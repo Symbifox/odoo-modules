@@ -82,6 +82,26 @@ The display name is taken from:
 The context is passed to the bridge as `<page-context>` with model, res_id,
 display_name, view_type and url.
 
+### How to write about people (1.39.0)
+
+When `bf_preferred_name` is installed, two optional lines join the context sent
+to the bridge:
+
+- `user_writing`: the writing guidance of the connected user, so that what Gen
+  writes in their voice agrees with the grammatical gender they gave;
+- `contact_writing`: the guidance of the person of the record in context, with
+  or without a persona. The person is the record itself for a contact, else its
+  `partner_id`, else its `work_contact_id` (an employee).
+
+Each line holds the pronouns the person gave and how to make words agree, or
+the instruction to write in gender-neutral (epicene) language when nothing was
+given. Gen never infers a gender from a first name. The text is written by
+`bf_preferred_name` (`res.partner._bf_writing_guidance`) and looked up by name:
+Gen does not depend on that module, and without it nothing is sent. The record
+is the one already validated into the context and is read with the caller's
+rights: a record they cannot read sends nothing. Each line is capped at 300
+characters.
+
 ### Live streaming
 
 Answers stream token by token over Server-Sent Events instead of one blocking
@@ -645,4 +665,4 @@ After updating, force a browser asset reload: `Ctrl+Shift+R`.
 ## Licence
 
 Business Source License 1.1, see `LICENSE`. This version becomes available
-under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-10-24).
+under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-10-29).

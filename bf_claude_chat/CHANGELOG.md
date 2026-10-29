@@ -1,5 +1,26 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.39.0 - 2026-10-29
+
+### Gen sait comment écrire au sujet des personnes
+
+Gen ne recevait, de la personne qui lui parle, que son nom et son courriel, et
+du contact de la fiche, que son persona quand il en avait un. Il ne pouvait pas
+accorder ce qu'il écrit au « je » au nom de l'usager, ni savoir quels pronoms
+emploie le contact, et risquait de deviner un genre d'après un prénom.
+
+- **`user_writing` et `contact_writing`** dans le contexte envoyé au pont : la
+  consigne d'écriture de l'usager connecté et celle du contact de la fiche
+  (ses pronoms, l'accord au genre grammatical donné, sinon l'épicène), avec ou
+  sans persona. Rédigée par `bf_preferred_name`, lue par son nom : Gen n'en
+  dépend pas, et rien ne part sans lui.
+- La fiche est celle que `_validated_context_ref` a déjà validée, et la
+  personne est lue avec les droits de l'appelant : une fiche qu'il ne peut pas
+  lire ne donne rien.
+- La personne d'une fiche est la fiche elle-même pour un contact, sinon son
+  `partner_id`, sinon son `work_contact_id` : une fiche d'employé, qui n'a pas
+  de `partner_id`, donne la consigne de son contact de travail.
+
 ## 18.0.1.38.0 - 2026-10-24
 
 ### Signaler une réponse de Gen depuis Symbifox Mobile

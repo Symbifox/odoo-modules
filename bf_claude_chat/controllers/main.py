@@ -430,6 +430,73 @@ def _attach_identity(env, bridge_payload):
     bridge_payload.setdefault("context", {})["identity"] = text[:PERSONALITY_MAX_CHARS]
 
 
+# How long one person's writing guidance may be once it reaches the bridge. It
+# is a short sentence (pronouns are capped at 40 characters where they are
+# typed); the cap only bounds what a future version of the text could send.
+PERSON_GUIDANCE_MAX_CHARS = 300
+
+
+def _person_guidance(partner):
+    """The writing guidance of a person, or "" when nothing can say it.
+
+    Written by ``bf_preferred_name`` (``res.partner._bf_writing_guidance``):
+    the pronouns the person gave and how to make words agree, epicene when
+    nothing was given. Looked up by name so that Gen does not depend on that
+    module; without it, nothing travels and the tenant prompt applies alone.
+    """
+    guidance = getattr(partner, "_bf_writing_guidance", None) if partner else None
+    if not guidance:
+        return ""
+    try:
+        return (guidance() or "")[:PERSON_GUIDANCE_MAX_CHARS]
+    except Exception:
+        _logger.debug("Writing guidance failed for partner %s", partner.id, exc_info=True)
+        return ""
+
+
+# Where the person of a record is, in order: most records name their contact
+# ``partner_id``; an employee has none and names the person ``work_contact_id``.
+PERSON_GUIDANCE_PARTNER_FIELDS = ("partner_id", "work_contact_id")
+
+
+def _attach_person_guidance(env, bridge_payload):
+    """Tell Gen how to write about the connected user and about the contact.
+
+    Two lines, both optional: ``user_writing`` (the person Gen writes for,
+    so that « je suis ravi·e » agrees) and ``contact_writing`` (the person of
+    the record in context, persona or not). The record is the one already
+    validated into the payload (``_validated_context_ref``), read with the
+    caller's rights: a record they cannot read gives nothing. Its person is
+    the record itself for a contact, else the first of
+    ``PERSON_GUIDANCE_PARTNER_FIELDS`` it has. Silent on failure, like the
+    identity.
+    """
+    ctx = bridge_payload.get("context") or {}
+    lines = {}
+    lines["user_writing"] = _person_guidance(env.user.partner_id)
+    model, res_id = ctx.get("model"), ctx.get("res_id")
+    if model and res_id and model in env:
+        try:
+            record = env[model].browse(res_id)
+            if record.exists():
+                record.check_access("read")
+                partner = record if model == "res.partner" else None
+                if partner is None:
+                    for name in PERSON_GUIDANCE_PARTNER_FIELDS:
+                        field = record._fields.get(name)
+                        if field and field.type == "many2one" and field.comodel_name == "res.partner":
+                            partner = record[name]
+                            break
+                if partner and partner != env.user.partner_id:
+                    partner.check_access("read")
+                    lines["contact_writing"] = _person_guidance(partner)
+        except Exception:
+            _logger.debug("Contact guidance failed for %s/%s", model, res_id, exc_info=True)
+    lines = {key: value for key, value in lines.items() if value}
+    if lines:
+        bridge_payload.setdefault("context", {}).update(lines)
+
+
 # Directive sent on the user's behalf the first time the panel opens on a
 # record. It is stored as an internal message: Claude sees it, the panel does
 # not render it, so the conversation opens straight on the briefing.
@@ -543,6 +610,7 @@ def launch_background_turn(env, session, question, settings, *, internal=False,
         if persona:
             payload["context"]["persona_summary"] = persona[:2000]
     _attach_identity(env, payload)
+    _attach_person_guidance(env, payload)
     _attach_steering(env, payload, fiche_model)
 
     # La clé d'API n'est pas stockée : le fil la relit au départ.
@@ -646,6 +714,7 @@ class ClaudeChatController(http.Controller):
                     bridge_payload["context"]["persona_summary"] = persona_summary[:2000]
 
         _attach_identity(request.env, bridge_payload)
+        _attach_person_guidance(request.env, bridge_payload)
         _attach_steering(
             request.env, bridge_payload,
             bridge_payload.get("context", {}).get("model"),
@@ -862,6 +931,7 @@ class ClaudeChatController(http.Controller):
                     bridge_payload["context"]["persona_summary"] = persona_summary[:2000]
 
         _attach_identity(request.env, bridge_payload)
+        _attach_person_guidance(request.env, bridge_payload)
         _attach_steering(
             request.env, bridge_payload,
             bridge_payload.get("context", {}).get("model"),
