@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_preferred_name_rename_form_linkpage" model="ir.ui.view">
+        <field name="name">bf.preferred.name.rename.form.linkpage</field>
+        <field name="model">bf.preferred.name.rename</field>
+        <field name="inherit_id" ref="bf_preferred_name.view_bf_preferred_name_rename_form"/>
+        <field name="arch" type="xml">
+            <field name="new_name" position="after">
+                <field name="address_count" invisible="1"/>
+                <field name="change_linkpage_address" invisible="not address_count"/>
+            </field>
+            <xpath expr="//footer" position="before">
+                <div invisible="not change_linkpage_address">
+                    <p class="text-muted" invisible="address_ids">
+                        No address carries the former name.
+                    </p>
+                    <field name="address_ids" nolabel="1" invisible="not address_ids">
+                        <list editable="bottom" create="0" delete="0">
+                            <field name="apply" widget="boolean_toggle"/>
+                            <!-- En lecture seule, ces champs ne partiraient pas à
+                                 l'enregistrement sans force_save : la ligne naîtrait
+                                 sans res_id. -->
+                            <field name="kind" force_save="1"/>
+                            <field name="current_address" force_save="1"/>
+                            <field name="new_slug" required="apply"/>
+                            <field name="res_id" column_invisible="1" force_save="1"/>
+                        </list>
+                    </field>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,241 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_preferred_name_linkpage
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-27 14:18+0000\n"
+"PO-Revision-Date: 2026-10-27 14:18+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__slug_hash
+msgid "Address fingerprint"
+msgstr "Empreinte de l'adresse"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model,name:bf_preferred_name_linkpage.model_bf_preferred_name_rename_address
+msgid "Address to change with the preferred name"
+msgstr "Adresse à changer avec le nom d'usage"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename__address_ids
+msgid "Addresses"
+msgstr "Adresses"
+
+#. module: bf_preferred_name_linkpage
+#: model_terms:ir.actions.act_window,help:bf_preferred_name_linkpage.action_bf_linkpage_retired_slug
+msgid ""
+"Addresses that a link page left. No other person's page can take\n"
+"            them, so that printed links and QR codes never lead to someone\n"
+"            else. Delete a line to free its address."
+msgstr ""
+"Adresses qu'une page de liens a quittées. La page d'aucune autre personne ne peut\n"
+"            les prendre, pour que les liens et les codes QR imprimés ne mènent jamais\n"
+"            chez quelqu'un d'autre. Supprimez une ligne pour libérer son adresse."
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename__change_linkpage_address
+msgid "Also change the addresses that carry the name"
+msgstr "Changer aussi les adresses qui portent le nom"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,help:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__partner_id
+msgid ""
+"Another page of the same person may take this address back; no one else can."
+msgstr ""
+"Une autre page de la même personne peut reprendre cette adresse ; personne "
+"d'autre ne le peut."
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields.selection,name:bf_preferred_name_linkpage.selection__bf_preferred_name_rename_address__kind__appointment
+msgid "Appointment type"
+msgstr "Type de rendez-vous"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__apply
+msgid "Change"
+msgstr "Changer"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model,name:bf_preferred_name_linkpage.model_bf_preferred_name_rename
+msgid "Change preferred name"
+msgstr "Changer le nom d'usage"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model,name:bf_preferred_name_linkpage.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__create_uid
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__create_date
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__current_address
+msgid "Current address"
+msgstr "Adresse actuelle"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__display_name
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__id
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__kind
+msgid "Kind"
+msgstr "Élément"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__write_uid
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__write_date
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model,name:bf_preferred_name_linkpage.model_bf_linkpage
+#: model:ir.model.fields.selection,name:bf_preferred_name_linkpage.selection__bf_preferred_name_rename_address__kind__linkpage
+msgid "Link page"
+msgstr "Page de liens"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,help:bf_preferred_name_linkpage.field_bf_preferred_name_rename__change_linkpage_address
+msgid ""
+"Link page, secure drop page and appointment types whose address carries the "
+"former name. Changing them breaks the links already sent and the printed QR "
+"codes: an old address then leads nowhere, with no redirection to the new "
+"one, so that it never links the former name to the person."
+msgstr ""
+"La page de liens, la page de dépôt sécurisé et les types de rendez-vous dont"
+" l'adresse porte l'ancien nom. Les changer casse les liens déjà envoyés et "
+"les codes QR imprimés : une ancienne adresse ne mène alors plus nulle part, "
+"sans redirection vers la nouvelle, pour ne jamais relier l'ancien nom à la "
+"personne."
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model,name:bf_preferred_name_linkpage.model_base_partner_merge_automatic_wizard
+msgid "Merge Partner Wizard"
+msgstr "Assistant de fusion des partenaires"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__new_slug
+msgid "New address"
+msgstr "Nouvelle adresse"
+
+#. module: bf_preferred_name_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name_linkpage.view_bf_preferred_name_rename_form_linkpage
+msgid "No address carries the former name."
+msgstr "Aucune adresse ne porte l'ancien nom."
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__page_id
+msgid "Page that left it"
+msgstr "Page qui l'a quittée"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__partner_id
+msgid "Person"
+msgstr "Personne"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename__address_count
+msgid "Public addresses"
+msgstr "Adresses publiques"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__res_id
+msgid "Res"
+msgstr "Enregistrement"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model,name:bf_preferred_name_linkpage.model_bf_linkpage_retired_slug
+msgid "Retired link page address"
+msgstr "Adresse de page de liens retirée"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.actions.act_window,name:bf_preferred_name_linkpage.action_bf_linkpage_retired_slug
+#: model:ir.ui.menu,name:bf_preferred_name_linkpage.menu_bf_linkpage_retired_slug
+msgid "Retired link page addresses"
+msgstr "Adresses de pages de liens retirées"
+
+#. module: bf_preferred_name_linkpage
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name_linkpage.view_bf_linkpage_retired_slug_list
+msgid "Retired on"
+msgstr "Retirée le"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields.selection,name:bf_preferred_name_linkpage.selection__bf_preferred_name_rename_address__kind__securetransfer
+msgid "Secure drop page"
+msgstr "Page de dépôt sécurisé"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_linkpage__bf_show_pronouns
+msgid "Show my pronouns"
+msgstr "Afficher mes pronoms"
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,help:bf_preferred_name_linkpage.field_bf_linkpage__bf_show_pronouns
+msgid ""
+"Show, under the name on the public page, the pronouns the person gave on "
+"their contact form. Unchecked, they stay on the contact form and in the "
+"email signature, but not on this page."
+msgstr ""
+"Affiche sous le nom, sur la page publique, les pronoms que la personne a "
+"donnés sur sa fiche. Décochée, ils restent sur la fiche et dans la signature"
+" de courriel, mais pas sur cette page."
+
+#. module: bf_preferred_name_linkpage
+#. odoo-python
+#: code:addons/bf_preferred_name_linkpage/models/bf_linkpage.py:0
+msgid "The URL slug \"%s\" is not available. Choose another one."
+msgstr "L'adresse « %s » n'est pas disponible. Choisissez-en une autre."
+
+#. module: bf_preferred_name_linkpage
+#. odoo-python
+#: code:addons/bf_preferred_name_linkpage/wizard/bf_preferred_name_rename.py:0
+msgid "The new address “%s” has no letter or digit."
+msgstr "La nouvelle adresse « %s » n'a ni lettre ni chiffre."
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,help:bf_preferred_name_linkpage.field_bf_linkpage_retired_slug__page_id
+msgid "The page may take this address back."
+msgstr "Cette page peut reprendre l'adresse."
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.constraint,message:bf_preferred_name_linkpage.constraint_bf_linkpage_retired_slug_slug_hash_uniq
+msgid "This address is already retired."
+msgstr "Cette adresse est déjà retirée."
+
+#. module: bf_preferred_name_linkpage
+#: model:ir.model.fields,field_description:bf_preferred_name_linkpage.field_bf_preferred_name_rename_address__wizard_id
+msgid "Wizard"
+msgstr "Assistant"

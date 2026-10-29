@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_users_form_simple_modif_preferred_name" model="ir.ui.view">
+        <field name="name">res.users.preferences.form.bf_preferred_name</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='email']" position="after">
+                <field name="bf_pronouns" readonly="0"
+                       placeholder="e.g. she/her, il, iel, they/them"/>
+                <field name="bf_grammatical_gender" readonly="0"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

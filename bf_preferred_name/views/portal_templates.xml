@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Ancré sur le champ courriel, jamais sur un texte : un xpath par texte
+         casse dès que le gabarit est rendu en français. -->
+    <template id="portal_my_details_fields_preferred_name"
+              inherit_id="portal.portal_my_details_fields">
+        <xpath expr="//input[@name='email']/.." position="after">
+            <div t-attf-class="mb-3 #{error.get('bf_pronouns') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label label-optional" for="bf_pronouns">Pronouns</label>
+                <input type="text" name="bf_pronouns" id="bf_pronouns" maxlength="40"
+                       list="bf_pronouns_suggestions"
+                       t-attf-class="form-control #{error.get('bf_pronouns') and 'is-invalid' or ''}"
+                       t-att-value="bf_pronouns if bf_pronouns is not None else partner.bf_pronouns"/>
+                <datalist id="bf_pronouns_suggestions">
+                    <option value="elle"/>
+                    <option value="il"/>
+                    <option value="iel"/>
+                    <option value="she/her"/>
+                    <option value="he/him"/>
+                    <option value="they/them"/>
+                </datalist>
+                <small class="form-text text-muted">How you want to be referred to, in your own words.</small>
+            </div>
+            <div t-attf-class="mb-3 #{error.get('bf_grammatical_gender') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label label-optional" for="bf_grammatical_gender">Grammatical gender</label>
+                <t t-set="bf_gender" t-value="bf_grammatical_gender if bf_grammatical_gender is not None else partner.bf_grammatical_gender"/>
+                <select name="bf_grammatical_gender" id="bf_grammatical_gender"
+                        t-attf-class="form-select #{error.get('bf_grammatical_gender') and 'is-invalid' or ''}">
+                    <option value="">Not specified</option>
+                    <t t-foreach="bf_grammatical_gender_options" t-as="option">
+                        <option t-att-value="option[0]" t-att-selected="option[0] == bf_gender">
+                            <t t-esc="option[1]"/>
+                        </option>
+                    </t>
+                </select>
+                <small class="form-text text-muted">How words agree when we write about you in French. Left empty, we write in gender-neutral language.</small>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

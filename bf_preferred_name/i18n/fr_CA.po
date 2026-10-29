@@ -1,0 +1,313 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_preferred_name
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"POT-Creation-Date: 2026-10-26 08:04+0000\n"
+"PO-Revision-Date: 2026-10-26 08:04+0000\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.portal_my_details_fields_preferred_name
+msgid "<option value=\"\">Not specified</option>"
+msgstr "<option value=\"\">Non précisé</option>"
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.portal_my_details_fields_preferred_name
+msgid ""
+"<small class=\"form-text text-muted\">How words agree when we write about "
+"you in French. Left empty, we write in gender-neutral language.</small>"
+msgstr ""
+"<small class=\"form-text text-muted\">Comment accorder les mots quand on "
+"écrit à votre sujet en français. Laissé vide, on écrit en épicène.</small>"
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.portal_my_details_fields_preferred_name
+msgid ""
+"<small class=\"form-text text-muted\">How you want to be referred to, in "
+"your own words.</small>"
+msgstr ""
+"<small class=\"form-text text-muted\">Comment vous souhaitez qu'on parle de "
+"vous, dans vos propres mots.</small>"
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_bf_preferred_name_rename_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_preferred_name
+#: model:ir.actions.act_window,name:bf_preferred_name.action_bf_preferred_name_rename
+#: model:ir.model,name:bf_preferred_name.model_bf_preferred_name_rename
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_bf_preferred_name_rename_form
+msgid "Change preferred name"
+msgstr "Changer le nom d'usage"
+
+#. module: bf_preferred_name
+#: model:ir.model,name:bf_preferred_name.model_res_partner
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__current_legal_name
+msgid "Current legal name"
+msgstr "Nom légal actuel"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__current_name
+msgid "Current name"
+msgstr "Nom actuel"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__erase_history
+msgid "Erase the name-change history"
+msgstr "Effacer l'historique des changements de nom"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields.selection,name:bf_preferred_name.selection__res_partner__bf_grammatical_gender__feminine
+msgid "Feminine"
+msgstr "Féminin"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_partner__bf_grammatical_gender
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_users__bf_grammatical_gender
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.portal_my_details_fields_preferred_name
+msgid "Grammatical gender"
+msgstr "Genre grammatical"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_res_partner__bf_grammatical_gender
+#: model:ir.model.fields,help:bf_preferred_name.field_res_users__bf_grammatical_gender
+msgid ""
+"How to make words agree when writing about this person in French. Left "
+"empty, write in gender-neutral (epicene) language."
+msgstr ""
+"Comment accorder les mots quand on écrit au sujet de cette personne en "
+"français. Laissé vide, on écrit en épicène."
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__keep_old_as_legal
+msgid "Keep the current name as legal name"
+msgstr "Garder le nom actuel comme nom légal"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_preferred_name
+#: model:res.groups,name:bf_preferred_name.group_legal_name
+msgid "Legal names"
+msgstr "Noms légaux"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields.selection,name:bf_preferred_name.selection__res_partner__bf_grammatical_gender__masculine
+msgid "Masculine"
+msgstr "Masculin"
+
+#. module: bf_preferred_name
+#: model:ir.model,name:bf_preferred_name.model_base_partner_merge_automatic_wizard
+msgid "Merge Partner Wizard"
+msgstr "Assistant de fusion des partenaires"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields.selection,name:bf_preferred_name.selection__res_partner__bf_grammatical_gender__neuter
+msgid "Neutral (epicene)"
+msgstr "Épicène (neutre)"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__new_name
+msgid "New preferred name"
+msgstr "Nouveau nom d'usage"
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/models/res_partner.py:0
+msgid "Only members of the group “%(group)s” can set a personal legal name."
+msgstr ""
+"Seuls les membres du groupe « %(group)s » peuvent inscrire le nom légal "
+"d'une personne."
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_partner__bf_legal_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_users__bf_legal_name
+msgid "Personal legal name"
+msgstr "Nom légal de la personne"
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/controllers/portal.py:0
+msgid "Please choose a grammatical gender from the list."
+msgstr "Veuillez choisir un genre grammatical dans la liste."
+
+#. module: bf_preferred_name
+#: model:ir.module.category,name:bf_preferred_name.module_category_bf_preferred_name
+msgid "Preferred names"
+msgstr "Noms d'usage"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_partner__bf_pronouns
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_users__bf_pronouns
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.portal_my_details_fields_preferred_name
+msgid "Pronouns"
+msgstr "Pronoms"
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/controllers/portal.py:0
+msgid "Pronouns are limited to %(count)s characters."
+msgstr "Les pronoms sont limités à %(count)s caractères."
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/models/res_partner.py:0
+msgid ""
+"Pronouns may only contain letters, spaces and these signs: / , · - ' ( )."
+msgstr ""
+"Les pronoms ne peuvent contenir que des lettres, des espaces et ces signes :"
+" / , · - ' ( )."
+
+#. module: bf_preferred_name
+#: model:res.groups,comment:bf_preferred_name.group_legal_name
+msgid ""
+"Reads and edits the personal legal name of contacts, and may erase their "
+"name-change history."
+msgstr ""
+"Lit et modifie le nom légal des personnes, et peut effacer l'historique de "
+"leurs changements de nom."
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_bf_preferred_name_rename__erase_history
+msgid ""
+"Remove every “old name → new name” trace from this contact's chatter (and "
+"from the linked employee's). Other records that tracked this contact, such "
+"as the customer of a task, keep the name it had then. Notifications already "
+"emailed to followers cannot be recalled."
+msgstr ""
+"Retire du fil de cette fiche (et de celui de l'employé lié) toutes les "
+"traces « ancien nom → nouveau nom ». Les autres fiches qui ont suivi ce "
+"contact, comme le client d'une tâche, gardent le nom d'alors. Les "
+"notifications déjà envoyées par courriel aux abonnés ne se rattrapent pas."
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_bf_preferred_name_rename_form
+msgid "Rename"
+msgstr "Renommer"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_bf_preferred_name_rename__keep_old_as_legal
+msgid ""
+"Store the current name in the personal legal name, which only the “Legal "
+"names” group can read. Only when the contact has no legal name yet."
+msgstr ""
+"Range le nom actuel dans le nom légal de la personne, que seul le groupe « "
+"Noms légaux » peut lire. Seulement si la fiche n'a pas encore de nom légal."
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_bf_preferred_name_rename_form
+msgid ""
+"The contact is renamed without leaving the former name in its chatter.\n"
+"                    Messages already written keep the name they carried."
+msgstr ""
+"La fiche est renommée sans laisser l'ancien nom à son fil.\n"
+"                    Les messages déjà écrits gardent le nom qu'ils portaient."
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/wizard/bf_preferred_name_rename.py:0
+msgid ""
+"The contact is renamed, but not its employee record, which you are not "
+"allowed to change. Ask Human Resources to use “Change preferred name” too."
+msgstr ""
+"La fiche est renommée, mais pas la fiche d'employé, que vous n'avez pas le "
+"droit de modifier. Demandez aux Ressources humaines de faire aussi « Changer"
+" le nom d'usage »."
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/wizard/bf_preferred_name_rename.py:0
+msgid "The new preferred name cannot be empty."
+msgstr "Le nouveau nom d'usage ne peut pas être vide."
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_bf_preferred_name_rename__current_legal_name
+#: model:ir.model.fields,help:bf_preferred_name.field_res_partner__bf_legal_name
+#: model:ir.model.fields,help:bf_preferred_name.field_res_users__bf_legal_name
+msgid ""
+"The person's legal name, when it differs from the name above. Read only by "
+"the acts that require it (governance registers, electronic signatures, "
+"employment contracts). Never shown elsewhere and never tracked in the "
+"chatter."
+msgstr ""
+"Le nom légal de la personne, quand il diffère du nom ci-dessus. Lu seulement"
+" par les actes qui l'exigent (registres de gouvernance, signatures "
+"électroniques, contrats de travail). Jamais affiché ailleurs, jamais suivi "
+"au fil."
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_res_partner__bf_pronouns
+#: model:ir.model.fields,help:bf_preferred_name.field_res_users__bf_pronouns
+msgid ""
+"The pronouns this person gave, in their own words (e.g. she/her, il, iel, "
+"they/them). Never guessed."
+msgstr ""
+"Les pronoms que cette personne a donnés, dans ses propres mots (p. ex. elle,"
+" il, iel, she/her, they/them). Jamais devinés."
+
+#. module: bf_preferred_name
+#: model:ir.model,name:bf_preferred_name.model_res_users
+msgid "User"
+msgstr "Usager"
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_res_partner__bf_writing_guidance
+#: model:ir.model.fields,help:bf_preferred_name.field_res_users__bf_writing_guidance
+msgid ""
+"What Gen is told about this person: the pronouns they gave and the "
+"grammatical agreement to use, epicene when none was given."
+msgstr ""
+"Ce que Gen reçoit sur cette personne : les pronoms qu'elle a donnés et "
+"l'accord à faire, en épicène quand elle n'en a donné aucun."
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_partner__bf_writing_guidance
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_users__bf_writing_guidance
+msgid "Writing guidance for Gen"
+msgstr "Consigne d'écriture pour Gen"
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_partner_form_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_users_form_simple_modif_preferred_name
+msgid "e.g. she/her, il, iel, they/them"
+msgstr "p. ex. elle, il, iel, she/her, they/them"

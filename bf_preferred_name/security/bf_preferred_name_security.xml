@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="module_category_bf_preferred_name" model="ir.module.category">
+            <field name="name">Preferred names</field>
+            <field name="sequence">90</field>
+        </record>
+
+        <!-- Personne par défaut, administrateur compris : le nom légal d'une
+             personne est une donnée que peu de gens doivent lire. -->
+        <record id="group_legal_name" model="res.groups">
+            <field name="name">Legal names</field>
+            <field name="comment">Reads and edits the personal legal name of contacts, and may erase their name-change history.</field>
+            <field name="category_id" ref="module_category_bf_preferred_name"/>
+        </record>
+
+        <!-- Un assistant de renommage porte le nom prévu avant qu'il ne soit
+             écrit, et le nom actuel : il n'est lu que par celui qui l'a ouvert.
+             Règle globale, administrateur compris. -->
+        <record id="rule_bf_preferred_name_rename_own" model="ir.rule">
+            <field name="name">Change preferred name: own wizards only</field>
+            <field name="model_id" ref="model_bf_preferred_name_rename"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        </record>
+
+    </data>
+</odoo>

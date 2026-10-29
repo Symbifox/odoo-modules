@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La ligne « Administrateur(s) » du procès-verbal. -->
+    <template id="report_corporate_resolution_legal_names"
+              inherit_id="bf_corporate_governance.report_corporate_resolution"
+              name="Resolution: legal names of the directors">
+        <xpath expr="//t[@t-out='director.partner_id.name']" position="attributes">
+            <attribute name="t-out">director.partner_id._bf_legal_name()</attribute>
+        </xpath>
+    </template>
+
+</odoo>

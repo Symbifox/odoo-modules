@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_linkpage_form_preferred_name" model="ir.ui.view">
+        <field name="name">bf.linkpage.form.preferred.name</field>
+        <field name="model">bf.linkpage</field>
+        <field name="inherit_id" ref="bf_linkpage.view_bf_linkpage_form"/>
+        <field name="arch" type="xml">
+            <field name="show_vcard" position="after">
+                <field name="bf_show_pronouns" invisible="kind != 'owner'"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le bandeau paraît aussi pour un
+         destinataire qui a donné ses pronoms sans avoir de persona, et le bouton
+         « Appliquer le persona » n'y faisait rien. Il ne paraît que s'il y a un
+         persona à appliquer (`persona_hint_partner_id`, que bf_persona pose avec
+         lui). -->
+    <record id="view_mail_compose_message_persona_pronouns" model="ir.ui.view">
+        <field name="name">mail.compose.message.persona.hint.bf_preferred_name</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="bf_persona.view_mail_compose_message_persona"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_apply_persona']" position="attributes">
+                <attribute name="invisible">not persona_hint_partner_id</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

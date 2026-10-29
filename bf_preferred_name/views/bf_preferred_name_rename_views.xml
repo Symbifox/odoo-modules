@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_preferred_name_rename_form" model="ir.ui.view">
+        <field name="name">bf.preferred.name.rename.form</field>
+        <field name="model">bf.preferred.name.rename</field>
+        <field name="arch" type="xml">
+            <form string="Change preferred name">
+                <p class="text-muted">
+                    The contact is renamed without leaving the former name in its chatter.
+                    Messages already written keep the name they carried.
+                </p>
+                <group>
+                    <field name="partner_id" invisible="1"/>
+                    <field name="current_name"/>
+                    <field name="new_name"/>
+                </group>
+                <group groups="bf_preferred_name.group_legal_name">
+                    <field name="current_legal_name" invisible="1"/>
+                    <field name="keep_old_as_legal" invisible="current_legal_name"/>
+                    <field name="erase_history"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Rename" class="btn-primary"
+                            data-hotkey="q"/>
+                    <button special="cancel" string="Cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Dans le menu « Action » de la fiche contact. -->
+    <record id="action_bf_preferred_name_rename" model="ir.actions.act_window">
+        <field name="name">Change preferred name</field>
+        <field name="res_model">bf.preferred.name.rename</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">form</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,281 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_preferred_name
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"POT-Creation-Date: 2026-10-26 08:04+0000\n"
+"PO-Revision-Date: 2026-10-26 08:04+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.portal_my_details_fields_preferred_name
+msgid "<option value=\"\">Not specified</option>"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.portal_my_details_fields_preferred_name
+msgid ""
+"<small class=\"form-text text-muted\">How words agree when we write about "
+"you in French. Left empty, we write in gender-neutral language.</small>"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.portal_my_details_fields_preferred_name
+msgid ""
+"<small class=\"form-text text-muted\">How you want to be referred to, in "
+"your own words.</small>"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_bf_preferred_name_rename_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.actions.act_window,name:bf_preferred_name.action_bf_preferred_name_rename
+#: model:ir.model,name:bf_preferred_name.model_bf_preferred_name_rename
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_bf_preferred_name_rename_form
+msgid "Change preferred name"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model,name:bf_preferred_name.model_res_partner
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__partner_id
+msgid "Contact"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__current_legal_name
+msgid "Current legal name"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__current_name
+msgid "Current name"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__erase_history
+msgid "Erase the name-change history"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields.selection,name:bf_preferred_name.selection__res_partner__bf_grammatical_gender__feminine
+msgid "Feminine"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_partner__bf_grammatical_gender
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_users__bf_grammatical_gender
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.portal_my_details_fields_preferred_name
+msgid "Grammatical gender"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_res_partner__bf_grammatical_gender
+#: model:ir.model.fields,help:bf_preferred_name.field_res_users__bf_grammatical_gender
+msgid ""
+"How to make words agree when writing about this person in French. Left "
+"empty, write in gender-neutral (epicene) language."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__keep_old_as_legal
+msgid "Keep the current name as legal name"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:res.groups,name:bf_preferred_name.group_legal_name
+msgid "Legal names"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields.selection,name:bf_preferred_name.selection__res_partner__bf_grammatical_gender__masculine
+msgid "Masculine"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model,name:bf_preferred_name.model_base_partner_merge_automatic_wizard
+msgid "Merge Partner Wizard"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields.selection,name:bf_preferred_name.selection__res_partner__bf_grammatical_gender__neuter
+msgid "Neutral (epicene)"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_bf_preferred_name_rename__new_name
+msgid "New preferred name"
+msgstr ""
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/models/res_partner.py:0
+msgid "Only members of the group “%(group)s” can set a personal legal name."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_partner__bf_legal_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_users__bf_legal_name
+msgid "Personal legal name"
+msgstr ""
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/controllers/portal.py:0
+msgid "Please choose a grammatical gender from the list."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.module.category,name:bf_preferred_name.module_category_bf_preferred_name
+msgid "Preferred names"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_partner__bf_pronouns
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_users__bf_pronouns
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.portal_my_details_fields_preferred_name
+msgid "Pronouns"
+msgstr ""
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/controllers/portal.py:0
+msgid "Pronouns are limited to %(count)s characters."
+msgstr ""
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/models/res_partner.py:0
+msgid ""
+"Pronouns may only contain letters, spaces and these signs: / , · - ' ( )."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:res.groups,comment:bf_preferred_name.group_legal_name
+msgid ""
+"Reads and edits the personal legal name of contacts, and may erase their "
+"name-change history."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_bf_preferred_name_rename__erase_history
+msgid ""
+"Remove every “old name → new name” trace from this contact's chatter (and "
+"from the linked employee's). Other records that tracked this contact, such "
+"as the customer of a task, keep the name it had then. Notifications already "
+"emailed to followers cannot be recalled."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_bf_preferred_name_rename_form
+msgid "Rename"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_bf_preferred_name_rename__keep_old_as_legal
+msgid ""
+"Store the current name in the personal legal name, which only the “Legal "
+"names” group can read. Only when the contact has no legal name yet."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_bf_preferred_name_rename_form
+msgid ""
+"The contact is renamed without leaving the former name in its chatter.\n"
+"                    Messages already written keep the name they carried."
+msgstr ""
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/wizard/bf_preferred_name_rename.py:0
+msgid ""
+"The contact is renamed, but not its employee record, which you are not "
+"allowed to change. Ask Human Resources to use “Change preferred name” too."
+msgstr ""
+
+#. module: bf_preferred_name
+#. odoo-python
+#: code:addons/bf_preferred_name/wizard/bf_preferred_name_rename.py:0
+msgid "The new preferred name cannot be empty."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_bf_preferred_name_rename__current_legal_name
+#: model:ir.model.fields,help:bf_preferred_name.field_res_partner__bf_legal_name
+#: model:ir.model.fields,help:bf_preferred_name.field_res_users__bf_legal_name
+msgid ""
+"The person's legal name, when it differs from the name above. Read only by "
+"the acts that require it (governance registers, electronic signatures, "
+"employment contracts). Never shown elsewhere and never tracked in the "
+"chatter."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_res_partner__bf_pronouns
+#: model:ir.model.fields,help:bf_preferred_name.field_res_users__bf_pronouns
+msgid ""
+"The pronouns this person gave, in their own words (e.g. she/her, il, iel, "
+"they/them). Never guessed."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model,name:bf_preferred_name.model_res_users
+msgid "User"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,help:bf_preferred_name.field_res_partner__bf_writing_guidance
+#: model:ir.model.fields,help:bf_preferred_name.field_res_users__bf_writing_guidance
+msgid ""
+"What Gen is told about this person: the pronouns they gave and the "
+"grammatical agreement to use, epicene when none was given."
+msgstr ""
+
+#. module: bf_preferred_name
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_partner__bf_writing_guidance
+#: model:ir.model.fields,field_description:bf_preferred_name.field_res_users__bf_writing_guidance
+msgid "Writing guidance for Gen"
+msgstr ""
+
+#. module: bf_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_partner_form_preferred_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name.view_users_form_simple_modif_preferred_name
+msgid "e.g. she/her, il, iel, they/them"
+msgstr ""

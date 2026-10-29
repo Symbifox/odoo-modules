@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le certificat d'achèvement est l'acte : le nom légal figé. -->
+    <template id="report_sign_certificate_act_name" inherit_id="bf_sign.report_sign_certificate"
+              name="BF Sign certificate: name on the act">
+        <xpath expr="//table[hasclass('cert-signers')]//td[@t-out='s.name']" position="attributes">
+            <attribute name="t-out">s._bf_act_name()</attribute>
+        </xpath>
+    </template>
+
+    <!-- La page publique de vérification atteste l'acte. -->
+    <template id="verify_page_act_name" inherit_id="bf_sign.verify_page"
+              name="BF Sign verification: name on the act">
+        <xpath expr="//t[@t-foreach='req.signer_ids']//t[@t-esc='s.name']" position="attributes">
+            <attribute name="t-esc">s._bf_act_name()</attribute>
+        </xpath>
+    </template>
+
+</odoo>

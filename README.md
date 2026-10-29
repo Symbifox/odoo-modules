@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**263 modules are BUSL-1.1.** The source is published and auditable, and **you
+**272 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -299,6 +299,15 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_persona_privacy` | Persona des contacts — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Privacy bridge for contact personas: relationship-profile and payer-rating purpose in the register, retention from the end of the relationship, verified destruction recorded in the register, classifiable personas |
 | `bf_policy` | Symbifox — Blue Fox OS Policy | 18.0.2.13.0 | BUSL-1.1 | Manage Blue Fox OS workstations from Odoo: install, sign-in, disk encryption, apps and browser policy served to each machine, with machine enrolment and disk-passphrase escrow |
 | `bf_policy_live` | Symbifox — Blue Fox OS Policy, Live USB Key | 18.0.1.3.0 | BUSL-1.1 | Key escrow and one-time Odoo sign-in for the Blue Fox OS live USB key |
+| `bf_preferred_name` | Symbifox Noms d'usage et pronoms | 18.0.1.1.0 | BUSL-1.1 | The preferred name everywhere, the legal name kept apart and protected, and the pronouns the person chose |
+| `bf_preferred_name_dav` | Symbifox Noms d'usage et pronoms — pont CardDAV | 18.0.1.0.0 | BUSL-1.1 | Pronouns and grammatical gender in the contact cards served over CardDAV |
+| `bf_preferred_name_governance` | Symbifox Noms d'usage et pronoms — pont Gouvernance | 18.0.1.0.0 | BUSL-1.1 | Resolutions print the legal name of signatories and directors |
+| `bf_preferred_name_linkpage` | Symbifox Noms d'usage et pronoms — pont Page de liens | 18.0.1.1.0 | BUSL-1.1 | Pronouns and the preferred name on a person's link page; renaming offers to change the addresses that carry the name |
+| `bf_preferred_name_nextcloud` | Symbifox Noms d'usage et pronoms — pont Contacts Nextcloud | 18.0.1.0.0 | BUSL-1.1 | Pronouns and grammatical gender in the cards pushed to Nextcloud Contacts |
+| `bf_preferred_name_persona` | Symbifox Noms d'usage et pronoms — pont Persona | 18.0.1.0.0 | BUSL-1.1 | The recipients' pronouns in the email composer banner |
+| `bf_preferred_name_receipt` | Symbifox Noms d'usage et pronoms — pont Reçus de dons | 18.0.1.0.0 | BUSL-1.1 | The official donation receipt carries the donor's legal name |
+| `bf_preferred_name_sign` | Symbifox Noms d'usage et pronoms — pont Signature | 18.0.1.0.0 | BUSL-1.1 | The signer's legal name on the signed act, their preferred name everywhere else |
+| `bf_preferred_name_sign_sale` | Symbifox Noms d'usage et pronoms — pont Signature des devis | 18.0.1.0.0 | BUSL-1.1 | A quotation's "Signed by" carries the frozen legal name of the signer |
 | `bf_process` | Cartographie de processus | 18.0.5.1.0 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.1.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_property_core` | Immeubles : socle | 18.0.2.10.1 | BUSL-1.1 | The neutral foundation: organisations, buildings, dwellings and occupants, for divided co-ownership and residential rental alike |
@@ -482,7 +491,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **263 modules: BUSL-1.1.** Production use for your own internal business
+- **272 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les pronoms sous le nom, dans le style du titre d'emploi. -->
+    <template id="linkpage_public_pronouns" inherit_id="bf_linkpage.linkpage_public"
+              name="Link page: pronouns">
+        <xpath expr="//h1[hasclass('bf-linkpage__name')]" position="after">
+            <t t-set="bf_pronouns" t-value="page._bf_public_pronouns()"/>
+            <p t-if="bf_pronouns" class="bf-linkpage__headline bf-linkpage__pronouns"
+               t-out="bf_pronouns"/>
+        </xpath>
+    </template>
+
+</odoo>

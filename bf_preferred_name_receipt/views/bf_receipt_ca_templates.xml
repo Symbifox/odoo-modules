@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_donation_receipt_legal_name"
+              inherit_id="donation_base.report_donationtaxreceipt_document"
+              name="Donation receipt: donor's legal name">
+        <xpath expr="//div[@t-out='o.partner_id.name']" position="attributes">
+            <attribute name="t-out">o.partner_id._bf_legal_name()</attribute>
+        </xpath>
+        <!-- L'adresse seule. Le gabarit d'adresse d'Odoo (widget « contact »)
+             garde le nom de la fiche dans un bloc que seule la feuille de style
+             masque : quand elle ne se charge pas dans le moteur PDF, le nom
+             d'usage s'imprimait sous le nom légal (vu à l'essai). -->
+        <xpath expr="//div[@t-field='o.partner_id'][contains(@t-options, 'address')]" position="replace">
+            <div style="color: #454748; line-height: 1.4; white-space: pre-line;"
+                 t-out="o.partner_id._display_address(without_company=True)"/>
+        </xpath>
+    </template>
+
+</odoo>

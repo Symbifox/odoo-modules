@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_preferred_name" model="ir.ui.view">
+        <field name="name">res.partner.form.bf_preferred_name</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Le premier « function » est celui de la fiche ; les suivants
+                 sont ceux des contacts enfants. -->
+            <xpath expr="(//field[@name='function'])[1]" position="after">
+                <field name="bf_pronouns" invisible="is_company"
+                       placeholder="e.g. she/her, il, iel, they/them"/>
+                <field name="bf_grammatical_gender" invisible="is_company"/>
+                <!-- `groups=` retire le nœud côté serveur : `invisible` ne
+                     protège rien, le champ serait quand même lu. -->
+                <field name="bf_legal_name" invisible="is_company"
+                       groups="bf_preferred_name.group_legal_name"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
