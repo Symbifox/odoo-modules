@@ -35,6 +35,20 @@ from . import _sms_text
 _logger = logging.getLogger(__name__)
 
 
+def _talk_token(url):
+    """Le jeton d'une adresse de salle Talk (`…/call/<jeton>`), ou False.
+
+    ⚠️ L'expression est lue dans `privacy_appointment` au moment de l'appel,
+    pas importée en tête : importer ce fichier ici le chargerait avant son
+    tour dans `models/__init__.py`, et ses classes changeraient de place dans
+    l'ordre d'héritage de `resource.booking`.
+    """
+    from .privacy_appointment import _TALK_CALL_RE
+
+    match = _TALK_CALL_RE.search((url or "").strip())
+    return match.group(1) if match else False
+
+
 def _escape_ics(value):
     """Escape a string for use in ICS property values per RFC 5545."""
     if not value:
@@ -100,6 +114,15 @@ class ResourceBooking(models.Model):
         string="Jeton de salle vidéo",
         copy=False,
         help="Jeton unique pour l'URL de la salle de vidéoconférence.",
+    )
+    video_room_host_id = fields.Many2one(
+        "res.users",
+        string="Hôte de la salle vidéo",
+        copy=False,
+        readonly=True,
+        help="L'organisateur pour qui la salle Talk dédiée a été créée : ses "
+        "modérateurs sont ceux de cet hôte. Un déplacement qui change d'hôte "
+        "crée une salle neuve au lieu de garder celle-ci.",
     )
     reminder_sent = fields.Boolean(
         string="Rappel envoyé",
@@ -1094,13 +1117,161 @@ class ResourceBooking(models.Model):
         provider = self.type_id.video_provider
         if not provider or provider == "none":
             return False
+        # ⚠️ Lu AVANT de poser le jeton, qui est posé juste dessous : un jeton
+        # déjà là dit qu'un appel PRÉCÉDENT a donné sa salle à la réservation.
+        # Sans lui, c'est une première confirmation, et le lien qu'elle porte
+        # (celui du type, recopié par l'OCA, ou une salle collée à la main)
+        # n'est pas le sien : on ne le reprend ni ne le renomme.
+        deja_generee = bool(self.video_room_token)
         if not self.video_room_token:
             self.video_room_token = uuid.uuid4().hex[:12]
         if provider == "jitsi":
             return self._generate_jitsi_url()
         if provider == "nextcloud_talk":
+            # Un déplacement repasse par `action_confirm` : la réservation qui a
+            # déjà SA salle la garde. Sinon chaque nouvelle heure
+            # créait une salle de plus, et les courriels successifs menaient
+            # chacun à une salle différente.
+            if deja_generee:
+                # Le lien est SON lien court (repli Shlink, actif ou réparé) :
+                # c'est lui que le client a reçu, il ne change pas ; seule sa
+                # cible change.
+                if self._shlink_is_ours():
+                    return self._nc_talk_room_behind_shlink()
+                url = self._nc_talk_reuse_room()
+                if url:
+                    return url
             return self._nc_talk_url_with_fallback()
         return False
+
+    def _nc_talk_reuse_room(self):
+        """L'adresse de la salle Talk propre à cette réservation, renommée à
+        la nouvelle heure, ou False s'il faut en créer une.
+
+        On n'en crée une que si la réservation n'a pas de salle à elle (salle
+        de repli, lien fixe du type, aucune salle) ou si Nextcloud dit qu'elle
+        n'existe plus (404). Toute autre erreur de renommage garde la salle :
+        un nom périmé vaut mieux qu'un lien qui change sous les pieds du client.
+        """
+        self.ensure_one()
+        token = self._bf_privacy_talk_token()
+        if not token:
+            return False
+        url = self.videocall_location.strip()
+        # L'hôte a changé (type à plusieurs hôtes, attribution automatique) :
+        # la salle est modérée par l'ANCIEN. Salle neuve, que le chemin de
+        # création donne au nouvel hôte.
+        if self.video_room_host_id != self.user_id:
+            _logger.info(
+                "bf_appointment: hôte changé sur la réservation %s (%s -> %s), "
+                "salle Talk neuve au lieu de %s", self.id,
+                self.video_room_host_id.login, self.user_id.login, token,
+            )
+            return False
+        # Jamais une salle PARTAGÉE : la salle générique de repli, le lien fixe
+        # de N'IMPORTE QUEL type, ou une salle qu'une autre réservation porte
+        # aussi (copie au back-office : le lien n'est pas exclu de `copy()`).
+        # La renommer l'afficherait à tous, et des clients différents se
+        # retrouveraient dans la même salle. Comparé par JETON : une même
+        # salle s'écrit de plusieurs façons (`/index.php/call/`, `/call/`,
+        # barre finale).
+        if token in self._nc_talk_shared_tokens():
+            return False
+        autres = self.sudo().with_context(active_test=False).search([
+            ("id", "!=", self.id),
+            ("videocall_location", "like", "/call/%s" % token),
+        ])
+        if any(_talk_token(b.videocall_location) == token for b in autres):
+            return False
+        status = self._nc_talk_rename_room(token, self._nc_talk_room_name())
+        if status == 404:
+            _logger.info(
+                "bf_appointment: la salle Talk %s de la réservation %s n'existe "
+                "plus, une nouvelle est créée", token, self.id,
+            )
+            return False
+        if status is None or status >= 400:
+            _logger.warning(
+                "bf_appointment: salle Talk %s gardée sans renommage "
+                "(réservation %s, réponse %s)", token, self.id, status,
+            )
+        return url
+
+    def _nc_talk_shared_tokens(self):
+        """Jetons des salles Talk PARTAGÉES : la salle générique de repli et
+        le lien fixe de tous les types, archivés compris."""
+        liens = [
+            self.env["ir.config_parameter"].sudo()
+            .get_param("bf_appointment.nc_talk_generic_room_url") or ""
+        ]
+        liens += self.env["resource.booking.type"].sudo().with_context(
+            active_test=False,
+        ).search([("videocall_location", "!=", False)]).mapped("videocall_location")
+        return {t for t in map(_talk_token, liens) if t}
+
+    def _bf_backfill_video_room_host(self):
+        """Réservations d'avant 18.0.2.66.2 : leur salle a été faite pour
+        l'organisateur d'alors, qui est encore le leur (un déplacement au
+        back-office ne touchait pas la salle). Appelé par la migration ; sans
+        lui, toute salle existante serait vue comme celle d'un autre hôte et
+        remplacée au premier déplacement."""
+        # Ce qui attend encore en mémoire doit être en base avant l'UPDATE brut.
+        self.flush_model(["video_room_host_id", "user_id", "video_room_token"])
+        self.env.cr.execute("""
+            UPDATE resource_booking
+               SET video_room_host_id = user_id
+             WHERE video_room_token IS NOT NULL
+               AND video_room_host_id IS NULL
+               AND user_id IS NOT NULL
+        """)
+        # Lu tout de suite : rien d'autre ne doit passer par le curseur avant.
+        rattrapees = self.env.cr.rowcount
+        self.invalidate_model(["video_room_host_id"])
+        return rattrapees
+
+    def _nc_talk_rename_room(self, token, new_name):
+        """Renomme une salle Talk. Rend le code HTTP, ou None si Talk n'est
+        pas configuré ou injoignable. Ne lève jamais."""
+        ICP = self.env["ir.config_parameter"].sudo()
+        base_url = (ICP.get_param("bf_appointment.nc_talk_base_url") or "").rstrip("/")
+        talk_login = ICP.get_param("bf_appointment.nc_talk_user")
+        password_enc = ICP.get_param("bf_appointment.nc_talk_password_encrypted")
+        password = password_enc and self._decrypt_nc_talk_password(password_enc)
+        if not (base_url and talk_login and password):
+            return None
+        try:
+            import requests
+
+            response = requests.put(
+                f"{base_url}/ocs/v2.php/apps/spreed/api/v4/room/{token}",
+                auth=(talk_login, password),
+                headers={"OCS-APIREQUEST": "true", "Accept": "application/json"},
+                data={"roomName": new_name[:200]},
+                timeout=10,
+            )
+            return response.status_code
+        except Exception as e:  # noqa: BLE001
+            _logger.error("Failed to rename Nextcloud Talk room %s: %s", token, e)
+            return None
+
+    def _nc_talk_room_name(self):
+        """Nom de la salle : le titre que les pages à jeton affichent, puis
+        l'heure locale du demandeur.
+
+        Le type seul (« Rencontre flexible ») ne disait pas de quelle rencontre
+        il s'agissait, et le nom de la fiche que le formulaire public retrouve
+        par l'adresse n'a rien à faire là (voir `bf_page_title`).
+        """
+        self.ensure_one()
+        import pytz
+
+        local_start = ""
+        if self.start:
+            local_start = pytz.utc.localize(self.start).astimezone(
+                pytz.timezone(self._get_booker_display_tz())
+            ).strftime("%Y-%m-%d %H:%M")
+        # Nextcloud caps room names at 200 chars
+        return " | ".join(p for p in (self.bf_page_title(), local_start) if p)[:200]
 
     def _generate_jitsi_url(self):
         """Generate a Jitsi Meet URL."""
@@ -1126,23 +1297,9 @@ class ResourceBooking(models.Model):
         if not password:
             return False
         try:
-            import pytz
             import requests
 
-            tz_name = self._get_booker_display_tz()
-            local_start = ""
-            if self.start:
-                local_start = pytz.utc.localize(self.start).astimezone(
-                    pytz.timezone(tz_name)
-                ).strftime("%Y-%m-%d %H:%M")
-            # Le titre que les pages à jeton affichent : le lien de la salle
-            # part avec elles. Le type seul (« Rencontre flexible ») ne disait
-            # pas de quelle rencontre il s'agissait, et le nom de la fiche que
-            # le formulaire public retrouve par l'adresse n'a rien à faire là
-            # (voir `bf_page_title`).
-            room_name = " | ".join(p for p in (self.bf_page_title(), local_start) if p)
-            # Nextcloud caps room names at 200 chars
-            room_name = room_name[:200]
+            room_name = self._nc_talk_room_name()
 
             api_url = f"{base_url.rstrip('/')}/ocs/v2.php/apps/spreed/api/v4/room"
             response = requests.post(
@@ -1162,6 +1319,9 @@ class ResourceBooking(models.Model):
             data = response.json()
             room_token = data["ocs"]["data"]["token"]
             self._nc_talk_grant_moderation(base_url, (user, password), room_token)
+            # Les modérateurs posés sont ceux de CET hôte : un déplacement vers
+            # un autre hôte ne gardera pas cette salle.
+            self.video_room_host_id = self.user_id
             return f"{base_url.rstrip('/')}/index.php/call/{room_token}"
         except Exception as e:
             _logger.error("Failed to create Nextcloud Talk room: %s", e)

@@ -428,7 +428,18 @@
     #   société levait une AccessError. Il est rejoué en sudo, entier ; qui ne
     #   peut pas lire les réservations en conflit reçoit un refus qui ne les
     #   nomme pas.
-    "version": "18.0.2.66.1",
+    # 18.0.2.66.2: un déplacement par le client ne crée plus de salle Talk
+    #   La réservation qui a déjà sa salle la garde, renommée
+    #   à la nouvelle heure ; salle neuve seulement si l'ancienne a disparu
+    #   (404), ou depuis la salle de repli ou le lien fixe du type. Le même
+    #   créneau renvoyé sur `/confirm` ne fait plus rien : ni salle, ni
+    #   seconde confirmation, ni second « Nouvelle réservation ».
+    #   Salle neuve aussi quand l'hôte change (la salle
+    #   retient son hôte, `video_room_host_id`, rattrapé par migration sur les
+    #   salles existantes) ; jamais de reprise à la première confirmation ni
+    #   d'une salle d'un type ou d'une autre réservation (comparées par jeton) ;
+    #   un lien court Shlink reste le lien et est repointé sur la salle neuve.
+    "version": "18.0.2.66.2",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

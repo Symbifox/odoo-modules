@@ -355,6 +355,37 @@ refusal names the conflicting bookings (their customer and subject) only to a
 user who can read all of them; anyone else gets a generic message asking an
 appointment manager to move them first.
 
+## Rescheduling keeps the video room (18.0.2.66.2)
+
+When a customer moves their appointment from the personal link, the booking now
+keeps its Nextcloud Talk room: the link they already received stays valid, and
+the room is renamed to the new date and time. Before this version every
+confirmation created a new room, so successive emails pointed to different
+rooms for the same meeting.
+
+A new room is created only when the old one cannot be reused:
+
+- Nextcloud answers that the room no longer exists (404);
+- the booking was on the generic fallback room, or on a fixed link of any
+  appointment type (a shared room is never renamed);
+- another booking carries the same room (rooms are compared by token);
+- the host changes, for appointment types with several hosts: the room
+  remembers the host it was created for (`video_room_host_id`) and its
+  moderators belong to that host. A migration fills this field on existing
+  bookings with their current organizer.
+
+If the customer's link is the per-booking Shlink short URL, the short URL stays
+the link and is repointed to the new room. A rename that fails for any other
+reason keeps the room and its link; only the name is stale.
+
+Submitting the same time slot again (a double click, the back button, a page
+left open) no longer does anything: no new room, no second confirmation to the
+customer, no second "new booking" email to the organizer. Consent boxes ticked
+on that page are still recorded, without any emailed request.
+
+Known limit: a booking moved from the back office keeps its room but the room
+is not renamed.
+
 ## Notes on the confirmation links
 
 Booking, cancellation and guest-confirmation links travel by email and by
@@ -378,5 +409,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-17, this version converts automatically to
+- **Change Date**: on 2030-10-29, this version converts automatically to
   **LGPL-3.0-or-later**.

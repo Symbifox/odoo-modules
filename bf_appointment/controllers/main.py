@@ -1065,6 +1065,47 @@ class AppointmentController(Controller):
         # confirmation ou un DÉPLACEMENT. Les deux ne disent pas la même chose
         # au demandeur, et jusqu'ici ils disaient la même.
         debut_precedent = booking_sudo.start
+        # Le MÊME créneau renvoyé (double clic, retour arrière, page restée
+        # ouverte) n'est ni une confirmation ni un déplacement : rien ne part.
+        # Auparavant, il refaisait une salle Talk, une seconde confirmation
+        # au client et un second « Nouvelle réservation » à l'organisateur.
+        # On consigne seulement les cases que la personne vient de cocher,
+        # sans aucune demande par courriel.
+        #
+        # ⚠️ `state == "confirmed"` ne suffit pas : l'OCA le CALCULE depuis
+        # l'invité accepté sur l'événement, donc une acceptation à la main
+        # dans l'agenda (ou un demandeur qui est aussi ressource de la
+        # combinaison) le pose sans qu'`action_confirm` ait tourné. Le même
+        # créneau renvoyé ensuite doit alors confirmer pour de vrai. Le jeton
+        # de salle n'est posé que par `_generate_video_url`, appelé par
+        # `action_confirm` seul : c'est la trace qu'elle a eu lieu. Un type
+        # sans visio n'en laisse aucune ; on s'y fie alors à l'état.
+        confirmation_faite = bool(booking_sudo.video_room_token) or (
+            booking_sudo.type_id.video_provider in (False, "none"))
+        if (
+            booking_sudo.state == "confirmed"
+            and confirmation_faite
+            and debut_precedent
+            and debut_precedent == when_naive
+        ):
+            try:
+                demandes = [a["code"] for a in booking_sudo._bf_missing_consents()]
+                collected = {
+                    code: bool(kwargs.get("bf_consent_%s" % code))
+                    for code in demandes
+                    if kwargs.get("bf_consent_shown_%s" % code)
+                }
+                if collected:
+                    booking_sudo._bf_ensure_consents(
+                        collected=collected,
+                        source_note="/appointment/b/%d/.../confirm" % booking_sudo.id,
+                        allow_request=False,
+                    )
+            except Exception:  # noqa: BLE001
+                _logger.exception(
+                    "Consentements sur un créneau renvoyé (réservation %s)",
+                    booking_sudo.id)
+            return request.redirect(f"/appointment/b/{booking_id}/{token}")
         try:
             booking_sudo.start = when_naive
         except ValidationError as error:

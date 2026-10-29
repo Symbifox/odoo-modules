@@ -130,6 +130,48 @@ class ResourceBooking(models.Model):
             return room
         return self._fallback_booking_shlink()
 
+    def _nc_talk_room_behind_shlink(self):
+        """Déplacement d'une réservation dont le lien est SON lien court.
+
+        Le client a reçu le lien court (repli Shlink, actif ou déjà réparé par
+        la nuit) : c'est lui qui doit rester. Auparavant, le
+        déplacement remplaçait le lien court par l'adresse Talk brute d'une
+        salle neuve, et l'ancien lien court menait toujours à l'ancienne
+        salle : deux liens, deux salles.
+
+        On ne sait pas, sans interroger Shlink, vers quelle salle le lien court
+        pointe : on crée donc la salle (avec les modérateurs de l'hôte actuel)
+        et on y repointe le lien court, qu'on garde.
+
+        * Nextcloud ne répond pas : rien ne change, le lien court mène où il
+          menait, et la réservation passe (ou reste) en repli pour que la
+          réparation de la nuit le repointe. Avant, la cible était ramenée sur
+          la salle générique, même quand elle menait à une vraie salle.
+        * Shlink refuse le repointage : l'adresse Talk brute, comme avant. Le
+          client la reçoit dans l'avis de changement ; garder le lien court
+          l'aurait laissé sur l'ancienne cible, et la réparation de la nuit
+          aurait refait une salle chaque nuit sans jamais réussir.
+        """
+        self.ensure_one()
+        short = self.videocall_location
+        room = self._generate_nc_talk_url()
+        if not room:
+            _logger.warning(
+                "bf_appointment: Nextcloud injoignable au déplacement de la "
+                "réservation %s, lien court %s gardé tel quel", self.id, short,
+            )
+            self.video_fallback_active = True
+            return short
+        if self.video_fallback_active:
+            self.video_fallback_active = False
+        if self._shlink_repoint(self._booking_shlink_slug(), room):
+            return short
+        _logger.warning(
+            "bf_appointment: lien court %s non repointé (réservation %s), "
+            "adresse Talk directe %s", short, self.id, room,
+        )
+        return room
+
     def _fallback_booking_shlink(self):
         self.ensure_one()
         ICP = self.env["ir.config_parameter"].sudo()
