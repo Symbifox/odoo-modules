@@ -12,7 +12,10 @@
     #   pronoms, l'accord au genre grammatical donné, sinon l'épicène) ; le
     #   contexte de Gen la reprend, et le champ `bf_writing_guidance` la rend
     #   lisible par l'API.
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1: l'aide du nom légal cite les actes que les ponts lisent
+    #   vraiment (registres, signatures, reçus de dons), plus les contrats de
+    #   travail, qu'aucun pont ne produit.
+    "version": "18.0.1.1.1",
     "category": "Productivity/Contacts",
     "summary": "Le nom d'usage partout, le nom légal à part et protégé, les "
                "pronoms choisis par la personne",
@@ -22,7 +25,7 @@ Noms d'usage et pronoms
 
 Une personne a un nom d'usage, celui sous lequel on l'appelle, et parfois un
 nom légal différent, que seuls quelques actes exigent : un registre de
-gouvernance, une signature électronique, un contrat de travail. Le Code civil
+gouvernance, une signature électronique, un reçu de don. Le Code civil
 du Québec (art. 5) reconnaît le nom d'usage ; Odoo, lui, n'a qu'un champ.
 
 Ce que le module pose

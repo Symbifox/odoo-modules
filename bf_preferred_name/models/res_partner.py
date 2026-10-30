@@ -134,7 +134,7 @@ class ResPartner(models.Model):
         copy=False,
         help="The person's legal name, when it differs from the name above. "
              "Read only by the acts that require it (governance registers, "
-             "electronic signatures, employment contracts). Never shown "
+             "electronic signatures, donation receipts). Never shown "
              "elsewhere and never tracked in the chatter.",
     )
     bf_pronouns = fields.Char(
