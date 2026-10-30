@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_kitchen_root" name="Kitchen" sequence="45"
+              web_icon="bf_kitchen,static/description/icon.png"
+              groups="bf_kitchen.group_kitchen_cook"/>
+
+    <menuitem id="menu_kitchen_recipes" name="Recipes" parent="menu_kitchen_root" sequence="10"
+              action="bf_kitchen_dish_action"/>
+    <menuitem id="menu_kitchen_preparations" name="Preparations" parent="menu_kitchen_root" sequence="20"
+              action="bf_kitchen_preparation_action"/>
+    <menuitem id="menu_kitchen_ingredients" name="Ingredients" parent="menu_kitchen_root" sequence="30"
+              action="bf_kitchen_ingredient_action"/>
+
+    <menuitem id="menu_kitchen_bills" name="Vendor bills" parent="menu_kitchen_root" sequence="40"
+              groups="account.group_account_invoice"/>
+    <menuitem id="menu_kitchen_lines_to_attach" name="Lines to attach" parent="menu_kitchen_bills" sequence="10"
+              action="bf_kitchen_lines_to_attach_action"/>
+    <menuitem id="menu_kitchen_costs_to_check" name="Costs to check" parent="menu_kitchen_bills" sequence="20"
+              action="bf_kitchen_costs_to_check_action"/>
+
+    <menuitem id="menu_kitchen_config" name="Configuration" parent="menu_kitchen_root" sequence="90"
+              groups="bf_kitchen.group_kitchen_manager"/>
+    <menuitem id="menu_kitchen_settings" name="Settings" parent="menu_kitchen_config" sequence="10"
+              action="bf_kitchen_settings_action" groups="base.group_system"/>
+    <menuitem id="menu_kitchen_allergens" name="Allergens" parent="menu_kitchen_config" sequence="20"
+              action="bf_food_allergen.bf_food_allergen_action"/>
+</odoo>

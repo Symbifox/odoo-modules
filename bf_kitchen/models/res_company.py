@@ -1,0 +1,32 @@
+from odoo import fields, models
+
+
+class ResCompany(models.Model):
+    _inherit = "res.company"
+
+    bf_kitchen_target_pct = fields.Float(
+        "Target food cost (%)", default=30.0,
+        help="Default target for a new recipe: plate cost over selling price.")
+    bf_kitchen_price_rounding = fields.Selection(
+        [("none", "No rounding"), ("0.05", "To the next 0.05"), ("0.25", "To the next 0.25"),
+         ("1", "To the next dollar"), ("0.95", "Ending in .95")],
+        "Suggested price rounding", default="0.25", required=True)
+    bf_kitchen_cost_max_age = fields.Integer(
+        "Cost too old after (days)", default=60,
+        help="A recipe is flagged when one of its ingredient costs is older than this.")
+    bf_kitchen_alert_points = fields.Float(
+        "Alert on a rise of (points)", default=2.0,
+        help="A dish already above its target raises a new alert only when a bill pushes its "
+             "food cost up by at least this many points.")
+    bf_kitchen_manager_id = fields.Many2one(
+        "res.users", "Kitchen manager",
+        help="Receives the plate cost alerts. Empty: the user who validates the bill.")
+    bf_kitchen_tax_nonrecoverable_pct = fields.Float(
+        "Non-recoverable share of taxes (%)", default=0.0,
+        help="Share of the taxes on a vendor bill that the company cannot claim back and that "
+             "belongs in the ingredient cost (a charity refunded in part, exempt supplies). "
+             "0: the cost is net of taxes.")
+    bf_kitchen_receive_without_po = fields.Boolean(
+        "Receive from the vendor bill", default=True,
+        help="Show the Received button on draft vendor bills that are not linked to a purchase "
+             "order, so ingredients enter the stock on the day they arrive.")

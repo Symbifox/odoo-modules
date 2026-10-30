@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="technical_sheet_body">
+        <div class="page">
+            <h2 t-out="bom.product_tmpl_id.name"/>
+            <p>
+                <span>Makes </span><span t-out="bom._bf_format_number(bom.product_qty)"/> <span t-out="bom.product_uom_id.name"/>
+                <t t-if="bom.bf_prep_minutes"> · <span t-out="bom.bf_prep_minutes"/> min</t>
+            </p>
+            <table class="table table-sm o_main_table">
+                <thead>
+                    <tr>
+                        <th>Ingredient</th>
+                        <th class="text-end">Net</th>
+                        <th class="text-end">Yield</th>
+                        <th class="text-end">Gross</th>
+                        <th>Unit</th>
+                        <th t-if="with_cost" class="text-end">Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="bom.bom_line_ids" t-as="line">
+                        <td t-out="line.product_id.display_name"/>
+                        <td class="text-end" t-out="bom._bf_format_number(line.bf_net_qty)"/>
+                        <td class="text-end"><span t-out="bom._bf_format_number(line.bf_yield_pct or 100.0, 1)"/> %</td>
+                        <td class="text-end" t-out="bom._bf_format_number(line.product_qty)"/>
+                        <td t-out="line.product_uom_id.name"/>
+                        <td t-if="with_cost" class="text-end" t-out="line.bf_cost_line"
+                            t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/>
+                    </tr>
+                </tbody>
+            </table>
+            <t t-if="with_cost">
+                <p>
+                    <strong>Plate cost: </strong>
+                    <span t-out="bom.bf_cost_portion" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/>
+                    <t t-if="bom.bf_kitchen_type == 'dish'">
+                        · <strong>Price: </strong>
+                        <span t-out="bom.bf_price" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/>
+                        · <strong>Food cost: </strong><span t-out="bom._bf_format_number(bom.bf_food_cost_pct, 1)"/> %
+                        · <strong>Suggested price: </strong>
+                        <span t-out="bom.bf_price_suggested" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/>
+                    </t>
+                </p>
+            </t>
+            <t t-set="allergens" t-value="bom.product_tmpl_id.bf_allergen_ids"/>
+            <p t-if="allergens"><strong>Allergens: </strong><span t-out="', '.join(allergens.mapped('name'))"/></p>
+            <p t-if="bom.product_tmpl_id.bf_may_contain_ids"><strong>May contain: </strong>
+                <span t-out="', '.join(bom.product_tmpl_id.bf_may_contain_ids.mapped('name'))"/></p>
+            <t t-if="bom.bf_method">
+                <h4>Method</h4>
+                <div t-out="bom.bf_method"/>
+            </t>
+        </div>
+    </template>
+
+    <template id="report_technical_sheet">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="bom">
+                <t t-set="o" t-value="bom"/>
+                <t t-set="company" t-value="bom.company_id.sudo() or res_company"/>
+                <t t-call="web.external_layout">
+                    <t t-set="with_cost" t-value="False"/>
+                    <t t-call="bf_kitchen.technical_sheet_body"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_technical_sheet_cost">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="bom">
+                <t t-set="o" t-value="bom"/>
+                <t t-set="company" t-value="bom.company_id.sudo() or res_company"/>
+                <t t-call="web.external_layout">
+                    <t t-set="with_cost" t-value="True"/>
+                    <t t-call="bf_kitchen.technical_sheet_body"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_allergen_sheet">
+        <t t-call="web.html_container">
+            <t t-set="o" t-value="docs[:1]"/>
+            <t t-set="company" t-value="docs.company_id.sudo()[:1] or res_company"/>
+            <t t-call="web.external_layout">
+                <t t-set="allergen_list" t-value="docs.env['bf.food.allergen'].search([])"/>
+                <div class="page">
+                    <h2>Allergens on our menu</h2>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Dish</th>
+                                <th t-foreach="allergen_list" t-as="allergen" class="text-center small" style="text-align: center;" t-out="allergen.name"/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="bom">
+                                <t t-set="tmpl" t-value="bom.product_tmpl_id"/>
+                                <td t-out="tmpl.name"/>
+                                <td t-foreach="allergen_list" t-as="allergen" class="text-center" style="text-align: center;">
+                                    <t t-if="allergen in tmpl.bf_allergen_ids">●</t>
+                                    <t t-elif="allergen in tmpl.bf_may_contain_ids">○</t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="small">● contains · ○ may contain (cross-contamination)</p>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

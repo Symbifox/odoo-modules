@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**272 modules are BUSL-1.1.** The source is published and auditable, and **you
+**274 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -223,6 +223,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_flux_nextcloud` | Flux RSS : corpus Nextcloud | 18.0.1.0.2 | BUSL-1.1 | Deposits what a list retains into a Nextcloud folder as monthly Markdown files per source, with an index, for a knowledge base read by an agent |
 | `bf_flux_partage` | Flux RSS : partage externe | 18.0.1.0.3 | BUSL-1.1 | Secret share links without login: a public card page and the same items as RSS, one link per recipient, with expiry, visit count and revocation |
 | `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.3.0 | LGPL-3 | Crons that remove non-employee followers (customers keep their own invoices, so the portal shows them) and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
+| `bf_food_allergen` | Symbifox: food allergens | 18.0.1.0.0 | BUSL-1.1 | One shared list of Health Canada's priority food allergens for the Symbifox food modules |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.1.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.1.0 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.3.1.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
@@ -246,6 +247,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_job_search` | Job Search | 18.0.1.0.3 | LGPL-3 | Track your job applications with the good habits built in: follow-ups, interviews, thank-you notes, referees and a job search log |
 | `bf_key_management` | Symbifox Keys | 18.0.1.0.15 | BUSL-1.1 | Who holds which key, card or remote of the premises, which doors each one opens, and nothing forgotten when someone leaves |
+| `bf_kitchen` | Symbifox: kitchen | 18.0.1.0.3 | BUSL-1.1 | Recipes and plate cost for restaurants, caterers and kitchens: yield, sub-recipes, ingredient cost from the last vendor bill, food cost ratio, suggested price, allergens |
 | `bf_labour_relations` | Relations de travail | 18.0.1.0.0 | BUSL-1.1 | Certification, collective agreement, seniority, grievances and union dues, from the employer's side as much as the union's |
 | `bf_labour_relations_employer` | Relations de travail : côté employeur | 18.0.1.1.0 | BUSL-1.1 | Obligations and reminders, the posted seniority list, job postings and movements, dues remittance preparation, the joint committee |
 | `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |
@@ -491,7 +493,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **272 modules: BUSL-1.1.** Production use for your own internal business
+- **274 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

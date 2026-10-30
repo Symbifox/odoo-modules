@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_kitchen_attach_line_view_form" model="ir.ui.view">
+        <field name="name">bf.kitchen.attach.line.form</field>
+        <field name="model">bf.kitchen.attach.line</field>
+        <field name="arch" type="xml">
+            <form string="Attach to an ingredient">
+                <group>
+                    <field name="line_id" invisible="1"/>
+                    <field name="line_name"/>
+                    <field name="partner_id"/>
+                    <field name="line_quantity"/>
+                    <field name="ingredient_id" context="{'default_bf_kitchen_type': 'ingredient', 'default_is_storable': True, 'default_sale_ok': False}"/>
+                    <label for="pack_qty"/>
+                    <div class="o_row">
+                        <field name="pack_qty"/>
+                        <field name="stock_uom_id"/>
+                    </div>
+                    <field name="pack_uom_id" groups="uom.group_uom"/>
+                    <field name="vendor_code"/>
+                    <field name="remember"/>
+                </group>
+                <footer>
+                    <button name="action_attach" type="object" string="Attach" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

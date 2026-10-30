@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kitchen tab on the product form (seen from Inventory, Purchase, Kitchen). -->
+    <record id="product_template_form_view_kitchen" model="ir.ui.view">
+        <field name="name">product.template.form.kitchen</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Kitchen" name="bf_kitchen">
+                    <group>
+                        <group>
+                            <field name="bf_kitchen_type"/>
+                            <field name="bf_yield_pct" invisible="bf_kitchen_type != 'ingredient'"/>
+                            <field name="bf_kitchen_bom_id" invisible="bf_kitchen_type not in ('preparation', 'dish')"/>
+                        </group>
+                        <group groups="bf_kitchen.group_kitchen_manager" invisible="not bf_kitchen_type">
+                            <field name="currency_id" invisible="1"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_display_text" string="Kitchen cost"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_unit" string="Cost per stock unit"
+                                   widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"
+                                   invisible="bf_kitchen_type != 'ingredient' or bf_cost_source == 'bill'"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_source"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_date"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_line_id" invisible="not bf_cost_line_id"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_manual"
+                                   widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"
+                                   invisible="bf_kitchen_type != 'ingredient' or bf_cost_source == 'bill'"/>
+                        </group>
+                    </group>
+                    <group invisible="not bf_kitchen_type">
+                        <field name="bf_allergen_input_ids" widget="many2many_tags"/>
+                        <field name="bf_may_contain_ids" widget="many2many_tags"/>
+                        <field name="bf_allergen_ids" widget="many2many_tags" invisible="bf_kitchen_type == 'ingredient'"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_supplierinfo_tree_view_kitchen" model="ir.ui.view">
+        <field name="name">product.supplierinfo.list.kitchen</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="price" position="before">
+                <field name="bf_pack_qty" optional="show" invisible="id and not bf_pack_qty and not bf_pack_uom_id"/>
+                <field name="bf_pack_uom_id" optional="show" groups="uom.group_uom"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Kitchen's own product views: no stock, accounting or manufacturing fields. -->
+    <record id="bf_kitchen_product_view_list" model="ir.ui.view">
+        <field name="name">product.template.list.bf_kitchen</field>
+        <field name="model">product.template</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="bf_kitchen_type" optional="hide"/>
+                <field name="uom_id" string="Stock unit"/>
+                <field name="bf_yield_pct" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="bf_cost_display" groups="bf_kitchen.group_kitchen_manager"/>
+                <field name="bf_cost_display_uom_id" string="Per" groups="bf_kitchen.group_kitchen_manager"/>
+                <field name="bf_cost_source" groups="bf_kitchen.group_kitchen_manager" optional="show"/>
+                <field name="bf_cost_date" groups="bf_kitchen.group_kitchen_manager" optional="show"/>
+                <field name="bf_allergen_input_ids" widget="many2many_tags" optional="show"/>
+                <field name="seller_ids" widget="many2many_tags" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_product_view_form" model="ir.ui.view">
+        <field name="name">product.template.form.bf_kitchen</field>
+        <field name="model">product.template</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Whole salmon"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bf_kitchen_type" readonly="1"/>
+                            <field name="uom_id" string="Stock unit" groups="uom.group_uom"/>
+                            <field name="uom_po_id" string="Purchase unit" groups="uom.group_uom"/>
+                            <field name="bf_yield_pct" invisible="bf_kitchen_type != 'ingredient'"/>
+                            <field name="list_price" string="Selling price" invisible="bf_kitchen_type != 'dish'"
+                                   groups="bf_kitchen.group_kitchen_manager"/>
+                            <field name="bf_kitchen_bom_id" invisible="bf_kitchen_type == 'ingredient'"/>
+                        </group>
+                        <group groups="bf_kitchen.group_kitchen_manager">
+                            <field name="currency_id" invisible="1"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_display_text" string="Kitchen cost"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_unit" string="Cost per stock unit"
+                                   widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"
+                                   invisible="bf_kitchen_type != 'ingredient' or bf_cost_source == 'bill'"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_source"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_date"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_line_id" invisible="not bf_cost_line_id"/>
+                            <field groups="bf_kitchen.group_kitchen_manager" name="bf_cost_manual"
+                                   widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"
+                                   invisible="bf_kitchen_type != 'ingredient' or bf_cost_source == 'bill'"/>
+                        </group>
+                    </group>
+                    <group string="Allergens">
+                        <field name="bf_allergen_input_ids" widget="many2many_tags" string="Contains"/>
+                        <field name="bf_may_contain_ids" widget="many2many_tags"/>
+                        <field name="bf_allergen_ids" widget="many2many_tags" string="All allergens"
+                               invisible="bf_kitchen_type == 'ingredient'"/>
+                    </group>
+                    <notebook>
+                        <page string="Vendors" name="vendors" invisible="bf_kitchen_type != 'ingredient'"
+                              groups="bf_kitchen.group_kitchen_manager">
+                            <field name="seller_ids" context="{'default_product_tmpl_id': id}">
+                                <list editable="bottom">
+                                    <field name="partner_id"/>
+                                    <field name="product_code"/>
+                                    <field name="product_name"/>
+                                    <field name="bf_pack_qty" string="Format" invisible="id and not bf_pack_qty and not bf_pack_uom_id"/>
+                                    <field name="bf_pack_uom_id" groups="uom.group_uom"/>
+                                    <field name="price"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="company_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_product_view_search" model="ir.ui.view">
+        <field name="name">product.template.search.bf_kitchen</field>
+        <field name="model">product.template</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="seller_ids" string="Vendor" filter_domain="[('seller_ids.partner_id', 'ilike', self)]"/>
+                <field name="bf_allergen_input_ids" string="Allergen"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_ingredient_action" model="ir.actions.act_window">
+        <field name="name">Ingredients</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('bf_kitchen_type', '=', 'ingredient')]</field>
+        <field name="context">{'default_bf_kitchen_type': 'ingredient', 'default_type': 'consu', 'default_is_storable': True, 'default_sale_ok': False, 'default_purchase_ok': True}</field>
+        <field name="search_view_id" ref="bf_kitchen_product_view_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('bf_kitchen_product_view_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('bf_kitchen_product_view_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add the ingredients you buy</p>
+            <p>Stock each ingredient in its smallest kitchen unit (g, ml, unit): a few grams stocked in kg would round to zero.</p>
+        </field>
+    </record>
+
+    <record id="res_partner_form_view_kitchen" model="ir.ui.view">
+        <field name="name">res.partner.form.kitchen</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']//group[@name='purchase']" position="inside">
+                <field name="bf_food_supplier" groups="bf_kitchen.group_kitchen_manager"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

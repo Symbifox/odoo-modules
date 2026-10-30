@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Health Canada's priority food allergens; same keys as bf_school_meal, for its migration. -->
+    <data noupdate="1">
+        <record id="allergen_peanut" model="bf.food.allergen"><field name="name">Peanuts</field><field name="sequence">1</field></record>
+        <record id="allergen_tree_nut" model="bf.food.allergen"><field name="name">Tree nuts</field><field name="sequence">2</field></record>
+        <record id="allergen_sesame" model="bf.food.allergen"><field name="name">Sesame</field><field name="sequence">3</field></record>
+        <record id="allergen_milk" model="bf.food.allergen"><field name="name">Milk</field><field name="sequence">4</field></record>
+        <record id="allergen_egg" model="bf.food.allergen"><field name="name">Eggs</field><field name="sequence">5</field></record>
+        <record id="allergen_fish" model="bf.food.allergen"><field name="name">Fish</field><field name="sequence">6</field></record>
+        <record id="allergen_shellfish" model="bf.food.allergen"><field name="name">Crustaceans and molluscs</field><field name="sequence">7</field></record>
+        <record id="allergen_soy" model="bf.food.allergen"><field name="name">Soy</field><field name="sequence">8</field></record>
+        <record id="allergen_wheat" model="bf.food.allergen"><field name="name">Wheat and gluten</field><field name="sequence">9</field></record>
+        <record id="allergen_sulphite" model="bf.food.allergen"><field name="name">Sulphites</field><field name="sequence">10</field></record>
+        <record id="allergen_mustard" model="bf.food.allergen"><field name="name">Mustard</field><field name="sequence">11</field></record>
+    </data>
+</odoo>

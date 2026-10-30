@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_kitchen" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.kitchen</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Kitchen" string="Kitchen" name="bf_kitchen" groups="bf_kitchen.group_kitchen_manager">
+                    <block title="Plate cost" name="bf_kitchen_cost">
+                        <setting string="Target food cost" help="Default target of a new recipe (plate cost over selling price).">
+                            <field name="bf_kitchen_target_pct"/>
+                        </setting>
+                        <setting string="Suggested price rounding">
+                            <field name="bf_kitchen_price_rounding"/>
+                        </setting>
+                        <setting string="Cost too old after (days)" help="A recipe is flagged when one of its ingredient costs is older.">
+                            <field name="bf_kitchen_cost_max_age"/>
+                        </setting>
+                        <setting string="Alerts" help="A dish already over its target raises a new alert on a rise of at least this many points. The kitchen manager receives them (empty: whoever validates the bill).">
+                            <field name="bf_kitchen_alert_points"/>
+                            <field name="bf_kitchen_manager_id"/>
+                        </setting>
+                        <setting string="Non-recoverable taxes (%)" help="Share of the bill taxes that belongs in the ingredient cost. 0 when the taxes are claimed back.">
+                            <field name="bf_kitchen_tax_nonrecoverable_pct"/>
+                        </setting>
+                        <setting string="Receive from the vendor bill" help="Received button on draft vendor bills without a purchase order.">
+                            <field name="bf_kitchen_receive_without_po"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_settings_action" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'bf_kitchen', 'bin_size': False}</field>
+    </record>
+</odoo>

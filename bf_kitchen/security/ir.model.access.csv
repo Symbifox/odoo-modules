@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_kitchen_cook_bom,kitchen cook mrp.bom,mrp.model_mrp_bom,group_kitchen_cook,1,0,0,0
+access_kitchen_cook_bom_line,kitchen cook mrp.bom.line,mrp.model_mrp_bom_line,group_kitchen_cook,1,0,0,0
+access_kitchen_cook_routing,kitchen cook mrp.routing.workcenter,mrp.model_mrp_routing_workcenter,group_kitchen_cook,1,0,0,0
+access_kitchen_cook_byproduct,kitchen cook mrp.bom.byproduct,mrp.model_mrp_bom_byproduct,group_kitchen_cook,1,0,0,0
+access_kitchen_cook_workcenter,kitchen cook mrp.workcenter,mrp.model_mrp_workcenter,group_kitchen_cook,1,0,0,0
+access_kitchen_manager_bom,kitchen manager mrp.bom,mrp.model_mrp_bom,group_kitchen_manager,1,1,1,1
+access_kitchen_manager_bom_line,kitchen manager mrp.bom.line,mrp.model_mrp_bom_line,group_kitchen_manager,1,1,1,1
+access_kitchen_manager_template,kitchen manager product.template,product.model_product_template,group_kitchen_manager,1,1,1,1
+access_kitchen_manager_product,kitchen manager product.product,product.model_product_product,group_kitchen_manager,1,1,1,1
+access_kitchen_manager_supplierinfo,kitchen manager product.supplierinfo,product.model_product_supplierinfo,group_kitchen_manager,1,1,1,1
+access_kitchen_manager_allergen,kitchen manager bf.food.allergen,bf_food_allergen.model_bf_food_allergen,group_kitchen_manager,1,1,1,1
+access_kitchen_manager_attach,kitchen manager bf.kitchen.attach.line,model_bf_kitchen_attach_line,group_kitchen_manager,1,1,1,1

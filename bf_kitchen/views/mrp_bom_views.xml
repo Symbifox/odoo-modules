@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The kitchen's own recipe views. They leave out operations, by-products and work centers,
+         and every cost field carries the manager group: the cook opens a recipe without them. -->
+    <record id="bf_kitchen_bom_view_form" model="ir.ui.view">
+        <field name="name">mrp.bom.form.bf_kitchen</field>
+        <field name="model">mrp.bom</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_bf_apply_suggested_price" type="object" string="Apply the suggested price"
+                            groups="bf_kitchen.group_kitchen_manager" invisible="bf_kitchen_type != 'dish'"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="product_tmpl_id" string="Recipe of"/>
+                        <h1>
+                            <field name="product_tmpl_id" class="w-100" placeholder="e.g. Salmon tartare"
+                                   domain="[('bf_kitchen_type', 'in', ('preparation', 'dish'))]"
+                                   context="{'default_bf_kitchen_type': context.get('default_bf_kitchen_type_product', 'dish'), 'default_type': 'consu', 'default_purchase_ok': False, 'form_view_ref': 'bf_kitchen.bf_kitchen_product_view_form'}"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <label for="product_qty" string="Makes"/>
+                            <div class="o_row">
+                                <field name="product_qty"/>
+                                <field name="product_uom_id" groups="uom.group_uom" options="{'no_open': True, 'no_create': True}"/>
+                            </div>
+                            <field name="bf_kitchen_type" readonly="1"/>
+                            <field name="bf_prep_minutes"/>
+                            <field name="type" invisible="1"/>
+                            <field name="product_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        </group>
+                        <group groups="bf_kitchen.group_kitchen_manager">
+                            <field name="bf_currency_id" invisible="1" groups="bf_kitchen.group_kitchen_manager"/>
+                            <field name="bf_cost_portion" invisible="bf_kitchen_type != 'dish'" groups="bf_kitchen.group_kitchen_manager"/>
+                            <field name="bf_cost_unit_display_text" string="Cost per unit made" invisible="bf_kitchen_type == 'dish'" groups="bf_kitchen.group_kitchen_manager"/>
+                            <field name="bf_price" invisible="bf_kitchen_type != 'dish'" groups="bf_kitchen.group_kitchen_manager"
+                                   widget="monetary" options="{'currency_field': 'bf_currency_id'}"/>
+                            <field name="bf_food_cost_pct" invisible="bf_kitchen_type != 'dish'" groups="bf_kitchen.group_kitchen_manager" decoration-danger="bf_over_target"/>
+                            <field name="bf_target_pct" invisible="bf_kitchen_type != 'dish'" groups="bf_kitchen.group_kitchen_manager"/>
+                            <field name="bf_price_suggested" invisible="bf_kitchen_type != 'dish'" groups="bf_kitchen.group_kitchen_manager"/>
+                            <field name="bf_margin" invisible="bf_kitchen_type != 'dish'" groups="bf_kitchen.group_kitchen_manager"/>
+                            <field name="bf_cost_total" groups="bf_kitchen.group_kitchen_manager"/>
+                            <field name="bf_cost_oldest_date" groups="bf_kitchen.group_kitchen_manager" decoration-warning="bf_cost_stale"/>
+                            <field name="bf_cost_stale" invisible="1" groups="bf_kitchen.group_kitchen_manager"/>
+                            <field name="bf_over_target" invisible="1" groups="bf_kitchen.group_kitchen_manager"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ingredients" name="lines">
+                            <field name="bom_line_ids" context="{'default_product_qty': 0}">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id" string="Ingredient" domain="[('product_tmpl_id.bf_kitchen_type', 'in', ('ingredient', 'preparation'))]"
+                                           context="{'default_bf_kitchen_type': 'ingredient', 'default_is_storable': True, 'default_sale_ok': False}"/>
+                                    <field name="bf_net_qty" string="Net" width="90px"/>
+                                    <field name="bf_yield_pct" string="Yield %" width="115px"/>
+                                    <field name="product_qty" string="Gross" width="90px"/>
+                                    <field name="product_uom_id" string="Unit" width="80px" groups="uom.group_uom" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="product_uom_category_id" column_invisible="True"/>
+                                    <field name="bf_currency_id" column_invisible="True"/>
+                                    <field name="bf_cost_line" string="Cost" width="100px" groups="bf_kitchen.group_kitchen_manager" sum="Total"/>
+                                    <field name="company_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Method" name="method">
+                            <field name="bf_method" placeholder="The steps, as the brigade reads them."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_bom_view_list" model="ir.ui.view">
+        <field name="name">mrp.bom.list.bf_kitchen</field>
+        <field name="model">mrp.bom</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_tmpl_id" string="Recipe"/>
+                <field name="product_qty" string="Makes"/>
+                <field name="product_uom_id" groups="uom.group_uom"/>
+                <field name="bf_currency_id" column_invisible="True" groups="bf_kitchen.group_kitchen_manager"/>
+                <field name="bf_cost_portion" groups="bf_kitchen.group_kitchen_manager"/>
+                <field name="bf_price" groups="bf_kitchen.group_kitchen_manager" optional="show"
+                       widget="monetary" options="{'currency_field': 'bf_currency_id'}"/>
+                <field name="bf_food_cost_pct" groups="bf_kitchen.group_kitchen_manager" optional="show" decoration-danger="bf_over_target"/>
+                <field name="bf_over_target" column_invisible="True" groups="bf_kitchen.group_kitchen_manager"/>
+                <field name="bf_price_suggested" groups="bf_kitchen.group_kitchen_manager" optional="show"/>
+                <field name="bf_cost_stale" groups="bf_kitchen.group_kitchen_manager" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Preparations: no selling price, food cost or suggested price, which are a dish's. -->
+    <record id="bf_kitchen_preparation_view_list" model="ir.ui.view">
+        <field name="name">mrp.bom.list.bf_kitchen.preparation</field>
+        <field name="model">mrp.bom</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_tmpl_id" string="Preparation"/>
+                <field name="product_qty" string="Makes"/>
+                <field name="product_uom_id" groups="uom.group_uom"/>
+                <field name="bf_currency_id" column_invisible="True" groups="bf_kitchen.group_kitchen_manager"/>
+                <field name="bf_cost_total" width="150px" groups="bf_kitchen.group_kitchen_manager"/>
+                <field name="bf_cost_unit_display" width="170px" groups="bf_kitchen.group_kitchen_manager"/>
+                <field name="bf_cost_unit_display_uom_id" string="Per" width="60px" groups="bf_kitchen.group_kitchen_manager"/>
+                <field name="bf_cost_stale" width="140px" groups="bf_kitchen.group_kitchen_manager" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_bom_view_kanban" model="ir.ui.view">
+        <field name="name">mrp.bom.kanban.bf_kitchen</field>
+        <field name="model">mrp.bom</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="bf_kitchen_type"/>
+                <templates>
+                    <t t-name="card">
+                        <main>
+                            <field name="product_tmpl_id" class="fw-bold fs-5"/>
+                            <div groups="bf_kitchen.group_kitchen_manager">
+                                <field name="bf_currency_id" invisible="1" groups="bf_kitchen.group_kitchen_manager"/>
+                                <span>Plate cost </span><field name="bf_cost_portion" groups="bf_kitchen.group_kitchen_manager"/>
+                                <span invisible="bf_kitchen_type != 'dish'"> · <field name="bf_food_cost_pct" groups="bf_kitchen.group_kitchen_manager"/> %</span>
+                                <span class="badge text-bg-danger ms-1" invisible="not bf_over_target">Over target</span>
+                                <span class="badge text-bg-warning ms-1" invisible="not bf_cost_stale">Cost too old</span>
+                                <field name="bf_over_target" invisible="1" groups="bf_kitchen.group_kitchen_manager"/>
+                                <field name="bf_cost_stale" invisible="1" groups="bf_kitchen.group_kitchen_manager"/>
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_bom_view_search" model="ir.ui.view">
+        <field name="name">mrp.bom.search.bf_kitchen</field>
+        <field name="model">mrp.bom</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_tmpl_id" string="Recipe"/>
+                <field name="bom_line_ids" string="Ingredient" filter_domain="[('bom_line_ids.product_id', 'ilike', self)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_dish_action" model="ir.actions.act_window">
+        <field name="name">Recipes</field>
+        <field name="res_model">mrp.bom</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('bf_kitchen_type', '=', 'dish')]</field>
+        <field name="context">{'default_type': 'phantom', 'default_bf_kitchen_type_product': 'dish'}</field>
+        <field name="search_view_id" ref="bf_kitchen_bom_view_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('bf_kitchen_bom_view_kanban')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('bf_kitchen_bom_view_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('bf_kitchen_bom_view_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Write your first recipe</p>
+            <p>A recipe is the technical sheet of a dish: its ingredients with the net quantity and the yield, the method, and what one portion costs.</p>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_preparation_action" model="ir.actions.act_window">
+        <field name="name">Preparations</field>
+        <field name="res_model">mrp.bom</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('bf_kitchen_type', '=', 'preparation')]</field>
+        <field name="context">{'default_type': 'phantom', 'default_bf_kitchen_type_product': 'preparation'}</field>
+        <field name="search_view_id" ref="bf_kitchen_bom_view_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('bf_kitchen_preparation_view_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('bf_kitchen_bom_view_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a preparation</p>
+            <p>A stock, a sauce, a dough: a sub-recipe used in other recipes. Its cost follows its own ingredients.</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_food_allergen_view_list" model="ir.ui.view">
+        <field name="name">bf.food.allergen.list</field>
+        <field name="model">bf.food.allergen</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="note"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_food_allergen_view_search" model="ir.ui.view">
+        <field name="name">bf.food.allergen.search</field>
+        <field name="model">bf.food.allergen</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_food_allergen_action" model="ir.actions.act_window">
+        <field name="name">Food allergens</field>
+        <field name="res_model">bf.food.allergen</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

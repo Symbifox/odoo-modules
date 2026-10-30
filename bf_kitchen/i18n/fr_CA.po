@@ -1,0 +1,1486 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_kitchen
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-29 06:17+0000\n"
+"PO-Revision-Date: 2026-10-29 00:30+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid ""
+"%\n"
+"                        · <strong>Suggested price: </strong>"
+msgstr ""
+"%\n"
+"                        · <strong>Prix suggéré : </strong>"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid ""
+"%(bill)s: the ingredients it brought into stock could not be sent back "
+"(%(error)s). Return the receipt from Inventory, then cancel the bill."
+msgstr ""
+"%(bill)s : les ingrédients qu'elle a fait entrer en stock n'ont pas pu être "
+"renvoyés (%(error)s). Faites le retour de la réception depuis l'Inventaire, "
+"puis annulez la facture."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/attach_line.py:0
+msgid "%(ingredient)s belongs to another company than the bill."
+msgstr "%(ingredient)s appartient à une autre société que la facture."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid ""
+"%(line)s: already received into stock (%(qty)s %(unit)s of %(product)s), so "
+"its product, unit and quantity can no longer change. Cancel the bill to send"
+" the ingredients back, or return the receipt from Inventory, then change the"
+" line."
+msgstr ""
+"%(line)s : déjà reçue en stock (%(qty)s %(unit)s de %(product)s), son "
+"produit, son unité et sa quantité ne peuvent plus changer. Annulez la "
+"facture pour renvoyer les ingrédients, ou faites le retour de la réception "
+"depuis l'Inventaire, puis changez la ligne."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid ""
+"%(lines)s: already received into stock. Cancel the bill to send the "
+"ingredients back, or return the receipt from Inventory, before deleting it."
+msgstr ""
+"%(lines)s : déjà reçue en stock. Annulez la facture pour renvoyer les "
+"ingrédients, ou faites le retour de la réception depuis l'Inventaire, avant "
+"de la supprimer."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid ""
+"%(product)s: the bill unit (%(unit)s) cannot be converted to the stock unit "
+"(%(stock)s). Give the format on the line first."
+msgstr ""
+"%(product)s : l'unité de la facture (%(unit)s) ne se convertit pas dans "
+"l'unité de stock (%(stock)s). Donnez d'abord le format sur la ligne."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom.py:0
+msgid ""
+"%(recipe)s: %(qty)s %(unit)s of %(product)s becomes 0 %(stock)s in its stock"
+" unit, so it would never leave the stock. Stock %(product)s in a smaller "
+"unit (g, ml)."
+msgstr ""
+"%(recipe)s : %(qty)s %(unit)s de %(product)s devient 0 %(stock)s dans son "
+"unité de stock et ne sortirait jamais du stock. Stockez %(product)s dans une"
+" unité plus petite (g, ml)."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom.py:0
+msgid ""
+"%(recipe)s: one portion takes %(qty)s %(unit)s of %(product)s, which becomes"
+" 0 %(stock)s in its stock unit, so it would never leave the stock. Stock "
+"%(product)s in a smaller unit (g, ml)."
+msgstr ""
+"%(recipe)s : une portion prend %(qty)s %(unit)s de %(product)s, soit 0 "
+"%(stock)s dans son unité de stock : l'ingrédient ne sortirait jamais du "
+"stock. Stockez %(product)s dans une unité plus petite (g, ml)."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/attach_line.py:0
+msgid "%s is not a kitchen ingredient: only an ingredient can be attached."
+msgstr ""
+"%s n'est pas un ingrédient de cuisine : seul un ingrédient se rattache."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/product.py:0
+msgid ""
+"%s: the kitchen cost comes from its vendor bills or its recipe and cannot be"
+" typed."
+msgstr ""
+"%s : le coût cuisine vient de ses factures fournisseurs ou de sa recette et "
+"ne se tape pas."
+
+#. module: bf_kitchen
+#: model:ir.actions.report,print_report_name:bf_kitchen.action_report_allergen_sheet
+msgid "'Allergens'"
+msgstr "'Allergènes'"
+
+#. module: bf_kitchen
+#: model:ir.actions.report,print_report_name:bf_kitchen.action_report_technical_sheet_cost
+msgid "'Technical sheet (costs) - %s' % (object.product_tmpl_id.name)"
+msgstr "'Fiche technique (coûts) - %s' % (object.product_tmpl_id.name)"
+
+#. module: bf_kitchen
+#: model:ir.actions.report,print_report_name:bf_kitchen.action_report_technical_sheet
+msgid "'Technical sheet - %s' % (object.product_tmpl_id.name)"
+msgstr "'Fiche technique - %s' % (object.product_tmpl_id.name)"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_attach_line__pack_qty
+msgid "12000 for a case of 12 x 1 L when the stock unit is the ml."
+msgstr "12000 pour une caisse de 12 x 1 L quand l'unité de stock est le ml."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_kanban
+msgid ""
+"<span class=\"badge text-bg-danger ms-1\" invisible=\"not bf_over_target\">Over target</span>\n"
+"                                <span class=\"badge text-bg-warning ms-1\" invisible=\"not bf_cost_stale\">Cost too old</span>"
+msgstr ""
+"<span class=\"badge text-bg-danger ms-1\" invisible=\"not bf_over_target\">Au-dessus de la cible</span>\n"
+"                                <span class=\"badge text-bg-warning ms-1\" invisible=\"not bf_cost_stale\">Coût trop vieux</span>"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "<span>Makes </span>"
+msgstr "<span>Donne </span>"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_kanban
+msgid "<span>Plate cost </span>"
+msgstr "<span>Coût de l'assiette </span>"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "<strong>Allergens: </strong>"
+msgstr "<strong>Allergènes : </strong>"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "<strong>May contain: </strong>"
+msgstr "<strong>Peut contenir : </strong>"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "<strong>Plate cost: </strong>"
+msgstr "<strong>Coût de l'assiette : </strong>"
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_costs_to_check_action
+msgid ""
+"A bill line whose unit cannot be brought back to the ingredient's stock unit"
+" lands here instead of blocking the validation. Give its format with Attach."
+msgstr ""
+"Une ligne de facture dont l'unité ne se ramène pas à l'unité de stock de "
+"l'ingrédient arrive ici au lieu de bloquer la validation. Donnez son format "
+"avec Rattacher."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_company__bf_kitchen_alert_points
+#: model:ir.model.fields,help:bf_kitchen.field_res_config_settings__bf_kitchen_alert_points
+msgid ""
+"A dish already above its target raises a new alert only when a bill pushes "
+"its food cost up by at least this many points."
+msgstr ""
+"Un plat déjà au-dessus de sa cible ne relance une alerte que si une facture "
+"fait monter son coût matière d'au moins ce nombre de points."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid ""
+"A dish already over its target raises a new alert on a rise of at least this"
+" many points. The kitchen manager receives them (empty: whoever validates "
+"the bill)."
+msgstr ""
+"Un plat déjà au-dessus de sa cible relance une alerte sur une hausse d'au "
+"moins ce nombre de points. Le responsable de la cuisine les reçoit (vide : "
+"la personne qui valide la facture)."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_company__bf_kitchen_cost_max_age
+#: model:ir.model.fields,help:bf_kitchen.field_res_config_settings__bf_kitchen_cost_max_age
+msgid ""
+"A recipe is flagged when one of its ingredient costs is older than this."
+msgstr ""
+"Une recette est signalée quand le coût d'un de ses ingrédients est plus "
+"vieux que ça."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "A recipe is flagged when one of its ingredient costs is older."
+msgstr ""
+"Une recette est signalée quand le coût d'un de ses ingrédients est plus "
+"vieux."
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_dish_action
+msgid ""
+"A recipe is the technical sheet of a dish: its ingredients with the net "
+"quantity and the yield, the method, and what one portion costs."
+msgstr ""
+"Une recette est la fiche technique d'un plat : ses ingrédients avec la "
+"quantité nette et le rendement, la méthode, et ce que coûte une portion."
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_preparation_action
+msgid ""
+"A stock, a sauce, a dough: a sub-recipe used in other recipes. Its cost "
+"follows its own ingredients."
+msgstr ""
+"Un fond, une sauce, une pâte : une sous-recette utilisée dans d'autres "
+"recettes. Son coût suit ses propres ingrédients."
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_preparation_action
+msgid "Add a preparation"
+msgstr "Ajouter une préparation"
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_ingredient_action
+msgid "Add the ingredients you buy"
+msgstr "Ajoutez les ingrédients que vous achetez"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_alert_points
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_alert_points
+msgid "Alert on a rise of (points)"
+msgstr "Alerte sur une hausse de (points)"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Alerts"
+msgstr "Alertes"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+msgid "All allergens"
+msgstr "Tous les allergènes"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_search
+msgid "Allergen"
+msgstr "Allergène"
+
+#. module: bf_kitchen
+#: model:ir.actions.report,name:bf_kitchen.action_report_allergen_sheet
+msgid "Allergen sheet"
+msgstr "Feuille des allergènes"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_allergen_ids
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_allergen_ids
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_allergens
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+msgid "Allergens"
+msgstr "Allergènes"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_product_product__bf_allergen_input_ids
+#: model:ir.model.fields,help:bf_kitchen.field_product_template__bf_allergen_input_ids
+msgid ""
+"Allergens declared on this product. A preparation or a dish also carries the"
+" allergens of its recipe."
+msgstr ""
+"Allergènes déclarés sur ce produit. Une préparation ou un plat porte aussi "
+"les allergènes de sa recette."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.report_allergen_sheet
+msgid "Allergens on our menu"
+msgstr "Les allergènes de notre menu"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
+msgid "Amount"
+msgstr "Montant"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid "Apply the suggested price"
+msgstr "Appliquer le prix suggéré"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_search
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_search
+msgid "Archived"
+msgstr "Archivés"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_scope.py:0
+msgid ""
+"As a kitchen manager, you can only change kitchen products and recipes "
+"(%(records)s is not one)."
+msgstr ""
+"Comme responsable de la cuisine, vous ne pouvez modifier que les produits et"
+" les recettes de la cuisine (%(records)s n'en est pas)."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_scope.py:0
+msgid ""
+"As a kitchen manager, you cannot change %(fields)s: these settle the "
+"accounting and the stock valuation of the product. Ask a product, inventory "
+"or accounting manager."
+msgstr ""
+"Comme responsable de la cuisine, vous ne pouvez pas modifier %(fields)s : "
+"ces champs règlent la comptabilité et la valorisation du stock du produit. "
+"Demandez à un ou une responsable des produits, de l'inventaire ou de la "
+"comptabilité."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_attach_line_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
+msgid "Attach"
+msgstr "Rattacher"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_attach_line
+msgid "Attach a bill line to a kitchen ingredient"
+msgstr "Rattacher une ligne de facture à un ingrédient"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_attach_line_view_form
+msgid "Attach to an ingredient"
+msgstr "Rattacher à un ingrédient"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid ""
+"Attaching bill lines to ingredients takes the Kitchen manager and Accounting"
+" / Billing rights."
+msgstr ""
+"Rattacher des lignes de facture à des ingrédients demande les droits "
+"Responsable de la cuisine et Comptabilité / Facturation."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_mrp_bom__bf_price
+msgid "Before taxes."
+msgstr "Avant taxes."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
+msgid "Bill"
+msgstr "Facture"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
+msgid "Bill date"
+msgstr "Date de facture"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__line_name
+msgid "Bill line"
+msgstr "Ligne de facture"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_mrp_bom
+msgid "Bill of Material"
+msgstr "Nomenclature"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_mrp_bom_line
+msgid "Bill of Material Line"
+msgstr "Ligne de nomenclature"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__line_quantity
+msgid "Billed quantity"
+msgstr "Quantité facturée"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__pack_uom_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_supplierinfo__bf_pack_uom_id
+msgid "Billed unit"
+msgstr "Unité facturée"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.view_move_form_kitchen
+msgid "Brings the ingredients of this bill into stock today, once per line."
+msgstr ""
+"Fait entrer en stock aujourd'hui les ingrédients de cette facture, une fois "
+"par ligne."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_account_bank_statement_line__bf_kitchen_can_receive
+#: model:ir.model.fields,field_description:bf_kitchen.field_account_move__bf_kitchen_can_receive
+msgid "Can be received"
+msgstr "Peut être reçue"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_attach_line_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid ""
+"Cancelled with ingredients already used, so not sent back to the vendor: %s."
+msgstr ""
+"Annulée alors que des ingrédients avaient déjà servi, donc non renvoyés au "
+"fournisseur : %s."
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: bf_kitchen
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_allergen_input_ids
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_allergen_input_ids
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+msgid "Contains"
+msgstr "Contient"
+
+#. module: bf_kitchen
+#: model:res.groups,name:bf_kitchen.group_kitchen_cook
+msgid "Cook"
+msgstr "Cuisinier ou cuisinière"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_mrp_bom_line__bf_yield_pct
+msgid "Copied from the ingredient when the line is created, then kept as is."
+msgstr "Copié de l'ingrédient à la création de la ligne, puis gardé tel quel."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "Cost"
+msgstr "Coût"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_cost_line_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_cost_line_id
+msgid "Cost bill line"
+msgstr "Ligne de facture du coût"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_cost_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_cost_date
+msgid "Cost date"
+msgstr "Date du coût"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_cost_source
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_cost_source
+msgid "Cost from"
+msgstr "Coût tiré de"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_account_move_line__bf_cost_issue
+msgid "Cost issue"
+msgstr "Problème de coût"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_product_product__bf_cost_unit
+msgid ""
+"Cost of one stock unit: the last validated vendor bill, the entered cost "
+"until then, or the recipe for a preparation or a dish. The stock valuation "
+"is not touched."
+msgstr ""
+"Coût d'une unité de stock : la dernière facture fournisseur validée, le coût"
+" saisi d'ici là, ou la recette pour une préparation ou un plat. La "
+"valorisation du stock n'est pas touchée."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_mrp_bom__bf_cost_portion
+msgid ""
+"Cost of one unit of the product: one portion for a dish, one kg or one litre"
+" for a preparation measured that way."
+msgstr ""
+"Coût d'une unité du produit : une portion pour un plat, un kg ou un litre "
+"pour une préparation mesurée ainsi."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.product_template_form_view_kitchen
+msgid "Cost per stock unit"
+msgstr "Coût par unité de stock"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_cost_unit_display
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid "Cost per unit made"
+msgstr "Coût par unité produite"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_cost_unit_display_text
+msgid "Cost per unit made, as read"
+msgstr "Coût par unité produite, lu"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_cost_stale
+msgid "Cost too old"
+msgstr "Coût trop vieux"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_cost_max_age
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_cost_max_age
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Cost too old after (days)"
+msgstr "Coût trop vieux après (jours)"
+
+#. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_costs_to_check_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_costs_to_check
+msgid "Costs to check"
+msgstr "Coûts à vérifier"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_attach_line__remember
+msgid ""
+"Creates the vendor line on the ingredient (vendor's code, name, format and "
+"price per purchase unit), so the next bill, typed or read by OCR, carries "
+"the product."
+msgstr ""
+"Crée la fiche fournisseur sur l'ingrédient (code, nom et format du "
+"fournisseur) : la prochaine facture, saisie ou lue par OCR, portera le "
+"produit."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_product_product__bf_may_contain_ids
+#: model:ir.model.fields,help:bf_kitchen.field_product_template__bf_may_contain_ids
+msgid "Cross-contamination: printed apart on the allergen sheet."
+msgstr ""
+"Contamination croisée : imprimée à part sur la feuille des allergènes."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_currency_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom_line__bf_currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_product_product__bf_allergen_ids
+#: model:ir.model.fields,help:bf_kitchen.field_product_template__bf_allergen_ids
+msgid "Declared allergens plus those of the recipe, sub-recipes included."
+msgstr "Allergènes déclarés et ceux de la recette, sous-recettes comprises."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_company__bf_kitchen_target_pct
+#: model:ir.model.fields,help:bf_kitchen.field_res_config_settings__bf_kitchen_target_pct
+msgid "Default target for a new recipe: plate cost over selling price."
+msgstr ""
+"Cible par défaut d'une nouvelle recette : coût de l'assiette sur prix de "
+"vente."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Default target of a new recipe (plate cost over selling price)."
+msgstr ""
+"Cible par défaut d'une nouvelle recette (coût de l'assiette sur prix de "
+"vente)."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_attach_line__stock_uom_id
+msgid "Default unit of measure used for all stock operations."
+msgstr ""
+"Unité de mesure par défaut utilisée pour toutes les opérations de stock."
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__product_template__bf_kitchen_type__dish
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.report_allergen_sheet
+msgid "Dish"
+msgstr "Plat"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__res_company__bf_kitchen_price_rounding__0_95
+msgid "Ending in .95"
+msgstr "Terminé en ,95"
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__product_product__bf_cost_source__manual
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__product_template__bf_cost_source__manual
+msgid "Entered"
+msgstr "Saisi"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_cost_manual
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_cost_manual
+msgid "Entered cost"
+msgstr "Coût saisi"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_cost_manual_date
+msgid "Entered on"
+msgstr "Saisi le"
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_lines_to_attach_action
+msgid "Every food bill line is attached"
+msgstr "Toutes les lignes de factures alimentaires sont rattachées"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_food_cost_pct
+msgid "Food cost (%)"
+msgstr "Coût matière (%)"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_partner__bf_food_supplier
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_users__bf_food_supplier
+msgid "Food supplier"
+msgstr "Fournisseur alimentaire"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+msgid "Format"
+msgstr "Format"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_account_move_line__bf_pack_qty
+msgid "Format of the billed unit, in the ingredient's stock unit."
+msgstr "Format de l'unité facturée, dans l'unité de stock de l'ingrédient."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "Gross"
+msgstr "Brut"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__ingredient_id
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__product_template__bf_kitchen_type__ingredient
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_search
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "Ingredient"
+msgstr "Ingrédient"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_account_move_line__bf_ingredient_id
+msgid ""
+"Ingredient this line was attached to, when it has no product. The product of"
+" a posted line is never rewritten: Odoo would recompute its label, unit, "
+"price, taxes and analytic distribution."
+msgstr ""
+"Ingrédient auquel cette ligne a été rattachée, quand elle n'a pas de "
+"produit. Le produit d'une ligne validée n'est jamais réécrit : Odoo "
+"recalculerait son libellé, son unité, son prix, ses taxes et sa répartition "
+"analytique."
+
+#. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_ingredient_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_ingredients
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid "Ingredients"
+msgstr "Ingrédients"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid "Ingredients are received from a draft vendor bill."
+msgstr ""
+"Les ingrédients se reçoivent depuis une facture fournisseur en brouillon."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid "Ingredients received into stock: %s."
+msgstr "Ingrédients reçus en stock : %s."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_partner__bf_food_supplier
+#: model:ir.model.fields,help:bf_kitchen.field_res_users__bf_food_supplier
+msgid ""
+"Its bill lines with no product are listed in Kitchen > Lines to attach."
+msgstr ""
+"Ses lignes de facture sans produit apparaissent dans Cuisine > Lignes à "
+"rattacher."
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_account_move_line
+msgid "Journal Item"
+msgstr "Écriture comptable"
+
+#. module: bf_kitchen
+#: model:ir.module.category,name:bf_kitchen.module_category_kitchen
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_root
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.product_template_form_view_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Kitchen"
+msgstr "Cuisine"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_cost_display
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_cost_unit
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_cost_display
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_cost_unit
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.product_template_form_view_kitchen
+msgid "Kitchen cost"
+msgstr "Coût cuisine"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_cost_display_uom_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_cost_display_uom_id
+msgid "Kitchen cost per"
+msgstr "Coût cuisine par"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_cost_display_text
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_cost_display_text
+msgid "Kitchen cost, as read"
+msgstr "Coût cuisine, lu"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_account_move_line__bf_ingredient_id
+msgid "Kitchen ingredient"
+msgstr "Ingrédient de cuisine"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_manager_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_manager_id
+#: model:res.groups,name:bf_kitchen.group_kitchen_manager
+msgid "Kitchen manager"
+msgstr "Responsable de la cuisine"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_account_move_line__bf_kitchen_product_id
+msgid "Kitchen product"
+msgstr "Produit de cuisine"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_account_move_line__bf_receipt_move_id
+msgid "Kitchen receipt"
+msgstr "Réception cuisine"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_kitchen_type
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_kitchen_type
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_kitchen_type
+msgid "Kitchen type"
+msgstr "Type cuisine"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_scope_mixin
+msgid "Kitchen write scope"
+msgstr "Portée d'écriture de la cuisine"
+
+#. module: bf_kitchen
+#: model:ir.actions.server,name:bf_kitchen.ir_cron_kitchen_cost_refresh_ir_actions_server
+msgid "Kitchen: refresh plate costs from the vendor bills"
+msgstr ""
+"Cuisine : recalculer les coûts de l'assiette depuis les factures "
+"fournisseurs"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__line_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
+msgid "Line"
+msgstr "Ligne"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom_line__bf_cost_line
+msgid "Line cost"
+msgstr "Coût de la ligne"
+
+#. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_lines_to_attach_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_lines_to_attach
+msgid "Lines to attach"
+msgstr "Lignes à rattacher"
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_lines_to_attach_action
+msgid ""
+"Lines with no product on the validated bills of your food suppliers come "
+"here. Attach each one to an ingredient once: its price becomes the "
+"ingredient cost, and the next bill from that supplier carries the product."
+msgstr ""
+"Les lignes sans produit des factures validées de vos fournisseurs "
+"alimentaires arrivent ici. Rattachez chacune une fois à un ingrédient : son "
+"prix devient le coût de l'ingrédient, et la prochaine facture de ce "
+"fournisseur portera le produit."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_preparation_view_list
+msgid "Makes"
+msgstr "Donne"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_margin
+msgid "Margin per portion"
+msgstr "Marge par portion"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_may_contain_ids
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_may_contain_ids
+msgid "May contain"
+msgstr "Peut contenir"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_method
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "Method"
+msgstr "Méthode"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "Net"
+msgstr "Net"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom_line__bf_net_qty
+msgid "Net quantity"
+msgstr "Quantité nette"
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_costs_to_check_action
+msgid "No bill line is waiting"
+msgstr "Aucune ligne de facture n'attend"
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__res_company__bf_kitchen_price_rounding__none
+msgid "No rounding"
+msgstr "Sans arrondi"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_tax_nonrecoverable_pct
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_tax_nonrecoverable_pct
+msgid "Non-recoverable share of taxes (%)"
+msgstr "Part non récupérable des taxes (%)"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Non-recoverable taxes (%)"
+msgstr "Taxes non récupérables (%)"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_account_move_line__bf_kitchen_ignore
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
+msgid "Not an ingredient"
+msgstr "Pas un ingrédient"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid ""
+"Nothing to receive: every ingredient line is already received, comes from a "
+"purchase order, or has no product (set the ingredient as the product of the "
+"line first)."
+msgstr ""
+"Rien à recevoir : chaque ligne d'ingrédient est déjà reçue, vient d'un bon "
+"de commande ou n'a pas de produit (mettez d'abord l'ingrédient comme produit"
+" de la ligne)."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_cost_oldest_date
+msgid "Oldest ingredient cost"
+msgstr "Plus vieux coût d'ingrédient"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/report/kitchen_report.py:0
+msgid "Only a kitchen manager can print the technical sheet with costs."
+msgstr ""
+"Seul le responsable de la cuisine peut imprimer la fiche technique avec "
+"coûts."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid "Only a kitchen manager can receive ingredients from a bill."
+msgstr ""
+"Seul le responsable de la cuisine peut recevoir des ingrédients depuis une "
+"facture."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/attach_line.py:0
+msgid "Only the product lines of a vendor bill can be attached."
+msgstr ""
+"Seules les lignes de produits d'une facture fournisseur se rattachent."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid ""
+"Only the vendor bill lines without a product can be set aside as not an "
+"ingredient."
+msgstr ""
+"Seules les lignes de facture fournisseur sans produit peuvent être écartées "
+"comme n'étant pas un ingrédient."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_over_target
+msgid "Over target"
+msgstr "Au-dessus de la cible"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_preparation_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_list
+msgid "Per"
+msgstr "Par"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_cost_unit_display_uom_id
+msgid "Per unit made"
+msgstr "Par unité produite"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_cost_portion
+#: model:mail.activity.type,name:bf_kitchen.mail_activity_plate_cost
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Plate cost"
+msgstr "Coût de l'assiette"
+
+#. module: bf_kitchen
+#: model:mail.activity.type,summary:bf_kitchen.mail_activity_plate_cost
+msgid "Plate cost over target"
+msgstr "Coût de l'assiette au-dessus de la cible"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid "Plate cost over target: %s"
+msgstr "Coût de l'assiette au-dessus de la cible : %s"
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__product_template__bf_kitchen_type__preparation
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_preparation_view_list
+msgid "Preparation"
+msgstr "Préparation"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_prep_minutes
+msgid "Preparation time (min)"
+msgstr "Temps de préparation (min)"
+
+#. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_preparation_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_preparations
+msgid "Preparations"
+msgstr "Préparations"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_product_product
+msgid "Product Variant"
+msgstr "Variante de produit"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+msgid "Purchase unit"
+msgstr "Unité d'achat"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_receive_without_po
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_receive_without_po
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Receive from the vendor bill"
+msgstr "Recevoir depuis la facture fournisseur"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.view_move_form_kitchen
+msgid "Received"
+msgstr "Reçu"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Received button on draft vendor bills without a purchase order."
+msgstr ""
+"Bouton Reçu sur les factures fournisseurs en brouillon sans bon de commande."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_stock_move__bf_kitchen_bill_line_id
+msgid "Received from bill line"
+msgstr "Reçu depuis la ligne de facture"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_company__bf_kitchen_manager_id
+#: model:ir.model.fields,help:bf_kitchen.field_res_config_settings__bf_kitchen_manager_id
+msgid ""
+"Receives the plate cost alerts. Empty: the user who validates the bill."
+msgstr ""
+"Reçoit les alertes de coût de l'assiette. Vide : la personne qui valide la "
+"facture."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_kitchen_bom_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_kitchen_bom_id
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__product_product__bf_cost_source__recipe
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__product_template__bf_cost_source__recipe
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_search
+msgid "Recipe"
+msgstr "Recette"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_cost_total
+msgid "Recipe cost"
+msgstr "Coût de la recette"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid "Recipe of"
+msgstr "Recette de"
+
+#. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_dish_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_recipes
+msgid "Recipes"
+msgstr "Recettes"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__remember
+msgid "Remember for this vendor"
+msgstr "Retenir pour ce fournisseur"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_price
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+msgid "Selling price"
+msgstr "Prix de vente"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_stock_move__bf_kitchen_bill_line_id
+msgid ""
+"Set by the kitchen's Received button: the vendor bill line this receipt "
+"stands for."
+msgstr ""
+"Posé par le bouton Reçu de la cuisine : la ligne de facture fournisseur que "
+"cette réception représente."
+
+#. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_settings_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_settings
+msgid "Settings"
+msgstr "Paramètres"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid ""
+"Share of the bill taxes that belongs in the ingredient cost. 0 when the "
+"taxes are claimed back."
+msgstr ""
+"Part des taxes de la facture qui va dans le coût de l'ingrédient. 0 quand "
+"les taxes sont récupérées."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_company__bf_kitchen_tax_nonrecoverable_pct
+#: model:ir.model.fields,help:bf_kitchen.field_res_config_settings__bf_kitchen_tax_nonrecoverable_pct
+msgid ""
+"Share of the taxes on a vendor bill that the company cannot claim back and "
+"that belongs in the ingredient cost (a charity refunded in part, exempt "
+"supplies). 0: the cost is net of taxes."
+msgstr ""
+"Part des taxes d'une facture fournisseur que l'entreprise ne peut pas "
+"récupérer et qui va dans le coût de l'ingrédient (OBNL remboursé en partie, "
+"fournitures exonérées). 0 : le coût est net de taxes."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_company__bf_kitchen_receive_without_po
+#: model:ir.model.fields,help:bf_kitchen.field_res_config_settings__bf_kitchen_receive_without_po
+msgid ""
+"Show the Received button on draft vendor bills that are not linked to a "
+"purchase order, so ingredients enter the stock on the day they arrive."
+msgstr ""
+"Affiche le bouton Reçu sur les factures fournisseurs en brouillon qui ne "
+"viennent pas d'un bon de commande : les ingrédients entrent en stock le jour"
+" où ils arrivent."
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_stock_move
+msgid "Stock Move"
+msgstr "Mouvement de stock"
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_ingredient_action
+msgid ""
+"Stock each ingredient in its smallest kitchen unit (g, ml, unit): a few "
+"grams stocked in kg would round to zero."
+msgstr ""
+"Stockez chaque ingrédient dans sa plus petite unité de cuisine (g, ml, "
+"unité) : quelques grammes stockés en kg s'arrondiraient à zéro."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__stock_uom_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_list
+msgid "Stock unit"
+msgstr "Unité de stock"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_account_move_line__bf_pack_qty
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__pack_qty
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_supplierinfo__bf_pack_qty
+msgid "Stock units per billed unit"
+msgstr "Unités de stock par unité facturée"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_price_suggested
+msgid "Suggested price"
+msgstr "Prix suggéré"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_price_rounding
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_price_rounding
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Suggested price rounding"
+msgstr "Arrondi du prix suggéré"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_product_supplierinfo
+msgid "Supplier Pricelist"
+msgstr "Liste de prix du fournisseur"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Target food cost"
+msgstr "Coût matière cible"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_target_pct
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_target_pct
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_target_pct
+msgid "Target food cost (%)"
+msgstr "Coût matière cible (%)"
+
+#. module: bf_kitchen
+#: model:ir.actions.report,name:bf_kitchen.action_report_technical_sheet
+msgid "Technical sheet"
+msgstr "Fiche technique"
+
+#. module: bf_kitchen
+#: model:ir.actions.report,name:bf_kitchen.action_report_technical_sheet_cost
+#: model:ir.model,name:bf_kitchen.model_report_bf_kitchen_report_technical_sheet_cost
+msgid "Technical sheet with costs"
+msgstr "Fiche technique avec coûts"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid "The company %s has no warehouse."
+msgstr "La société %s n'a pas d'entrepôt."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/attach_line.py:0
+msgid "The format must be above 0."
+msgstr "Le format doit être supérieur à 0."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/product.py:0
+msgid ""
+"The format of a vendor line must be above 0 (or left empty, with no billed "
+"unit)."
+msgstr ""
+"Le format d'une ligne fournisseur doit être supérieur à 0 (ou laissé vide, "
+"sans unité facturée)."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/product.py:0
+msgid ""
+"The kitchen cost is computed from the vendor bills and the recipes: enter a "
+"cost in Entered cost instead."
+msgstr ""
+"Le coût cuisine se calcule depuis les factures fournisseurs et les recettes "
+": saisissez plutôt un coût dans Coût saisi."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid ""
+"The kitchen fields of a bill line (ingredient, format, receipt, cost issue, "
+"not an ingredient) are set by the kitchen's own buttons only."
+msgstr ""
+"Les champs cuisine d'une ligne de facture (ingrédient, format, réception, "
+"problème de coût, pas un ingrédient) ne se posent que par les boutons de la "
+"cuisine."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom.py:0
+msgid ""
+"The kitchen type of a recipe is the one of its product: change it on the "
+"product."
+msgstr ""
+"Le type cuisine d'une recette est celui de son produit : changez-le sur le "
+"produit."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/stock_move.py:0
+msgid ""
+"The link between a receipt and a vendor bill line is set by the Received "
+"button only."
+msgstr ""
+"Le lien entre une réception et une ligne de facture fournisseur ne se pose "
+"que par le bouton Reçu."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_attach_line__line_quantity
+msgid ""
+"The optional quantity expressed by this line, eg: number of product sold. "
+"The quantity is not a legal requirement but is very useful for some reports."
+msgstr ""
+"La quantité facultative correspondant à cette ligne, par exemple le nombre "
+"de produits vendus. La quantité n'est pas une obligation légale mais est "
+"très utile pour certains rapports."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+msgid ""
+"The plate cost went over its target after %(bills)s. Ingredients: "
+"%(ingredients)s. The figures are on the recipe."
+msgstr ""
+"Le coût de l'assiette a dépassé sa cible après %(bills)s. Ingrédients : "
+"%(ingredients)s. Les chiffres sont sur la recette."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_mrp_bom__bf_method
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid "The steps, as the brigade reads them."
+msgstr "Les étapes, telles que la brigade les lit."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_attach_line__pack_uom_id
+msgid ""
+"The unit of the bill line. The format is remembered for this vendor's lines "
+"in this unit only; empty: the lines with no unit."
+msgstr ""
+"L'unité de la ligne de facture. Le format est retenu pour les lignes de ce "
+"fournisseur dans cette unité seulement ; vide : les lignes sans unité."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_product_supplierinfo__bf_pack_uom_id
+msgid ""
+"The unit of this vendor's bill lines that the format applies to. Empty: the "
+"lines with no unit. A line in any other unit is converted as usual."
+msgstr ""
+"L'unité des lignes de facture de ce fournisseur à laquelle le format "
+"s'applique. Vide : les lignes sans unité. Une ligne dans toute autre unité "
+"est convertie comme d'habitude."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom.py:0
+#: code:addons/bf_kitchen/models/product.py:0
+msgid "The yield must be above 0 and at most 100%."
+msgstr "Le rendement doit être supérieur à 0 et au plus 100 %."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/attach_line.py:0
+msgid "This line already has a product: its cost is read from it."
+msgstr "Cette ligne a déjà un produit : son coût se lit à partir de lui."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_product_supplierinfo__bf_pack_qty
+msgid ""
+"This vendor's format, in the product's stock unit: 12000 for a case of 12 x "
+"1 L when the stock unit is the ml. Used for the kitchen cost of its bill "
+"lines in the billed unit only."
+msgstr ""
+"Format de ce fournisseur, dans l'unité de stock du produit : 12000 pour une "
+"caisse de 12 x 1 L quand l'unité de stock est le ml. Sert au coût cuisine de"
+" ses lignes de facture."
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__res_company__bf_kitchen_price_rounding__0_05
+msgid "To the next 0.05"
+msgstr "Au 0,05 supérieur"
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__res_company__bf_kitchen_price_rounding__0_25
+msgid "To the next 0.25"
+msgstr "Au 0,25 supérieur"
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__res_company__bf_kitchen_price_rounding__1
+msgid "To the next dollar"
+msgstr "Au dollar supérieur"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "Unit"
+msgstr "Unité"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_product_product__bf_yield_pct
+#: model:ir.model.fields,help:bf_kitchen.field_product_template__bf_yield_pct
+msgid ""
+"Usable share after trimming or peeling: 45 for a whole salmon, 85 for "
+"carrots. Copied on each new recipe line, then changed there if needed."
+msgstr ""
+"Part utilisable après parage ou épluchage : 45 pour un saumon entier, 85 "
+"pour des carottes. Copié sur chaque nouvelle ligne de recette, puis "
+"modifiable là."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_product_template__bf_cost_manual
+msgid "Used only until a validated vendor bill gives the cost."
+msgstr ""
+"Utilisé seulement jusqu'à ce qu'une facture fournisseur validée donne le "
+"coût."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_search
+msgid "Vendor"
+msgstr "Fournisseur"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/account_move.py:0
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__product_product__bf_cost_source__bill
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__product_template__bf_cost_source__bill
+msgid "Vendor bill"
+msgstr "Facture fournisseur"
+
+#. module: bf_kitchen
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_bills
+msgid "Vendor bills"
+msgstr "Factures fournisseurs"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__vendor_code
+msgid "Vendor's code"
+msgstr "Code du fournisseur"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+msgid "Vendors"
+msgstr "Fournisseurs"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_mrp_bom_line__bf_net_qty
+msgid ""
+"What goes on the plate. The quantity that leaves the stock is the gross one:"
+" net divided by the yield."
+msgstr ""
+"Ce qui va dans l'assiette. La quantité qui sort du stock est la brute : la "
+"nette divisée par le rendement."
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_dish_action
+msgid "Write your first recipe"
+msgstr "Écrivez votre première recette"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "Yield"
+msgstr "Rendement"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid "Yield %"
+msgstr "Rendement %"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom_line__bf_yield_pct
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_yield_pct
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_yield_pct
+msgid "Yield (%)"
+msgstr "Rendement (%)"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid "e.g. Salmon tartare"
+msgstr "ex. Tartare de saumon"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
+msgid "e.g. Whole salmon"
+msgstr "ex. Saumon entier"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "min"
+msgstr "min"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "· <strong>Food cost: </strong>"
+msgstr "· <strong>Coût matière : </strong>"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
+msgid "· <strong>Price: </strong>"
+msgstr "· <strong>Prix : </strong>"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.report_allergen_sheet
+msgid "● contains · ○ may contain (cross-contamination)"
+msgstr "● contient · ○ peut contenir (contamination croisée)"

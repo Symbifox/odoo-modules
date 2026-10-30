@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_kitchen" model="ir.module.category">
+        <field name="name">Kitchen</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <!-- The cook reads recipes without their costs, and will declare losses and counts (a later release):
+         stock.group_stock_user gives the scrap and quant rights; its Inventory menu stays visible. -->
+    <record id="group_kitchen_cook" model="res.groups">
+        <field name="name">Cook</field>
+        <field name="category_id" ref="module_category_kitchen"/>
+        <field name="implied_ids" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <!-- The kitchen manager writes recipes and kitchen products through the module's own access
+         lines, without any mrp group (mrp.group_mrp_manager would open the Manufacturing menu).
+         The write is limited to kitchen products and recipes in Python (KitchenScopeMixin), not by
+         record rules: a group rule would become the only one on products and restrict a stock,
+         purchase or sales manager who is also in the kitchen, and the groups that write products
+         differ from one database to the next (sales, point of sale, events, expenses). -->
+    <record id="group_kitchen_manager" model="res.groups">
+        <field name="name">Kitchen manager</field>
+        <field name="category_id" ref="module_category_kitchen"/>
+        <field name="implied_ids" eval="[(4, ref('group_kitchen_cook'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_technical_sheet" model="ir.actions.report">
+        <field name="name">Technical sheet</field>
+        <field name="model">mrp.bom</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_kitchen.report_technical_sheet</field>
+        <field name="report_file">bf_kitchen.report_technical_sheet</field>
+        <field name="print_report_name">'Technical sheet - %s' % (object.product_tmpl_id.name)</field>
+        <field name="binding_model_id" ref="mrp.model_mrp_bom"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_technical_sheet_cost" model="ir.actions.report">
+        <field name="name">Technical sheet with costs</field>
+        <field name="model">mrp.bom</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_kitchen.report_technical_sheet_cost</field>
+        <field name="report_file">bf_kitchen.report_technical_sheet_cost</field>
+        <field name="print_report_name">'Technical sheet (costs) - %s' % (object.product_tmpl_id.name)</field>
+        <field name="binding_model_id" ref="mrp.model_mrp_bom"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(6, 0, [ref('bf_kitchen.group_kitchen_manager')])]"/>
+    </record>
+
+    <record id="action_report_allergen_sheet" model="ir.actions.report">
+        <field name="name">Allergen sheet</field>
+        <field name="model">mrp.bom</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_kitchen.report_allergen_sheet</field>
+        <field name="report_file">bf_kitchen.report_allergen_sheet</field>
+        <field name="print_report_name">'Allergens'</field>
+        <field name="binding_model_id" ref="mrp.model_mrp_bom"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
