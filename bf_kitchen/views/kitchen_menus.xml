@@ -11,6 +11,16 @@
     <menuitem id="menu_kitchen_ingredients" name="Ingredients" parent="menu_kitchen_root" sequence="30"
               action="bf_kitchen_ingredient_action"/>
 
+    <menuitem id="menu_kitchen_stock" name="Stock" parent="menu_kitchen_root" sequence="35"/>
+    <menuitem id="menu_kitchen_counts" name="Counts" parent="menu_kitchen_stock" sequence="10"
+              action="bf_kitchen_count_action"/>
+    <menuitem id="menu_kitchen_declare_loss" name="Declare a loss" parent="menu_kitchen_stock" sequence="20"
+              action="bf_kitchen_loss_action"/>
+    <menuitem id="menu_kitchen_losses" name="Losses" parent="menu_kitchen_stock" sequence="30"
+              action="bf_kitchen_losses_action"/>
+    <menuitem id="menu_kitchen_prepared" name="I prepared" parent="menu_kitchen_stock" sequence="40"
+              action="bf_kitchen_prepared_action"/>
+
     <menuitem id="menu_kitchen_bills" name="Vendor bills" parent="menu_kitchen_root" sequence="40"
               groups="account.group_account_invoice"/>
     <menuitem id="menu_kitchen_lines_to_attach" name="Lines to attach" parent="menu_kitchen_bills" sequence="10"
@@ -22,6 +32,9 @@
               groups="bf_kitchen.group_kitchen_manager"/>
     <menuitem id="menu_kitchen_settings" name="Settings" parent="menu_kitchen_config" sequence="10"
               action="bf_kitchen_settings_action" groups="base.group_system"/>
+    <!-- Writing a location is Odoo's Inventory administrator's: the list is theirs. -->
+    <menuitem id="menu_kitchen_locations" name="Kitchen locations" parent="menu_kitchen_config" sequence="15"
+              action="bf_kitchen_location_action" groups="stock.group_stock_manager"/>
     <menuitem id="menu_kitchen_allergens" name="Allergens" parent="menu_kitchen_config" sequence="20"
               action="bf_food_allergen.bf_food_allergen_action"/>
 </odoo>

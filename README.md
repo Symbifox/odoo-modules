@@ -248,7 +248,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_job_search` | Job Search | 18.0.1.0.3 | LGPL-3 | Track your job applications with the good habits built in: follow-ups, interviews, thank-you notes, referees and a job search log |
 | `bf_key_management` | Symbifox Keys | 18.0.1.0.15 | BUSL-1.1 | Who holds which key, card or remote of the premises, which doors each one opens, and nothing forgotten when someone leaves |
-| `bf_kitchen` | Symbifox: kitchen | 18.0.1.0.3 | BUSL-1.1 | Recipes and plate cost for restaurants, caterers and kitchens: yield, sub-recipes, ingredient cost from the last vendor bill, food cost ratio, suggested price, allergens |
+| `bf_kitchen` | Symbifox: kitchen | 18.0.1.1.0 | BUSL-1.1 | Recipes and plate cost for restaurants, caterers and kitchens: yield, sub-recipes, ingredient cost from the last vendor bill, food cost ratio, suggested price, allergens |
 | `bf_labour_relations` | Relations de travail | 18.0.1.0.0 | BUSL-1.1 | Certification, collective agreement, seniority, grievances and union dues, from the employer's side as much as the union's |
 | `bf_labour_relations_employer` | Relations de travail : côté employeur | 18.0.1.1.0 | BUSL-1.1 | Obligations and reminders, the posted seniority list, job postings and movements, dues remittance preparation, the joint committee |
 | `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |

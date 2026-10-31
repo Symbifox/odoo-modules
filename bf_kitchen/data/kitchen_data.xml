@@ -18,4 +18,30 @@
         <field name="nextcall" eval="(DateTime.now().replace(hour=7, minute=10, second=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
         <field name="active" eval="True"/>
     </record>
+
+    <record id="mail_activity_kitchen_count" model="mail.activity.type">
+        <field name="name">Kitchen count</field>
+        <field name="summary">Count the kitchen</field>
+        <field name="res_model">bf.kitchen.count</field>
+        <field name="icon">fa-list-ol</field>
+    </record>
+
+    <record id="seq_bf_kitchen_count" model="ir.sequence">
+        <field name="name">Kitchen count</field>
+        <field name="code">bf.kitchen.count</field>
+        <field name="prefix">COUNT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="ir_cron_kitchen_count_reminder" model="ir.cron">
+        <field name="name">Kitchen: count reminder</field>
+        <field name="model_id" ref="model_bf_kitchen_count"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_bf_kitchen_count_reminder()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=10, minute=0, second=0)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="active" eval="True"/>
+    </record>
 </odoo>

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-30 07:26+0000\n"
-"PO-Revision-Date: 2026-10-30 07:26+0000\n"
+"POT-Creation-Date: 2026-10-31 02:29+0000\n"
+"PO-Revision-Date: 2026-10-31 02:29+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -56,6 +56,33 @@ msgstr ""
 
 #. module: bf_kitchen
 #. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom_stock.py:0
+msgid ""
+"%(prep)s cannot be held in stock yet: confirmed sales of it as a kit are not fully invoiced. Invoice or cancel them first.\n"
+"\n"
+"%(odoo)s"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom_stock.py:0
+msgid ""
+"%(prep)s cannot change how it is made yet: %(n)s stock move(s) of it, or of "
+"the dishes that use it, are still to be done (a delivery, a register order)."
+" Validate or cancel them first."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom_stock.py:0
+msgid ""
+"%(prep)s cannot change how it is made yet: confirmed sales of it, or of the dishes that use it, are not fully invoiced. Invoice or cancel them first.\n"
+"\n"
+"%(odoo)s"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
 #: code:addons/bf_kitchen/models/account_move.py:0
 msgid ""
 "%(product)s: the bill unit (%(unit)s) cannot be converted to the stock unit "
@@ -82,8 +109,80 @@ msgstr ""
 
 #. module: bf_kitchen
 #. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "%(what)s: %(fields)s is written by the count itself, not by hand."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid ""
+"%s cannot be counted here: a kitchen count takes the ingredients and the "
+"preparations held in stock, not tracked by lot. Count the ingredients of a "
+"preparation made on the fly; use the Inventory app for the items tracked by "
+"lot."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
 #: code:addons/bf_kitchen/wizard/attach_line.py:0
 msgid "%s is not a kitchen ingredient: only an ingredient can be attached."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "%s is not a stock location of this warehouse."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/prepared.py:0
+msgid "%s is not held in stock: it is made where it is used."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/loss.py:0
+msgid "%s is not kept in stock: there is nothing to take out."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom_stock.py:0
+msgid ""
+"%s is still in stock: use it up, declare it lost or count it to 0 before "
+"making it on the fly."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/res_config_settings.py:0
+msgid "%s kitchen location(s) created."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid ""
+"%s register order(s) are still open: their dishes have not left the stock "
+"yet."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid ""
+"%s register order(s) of a session still open leave the stock only when the "
+"session closes: close it before counting."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid ""
+"%s transfer(s) of this warehouse are not validated: what they move is not in"
+" the stock figures yet."
 msgstr ""
 
 #. module: bf_kitchen
@@ -147,10 +246,31 @@ msgid "<strong>Plate cost: </strong>"
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom_stock.py:0
+msgid "A batch of %s is still in progress: finish or cancel it first."
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_costs_to_check_action
 msgid ""
 "A bill line whose unit cannot be brought back to the ingredient's stock unit"
 " lands here instead of blocking the validation. Give its format with Attach."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid ""
+"A count that has started cannot be deleted: its applied steps moved the "
+"stock."
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_count_action
+msgid ""
+"A count walks through every storage location of the warehouse. Each location is applied\n"
+"               when it is entered, and its variance is kept."
 msgstr ""
 
 #. module: bf_kitchen
@@ -167,6 +287,20 @@ msgid ""
 "A dish already over its target raises a new alert on a rise of at least this"
 " many points. The kitchen manager receives them (empty: whoever validates "
 "the bill)."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom_stock.py:0
+msgid ""
+"A kitchen recipe changes type through Hold in stock or Make it on the fly, "
+"on a preparation only."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "A location that is applied or skipped cannot be changed."
 msgstr ""
 
 #. module: bf_kitchen
@@ -193,6 +327,31 @@ msgstr ""
 msgid ""
 "A stock, a sauce, a dough: a sub-recipe used in other recipes. Its cost "
 "follows its own ingredients."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_type_icon
+msgid "Activity Type Icon"
 msgstr ""
 
 #. module: bf_kitchen
@@ -258,8 +417,45 @@ msgid "Amount"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.constraint,message:bf_kitchen.constraint_bf_kitchen_count_line_product_step_uniq
+msgid "An item appears once per location."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid ""
+"Another count of this warehouse is in progress: finish it first. Two counts "
+"at once would set the same stock twice."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_count_step__state__applied
+msgid "Applied"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__applied_date
+msgid "Applied on"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid ""
+"Apply the step %(location)s before finishing: sales, receipts and "
+"preparations move the stock there, and a count that skips it counts that "
+"stock twice."
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
 msgid "Apply the suggested price"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid "Apply this location"
 msgstr ""
 
 #. module: bf_kitchen
@@ -312,8 +508,28 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid "Back to the count"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__warning_html
+msgid "Before counting"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_mrp_bom__bf_price
 msgid "Before taxes."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_stock_location__bf_kitchen_key
+msgid "Bf Kitchen Key"
 msgstr ""
 
 #. module: bf_kitchen
@@ -365,6 +581,8 @@ msgstr ""
 
 #. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_attach_line_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_loss_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_prepared_view_form
 msgid "Cancel"
 msgstr ""
 
@@ -376,8 +594,29 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__uom_category_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__uom_category_id
+msgid "Category"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "Change the item before entering its count, or add a new line."
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model,name:bf_kitchen.model_res_company
 msgid "Companies"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__company_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__company_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__company_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__company_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__company_id
+msgid "Company"
 msgstr ""
 
 #. module: bf_kitchen
@@ -403,8 +642,21 @@ msgid "Contains"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_loss__uom_category_id
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_prepared__uom_category_id
+msgid ""
+"Conversion between Units of Measure can only occur if they belong to the "
+"same category. The conversion will be made based on the ratios."
+msgstr ""
+
+#. module: bf_kitchen
 #: model:res.groups,name:bf_kitchen.group_kitchen_cook
 msgid "Cook"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:stock.scrap.reason.tag,name:bf_kitchen.scrap_reason_cooking
+msgid "Cooking failure"
 msgstr ""
 
 #. module: bf_kitchen
@@ -492,12 +744,102 @@ msgid "Costs to check"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__count_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__count_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
+msgid "Count"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid ""
+"Count here only what is not put away in a location, and enter 0 for the items\n"
+"                        listed that are stored elsewhere: sales, receipts, losses and preparations move the\n"
+"                        stock here, and a negative balance is what left from here while it is stored elsewhere."
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
+msgid ""
+"Count one location at a time, and apply it as soon as it is entered: the sales made\n"
+"                        after a location is applied are not put back in stock. The stock location of the\n"
+"                        warehouse comes last: count there only what is not put away, and enter 0 for the rest."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_stock_location__bf_kitchen_count_sequence
+msgid "Count order"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Count reminder"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:mail.activity.type,summary:bf_kitchen.mail_activity_kitchen_count
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_count_action
+msgid "Count the kitchen"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__counted_qty
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__is_counted
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid "Counted"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__user_id
+msgid "Counted by"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__diff_value
+msgid ""
+"Counted minus expected, valued at the kitchen cost of each item on the day "
+"of the count."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count_line__is_counted
+msgid "Counted, even at 0. Entering a quantity marks it."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "Counting the kitchen takes the Cook or Kitchen manager rights."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_count_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_counts
+msgid "Counts"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Create the kitchen locations"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__create_uid
 msgid "Created by"
 msgstr ""
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__create_date
 msgid "Created on"
 msgstr ""
 
@@ -516,15 +858,58 @@ msgid "Cross-contamination: printed apart on the allergen sheet."
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__currency_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__currency_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_currency_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom_line__bf_currency_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_stock_scrap__bf_kitchen_currency_id
 msgid "Currency"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:stock.scrap.reason.tag,name:bf_kitchen.scrap_reason_customer_return
+msgid "Customer return"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
+msgid "Date"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_loss
+msgid "Declare a kitchen loss"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_loss_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_declare_loss
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_loss_view_form
+msgid "Declare a loss"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_losses_action
+msgid ""
+"Declare a loss from the menu: what, how much, why. It leaves the stock at "
+"once."
 msgstr ""
 
 #. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_product_product__bf_allergen_ids
 #: model:ir.model.fields,help:bf_kitchen.field_product_template__bf_allergen_ids
 msgid "Declared allergens plus those of the recipe, sub-recipes included."
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
+msgid "Declared by"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/loss.py:0
+msgid "Declaring a kitchen loss takes the Cook or Kitchen manager rights."
 msgstr ""
 
 #. module: bf_kitchen
@@ -540,6 +925,7 @@ msgstr ""
 
 #. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_attach_line__stock_uom_id
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count_line__uom_id
 msgid "Default unit of measure used for all stock operations."
 msgstr ""
 
@@ -551,12 +937,29 @@ msgstr ""
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__display_name
 msgid "Display Name"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_count__state__done
+msgid "Done"
 msgstr ""
 
 #. module: bf_kitchen
 #: model:ir.model.fields.selection,name:bf_kitchen.selection__res_company__bf_kitchen_price_rounding__0_95
 msgid "Ending in .95"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid ""
+"Enter whole purchase units (cases, bags) and what is left of an opened one in the\n"
+"                        stock unit. Enter 0 for an item that is not there. An item not entered keeps its stock."
 msgstr ""
 
 #. module: bf_kitchen
@@ -582,6 +985,78 @@ msgid "Every food bill line is attached"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__res_company__bf_kitchen_count_frequency__monthly
+msgid "Every month"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__res_company__bf_kitchen_count_frequency__biweekly
+msgid "Every two weeks"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/res_config_settings.py:0
+msgid "Every warehouse already has its kitchen locations."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__res_company__bf_kitchen_count_frequency__weekly
+msgid "Every week"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__expected_qty
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid "Expected"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__qty_before
+msgid "Expected when applied"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:stock.scrap.reason.tag,name:bf_kitchen.scrap_reason_expired
+msgid "Expired"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
+msgid "Finish the count"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_search
+msgid "Finished"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__date_done
+msgid "Finished on"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_food_cost_pct
 msgid "Food cost (%)"
 msgstr ""
@@ -603,14 +1078,87 @@ msgid "Format of the billed unit, in the ingredient's stock unit."
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/loss.py:0
+#: code:addons/bf_kitchen/wizard/prepared.py:0
+msgid "Give a quantity above 0."
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
 msgid "Gross"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_kitchen_stocked
+msgid "Held in stock"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid "Hold in stock"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__quantity
+msgid "How much"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom_stock.py:0
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_prepared_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_prepared
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_prepared_view_form
+msgid "I prepared"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__id
 msgid "ID"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__message_has_error
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_count__state__in_progress
+msgid "In progress"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__qty_purchase
+msgid "In purchase units"
 msgstr ""
 
 #. module: bf_kitchen
@@ -651,6 +1199,37 @@ msgid "Ingredients received into stock: %s."
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_location_view_list
+msgid "Inside"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_stock_location
+msgid "Inventory Locations"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__is_stock_root
+msgid "Is Stock Root"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__product_id
+msgid "Item"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
+msgid "Items"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_res_partner__bf_food_supplier
 #: model:ir.model.fields,help:bf_kitchen.field_res_users__bf_food_supplier
 msgid ""
@@ -668,6 +1247,8 @@ msgid "Journal Item"
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/prepared.py:0
 #: model:ir.module.category,name:bf_kitchen.module_category_kitchen
 #: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_root
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.product_template_form_view_kitchen
@@ -680,6 +1261,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_cost_unit
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_cost_display
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_cost_unit
+#: model:ir.model.fields,field_description:bf_kitchen.field_stock_scrap__bf_kitchen_cost
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.product_template_form_view_kitchen
 msgid "Kitchen cost"
@@ -698,8 +1280,58 @@ msgid "Kitchen cost, as read"
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_count
+#: model:mail.activity.type,name:bf_kitchen.mail_activity_kitchen_count
+msgid "Kitchen count"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "Kitchen count item"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "Kitchen count location"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_count_frequency
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_count_frequency
+msgid "Kitchen count reminder"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_count_line
+msgid "Kitchen count: one item"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_count_step
+msgid "Kitchen count: one location"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_account_move_line__bf_ingredient_id
 msgid "Kitchen ingredient"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_location_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_locations
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Kitchen locations"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/loss.py:0
+#: model:ir.model.fields,field_description:bf_kitchen.field_stock_scrap__bf_is_kitchen
+msgid "Kitchen loss"
 msgstr ""
 
 #. module: bf_kitchen
@@ -720,6 +1352,12 @@ msgid "Kitchen receipt"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_kitchen_location_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_kitchen_location_id
+msgid "Kitchen storage"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_kitchen_type
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_kitchen_type
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_kitchen_type
@@ -732,17 +1370,37 @@ msgid "Kitchen write scope"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_prepared
+msgid "Kitchen: I prepared"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.actions.server,name:bf_kitchen.ir_cron_kitchen_count_reminder_ir_actions_server
+msgid "Kitchen: count reminder"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.actions.server,name:bf_kitchen.ir_cron_kitchen_cost_refresh_ir_actions_server
 msgid "Kitchen: refresh plate costs from the vendor bills"
 msgstr ""
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__write_uid
 msgid "Last Updated by"
 msgstr ""
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__write_date
 msgid "Last Updated on"
 msgstr ""
 
@@ -750,6 +1408,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__line_id
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
 msgid "Line"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__line_count
+msgid "Line Count"
 msgstr ""
 
 #. module: bf_kitchen
@@ -772,6 +1435,49 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__location_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__location_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_location_view_list
+msgid "Location"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__step_ids
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_list
+msgid "Locations"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_list
+msgid "Locations done"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/loss.py:0
+msgid "Loss recorded: %(qty)s %(unit)s of %(item)s."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_losses_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_losses
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_pivot
+msgid "Losses"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_mrp_bom__bf_kitchen_stocked
+msgid ""
+"Made ahead and kept in stock: the dishes take it from the stock, and making "
+"it takes its ingredients out."
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid "Make it on the fly"
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_list
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_preparation_view_list
@@ -790,10 +1496,45 @@ msgid "May contain"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_method
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
 msgid "Method"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__my_activity_date_deadline
+msgid "My Activity Deadline"
 msgstr ""
 
 #. module: bf_kitchen
@@ -808,8 +1549,39 @@ msgid "Net quantity"
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "New"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_costs_to_check_action
 msgid "No bill line is waiting"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_losses_action
+msgid "No loss yet"
 msgstr ""
 
 #. module: bf_kitchen
@@ -829,9 +1601,31 @@ msgid "Non-recoverable taxes (%)"
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid "None here"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_account_move_line__bf_kitchen_ignore
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
 msgid "Not an ingredient"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_search
+msgid "Not finished"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__note
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
+msgid "Note"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "Nothing is counted at %s. Enter 0 for an item that is not there."
 msgstr ""
 
 #. module: bf_kitchen
@@ -844,8 +1638,40 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_cost_oldest_date
 msgid "Oldest ingredient cost"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom_stock.py:0
+msgid "Only a kitchen manager can change how a preparation is made."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/res_config_settings.py:0
+msgid "Only a kitchen manager can create the kitchen locations."
 msgstr ""
 
 #. module: bf_kitchen
@@ -862,6 +1688,19 @@ msgstr ""
 
 #. module: bf_kitchen
 #. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid ""
+"Only a location still to count, in a count in progress, can be applied."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/mrp_bom_stock.py:0
+msgid "Only a preparation can be held in stock: %s is not one."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
 #: code:addons/bf_kitchen/wizard/attach_line.py:0
 msgid "Only the product lines of a vendor bill can be attached."
 msgstr ""
@@ -872,6 +1711,13 @@ msgstr ""
 msgid ""
 "Only the vendor bill lines without a product can be set aside as not an "
 "ingredient."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_stock_location__bf_kitchen_count_sequence
+msgid ""
+"Order of this location in a kitchen count: the order a cook walks through "
+"them."
 msgstr ""
 
 #. module: bf_kitchen
@@ -909,6 +1755,17 @@ msgid "Plate cost over target: %s"
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid "Plus"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__qty_stock
+msgid "Plus, in stock units"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__bom_id
 #: model:ir.model.fields.selection,name:bf_kitchen.selection__product_template__bf_kitchen_type__preparation
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_preparation_view_list
 msgid "Preparation"
@@ -926,6 +1783,21 @@ msgid "Preparations"
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid ""
+"Prepares a count once the last finished count is older than this, with an "
+"activity for the kitchen manager when one is set (Alerts)."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_company__bf_kitchen_count_frequency
+#: model:ir.model.fields,help:bf_kitchen.field_res_config_settings__bf_kitchen_count_frequency
+msgid ""
+"Prepares a count once the last finished count is older than this, with an "
+"activity for the kitchen manager when one is set. Empty: no reminder."
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model,name:bf_kitchen.model_product_template
 msgid "Product"
 msgstr ""
@@ -936,8 +1808,29 @@ msgid "Product Variant"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__purchase_uom_id
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
 msgid "Purchase unit"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid "Purchase units"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
+msgid "Quantity"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__quantity
+msgid "Quantity made"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__rating_ids
+msgid "Ratings"
 msgstr ""
 
 #. module: bf_kitchen
@@ -996,14 +1889,71 @@ msgid "Recipes"
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_prepared_view_form
+msgid "Record"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_loss_view_form
+msgid "Record the loss"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/prepared.py:0
+msgid "Recorded: %(qty)s %(unit)s of %(prep)s (%(ref)s)."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/prepared.py:0
+msgid "Recording a preparation takes the Cook or Kitchen manager rights."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__name
+msgid "Reference"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__remember
 msgid "Remember for this vendor"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_stock_scrap
+msgid "Scrap"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_stock_scrap_reason_tag
+msgid "Scrap Reason Tag"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
+msgid "See"
 msgstr ""
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_price
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
 msgid "Selling price"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__sequence
+msgid "Sequence"
 msgstr ""
 
 #. module: bf_kitchen
@@ -1044,6 +1994,73 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid "Skip"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_count_step__state__skipped
+msgid "Skipped"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:stock.scrap.reason.tag,name:bf_kitchen.scrap_reason_spilled
+msgid "Spilled or dropped"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:stock.scrap.reason.tag,name:bf_kitchen.scrap_reason_staff_meal
+msgid "Staff meal"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
+msgid "Start the count"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__date
+msgid "Started on"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__state
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__step_state
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__state
+msgid "State"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__step_id
+msgid "Step"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__step_count
+msgid "Step Count"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__step_done_count
+msgid "Step Done Count"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_stock
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Stock"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model,name:bf_kitchen.model_stock_move
 msgid "Stock Move"
 msgstr ""
@@ -1057,6 +2074,7 @@ msgstr ""
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__stock_uom_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__uom_id
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_list
 msgid "Stock unit"
@@ -1087,6 +2105,11 @@ msgid "Supplier Pricelist"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__location_id
+msgid "Taken from"
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
 msgid "Target food cost"
 msgstr ""
@@ -1096,6 +2119,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_target_pct
 #: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_target_pct
 msgid "Target food cost (%)"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:stock.scrap.reason.tag,name:bf_kitchen.scrap_reason_tasting
+msgid "Tasting"
 msgstr ""
 
 #. module: bf_kitchen
@@ -1127,6 +2155,11 @@ msgstr ""
 msgid ""
 "The format of a vendor line must be above 0 (or left empty, with no billed "
 "unit)."
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_prepared_view_form
+msgid "The ingredients leave the stock and the preparation enters it."
 msgstr ""
 
 #. module: bf_kitchen
@@ -1162,6 +2195,18 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "The locations of a count are made when it starts."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_stock_scrap__bf_kitchen_cost
+msgid ""
+"The loss valued at the kitchen cost of the item on the day it was declared."
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_attach_line__line_quantity
 msgid ""
 "The optional quantity expressed by this line, eg: number of product sold. "
@@ -1177,9 +2222,40 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/prepared.py:0
+msgid "The preparation could not be recorded (%s)."
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_mrp_bom__bf_method
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
 msgid "The steps, as the brigade reads them."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid ""
+"The stock location cannot be skipped: sales, receipts and preparations move "
+"the stock there. Enter 0 for the items that are put away elsewhere."
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid "The stock of this location becomes what you counted, now. Continue?"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/loss.py:0
+msgid "The unit must be one of the item's own kind (weight, volume or units)."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/prepared.py:0
+msgid "The unit must be one of the preparation's own kind."
 msgstr ""
 
 #. module: bf_kitchen
@@ -1198,6 +2274,12 @@ msgstr ""
 
 #. module: bf_kitchen
 #. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid "The warehouse of a count that has started cannot change."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
 #: code:addons/bf_kitchen/models/mrp_bom.py:0
 #: code:addons/bf_kitchen/models/product.py:0
 msgid "The yield must be above 0 and at most 100%."
@@ -1210,11 +2292,34 @@ msgid "This line already has a product: its cost is read from it."
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/wizard/prepared.py:0
+msgid "This preparation belongs to a company you do not work for."
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+msgid ""
+"This preparation will be made ahead and kept in stock: the dishes take it "
+"from the stock, and recording a batch takes its ingredients out. Continue?"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_product_supplierinfo__bf_pack_qty
 msgid ""
 "This vendor's format, in the product's stock unit: 12000 for a case of 12 x "
 "1 L when the stock unit is the ml. Used for the kitchen cost of its bill "
 "lines in the billed unit only."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_count_step__state__to_count
+msgid "To count"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_count__state__draft
+msgid "To start"
 msgstr ""
 
 #. module: bf_kitchen
@@ -1235,11 +2340,22 @@ msgstr ""
 #. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
 msgid "Total"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__product_uom_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__product_uom_id
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
 msgid "Unit"
 msgstr ""
@@ -1255,6 +2371,21 @@ msgstr ""
 #. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_product_template__bf_cost_manual
 msgid "Used only until a validated vendor bill gives the cost."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__diff_qty
+msgid "Variance"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__diff_value
+msgid "Variance at kitchen cost"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__diff_value
+msgid "Variance value"
 msgstr ""
 
 #. module: bf_kitchen
@@ -1288,10 +2419,67 @@ msgid "Vendors"
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid ""
+"Walk-in cooler, freezer, dry storage and bar under the stock of each "
+"warehouse of the company. Those already made are kept."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_stock_warehouse
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__warehouse_id
+msgid "Warehouse"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__product_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
+msgid "What"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_mrp_bom_line__bf_net_qty
 msgid ""
 "What goes on the plate. The quantity that leaves the stock is the gross one:"
 " net divided by the yield."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count_line__qty_stock
+msgid "What is left of an opened unit, in the stock unit (g, ml, unit)."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_product_product__bf_kitchen_location_id
+#: model:ir.model.fields,help:bf_kitchen.field_product_template__bf_kitchen_location_id
+msgid ""
+"Where this item is kept. A count lists it there even when its stock is zero."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_stock_location__bf_kitchen_key
+msgid "Which default kitchen location this is, if any."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count_line__qty_purchase
+msgid "Whole purchase units (cases, bags, bottles)."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__reason_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
+msgid "Why"
 msgstr ""
 
 #. module: bf_kitchen
@@ -1317,6 +2505,11 @@ msgid "Yield (%)"
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_loss_view_form
+msgid "e.g. Fridge left open overnight"
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
 msgid "e.g. Salmon tartare"
 msgstr ""
@@ -1327,8 +2520,18 @@ msgid "e.g. Whole salmon"
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
+msgid "items"
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
 msgid "min"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+msgid "of"
 msgstr ""
 
 #. module: bf_kitchen

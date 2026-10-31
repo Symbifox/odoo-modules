@@ -6,3 +6,7 @@ from . import product
 from . import mrp_bom
 from . import stock_move
 from . import account_move
+from . import stock_location
+from . import stock_scrap
+from . import kitchen_count
+from . import mrp_bom_stock

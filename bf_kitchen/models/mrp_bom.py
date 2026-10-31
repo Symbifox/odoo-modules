@@ -125,7 +125,9 @@ class MrpBom(models.Model):
     def _bf_company(self):
         return self.company_id or self.env.company
 
-    @api.constrains("product_qty", "product_uom_id")
+    # The type too: a preparation held in stock (normal) is no longer exploded at the sale, so a dish
+    # takes it in its own stock unit, where a few grams of a stock kept in kg round to 0.
+    @api.constrains("product_qty", "product_uom_id", "type")
     def _check_bf_portion_qty(self):
         """The quantity per portion of each line depends on the number of portions too: going
         from 1 to 1000 portions must not slip 3 g of salt under the stock unit's rounding."""

@@ -11,6 +11,16 @@
                 <header>
                     <button name="action_bf_apply_suggested_price" type="object" string="Apply the suggested price"
                             groups="bf_kitchen.group_kitchen_manager" invisible="bf_kitchen_type != 'dish'"/>
+                    <button name="action_bf_prepared" type="object" string="I prepared" class="btn-primary"
+                            groups="bf_kitchen.group_kitchen_cook"
+                            invisible="bf_kitchen_type != 'preparation' or not bf_kitchen_stocked or not id"/>
+                    <button name="action_bf_hold_in_stock" type="object" string="Hold in stock"
+                            groups="bf_kitchen.group_kitchen_manager"
+                            invisible="bf_kitchen_type != 'preparation' or bf_kitchen_stocked or not id"
+                            confirm="This preparation will be made ahead and kept in stock: the dishes take it from the stock, and recording a batch takes its ingredients out. Continue?"/>
+                    <button name="action_bf_make_on_the_fly" type="object" string="Make it on the fly"
+                            groups="bf_kitchen.group_kitchen_manager"
+                            invisible="bf_kitchen_type != 'preparation' or not bf_kitchen_stocked"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -29,6 +39,7 @@
                                 <field name="product_uom_id" groups="uom.group_uom" options="{'no_open': True, 'no_create': True}"/>
                             </div>
                             <field name="bf_kitchen_type" readonly="1"/>
+                            <field name="bf_kitchen_stocked" invisible="bf_kitchen_type != 'preparation'"/>
                             <field name="bf_prep_minutes"/>
                             <field name="type" invisible="1"/>
                             <field name="product_id" invisible="1"/>

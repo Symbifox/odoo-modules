@@ -1,6 +1,6 @@
 {
     "name": "Symbifox: kitchen",
-    "version": "18.0.1.0.3",
+    "version": "18.0.1.1.0",
     "category": "Inventory/Inventory",
     "summary": "Recipes and plate cost for restaurants, caterers and kitchens: yield, sub-recipes, "
                "ingredient cost from the last vendor bill, food cost ratio, suggested price, allergens",
@@ -8,7 +8,7 @@
 Kitchen
 =======
 
-Recipes and plate cost.
+Recipes and plate cost, kitchen counts and losses.
 
 - recipes on Odoo kits (bills of materials of type kit): the dish sold is exploded into its
   ingredients when it leaves the stock, at the register or at delivery;
@@ -26,7 +26,12 @@ Recipes and plate cost.
 - a "Received" button on a draft vendor bill that brings the ingredients into stock on the
   day they arrive, once per line;
 - allergens declared on the ingredient, carried up to the dishes;
-- printed technical sheet (with or without costs) and allergen sheet of the menu.
+- printed technical sheet (with or without costs) and allergen sheet of the menu;
+- kitchen storage locations, and counts that walk through them, each location applied as it is
+  entered, with the variance at kitchen cost and a reminder to the kitchen manager;
+- losses declared in a few taps (what, how much, why), a dish lost exploded into its
+  ingredients, valued at kitchen cost;
+- preparations made ahead and held in stock, recorded with "I prepared".
 
 The stock valuation stays Odoo's: the module never writes the product cost.
 """,
@@ -43,10 +48,12 @@ The stock valuation stays Odoo's: the module never writes the product cost.
         "views/account_move_views.xml",
         "views/res_config_settings_views.xml",
         "wizard/attach_line_views.xml",
+        "views/kitchen_stock_views.xml",
         "report/kitchen_reports.xml",
         "report/kitchen_templates.xml",
         "views/kitchen_menus.xml",
     ],
+    "post_init_hook": "post_init_hook",
     "installable": True,
     "application": True,
 }

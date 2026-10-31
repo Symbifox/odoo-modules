@@ -5,7 +5,7 @@
         <field name="sequence">40</field>
     </record>
 
-    <!-- The cook reads recipes without their costs, and will declare losses and counts (a later release):
+    <!-- The cook reads recipes without their costs, and declares losses and counts:
          stock.group_stock_user gives the scrap and quant rights; its Inventory menu stays visible. -->
     <record id="group_kitchen_cook" model="res.groups">
         <field name="name">Cook</field>
@@ -24,5 +24,22 @@
         <field name="category_id" ref="module_category_kitchen"/>
         <field name="implied_ids" eval="[(4, ref('group_kitchen_cook'))]"/>
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- Counts of the companies one works for. -->
+    <record id="rule_bf_kitchen_count_company" model="ir.rule">
+        <field name="name">Kitchen count: own companies</field>
+        <field name="model_id" ref="model_bf_kitchen_count"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_kitchen_count_step_company" model="ir.rule">
+        <field name="name">Kitchen count location: own companies</field>
+        <field name="model_id" ref="model_bf_kitchen_count_step"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_kitchen_count_line_company" model="ir.rule">
+        <field name="name">Kitchen count item: own companies</field>
+        <field name="model_id" ref="model_bf_kitchen_count_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 </odoo>

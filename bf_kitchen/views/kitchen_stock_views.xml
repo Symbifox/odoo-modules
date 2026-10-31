@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- What a cook picks on the phone: the item, its kind and its stock unit, no price. -->
+    <record id="bf_kitchen_product_pick_kanban" model="ir.ui.view">
+        <field name="name">product.product.kanban.bf_kitchen.pick</field>
+        <field name="model">product.product</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <templates>
+                    <t t-name="card">
+                        <field name="display_name" class="fw-bold"/>
+                        <div class="text-muted">
+                            <field name="bf_kitchen_type"/> · <field name="uom_id"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ── counts ──────────────────────────────────────────────────────────────────── -->
+    <record id="bf_kitchen_count_view_list" model="ir.ui.view">
+        <field name="name">bf.kitchen.count.list</field>
+        <field name="model">bf.kitchen.count</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"/>
+                <field name="step_done_count" string="Locations done"/>
+                <field name="step_count" string="Locations"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="diff_value" groups="bf_kitchen.group_kitchen_manager" sum="Total"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" widget="badge" decoration-info="state == 'in_progress'" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_count_view_form" model="ir.ui.view">
+        <field name="name">bf.kitchen.count.form</field>
+        <field name="model">bf.kitchen.count</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" type="object" string="Start the count" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_finish" type="object" string="Finish the count" class="btn-primary"
+                            invisible="state != 'in_progress'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not warning_html">
+                        <field name="warning_html" nolabel="1"/>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <!-- On a phone, Odoo folds the header buttons into a menu: the next step stays in sight. -->
+                    <div class="d-md-none mb-3">
+                        <button name="action_start" type="object" string="Start the count" class="btn-primary w-100"
+                                invisible="state != 'draft'"/>
+                        <button name="action_finish" type="object" string="Finish the count" class="btn-primary w-100"
+                                invisible="state != 'in_progress'"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="warehouse_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="user_id" readonly="state == 'done'"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="date_done" invisible="state != 'done'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="diff_value" groups="bf_kitchen.group_kitchen_manager" invisible="state == 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <p class="text-muted" invisible="state != 'draft'">
+                        Count one location at a time, and apply it as soon as it is entered: the sales made
+                        after a location is applied are not put back in stock. The stock location of the
+                        warehouse comes last: count there only what is not put away, and enter 0 for the rest.
+                    </p>
+                    <field name="step_ids" invisible="state == 'draft'" mode="list,kanban">
+                        <kanban create="0" delete="0" class="o_kanban_mobile">
+                            <templates>
+                                <t t-name="card">
+                                    <div class="d-flex justify-content-between">
+                                        <field name="location_id" class="fw-bold"/>
+                                        <field name="state" widget="label_selection"
+                                               options="{'classes': {'to_count': 'info', 'applied': 'success', 'skipped': 'default'}}"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted"><field name="line_count"/> items</span>
+                                        <button name="action_open" type="object" string="Count" class="btn btn-sm btn-primary"
+                                                invisible="state != 'to_count'"/>
+                                        <button name="action_open" type="object" string="See" class="btn btn-sm btn-secondary"
+                                                invisible="state == 'to_count'"/>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                        <list create="0" delete="0" decoration-muted="state != 'to_count'">
+                            <field name="sequence" column_invisible="True"/>
+                            <field name="location_id"/>
+                            <field name="line_count" string="Items"/>
+                            <field name="state" widget="badge" decoration-info="state == 'to_count'"
+                                   decoration-success="state == 'applied'"/>
+                            <field name="applied_date"/>
+                            <button name="action_open" type="object" string="Count" icon="fa-pencil"
+                                    invisible="state != 'to_count'"/>
+                            <button name="action_open" type="object" string="See" icon="fa-eye"
+                                    invisible="state == 'to_count'"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_count_view_search" model="ir.ui.view">
+        <field name="name">bf.kitchen.count.search</field>
+        <field name="model">bf.kitchen.count</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_id"/>
+                <filter name="open" string="Not finished" domain="[('state', '!=', 'done')]"/>
+                <filter name="done" string="Finished" domain="[('state', '=', 'done')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_count_view_kanban" model="ir.ui.view">
+        <field name="name">bf.kitchen.count.kanban</field>
+        <field name="model">bf.kitchen.count</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <field name="name" class="fw-bold"/>
+                            <field name="state" widget="label_selection"
+                                   options="{'classes': {'draft': 'default', 'in_progress': 'info', 'done': 'success'}}"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="date"/>
+                            <span invisible="state == 'draft'"> · <field name="step_done_count"/> / <field name="step_count"/></span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_count_action" model="ir.actions.act_window">
+        <field name="name">Counts</field>
+        <field name="res_model">bf.kitchen.count</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="mobile_view_mode">kanban</field>
+        <field name="search_view_id" ref="bf_kitchen_count_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Count the kitchen</p>
+            <p>A count walks through every storage location of the warehouse. Each location is applied
+               when it is entered, and its variance is kept.</p>
+        </field>
+    </record>
+
+    <!-- One location of a count: the screen a cook fills in on the phone. -->
+    <record id="bf_kitchen_count_step_view_form" model="ir.ui.view">
+        <field name="name">bf.kitchen.count.step.form</field>
+        <field name="model">bf.kitchen.count.step</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0">
+                <header>
+                    <button name="action_apply" type="object" string="Apply this location" class="btn-primary"
+                            invisible="state != 'to_count'"
+                            confirm="The stock of this location becomes what you counted, now. Continue?"/>
+                    <button name="action_skip" type="object" string="Skip" invisible="state != 'to_count' or is_stock_root"/>
+                    <button name="action_back" type="object" string="Back to the count"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="location_id" readonly="1" options="{'no_open': True}"/></h1>
+                    </div>
+                    <div class="d-md-none mb-3 d-flex gap-2">
+                        <button name="action_apply" type="object" string="Apply this location" class="btn-primary flex-grow-1"
+                                invisible="state != 'to_count'"
+                                confirm="The stock of this location becomes what you counted, now. Continue?"/>
+                        <button name="action_back" type="object" string="Back to the count" class="btn-secondary"/>
+                    </div>
+                    <field name="count_id" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="is_stock_root" invisible="1"/>
+                    <p class="text-muted" invisible="not is_stock_root">
+                        Count here only what is not put away in a location, and enter 0 for the items
+                        listed that are stored elsewhere: sales, receipts, losses and preparations move the
+                        stock here, and a negative balance is what left from here while it is stored elsewhere.
+                    </p>
+                    <p class="text-muted" invisible="is_stock_root">
+                        Enter whole purchase units (cases, bags) and what is left of an opened one in the
+                        stock unit. Enter 0 for an item that is not there. An item not entered keeps its stock.
+                    </p>
+                    <field name="line_ids" readonly="state != 'to_count'" mode="list,kanban">
+                        <kanban class="o_kanban_mobile">
+                            <templates>
+                                <t t-name="card">
+                                    <field name="product_id" class="fw-bold"/>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>Expected <field name="expected_qty"/> <field name="uom_id"/></span>
+                                        <span invisible="not is_counted" class="fw-bold">Counted <field name="counted_qty"/></span>
+                                        <button name="action_zero" type="object" string="None here" class="btn btn-sm btn-secondary"
+                                                invisible="is_counted or parent.state != 'to_count'"/>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                        <form>
+                            <group>
+                                <field name="product_id" options="{'no_create': True}" readonly="id"
+                                       context="{'kanban_view_ref': 'bf_kitchen.bf_kitchen_product_pick_kanban'}"/>
+                                <field name="expected_qty"/>
+                                <label for="qty_purchase" invisible="not purchase_uom_id"/>
+                                <div class="o_row" invisible="not purchase_uom_id">
+                                    <field name="qty_purchase"/>
+                                    <field name="purchase_uom_id" options="{'no_open': True}"/>
+                                </div>
+                                <label for="qty_stock"/>
+                                <div class="o_row">
+                                    <field name="qty_stock"/>
+                                    <field name="uom_id" options="{'no_open': True}"/>
+                                </div>
+                                <field name="counted_qty"/>
+                                <field name="is_counted" widget="boolean_toggle"/>
+                            </group>
+                        </form>
+                        <list editable="bottom" decoration-muted="not is_counted" decoration-danger="expected_qty &lt; 0">
+                            <field name="product_id" options="{'no_create': True}"/>
+                            <field name="expected_qty" string="Expected"/>
+                            <field name="qty_purchase" string="Purchase units"/>
+                            <field name="purchase_uom_id" string="of" options="{'no_open': True}"/>
+                            <field name="qty_stock" string="Plus"/>
+                            <field name="uom_id" string="Unit" options="{'no_open': True}"/>
+                            <field name="counted_qty" string="Counted"/>
+                            <field name="is_counted" column_invisible="True"/>
+                            <field name="diff_qty" column_invisible="parent.state != 'applied'"/>
+                            <field name="currency_id" column_invisible="True"/>
+                            <field name="diff_value" groups="bf_kitchen.group_kitchen_manager"
+                                   column_invisible="parent.state != 'applied'"/>
+                            <button name="action_zero" type="object" string="None here" icon="fa-ban"
+                                    invisible="is_counted or parent.state != 'to_count'"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── losses ──────────────────────────────────────────────────────────────────── -->
+    <record id="bf_kitchen_loss_view_form" model="ir.ui.view">
+        <field name="name">bf.kitchen.loss.form</field>
+        <field name="model">bf.kitchen.loss</field>
+        <field name="arch" type="xml">
+            <form string="Declare a loss">
+                <group>
+                    <field name="product_id" options="{'no_create': True}"
+                           context="{'kanban_view_ref': 'bf_kitchen.bf_kitchen_product_pick_kanban'}"/>
+                    <label for="quantity"/>
+                    <div class="o_row">
+                        <field name="quantity"/>
+                        <field name="product_uom_id" options="{'no_create': True, 'no_open': True}"/>
+                    </div>
+                    <field name="reason_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="location_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations"/>
+                    <field name="note" placeholder="e.g. Fridge left open overnight"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="uom_category_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_declare" type="object" string="Record the loss" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_loss_action" model="ir.actions.act_window">
+        <field name="name">Declare a loss</field>
+        <field name="res_model">bf.kitchen.loss</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="bf_kitchen_scrap_view_list" model="ir.ui.view">
+        <field name="name">stock.scrap.list.bf_kitchen</field>
+        <field name="model">stock.scrap</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="date_done" string="Date"/>
+                <field name="product_id" string="What"/>
+                <field name="scrap_qty" string="Quantity"/>
+                <field name="product_uom_id" string="Unit"/>
+                <field name="scrap_reason_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" string="Why"/>
+                <field name="origin" string="Note" optional="show"/>
+                <field name="create_uid" string="Declared by" widget="many2one_avatar_user" optional="show"/>
+                <field name="bf_kitchen_currency_id" column_invisible="True"/>
+                <field name="bf_kitchen_cost" groups="bf_kitchen.group_kitchen_manager" sum="Total"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_scrap_view_pivot" model="ir.ui.view">
+        <field name="name">stock.scrap.pivot.bf_kitchen</field>
+        <field name="model">stock.scrap</field>
+        <field name="arch" type="xml">
+            <pivot string="Losses" sample="1">
+                <field name="scrap_reason_tag_ids" type="row"/>
+                <field name="date_done" interval="month" type="col"/>
+                <field name="bf_kitchen_cost" type="measure" groups="bf_kitchen.group_kitchen_manager"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_losses_action" model="ir.actions.act_window">
+        <field name="name">Losses</field>
+        <field name="res_model">stock.scrap</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="domain">[('bf_is_kitchen', '=', True), ('state', '=', 'done')]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('bf_kitchen_scrap_view_list')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('bf_kitchen_scrap_view_pivot')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No loss yet</p>
+            <p>Declare a loss from the menu: what, how much, why. It leaves the stock at once.</p>
+        </field>
+    </record>
+
+    <!-- ── preparations held in stock ──────────────────────────────────────────────── -->
+    <record id="bf_kitchen_prepared_view_form" model="ir.ui.view">
+        <field name="name">bf.kitchen.prepared.form</field>
+        <field name="model">bf.kitchen.prepared</field>
+        <field name="arch" type="xml">
+            <form string="I prepared">
+                <group>
+                    <field name="bom_id" options="{'no_create': True}"/>
+                    <label for="quantity"/>
+                    <div class="o_row">
+                        <field name="quantity"/>
+                        <field name="product_uom_id" options="{'no_create': True, 'no_open': True}"/>
+                    </div>
+                    <field name="company_id" invisible="1"/>
+                    <field name="uom_category_id" invisible="1"/>
+                </group>
+                <p class="text-muted">The ingredients leave the stock and the preparation enters it.</p>
+                <footer>
+                    <button name="action_done" type="object" string="Record" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_prepared_action" model="ir.actions.act_window">
+        <field name="name">I prepared</field>
+        <field name="res_model">bf.kitchen.prepared</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ── kitchen locations ───────────────────────────────────────────────────────── -->
+    <record id="bf_kitchen_location_view_list" model="ir.ui.view">
+        <field name="name">stock.location.list.bf_kitchen</field>
+        <field name="model">stock.location</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="bf_kitchen_count_sequence, complete_name">
+                <field name="bf_kitchen_count_sequence" widget="handle"/>
+                <field name="complete_name" string="Location"/>
+                <field name="name"/>
+                <field name="location_id" string="Inside" options="{'no_create': True}"
+                       domain="[('usage', '=', 'internal')]"/>
+                <field name="usage" column_invisible="True"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_location_action" model="ir.actions.act_window">
+        <field name="name">Kitchen locations</field>
+        <field name="res_model">stock.location</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('usage', '=', 'internal'), ('warehouse_id', '!=', False)]</field>
+        <field name="context">{'default_usage': 'internal'}</field>
+        <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('bf_kitchen_location_view_list')})]"/>
+    </record>
+</odoo>

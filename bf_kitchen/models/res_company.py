@@ -30,3 +30,8 @@ class ResCompany(models.Model):
         "Receive from the vendor bill", default=True,
         help="Show the Received button on draft vendor bills that are not linked to a purchase "
              "order, so ingredients enter the stock on the day they arrive.")
+    bf_kitchen_count_frequency = fields.Selection(
+        [("weekly", "Every week"), ("biweekly", "Every two weeks"), ("monthly", "Every month")],
+        "Kitchen count reminder",
+        help="Prepares a count once the last finished count is older than this, with an activity for "
+             "the kitchen manager when one is set. Empty: no reminder.")

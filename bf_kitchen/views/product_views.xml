@@ -93,6 +93,8 @@
                             <field name="list_price" string="Selling price" invisible="bf_kitchen_type != 'dish'"
                                    groups="bf_kitchen.group_kitchen_manager"/>
                             <field name="bf_kitchen_bom_id" invisible="bf_kitchen_type == 'ingredient'"/>
+                            <field name="bf_kitchen_location_id" invisible="bf_kitchen_type == 'dish'"
+                                   options="{'no_create': True}"/>
                         </group>
                         <group groups="bf_kitchen.group_kitchen_manager">
                             <field name="currency_id" invisible="1"/>

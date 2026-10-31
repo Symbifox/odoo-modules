@@ -28,6 +28,14 @@
                             <field name="bf_kitchen_receive_without_po"/>
                         </setting>
                     </block>
+                    <block title="Stock" name="bf_kitchen_stock">
+                        <setting string="Count reminder" help="Prepares a count once the last finished count is older than this, with an activity for the kitchen manager when one is set (Alerts).">
+                            <field name="bf_kitchen_count_frequency"/>
+                        </setting>
+                        <setting string="Kitchen locations" help="Walk-in cooler, freezer, dry storage and bar under the stock of each warehouse of the company. Those already made are kept.">
+                            <button name="action_bf_kitchen_create_locations" type="object" string="Create the kitchen locations" class="btn-link" icon="oi-arrow-right"/>
+                        </setting>
+                    </block>
                 </app>
             </xpath>
         </field>

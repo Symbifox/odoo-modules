@@ -1,9 +1,9 @@
 # Symbifox: kitchen (`bf_kitchen`)
 
 Recipes and plate cost for restaurants, caterers and kitchens, built on Odoo's stock,
-purchase and kits. This first release covers recipes and plate cost. Inventory counts and
-losses, sales from every source with the theoretical/actual variance, supplier orders and
-menu engineering are planned for later releases.
+purchase and kits: recipes and plate cost, then the kitchen stock (counts, losses,
+preparations made ahead). Sales from every source with the theoretical/actual variance,
+supplier orders and menu engineering are planned for later releases.
 
 ## Features
 
@@ -51,6 +51,30 @@ menu engineering are planned for later releases.
 - **Allergens.** Declared on the ingredient (Health Canada's priority list, from
   `bf_food_allergen`), carried up to preparations and dishes, plus "may contain".
 - **Printouts.** Technical sheet with or without costs; allergen sheet of the menu.
+- **Kitchen locations.** Walk-in cooler, freezer, dry storage and bar under the stock of the
+  warehouse, made for the companies that cook (or from the settings), in the order a cook
+  walks through them. Each item can say where it is stored.
+- **Counts.** A count walks through every location of the warehouse, the stock location
+  last: sales, receipts, losses and preparations move the stock there, and it can be
+  negative. Each location is applied as soon as it is entered (a count applied hours later
+  would put back what was sold in between). Whole purchase units plus what is left of an
+  opened one; "None here" counts 0; an item not entered keeps its stock. The variance is
+  kept, valued at kitchen cost. Before counting, the screen warns of transfers not validated
+  and register orders still open. A weekly, biweekly or monthly reminder prepares the next
+  count for the kitchen manager. Items tracked by lot are left to the Inventory app.
+- **Losses.** What, how much, why, in a few taps on a phone: a scrap is recorded and
+  validated at once, even when Odoo's figures say there is not that much (a loss is a fact).
+  A dish lost leaves the stock as its ingredients. Six reasons are shipped (expired, cooking
+  failure, customer return, spilled or dropped, staff meal, tasting). Each loss carries its
+  value at kitchen cost, for the kitchen manager.
+- **Preparations made ahead.** A preparation can be held in stock (a stock, a sauce): the
+  dishes then take it from the stock, and "I prepared" records a batch, its ingredients out
+  and the preparation in, in one tap. At standard cost, Odoo's default, a batch enters at the
+  preparation's inventory cost (0 until someone sets it) while its ingredients leave at their
+  value: put the preparations held in stock in a product category at average cost (AVCO) or
+  FIFO, where a batch enters at the value of its ingredients. Making it on the
+  fly again is refused while some of it is in stock or a batch is in progress, and either
+  switch waits for the deliveries and register orders already under way.
 
 ## Units
 
@@ -64,8 +88,8 @@ A purchase unit such as "bunch (60 g)" can be created in the Weight category.
 
 ## Rights
 
-- **Cook**: reads recipes without their costs. Implies Inventory / User (for the counts and
-  losses of a later release).
+- **Cook**: reads recipes without their costs, counts the stock, declares losses and records
+  the batches of preparations made ahead. Implies Inventory / User.
 - **Kitchen manager**: writes recipes and kitchen products through the module's own access
   rights, without any Manufacturing group. That write is limited to kitchen products and
   recipes; a user who can already write products through another group (stock, purchase,
@@ -82,11 +106,12 @@ A purchase unit such as "bunch (60 g)" can be created in the Weight category.
   vendor prices (`product.supplierinfo.price`). The module hides its own costs from the
   cook, not those native fields.
 
-## What this release does not do
+## What the module does not do yet
 
-The stock valuation stays Odoo's: the module never writes the product cost. Inventory
-counts, losses, sales sources, variance, supplier orders and menu engineering are
-planned for later releases.
+The stock valuation stays Odoo's: the module never writes the product cost. Sales sources,
+the theoretical/actual variance, supplier orders and menu engineering are planned for later
+releases. The kitchen locations list is the Inventory administrator's (writing a location is
+theirs in Odoo).
 
 ## Requirements
 
@@ -109,9 +134,12 @@ allergens. The interface is in English with a French (Canada) translation.
 - 18.0.1.0.3: a preparation's cost per unit made reads per kg or per L (0.84 $ / L, not 0.00 $), and
   the preparation list headings fit. The ingredient and preparation forms show their readable
   cost in one piece (27.50 $ / kg).
+- 18.0.1.1.0: the kitchen stock. Kitchen locations, counts walked location by location and
+  applied as they are entered, losses in a few taps (a dish lost leaves as its ingredients),
+  preparations held in stock with "I prepared", a count reminder.
 
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-10-30 for this one. In the meantime, use in production for
+its Change Date: 2030-10-31 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

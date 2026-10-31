@@ -1,4 +1,5 @@
-from odoo import fields, models
+from odoo import _, fields, models
+from odoo.exceptions import AccessError
 
 
 class ResConfigSettings(models.TransientModel):
@@ -13,3 +14,17 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.bf_kitchen_tax_nonrecoverable_pct", readonly=False)
     bf_kitchen_receive_without_po = fields.Boolean(
         related="company_id.bf_kitchen_receive_without_po", readonly=False)
+    bf_kitchen_count_frequency = fields.Selection(
+        related="company_id.bf_kitchen_count_frequency", readonly=False)
+
+    def action_bf_kitchen_create_locations(self):
+        if not self.env.user.has_group("bf_kitchen.group_kitchen_manager"):
+            raise AccessError(_("Only a kitchen manager can create the kitchen locations."))
+        warehouses = self.env["stock.warehouse"].search([("company_id", "=", self.company_id.id)])
+        created = warehouses._bf_kitchen_create_locations()
+        return {
+            "type": "ir.actions.client", "tag": "display_notification",
+            "params": {"type": "success", "sticky": False,
+                       "message": _("%s kitchen location(s) created.", len(created)) if created
+                       else _("Every warehouse already has its kitchen locations.")},
+        }
