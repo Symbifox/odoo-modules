@@ -1,0 +1,127 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_appointment_google_meet
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-31 04:45+0000\n"
+"PO-Revision-Date: 2026-10-31 03:30+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_appointment_google_meet
+#: model:ir.model.fields,field_description:bf_appointment_google_meet.field_resource_booking_type__video_provider
+msgid "Fournisseur de vidéoconférence"
+msgstr "Fournisseur de vidéoconférence"
+
+#. module: bf_appointment_google_meet
+#: model:ir.model.fields.selection,name:bf_appointment_google_meet.selection__resource_booking_type__video_provider__google_meet
+msgid "Google Meet"
+msgstr "Google Meet"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid ""
+"Google Meet could not be checked for this appointment (%(reason)s). Its Meet "
+"link is kept."
+msgstr ""
+"Le Google Meet de ce rendez-vous n'a pas pu être vérifié (%(reason)s). Son "
+"lien Meet est gardé."
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid ""
+"Google Meet could not be created for this appointment (%(reason)s). A "
+"Nextcloud Talk room is used instead."
+msgstr ""
+"Le Google Meet de ce rendez-vous n'a pas pu être créé (%(reason)s). Une "
+"salle Nextcloud Talk le remplace."
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid "Google could not be reached (%(err)s)"
+msgstr "Google est injoignable (%(err)s)"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid "Google did not return a Meet link in time"
+msgstr "Google n'a pas rendu de lien Meet à temps"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid ""
+"Google refused the host's connection: the host must reconnect their Google "
+"account in Preferences"
+msgstr ""
+"Google a refusé la connexion de l'hôte : l'hôte doit rebrancher son compte "
+"Google dans ses Préférences"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid "Google refused the request (HTTP %(code)s)"
+msgstr "Google a refusé la demande (HTTP %(code)s)"
+
+#. module: bf_appointment_google_meet
+#: model:ir.model,name:bf_appointment_google_meet.model_resource_booking
+msgid "Resource Booking"
+msgstr "Réservation de ressources"
+
+#. module: bf_appointment_google_meet
+#: model:ir.model,name:bf_appointment_google_meet.model_resource_booking_type
+msgid "Resource Booking Type"
+msgstr "Type de réservation de ressource"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid "the appointment has no calendar event"
+msgstr "le rendez-vous n'a pas d'événement d'agenda"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid "the event has not reached Google Calendar yet"
+msgstr "l'événement n'est pas encore arrivé dans l'agenda Google"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid "the event is not on the host's own Google Calendar"
+msgstr "l'événement n'est pas dans l'agenda Google de l'hôte"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid "the event is not synced to a Google Calendar"
+msgstr "l'événement n'est synchronisé avec aucun agenda Google"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid "the event was deleted from Google Calendar"
+msgstr "l'événement a été supprimé de l'agenda Google"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid "the host's Google Calendar is synced one way only"
+msgstr "l'agenda Google de l'hôte n'est synchronisé que dans un sens"
+
+#. module: bf_appointment_google_meet
+#. odoo-python
+#: code:addons/bf_appointment_google_meet/models/resource_booking.py:0
+msgid "the host's Google account could not be used (%(err)s)"
+msgstr "le compte Google de l'hôte n'a pas pu être utilisé (%(err)s)"
