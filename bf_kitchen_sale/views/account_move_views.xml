@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_kitchen_sale_move_form" model="ir.ui.view">
+        <field name="name">account.move.form.bf_kitchen_sale</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_bf_kitchen_view_consumptions" type="object" class="oe_stat_button"
+                        icon="fa-cutlery" invisible="not bf_kitchen_consumption_count"
+                        groups="stock.group_stock_user">
+                    <field name="bf_kitchen_consumption_count" widget="statinfo" string="Kitchen"/>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,89 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_kitchen_sale
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-31 11:21+0000\n"
+"PO-Revision-Date: 2026-10-31 11:21+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_kitchen_sale
+#: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_bank_statement_line__bf_kitchen_consumption_count
+#: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_move__bf_kitchen_consumption_count
+msgid "Bf Kitchen Consumption Count"
+msgstr ""
+
+#. module: bf_kitchen_sale
+#. odoo-python
+#: code:addons/bf_kitchen_sale/models/account_move.py:0
+msgid "Dishes put back in the kitchen stock: %s."
+msgstr ""
+
+#. module: bf_kitchen_sale
+#. odoo-python
+#: code:addons/bf_kitchen_sale/models/account_move.py:0
+msgid "Dishes taken out of the kitchen stock: %s."
+msgstr ""
+
+#. module: bf_kitchen_sale
+#: model:ir.model.fields,field_description:bf_kitchen_sale.field_stock_picking__bf_kitchen_invoice_id
+msgid "Invoice consumed"
+msgstr ""
+
+#. module: bf_kitchen_sale
+#: model:ir.model,name:bf_kitchen_sale.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: bf_kitchen_sale
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sale.bf_kitchen_sale_move_form
+msgid "Kitchen"
+msgstr ""
+
+#. module: bf_kitchen_sale
+#. odoo-python
+#: code:addons/bf_kitchen_sale/models/account_move.py:0
+#: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_bank_statement_line__bf_kitchen_consumption_ids
+#: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_move__bf_kitchen_consumption_ids
+msgid "Kitchen consumptions"
+msgstr ""
+
+#. module: bf_kitchen_sale
+#: model:ir.model.fields,help:bf_kitchen_sale.field_stock_picking__bf_kitchen_invoice_id
+msgid ""
+"The customer invoice with no sales order whose dishes this consumption took "
+"out."
+msgstr ""
+
+#. module: bf_kitchen_sale
+#. odoo-python
+#: code:addons/bf_kitchen_sale/models/account_move.py:0
+msgid "The dishes of this invoice did not leave the kitchen stock: %s"
+msgstr ""
+
+#. module: bf_kitchen_sale
+#. odoo-python
+#: code:addons/bf_kitchen_sale/models/account_move.py:0
+msgid ""
+"The dishes of this invoice did not leave the kitchen stock: the company %s "
+"has no warehouse."
+msgstr ""
+
+#. module: bf_kitchen_sale
+#. odoo-python
+#: code:addons/bf_kitchen_sale/models/stock_picking.py:0
+msgid "The kitchen source of a transfer is set by the kitchen itself."
+msgstr ""
+
+#. module: bf_kitchen_sale
+#: model:ir.model,name:bf_kitchen_sale.model_stock_picking
+msgid "Transfer"
+msgstr ""

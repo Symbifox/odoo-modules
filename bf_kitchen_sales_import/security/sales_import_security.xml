@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_sales_source_company" model="ir.rule">
+        <field name="name">Kitchen register: own companies</field>
+        <field name="model_id" ref="model_bf_kitchen_sales_source"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_sales_mapping_company" model="ir.rule">
+        <field name="name">Kitchen register item: own companies</field>
+        <field name="model_id" ref="model_bf_kitchen_sales_mapping"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_sales_import_company" model="ir.rule">
+        <field name="name">Kitchen sales import: own companies</field>
+        <field name="model_id" ref="model_bf_kitchen_sales_import"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_sales_import_line_company" model="ir.rule">
+        <field name="name">Kitchen sales import line: own companies</field>
+        <field name="model_id" ref="model_bf_kitchen_sales_import_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

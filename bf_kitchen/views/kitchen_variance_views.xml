@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_kitchen_variance_view_form" model="ir.ui.view">
+        <field name="name">bf.kitchen.variance.form</field>
+        <field name="model">bf.kitchen.variance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_compute" type="object" string="Compute" class="btn-primary"/>
+                    <button name="action_open_analysis" type="object" string="Analyse by item" invisible="not computed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><span>Kitchen variance</span></h1>
+                        <div class="text-muted">
+                            What left the stock between two counts, and what the sales do not explain.
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="computed" invisible="1"/>
+                            <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"/>
+                            <field name="count_from_id" options="{'no_create': True}"/>
+                            <field name="count_to_id" options="{'no_create': True}"/>
+                        </group>
+                        <group invisible="not computed">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="not warning_html">
+                        <field name="warning_html" nolabel="1"/>
+                    </div>
+                    <group invisible="not computed" string="At kitchen cost">
+                        <group>
+                            <field name="purchase_value"/>
+                            <field name="consumption_value"/>
+                            <field name="loss_value"/>
+                        </group>
+                        <group>
+                            <field name="unexplained_value"
+                                   decoration-danger="unexplained_value &lt; 0"/>
+                            <field name="unexplained_pct" decoration-danger="unexplained_pct &lt; 0"/>
+                        </group>
+                    </group>
+                    <notebook invisible="not computed">
+                        <page string="Biggest unexplained variances" name="top">
+                            <field name="top_line_ids" nolabel="1">
+                                <list>
+                                    <field name="product_id"/>
+                                    <field name="kitchen_type"/>
+                                    <field name="qty" decoration-danger="qty &lt; 0"/>
+                                    <field name="uom_id"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="value" decoration-danger="value &lt; 0"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Losses" name="losses">
+                            <field name="loss_line_ids" nolabel="1">
+                                <list>
+                                    <field name="product_id"/>
+                                    <field name="reason"/>
+                                    <field name="qty"/>
+                                    <field name="uom_id"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="value" sum="Total"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_variance_line_view_list" model="ir.ui.view">
+        <field name="name">bf.kitchen.variance.line.list</field>
+        <field name="model">bf.kitchen.variance.line</field>
+        <field name="arch" type="xml">
+            <list default_order="value_abs desc" create="0" edit="0" delete="0">
+                <field name="product_id"/>
+                <field name="kitchen_type" optional="hide"/>
+                <field name="kind"/>
+                <field name="reason" optional="show"/>
+                <field name="source" optional="show"/>
+                <field name="qty"/>
+                <field name="uom_id"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="value" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_variance_line_view_pivot" model="ir.ui.view">
+        <field name="name">bf.kitchen.variance.line.pivot</field>
+        <field name="model">bf.kitchen.variance.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Kitchen variance" disable_linking="1">
+                <field name="product_id" type="row"/>
+                <field name="kind" type="col"/>
+                <field name="value" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_variance_line_view_search" model="ir.ui.view">
+        <field name="name">bf.kitchen.variance.line.search</field>
+        <field name="model">bf.kitchen.variance.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+                <filter name="unexplained" string="Unexplained" domain="[('kind', '=', 'unexplained')]"/>
+                <filter name="losses" string="Losses" domain="[('kind', '=', 'loss')]"/>
+                <filter name="consumption" string="Consumed by sales" domain="[('kind', '=', 'consumption')]"/>
+                <group>
+                    <filter name="group_kind" string="Column" context="{'group_by': 'kind'}"/>
+                    <filter name="group_reason" string="Reason" context="{'group_by': 'reason'}"/>
+                    <filter name="group_source" string="Sold through" context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_variance_action" model="ir.actions.act_window">
+        <field name="name">Kitchen variance</field>
+        <field name="res_model">bf.kitchen.variance</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

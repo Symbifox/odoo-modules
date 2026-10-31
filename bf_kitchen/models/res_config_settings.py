@@ -16,6 +16,7 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.bf_kitchen_receive_without_po", readonly=False)
     bf_kitchen_count_frequency = fields.Selection(
         related="company_id.bf_kitchen_count_frequency", readonly=False)
+    bf_kitchen_warehouse_id = fields.Many2one(related="company_id.bf_kitchen_warehouse_id", readonly=False)
 
     def action_bf_kitchen_create_locations(self):
         if not self.env.user.has_group("bf_kitchen.group_kitchen_manager"):

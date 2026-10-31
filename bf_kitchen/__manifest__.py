@@ -1,9 +1,9 @@
 {
     "name": "Symbifox: kitchen",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.2.0",
     "category": "Inventory/Inventory",
-    "summary": "Recipes and plate cost for restaurants, caterers and kitchens: yield, sub-recipes, "
-               "ingredient cost from the last vendor bill, food cost ratio, suggested price, allergens",
+    "summary": "Kitchen management for restaurants, caterers and kitchens: recipes and plate cost from "
+               "the last vendor bill, kitchen counts and losses, theoretical/actual variance",
     "description": """
 Kitchen
 =======
@@ -31,7 +31,12 @@ Recipes and plate cost, kitchen counts and losses.
   entered, with the variance at kitchen cost and a reminder to the kitchen manager;
 - losses declared in a few taps (what, how much, why), a dish lost exploded into its
   ingredients, valued at kitchen cost;
-- preparations made ahead and held in stock, recorded with "I prepared".
+- preparations made ahead and held in stock, recorded with "I prepared";
+- a Kitchen consumption operation type for what leaves without a delivery (bridges: invoices
+  with no sales order, school meals, sales imported from another register);
+- the variance between two counts: bought, consumed by sales (by source), lost (by reason),
+  used and made in the kitchen, and the unexplained variance, at kitchen cost, with the ten
+  biggest variances and the variance as a share of purchases.
 
 The stock valuation stays Odoo's: the module never writes the product cost.
 """,
@@ -49,6 +54,7 @@ The stock valuation stays Odoo's: the module never writes the product cost.
         "views/res_config_settings_views.xml",
         "wizard/attach_line_views.xml",
         "views/kitchen_stock_views.xml",
+        "views/kitchen_variance_views.xml",
         "report/kitchen_reports.xml",
         "report/kitchen_templates.xml",
         "views/kitchen_menus.xml",

@@ -49,12 +49,15 @@ class StockScrapReasonTag(models.Model):
         Data = self.env["ir.model.data"].sudo()
         Tag = self.sudo().with_context(lang="en_US", active_test=False)
         fr = self.env["res.lang"]._lang_get("fr_CA")
+        fr_active = bool(fr and fr.active)
         for key, name_en, name_fr, sequence in LOSS_REASONS:
             xmlid = f"bf_kitchen.scrap_reason_{key}"
             if self.env.ref(xmlid, raise_if_not_found=False):
                 continue
-            existing = Tag.search([("name", "=", name_en)], limit=1) or \
-                Tag.with_context(lang="fr_CA").search([("name", "=", name_fr)], limit=1)
+            # A search in a language the database does not have fails (Invalid language code): a
+            # database without French would not install the kitchen.
+            existing = Tag.search([("name", "=", name_en)], limit=1) or (
+                fr_active and Tag.with_context(lang="fr_CA").search([("name", "=", name_fr)], limit=1))
             if existing:
                 # The database's own tag: reused as it is, its translation kept, and no xmlid of
                 # ours on it (uninstalling the kitchen would delete it).
@@ -62,7 +65,7 @@ class StockScrapReasonTag(models.Model):
             tag = Tag.create({"name": name_en, "sequence": sequence})
             Data.create({"module": "bf_kitchen", "name": f"scrap_reason_{key}", "model": tag._name,
                          "res_id": tag.id, "noupdate": True})
-            if fr and fr.active:
+            if fr_active:
                 tag.update_field_translations("name", {"fr_CA": name_fr})
 
     @api.model
@@ -75,5 +78,8 @@ class StockScrapReasonTag(models.Model):
         if not names:
             return self.browse()
         Tag = self.sudo().with_context(active_test=False)
-        return self.browse((Tag.with_context(lang="en_US").search([("name", "=", names[0])], limit=1)
-                            or Tag.with_context(lang="fr_CA").search([("name", "=", names[1])], limit=1)).ids)
+        found = Tag.with_context(lang="en_US").search([("name", "=", names[0])], limit=1)
+        fr = self.env["res.lang"]._lang_get("fr_CA")
+        if not found and fr and fr.active:
+            found = Tag.with_context(lang="fr_CA").search([("name", "=", names[1])], limit=1)
+        return self.browse(found.ids)

@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-09 00:22+0000\n"
-"PO-Revision-Date: 2026-10-09 00:22+0000\n"
+"POT-Creation-Date: 2026-10-31 11:20+0000\n"
+"PO-Revision-Date: 2026-10-31 11:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -122,7 +122,6 @@ msgid "Account"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__active
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_item__active
 msgid "Active"
 msgstr ""
@@ -246,7 +245,6 @@ msgid "Contains:"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__create_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__create_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__create_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__create_uid
@@ -258,7 +256,6 @@ msgid "Created by"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__create_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__create_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__create_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__create_date
@@ -277,11 +274,6 @@ msgstr ""
 #. module: bf_school_meal
 #: model:ir.model.fields.selection,name:bf_school_meal.selection__bf_school_meal_order__state__credited
 msgid "Credited (school closed)"
-msgstr ""
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_shellfish
-msgid "Crustaceans and molluscs"
 msgstr ""
 
 #. module: bf_school_meal
@@ -317,7 +309,6 @@ msgid "Discard"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__display_name
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__display_name
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__display_name
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__display_name
@@ -329,27 +320,11 @@ msgid "Display Name"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_egg
-msgid "Eggs"
-msgstr ""
-
-#. module: bf_school_meal
 #: model_terms:ir.ui.view,arch_db:bf_school_meal.bf_school_meal_day_view_form
 msgid "Every order of the day is cancelled and credited. Continue?"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_fish
-msgid "Fish"
-msgstr ""
-
-#. module: bf_school_meal
-#: model:ir.model,name:bf_school_meal.model_bf_school_allergen
-msgid "Food allergen"
-msgstr ""
-
-#. module: bf_school_meal
-#: model:ir.actions.act_window,name:bf_school_meal.bf_school_allergen_action
 #: model:ir.ui.menu,name:bf_school_meal.menu_school_allergens
 msgid "Food allergens"
 msgstr ""
@@ -372,7 +347,6 @@ msgid "Group"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__id
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__id
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__id
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__id
@@ -411,7 +385,6 @@ msgid "Kitchen list"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__write_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__write_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__write_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__write_uid
@@ -423,7 +396,6 @@ msgid "Last Updated by"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__write_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__write_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__write_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__write_date
@@ -526,11 +498,6 @@ msgid "Menus"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_milk
-msgid "Milk"
-msgstr ""
-
-#. module: bf_school_meal
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__mode
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_order__mode
 msgid "Mode"
@@ -551,12 +518,6 @@ msgid "Movements"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_mustard
-msgid "Mustard"
-msgstr ""
-
-#. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__name
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_item__name
 msgid "Name"
 msgstr ""
@@ -649,11 +610,6 @@ msgid "Pays"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_peanut
-msgid "Peanuts"
-msgstr ""
-
-#. module: bf_school_meal
 #: model:ir.model.fields.selection,name:bf_school_meal.selection__bf_school__meal_payment_modes__prepaid
 #: model:ir.model.fields.selection,name:bf_school_meal.selection__bf_school_meal_account__mode__prepaid
 #: model:ir.model.fields.selection,name:bf_school_meal.selection__bf_school_meal_order__mode__prepaid
@@ -697,19 +653,8 @@ msgid "School: official PDF of meal top-up invoices"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__sequence
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_item__sequence
 msgid "Sequence"
-msgstr ""
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_sesame
-msgid "Sesame"
-msgstr ""
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_soy
-msgid "Soy"
 msgstr ""
 
 #. module: bf_school_meal
@@ -721,11 +666,6 @@ msgstr ""
 #. module: bf_school_meal
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_order__student_id
 msgid "Student"
-msgstr ""
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_sulphite
-msgid "Sulphites"
 msgstr ""
 
 #. module: bf_school_meal
@@ -832,19 +772,9 @@ msgid "Top-ups"
 msgstr ""
 
 #. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_tree_nut
-msgid "Tree nuts"
-msgstr ""
-
-#. module: bf_school_meal
 #. odoo-python
 #: code:addons/bf_school_meal/models/account.py:0
 msgid "Use up or have the office refund the prepaid balance before changing."
-msgstr ""
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_wheat
-msgid "Wheat and gluten"
 msgstr ""
 
 #. module: bf_school_meal

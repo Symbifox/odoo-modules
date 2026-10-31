@@ -250,21 +250,6 @@
         <field name="res_model">bf.school.meal.account</field>
         <field name="view_mode">list,form</field>
     </record>
-    <record id="bf_school_allergen_action" model="ir.actions.act_window">
-        <field name="name">Food allergens</field>
-        <field name="res_model">bf.school.allergen</field>
-        <field name="view_mode">list</field>
-    </record>
-    <record id="bf_school_allergen_view_list" model="ir.ui.view">
-        <field name="name">bf.school.allergen.list</field>
-        <field name="model">bf.school.allergen</field>
-        <field name="arch" type="xml">
-            <list editable="bottom">
-                <field name="sequence" widget="handle"/>
-                <field name="name"/>
-            </list>
-        </field>
-    </record>
 
     <menuitem id="menu_school_meal_root" name="Meals" parent="bf_school_core.menu_school_root" sequence="22"/>
     <menuitem id="menu_school_meal_orders" name="Kitchen list" parent="menu_school_meal_root"
@@ -276,5 +261,5 @@
     <menuitem id="menu_school_meal_accounts" name="Meal accounts" parent="menu_school_meal_root"
               action="bf_school_meal_account_action" sequence="30" groups="bf_school_core.group_school_manager"/>
     <menuitem id="menu_school_allergens" name="Food allergens" parent="bf_school_core.menu_school_config"
-              action="bf_school_allergen_action" sequence="40"/>
+              action="bf_food_allergen.bf_food_allergen_action" sequence="40"/>
 </odoo>

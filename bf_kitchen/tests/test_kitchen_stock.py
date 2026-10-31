@@ -50,6 +50,7 @@ class TestKitchenStock(TestKitchen):
 
     def test_s2_loss_reasons_reused(self):
         """The loss reasons reuse a tag of the same name instead of failing on its unique name."""
+        self.env["res.lang"]._activate_lang("fr_CA")
         Tag = self.env["stock.scrap.reason.tag"]
         for key in ("expired", "cooking", "customer_return", "spilled", "staff_meal", "tasting"):
             self.assertTrue(self.env.ref(f"bf_kitchen.scrap_reason_{key}", raise_if_not_found=False), key)
@@ -544,6 +545,7 @@ class TestKitchenStock(TestKitchen):
 
     def test_r2_french_named_reason_found(self):
         """A loss reason the database already has under its French name only is the one used."""
+        self.env["res.lang"]._activate_lang("fr_CA")
         Tag = self.env["stock.scrap.reason.tag"]
         self.env.ref("bf_kitchen.scrap_reason_expired").unlink()
         theirs = Tag.with_context(lang="fr_CA").create({"name": "Périmé"})

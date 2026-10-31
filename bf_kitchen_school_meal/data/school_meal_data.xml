@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_kitchen_school_meals" model="ir.cron">
+        <field name="name">Kitchen: school meals served leave the stock</field>
+        <field name="model_id" ref="bf_school_meal.model_bf_school_meal_order"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_bf_kitchen_consume_meals()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

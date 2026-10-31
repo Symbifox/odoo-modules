@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_bf_kitchen_sales_import" model="ir.sequence">
+        <field name="name">Kitchen sales import</field>
+        <field name="code">bf.kitchen.sales.import</field>
+        <field name="prefix">SALES/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

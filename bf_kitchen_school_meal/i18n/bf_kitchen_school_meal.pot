@@ -1,0 +1,126 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_kitchen_school_meal
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-31 11:23+0000\n"
+"PO-Revision-Date: 2026-10-31 11:23+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_kitchen_school_meal
+#. odoo-python
+#: code:addons/bf_kitchen_school_meal/models/school_meal.py:0
+msgid "A meal points to a dish of the kitchen."
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_allergen_ids
+msgid "Allergens of the dish"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,help:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_allergen_ids
+msgid ""
+"Carried up from the recipe's ingredients; they count with the meal's own "
+"allergens."
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_food_cost_pct
+msgid "Food cost (%)"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_order__bf_kitchen_picking_id
+msgid "Kitchen consumption"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_dish_id
+msgid "Kitchen dish"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_stock_picking__bf_kitchen_source
+msgid "Kitchen source"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model,name:bf_kitchen_school_meal.model_bf_kitchen_variance
+msgid "Kitchen variance between two counts"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.actions.server,name:bf_kitchen_school_meal.ir_cron_kitchen_school_meals_ir_actions_server
+msgid "Kitchen: school meals served leave the stock"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#. odoo-python
+#: code:addons/bf_kitchen_school_meal/models/school_meal.py:0
+msgid "Meal cancelled after the cut-off"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model,name:bf_kitchen_school_meal.model_bf_school_meal_item
+msgid "Meal on the menu"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model,name:bf_kitchen_school_meal.model_bf_school_meal_order
+msgid "Meal ordered"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_cost
+msgid "Plate cost"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields.selection,name:bf_kitchen_school_meal.selection__stock_picking__bf_kitchen_source__school_meal
+msgid "School meals"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#. odoo-python
+#: code:addons/bf_kitchen_school_meal/models/school_meal.py:0
+msgid "The dish of a meal belongs to the school's company."
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,help:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_dish_id
+msgid ""
+"The dish of the kitchen this meal is: its recipe gives the cost and the "
+"allergens, and the meals served take its ingredients out of the stock."
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#. odoo-python
+#: code:addons/bf_kitchen_school_meal/models/school_meal.py:0
+msgid "The kitchen consumption of a meal is set by the kitchen itself."
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,help:bf_kitchen_school_meal.field_bf_school_meal_order__bf_kitchen_picking_id
+msgid ""
+"The transfer that took this meal's ingredients out of the stock, at the "
+"cancellation hour."
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model,name:bf_kitchen_school_meal.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,help:bf_kitchen_school_meal.field_stock_picking__bf_kitchen_source
+msgid "Where a kitchen consumption comes from."
+msgstr ""

@@ -30,8 +30,20 @@ class ResCompany(models.Model):
         "Receive from the vendor bill", default=True,
         help="Show the Received button on draft vendor bills that are not linked to a purchase "
              "order, so ingredients enter the stock on the day they arrive.")
+    bf_kitchen_warehouse_id = fields.Many2one(
+        "stock.warehouse", "Kitchen warehouse", check_company=True,
+        help="The warehouse the kitchen's sales leave from when nothing else says it (an invoice with "
+             "no sales order, the school meals) and where the Received button brings the ingredients. "
+             "Empty: the company's first warehouse.")
     bf_kitchen_count_frequency = fields.Selection(
         [("weekly", "Every week"), ("biweekly", "Every two weeks"), ("monthly", "Every month")],
         "Kitchen count reminder",
         help="Prepares a count once the last finished count is older than this, with an activity for "
              "the kitchen manager when one is set. Empty: no reminder.")
+
+    def _bf_kitchen_warehouse(self):
+        """The kitchen's warehouse of this company: the one set, else its first."""
+        self.ensure_one()
+        company = self.sudo()
+        return company.bf_kitchen_warehouse_id or self.env["stock.warehouse"].sudo().search(
+            [("company_id", "=", company.id)], limit=1)

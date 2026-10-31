@@ -72,11 +72,12 @@
                         <div class="d-flex flex-wrap gap-2 mt-1">
                             <t t-foreach="day.item_ids" t-as="item">
                                 <t t-set="order" t-value="orders.filtered(lambda o: o.day_id == day and o.student_id == child and o.item_id == item)"/>
-                                <t t-set="conflict" t-value="item.allergen_ids &amp; child.meal_allergen_ids"/>
+                                <t t-set="contains" t-value="item._school_allergens()"/>
+                                <t t-set="conflict" t-value="contains &amp; child.meal_allergen_ids"/>
                                 <div t-attf-class="border rounded p-2 small #{'border-success' if order else ''}">
                                     <strong t-out="item.name"/>
                                     · <span t-out="item.price" t-options="{'widget': 'monetary', 'display_currency': item.currency_id}"/>
-                                    <div t-if="item.allergen_ids" class="text-muted">Contains: <t t-out="', '.join(item.allergen_ids.mapped('name'))"/></div>
+                                    <div t-if="contains" class="text-muted">Contains: <t t-out="', '.join(contains.mapped('name'))"/></div>
                                     <div t-if="order" class="mt-1">
                                         <span class="text-success"><i class="fa fa-check"/> Ordered</span>
                                         <form t-if="cancellable" method="post" class="d-inline"

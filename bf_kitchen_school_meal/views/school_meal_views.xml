@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_kitchen_school_meal_item_view_list" model="ir.ui.view">
+        <field name="name">bf.school.meal.item.list.bf_kitchen</field>
+        <field name="model">bf.school.meal.item</field>
+        <field name="inherit_id" ref="bf_school_meal.bf_school_meal_item_view_list"/>
+        <field name="arch" type="xml">
+            <field name="price" position="after">
+                <field name="company_id" column_invisible="1"/>
+                <field name="bf_kitchen_dish_id" options="{'no_create': True}" optional="show"/>
+                <field name="bf_kitchen_cost" groups="bf_kitchen.group_kitchen_manager" optional="show"/>
+                <field name="bf_kitchen_food_cost_pct" groups="bf_kitchen.group_kitchen_manager" optional="show"/>
+            </field>
+            <field name="allergen_ids" position="after">
+                <field name="bf_kitchen_allergen_ids" widget="many2many_tags" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_school_meal_day_view_form" model="ir.ui.view">
+        <field name="name">bf.school.meal.day.form.bf_kitchen</field>
+        <field name="model">bf.school.meal.day</field>
+        <field name="inherit_id" ref="bf_school_meal.bf_school_meal_day_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[hasclass('alert')]" position="after">
+                <div class="alert alert-danger" role="alert" invisible="not bf_kitchen_issue">
+                    The meals of this day have not left the kitchen stock: <field name="bf_kitchen_issue" class="d-inline"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

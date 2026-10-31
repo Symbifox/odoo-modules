@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : repas",
-    "version": "18.0.1.0.5",
+    "version": "18.0.1.1.0",
     "category": "Education/School",
     "summary": "Caterer menus, meal orders on the family portal, prepaid balance or monthly invoice, "
                "food allergies checked at the order and on the kitchen list",
@@ -29,7 +29,7 @@ tax. The school's accountant confirms before going live.
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "Other proprietary",  # Business Source License 1.1, see LICENSE
-    "depends": ["bf_school_portal", "account_payment"],
+    "depends": ["bf_school_portal", "account_payment", "bf_food_allergen"],
     "data": [
         "security/ir.model.access.csv",
         "data/meal_data.xml",

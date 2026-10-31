@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- On sale at the register, set from the recipe of a dish by the kitchen manager. -->
+    <record id="bf_kitchen_pos_bom_view_form" model="ir.ui.view">
+        <field name="name">mrp.bom.form.bf_kitchen_pos</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="bf_kitchen.bf_kitchen_bom_view_form"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="bf_available_in_pos" invisible="bf_kitchen_type != 'dish'"
+                       groups="bf_kitchen.group_kitchen_manager"/>
+                <field name="bf_pos_categ_ids" widget="many2many_tags"
+                       invisible="bf_kitchen_type != 'dish' or not bf_available_in_pos"
+                       groups="bf_kitchen.group_kitchen_manager" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+</odoo>

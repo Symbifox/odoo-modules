@@ -28,6 +28,11 @@
     <menuitem id="menu_kitchen_costs_to_check" name="Costs to check" parent="menu_kitchen_bills" sequence="20"
               action="bf_kitchen_costs_to_check_action"/>
 
+    <menuitem id="menu_kitchen_reports" name="Reports" parent="menu_kitchen_root" sequence="80"
+              groups="bf_kitchen.group_kitchen_manager"/>
+    <menuitem id="menu_kitchen_variance" name="Variance between counts" parent="menu_kitchen_reports" sequence="10"
+              action="bf_kitchen_variance_action"/>
+
     <menuitem id="menu_kitchen_config" name="Configuration" parent="menu_kitchen_root" sequence="90"
               groups="bf_kitchen.group_kitchen_manager"/>
     <menuitem id="menu_kitchen_settings" name="Settings" parent="menu_kitchen_config" sequence="10"

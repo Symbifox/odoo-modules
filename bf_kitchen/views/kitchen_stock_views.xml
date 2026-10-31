@@ -49,6 +49,8 @@
                             invisible="state != 'draft'"/>
                     <button name="action_finish" type="object" string="Finish the count" class="btn-primary"
                             invisible="state != 'in_progress'"/>
+                    <button name="action_bf_variance" type="object" string="Variance since the previous count"
+                            invisible="state != 'done'" groups="bf_kitchen.group_kitchen_manager"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

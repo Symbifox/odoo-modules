@@ -195,7 +195,7 @@ class AccountMove(models.Model):
                               "from a purchase order, or has no product (set the ingredient as the "
                               "product of the line first)."))
         company = self.company_id
-        warehouse = self.env["stock.warehouse"].sudo().search([("company_id", "=", company.id)], limit=1)
+        warehouse = company._bf_kitchen_warehouse()
         if not warehouse:
             raise UserError(_("The company %s has no warehouse.", company.name))
         ptype = warehouse.in_type_id
@@ -236,7 +236,7 @@ class AccountMove(models.Model):
             move.picked = True
             move.bf_kitchen_bill_line_id.bf_receipt_move_id = move.id
         picking.with_context(skip_backorder=True, skip_sms=True).button_validate()
-        self.message_post(body=_("Ingredients received into stock: %s.", picking._get_html_link()))
+        self._message_log(body=_("Ingredients received into stock: %s.", picking._get_html_link()))
         return True
 
     def _bf_kitchen_return_receipts(self):
@@ -269,7 +269,7 @@ class AccountMove(models.Model):
                 if float_compare(take, 0.0, precision_rounding=rounding) > 0:
                     todo.setdefault(rmove.picking_id, {})[rmove] = take
             if short:
-                move.sudo().message_post(body=_(
+                move.sudo()._message_log(body=_(
                     "Cancelled with ingredients already used, so not sent back to the vendor: %s.",
                     ", ".join("%s %s %s" % (round(q, 3), p.uom_id.name, p.display_name) for p, q in short)))
             if not todo:

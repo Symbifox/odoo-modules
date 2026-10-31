@@ -31,22 +31,12 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     # Every staff member sees them, like the health alert: the lunch supervisors must know.
+    # The shared list of the range (bf_food_allergen) since 18.0.1.1.0: the kitchen's dishes carry
+    # the same allergens.
     meal_allergen_ids = fields.Many2many(
-        "bf.school.allergen", "bf_school_student_allergen_rel", "partner_id", "allergen_id",
+        "bf.food.allergen", "bf_school_student_food_allergen_rel", "partner_id", "allergen_id",
         "Food allergies", groups="base.group_user",  # staff only, the portal reads it in sudo
         help="A meal containing one of these cannot be ordered for this student.")
-
-
-class Allergen(models.Model):
-    """The priority food allergens (Health Canada) and any other the school adds."""
-
-    _name = "bf.school.allergen"
-    _description = "Food allergen"
-    _order = "sequence, name"
-
-    name = fields.Char(required=True, translate=True)
-    sequence = fields.Integer(default=10)
-    active = fields.Boolean(default=True)
 
 
 class MealItem(models.Model):
@@ -61,8 +51,14 @@ class MealItem(models.Model):
     currency_id = fields.Many2one(related="company_id.currency_id")
     price = fields.Monetary(required=True)
     description = fields.Text()
-    allergen_ids = fields.Many2many("bf.school.allergen", string="Contains")
+    allergen_ids = fields.Many2many("bf.food.allergen", "bf_school_meal_item_food_allergen_rel", "item_id",
+                                    "allergen_id", string="Contains")
     active = fields.Boolean(default=True)
+
+    def _school_allergens(self):
+        """What this meal contains: its own allergens (a bridge adds those of its dish)."""
+        self.ensure_one()
+        return self.allergen_ids
 
     @api.constrains("price")
     def _check_price(self):
@@ -186,7 +182,7 @@ class MealOrder(models.Model):
                 raise ValidationError(_("This meal is not on the menu that day."))
             if order.day_id.closed:
                 raise ValidationError(_("The school is closed that day."))
-            conflict = order.item_id.allergen_ids & order.student_id.meal_allergen_ids
+            conflict = order.item_id._school_allergens() & order.student_id.meal_allergen_ids
             if conflict:
                 raise ValidationError(_("%(student)s is allergic to %(allergens)s: this meal cannot be ordered.",
                                         student=order.student_id.name,
@@ -299,3 +295,19 @@ class MealClose(models.TransientModel):
         days = self.env["bf.school.meal.day"].browse(self.env.context.get("active_ids", []))
         days.action_close(self.reason)
         return {"type": "ir.actions.act_window_close"}
+
+
+class FoodAllergen(models.Model):
+    _inherit = "bf.food.allergen"
+
+    def write(self, vals):
+        # The list is shared with the kitchen: archiving an allergen would hide the allergies declared
+        # with it, and a meal containing it would no longer be refused to the student.
+        if "active" in vals and not vals["active"]:
+            students = self.env["res.partner"].sudo().with_context(active_test=False).search_count(
+                [("meal_allergen_ids", "in", self.ids)])
+            if students:
+                raise UserError(_("%(count)s student(s) are declared allergic to %(names)s: the allergen stays "
+                                  "active while it is declared.", count=students,
+                                  names=", ".join(self.mapped("name"))))
+        return super().write(vals)

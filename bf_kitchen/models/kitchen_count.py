@@ -60,8 +60,7 @@ class KitchenCount(models.Model):
                                  readonly=True)
     warehouse_id = fields.Many2one(
         "stock.warehouse", "Warehouse", required=True, check_company=True,
-        default=lambda self: self.env["stock.warehouse"].search(
-            [("company_id", "=", self.env.company.id)], limit=1))
+        default=lambda self: self.env.company._bf_kitchen_warehouse())
     user_id = fields.Many2one("res.users", "Counted by", default=lambda self: self.env.user)
     date = fields.Datetime("Started on", readonly=True, copy=False)
     date_done = fields.Datetime("Finished on", readonly=True, copy=False)
@@ -219,7 +218,7 @@ class KitchenCount(models.Model):
                                 order="date_done desc", limit=1)
             if last and last.date_done > fields.Datetime.now() - timedelta(days=days):
                 continue
-            warehouse = self.env["stock.warehouse"].sudo().search([("company_id", "=", company.id)], limit=1)
+            warehouse = company._bf_kitchen_warehouse()
             if not warehouse:
                 continue
             # Without a kitchen manager, the count is still prepared: it waits in the counts not finished.
@@ -309,6 +308,13 @@ class KitchenCountStep(models.Model):
             if step.count_id.state != "in_progress" or step.state != "to_count":
                 raise UserError(_("Only a location still to count, in a count in progress, can be applied."))
             step._bf_check_location()
+            # The stock location is applied last: sales take from it, so its moment closes the count
+            # (the variance report reads the period up to it). A location applied after it would put
+            # its adjustment in the next period.
+            if not step.is_stock_root and step.count_id.step_ids.filtered(
+                    lambda s: s.is_stock_root and s.state == "applied"):
+                raise UserError(_("The stock location is already applied: it closes the count. "
+                                  "Count %s before it, in the next count.", step.location_id.complete_name))
             lines = step.line_ids.filtered("is_counted")
             if not lines and step.line_ids:
                 raise UserError(_("Nothing is counted at %s. Enter 0 for an item that is not there.",

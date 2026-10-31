@@ -20,8 +20,10 @@ The caterer's menus and meal orders on the family portal.
     the next month to the adult who pays.
   The mode is frozen on each order: a family that changes mode does not change what
   it already ordered.
-- **Food allergies**: Health Canada's priority allergens. A meal containing a declared
-  allergy of the student cannot be ordered; the kitchen list opens on tomorrow's
+- **Food allergies**: Health Canada's priority allergens, from the list shared with the
+  kitchen (`bf_food_allergen`); the school manager adds others. A meal containing a declared
+  allergy of the student cannot be ordered (with `bf_kitchen_school_meal`, the allergens of
+  the meal's kitchen dish count too); the kitchen list opens on tomorrow's
   ordered meals, grouped by meal, and shows every allergy. A student's allergies are for
   internal users only (the portal reads them in sudo to refuse a meal).
 - **Closed day** (storm, closure): every order is cancelled and credited at once.
@@ -39,6 +41,20 @@ tax. The school's accountant confirms before going live.
 ## What has not been confirmed
 
 - No link with the caterer's own platform (none offers a public API): the kitchen
-  list is read in Symbifox or exported.
+  list is read in Symbifox or exported. A caterer who cooks in the same Symbifox links
+  each meal to its dish with `bf_kitchen_school_meal`.
 - No refund of a positive balance by the software: the office records it.
 - The lunch supervision fee (public primary) and the daycare are not billed here.
+
+## Changelog
+
+- 18.0.1.1.0: the food allergens come from the list shared with the kitchen
+  (`bf_food_allergen`). The update moves the school's allergens, the students' allergies and
+  the meals' allergens to it (an allergen the school added keeps its names), and removes the
+  school's own list.
+
+## Licence
+
+Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
+its Change Date: 2030-10-31 for this one. In the meantime, use in production for
+your own internal business operations is permitted.

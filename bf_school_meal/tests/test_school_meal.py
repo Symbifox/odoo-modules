@@ -23,7 +23,7 @@ class TestSchoolMeal(HttpCase):
         Partner = env["res.partner"]
         cls.a = Partner.create({"name": "Alpha Essai", "is_student": True})
         cls.b = Partner.create({"name": "Bravo Essai", "is_student": True,
-                                "meal_allergen_ids": [(6, 0, env.ref("bf_school_meal.allergen_peanut").ids)]})
+                                "meal_allergen_ids": [(6, 0, env.ref("bf_food_allergen.allergen_peanut").ids)]})
         cls.c = Partner.create({"name": "Charlie Essai", "is_student": True})
         for student in (cls.a, cls.b, cls.c):
             env["bf.school.enrollment"].create({"student_id": student.id, "group_id": group.id})
@@ -38,7 +38,7 @@ class TestSchoolMeal(HttpCase):
         Item = env["bf.school.meal.item"]
         cls.pasta = Item.create({"name": "Pâtes sauce tomate", "school_id": cls.school.id, "price": 6.5})
         cls.satay = Item.create({"name": "Poulet satay", "school_id": cls.school.id, "price": 7.0,
-                                 "allergen_ids": [(6, 0, env.ref("bf_school_meal.allergen_peanut").ids)]})
+                                 "allergen_ids": [(6, 0, env.ref("bf_food_allergen.allergen_peanut").ids)]})
         cls.today = cls.school._school_now().date()
 
     def _day(self, offset, items=None):

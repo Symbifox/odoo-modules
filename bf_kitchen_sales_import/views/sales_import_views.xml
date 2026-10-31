@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ── registers ─────────────────────────────────────────────────────────────── -->
+    <record id="bf_kitchen_sales_source_view_list" model="ir.ui.view">
+        <field name="name">bf.kitchen.sales.source.list</field>
+        <field name="model">bf.kitchen.sales.source</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_sales_source_view_form" model="ir.ui.view">
+        <field name="name">bf.kitchen.sales.source.form</field>
+        <field name="model">bf.kitchen.sales.source</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Square, dining room"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="active" invisible="1"/>
+                            <field name="warehouse_id"/>
+                            <field name="date_order"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Items of the register" name="items">
+                            <field name="mapping_ids">
+                                <list editable="bottom">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="product_id" invisible="ignored" options="{'no_create': True}"/>
+                                    <field name="ignored"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_sales_source_action" model="ir.actions.act_window">
+        <field name="name">Other registers</field>
+        <field name="res_model">bf.kitchen.sales.source</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add the register whose sales you import</p>
+            <p>A register that is not Odoo's (Square, Lightspeed, Toast, Clover): its sales export
+               takes the dishes' ingredients out of the kitchen stock, one day at a time.</p>
+        </field>
+    </record>
+
+    <!-- ── imports ───────────────────────────────────────────────────────────────── -->
+    <record id="bf_kitchen_sales_import_view_list" model="ir.ui.view">
+        <field name="name">bf.kitchen.sales.import.list</field>
+        <field name="model">bf.kitchen.sales.import</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="source_id"/>
+                <field name="filename"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="unmatched_count" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" widget="badge" decoration-info="state == 'read'"
+                       decoration-success="state == 'done'" decoration-muted="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_sales_import_view_form" model="ir.ui.view">
+        <field name="name">bf.kitchen.sales.import.form</field>
+        <field name="model">bf.kitchen.sales.import</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_read" type="object" string="Read the file" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_import" type="object" string="Take out of the stock" class="btn-primary"
+                            invisible="state != 'read'"/>
+                    <button name="action_cancel" type="object" string="Cancel the import"
+                            invisible="state not in ('read', 'done')"
+                            confirm="The food these sales took out goes back in stock, and their days can be imported again."/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,read,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_pickings" type="object" class="oe_stat_button" icon="fa-cutlery"
+                                invisible="not picking_count" groups="stock.group_stock_user">
+                            <field name="picking_count" widget="statinfo" string="Consumptions"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="state != 'read' or not unmatched_count">
+                        <field name="unmatched_count" class="oe_inline"/> sale(s) of items the register has not
+                        matched yet: choose their dish, or tick « Not food ».
+                    </div>
+                    <group>
+                        <group>
+                            <field name="source_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="file" filename="filename" readonly="state != 'draft'"/>
+                            <field name="filename" invisible="1"/>
+                        </group>
+                        <group invisible="state == 'draft'">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook invisible="state == 'draft'">
+                        <page string="Sales" name="sales">
+                            <field name="line_ids" readonly="state not in ('read',)">
+                                <list editable="bottom" create="0" delete="0"
+                                      decoration-warning="status == 'unmatched'" decoration-muted="status == 'ignored'">
+                                    <field name="date" readonly="1"/>
+                                    <field name="code" readonly="1" optional="show"/>
+                                    <field name="name" readonly="1"/>
+                                    <field name="qty" readonly="1"/>
+                                    <field name="product_id" readonly="ignored" options="{'no_create': True}"/>
+                                    <field name="ignored"/>
+                                    <field name="status" widget="badge" decoration-warning="status == 'unmatched'"
+                                           decoration-success="status == 'matched'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_sales_import_view_search" model="ir.ui.view">
+        <field name="name">bf.kitchen.sales.import.search</field>
+        <field name="model">bf.kitchen.sales.import</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="source_id"/>
+                <filter name="to_do" string="To import" domain="[('state', 'in', ('draft', 'read'))]"/>
+                <filter name="done" string="Imported" domain="[('state', '=', 'done')]"/>
+                <group>
+                    <filter name="group_source" string="Register" context="{'group_by': 'source_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_sales_import_action" model="ir.actions.act_window">
+        <field name="name">Imported sales</field>
+        <field name="res_model">bf.kitchen.sales.import</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Import the sales of another register</p>
+            <p>Export the item sales of the register (CSV or Excel: date, item, quantity), add the
+               file here, match each item to its dish once, and the dishes leave the stock as their
+               ingredients, one day at a time.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_kitchen_sales" name="Sales" parent="bf_kitchen.menu_kitchen_root" sequence="38"
+              groups="bf_kitchen.group_kitchen_manager"/>
+    <menuitem id="menu_kitchen_sales_imports" name="Imported sales" parent="menu_kitchen_sales" sequence="10"
+              action="bf_kitchen_sales_import_action"/>
+    <menuitem id="menu_kitchen_sales_sources" name="Other registers" parent="bf_kitchen.menu_kitchen_config"
+              sequence="30" action="bf_kitchen_sales_source_action"/>
+</odoo>

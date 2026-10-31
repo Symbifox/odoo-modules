@@ -1,29 +1,35 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_meal
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-09 00:22+0000\n"
-"PO-Revision-Date: 2026-09-27 04:02+0000\n"
+"POT-Creation-Date: 2026-10-31 11:20+0000\n"
+"PO-Revision-Date: 2026-10-31 11:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: \n"
 
 #. module: bf_school_meal
 #. odoo-python
 #: code:addons/bf_school_meal/models/meal.py:0
 msgid "%(student)s is allergic to %(allergens)s: this meal cannot be ordered."
-msgstr "Allergie déclarée pour %(student)s (%(allergens)s) : ce repas ne peut pas être commandé."
+msgstr ""
+"Allergie déclarée pour %(student)s (%(allergens)s) : ce repas ne peut pas "
+"être commandé."
 
 #. module: bf_school_meal
 #. odoo-python
 #: code:addons/bf_school_meal/models/meal.py:0
 msgid "%s has no adult who pays: set one on the student's guardians."
-msgstr "Aucun adulte ne paie pour %s : l'indiquer dans les liens familiaux de l'élève."
+msgstr ""
+"Aucun adulte ne paie pour %s : l'indiquer dans les liens familiaux de "
+"l'élève."
 
 #. module: bf_school_meal
 #: model_terms:ir.ui.view,arch_db:bf_school_meal.portal_my_school_meal_link
@@ -39,11 +45,6 @@ msgid ""
 "                                <option value=\"100\">100</option>\n"
 "                            </select>"
 msgstr ""
-"<select name=\"amount\" class=\"form-select form-select-sm w-auto\">\n"
-"                                <option value=\"20\">20</option>\n"
-"                                <option value=\"50\" selected=\"selected\">50</option>\n"
-"                                <option value=\"100\">100</option>\n"
-"                            </select>"
 
 #. module: bf_school_meal
 #: model_terms:ir.ui.view,arch_db:bf_school_meal.portal_school_meals
@@ -58,19 +59,29 @@ msgstr "Une journée se ferme avec son bouton, qui crédite les commandes."
 
 #. module: bf_school_meal
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school__meal_cancel_hour
-msgid "A family cancels a meal until this hour on the day it is served; it is credited."
-msgstr "Une famille annule un repas jusqu'à cette heure le jour même; il est crédité."
+msgid ""
+"A family cancels a meal until this hour on the day it is served; it is "
+"credited."
+msgstr ""
+"Une famille annule un repas jusqu'à cette heure le jour même; il est "
+"crédité."
 
 #. module: bf_school_meal
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school__meal_order_days
-msgid "A family orders a meal at the latest this many days before it is served."
-msgstr "Une famille commande un repas au plus tard ce nombre de jours avant le service."
+msgid ""
+"A family orders a meal at the latest this many days before it is served."
+msgstr ""
+"Une famille commande un repas au plus tard ce nombre de jours avant le "
+"service."
 
 #. module: bf_school_meal
 #. odoo-python
 #: code:addons/bf_school_meal/models/account.py:0
-msgid "A meal account stays with the adult who pays: open one for the other adult."
-msgstr "Un compte repas reste à l'adulte qui paie : ouvrez-en un pour l'autre adulte."
+msgid ""
+"A meal account stays with the adult who pays: open one for the other adult."
+msgstr ""
+"Un compte repas reste à l'adulte qui paie : ouvrez-en un pour l'autre "
+"adulte."
 
 #. module: bf_school_meal
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school_meal_order__student_allergen_ids
@@ -121,7 +132,6 @@ msgid "Account"
 msgstr "Compte"
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__active
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_item__active
 msgid "Active"
 msgstr "Actif"
@@ -213,7 +223,8 @@ msgstr "Fermée"
 #. module: bf_school_meal
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school_meal_day__closed
 msgid "Closed after the fact (storm, closure): every order is credited."
-msgstr "Fermée après coup (tempête, fermeture) : chaque commande est créditée."
+msgstr ""
+"Fermée après coup (tempête, fermeture) : chaque commande est créditée."
 
 #. module: bf_school_meal
 #: model_terms:ir.ui.view,arch_db:bf_school_meal.bf_school_meal_day_view_form
@@ -245,7 +256,6 @@ msgid "Contains:"
 msgstr "Contient :"
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__create_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__create_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__create_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__create_uid
@@ -257,7 +267,6 @@ msgid "Created by"
 msgstr "Créé par"
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__create_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__create_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__create_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__create_date
@@ -277,11 +286,6 @@ msgstr "Crédit"
 #: model:ir.model.fields.selection,name:bf_school_meal.selection__bf_school_meal_order__state__credited
 msgid "Credited (school closed)"
 msgstr "Crédité (école fermée)"
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_shellfish
-msgid "Crustaceans and molluscs"
-msgstr "Crustacés et mollusques"
 
 #. module: bf_school_meal
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__currency_id
@@ -316,7 +320,6 @@ msgid "Discard"
 msgstr "Abandonner"
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__display_name
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__display_name
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__display_name
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__display_name
@@ -328,27 +331,11 @@ msgid "Display Name"
 msgstr "Nom d'affichage"
 
 #. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_egg
-msgid "Eggs"
-msgstr "Œufs"
-
-#. module: bf_school_meal
 #: model_terms:ir.ui.view,arch_db:bf_school_meal.bf_school_meal_day_view_form
 msgid "Every order of the day is cancelled and credited. Continue?"
 msgstr "Chaque commande de la journée est annulée et créditée. Continuer?"
 
 #. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_fish
-msgid "Fish"
-msgstr "Poisson"
-
-#. module: bf_school_meal
-#: model:ir.model,name:bf_school_meal.model_bf_school_allergen
-msgid "Food allergen"
-msgstr "Allergène alimentaire"
-
-#. module: bf_school_meal
-#: model:ir.actions.act_window,name:bf_school_meal.bf_school_allergen_action
 #: model:ir.ui.menu,name:bf_school_meal.menu_school_allergens
 msgid "Food allergens"
 msgstr "Allergènes alimentaires"
@@ -361,8 +348,11 @@ msgstr "Allergies alimentaires"
 
 #. module: bf_school_meal
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school_meal_order__mode
-msgid "Frozen when ordered: a family that changes mode does not change past orders."
-msgstr "Fixé à la commande : une famille qui change de mode ne change pas les commandes passées."
+msgid ""
+"Frozen when ordered: a family that changes mode does not change past orders."
+msgstr ""
+"Fixé à la commande : une famille qui change de mode ne change pas les "
+"commandes passées."
 
 #. module: bf_school_meal
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_order__group_names
@@ -370,7 +360,6 @@ msgid "Group"
 msgstr "Groupe"
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__id
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__id
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__id
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__id
@@ -409,7 +398,6 @@ msgid "Kitchen list"
 msgstr "Liste de la cuisine"
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__write_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__write_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__write_uid
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__write_uid
@@ -421,7 +409,6 @@ msgid "Last Updated by"
 msgstr "Mis à jour par"
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__write_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__write_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_close__write_date
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__write_date
@@ -505,7 +492,8 @@ msgstr "Repas %s"
 #. module: bf_school_meal
 #: model_terms:ir.ui.view,arch_db:bf_school_meal.portal_school_meals
 msgid "Meals are billed at the end of each month, on one invoice."
-msgstr "Les repas sont facturés à la fin de chaque mois, sur une seule facture."
+msgstr ""
+"Les repas sont facturés à la fin de chaque mois, sur une seule facture."
 
 #. module: bf_school_meal
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_day__item_ids
@@ -522,11 +510,6 @@ msgstr "Menu du jour"
 #: model:ir.ui.menu,name:bf_school_meal.menu_school_meal_days
 msgid "Menus"
 msgstr "Menus"
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_milk
-msgid "Milk"
-msgstr "Lait"
 
 #. module: bf_school_meal
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__mode
@@ -549,12 +532,6 @@ msgid "Movements"
 msgstr "Mouvements"
 
 #. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_mustard
-msgid "Mustard"
-msgstr "Moutarde"
-
-#. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__name
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_item__name
 msgid "Name"
 msgstr "Nom"
@@ -623,7 +600,7 @@ msgstr "Payé par"
 #. module: bf_school_meal
 #: model:ir.model,name:bf_school_meal.model_account_partial_reconcile
 msgid "Partial Reconcile"
-msgstr "Lettrage partiel"
+msgstr "Rapprochement"
 
 #. module: bf_school_meal
 #: model_terms:ir.ui.view,arch_db:bf_school_meal.portal_school_meals
@@ -645,11 +622,6 @@ msgstr "Paiement de la recharge annulé"
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_account__partner_id
 msgid "Pays"
 msgstr "Paie"
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_peanut
-msgid "Peanuts"
-msgstr "Arachides"
 
 #. module: bf_school_meal
 #: model:ir.model.fields.selection,name:bf_school_meal.selection__bf_school__meal_payment_modes__prepaid
@@ -695,20 +667,9 @@ msgid "School: official PDF of meal top-up invoices"
 msgstr "École : PDF officiel des factures de recharge"
 
 #. module: bf_school_meal
-#: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_allergen__sequence
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_item__sequence
 msgid "Sequence"
 msgstr "Séquence"
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_sesame
-msgid "Sesame"
-msgstr "Sésame"
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_soy
-msgid "Soy"
-msgstr "Soja"
 
 #. module: bf_school_meal
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_order__state
@@ -720,11 +681,6 @@ msgstr "État"
 #: model:ir.model.fields,field_description:bf_school_meal.field_bf_school_meal_order__student_id
 msgid "Student"
 msgstr "Élève"
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_sulphite
-msgid "Sulphites"
-msgstr "Sulfites"
 
 #. module: bf_school_meal
 #: model:ir.model.fields.selection,name:bf_school_meal.selection__bf_school__meal_payment_modes__choice
@@ -740,8 +696,11 @@ msgstr "Le solde repas est insuffisant (%(balance)s) : le recharger d'abord."
 #. module: bf_school_meal
 #. odoo-python
 #: code:addons/bf_school_meal/models/account.py:0
-msgid "The office records adjustments; the other movements are kept by the system."
-msgstr "Le secrétariat inscrit des ajustements; les autres mouvements sont tenus par le système."
+msgid ""
+"The office records adjustments; the other movements are kept by the system."
+msgstr ""
+"Le secrétariat inscrit des ajustements; les autres mouvements sont tenus par"
+" le système."
 
 #. module: bf_school_meal
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school_meal_order__price
@@ -829,20 +788,12 @@ msgid "Top-ups"
 msgstr "Recharges"
 
 #. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_tree_nut
-msgid "Tree nuts"
-msgstr "Noix"
-
-#. module: bf_school_meal
 #. odoo-python
 #: code:addons/bf_school_meal/models/account.py:0
 msgid "Use up or have the office refund the prepaid balance before changing."
-msgstr "Utiliser le solde prépayé ou le faire rembourser par le secrétariat avant de changer."
-
-#. module: bf_school_meal
-#: model:bf.school.allergen,name:bf_school_meal.allergen_wheat
-msgid "Wheat and gluten"
-msgstr "Blé et gluten"
+msgstr ""
+"Utiliser le solde prépayé ou le faire rembourser par le secrétariat avant de"
+" changer."
 
 #. module: bf_school_meal
 #: model_terms:ir.ui.view,arch_db:bf_school_meal.bf_school_meal_order_view_search

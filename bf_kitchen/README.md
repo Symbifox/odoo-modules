@@ -1,9 +1,10 @@
 # Symbifox: kitchen (`bf_kitchen`)
 
 Recipes and plate cost for restaurants, caterers and kitchens, built on Odoo's stock,
-purchase and kits: recipes and plate cost, then the kitchen stock (counts, losses,
-preparations made ahead). Sales from every source with the theoretical/actual variance,
-supplier orders and menu engineering are planned for later releases.
+purchase and kits: recipes and plate cost, the kitchen stock (counts, losses, preparations
+made ahead), and what the kitchen consumed between two counts against what it sold (the
+theoretical/actual variance). Supplier orders and menu engineering are planned for later
+releases.
 
 ## Features
 
@@ -75,6 +76,21 @@ supplier orders and menu engineering are planned for later releases.
   FIFO, where a batch enters at the value of its ingredients. Making it on the
   fly again is refused while some of it is in stock or a batch is in progress, and either
   switch waits for the deliveries and register orders already under way.
+- **Sales from every source.** What leaves without a delivery (an invoice with no sales order,
+  the school meals served, the sales of another register) leaves through one **Kitchen
+  consumption** transfer of the warehouse, so that Odoo explodes the dishes into their
+  ingredients; what is not in stock goes negative, as at the register. The sources are
+  bridges: `bf_kitchen_pos` (Odoo's register), `bf_kitchen_sale` (sales orders and invoices),
+  `bf_kitchen_school_meal` (school meals), `bf_kitchen_sales_import` (another register).
+- **Variance between two counts.** Since every sale has already taken its ingredients out,
+  what a count adjusts is what the sales do not explain. Between two finished counts (from the
+  moment the stock location of each was applied), per item: bought, consumed by sales (by
+  source), lost (by reason), used in and made by the kitchen, and the unexplained variance,
+  in quantity and at today's kitchen cost; the ten biggest variances, the variance as a share
+  of purchases, and an analysis by item. The report warns of a consumption recorded after the
+  first count for a day before it (that count already saw the food gone). The stock location
+  is applied last and closes the count: no other location is applied after it. From a finished
+  count, one button gives the variance since the previous one. Kitchen manager only.
 
 ## Units
 
@@ -108,9 +124,9 @@ A purchase unit such as "bunch (60 g)" can be created in the Weight category.
 
 ## What the module does not do yet
 
-The stock valuation stays Odoo's: the module never writes the product cost. Sales sources,
-the theoretical/actual variance, supplier orders and menu engineering are planned for later
-releases. The kitchen locations list is the Inventory administrator's (writing a location is
+The stock valuation stays Odoo's: the module never writes the product cost. The variance is
+valued at today's kitchen cost, not at the cost of each day. Supplier orders and menu
+engineering are planned for later releases. The kitchen locations list is the Inventory administrator's (writing a location is
 theirs in Odoo).
 
 ## Requirements
@@ -137,6 +153,14 @@ allergens. The interface is in English with a French (Canada) translation.
 - 18.0.1.1.0: the kitchen stock. Kitchen locations, counts walked location by location and
   applied as they are entered, losses in a few taps (a dish lost leaves as its ingredients),
   preparations held in stock with "I prepared", a count reminder.
+- 18.0.1.2.0: sales and the theoretical/actual variance. The Kitchen consumption operation type
+  for what leaves without a delivery, the variance report between two counts. The kitchen
+  installs on a database without French (the loss reasons were searched in French). The
+  notes the kitchen leaves on a bill or a transfer no longer need the user to have an email
+  address ("Received" failed without one). A kitchen warehouse per company (settings): where the
+  sales with no delivery of their own leave from, and where Received brings the ingredients (the
+  first warehouse when none is set). The stock location closes a count: no location is applied
+  after it.
 
 ## Licence
 

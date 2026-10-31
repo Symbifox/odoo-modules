@@ -1020,6 +1020,7 @@ class TestKitchen(AccountTestInvoicingCommon):
         self.assertRegex(html, r">\s*50\s*</span>")
         self.assertNotRegex(html, r">\s*(2\.5|120\.0|240\.0|50\.0)\s*<")
         self.assertTrue(bom.with_env(env)._bf_format_number(1234.5).endswith("234,5"))
+        self.env["res.lang"]._activate_lang("en_CA")
         self.assertEqual(bom.with_context(lang="en_CA")._bf_format_number(33.44, 1), "33.4")
 
     def test_v2_preparation_list_has_no_dish_columns(self):

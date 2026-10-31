@@ -44,8 +44,7 @@ class KitchenLoss(models.TransientModel):
             if stored:
                 loss.location_id = stored
                 continue
-            warehouse = self.env["stock.warehouse"].search([("company_id", "=", loss.company_id.id)], limit=1)
-            loss.location_id = warehouse.lot_stock_id
+            loss.location_id = (loss.company_id or self.env.company)._bf_kitchen_warehouse().lot_stock_id
 
     def action_declare(self):
         self.ensure_one()

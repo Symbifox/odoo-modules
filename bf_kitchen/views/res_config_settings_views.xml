@@ -29,6 +29,9 @@
                         </setting>
                     </block>
                     <block title="Stock" name="bf_kitchen_stock">
+                        <setting string="Kitchen warehouse" help="Where the sales that have no delivery of their own leave from (invoices with no sales order, school meals), and where Received brings the ingredients. Empty: the first warehouse of the company." groups="stock.group_stock_multi_warehouses">
+                            <field name="bf_kitchen_warehouse_id" options="{'no_create': True}"/>
+                        </setting>
                         <setting string="Count reminder" help="Prepares a count once the last finished count is older than this, with an activity for the kitchen manager when one is set (Alerts).">
                             <field name="bf_kitchen_count_frequency"/>
                         </setting>

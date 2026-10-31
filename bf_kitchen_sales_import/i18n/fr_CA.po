@@ -1,0 +1,744 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_kitchen_sales_import
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-31 11:22+0000\n"
+"PO-Revision-Date: 2026-10-31 11:22+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "%(count)s day(s) of sales taken out of the kitchen stock."
+msgstr "%(count)s jour(s) de ventes sorti(s) du stock de la cuisine."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid ""
+"%s item(s) of the register are not matched to a dish yet (or marked not "
+"food)."
+msgstr ""
+"%s article(s) de la caisse ne sont pas encore rattachés à un plat (ni "
+"marqués « Pas de la nourriture »)."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__ignored
+msgid "A gift card, a delivery fee: nothing leaves the stock."
+msgstr "Une carte-cadeau, des frais de livraison : rien ne sort du stock."
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.actions.act_window,help:bf_kitchen_sales_import.bf_kitchen_sales_source_action
+msgid ""
+"A register that is not Odoo's (Square, Lightspeed, Toast, Clover): its sales export\n"
+"               takes the dishes' ingredients out of the kitchen stock, one day at a time."
+msgstr ""
+"Une caisse qui n'est pas celle d'Odoo (Square, Lightspeed, Toast, Clover) : son export des ventes\n"
+"               sort du stock de la cuisine les ingrédients des plats, un jour à la fois."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "Add the export file of the register first."
+msgstr "Ajoutez d'abord le fichier exporté de la caisse."
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.actions.act_window,help:bf_kitchen_sales_import.bf_kitchen_sales_source_action
+msgid "Add the register whose sales you import"
+msgstr "Ajoutez la caisse dont vous importez les ventes"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "An import moves through its own buttons."
+msgstr "Un import avance par ses propres boutons."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "An imported file took food out of the stock: cancel it first."
+msgstr ""
+"Un fichier importé a sorti de la nourriture du stock : annulez-le d'abord."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "An item is either matched to a dish or not food, not both."
+msgstr ""
+"Un article est rattaché à un plat ou n'est pas de la nourriture, pas les "
+"deux."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "An item of the register is matched to a kitchen dish or item."
+msgstr ""
+"Un article de la caisse se rattache à un plat ou à un article de la cuisine."
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_source_view_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_form
+msgid "Cancel the import"
+msgstr "Annuler l'import"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields.selection,name:bf_kitchen_sales_import.selection__bf_kitchen_sales_import__state__cancel
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__checksum
+msgid "Checksum"
+msgstr "Somme de contrôle"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__code
+msgid "Code at the register"
+msgstr "Code à la caisse"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__company_id
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__company_id
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__company_id
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_form
+msgid "Consumptions"
+msgstr "Consommations"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__create_date
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__create_date
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__create_date
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__date_order
+msgid "Dates written"
+msgstr "Dates écrites"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields.selection,name:bf_kitchen_sales_import.selection__bf_kitchen_sales_source__date_order__dmy
+msgid "Day / month / year"
+msgstr "Jour / mois / année"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__product_id
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__product_id
+msgid "Dish"
+msgstr "Plat"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__display_name
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__display_name
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__display_name
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__file
+msgid "Export file"
+msgstr "Fichier exporté"
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.actions.act_window,help:bf_kitchen_sales_import.bf_kitchen_sales_import_action
+msgid ""
+"Export the item sales of the register (CSV or Excel: date, item, quantity), add the\n"
+"               file here, match each item to its dish once, and the dishes leave the stock as their\n"
+"               ingredients, one day at a time."
+msgstr ""
+"Exportez les ventes par article de la caisse (CSV ou Excel : date, article, quantité), ajoutez le\n"
+"               fichier ici, rattachez une fois chaque article à son plat, et les plats sortent du stock en\n"
+"               ingrédients, un jour à la fois."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__filename
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__date_from
+msgid "First day"
+msgstr "Premier jour"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (contacts)"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "Food put back in the kitchen stock: %s."
+msgstr "Nourriture remise dans le stock de la cuisine : %s."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_source__date_order
+msgid ""
+"How the export writes a date like 03/04/2026. A date written 2026-04-03 is "
+"read in any case."
+msgstr ""
+"Comment l'export écrit une date comme 03/04/2026. Une date écrite 2026-04-03"
+" est lue dans tous les cas."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__id
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__id
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__id
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_has_error
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, des messages ont une erreur de livraison."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__import_id
+msgid "Import"
+msgstr "Import"
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.actions.act_window,help:bf_kitchen_sales_import.bf_kitchen_sales_import_action
+msgid "Import the sales of another register"
+msgstr "Importez les ventes d'une autre caisse"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields.selection,name:bf_kitchen_sales_import.selection__bf_kitchen_sales_import__state__done
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_search
+msgid "Imported"
+msgstr "Importé"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.actions.act_window,name:bf_kitchen_sales_import.bf_kitchen_sales_import_action
+#: model:ir.model.fields.selection,name:bf_kitchen_sales_import.selection__stock_picking__bf_kitchen_source__import
+#: model:ir.ui.menu,name:bf_kitchen_sales_import.menu_kitchen_sales_imports
+msgid "Imported sales"
+msgstr "Ventes importées"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "Importing sales is the kitchen manager's."
+msgstr "Importer des ventes revient au responsable de la cuisine."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__import_ids
+msgid "Imports"
+msgstr "Imports"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__name
+msgid "Item"
+msgstr "Article"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model,name:bf_kitchen_sales_import.model_bf_kitchen_sales_mapping
+msgid "Item of another register, matched to a dish"
+msgstr "Article d'une autre caisse, rattaché à un plat"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__mapping_ids
+msgid "Items"
+msgstr "Articles"
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_source_view_form
+msgid "Items of the register"
+msgstr "Articles de la caisse"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__unmatched_count
+msgid "Items to match"
+msgstr "Articles à rattacher"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__key
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__key
+msgid "Key"
+msgstr "Clé"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__picking_ids
+msgid "Kitchen consumptions"
+msgstr "Consommations cuisine"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_stock_picking__bf_kitchen_source
+msgid "Kitchen source"
+msgstr "Source cuisine"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__write_date
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__write_date
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__write_date
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__date_to
+msgid "Last day"
+msgstr "Dernier jour"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__mapping_id
+msgid "Mapping"
+msgstr "Rattachement"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields.selection,name:bf_kitchen_sales_import.selection__bf_kitchen_sales_import_line__status__matched
+msgid "Matched"
+msgstr "Rattaché"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "Matching the register's items is the kitchen manager's."
+msgstr ""
+"Rattacher les articles de la caisse revient au responsable de la cuisine."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur de livraison du message"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, pour les recherches seulement"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, pour les recherches seulement"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields.selection,name:bf_kitchen_sales_import.selection__bf_kitchen_sales_source__date_order__mdy
+msgid "Month / day / year"
+msgstr "Mois / jour / année"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__name
+msgid "Name at the register"
+msgstr "Nom à la caisse"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "New"
+msgstr "Nouveau"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid ""
+"No date, quantity and item columns were found in the first rows of the file."
+" Expected columns: Date, Item (or Code), Quantity."
+msgstr ""
+"Aucune colonne de date, de quantité et d'article dans les premières lignes "
+"du fichier. Colonnes attendues : Date, Article (ou Code), Quantité."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__ignored
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__ignored
+#: model:ir.model.fields.selection,name:bf_kitchen_sales_import.selection__bf_kitchen_sales_import_line__status__ignored
+msgid "Not food"
+msgstr "Pas de la nourriture"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages en erreur de livraison"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "Only a read or imported file is cancelled."
+msgstr "Seul un fichier lu ou importé s'annule."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.actions.act_window,name:bf_kitchen_sales_import.bf_kitchen_sales_source_action
+#: model:ir.ui.menu,name:bf_kitchen_sales_import.menu_kitchen_sales_sources
+msgid "Other registers"
+msgstr "Autres caisses"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__picking_count
+msgid "Picking Count"
+msgstr "Nombre de transferts"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__qty
+msgid "Quantity"
+msgstr "Quantité"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_form
+msgid "Read the file"
+msgstr "Lire le fichier"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "Read the file before importing it."
+msgstr "Lisez le fichier avant de l'importer."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "Reading Excel files needs openpyxl on the server."
+msgstr "Lire un fichier Excel demande openpyxl sur le serveur."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__name
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__source_id
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__source_id
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__source_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_search
+msgid "Register"
+msgstr "Caisse"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model,name:bf_kitchen_sales_import.model_bf_kitchen_sales_source
+msgid "Register that is not Odoo's"
+msgstr "Caisse qui n'est pas celle d'Odoo"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__row
+msgid "Row"
+msgstr "Ligne"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "Row %(row)s: « %(value)s » is not a date."
+msgstr "Ligne %(row)s : « %(value)s » n'est pas une date."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "Row %(row)s: « %(value)s » is not a quantity."
+msgstr "Ligne %(row)s : « %(value)s » n'est pas une quantité."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi du texto"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model,name:bf_kitchen_sales_import.model_bf_kitchen_sales_import_line
+msgid "Sale imported from another register"
+msgstr "Vente importée d'une autre caisse"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__line_ids
+#: model:ir.ui.menu,name:bf_kitchen_sales_import.menu_kitchen_sales
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_form
+msgid "Sales"
+msgstr "Ventes"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_stock_picking__bf_kitchen_import_id
+msgid "Sales import"
+msgstr "Import de ventes"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model,name:bf_kitchen_sales_import.model_bf_kitchen_sales_import
+msgid "Sales imported from another register"
+msgstr "Ventes importées d'une autre caisse"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__status
+msgid "Status"
+msgstr "Statut"
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_form
+msgid "Take out of the stock"
+msgstr "Sortir du stock"
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "The file has no sales."
+msgstr "Le fichier n'a aucune vente."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "The file of an import already read is not replaced: make a new import."
+msgstr ""
+"Le fichier d'un import déjà lu ne se remplace pas : faites un nouvel import."
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_form
+msgid ""
+"The food these sales took out goes back in stock, and their days can be "
+"imported again."
+msgstr ""
+"La nourriture que ces ventes ont sortie revient en stock, et leurs jours "
+"pourront être importés de nouveau."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "The items of an imported file are not matched again."
+msgstr "Les articles d'un fichier importé ne se rattachent plus."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/stock_picking.py:0
+msgid "The kitchen source of a transfer is set by the kitchen itself."
+msgstr "La source cuisine d'un transfert est posée par la cuisine elle-même."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_source__name
+msgid "The register, as the kitchen calls it: « Square, dining room »."
+msgstr "La caisse, comme la cuisine l'appelle : « Square, salle à manger »."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "The sales of an import come from its file."
+msgstr "Les ventes d'un import viennent de son fichier."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_source__warehouse_id
+msgid "The stock its sales take from."
+msgstr "Le stock dont ses ventes sortent."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid ""
+"These days are already imported for this register: %s. Cancel that import "
+"first, or remove these days from the file."
+msgstr ""
+"Ces jours sont déjà importés pour cette caisse : %s. Annulez d'abord cet "
+"import, ou retirez ces jours du fichier."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "This file cannot be read as an Excel workbook."
+msgstr "Ce fichier ne se lit pas comme un classeur Excel."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "This import is already read."
+msgstr "Cet import est déjà lu."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.constraint,message:bf_kitchen_sales_import.constraint_bf_kitchen_sales_mapping_one_per_item
+msgid "This item of the register is already matched."
+msgstr "Cet article de la caisse est déjà rattaché."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
+msgid "This very file was already imported for this register (%s)."
+msgstr "Ce même fichier a déjà été importé pour cette caisse (%s)."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields.selection,name:bf_kitchen_sales_import.selection__bf_kitchen_sales_import__state__read
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_search
+msgid "To import"
+msgstr "À importer"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields.selection,name:bf_kitchen_sales_import.selection__bf_kitchen_sales_import_line__status__unmatched
+msgid "To match"
+msgstr "À rattacher"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields.selection,name:bf_kitchen_sales_import.selection__bf_kitchen_sales_import__state__draft
+msgid "To read"
+msgstr "À lire"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model,name:bf_kitchen_sales_import.model_stock_picking
+msgid "Transfer"
+msgstr "Transfert"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_source__warehouse_id
+msgid "Warehouse"
+msgstr "Entrepôt"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_import__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des échanges sur le site web"
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__product_id
+msgid ""
+"What this item takes out of the stock: a dish (its ingredients), or an item "
+"sold as it is."
+msgstr ""
+"Ce que cet article sort du stock : un plat (ses ingrédients), ou un article "
+"vendu tel quel."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model.fields,help:bf_kitchen_sales_import.field_stock_picking__bf_kitchen_source
+msgid "Where a kitchen consumption comes from."
+msgstr "D'où vient une consommation cuisine."
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_source_view_form
+msgid "e.g. Square, dining room"
+msgstr "p. ex. Square, salle à manger"
+
+#. module: bf_kitchen_sales_import
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_form
+msgid ""
+"sale(s) of items the register has not\n"
+"                        matched yet: choose their dish, or tick « Not food »."
+msgstr ""
+"vente(s) d'articles que la caisse n'a pas encore\n"
+"                        rattachés : choisissez leur plat, ou cochez « Pas de la nourriture »."

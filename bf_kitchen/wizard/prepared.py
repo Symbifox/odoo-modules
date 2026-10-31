@@ -49,7 +49,10 @@ class KitchenPrepared(models.TransientModel):
             raise AccessError(_("This preparation belongs to a company you do not work for."))
         product = bom.product_id or bom.product_tmpl_id.product_variant_id
         Production = self.env["mrp.production"].sudo().with_company(company)
+        # The batch is made in the kitchen's warehouse: Odoo's default manufacturing type is the first one's.
+        manu_type = company._bf_kitchen_warehouse().manu_type_id
         production = Production.create({
+            **({"picking_type_id": manu_type.id} if manu_type else {}),
             "product_id": product.id, "bom_id": bom.id, "product_qty": self.quantity,
             "product_uom_id": self.product_uom_id.id, "company_id": company.id,
             "user_id": self.env.user.id, "origin": _("Kitchen"),

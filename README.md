@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**274 modules are BUSL-1.1.** The source is published and auditable, and **you
+**278 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -248,7 +248,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_job_search` | Job Search | 18.0.1.0.3 | LGPL-3 | Track your job applications with the good habits built in: follow-ups, interviews, thank-you notes, referees and a job search log |
 | `bf_key_management` | Symbifox Keys | 18.0.1.0.15 | BUSL-1.1 | Who holds which key, card or remote of the premises, which doors each one opens, and nothing forgotten when someone leaves |
-| `bf_kitchen` | Symbifox: kitchen | 18.0.1.1.0 | BUSL-1.1 | Recipes and plate cost for restaurants, caterers and kitchens: yield, sub-recipes, ingredient cost from the last vendor bill, food cost ratio, suggested price, allergens |
+| `bf_kitchen` | Symbifox: kitchen | 18.0.1.2.0 | BUSL-1.1 | Kitchen management for restaurants, caterers and kitchens: recipes and plate cost from the last vendor bill, kitchen counts and losses, theoretical/actual variance |
+| `bf_kitchen_pos` | Symbifox: kitchen and register | 18.0.1.0.0 | BUSL-1.1 | Dishes sold at Odoo's register take their ingredients out of the kitchen stock; a dish refunded at the register is a loss, not stock back on the shelf |
+| `bf_kitchen_sale` | Symbifox: kitchen and sales | 18.0.1.0.0 | BUSL-1.1 | Dishes sold on quotations and invoices take their ingredients out of the kitchen stock, an invoice with no sales order too |
+| `bf_kitchen_sales_import` | Symbifox: kitchen sales from another register | 18.0.1.0.0 | BUSL-1.1 | The sales of a register that is not Odoo's, imported from its CSV or Excel export, take the dishes' ingredients out of the kitchen stock |
+| `bf_kitchen_school_meal` | Symbifox: kitchen and school meals | 18.0.1.0.0 | BUSL-1.1 | A meal of the school menu points to its kitchen dish: cost and allergens from the recipe, the meals served leave the stock |
 | `bf_labour_relations` | Relations de travail | 18.0.1.0.0 | BUSL-1.1 | Certification, collective agreement, seniority, grievances and union dues, from the employer's side as much as the union's |
 | `bf_labour_relations_employer` | Relations de travail : côté employeur | 18.0.1.1.0 | BUSL-1.1 | Obligations and reminders, the posted seniority list, job postings and movements, dues remittance preparation, the joint committee |
 | `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |
@@ -365,7 +369,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_school_gradebook` | Symbifox École : carnet de notes | 18.0.1.0.1 | BUSL-1.1 | Evaluations and grades by course, results by competency and discipline, the 20/20/60 weighting over the three terms and the ministerial exams |
 | `bf_school_health` | Symbifox École : santé | 18.0.1.0.4 | BUSL-1.1 | Health alerts for every staff member, detailed health records and medication for a restricted group, parents' authorisations signed on the portal |
 | `bf_school_homework` | Symbifox École : devoirs et agenda | 18.0.1.0.4 | BUSL-1.1 | Homework, studies, projects and announced tests per group, on the family portal and in the parents' own calendar (iCal) |
-| `bf_school_meal` | Symbifox École : repas | 18.0.1.0.5 | BUSL-1.1 | Caterer menus, meal orders on the family portal, prepaid balance or monthly invoice, food allergies checked at the order and on the kitchen list |
+| `bf_school_meal` | Symbifox École : repas | 18.0.1.1.0 | BUSL-1.1 | Caterer menus, meal orders on the family portal, prepaid balance or monthly invoice, food allergies checked at the order and on the kitchen list |
 | `bf_school_meeting` | Symbifox École : rencontres de parents | 18.0.1.0.1 | BUSL-1.1 | Parent-teacher meetings: the office sets each teacher's hours, parents book a slot with each teacher of their child, without overlaps |
 | `bf_school_message` | Symbifox École : annonces aux familles | 18.0.1.0.1 | BUSL-1.1 | School announcements to families, by school or group, with an email that names the children and a dated read receipt on the portal |
 | `bf_school_portal` | Symbifox École : portail des familles | 18.0.1.0.3 | BUSL-1.1 | One portal account per adult for all their children: groups, teachers, and what the school allows them to do |
