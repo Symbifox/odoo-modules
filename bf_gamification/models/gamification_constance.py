@@ -198,6 +198,7 @@ class GamificationProfileConstance(models.Model):
                 'message': CAUGHT_UP_MESSAGES[kind],
                 'img_url': FOX_IMAGE,
                 'big': kind == 'all',
+                'claim': self.env['bf.gamification.celebration']._bf_issue(self.user_id, 'caught_up'),
             },
         )
 

@@ -345,6 +345,7 @@ class GamificationProfile(models.Model):
                     'css_class': new_level.css_class or '',
                 },
                 'total_xp': self.total_xp,
+                'claim': self.env['bf.gamification.celebration']._bf_issue(self.user_id, 'level_up'),
             },
         )
 
@@ -364,6 +365,7 @@ class GamificationProfile(models.Model):
                 'popup_effect': badge.popup_effect,
                 'popup_sound': badge.popup_sound,
                 'popup_message': badge.popup_message or '',
+                'claim': self.env['bf.gamification.celebration']._bf_issue(self.user_id, 'badge'),
             },
         )
 

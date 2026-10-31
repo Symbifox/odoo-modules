@@ -5,3 +5,4 @@ from . import test_constance
 from . import test_challenges
 from . import test_manifest
 from . import test_noms_affiches
+from . import test_celebration

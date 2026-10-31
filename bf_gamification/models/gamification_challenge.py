@@ -352,6 +352,10 @@ class GamificationProfileChallenge(models.Model):
                 'message': (_("Carte de défis complète ! Le renard vous doit une fête.")
                             if card_complete else done_messages[line.id % len(done_messages)]),
                 'img_url': '/bf_gamification/static/img/renard_a_jour.svg',
+                # La carte complète a sa fête, montrée une fois ; un défi seul n'est
+                # qu'une notification, qui s'efface d'elle-même dans chaque onglet.
+                'claim': (self.env['bf.gamification.celebration']._bf_issue(self.user_id, 'challenge_card')
+                          if card_complete else False),
             },
         )
 

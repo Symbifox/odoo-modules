@@ -44,7 +44,9 @@
     # 18.0.3.1.1: a profile, an earned badge, an XP transaction and a person's daily challenge
     #   read by what they are. The "My profile" title and the showcase pills used to show
     #   "model,id"; they now show the person's name and the badge's name.
-    "version": "18.0.3.1.1",
+    # 18.0.3.2.0: a celebration (caught-up fox, complete card, badge, level up) shows once, in
+    #   the tab the person is looking at, whatever the number of open tabs, windows or devices.
+    "version": "18.0.3.2.0",
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

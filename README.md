@@ -227,7 +227,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_food_allergen` | Symbifox: food allergens | 18.0.1.0.0 | BUSL-1.1 | One shared list of Health Canada's priority food allergens for the Symbifox food modules |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.1.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.1.0 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
-| `bf_gamification` | Fox Quest | 18.0.3.1.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
+| `bf_gamification` | Fox Quest | 18.0.3.2.0 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
 | `bf_gamification_contact_absence` | Fox Quest : absences déclarées et constance | 18.0.1.0.0 | BUSL-1.1 | A declared, corrected, archived or removed absence recomputes the Fox Quest streak |
 | `bf_gamification_hr_holidays` | Fox Quest : congés de constance dans Congés | 18.0.1.0.0 | BUSL-1.1 | An approved constance day off becomes a Time Off allocation |
 | `bf_gantt` | Échéancier | 18.0.1.7.0 | BUSL-1.1 | Gantt schedules for Odoo Community, on a project or standalone, shareable on the portal without a seat, exportable to branded PDF, PNG, SVG, XLSX and MS Project |

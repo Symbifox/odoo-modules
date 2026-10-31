@@ -296,6 +296,13 @@ task counts (not postponing it or leaving it); a task in a folded stage is close
 fails never breaks the action that triggered it. The effect follows Fox Quest's popup setting and
 Odoo's "Show effects" setting (when effects are off, Odoo shows a plain notification).
 
+**Shown once.** A celebration (caught-up fox, complete challenge card, badge, level up) appears
+once, whatever the number of open tabs, windows or devices. Odoo delivers it to every open tab; each
+tab waits until you are looking at it (visible and focused), then asks the server for the
+celebration's one-time token. Only the first tab to ask shows it; the others stay silent. A
+celebration nobody looked at within 10 minutes is dropped, and a support session seeing Odoo as you
+(`bf_impersonate`) never takes yours.
+
 ### Daily challenges
 
 Every working day of a person, Fox Quest offers three small challenges drawn from what that person
@@ -594,6 +601,7 @@ Fox Quest (root, sequence 65)
 | `bf.gamification.reward.claim` | Reward claims (workflow) | Yes |
 | `bf.gamification.challenge` | Daily challenge catalogue | Yes |
 | `bf.gamification.challenge.line` | A person's challenges for a day | Yes |
+| `bf.gamification.celebration` | One-time token of a celebration, shown in a single tab | Yes |
 | `bf.gamification.dashboard` | Dashboard data provider | No (`_auto=False`) |
 | `bf.gamification.grant.badge.wizard` | Badge granting wizard | TransientModel |
 
@@ -642,11 +650,15 @@ refused under support impersonation.
 
 | Channel | Payload | Trigger |
 |---|---|---|
-| `bf_gamification/badge_earned` | badge name, description, XP, rarity, effect, sound, message | Badge granted |
-| `bf_gamification/level_up` | old level, new level (name, title, CSS class), total XP | Level threshold crossed |
-| `bf_gamification/caught_up` | kind, message, image, big | A work list was emptied by its owner |
-| `bf_gamification/challenge_done` | challenge name, XP, stamps, stamps per card, card complete, message | A daily challenge was finished |
+| `bf_gamification/badge_earned` | badge name, description, XP, rarity, effect, sound, message, `claim` | Badge granted |
+| `bf_gamification/level_up` | old level, new level (name, title, CSS class), total XP, `claim` | Level threshold crossed |
+| `bf_gamification/caught_up` | kind, message, image, big, `claim` | A work list was emptied by its owner |
+| `bf_gamification/challenge_done` | challenge name, XP, stamps, stamps per card, card complete, message, `claim` (complete card only) | A daily challenge was finished |
 | `bf_gamification/xp_gained` | amount, description | XP awarded (reserved) |
+
+`claim` is a one-time token (`bf.gamification.celebration`). The tab you are looking at posts it to
+`/bf_gamification/celebration/claim` (JSON, logged-in users); the answer is `true` for the first tab
+only, and for the token's own user only.
 
 ---
 
@@ -678,6 +690,7 @@ bf_gamification/
 |   |-- gamification_reward.py          # Rewards + claims
 |   |-- gamification_dashboard.py       # Dashboard data (_auto=False)
 |   |-- gamification_constance.py       # Caught-up fox, constance time off
+|   |-- gamification_celebration.py     # A celebration shows once (one-time token)
 |   |-- gamification_challenge.py       # Daily challenges, stamp card, worn title
 |   |-- fq_days.py                      # The person's day and working days
 |   |-- fq_savepoint.py                 # Savepoint that never breaks the triggering action
@@ -751,6 +764,16 @@ bf_gamification/
 ---
 
 ## Changelog
+
+### v3.2.0 — A celebration shows once
+
+- The caught-up fox, the complete-card fox, the badge and the level-up popups appeared in every open
+  tab; in a background tab the fox waited for you to come back, so it showed again on every tab you
+  returned to, and the level-up popup had to be closed in each tab. Each celebration now carries a
+  one-time token: the tab you are looking at claims it, and only the first claim shows it. A
+  celebration nobody looked at within 10 minutes is dropped.
+- New model `bf.gamification.celebration` (no access for employees; tokens swept after 30 days) and
+  route `/bf_gamification/celebration/claim`.
 
 ### v3.1.1 — Readable names
 
@@ -920,7 +943,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-25, this version converts automatically to
+- **Change Date**: on 2030-10-31, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ---
