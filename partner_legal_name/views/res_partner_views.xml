@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_legal_name" model="ir.ui.view">
+        <field name="name">res.partner.form.legal_name</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="before">
+                <field name="legal_name" placeholder="e.g. Les services de consultation Blue Fox, Inc."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="external_layout_folder_legal_name" inherit_id="web.external_layout_folder">
+        <xpath expr="//ul[@name='company_address_list']" position="before">
+            <div t-if="company.legal_name and company.legal_name != company.name"
+                 class="o_company_legal_name fw-bold small text-muted mb-1"
+                 t-out="company.legal_name"/>
+        </xpath>
+    </template>
+</odoo>

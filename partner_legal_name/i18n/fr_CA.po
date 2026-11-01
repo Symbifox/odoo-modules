@@ -1,0 +1,60 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* partner_legal_name
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 04:17+0000\n"
+"PO-Revision-Date: 2026-11-01 04:17+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: partner_legal_name
+#: model:ir.model,name:partner_legal_name.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: partner_legal_name
+#: model:ir.model,name:partner_legal_name.model_base_document_layout
+msgid "Company Document Layout"
+msgstr "Mise en page des documents de votre société"
+
+#. module: partner_legal_name
+#: model:ir.model,name:partner_legal_name.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: partner_legal_name
+#: model:ir.model.fields,help:partner_legal_name.field_base_document_layout__legal_name
+#: model:ir.model.fields,help:partner_legal_name.field_res_company__legal_name
+#: model:ir.model.fields,help:partner_legal_name.field_res_partner__legal_name
+#: model:ir.model.fields,help:partner_legal_name.field_res_users__legal_name
+msgid ""
+"Full legal name (e.g. 'Les services de consultation Blue Fox, Inc.'). When "
+"empty, reports fall back to Name. Use Name for the trade/DBA name shown in "
+"the UI."
+msgstr ""
+"Raison sociale complète (p. ex. « Les services de consultation Blue Fox, "
+"Inc. »). Vide, les documents reprennent le nom. Le nom sert au nom "
+"commercial affiché à l'écran."
+
+#. module: partner_legal_name
+#: model:ir.model.fields,field_description:partner_legal_name.field_base_document_layout__legal_name
+#: model:ir.model.fields,field_description:partner_legal_name.field_res_company__legal_name
+#: model:ir.model.fields,field_description:partner_legal_name.field_res_partner__legal_name
+#: model:ir.model.fields,field_description:partner_legal_name.field_res_users__legal_name
+msgid "Legal name"
+msgstr "Nom légal"
+
+#. module: partner_legal_name
+#: model_terms:ir.ui.view,arch_db:partner_legal_name.view_company_form_legal_name
+#: model_terms:ir.ui.view,arch_db:partner_legal_name.view_partner_form_legal_name
+msgid "e.g. Les services de consultation Blue Fox, Inc."
+msgstr "p. ex. Les services de consultation Blue Fox, Inc."
