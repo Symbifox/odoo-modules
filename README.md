@@ -345,7 +345,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_property_operations_portal` | Immeubles : de la demande au travail | 18.0.2.1.1 | BUSL-1.1 | Route an occupant's request to their building's team, and turn it into the work to be done |
 | `bf_property_operations_privacy` | Exploitation : pont vie privée (Loi 25) | 18.0.1.3.0 | BUSL-1.1 | Record in the Law 25 register what a work shift says about employees |
 | `bf_property_operations_records` | Copropriété : le carnet et l'exploitation | 18.0.3.3.0 | BUSL-1.1 | The maintenance logbook cites the equipment operations keeps, and flags when the two disagree |
-| `bf_property_portal` | Copropriété : portail de l'occupant | 18.0.6.11.1 | BUSL-1.1 | Occupant portal: notices, documents, contact details, maintenance requests, common-area bookings, parcels and visitors |
+| `bf_property_portal` | Copropriété : portail de l'occupant | 18.0.6.11.2 | BUSL-1.1 | Occupant portal: notices, documents, contact details, maintenance requests, common-area bookings, parcels and visitors |
 | `bf_property_privacy` | Copropriété : pont vie privée (Loi 25) | 18.0.2.1.1 | BUSL-1.1 | Record in the Law 25 register what the co-ownership suite collects, and link the art. 1070 consent to the Law 25 file |
 | `bf_property_records` | Copropriété : carnet, étude et attestations | 18.0.4.7.2 | BUSL-1.1 | Maintenance logbook, contingency fund study, syndicate certificate and the calendar of due dates |
 | `bf_property_securetransfer` | Copropriété : remise sécurisée des documents | 18.0.2.4.0 | BUSL-1.1 | Hand the certificate, the statement of charges and documents to a buyer by secure transfer, and know whether they were read |

@@ -447,7 +447,7 @@
                             </t>
                             <ul t-if="slot['busy']" class="mb-0">
                                 <li t-foreach="slot['busy']" t-as="busy">
-                                    <span t-out="busy['date_start']" t-options="{'widget': 'datetime'}"/> à <span t-out="busy['date_stop']" t-options="{'widget': 'datetime'}"/>
+                                    <span t-out="busy['date_start']" t-options="{'widget': 'datetime', 'hide_seconds': True}"/> à <span t-out="busy['date_stop']" t-options="{'widget': 'datetime', 'hide_seconds': True}"/>
                                 </li>
                             </ul>
                         </div>
@@ -471,8 +471,8 @@
                     <tbody>
                         <tr t-foreach="bookings" t-as="booking">
                             <td><span t-field="booking.common_area_id.name"/></td>
-                            <td><span t-field="booking.date_start"/></td>
-                            <td><span t-field="booking.date_stop"/></td>
+                            <td><span t-field="booking.date_start" t-options="{'hide_seconds': True}"/></td>
+                            <td><span t-field="booking.date_stop" t-options="{'hide_seconds': True}"/></td>
                             <td><span t-field="booking.state"/></td>
                             <td class="text-end">
                                 <form t-if="booking.state in ('requested', 'confirmed')"
@@ -520,7 +520,7 @@
                     </thead>
                     <tbody>
                         <tr t-foreach="parcels" t-as="parcel">
-                            <td><span t-field="parcel.date_received"/></td>
+                            <td><span t-field="parcel.date_received" t-options="{'hide_seconds': True}"/></td>
                             <td><span t-field="parcel.parcel_type"/></td>
                             <td><span t-field="parcel.carrier"/></td>
                             <td><span t-field="parcel.storage_location"/></td>
@@ -597,7 +597,7 @@
                     <tbody>
                         <tr t-foreach="visits" t-as="visit">
                             <td><span t-field="visit.visitor_name"/></td>
-                            <td><span t-field="visit.date_expected"/></td>
+                            <td><span t-field="visit.date_expected" t-options="{'hide_seconds': True}"/></td>
                             <td><span t-field="visit.visitor_kind"/></td>
                             <td><span t-field="visit.state"/></td>
                             <td class="text-end">

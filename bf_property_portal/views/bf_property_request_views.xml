@@ -9,7 +9,7 @@
                 <list decoration-danger="is_overdue or is_safety"
                       decoration-muted="state in ('done', 'refused')">
                     <field name="name"/>
-                    <field name="date_submitted"/>
+                    <field name="date_submitted" options="{'show_seconds': false}"/>
                     <field name="building_id"/>
                     <field name="unit_id" optional="show"/>
                     <field name="requester_partner_id"/>
@@ -17,7 +17,7 @@
                     <field name="portion_type"/>
                     <field name="is_safety" string="Sécurité"/>
                     <field name="responsible_user_id" optional="show"/>
-                    <field name="acknowledge_deadline" optional="hide"/>
+                    <field name="acknowledge_deadline" optional="hide" options="{'show_seconds': false}"/>
                     <field name="is_overdue" string="En retard"/>
                     <field name="state" widget="badge"
                            decoration-info="state == 'submitted'"
@@ -78,13 +78,13 @@
                         </group>
                         <group>
                             <group>
-                                <field name="date_submitted"/>
-                                <field name="acknowledge_deadline"/>
+                                <field name="date_submitted" options="{'show_seconds': false}"/>
+                                <field name="acknowledge_deadline" options="{'show_seconds': false}"/>
                                 <field name="is_overdue"/>
                             </group>
                             <group>
-                                <field name="date_acknowledged"/>
-                                <field name="date_done"/>
+                                <field name="date_acknowledged" options="{'show_seconds': false}"/>
+                                <field name="date_done" options="{'show_seconds': false}"/>
                             </group>
                         </group>
                         <notebook>

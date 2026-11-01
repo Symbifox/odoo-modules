@@ -417,8 +417,11 @@ the company's brand colour when the company carries one.
 Every page names itself in the portal breadcrumb, under "My co-ownership".
 The slots already taken in a common space are printed in the reader's time
 zone, like their own bookings below them, and a refused request shows its
-reason under "Reason for refusal", not under "What was done". The date a request
-was filed is shown in the reader's time zone, without seconds.
+reason under "Reason for refusal", not under "What was done". Every date and
+time the portal prints (a request filed, a parcel received, a visitor expected,
+a booking and the slots already taken) is shown in the reader's time zone,
+without seconds; so is every date and time on the office's lists and forms of
+parcels, visitors, requests and bookings (18.0.6.11.2).
 
 ## Security
 
@@ -458,8 +461,9 @@ an internal account, refused to a resident, with a link that opens the
 password page, followed over HTTP) and the syndicate's welcome after signup;
 and the branded layout on every message. What the pages show: the slots taken
 in the reader's time zone, every page named in the breadcrumb, the current
-announcements on the home page, a refusal labelled as one, and a register badge
-that stays readable on the website theme.
+announcements on the home page, a refusal labelled as one, a register badge
+that stays readable on the website theme, and no seconds on any date the portal
+or the office views print.
 
 ## Licence
 
@@ -476,7 +480,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 - **Requires a written agreement**: administering immovables for the account of
   others, and providing the module as a product or service to third parties,
   whether hosted, managed or resold.
-- **Change Date**: on 2030-10-19, this version converts automatically to
+- **Change Date**: on 2030-11-01, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Acknowledgements

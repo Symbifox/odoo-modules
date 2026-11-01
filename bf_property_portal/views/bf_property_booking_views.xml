@@ -13,8 +13,8 @@
                     <field name="building_id" optional="show"/>
                     <field name="partner_id"/>
                     <field name="unit_id" optional="hide"/>
-                    <field name="date_start"/>
-                    <field name="date_stop"/>
+                    <field name="date_start" options="{'show_seconds': false}"/>
+                    <field name="date_stop" options="{'show_seconds': false}"/>
                     <field name="duration_minutes" string="Minutes" optional="hide"/>
                     <field name="state" widget="badge"
                            decoration-info="state == 'requested'"
@@ -50,8 +50,8 @@
                                 <field name="unit_id"/>
                             </group>
                             <group>
-                                <field name="date_start"/>
-                                <field name="date_stop"/>
+                                <field name="date_start" options="{'show_seconds': false}"/>
+                                <field name="date_stop" options="{'show_seconds': false}"/>
                                 <field name="duration_minutes"/>
                             </group>
                         </group>

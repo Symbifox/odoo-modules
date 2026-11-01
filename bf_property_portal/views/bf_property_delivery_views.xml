@@ -9,7 +9,7 @@
                 <list decoration-muted="state != 'held'"
                       decoration-warning="parcel_type == 'perishable' and state == 'held'">
                     <field name="name"/>
-                    <field name="date_received"/>
+                    <field name="date_received" options="{'show_seconds': false}"/>
                     <field name="building_id" optional="show"/>
                     <field name="unit_id"/>
                     <field name="partner_id"/>
@@ -51,10 +51,10 @@
                         </group>
                         <group>
                             <group>
-                                <field name="date_received"/>
+                                <field name="date_received" options="{'show_seconds': false}"/>
                             </group>
                             <group>
-                                <field name="date_closed"/>
+                                <field name="date_closed" options="{'show_seconds': false}"/>
                                 <field name="collected_by"/>
                             </group>
                         </group>
@@ -98,7 +98,7 @@
             <field name="arch" type="xml">
                 <list decoration-muted="state in ('departed', 'cancelled')">
                     <field name="name"/>
-                    <field name="date_expected"/>
+                    <field name="date_expected" options="{'show_seconds': false}"/>
                     <field name="building_id" optional="show"/>
                     <field name="unit_id"/>
                     <field name="host_partner_id"/>
@@ -146,12 +146,12 @@
                         </group>
                         <group>
                             <group>
-                                <field name="date_expected"/>
-                                <field name="date_expected_end"/>
+                                <field name="date_expected" options="{'show_seconds': false}"/>
+                                <field name="date_expected_end" options="{'show_seconds': false}"/>
                             </group>
                             <group>
-                                <field name="date_arrived"/>
-                                <field name="date_departed"/>
+                                <field name="date_arrived" options="{'show_seconds': false}"/>
+                                <field name="date_departed" options="{'show_seconds': false}"/>
                             </group>
                         </group>
                         <field name="note"/>

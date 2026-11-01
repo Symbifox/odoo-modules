@@ -280,3 +280,71 @@ class TestPortalAffichage(HttpCase):
         texte = self._page("/my/property")
         self.assertIn('title="Pinned"', texte)
         self.assertNotIn('title="Épinglée"', texte)
+
+    def test_parcels_visitors_and_bookings_show_no_seconds(self):
+        """« 18:15:37 » : la date d'un colis, l'heure attendue d'un visiteur et
+        les bornes d'une réservation portaient leurs secondes. Même défaut que la
+        date d'une demande, resté sur les trois autres tableaux."""
+        tz = pytz.timezone("America/Montreal")
+        moment = (fields.Datetime.now() + timedelta(days=6)).replace(
+            hour=15, minute=20, second=41, microsecond=0
+        )
+        local = pytz.utc.localize(moment).astimezone(tz)
+        avec, sans = local.strftime("%H:%M:%S"), local.strftime("%H:%M")
+        self.env["bf.property.parcel"].create(
+            {
+                "organisation_id": self.syndicat.id,
+                "building_id": self.building.id,
+                "unit_id": self.unit.id,
+                "partner_id": self.partner.id,
+                "date_received": moment,
+            }
+        )
+        self.env["bf.property.visit"].create(
+            {
+                "organisation_id": self.syndicat.id,
+                "building_id": self.building.id,
+                "unit_id": self.unit.id,
+                "host_partner_id": self.partner.id,
+                "visitor_name": "Visiteur de l'affichage",
+                "date_expected": moment,
+            }
+        )
+        texte = self._page("/my/property/deliveries")
+        self.assertIn("Visiteur de l'affichage", texte)
+        self.assertGreaterEqual(texte.count(sans), 2, "colis et visiteur absents à l'heure locale")
+        self.assertNotIn(avec, texte)
+        self.env["bf.property.booking"].create(
+            {
+                "common_area_id": self.hall.id,
+                "partner_id": self.partner.id,
+                "date_start": moment,
+                "date_stop": moment + timedelta(hours=1),
+            }
+        )
+        texte = self._page("/my/property/bookings")
+        self.assertIn(sans, texte)
+        self.assertNotIn(avec, texte)
+
+    def test_office_views_show_no_seconds(self):
+        """Au bureau, les listes et fiches des colis, visiteurs, demandes et
+        réservations montraient « 2026-11-02 18:00:00 » : chaque champ date-heure
+        de ces vues porte `show_seconds: false`."""
+        from lxml import etree
+
+        # L'option s'écrit à la JavaScript (`false`), comme dans tout le module.
+        sans_secondes = re.compile(r"['\"]show_seconds['\"]\s*:\s*(false|False)\b")
+
+        for model in ("bf.property.parcel", "bf.property.visit",
+                      "bf.property.request", "bf.property.booking"):
+            Model = self.env[model]
+            for view_type in ("list", "form"):
+                arch = Model.get_view(view_type=view_type)["arch"]
+                for node in etree.fromstring(arch).iter("field"):
+                    field = Model._fields.get(node.get("name"))
+                    if not field or field.type != "datetime":
+                        continue
+                    self.assertRegex(
+                        node.get("options") or "", sans_secondes,
+                        "%s %s : %s" % (model, view_type, node.get("name")),
+                    )

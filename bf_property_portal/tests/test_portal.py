@@ -17,6 +17,8 @@ d'immeuble ordinaire se tromperait :
 """
 from datetime import timedelta
 
+import pytz
+
 from odoo import fields
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests.common import HttpCase, TransactionCase, tagged
@@ -1328,6 +1330,10 @@ class TestPropertyBookingPortal(HttpCase):
                 "login": "booking_page_user",
                 "password": "booking_page_pwd",
                 "partner_id": cls.partner.id,
+                # Un fuseau posé : sans lui, le serveur en prête un à la requête
+                # (celui de la base) que l'essai ne voit pas, et l'heure postée
+                # se lit décalée de 4 ou 5 heures.
+                "tz": "America/Montreal",
                 "groups_id": [(6, 0, [cls.env.ref("base.group_portal").id])],
             }
         )
@@ -1401,13 +1407,22 @@ class TestPropertyBookingPortal(HttpCase):
         self.authenticate("booking_page_user", "booking_page_pwd")
         page = self.url_open("/my/property/bookings")
         before = self.env["bf.property.booking"].search_count([])
+        # `datetime-local` poste l'heure LOCALE de l'usager. Poster l'UTC brute
+        # décalait le créneau de 4 ou 5 heures : plus de conflit, la
+        # réservation passait, et l'essai échouait sur toute base qui prête un
+        # fuseau à l'usager (une base où les usagers en ont un), jamais en CI.
+        zone = pytz.timezone(self.user.tz)
+
+        def local(moment):
+            return pytz.utc.localize(moment).astimezone(zone).strftime("%Y-%m-%dT%H:%M")
+
         response = self.url_open(
             "/my/property/bookings/new",
             data={
                 "csrf_token": self._csrf(page.text),
                 "common_area_id": str(self.hall.id),
-                "date_start": self.foreign_booking.date_start.strftime("%Y-%m-%dT%H:%M"),
-                "date_stop": self.foreign_booking.date_stop.strftime("%Y-%m-%dT%H:%M"),
+                "date_start": local(self.foreign_booking.date_start),
+                "date_stop": local(self.foreign_booking.date_stop),
             },
         )
         self.assertEqual(response.status_code, 200)
