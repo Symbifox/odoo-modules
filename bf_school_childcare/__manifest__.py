@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : service de garde",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "School child care: periods and places, regular registrations, occasional bookings, "
                "daily sheets with arrivals and departures, who may pick up a child, leaving alone",
