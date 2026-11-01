@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_host_purge" model="ir.cron">
+        <field name="name">Host stand: erase the guests' names and notes after a day</field>
+        <field name="model_id" ref="model_bf_host_seating"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_bf_purge()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=8, minute=17, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+</odoo>

@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_section_pos_user,section register,model_bf_host_section,point_of_sale.group_pos_user,1,0,0,0
+access_section_pos_manager,section register manager,model_bf_host_section,point_of_sale.group_pos_manager,1,1,1,1
+access_section_kitchen_manager,section kitchen manager,model_bf_host_section,bf_kitchen.group_kitchen_manager,1,1,1,1
+access_seating_pos_user,seating register,model_bf_host_seating,point_of_sale.group_pos_user,1,0,0,0
+access_seating_kitchen_manager,seating kitchen manager,model_bf_host_seating,bf_kitchen.group_kitchen_manager,1,0,0,0
+access_wait_pos_user,wait register,model_bf_host_wait,point_of_sale.group_pos_user,1,0,0,0
+access_wait_kitchen_manager,wait kitchen manager,model_bf_host_wait,bf_kitchen.group_kitchen_manager,1,0,0,0

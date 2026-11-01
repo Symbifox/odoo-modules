@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The floor plan: each table's state, and the host's panel -->
+    <t t-name="bf_kitchen_host.FloorScreen" t-inherit="pos_restaurant.FloorScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('floor-selector')]" position="after">
+            <div t-if="bfHostOn and !pos.isEditMode" class="bf-host-toggle d-flex align-items-center gap-2 p-2">
+                <span t-if="bfHost.armedWait" class="badge text-bg-primary fs-6">
+                    <t t-esc="bfHostArmedLabel"/>
+                    <i class="fa fa-times ms-1 cursor-pointer" t-on-click.stop="bfHostCancelMode" title="Cancel"/>
+                </span>
+                <span t-if="bfHost.moving" class="badge text-bg-warning fs-6">
+                    Choose the free table to move to
+                    <i class="fa fa-times ms-1 cursor-pointer" t-on-click.stop="bfHostCancelMode" title="Cancel"/>
+                </span>
+                <button class="btn btn-lg btn-light bf-host-panel-button" t-on-click="bfHostToggle"
+                        t-att-class="{'active': bfHostPanelOpen}">
+                    <i class="fa fa-users me-1" role="img" aria-label="Host stand"/> Host stand
+                </button>
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('info')]" position="after">
+            <t t-set="bfBadge" t-value="bfHostBadge(table)"/>
+            <div t-if="bfBadge" class="bf-host-badge position-absolute bottom-0 start-0 end-0 d-flex align-items-center justify-content-center gap-1 smaller fw-bold"
+                 t-attf-class="bf-host-{{bfBadge.state}} {{bfBadge.moving ? 'bf-host-moving' : ''}} {{bfBadge.next ? 'bf-host-next' : ''}}"
+                 t-attf-style="{{bfBadge.color ? 'border-bottom: 5px solid ' + bfBadge.color + ';' : ''}}">
+                <i t-if="bfBadge.icon" t-attf-class="fa {{bfBadge.icon}}" role="img"/>
+                <span t-if="bfBadge.covers" t-esc="bfBadge.covers"/>
+                <span t-if="bfBadge.server" class="text-truncate" t-esc="bfBadge.server"/>
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('floor-screen')]" position="inside">
+            <div t-if="bfHostOn and bfHostPanelOpen and !pos.isEditMode" class="bf-host-panel position-absolute end-0 bg-white border-start shadow-sm overflow-auto p-3 d-flex flex-column gap-3">
+                <div t-if="pos.bfHostOffline" class="alert alert-warning m-0 py-2">Offline: the host stand is not up to date.</div>
+
+                <t t-set="pace" t-value="bfHostPace"/>
+                <div t-if="pace" class="bf-host-pace rounded p-2" t-attf-class="bf-host-pace-{{pace.level}}">
+                    <div class="fw-bold fs-5" t-esc="pace.advice"/>
+                    <div t-esc="pace.covers"/>
+                    <div t-esc="pace.kitchen"/>
+                </div>
+
+                <div t-if="!bfHostIsHost" class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="bf_host_seat_mode" t-model="bfHost.seatMode"/>
+                    <label class="form-check-label" for="bf_host_seat_mode">Seat guests (a table opens the host's window)</label>
+                </div>
+
+                <div>
+                    <h5 class="mb-2">Sections</h5>
+                    <div t-if="bfHostNext" class="text-primary fw-bold mb-2" t-esc="bfHostNext"/>
+                    <div t-if="!bfHostSections.length" class="text-muted">No section: set them in Kitchen, Configuration, Host sections.</div>
+                    <div t-foreach="bfHostSections" t-as="section" t-key="section.id" class="bf-host-section d-flex align-items-center gap-2 py-1 border-bottom">
+                        <span class="bf-host-dot rounded-circle" t-attf-style="background: {{section.hex}};"/>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold"><t t-esc="section.name"/>
+                                <i t-if="section.recent" class="fa fa-exclamation-triangle text-warning ms-1" title="Just seated"/></div>
+                            <div class="small text-muted" t-esc="section.detail"/>
+                        </div>
+                        <select class="form-select form-select-sm w-auto" t-on-change="(ev) => this.bfHostAssign(section, ev)">
+                            <option value="" t-att-selected="!section.employee_id">No server</option>
+                            <t t-foreach="bfHostServers" t-as="server" t-key="server.id">
+                                <option t-att-value="server.id" t-att-selected="server.id === section.employee_id" t-esc="server.name"/>
+                            </t>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h5 class="m-0">Waiting list</h5>
+                        <button class="btn btn-primary" t-on-click="bfHostAddWait"><i class="fa fa-plus me-1"/>Add</button>
+                    </div>
+                    <div t-if="bfHostQuote" class="small text-muted mb-2" t-esc="bfHostQuote"/>
+                    <div t-if="!bfHostWaits.length" class="text-muted">Nobody is waiting.</div>
+                    <div t-foreach="bfHostWaits" t-as="wait" t-key="wait.id" class="bf-host-wait d-flex align-items-center gap-2 py-1 border-bottom"
+                         t-att-class="{'bf-host-late': wait.late, 'bf-host-armed': wait.armed}">
+                        <div class="flex-grow-1">
+                            <div class="fw-bold"><t t-esc="wait.name"/>, <t t-esc="wait.covers"/></div>
+                            <div class="small" t-esc="wait.detail"/>
+                            <div t-if="wait.note" class="small text-danger" t-esc="wait.note"/>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary" t-on-click="() => this.bfHostArm(wait)">Seat</button>
+                        <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.bfHostWaitLeft(wait)" title="Left">
+                            <i class="fa fa-sign-out" role="img" aria-label="Left"/>
+                        </button>
+                    </div>
+                </div>
+
+                <div t-if="bfHostToClear.length">
+                    <h5 class="mb-2">To clear</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button t-foreach="bfHostToClear" t-as="item" t-key="item.id" class="btn btn-outline-dark"
+                                t-on-click="() => this.bfHostClear(item)">
+                            <i class="fa fa-eraser me-1"/><t t-esc="item.label"/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+
+    <!-- Seat a party -->
+    <t t-name="bf_kitchen_host.SeatDialog">
+        <Dialog title="title" size="'md'">
+            <div class="d-flex flex-column gap-3">
+                <div t-if="state.server" class="text-muted" t-esc="serverLabel"/>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="fw-bold">Covers</span>
+                    <button class="btn btn-lg btn-light" t-on-click="() => this.step(-1)">-</button>
+                    <span class="fs-3 fw-bold bf-host-covers" t-esc="state.covers"/>
+                    <button class="btn btn-lg btn-light" t-on-click="() => this.step(1)">+</button>
+                </div>
+                <input class="form-control" placeholder="Name (erased at closing)" t-model="state.name"/>
+                <input class="form-control" placeholder="Note for the server and the kitchen (allergy, occasion)" t-model="state.note"/>
+                <div t-foreach="state.warnings" t-as="warning" t-key="warning_index" class="alert alert-warning m-0 py-2" t-esc="warning"/>
+                <div t-if="state.error" class="alert alert-danger m-0 py-2" t-esc="state.error"/>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg" t-att-disabled="state.busy" t-on-click="confirm">Seat</button>
+                <button class="btn btn-secondary btn-lg" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <!-- A table taken -->
+    <t t-name="bf_kitchen_host.TableDialog">
+        <Dialog title="title" size="'md'">
+            <div class="d-flex flex-column gap-3">
+                <div class="fw-bold" t-esc="stateLabel"/>
+                <div t-if="props.row.seating_id" class="text-muted" t-esc="seatedLabel"/>
+                <div t-else="" class="text-muted">Opened at the register before the host stand: nothing to change here.</div>
+                <t t-if="props.row.seating_id and props.row.state !== 'to_clear'">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="fw-bold">Covers</span>
+                        <button class="btn btn-lg btn-light" t-on-click="() => this.step(-1)">-</button>
+                        <span class="fs-3 fw-bold bf-host-covers" t-esc="state.covers"/>
+                        <button class="btn btn-lg btn-light" t-on-click="() => this.step(1)">+</button>
+                    </div>
+                    <input class="form-control" placeholder="Name (erased at closing)" t-model="state.name"/>
+                    <input class="form-control" placeholder="Note for the server and the kitchen (allergy, occasion)" t-model="state.note"/>
+                </t>
+                <div t-if="state.error" class="alert alert-danger m-0 py-2" t-esc="state.error"/>
+            </div>
+            <t t-set-slot="footer">
+                <button t-if="props.row.state === 'to_clear'" class="btn btn-primary btn-lg" t-att-disabled="state.busy" t-on-click="clear">Table cleared</button>
+                <button t-if="props.row.seating_id and props.row.state !== 'to_clear'" class="btn btn-primary btn-lg" t-att-disabled="state.busy" t-on-click="save">Save</button>
+                <button t-if="props.row.state === 'seated' and !props.row.has_order" class="btn btn-light btn-lg" t-on-click="move">Move</button>
+                <button t-if="props.row.state === 'seated' and !props.row.has_order" class="btn btn-light btn-lg" t-att-disabled="state.busy" t-on-click="clear">Left without ordering</button>
+                <button t-if="props.canOpen" class="btn btn-light btn-lg" t-on-click="open">Open the order</button>
+                <button class="btn btn-secondary btn-lg" t-on-click="props.close">Close</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <!-- Waiting list -->
+    <t t-name="bf_kitchen_host.WaitDialog">
+        <Dialog title.translate="Waiting list" size="'md'">
+            <div class="d-flex flex-column gap-3">
+                <input class="form-control" placeholder="Name to call the party" t-model="state.name"/>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="fw-bold">Covers</span>
+                    <button class="btn btn-lg btn-light" t-on-click="() => this.step(-1)">-</button>
+                    <span class="fs-3 fw-bold bf-host-covers" t-esc="state.covers"/>
+                    <button class="btn btn-lg btn-light" t-on-click="() => this.step(1)">+</button>
+                </div>
+                <input class="form-control" placeholder="Note (allergy, high chair, terrace)" t-model="state.note"/>
+                <div t-if="quoteLabel" class="alert alert-info m-0 py-2 fs-5" t-esc="quoteLabel"/>
+                <div t-if="state.error" class="alert alert-danger m-0 py-2" t-esc="state.error"/>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg" t-att-disabled="state.busy" t-on-click="confirm">Add</button>
+                <button class="btn btn-secondary btn-lg" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>

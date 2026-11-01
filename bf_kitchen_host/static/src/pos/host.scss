@@ -1,0 +1,35 @@
+.bf-host-panel {
+    top: 0;
+    bottom: 0;
+    width: 360px;
+    max-width: 100%;
+    z-index: 5;
+}
+.floor-screen .bf-host-panel {
+    top: 4.5rem;
+}
+.bf-host-badge {
+    height: 1.6rem;
+    background: rgba(255, 255, 255, 0.85);
+    color: #212529;
+    border-radius: 0 0 4px 4px;
+    pointer-events: none;
+}
+.bf-host-seated { background: #cfe2ff; }
+.bf-host-ordered { background: #fff3cd; }
+.bf-host-served { background: #d1e7dd; }
+.bf-host-to_clear { background: #e2e3e5; color: #6c757d; }
+.bf-host-moving { outline: 3px dashed #fd7e14; }
+.bf-host-next.bf-host-free { outline: 3px solid #0d6efd; }
+.bf-host-dot {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+}
+.bf-host-pace-green { background: #d1e7dd; }
+.bf-host-pace-amber { background: #fff3cd; }
+.bf-host-pace-red { background: #f8d7da; }
+.bf-host-late { background: #fff3cd; }
+.bf-host-armed { outline: 2px solid #0d6efd; }
+.bf-host-covers { min-width: 2.5rem; text-align: center; }

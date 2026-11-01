@@ -1,0 +1,952 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_kitchen_host
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 12:39+0000\n"
+"PO-Revision-Date: 2026-11-01 12:39+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "%(covers)s / %(limit)s covers in 15 min"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid ""
+"%(covers)s covers, open tables: %(open)s, last seated %(minutes)s min ago"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "%(covers)s covers, open tables: %(open)s, none seated yet"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/wait.py:0
+msgid "%(name)s, %(covers)s"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "%(table)s, %(covers)s covers"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "%(tickets)s kitchen tickets open, oldest %(oldest)s min"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "%s covers in 15 min"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "%s does not work at this register."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_pos_config__bf_host_ticket_alert_minutes
+#: model:ir.model.fields,help:bf_kitchen_host.field_res_config_settings__pos_bf_host_ticket_alert_minutes
+msgid "A kitchen ticket still open after this delay turns the pace gauge red."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "A party has from 1 to %s guests."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_pos_config__bf_host_double_seat_minutes
+#: model:ir.model.fields,help:bf_kitchen_host.field_res_config_settings__pos_bf_host_double_seat_minutes
+msgid ""
+"A section seated again within this delay is a double seating: the host is "
+"warned."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "A table is free now."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Add"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_section_view_search
+msgid "Archived"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_wait_view_search
+msgid "Arrived"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__arrived_at
+msgid "Arrived At"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_search
+msgid "At a table"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "Choose a free table."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "Choose a table for %s"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Choose the free table to move to"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields.selection,name:bf_kitchen_host.selection__bf_host_seating__state__done
+msgid "Cleared"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__cleared_at
+msgid "Cleared At"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Close"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__color
+msgid "Color"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__company_id
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__company_id
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model,name:bf_kitchen_host.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__party_size
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__party_size
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_wait_view_list
+msgid "Covers"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_pos_config__bf_host_pace_covers
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_res_config_settings__pos_bf_host_pace_covers
+msgid "Covers per 15 minutes"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__create_date
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__create_date
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_search
+msgid "Day"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__display_name
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__display_name
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_pos_config__bf_host_double_seat_minutes
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_res_config_settings__pos_bf_host_double_seat_minutes
+msgid "Double seating (minutes)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "Double seating: section %(section)s was seated %(minutes)s min ago."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.actions.act_window,help:bf_kitchen_host.bf_host_seating_action
+msgid ""
+"Each party seated at the register's floor plan, by the host or by a server, with how long its\n"
+"               meal lasted. Names and notes are erased when the session closes."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model,name:bf_kitchen_host.model_hr_employee
+msgid "Employee"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_pos_config__bf_host_employee_ids
+#: model:ir.model.fields,help:bf_kitchen_host.field_res_config_settings__pos_bf_host_employee_ids
+msgid ""
+"Employees who seat the guests at this register, with their PIN: they see the"
+" floor plan only, never an order nor a payment. A manager keeps every right."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_bf_host_seating__guest_name
+#: model:ir.model.fields,help:bf_kitchen_host.field_bf_host_wait__guest_name
+#: model:ir.model.fields,help:bf_kitchen_host.field_bf_host_wait__note
+msgid "Erased when the session closes."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_bf_host_seating__note_history
+msgid ""
+"Every note the seating had, to erase them all from the orders. Erased with "
+"it."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_bf_host_seating__duration
+msgid "From seated to paid."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__wait_id
+msgid "From the waiting list"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/wait.py:0
+msgid "Give a name to call the party."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "Hold the door"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model,name:bf_kitchen_host.model_bf_host_section
+msgid "Host section"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.actions.act_window,name:bf_kitchen_host.bf_host_section_action
+#: model:ir.ui.menu,name:bf_kitchen_host.menu_host_sections
+msgid "Host sections"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_pos_config__bf_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_res_config_settings__pos_bf_host
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.res_config_settings_view_form
+msgid "Host stand"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.actions.server,name:bf_kitchen_host.cron_host_purge_ir_actions_server
+msgid "Host stand: erase the guests' names and notes after a day"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_pos_config__bf_host_employee_ids
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_res_config_settings__pos_bf_host_employee_ids
+msgid "Hosts"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.res_config_settings_view_form
+msgid ""
+"Hosts seat the guests on the floor plan: sections in turn, waiting list, "
+"kitchen pace"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__id
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__id
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "It is section %(next)s's turn (%(server)s), not %(this)s."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Just seated"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_pos_config__bf_host_ticket_alert_minutes
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_res_config_settings__pos_bf_host_ticket_alert_minutes
+msgid "Kitchen ticket alert (minutes)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__write_date
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__write_date
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+#: model:ir.model.fields.selection,name:bf_kitchen_host.selection__bf_host_seating__state__left
+#: model:ir.model.fields.selection,name:bf_kitchen_host.selection__bf_host_wait__state__left
+msgid "Left"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_wait_view_search
+msgid "Left before a table"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_search
+msgid "Left without ordering"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__duration
+msgid "Meal (minutes)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Move"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__guest_name
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__name
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__guest_name
+msgid "Name"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Name (erased at closing)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Name to call the party"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "Next: %(section)s, %(server)s"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "Next: %(section)s, %(server)s (table %(table)s)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "No kitchen ticket open"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.actions.act_window,help:bf_kitchen_host.bf_host_seating_action
+msgid "No seating yet"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "No section: set them in Kitchen, Configuration, Host sections."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "No server"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Nobody is waiting."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.actions.act_window,help:bf_kitchen_host.bf_host_wait_action
+msgid "Nobody waited"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__note
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__note
+msgid "Note"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Note (allergy, high chair, terrace)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__note_history
+msgid "Note History"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Note for the server and the kitchen (allergy, occasion)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Offline: the host stand is not up to date."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.actions.act_window,help:bf_kitchen_host.bf_host_section_action
+msgid ""
+"One server per section for a service. The host seats the sections in turn; the server of a\n"
+"               section changes at the register, from the host's panel."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Open the order"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Opened at the register before the host stand: nothing to change here."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+#: model:ir.model.fields.selection,name:bf_kitchen_host.selection__bf_host_seating__state__ordered
+msgid "Ordered"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__ordered_at
+msgid "Ordered At"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__order_ids
+msgid "Orders"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__paid_at
+msgid "Paid At"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "Paid: to clear"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/wait.py:0
+msgid "Party"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_bf_host_seating__note
+msgid ""
+"Passed to the order. Erased when the session closes, from the order and its "
+"kitchen tickets too."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model,name:bf_kitchen_host.model_pos_config
+msgid "Point of Sale Configuration"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model,name:bf_kitchen_host.model_pos_order
+msgid "Point of Sale Orders"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model,name:bf_kitchen_host.model_pos_session
+msgid "Point of Sale Session"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "Quote about %s min."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__config_id
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__config_id
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__config_id
+msgid "Register"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Save"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Seat"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "Seat at table %s"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Seat guests (a table opens the host's window)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields.selection,name:bf_kitchen_host.selection__bf_host_seating__state__seated
+#: model:ir.model.fields.selection,name:bf_kitchen_host.selection__bf_host_wait__state__seated
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_search
+msgid "Seated"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "Seated %s min ago."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__seated_at
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__seated_at
+msgid "Seated At"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__host_id
+msgid "Seated by"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "Seated, no order yet"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model,name:bf_kitchen_host.model_bf_host_seating
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__seating_id
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_pos_order__bf_host_seating_id
+msgid "Seating"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.actions.act_window,name:bf_kitchen_host.bf_host_seating_action
+#: model:ir.ui.menu,name:bf_kitchen_host.menu_host_seatings
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_graph
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_pivot
+msgid "Seatings"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__section_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_search
+msgid "Section"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_pos_config__bf_host_section_ids
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.res_config_settings_view_form
+msgid "Sections"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "Served"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__employee_id
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__employee_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_search
+msgid "Server"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "Server: %(server)s. Seated %(minutes)s min ago."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "Server: %s"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__session_id
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__session_id
+msgid "Session"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid "Slow down"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.actions.act_window,help:bf_kitchen_host.bf_host_section_action
+msgid "Split the floor in sections"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__state
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__state
+msgid "State"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__table_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_seating_view_search
+msgid "Table"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/section.py:0
+msgid "Table %(table)s is already in the section %(section)s."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "Table %(table)s seats %(seats)s, for a party of %(party)s."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "Table %(table)s seats %(seats)s: a smaller table is free."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "Table %s"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "Table %s is not free."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/section.py:0
+msgid "Table %s is not on a floor of this register."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+msgid "Table cleared"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_seating__table_name
+msgid "Table name"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_section__table_ids
+msgid "Tables"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_pos_config__bf_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_res_config_settings__pos_bf_host
+msgid ""
+"The floor plan shows where each table is, the sections, the waiting list and"
+" the kitchen's pace; the hosts below seat the guests."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "The host stand is for the register's users."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "The host stand is not on at this register."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/pos_config.py:0
+msgid ""
+"The host stand's delays and ceiling cannot be negative, and the usual meal "
+"length must be above zero."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model_terms:ir.actions.act_window,help:bf_kitchen_host.bf_host_wait_action
+msgid ""
+"The parties the host put on the waiting list, the wait quoted and the wait "
+"they had."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+#: code:addons/bf_kitchen_host/static/src/pos/host_dialogs.js:0
+msgid "The server did not answer."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "This party has left."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "This party has ordered: move its order from the table."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+#: code:addons/bf_kitchen_host/models/wait.py:0
+msgid "This party is no longer waiting."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "This register no longer exists."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "This section no longer exists."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "This table has an order still open."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "This table is already cleared."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-python
+#: code:addons/bf_kitchen_host/models/seating.py:0
+msgid "This table is not on this register's floors."
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+#: model:ir.model.fields.selection,name:bf_kitchen_host.selection__bf_host_seating__state__to_clear
+msgid "To clear"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_pos_config__bf_host_turn_minutes
+#: model:ir.model.fields,help:bf_kitchen_host.field_res_config_settings__pos_bf_host_turn_minutes
+msgid ""
+"Used to quote a wait until this register has seen enough meals of each party"
+" size."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_pos_config__bf_host_turn_minutes
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_res_config_settings__pos_bf_host_turn_minutes
+msgid "Usual meal length (minutes)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid ""
+"Wait now: 2 guests %(two)s min, 4 guests %(four)s min, 6 guests %(six)s min"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__quoted_minutes
+msgid "Wait quoted (minutes)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,field_description:bf_kitchen_host.field_bf_host_wait__waited_minutes
+msgid "Waited (minutes)"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields.selection,name:bf_kitchen_host.selection__bf_host_wait__state__waiting
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_host.bf_host_wait_view_search
+msgid "Waiting"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/floor_screen_patch.js:0
+msgid ""
+"Waiting %(minutes)s min, quoted %(quoted)s min, a table in about "
+"%(estimate)s min"
+msgstr ""
+
+#. module: bf_kitchen_host
+#. odoo-javascript
+#: code:addons/bf_kitchen_host/static/src/pos/host.xml:0
+#: model:ir.actions.act_window,name:bf_kitchen_host.bf_host_wait_action
+#: model:ir.ui.menu,name:bf_kitchen_host.menu_host_waits
+msgid "Waiting list"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model,name:bf_kitchen_host.model_bf_host_wait
+msgid "Waiting party"
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_pos_config__bf_host_pace_covers
+#: model:ir.model.fields,help:bf_kitchen_host.field_res_config_settings__pos_bf_host_pace_covers
+msgid ""
+"What the kitchen can take in 15 minutes before its tickets pile up. 0: no "
+"ceiling."
+msgstr ""
+
+#. module: bf_kitchen_host
+#: model:ir.model.fields,help:bf_kitchen_host.field_bf_host_section__employee_id
+msgid ""
+"Who serves this section now. The host changes it at the start of a service."
+msgstr ""

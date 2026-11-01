@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sections -->
+    <record id="bf_host_section_view_list" model="ir.ui.view">
+        <field name="name">bf.host.section.list</field>
+        <field name="model">bf.host.section</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="config_id" options="{'no_create': True}"/>
+                <field name="table_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                <field name="employee_id" options="{'no_create': True}"/>
+                <field name="color" widget="color_picker"/>
+                <field name="company_id" column_invisible="True"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+    <record id="bf_host_section_view_search" model="ir.ui.view">
+        <field name="name">bf.host.section.search</field>
+        <field name="model">bf.host.section</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="config_id"/>
+                <field name="employee_id"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+    <record id="bf_host_section_action" model="ir.actions.act_window">
+        <field name="name">Host sections</field>
+        <field name="res_model">bf.host.section</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Split the floor in sections</p>
+            <p>One server per section for a service. The host seats the sections in turn; the server of a
+               section changes at the register, from the host's panel.</p>
+        </field>
+    </record>
+
+    <!-- Seatings -->
+    <record id="bf_host_seating_view_list" model="ir.ui.view">
+        <field name="name">bf.host.seating.list</field>
+        <field name="model">bf.host.seating</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="seated_at"/>
+                <field name="config_id" optional="hide"/>
+                <field name="table_name" string="Table"/>
+                <field name="section_id" optional="show"/>
+                <field name="employee_id"/>
+                <field name="host_id" optional="show"/>
+                <field name="party_size" sum="Covers"/>
+                <field name="guest_name" optional="hide"/>
+                <field name="duration"/>
+                <field name="state" widget="badge" decoration-info="state == 'seated'"
+                       decoration-warning="state == 'to_clear'" decoration-success="state == 'done'"
+                       decoration-muted="state == 'left'"/>
+            </list>
+        </field>
+    </record>
+    <record id="bf_host_seating_view_form" model="ir.ui.view">
+        <field name="name">bf.host.seating.form</field>
+        <field name="model">bf.host.seating</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <header><field name="state" widget="statusbar" statusbar_visible="seated,ordered,to_clear,done"/></header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="config_id"/>
+                            <field name="table_name" string="Table"/>
+                            <field name="section_id"/>
+                            <field name="employee_id"/>
+                            <field name="host_id"/>
+                            <field name="party_size"/>
+                            <field name="guest_name"/>
+                            <field name="note"/>
+                        </group>
+                        <group>
+                            <field name="seated_at"/>
+                            <field name="ordered_at"/>
+                            <field name="paid_at"/>
+                            <field name="cleared_at"/>
+                            <field name="duration"/>
+                            <field name="wait_id"/>
+                        </group>
+                    </group>
+                    <field name="order_ids"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="bf_host_seating_view_pivot" model="ir.ui.view">
+        <field name="name">bf.host.seating.pivot</field>
+        <field name="model">bf.host.seating</field>
+        <field name="arch" type="xml">
+            <pivot string="Seatings" sample="1">
+                <field name="employee_id" type="row"/>
+                <field name="seated_at" interval="day" type="col"/>
+                <field name="party_size" type="measure"/>
+                <field name="duration" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="bf_host_seating_view_graph" model="ir.ui.view">
+        <field name="name">bf.host.seating.graph</field>
+        <field name="model">bf.host.seating</field>
+        <field name="arch" type="xml">
+            <graph string="Seatings" type="bar" sample="1">
+                <field name="seated_at" interval="hour"/>
+                <field name="party_size" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="bf_host_seating_view_search" model="ir.ui.view">
+        <field name="name">bf.host.seating.search</field>
+        <field name="model">bf.host.seating</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="table_name" string="Table"/>
+                <field name="employee_id"/>
+                <field name="config_id"/>
+                <filter name="live" string="At a table" domain="[('state', 'in', ('seated', 'ordered', 'to_clear'))]"/>
+                <filter name="left" string="Left without ordering" domain="[('state', '=', 'left')]"/>
+                <separator/>
+                <filter name="seated_at" string="Seated" date="seated_at"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_server" string="Server" context="{'group_by': 'employee_id'}"/>
+                    <filter name="by_section" string="Section" context="{'group_by': 'section_id'}"/>
+                    <filter name="by_day" string="Day" context="{'group_by': 'seated_at:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="bf_host_seating_action" model="ir.actions.act_window">
+        <field name="name">Seatings</field>
+        <field name="res_model">bf.host.seating</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No seating yet</p>
+            <p>Each party seated at the register's floor plan, by the host or by a server, with how long its
+               meal lasted. Names and notes are erased when the session closes.</p>
+        </field>
+    </record>
+
+    <!-- Waiting list -->
+    <record id="bf_host_wait_view_list" model="ir.ui.view">
+        <field name="name">bf.host.wait.list</field>
+        <field name="model">bf.host.wait</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="arrived_at"/>
+                <field name="config_id" optional="hide"/>
+                <field name="guest_name"/>
+                <field name="party_size" sum="Covers"/>
+                <field name="quoted_minutes"/>
+                <field name="waited_minutes"/>
+                <field name="state" widget="badge" decoration-info="state == 'waiting'"
+                       decoration-success="state == 'seated'" decoration-muted="state == 'left'"/>
+            </list>
+        </field>
+    </record>
+    <record id="bf_host_wait_view_search" model="ir.ui.view">
+        <field name="name">bf.host.wait.search</field>
+        <field name="model">bf.host.wait</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="guest_name"/>
+                <filter name="waiting" string="Waiting" domain="[('state', '=', 'waiting')]"/>
+                <filter name="left" string="Left before a table" domain="[('state', '=', 'left')]"/>
+                <separator/>
+                <filter name="arrived_at" string="Arrived" date="arrived_at"/>
+            </search>
+        </field>
+    </record>
+    <record id="bf_host_wait_action" model="ir.actions.act_window">
+        <field name="name">Waiting list</field>
+        <field name="res_model">bf.host.wait</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nobody waited</p>
+            <p>The parties the host put on the waiting list, the wait quoted and the wait they had.</p>
+        </field>
+    </record>
+</odoo>

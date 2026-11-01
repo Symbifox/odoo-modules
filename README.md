@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**287 modules are BUSL-1.1.** The source is published and auditable, and **you
+**288 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -262,6 +262,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_key_management` | Symbifox Keys | 18.0.1.0.15 | BUSL-1.1 | Who holds which key, card or remote of the premises, which doors each one opens, and nothing forgotten when someone leaves |
 | `bf_kitchen` | Symbifox: kitchen | 18.0.1.3.0 | BUSL-1.1 | Kitchen management for restaurants, caterers and kitchens: recipes and plate cost from the last vendor bill, kitchen counts and losses, theoretical/actual variance, supplier orders by delivery day |
 | `bf_kitchen_display` | Symbifox: kitchen display | 18.0.1.0.0 | BUSL-1.1 | The dishes a waiter sends from Odoo's register reach a kitchen screen, station by station: to do, in progress, ready, served; a dish cancelled after it was sent is a loss the cook decides on |
+| `bf_kitchen_host` | Symbifox: host stand | 18.0.1.0.0 | BUSL-1.1 | The host seats the guests on Odoo's floor plan: sections in turn by server, a waiting list that quotes the wait from the real length of meals, the kitchen's pace in view; guests' names and notes erased after the service |
 | `bf_kitchen_pos` | Symbifox: kitchen and register | 18.0.1.1.0 | BUSL-1.1 | Dishes sold at Odoo's register take their ingredients out of the kitchen stock; a dish refunded at the register is a loss, not stock back on the shelf; the register shows a dish's allergens |
 | `bf_kitchen_sale` | Symbifox: kitchen and sales | 18.0.1.0.0 | BUSL-1.1 | Dishes sold on quotations and invoices take their ingredients out of the kitchen stock, an invoice with no sales order too |
 | `bf_kitchen_sales_import` | Symbifox: kitchen sales from another register | 18.0.1.0.1 | BUSL-1.1 | The sales of a register that is not Odoo's, imported from its CSV or Excel export, take the dishes' ingredients out of the kitchen stock |

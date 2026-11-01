@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_host_seatings" name="Seatings" parent="bf_kitchen_display.menu_kitchen_service" sequence="30"
+              action="bf_host_seating_action" groups="bf_kitchen.group_kitchen_manager"/>
+    <menuitem id="menu_host_waits" name="Waiting list" parent="bf_kitchen_display.menu_kitchen_service" sequence="40"
+              action="bf_host_wait_action" groups="bf_kitchen.group_kitchen_manager"/>
+    <menuitem id="menu_host_sections" name="Host sections" parent="bf_kitchen.menu_kitchen_config" sequence="35"
+              action="bf_host_section_action" groups="bf_kitchen.group_kitchen_manager"/>
+</odoo>
