@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Manual refresh: re-render signatures from the company templates. Run after
+      editing a template (signatures are written explicitly, not via a live
+      compute, so an edit needs a re-apply). Bound to the Users list/form so it
+      appears in the Action menu; with no selection it refreshes all internal
+      users.
+    -->
+    <record id="action_bf_regen_signatures" model="ir.actions.server">
+        <field name="name">Régénérer les signatures courriel</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="binding_model_id" ref="base.model_res_users"/>
+        <field name="binding_view_types">list,form</field>
+        <!-- Régénère, en sudo, la signature de tout le personnel. -->
+        <field name="groups_id" eval="[(4, ref('base.group_erp_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+targets = records if records else model.search([('share', '=', False)])
+targets._bf_apply_company_signature()
+        </field>
+    </record>
+</odoo>

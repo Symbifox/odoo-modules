@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Anchored on mail's own « Emails » block in Général > Paramètres, so the
+      signature policy sits next to the other email settings instead of in a
+      section of its own. Everything here is per company and follows the
+      company selector at the top of the screen.
+    -->
+    <record id="res_config_settings_view_form_bf_signature" model="ir.ui.view">
+        <field name="name">res.config.settings.form.bf.signature</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="mail.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='emails']" position="inside">
+                <setting id="bf_signature_policy"
+                         string="Signatures courriel normalisées"
+                         help="Une signature identique pour tout le monde, rendue depuis un gabarit et les données de chaque personne.">
+                    <field name="bf_signature_template_id"/>
+                    <div class="mt-2">
+                        <field name="bf_signature_enforce"
+                               class="me-2"/>
+                        <span>Imposer la signature (le champ devient
+                            non modifiable dans les préférences)</span>
+                    </div>
+                    <div class="mt-2">
+                        <field name="bf_signature_auto_apply"
+                               class="me-2"/>
+                        <span>Régénérer automatiquement quand le gabarit
+                            ou la marque changent</span>
+                    </div>
+                    <div class="mt-3">
+                        <button name="action_bf_apply_signatures"
+                                type="object"
+                                string="Appliquer à tout le monde"
+                                class="btn-link"
+                                icon="fa-refresh"/>
+                        <button name="action_bf_open_signature_links"
+                                type="object"
+                                string="Liens rapides"
+                                class="btn-link"
+                                icon="fa-link"/>
+                    </div>
+                    <div class="text-muted mt-2">
+                        <field name="bf_signature_user_count" class="me-1"/>
+                        <span>signature(s) pilotée(s) par cette société.</span>
+                    </div>
+                </setting>
+                <setting id="bf_signature_brand"
+                         string="Marque de la signature"
+                         help="Ce que le gabarit lit pour se mettre aux couleurs de la société.">
+                    <div class="content-group">
+                        <div class="row mt-2">
+                            <label for="bf_signature_logo_url"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_signature_logo_url"
+                                   placeholder="https://…/logo.png"/>
+                        </div>
+                        <div class="row mt-2">
+                            <label for="bf_signature_logo_width"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_signature_logo_width"/>
+                        </div>
+                        <div class="row mt-2">
+                            <label for="bf_signature_accent_color"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_signature_accent_color"
+                                   widget="color"/>
+                        </div>
+                        <div class="row mt-2">
+                            <label for="bf_signature_text_color"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_signature_text_color"
+                                   widget="color"/>
+                        </div>
+                        <div class="row mt-2">
+                            <label for="bf_signature_muted_color"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_signature_muted_color"
+                                   widget="color"/>
+                        </div>
+                        <div class="row mt-2">
+                            <label for="bf_signature_font"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_signature_font"/>
+                        </div>
+                        <div class="row mt-2">
+                            <label for="bf_signature_tollfree"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_signature_tollfree"
+                                   placeholder="1-877-000-0000"/>
+                        </div>
+                        <div class="row mt-2">
+                            <label for="bf_signature_tagline"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_signature_tagline"/>
+                        </div>
+                        <div class="row mt-2">
+                            <label for="bf_signature_disclaimer_size"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_signature_disclaimer_size"/>
+                        </div>
+                        <div class="mt-2">
+                            <label for="bf_signature_disclaimer"/>
+                            <field name="bf_signature_disclaimer"
+                                   widget="html"
+                                   placeholder="Ce message et les documents qui l'accompagnent sont confidentiels…"/>
+                            <div class="text-muted">
+                                L'avis voyage avec la signature&#160;: il
+                                apparaît là où elle apparaît.
+                            </div>
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

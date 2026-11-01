@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_company_form_bf_mce" model="ir.ui.view">
+        <field name="name">res.company.form.bf.multi.company.email</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_info']" position="after">
+                <page string="Courriels multi-sociétés" name="bf_multi_company_email">
+                    <group>
+                        <group string="Signature">
+                            <field name="bf_signature_template_id"/>
+                            <field name="bf_signature_enforce"/>
+                            <field name="bf_signature_auto_apply"/>
+                            <field name="bf_signature_user_count"/>
+                            <button name="action_bf_apply_signatures"
+                                    type="object"
+                                    string="Appliquer à tout le monde"
+                                    class="btn-secondary"
+                                    colspan="2"
+                                    confirm="Régénérer la signature de chaque personne rattachée à cette société ? Les signatures modifiées à la main seront écrasées."/>
+                        </group>
+                        <group string="Routage courriel (société)">
+                            <field name="bf_catchall_domain"/>
+                            <field name="bf_catchall_alias"/>
+                            <field name="bf_bounce_alias"/>
+                            <field name="bf_default_from"/>
+                        </group>
+                    </group>
+                    <group string="Éléments de marque de la signature">
+                        <group>
+                            <field name="bf_signature_logo_url"
+                                   placeholder="https://…/logo.png"/>
+                            <field name="bf_signature_logo_width"/>
+                            <field name="bf_signature_tollfree"
+                                   placeholder="1-877-000-0000"/>
+                            <field name="bf_signature_tagline"/>
+                        </group>
+                        <group>
+                            <field name="bf_signature_accent_color"
+                                   widget="color"/>
+                            <field name="bf_signature_text_color"
+                                   widget="color"/>
+                            <field name="bf_signature_muted_color"
+                                   widget="color"/>
+                            <field name="bf_signature_font"/>
+                        </group>
+                    </group>
+                    <separator string="Avis de confidentialité (toute la société)"/>
+                    <group>
+                        <field name="bf_signature_disclaimer_size"/>
+                    </group>
+                    <field name="bf_signature_disclaimer" widget="html"
+                           placeholder="Ce message et les documents qui l'accompagnent sont confidentiels…"/>
+                    <p class="text-muted">
+                        ⚠️ L'avis voyage <b>avec la signature</b>&#160;: il
+                        apparaît là où la signature apparaît, pas sur une
+                        réponse courte qui n'en porte pas. Les produits qui
+                        l'ajoutent à tout le courrier sortant le font à la
+                        passerelle&#160;; ce n'est ni le même endroit ni le
+                        même outil.
+                    </p>
+
+                    <separator string="Liens rapides (pied de signature)"/>
+                    <field name="bf_signature_link_ids"
+                           context="{'default_company_id': id}">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="icon" placeholder="📅"/>
+                            <field name="name" placeholder="Prendre rendez-vous"/>
+                            <field name="source"/>
+                            <field name="target_url" string="Mène à"
+                                   placeholder="https://…"
+                                   readonly="source != 'manual'"/>
+                            <field name="use_tracker" widget="boolean_toggle"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </list>
+                    </field>
+                    <p class="text-muted">
+                        Ces liens s'ajoutent à ceux de chaque personne. Un lien
+                        qui vise l'agenda de quelqu'un en particulier va sur sa
+                        fiche, pas ici&#160;: sinon toute l'équipe envoie ses
+                        prospects au même calendrier.
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

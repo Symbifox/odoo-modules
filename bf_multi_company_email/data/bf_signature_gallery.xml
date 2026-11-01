@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      La galerie : quatre modèles de plus, prêts à choisir.
+
+      Aucun ne mentionne de société. Tous lisent le même appel unique,
+      `object.bf_signature_data()`, donc changer de modèle ne demande aucune
+      ressaisie : le nom, le titre, les pronoms, les téléphones, le logo, les
+      couleurs et les liens sont déjà là et se replacent tout seuls.
+
+      Trois contraintes tenues partout, parce qu'un client de messagerie n'est
+      pas un navigateur :
+
+      - **des tableaux, pas de mise en page moderne.** Outlook rend le HTML
+        avec le moteur de Word : `flex`, `grid` et `position` n'existent pas
+        pour lui. Un tableau avec des largeurs en pixels, oui.
+      - **des styles en ligne, pas de feuille de style.** Gmail retire le
+        `<style>` du corps d'un message.
+      - **rien qui dépende d'une image pour être lisible.** Beaucoup de clients
+        bloquent les images par défaut&#160;: le bloc doit rester compréhensible
+        sans elles, et le logo n'est jamais le seul porteur du nom.
+
+      Chaque modèle se dégrade proprement : pas de logo, pas de cellule logo&#160;;
+      pas de liens, pas de rangée de liens&#160;; pas de sans-frais, pas de
+      séparateur orphelin.
+    -->
+
+    <!-- ================================================================
+         Compacte — une seule ligne. Pour les fils de discussion internes,
+         où une carte de 520 px répétée vingt fois devient du bruit.
+         ================================================================ -->
+    <record id="bf_signature_compact" model="mail.template">
+        <field name="name">Compacte — une seule ligne</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="bf_is_signature" eval="True"/>
+        <field name="body_html" type="html">
+            <div>
+                <t t-set="sig" t-value="object.bf_signature_data()"/>
+                <table cellpadding="0" cellspacing="0" t-attf-style="border-collapse:collapse;font-family:{{ sig['font'] }};font-size:12px;line-height:1.5;color:{{ sig['text_color'] }};">
+                    <tbody><tr>
+                        <td t-attf-style="padding:0;color:{{ sig['text_color'] }};">
+                            <span t-attf-style="font-weight:700;color:{{ sig['text_color'] }};"><t t-out="sig['name']"/></span>
+                            <span t-if="sig['pronouns']" style="font-weight:400;font-size:10px;color:#999;">&#160;(<t t-out="sig['pronouns']"/>)</span>
+                            <t t-if="sig['title']">
+                                <span t-attf-style="color:{{ sig['accent'] }};">&#160;·&#160;</span>
+                                <span t-attf-style="color:{{ sig['muted'] }};"><t t-out="sig['title']"/></span>
+                            </t>
+                            <t t-if="sig['company_name']">
+                                <span t-attf-style="color:{{ sig['accent'] }};">&#160;·&#160;</span>
+                                <span t-attf-style="font-weight:600;color:{{ sig['text_color'] }};"><t t-out="sig['company_name']"/></span>
+                            </t>
+                        </td>
+                    </tr>
+                    <tr t-if="sig['email'] or sig['phone'] or sig['tollfree']">
+                        <td t-attf-style="padding:2px 0 0 0;color:{{ sig['muted'] }};">
+                            <a t-if="sig['email']" t-attf-href="mailto:{{ sig['email'] }}" t-attf-style="color:{{ sig['accent'] }};text-decoration:none;"><t t-out="sig['email']"/></a>
+                            <t t-if="sig['email'] and sig['phone']"><span style="color:#ccc;">&#160;|&#160;</span></t>
+                            <a t-if="sig['phone']" t-att-href="sig['phone_href']" t-attf-style="color:{{ sig['muted'] }};text-decoration:none;"><t t-out="sig['phone']"/></a>
+                            <t t-if="sig['tollfree'] and (sig['email'] or sig['phone'])"><span style="color:#ccc;">&#160;|&#160;</span></t>
+                            <a t-if="sig['tollfree']" t-att-href="sig['tollfree_href']" t-attf-style="color:{{ sig['muted'] }};text-decoration:none;"><t t-out="sig['tollfree']"/></a>
+                        </td>
+                    </tr>
+                    <tr t-if="sig['disclaimer']">
+                        <td colspan="3" t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
+                            <t t-out="sig['disclaimer']"/>
+                        </td>
+                    </tr></tbody>
+                </table>
+            </div>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         Bandeau — un filet vertical à gauche, tout le reste aligné dessus.
+         Le filet est une cellule de tableau avec une couleur de fond, pas une
+         bordure CSS : Outlook avale la première et ignore parfois la seconde.
+         ================================================================ -->
+    <record id="bf_signature_banner" model="mail.template">
+        <field name="name">Bandeau — filet coloré à gauche</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="bf_is_signature" eval="True"/>
+        <field name="body_html" type="html">
+            <div>
+                <t t-set="sig" t-value="object.bf_signature_data()"/>
+                <table cellpadding="0" cellspacing="0" t-attf-style="border-collapse:collapse;font-family:{{ sig['font'] }};font-size:13px;line-height:1.5;color:{{ sig['text_color'] }};">
+                    <tbody><tr>
+                        <td width="3" t-attf-style="width:3px;padding:0;background-color:{{ sig['accent'] }};">&#160;</td>
+                        <td t-attf-style="padding:0 0 0 12px;color:{{ sig['text_color'] }};">
+                            <div t-attf-style="font-size:15px;font-weight:700;color:{{ sig['text_color'] }};">
+                                <t t-out="sig['name']"/>
+                                <span t-if="sig['pronouns']" style="font-weight:400;font-size:11px;color:#999;">&#160;(<t t-out="sig['pronouns']"/>)</span>
+                            </div>
+                            <div t-if="sig['title'] or sig['company_name']" t-attf-style="font-size:12px;color:{{ sig['muted'] }};">
+                                <t t-out="sig['title']"/>
+                                <t t-if="sig['title'] and sig['company_name']">,&#160;</t>
+                                <span t-if="sig['company_name']" t-attf-style="color:{{ sig['text_color'] }};font-weight:600;"><t t-out="sig['company_name']"/></span>
+                            </div>
+                            <div t-if="sig['email'] or sig['phone'] or sig['tollfree'] or sig['website']" style="margin-top:6px;font-size:12px;">
+                                <a t-if="sig['email']" t-attf-href="mailto:{{ sig['email'] }}" t-attf-style="color:{{ sig['accent'] }};text-decoration:none;"><t t-out="sig['email']"/></a>
+                                <t t-if="sig['email'] and sig['phone']"><span style="color:#ccc;">&#160;·&#160;</span></t>
+                                <a t-if="sig['phone']" t-att-href="sig['phone_href']" t-attf-style="color:{{ sig['text_color'] }};text-decoration:none;"><t t-out="sig['phone']"/></a>
+                                <t t-if="sig['tollfree'] and (sig['email'] or sig['phone'])"><span style="color:#ccc;">&#160;·&#160;</span></t>
+                                <a t-if="sig['tollfree']" t-att-href="sig['tollfree_href']" t-attf-style="color:{{ sig['text_color'] }};text-decoration:none;"><t t-out="sig['tollfree']"/></a>
+                                <t t-if="sig['website'] and (sig['email'] or sig['phone'] or sig['tollfree'])"><span style="color:#ccc;">&#160;·&#160;</span></t>
+                                <a t-if="sig['website']" t-att-href="sig['website_href']" t-attf-style="color:{{ sig['accent'] }};text-decoration:none;"><t t-out="sig['website']"/></a>
+                            </div>
+                            <div t-if="sig['links']" style="margin-top:6px;font-size:11px;">
+                                <t t-foreach="sig['links']" t-as="link">
+                                    <t t-if="not link_first"><span style="color:#ddd;">&#160;·&#160;</span></t>
+                                    <t t-if="link['icon']"><t t-out="link['icon']"/>&#160;</t>
+                                    <a t-att-href="link['url']" style="color:#999999;text-decoration:none;"><t t-out="link['label']"/></a>
+                                </t>
+                            </div>
+                            <div t-if="sig['tagline']" t-attf-style="margin-top:6px;font-size:11px;color:{{ sig['muted'] }};"><t t-out="sig['tagline']"/></div>
+                        </td>
+                    </tr>
+                    <tr t-if="sig['disclaimer']">
+                        <td colspan="3" t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
+                            <t t-out="sig['disclaimer']"/>
+                        </td>
+                    </tr></tbody>
+                </table>
+            </div>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         Minimaliste — le nom, un filet, une ligne de coordonnées.
+         Le filet est une cellule de 1 px de haut, pas un <hr> : plusieurs
+         clients redessinent le <hr> à leur façon.
+         ================================================================ -->
+    <record id="bf_signature_minimal" model="mail.template">
+        <field name="name">Minimaliste — nom, filet, coordonnées</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="bf_is_signature" eval="True"/>
+        <field name="body_html" type="html">
+            <div>
+                <t t-set="sig" t-value="object.bf_signature_data()"/>
+                <table cellpadding="0" cellspacing="0" t-attf-style="border-collapse:collapse;font-family:{{ sig['font'] }};font-size:12px;line-height:1.5;color:{{ sig['text_color'] }};">
+                    <tbody><tr>
+                        <td t-attf-style="padding:0;font-size:14px;font-weight:600;letter-spacing:0.3px;color:{{ sig['text_color'] }};">
+                            <t t-out="sig['name']"/>
+                            <span t-if="sig['title']" t-attf-style="font-weight:400;color:{{ sig['muted'] }};">,&#160;<t t-out="sig['title']"/></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td t-attf-style="padding:5px 0;height:1px;line-height:1px;font-size:1px;background-color:{{ sig['accent'] }};background-clip:content-box;">&#160;</td>
+                    </tr>
+                    <tr>
+                        <td t-attf-style="padding:3px 0 0 0;color:{{ sig['muted'] }};">
+                            <span t-if="sig['company_name']" t-attf-style="color:{{ sig['text_color'] }};font-weight:600;"><t t-out="sig['company_name']"/></span>
+                            <t t-if="sig['company_name'] and sig['email']"><span style="color:#ccc;">&#160;·&#160;</span></t>
+                            <a t-if="sig['email']" t-attf-href="mailto:{{ sig['email'] }}" t-attf-style="color:{{ sig['accent'] }};text-decoration:none;"><t t-out="sig['email']"/></a>
+                            <t t-if="sig['phone']"><span style="color:#ccc;">&#160;·&#160;</span></t>
+                            <a t-if="sig['phone']" t-att-href="sig['phone_href']" t-attf-style="color:{{ sig['muted'] }};text-decoration:none;"><t t-out="sig['phone']"/></a>
+                            <t t-if="sig['website']"><span style="color:#ccc;">&#160;·&#160;</span></t>
+                            <a t-if="sig['website']" t-att-href="sig['website_href']" t-attf-style="color:{{ sig['muted'] }};text-decoration:none;"><t t-out="sig['website']"/></a>
+                        </td>
+                    </tr>
+                    <tr t-if="sig['disclaimer']">
+                        <td colspan="3" t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
+                            <t t-out="sig['disclaimer']"/>
+                        </td>
+                    </tr></tbody>
+                </table>
+            </div>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         Deux colonnes — logo à gauche, coordonnées à droite, sans filet.
+         Plus aéré que la carte, et le logo garde ses proportions : la largeur
+         vient du champ, la hauteur suit.
+         ================================================================ -->
+    <record id="bf_signature_two_columns" model="mail.template">
+        <field name="name">Deux colonnes — logo et coordonnées</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="bf_is_signature" eval="True"/>
+        <field name="body_html" type="html">
+            <div>
+                <t t-set="sig" t-value="object.bf_signature_data()"/>
+                <table cellpadding="0" cellspacing="0" t-attf-style="border-collapse:collapse;font-family:{{ sig['font'] }};font-size:13px;line-height:1.6;color:{{ sig['text_color'] }};">
+                    <tbody><tr>
+                        <td t-if="sig['logo_url']" valign="top" t-attf-style="padding:0 18px 0 0;vertical-align:top;">
+                            <a t-att-href="sig['website_href'] or '#'" target="_blank" style="text-decoration:none;">
+                                <img t-att-src="sig['logo_url']" t-att-alt="sig['company_name']"
+                                     t-attf-style="display:block;width:{{ sig['logo_width'] }}px;height:auto;border:0;"
+                                     t-att-width="sig['logo_width']"/>
+                            </a>
+                        </td>
+                        <td valign="top" t-attf-style="vertical-align:top;color:{{ sig['text_color'] }};">
+                            <div t-attf-style="font-size:15px;font-weight:700;color:{{ sig['text_color'] }};">
+                                <t t-out="sig['name']"/>
+                                <span t-if="sig['pronouns']" style="font-weight:400;font-size:11px;color:#999;">&#160;(<t t-out="sig['pronouns']"/>)</span>
+                            </div>
+                            <div t-if="sig['title']" t-attf-style="font-size:12px;color:{{ sig['muted'] }};"><t t-out="sig['title']"/></div>
+                            <div t-if="sig['company_name']" t-attf-style="font-size:12px;font-weight:600;color:{{ sig['accent'] }};"><t t-out="sig['company_name']"/></div>
+                            <div t-if="sig['email']" style="margin-top:8px;">
+                                <a t-attf-href="mailto:{{ sig['email'] }}" t-attf-style="color:{{ sig['accent'] }};text-decoration:none;"><t t-out="sig['email']"/></a>
+                            </div>
+                            <div t-if="sig['phone']">
+                                <a t-att-href="sig['phone_href']" t-attf-style="color:{{ sig['text_color'] }};text-decoration:none;"><t t-out="sig['phone']"/></a>
+                                <t t-if="sig['tollfree']"><span style="color:#ccc;">&#160;|&#160;</span>
+                                    <a t-att-href="sig['tollfree_href']" t-attf-style="color:{{ sig['text_color'] }};text-decoration:none;"><t t-out="sig['tollfree']"/></a>
+                                </t>
+                            </div>
+                            <div t-if="sig['website']">
+                                <a t-att-href="sig['website_href']" t-attf-style="color:{{ sig['muted'] }};text-decoration:none;"><t t-out="sig['website']"/></a>
+                            </div>
+                            <div t-if="sig['links']" style="margin-top:8px;font-size:11px;">
+                                <t t-foreach="sig['links']" t-as="link">
+                                    <t t-if="not link_first"><span style="color:#ddd;">&#160;·&#160;</span></t>
+                                    <t t-if="link['icon']"><t t-out="link['icon']"/>&#160;</t>
+                                    <a t-att-href="link['url']" style="color:#999999;text-decoration:none;"><t t-out="link['label']"/></a>
+                                </t>
+                            </div>
+                            <div t-if="sig['tagline']" t-attf-style="margin-top:6px;font-size:11px;color:{{ sig['muted'] }};"><t t-out="sig['tagline']"/></div>
+                        </td>
+                    </tr>
+                    <tr t-if="sig['disclaimer']">
+                        <td colspan="3" t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
+                            <t t-out="sig['disclaimer']"/>
+                        </td>
+                    </tr></tbody>
+                </table>
+            </div>
+        </field>
+    </record>
+
+</odoo>

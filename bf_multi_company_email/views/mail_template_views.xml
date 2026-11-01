@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Le marqueur, sur le formulaire des gabarits : sans lui, un gabarit de
+      signature écrit à la main n'apparaîtrait jamais dans la galerie et son
+      auteur n'aurait aucun moyen de comprendre pourquoi.
+    -->
+    <record id="email_template_form_bf_signature" model="ir.ui.view">
+        <field name="name">mail.template.form.bf.signature</field>
+        <field name="model">mail.template</field>
+        <field name="inherit_id" ref="mail.email_template_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='model_id']" position="after">
+                <field name="bf_is_signature"
+                       invisible="model_id == False"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

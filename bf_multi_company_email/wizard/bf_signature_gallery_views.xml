@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_signature_gallery_view_form" model="ir.ui.view">
+        <field name="name">bf.signature.gallery.form</field>
+        <field name="model">bf.signature.gallery</field>
+        <field name="arch" type="xml">
+            <form string="Choisir un modèle de signature">
+                <field name="can_set_company" invisible="1"/>
+                <field name="user_id" invisible="1"/>
+                <div class="oe_title">
+                    <h2>Modèles de signature</h2>
+                    <p class="text-muted">
+                        Chaque aperçu est rendu avec <b>vos</b> données&#160;:
+                        votre nom, votre titre, vos téléphones, vos liens.
+                        Rien n'est enregistré tant que vous n'avez pas choisi.
+                    </p>
+                </div>
+                <div class="alert alert-info" role="alert"
+                     invisible="not is_locked">
+                    <field name="is_locked" invisible="1"/>
+                    Votre société impose sa signature&#160;: vous pouvez
+                    regarder, pas changer. Vos pronoms, votre titre et vos
+                    liens restent modifiables et se replacent tout seuls.
+                </div>
+                <group>
+                    <group>
+                        <field name="scope" widget="radio"
+                               readonly="is_locked"/>
+                    </group>
+                    <group>
+                        <field name="company_id"
+                               groups="base.group_multi_company"/>
+                    </group>
+                </group>
+                <field name="line_ids" nolabel="1">
+                    <list create="false" delete="false" editable="bottom"
+                          decoration-success="is_current">
+                        <field name="template_id" column_invisible="1"/>
+                        <field name="selected" string="" widget="boolean_toggle"/>
+                        <field name="name" readonly="1"/>
+                        <field name="is_current" string="Actuel" readonly="1"
+                               widget="boolean_toggle"/>
+                        <field name="preview" string="Aperçu" readonly="1"
+                               widget="html"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_apply" type="object"
+                            string="Utiliser ce modèle"
+                            class="btn-primary"
+                            invisible="is_locked"/>
+                    <button name="action_reset_to_company" type="object"
+                            string="Revenir au modèle de la société"
+                            class="btn-secondary"
+                            invisible="is_locked or scope == 'company'"/>
+                    <button string="Fermer" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_signature_gallery" model="ir.actions.act_window">
+        <field name="name">Modèles de signature</field>
+        <field name="res_model">bf.signature.gallery</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_bf_signature_gallery"
+              name="Mod&#232;les de signature"
+              parent="bf_email_management.menu_bf_email_config"
+              action="action_bf_signature_gallery"
+              sequence="19"/>
+
+</odoo>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Quick links follow the same shape as everything else here: your own are
+      yours to edit, the company's are everybody's to read and an administrator's
+      to change. The ACL grants full rights on the model; these rules are what
+      actually bound them, so the two must be read together.
+    -->
+
+    <record id="bf_signature_link_rule_own" model="ir.rule">
+        <field name="name">Lien de signature : le mien</field>
+        <field name="model_id" ref="model_bf_signature_link"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_signature_link_rule_company_read" model="ir.rule">
+        <field name="name">Lien de signature : ceux de ma société sont visibles</field>
+        <field name="model_id" ref="model_bf_signature_link"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="bf_signature_link_rule_company_manage" model="ir.rule">
+        <field name="name">Lien de signature : l'administrateur gère ceux de la société</field>
+        <field name="model_id" ref="model_bf_signature_link"/>
+        <field name="domain_force">[('company_id', '!=', False)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Assign the card signature template to the main company. noupdate so a
+      later manual change on the company isn't reverted by a module upgrade.
+      Companies with no stable xml_id are assigned by the post_init hook.
+    -->
+    <data noupdate="1">
+        <record id="base.main_company" model="res.company">
+            <field name="bf_signature_template_id" ref="bf_signature_card"/>
+        </record>
+    </data>
+</odoo>

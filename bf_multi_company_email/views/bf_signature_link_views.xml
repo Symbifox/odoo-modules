@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_signature_link_view_list" model="ir.ui.view">
+        <field name="name">bf.signature.link.list</field>
+        <field name="model">bf.signature.link</field>
+        <field name="arch" type="xml">
+            <list default_order="sequence,id"
+                  decoration-info="auto_managed">
+                <field name="sequence" widget="handle"/>
+                <field name="icon"/>
+                <field name="name"/>
+                <field name="source"/>
+                <field name="target_url" string="Mène à" optional="show"/>
+                <field name="url" string="Publié comme" optional="show"/>
+                <field name="use_tracker" optional="show"
+                       widget="boolean_toggle"/>
+                <field name="click_count" optional="show"/>
+                <field name="user_id" optional="show"/>
+                <field name="company_id" optional="show"/>
+                <field name="auto_managed" optional="hide"
+                       widget="boolean_toggle"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_signature_link_view_form" model="ir.ui.view">
+        <field name="name">bf.signature.link.form</field>
+        <field name="model">bf.signature.link</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_tracker" type="object"
+                                class="oe_stat_button" icon="fa-link"
+                                invisible="not tracker_id">
+                            <field name="click_count" widget="statinfo"
+                                   string="Clics"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Automatique"
+                            bg_color="text-bg-info" invisible="not auto_managed"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Prendre rendez-vous"/></h1>
+                    </div>
+                    <group>
+                        <group string="Destination">
+                            <field name="source"/>
+                            <field name="target_url"
+                                   placeholder="https://…"
+                                   readonly="source != 'manual'"
+                                   required="source == 'manual'"/>
+                            <field name="auto_managed" invisible="1"/>
+                        </group>
+                        <group string="Raccourci traçable">
+                            <field name="use_tracker"/>
+                            <field name="tracker_code"
+                                   invisible="not use_tracker"
+                                   placeholder="rdv-prenom"/>
+                            <field name="url" string="Publié comme"/>
+                            <field name="tracker_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Affichage">
+                            <field name="icon" placeholder="📅"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="À qui">
+                            <field name="user_id"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        Un lien appartient à une personne <em>ou</em> à une
+                        société, jamais aux deux. Personnel pour ce qui vise un
+                        agenda ou une boîte en particulier, société pour ce qui
+                        vaut pour tout le monde.
+                    </p>
+                    <p class="text-muted" invisible="not use_tracker">
+                        Une signature reste des années dans la boîte des gens
+                        et l'adresse qu'elle contient est figée au collage. Le
+                        raccourci déplace ce point fixe côté serveur&#160;:
+                        changez «&#160;Mène à&#160;» et tout le monde suit,
+                        sans recoller quoi que ce soit.
+                    </p>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_signature_link_provision" model="ir.actions.server">
+        <field name="name">Provisionner les liens rapides</field>
+        <field name="model_id" ref="model_bf_signature_link"/>
+        <field name="binding_model_id" ref="model_bf_signature_link"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_provision_all()</field>
+    </record>
+
+    <record id="action_bf_signature_link" model="ir.actions.act_window">
+        <field name="name">Liens rapides de signature</field>
+        <field name="res_model">bf.signature.link</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun lien rapide
+            </p>
+            <p>
+                Les liens s'affichent en pied de signature&#160;: prise de
+                rendez-vous, dépôt de fichier, salle de rencontre.
+            </p>
+            <p>
+                «&#160;Provisionner les liens rapides&#160;», au menu Action
+                (administrateurs), en crée un par personne à partir de sa page de rendez-vous et
+                de sa page de dépôt sécurisée, chacun derrière un raccourci
+                <code>/r/</code> que l'on peut rediriger plus tard.
+            </p>
+        </field>
+    </record>
+
+    <!--
+      « Ma signature » — the person's own record, opened on the signature tab.
+      res_id is filled at click time by the server action so the menu works for
+      whoever clicks it.
+    -->
+    <record id="action_bf_my_signature" model="ir.actions.server">
+        <field name="name">Ma signature courriel</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    "type": "ir.actions.act_window",
+    "name": "Ma signature courriel",
+    "res_model": "res.users",
+    "res_id": env.uid,
+    "view_mode": "form",
+    "views": [(env.ref("base.view_users_form_simple_modif").id, "form")],
+    "target": "new",
+}
+        </field>
+    </record>
+
+    <record id="action_bf_signature_templates" model="ir.actions.act_window">
+        <field name="name">Gabarits de signature</field>
+        <field name="res_model">mail.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('bf_is_signature', '=', True)]</field>
+        <!--
+          `eval` + `ref()`, pas `%(xmlid)d` : l'interpolation ne s'applique pas
+          au texte d'un <field name="context">. Elle part telle quelle jusqu'au
+          navigateur, qui la refuse — « Token cannot be parsed » au clic sur le
+          menu.
+        -->
+        <field name="context"
+               eval="{'default_bf_is_signature': True, 'default_model_id': ref('base.model_res_users')}"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun gabarit de signature
+            </p>
+            <p>
+                Un gabarit s'écrit sur le modèle res.users et lit
+                <code>object.bf_signature_data()</code>. L'enregistrer
+                régénère les signatures qu'il pilote.
+            </p>
+        </field>
+    </record>
+
+    <!--
+      The menu hangs under Courriels > Configuration, which is why this module
+      depends on bf_email_management. Signatures are configuration, not a
+      workspace: no application tile, no root menu of their own.
+    -->
+    <menuitem id="menu_bf_my_signature"
+              name="Ma signature courriel"
+              parent="bf_email_management.menu_bf_email_config"
+              action="action_bf_my_signature"
+              sequence="20"/>
+
+    <menuitem id="menu_bf_signature_links"
+              name="Liens rapides de signature"
+              parent="bf_email_management.menu_bf_email_config"
+              action="action_bf_signature_link"
+              sequence="21"/>
+
+    <menuitem id="menu_bf_signature_templates"
+              name="Gabarits de signature"
+              parent="bf_email_management.menu_bf_email_config"
+              action="action_bf_signature_templates"
+              groups="base.group_system"
+              sequence="22"/>
+
+</odoo>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_users_form_bf_mce" model="ir.ui.view">
+        <field name="name">res.users.form.bf.multi.company.email</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences']" position="after">
+                <page string="Courriels multi-sociétés" name="bf_multi_company_email">
+                    <group>
+                        <field name="bf_company_email"/>
+                        <div colspan="2" class="text-muted">
+                            Adresse d'expédition utilisée pour les courriels
+                            envoyés sous la société active. Valeur par société —
+                            sélectionnez la société dans le sélecteur en haut à
+                            droite avant de la saisir. N'écrase jamais le
+                            courriel du partenaire.
+                        </div>
+                    </group>
+                    <separator string="Signature"/>
+                    <group>
+                        <group>
+                            <field name="bf_signature_pronouns"
+                                   placeholder="il/lui"/>
+                            <field name="bf_signature_job_title"
+                                   placeholder="Consultant principal"/>
+                        </group>
+                        <group>
+                            <field name="bf_signature_use_company_links"/>
+                            <field name="bf_signature_template_id"
+                                   groups="base.group_system"/>
+                            <field name="bf_signature_locked"/>
+                        </group>
+                    </group>
+                    <separator string="Mes liens rapides"/>
+                    <field name="bf_signature_link_ids"
+                           context="{'default_user_id': id}">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="icon" placeholder="📅"/>
+                            <field name="name" placeholder="Prendre rendez-vous"/>
+                            <field name="source"/>
+                            <field name="target_url" string="Mène à"
+                                   placeholder="https://…"
+                                   readonly="source != 'manual'"/>
+                            <field name="use_tracker" widget="boolean_toggle"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+      Preferences (the dialog every user opens on their own record). The
+      signature field is left in place but locked when the company imposes one,
+      so the read-only state is visible before the save rather than discovered
+      by a change that silently does not stick. The server does the real
+      refusing — see res_users.write.
+    -->
+    <record id="res_users_preferences_bf_signature" model="ir.ui.view">
+        <field name="name">res.users.preferences.bf.signature</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='signature']" position="attributes">
+                <attribute name="readonly">bf_signature_locked</attribute>
+            </xpath>
+            <xpath expr="//field[@name='signature']" position="before">
+                <field name="bf_signature_locked" invisible="1"/>
+                <div colspan="2" class="text-muted"
+                     invisible="not bf_signature_locked">
+                    Votre organisation impose la signature. Renseignez vos
+                    pronoms, votre titre et vos liens dans l'onglet
+                    « Signature » et elle se régénère toute seule.
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='signature']" position="after">
+                <group string="Signature" col="2">
+                    <field name="bf_signature_pronouns" placeholder="il/lui"/>
+                    <field name="bf_signature_job_title"/>
+                    <field name="bf_signature_use_company_links"/>
+                </group>
+                <separator string="Mes liens rapides"/>
+                <field name="bf_signature_link_ids">
+                    <list editable="bottom">
+                        <field name="sequence" widget="handle"/>
+                        <field name="icon" placeholder="📅"/>
+                        <field name="name" placeholder="Prendre rendez-vous"/>
+                        <field name="source"/>
+                        <field name="target_url" string="Mène à"
+                               placeholder="https://…"
+                               readonly="source != 'manual'"/>
+                        <field name="use_tracker" widget="boolean_toggle"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>
