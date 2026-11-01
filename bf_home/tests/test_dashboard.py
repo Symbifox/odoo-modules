@@ -108,6 +108,96 @@ class TestBfDashboard(TransactionCase):
                 len(tree.xpath(expr)), 1,
                 "l'ancre xpath de %s ne résout plus : %s" % (owner, expr))
 
+    def test_empty_modules_band_rule_matches_the_template(self):
+        """La bande « Modules » se tait sans tuile par une règle CSS, pas par le gabarit.
+
+        home.scss cache la rangée dont l'en-tête est ``.col-12 > h5 > .fa-cubes``
+        quand elle n'a aucun autre enfant que des ``.col-12``. La règle repose sur
+        des faits qu'aucune exception ne signalerait s'ils changeaient : l'en-tête
+        est à cette place, et aucune tuile n'est une ``.col-12`` — ni celles de
+        bf_home, ni celles que les modules installés ajoutent par xpath (sinon la
+        bande se cacherait avec ses tuiles). Une tuile peut être enveloppée dans
+        un ``<t t-if>`` : on descend à travers les ``<t>`` jusqu'à l'élément rendu.
+
+        Limites connues : seuls les ``<xpath>`` sont lus,
+        évalués sur le gabarit de base (pas en chaîne), en position inside, after
+        ou before ; une tuile rendue par un composant ou un ``t-call`` n'est pas
+        examinée.
+        """
+        import glob
+        import re
+        from lxml import etree
+        from odoo.modules.module import get_module_path
+
+        def rendus(noeud):
+            """Les éléments que le rendu place à ce niveau (les <t> s'effacent)."""
+            for enfant in noeud:
+                if not isinstance(enfant.tag, str):
+                    continue
+                if enfant.tag == "t":
+                    yield from rendus(enfant)
+                else:
+                    yield enfant
+
+        def en_col12(el):
+            return "col-12" in (el.get("class") or "").split()
+
+        base = get_module_path("bf_home")
+        tree = etree.parse("%s/static/src/xml/bf_dashboard.xml" % base)
+        rangees = tree.xpath(
+            "//div[contains(concat(' ', @class, ' '), ' row ')]"
+            "[div[contains(concat(' ', @class, ' '), ' col-12 ')]/h5/i[contains(@class, 'fa-cubes')]]")
+        self.assertEqual(len(rangees), 1, "l'en-tête « Modules » n'est plus à sa place")
+        rangee = rangees[0]
+        enfants = list(rendus(rangee))
+        tuiles = [d for d in enfants if not d.xpath("h5/i[contains(@class, 'fa-cubes')]")]
+        self.assertEqual(len(enfants) - len(tuiles), 1, "un seul en-tête « Modules » attendu")
+        self.assertTrue(tuiles, "la bande « Modules » n'a plus de tuiles dans le gabarit")
+        for d in tuiles:
+            self.assertFalse(en_col12(d), "une tuile en col-12 cacherait la bande sans tuile")
+
+        # Les tuiles des modules installés qui héritent du tableau de bord et
+        # visent cette rangée-ci (cible = la rangée ou l'un de ses enfants).
+        installes = self.env["ir.module.module"].search([("state", "=", "installed")]).mapped("name")
+        for module in installes:
+            chemin = get_module_path(module, display_warning=False)
+            if not chemin or module == "bf_home":
+                continue
+            for xml in glob.glob("%s/static/src/**/*.xml" % chemin, recursive=True):
+                try:
+                    satellite = etree.parse(xml)
+                except etree.XMLSyntaxError:
+                    continue
+                for gabarit in satellite.xpath("//t[@t-inherit='bf_dashboard.Dashboard']"):
+                    for xp in gabarit.xpath("xpath"):
+                        cibles = tree.xpath(xp.get("expr"))
+                        position = xp.get("position", "inside")
+                        for cible in cibles:
+                            dans_rangee = (cible is rangee and position == "inside") or (
+                                cible.getparent() is rangee and position in ("after", "before"))
+                            if not dans_rangee:
+                                continue
+                            for el in rendus(xp):
+                                self.assertFalse(
+                                    en_col12(el),
+                                    "%s ajoute une tuile en col-12 à la bande « Modules » : "
+                                    "la règle de home.scss la cacherait" % xml)
+
+        # Les deux règles, hors commentaires, dans le bloc .bfh-tiles.
+        with open("%s/static/src/scss/home.scss" % base, encoding="utf-8") as fh:
+            scss = fh.read()
+        scss = re.sub(r"/\*.*?\*/", "", scss, flags=re.S)
+        scss = re.sub(r"(?<![:\w])//[^\n]*", "", scss)   # pas les url(https://…)
+        debut = scss.index(".bfh-tiles {")
+        profondeur, k = 0, scss.index("{", debut)
+        for k in range(k, len(scss)):
+            profondeur += {"{": 1, "}": -1}.get(scss[k], 0)
+            if profondeur == 0:
+                break
+        bloc = " ".join(scss[debut:k].split())
+        self.assertIn(".row:has(> .col-12 > h5 > .fa-cubes):not(:has(> :not(.col-12))) { display: none; }", bloc)
+        self.assertRegex(bloc, r"\.o_bf_dashboard \{ margin-inline: -(\d+)px; padding-inline: \1px; \}")
+
     def test_absent_module_yields_no_tile_not_an_error(self):
         """Absent et cassé ne doivent pas se ressembler.
 

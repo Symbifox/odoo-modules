@@ -124,6 +124,15 @@ The suite asserts the contract the client action relies on, not the figures, whi
 
 ## Changelog
 
+### 18.0.2.1.1
+
+- No more empty horizontal scrollbar under "The figures" where the figures container scrolls (demo tenants): it gets back its half gutter, so Bootstrap rows fit inside it instead of overflowing it.
+- The "Modules" band no longer shows its heading alone when no installed module brings a tile (tiles added by other modules through xpath count).
+
+### 18.0.2.1.0
+
+- Labels, messages and templates are written in English in the source; French ships in `i18n/fr_CA.po`. Meeting times, dates, amounts and months follow the reader's language and locale.
+
 ### 18.0.2.0.1
 
 - A section the reader has no right to read is absent, not "unavailable", and no longer writes an `AccessError` traceback to the log on every home load.

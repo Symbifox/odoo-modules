@@ -181,6 +181,16 @@
     // gouttière que les bandes au lieu d'en ajouter une deuxième.
     .bfh-tiles {
         .o_bf_dashboard > .container-fluid { padding: 0 !important; }
+        // Sans gouttière, les marges négatives des .row (½ $grid-gutter-width, 16 px chez
+        // Odoo) dépassent du conteneur. Là où il défile (symbifox_demo_branding lui donne
+        // overflow-y auto, donc x aussi), cela dessinait une barre horizontale vide sous
+        // les chiffres. On lui rend la demi-gouttière en padding, compensée par
+        // une marge négative : les rangées tiennent dedans et l'alignement ne bouge pas.
+        .o_bf_dashboard { margin-inline: -16px; padding-inline: 16px; }
+        // La bande « Modules » n'a de tuiles que si un module en apporte (xpath compris).
+        // Sans aucune, le titre restait seul ; on le tait. La règle se lit sur le rendu :
+        // elle voit aussi les tuiles ajoutées par xpath, sans toucher au gabarit.
+        .o_bf_dashboard .row:has(> .col-12 > h5 > .fa-cubes):not(:has(> :not(.col-12))) { display: none; }
         .card { border-radius: 14px; border-color: var(--bfh-line); }
         h5.text-uppercase { font-size: 13px; letter-spacing: .02em; }
     }
