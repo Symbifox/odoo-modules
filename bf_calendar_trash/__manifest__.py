@@ -16,7 +16,13 @@
     #   delete BEFORE removing anything from Nextcloud or Google; the dates of a
     #   series sort by start within one gesture. Requires bf_calendar_invite
     #   18.0.6.2.0 or later (the series scope of the cancellation dialog).
-    "version": "18.0.1.0.1",
+    # 18.0.1.0.2: an archived (or read-only) Google synchronisation receives
+    #   nothing from the trash: moving to the trash and deleting for good remove
+    #   the meeting in Odoo only, and a meeting restored after its
+    #   synchronisation was archived comes back in Odoo only, with the usual
+    #   warning. These calls went straight to the Google backend, past the
+    #   sync's own guard.
+    "version": "18.0.1.0.2",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -351,9 +351,9 @@ class CalendarEvent(models.Model):
         caldav = self._push_via_caldav_enabled()
         plan = []
         for event in self.filtered(lambda e: not e.recurrence_id and e.x_nc_uid):
-            google = event.x_nc_calendar_id.sudo()
-            if google.backend_type == "google":
-                if google.sync_direction != "nc_to_odoo":
+            if event.x_nc_calendar_id.sudo().backend_type == "google":
+                google = event._bf_trash_google_config()
+                if google:
                     plan.append({"mode": "google", "config": google, "anchor": event,
                                  "title": event.name or "", "gid": event.x_nc_uid})
                 continue
@@ -575,7 +575,11 @@ class CalendarEvent(models.Model):
                     # live one. Deleted here only.
                     continue
                 if calendar.backend_type == "google":
-                    if not event.recurrence_id and calendar.sync_direction != "nc_to_odoo":
+                    # An archived synchronisation is not pulled any more: the
+                    # meeting is deleted here only, as on the Nextcloud side.
+                    # Still in Google, it comes back as a new meeting with the
+                    # first full pull if the synchronisation is reactivated.
+                    if not event.recurrence_id and event._bf_trash_google_config():
                         self.env["calendar.google.backend"].push_delete(calendar, event.x_nc_uid)
                     continue
                 config = event._bf_nc_config_pousse()
@@ -854,18 +858,56 @@ class CalendarEvent(models.Model):
             _logger.error("Restore: %s not written back to Nextcloud: %s", self.id, e)
             self._bf_nc_avertir_echec()
 
+    def _bf_trash_google_config(self):
+        """The Google synchronisation to remove this meeting from or put it back in, or nothing.
+
+        The same cut-off as the sync's own Google pushes: a read-only
+        (``nc_to_odoo``) or archived synchronisation receives nothing. Archiving
+        it is how its owner stops it; these calls go straight to the Google
+        backend, past the sync's own guard, so they check it here.
+        """
+        self.ensure_one()
+        config = self.x_nc_calendar_id.sudo()
+        if config.backend_type != "google" or config.sync_direction == "nc_to_odoo" \
+                or not config.active:
+            return config.browse()
+        return config
+
     def _bf_restore_google(self):
         """Deleted from Google by the trash: created there again (a new id)."""
         self.ensure_one()
-        config = self.x_nc_calendar_id.sudo()
+        config = self._bf_trash_google_config()
+        if not config:
+            # The synchronisation was archived (or made read-only) while the
+            # meeting was in the trash: back in Odoo only, and the user is told.
+            _logger.info("Restore: %s not written back to Google: synchronisation cut off", self.id)
+            self._bf_restore_google_forget()
+            self._bf_trash_warn_restored_here(self.name or "", "unreachable")
+            return
+        created = False
         try:
             gid, etag = self.env["calendar.google.backend"].push_create(config, self)
+            created = True
             self.with_context(skip_nc_sync=True, skip_google_sync=True,
                               no_mail_to_attendees=True).write({
                 "x_nc_uid": gid, "x_caldav_etag": etag, "x_last_sync": fields.Datetime.now()})
         except Exception as e:  # noqa: BLE001
             _logger.error("Restore: %s not written back to Google: %s", self.id, e)
+            if not created:
+                self._bf_restore_google_forget()
             self._bf_trash_warn_restored_here(self.name or "", "unreachable")
+
+    def _bf_restore_google_forget(self):
+        """Forget the Google id the trash deleted: the meeting is back in Odoo only.
+
+        Kept, it points at an event deleted in Google: the next full pull of
+        that calendar reads it back as cancelled and deletes the meeting for
+        good, past the trash. Forgotten, a meeting born in Odoo is created in
+        Google again by the sync's retry once the synchronisation is active.
+        """
+        self.with_context(skip_nc_sync=True, skip_google_sync=True,
+                          no_mail_to_attendees=True).write(
+            {"x_nc_uid": False, "x_caldav_etag": False})
 
     @api.model
     def _bf_trash_warn_restored_here(self, title, why):

@@ -55,7 +55,9 @@ Cancelling a meeting and then throwing it away took two gestures.
   (unless its rule was changed in Nextcloud since). Otherwise the meeting is
   restored in Odoo only, and the user is told.
 - A meeting in a Google calendar is deleted from Google, and created there
-  again when restored.
+  again when restored. An archived (or read-only) Google synchronisation
+  receives nothing: the meeting goes to the trash, is deleted for good or is
+  restored in Odoo only; a restore says so to the user.
 - A meeting deleted in Nextcloud and then restored there comes back from the
   trash on its own.
 - If Nextcloud cannot be reached, the meeting still goes to the trash, the user
@@ -80,9 +82,21 @@ Cancelling a meeting and then throwing it away took two gestures.
 - Removing from Nextcloud the meetings archived before the module was
   installed and still there.
 - Restoring a series changed in Nextcloud since: Odoo only.
+- A meeting moved to the trash or deleted for good while its Google
+  synchronisation was archived stays in Google. If the synchronisation is
+  reactivated, a meeting deleted for good comes back to Odoo as a new meeting
+  with the first full pull; one still in the trash stays there, and leaves
+  Google if it is deleted for good once the synchronisation is active.
+- A meeting restored while its Google synchronisation is archived, or that
+  Google refused to take back, forgets its Google id: it is created there again
+  only if it was born in Odoo, once the synchronisation is active. A meeting
+  that came from Google stays in Odoo only.
 
 ## Version history
 
+- 18.0.1.0.2: an archived Google synchronisation receives nothing from the trash
+  (moving to the trash, deleting for good, restoring), as with the sync's own
+  pushes.
 - 18.0.1.0.1: the trash fields of someone else's private meeting are readable;
   deleting for good checks the right to delete before anything leaves Nextcloud or
   Google; a series' dates sort by start.

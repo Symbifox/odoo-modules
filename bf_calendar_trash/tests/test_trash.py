@@ -574,3 +574,119 @@ class TestTrash(BaseRetouche):
         self.assertFalse(event.active)
         self.assertEqual(event.bf_trash_nc_state, "failed")
         self.assertIn(self.url_simple, magasin.ressources)
+
+    # -- an archived Google synchronisation receives nothing -----------------
+
+    def _google(self, **vals):
+        return self.env["nextcloud.calendar.sync.config"].create(dict({
+            "name": "Google archivable", "backend_type": "google", "sync_direction": "both",
+            "google_calendar_id": "primary",
+            "calendar_owner_id": self.env.ref("base.user_admin").id}, **vals))
+
+    def test_archived_google_trash_calls_nothing(self):
+        google = self._google()
+        event = self._local(x_nc_calendar_id=google.id, x_nc_uid="gid-archivee",
+                            x_sync_source="google")
+        google.active = False
+        Backend = type(self.env["calendar.google.backend"])
+        with patch.object(Backend, "push_delete") as delete:
+            event.with_context(bf_trash_door=True).action_archive()
+        delete.assert_not_called()
+        self.assertFalse(event.active)
+        self.assertTrue(event.bf_trashed_at)
+        self.assertFalse(event.bf_trash_nc_mode)
+        self.assertEqual(event.x_nc_uid, "gid-archivee")
+
+    def test_read_only_google_trash_calls_nothing(self):
+        google = self._google(sync_direction="nc_to_odoo")
+        event = self._local(x_nc_calendar_id=google.id, x_nc_uid="gid-lecture",
+                            x_sync_source="google")
+        Backend = type(self.env["calendar.google.backend"])
+        with patch.object(Backend, "push_delete") as delete:
+            event.with_context(bf_trash_door=True).action_archive()
+        delete.assert_not_called()
+        self.assertTrue(event.bf_trashed_at)
+
+    def _google_left_behind(self):
+        """In the trash, its removal from Google failed: still there."""
+        google = self._google()
+        event = self._local(x_nc_calendar_id=google.id, x_nc_uid="gid-reste",
+                            x_sync_source="google")
+        Backend = type(self.env["calendar.google.backend"])
+        with patch.object(Backend, "push_delete", side_effect=RuntimeError("panne")):
+            event.with_context(bf_trash_door=True).action_archive()
+        self.assertEqual(event.bf_trash_nc_state, "failed")
+        return google, event
+
+    def test_purge_active_google_removes_it_there(self):
+        google, event = self._google_left_behind()
+        Backend = type(self.env["calendar.google.backend"])
+        with patch.object(Backend, "push_delete") as delete:
+            event.action_bf_purge()
+        delete.assert_called_once_with(google, "gid-reste")
+        self.assertFalse(event.exists())
+
+    def test_purge_archived_google_deletes_here_only(self):
+        google, event = self._google_left_behind()
+        google.active = False
+        Backend = type(self.env["calendar.google.backend"])
+        with patch.object(Backend, "push_delete") as delete:
+            event.action_bf_purge()
+        delete.assert_not_called()
+        self.assertFalse(event.exists())
+
+    def test_restore_after_google_archived_stays_in_odoo_and_says_so(self):
+        google = self._google()
+        event = self._local(x_nc_calendar_id=google.id, x_nc_uid="gid-avant",
+                            x_sync_source="google")
+        Backend = type(self.env["calendar.google.backend"])
+        Event = type(self.env["calendar.event"])
+        with patch.object(Backend, "push_delete"):
+            event.with_context(bf_trash_door=True).action_archive()
+        self.assertEqual(event.bf_trash_nc_mode, "google")
+        self.assertEqual(event.bf_trash_nc_state, "deleted")
+        google.active = False
+        with patch.object(Backend, "push_create", return_value=("gid-neuf", "e1")) as create, \
+                patch.object(Event, "_bf_trash_warn_restored_here") as warn:
+            event.action_unarchive()
+        create.assert_not_called()
+        warn.assert_called_once_with(event.name, "unreachable")
+        self.assertTrue(event.active)
+        self.assertFalse(event.bf_trashed_at)
+        # The id deleted in Google is forgotten: reactivated, the full pull
+        # reads it back as cancelled and must not find the meeting.
+        self.assertFalse(event.x_nc_uid)
+        google.active = True
+        self.env["calendar.google.backend"]._upsert_event(
+            self.env["calendar.event"], {"id": "gid-avant", "status": "cancelled"}, google)
+        self.assertTrue(event.exists())
+        self.assertTrue(event.active)
+
+    def test_restore_under_read_only_google_stays_in_odoo(self):
+        google = self._google()
+        event = self._local(x_nc_calendar_id=google.id, x_nc_uid="gid-lu",
+                            x_sync_source="google")
+        Backend = type(self.env["calendar.google.backend"])
+        with patch.object(Backend, "push_delete"):
+            event.with_context(bf_trash_door=True).action_archive()
+        google.sync_direction = "nc_to_odoo"
+        with patch.object(Backend, "push_create", return_value=("gid-neuf", "e1")) as create:
+            event.action_unarchive()
+        create.assert_not_called()
+        self.assertTrue(event.active)
+        self.assertFalse(event.x_nc_uid)
+
+    def test_restore_refused_by_google_forgets_the_deleted_id(self):
+        google = self._google()
+        event = self._local(x_nc_calendar_id=google.id, x_nc_uid="gid-refus",
+                            x_sync_source="google")
+        Backend = type(self.env["calendar.google.backend"])
+        Event = type(self.env["calendar.event"])
+        with patch.object(Backend, "push_delete"):
+            event.with_context(bf_trash_door=True).action_archive()
+        with patch.object(Backend, "push_create", side_effect=RuntimeError("panne")), \
+                patch.object(Event, "_bf_trash_warn_restored_here") as warn:
+            event.action_unarchive()
+        warn.assert_called_once_with(event.name, "unreachable")
+        self.assertTrue(event.active)
+        self.assertFalse(event.x_nc_uid)
