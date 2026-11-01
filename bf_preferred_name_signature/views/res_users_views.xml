@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Préférences : bf_preferred_name y montre déjà les pronoms sous le
+         courriel. Le même champ deux fois sur le même écran ferait croire à
+         deux réglages. -->
+    <record id="res_users_preferences_bf_signature_one_pronoun" model="ir.ui.view">
+        <field name="name">res.users.preferences.bf_signature.one_pronoun</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="bf_multi_company_email.res_users_preferences_bf_signature"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='bf_signature_pronouns']" position="replace"/>
+            <!-- L'avis de la signature
+                 imposée renvoyait à « Signature » pour les pronoms, qui n'y
+                 sont plus. Ancré sur son attribut, jamais sur son texte. -->
+            <xpath expr="//div[@invisible='not bf_signature_locked']" position="replace">
+                <div colspan="2" class="text-muted" name="bf_signature_locked_notice"
+                     invisible="not bf_signature_locked">
+                    Your organization sets the signature. Enter your pronouns
+                    under your email, and your job title and links under
+                    “Signature”: the signature updates by itself.
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
