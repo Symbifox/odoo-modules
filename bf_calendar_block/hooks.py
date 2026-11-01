@@ -9,6 +9,17 @@ Une étiquette du même nom déjà présente (venue de Nextcloud, par exemple) e
 reprise plutôt que doublée.
 """
 
+import logging
+
+from odoo import Command, fields
+
+_logger = logging.getLogger(__name__)
+
+# 18.0.1.1.0 : les quatre types naissent
+# sans rappel. Les dispenses d'ordre du jour et de tableau de bord sont des
+# champs de bf_meeting : le pont bf_calendar_block_meeting les pose (lus ici,
+# pendant la montée de ce module, ses champs n'existent pas encore).
+
 TYPES = [
     # (xmlid, nom fr, nom en, pictogramme, couleur, disponibilité, ordre)
     ("block_focus", "Concentration", "Focus", "🎯", "#7B61FF", "busy", 10),
@@ -17,6 +28,50 @@ TYPES = [
     ("block_meeting", "Plage de rencontre", "Meeting slot", "🤝", "#D9A400", "free", 30),
     ("block_catch_up", "Rattrapage", "Catch-up", "🔁", "#C0398B", "busy", 40),
 ]
+
+
+def types_du_module(env):
+    """Les étiquettes des quatre types posés par ce module (celles qui existent encore)."""
+    types = env["calendar.event.type"].sudo().with_context(active_test=False)
+    for xmlid, *_reste in TYPES:
+        types |= env.ref("bf_calendar_block.%s" % xmlid, raise_if_not_found=False) \
+            or env["calendar.event.type"]
+    return types
+
+
+def valeurs_par_defaut(env):
+    """Les défauts que ce module pose sur ses quatre types."""
+    return {"bf_block_no_alarm": True}
+
+
+def plages_a_venir(env, types):
+    """Les plages À VENIR portant l'un de ces types (le passé reste tel quel)."""
+    Event = env["calendar.event"].sudo().with_context(
+        skip_nc_sync=True, no_mail_to_attendees=True, tracking_disable=True)
+    if not types:
+        return Event
+    return Event.search([
+        ("categ_ids", "in", types.ids),
+        ("start", ">", fields.Datetime.now()),
+    ])
+
+
+def aligner_plages_a_venir(env, types):
+    """Les plages À VENIR de ces types perdent leurs rappels si leur type est « Sans rappel ».
+
+    Occurrence par occurrence et sans `recurrence_update` : une écriture
+    « tous les événements » archive et recrée la série dans le cœur, et la
+    synchro Nextcloud la marque « à recréer ». Les rappels et les dispenses ne
+    partent pas vers Nextcloud (`skip_nc_sync` par prudence) : la copie
+    Nextcloud d'une série garde son VALARM, qu'il faut retirer là-bas.
+    """
+    plages = plages_a_venir(env, types)
+    sonnent = plages.filtered(
+        lambda e: e.alarm_ids and e.bf_block_type_id.bf_block_no_alarm)
+    if sonnent:
+        sonnent.write({"alarm_ids": [Command.clear()]})
+    _logger.info("bf_calendar_block : %d plage(s) à venir, %d sans rappel désormais",
+                 len(plages), len(sonnent))
 
 
 def post_init_hook(env):
@@ -39,6 +94,7 @@ def post_init_hook(env):
             "bf_block_glyph": glyphe,
             "bf_block_show_as": dispo,
             "bf_block_sequence": ordre,
+            **valeurs_par_defaut(env),
         }
         if existant:
             if not existant.color_hex:
@@ -57,6 +113,7 @@ def post_init_hook(env):
                 "res_id": etiquette.id,
                 "noupdate": True,
             })
+    aligner_plages_a_venir(env, types_du_module(env))
 
 
 def uninstall_hook(env):

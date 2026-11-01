@@ -36,6 +36,21 @@ calendar, and nothing else could tell them apart.
 - On someone else's private event, the type and the pictogram are hidden like
   the title: the calendar shows *Busy* only.
 - *Work blocks* filter and *Work block* grouping in the calendar search.
+- **No reminder** (on the type, ticked on the four types): a block of that type
+  is created without reminders, in Odoo and on the phones synchronised with
+  Nextcloud. A reminder set explicitly (by hand, or read from Nextcloud) is
+  kept. The type is read from the event's tags, so a block created with its
+  tag alone (RPC, assistant), or from a view whose defaults give the tag or
+  the type, counts too.
+
+  At upgrade, upcoming blocks of the four types lose their reminders in Odoo
+  only. Reminders do not travel to Nextcloud: the copies already pushed there
+  keep their alarm (a phone still rings) until it is removed in Nextcloud.
+  And a single (non-recurring) synchronised block whose Nextcloud copy still
+  has an alarm can take its reminder back at the next pull, since what
+  Nextcloud sends wins over the type.
+- With `bf_meeting`, the bridge `bf_calendar_block_meeting` ticks *No formal agenda* and *Exclude from dashboard* on the
+  four types: a block asks for neither an agenda nor minutes.
 
 Meeting slots open online booking with `bf_calendar_block_appointment`.
 
@@ -51,6 +66,7 @@ Meeting slots open online booking with `bf_calendar_block_appointment`.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 18.0.1.1.0 | 2026-10-31 | *No reminder* on block types, ticked on the four types; blocks created without reminders unless one is given; upcoming blocks aligned at upgrade (past ones untouched) |
 | 18.0.1.0.0 | 2026-10-14 | Typed work blocks: block types on calendar tags (pictogram, colour, availability, privacy, order), four types at installation, type buttons in the quick-create dialog, pictogram before the title in the calendar, colour rule, search filter and grouping |
 
 ## License

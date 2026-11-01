@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<templates xml:space="preserve">
+
+    <!-- Dupliquer : dans le pied de la bulle générique, dont celui de l'Agenda
+         hérite (gabarit « primary »). -->
+    <t t-inherit="web.CalendarCommonPopover.footer" t-inherit-mode="extension">
+        <xpath expr="//t[@t-if='isEventDeletable']" position="before">
+            <a t-if="bfCanDuplicate" href="#"
+               class="btn btn-secondary o_cw_popover_duplicate"
+               t-on-click.prevent="onBfDuplicate">Duplicate</a>
+        </xpath>
+    </t>
+
+</templates>

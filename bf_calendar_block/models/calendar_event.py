@@ -79,6 +79,40 @@ class CalendarEvent(models.Model):
         vals["categ_ids"] = list(existantes or []) + commandes
         return vals
 
+    @api.model
+    def _bf_block_des_etiquettes(self, commandes):
+        """Le type de plage que donneraient ces commandes sur `categ_ids` (création)."""
+        ids = []
+        for commande in commandes or []:
+            if isinstance(commande, int):
+                ids.append(commande)
+            elif commande[0] == Command.SET:
+                ids = list(commande[2])
+            elif commande[0] == Command.LINK:
+                ids.append(commande[1])
+            elif commande[0] == Command.UNLINK:
+                ids = [i for i in ids if i != commande[1]]
+            elif commande[0] == Command.CLEAR:
+                ids = []
+        blocs = self.env["calendar.event.type"].browse(ids).exists().filtered("bf_is_block")
+        return blocs.sorted(lambda t: (t.bf_block_sequence, t.id))[:1]
+
+    @api.model
+    def _bf_block_des_defauts(self):
+        """Le type de plage que donneraient les valeurs par défaut (création).
+
+        Quand l'appel ne dit rien des étiquettes ni du type, `create()` les
+        prendra plus loin dans les défauts : `default_categ_ids` du contexte
+        (une vue filtrée sur une étiquette), `default_bf_block_type_id`, le
+        type de la création rapide.
+        """
+        defauts = self.default_get(["categ_ids", "bf_block_type_id"])
+        bloc = self._bf_block_des_etiquettes(defauts.get("categ_ids"))
+        if not bloc and defauts.get("bf_block_type_id"):
+            bloc = self.env["calendar.event.type"].browse(
+                defauts["bf_block_type_id"]).exists().filtered("bf_is_block")
+        return bloc
+
     def _bf_block_confidentialite_plus_stricte(self, bloc, actuelle, organisateur=None):
         """La confidentialité du type, si elle est plus stricte que l'actuelle, sinon None.
 
@@ -118,6 +152,8 @@ class CalendarEvent(models.Model):
         if not self.name or self.name in noms_de_types:
             self.name = bloc.name
         self.show_as = bloc.bf_block_show_as or "busy"
+        if bloc.bf_block_no_alarm:
+            self.alarm_ids = [Command.clear()]
         stricte = self._bf_block_confidentialite_plus_stricte(bloc, self.privacy, self.user_id)
         if stricte:
             self.privacy = stricte
@@ -126,6 +162,7 @@ class CalendarEvent(models.Model):
     def create(self, vals_list):
         Type = self.env["calendar.event.type"]
         prets = []
+        bloc_des_defauts = None  # lu une fois, au besoin
         for vals in vals_list:
             bloc = Type.browse(vals.get("bf_block_type_id") or [])
             if bloc.exists() and bloc.bf_is_block:
@@ -144,6 +181,22 @@ class CalendarEvent(models.Model):
                     if stricte:
                         vals["privacy"] = stricte
             pret = self._bf_block_vers_etiquettes(vals)
+            # Sans rappel quand l'appel n'en dit rien : sinon le
+            # défaut du champ (bf_email_management, « 1,15 ») en posait deux.
+            # Le type se lit dans les ÉTIQUETTES, comme partout dans ce module :
+            # une plage créée par sa seule étiquette (Gen, RPC) est une plage.
+            # Un `alarm_ids` explicite gagne toujours (pull Nextcloud : le .ics
+            # fait foi ; rappel ajouté à la main dans le formulaire).
+            # Sans étiquettes ni type dans l'appel, le type vient des défauts.
+            if "alarm_ids" not in pret and not self.env.context.get("default_alarm_ids"):
+                if "categ_ids" in pret:
+                    bloc_cree = self._bf_block_des_etiquettes(pret["categ_ids"])
+                else:
+                    if bloc_des_defauts is None:
+                        bloc_des_defauts = self._bf_block_des_defauts()
+                    bloc_cree = bloc_des_defauts
+                if bloc_cree.bf_block_no_alarm:
+                    pret["alarm_ids"] = [Command.clear()]
             # À la création, la clé reste : retirée, la valeur par défaut du type
             # (contexte de la création rapide) reviendrait par l'inverse et
             # remplacerait le type demandé. Les étiquettes étant déjà justes,

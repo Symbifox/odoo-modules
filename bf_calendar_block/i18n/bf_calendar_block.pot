@@ -6,14 +6,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 00:59+0000\n"
-"PO-Revision-Date: 2026-10-15 00:59+0000\n"
+"POT-Creation-Date: 2026-11-01 00:41+0000\n"
+"PO-Revision-Date: 2026-11-01 00:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,help:bf_calendar_block.field_calendar_event_type__bf_block_no_alarm
+msgid ""
+"A new block of this type is created without reminders, in Odoo and on the "
+"phones synchronised with Nextcloud. A reminder can still be added by hand."
+msgstr ""
 
 #. module: bf_calendar_block
 #: model:ir.model.fields,help:bf_calendar_block.field_calendar_event_type__bf_block_show_as
@@ -52,6 +59,11 @@ msgstr ""
 msgid ""
 "Events with this tag are blocks of time booked for a kind of work (focus, "
 "production, catch-up…): they show its pictogram and colour in the calendar."
+msgstr ""
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,field_description:bf_calendar_block.field_calendar_event_type__bf_block_no_alarm
+msgid "No reminder"
 msgstr ""
 
 #. module: bf_calendar_block

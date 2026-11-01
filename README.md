@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**94 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**96 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -130,8 +130,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.1.0 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.2 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calculator` | BF Calculatrice | 18.0.1.2.0 | LGPL-3 | Top-bar calculator: history, labels in the math, reverse tax, hours, dates, Bank of Canada rates, post to chatter |
-| `bf_calendar_block` | BF Calendar Work Blocks | 18.0.1.0.0 | LGPL-3 | Book typed blocks of time (focus, production, meeting slot, catch-up), each with its own pictogram and colour in the calendar, and carried to other calendars as a category. |
+| `bf_calendar_block` | BF Calendar Work Blocks | 18.0.1.1.0 | LGPL-3 | Book typed blocks of time (focus, production, meeting slot, catch-up), each with its own pictogram and colour in the calendar, and carried to other calendars as a category. |
 | `bf_calendar_block_appointment` | BF Calendar Work Blocks - Online Booking | 18.0.1.0.1 | LGPL-3 | Meeting slots booked in your calendar open online booking times, on top of your working hours. |
+| `bf_calendar_block_meeting` | BF Calendar Work Blocks - Meetings | 18.0.1.0.0 | LGPL-3 | Work blocks (focus, production, meeting slot, catch-up) need neither an agenda nor minutes, and stay off the meetings dashboard. |
 | `bf_calendar_hold` | BF Calendar Held Slots | 18.0.1.0.3 | LGPL-3 | Hold several candidate slots for a meeting that has to move, see them on the meeting and in their own colour, and move the meeting to the one that is chosen: the others are released. |
 | `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.6.3.0 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
 | `bf_calendar_mobile` | Symbifox — Agenda mobile | 18.0.3.9.0 | LGPL-3 | Calendar, deadlines and activities for a mobile client, carrying what CalDAV cannot: the meeting agenda, the minutes, the RSVP and the two reminder gestures |
@@ -477,6 +478,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `privacy_framework_uk` | Cadre de confidentialité — UK GDPR (Royaume-Uni) | 18.0.1.0.1 | BUSL-1.1 | UK GDPR / DPA 2018 regulatory-framework pack for the Privacy module |
 | `privacy_incident` | Registre des incidents de confidentialité (Loi 25) | 18.0.1.1.1 | LGPL-3 | Confidentiality-incident register (Law 25): declaration, risk assessment, measures, the eight register items, and providers' notices with their fingerprint |
 | `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.13.5.1 | BUSL-1.1 | Project knowledge base, policies, and documentation |
+| `web_calendar_ergonomics` | Calendar Ergonomics | 18.0.1.0.0 | LGPL-3 | Refresh button, reload on return to the tab, keyboard shortcuts, remembered side panel, Duplicate in the event popover and working hours shaded in every calendar view. |
 <!-- MODULES_TABLE:END -->
 
 ## Installation
@@ -524,7 +526,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **94 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **96 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<templates xml:space="preserve">
+
+    <!-- ⟳ Actualiser, juste après « Aujourd'hui » ; Alt+T sur « Aujourd'hui ».
+         Ancré sur la CLASSE du bouton, jamais sur son texte (traduit). -->
+    <t t-inherit="web.CalendarController" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o_calendar_button_today')]" position="attributes">
+            <attribute name="data-hotkey">t</attribute>
+        </xpath>
+        <xpath expr="//button[hasclass('o_calendar_button_today')]" position="after">
+            <button
+                type="button"
+                class="btn o_calendar_button_refresh d-print-none order-2 order-lg-0"
+                t-att-class="env.isSmall ? 'btn-sm btn-light' : 'btn-secondary'"
+                title="Refresh (Alt+R)"
+                aria-label="Refresh"
+                data-hotkey="r"
+                t-att-disabled="bfRefresh.loading"
+                t-on-click.stop="() => this.bfReload()"
+            ><i class="fa fa-refresh" t-att-class="{ 'fa-spin': bfRefresh.loading }"/></button>
+        </xpath>
+    </t>
+
+</templates>

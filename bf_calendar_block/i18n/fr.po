@@ -1,10 +1,13 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_calendar_block
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 00:59+0000\n"
-"PO-Revision-Date: 2026-10-15 00:59+0000\n"
+"POT-Creation-Date: 2026-11-01 00:41+0000\n"
+"PO-Revision-Date: 2026-11-01 00:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -12,6 +15,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,help:bf_calendar_block.field_calendar_event_type__bf_block_no_alarm
+msgid ""
+"A new block of this type is created without reminders, in Odoo and on the "
+"phones synchronised with Nextcloud. A reminder can still be added by hand."
+msgstr ""
+"Une nouvelle plage de ce type est créée sans rappel, dans Odoo et sur les "
+"téléphones synchronisés avec Nextcloud. On peut toujours ajouter un rappel à"
+" la main."
 
 #. module: bf_calendar_block
 #: model:ir.model.fields,help:bf_calendar_block.field_calendar_event_type__bf_block_show_as
@@ -56,6 +69,11 @@ msgstr ""
 "Les événements qui portent cette étiquette sont des plages de temps "
 "réservées à un type de travail (concentration, production, rattrapage…) : "
 "ils en montrent le pictogramme et la couleur dans le calendrier."
+
+#. module: bf_calendar_block
+#: model:ir.model.fields,field_description:bf_calendar_block.field_calendar_event_type__bf_block_no_alarm
+msgid "No reminder"
+msgstr "Sans rappel"
 
 #. module: bf_calendar_block
 #: model:ir.model.fields.selection,name:bf_calendar_block.selection__calendar_event_type__bf_block_privacy__confidential

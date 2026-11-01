@@ -14,7 +14,11 @@
     #   porte vers Nextcloud et la relit, et Thunderbird, Apple ou DAVx5
     #   l'affichent. La plage de rencontre (libre par défaut) ouvre la prise
     #   de rendez-vous avec bf_calendar_block_appointment.
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0 : block types get "No reminder" (ticked on the four types);
+    #   a block created without explicit reminders gets none; upcoming blocks
+    #   aligned at upgrade, one occurrence at a time. Agenda/dashboard
+    #   exemptions come from the bridge bf_calendar_block_meeting.
+    "version": "18.0.1.1.0",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

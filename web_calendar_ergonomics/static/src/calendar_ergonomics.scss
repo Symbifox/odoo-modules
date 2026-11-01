@@ -1,0 +1,8 @@
+// License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+// Heures hors travail : une ombre légère, qui laisse lire les événements et
+// reste distincte des jours « inhabituels » d'Odoo (o_calendar_disabled).
+// Seulement sur NOTRE ombrage (classe posée par le rendu quand il ombre) :
+// celui de hr_calendar, sur l'Agenda, garde sa teinte.
+.o_calendar_renderer .fc.o_bf_work_hours {
+    --fc-non-business-color: rgba(108, 117, 125, 0.10);
+}

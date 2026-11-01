@@ -35,6 +35,13 @@ class CalendarEventType(models.Model):
         string="Shown as", default="busy",
         help="Availability given to a new block of this type. A busy block "
              "is not offered for online booking.")
+    # Une plage n'a pas à sonner. Les rappels posés d'office
+    # (bf_email_management.default_alarm_minutes) partaient sur chaque plage.
+    bf_block_no_alarm = fields.Boolean(
+        string="No reminder",
+        help="A new block of this type is created without reminders, in Odoo "
+             "and on the phones synchronised with Nextcloud. A reminder can "
+             "still be added by hand.")
     bf_block_privacy = fields.Selection(
         [("public", "Public"), ("private", "Private"),
          ("confidential", "Only internal users")],
