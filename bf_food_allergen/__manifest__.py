@@ -1,6 +1,6 @@
 {
     "name": "Symbifox: food allergens",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Inventory/Inventory",
     "summary": "One shared list of Health Canada's priority food allergens for the Symbifox food modules",
     "description": """

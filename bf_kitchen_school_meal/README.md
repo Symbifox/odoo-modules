@@ -33,6 +33,7 @@ Odoo 18, `bf_kitchen` and `bf_school_meal`. The interface is in English with a F
 ## Changelog
 
 - 18.0.1.0.0: first release.
+- 18.0.1.1.0: the order guide of the kitchen counts the school meals ordered and not served yet as known demand; French translation completed.
 
 ## Licence
 

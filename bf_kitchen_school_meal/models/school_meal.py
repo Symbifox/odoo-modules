@@ -206,3 +206,36 @@ class KitchenVariance(models.TransientModel):
                 continue
             leaves.append((product, line.product_uom_id._compute_quantity(data["qty"], product.uom_id, round=False)))
         return leaves
+
+
+class KitchenOrderGuide(models.TransientModel):
+    _inherit = "bf.kitchen.order.guide"
+
+    def _bf_known_demand(self, date_to):
+        """The school meals ordered until `date_to` and not taken out of the stock yet: Odoo's
+        forecast does not see them, the order guide must."""
+        demand = super()._bf_known_demand(date_to)
+        # The meals leave the company's kitchen warehouse: another warehouse's guide does not count them.
+        if self.warehouse_id != self.company_id._bf_kitchen_warehouse():
+            return demand
+        orders = self.env["bf.school.meal.order"].sudo().search([
+            ("state", "=", "ordered"), ("bf_kitchen_picking_id", "=", False),
+            ("item_id.bf_kitchen_dish_id", "!=", False), ("company_id", "=", self.company_id.id),
+            ("date", ">=", fields.Date.context_today(self)), ("date", "<=", date_to)])
+        portions = defaultdict(float)
+        for order in orders:
+            portions[order.item_id.bf_kitchen_dish_id] += 1.0
+        Bom = self.env["mrp.bom"].sudo()
+        for dish, count in portions.items():
+            bom = Bom._bom_find(dish, company_id=self.company_id.id, bom_type="phantom").get(dish)
+            if not bom:
+                continue
+            factor = dish.uom_id._compute_quantity(count, bom.product_uom_id) / bom.product_qty
+            _boms, lines = bom.explode(dish, factor)
+            for line, data in lines:
+                product = line.product_id
+                if product.product_tmpl_id.bf_kitchen_type not in STOCK_TYPES:
+                    continue
+                qty = line.product_uom_id._compute_quantity(data["qty"], product.uom_id, round=False)
+                demand[product] = demand.get(product, 0.0) + qty
+        return demand

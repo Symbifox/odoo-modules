@@ -21,6 +21,13 @@
     <menuitem id="menu_kitchen_prepared" name="I prepared" parent="menu_kitchen_stock" sequence="40"
               action="bf_kitchen_prepared_action"/>
 
+    <menuitem id="menu_kitchen_purchase" name="Purchasing" parent="menu_kitchen_root" sequence="37"
+              groups="bf_kitchen.group_kitchen_manager"/>
+    <menuitem id="menu_kitchen_order_guide" name="Order guide" parent="menu_kitchen_purchase" sequence="10"
+              action="bf_kitchen_order_guide_action"/>
+    <menuitem id="menu_kitchen_stock_levels" name="Stock levels" parent="menu_kitchen_purchase" sequence="20"
+              action="bf_kitchen_orderpoint_action"/>
+
     <menuitem id="menu_kitchen_bills" name="Vendor bills" parent="menu_kitchen_root" sequence="40"
               groups="account.group_account_invoice"/>
     <menuitem id="menu_kitchen_lines_to_attach" name="Lines to attach" parent="menu_kitchen_bills" sequence="10"

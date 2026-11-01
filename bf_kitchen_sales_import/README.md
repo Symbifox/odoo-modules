@@ -41,6 +41,7 @@ Odoo 18 and `bf_kitchen`. Excel files are read with `openpyxl`. The interface is
 ## Changelog
 
 - 18.0.1.0.0: first release.
+- 18.0.1.0.1: French translation completed.
 
 ## Licence
 

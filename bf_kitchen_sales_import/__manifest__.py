@@ -1,6 +1,6 @@
 {
     "name": "Symbifox: kitchen sales from another register",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Inventory/Inventory",
     "summary": "The sales of a register that is not Odoo's (Square, Lightspeed, Toast, Clover), imported "
                "from its CSV or Excel export, take the dishes' ingredients out of the kitchen stock",

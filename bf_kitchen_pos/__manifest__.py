@@ -1,6 +1,6 @@
 {
     "name": "Symbifox: kitchen and register",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Inventory/Inventory",
     "summary": "Dishes sold at Odoo's register take their ingredients out of the kitchen stock; a dish "
                "refunded at the register is a loss, not stock back on the shelf",

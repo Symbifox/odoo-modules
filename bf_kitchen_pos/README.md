@@ -30,6 +30,7 @@ Odoo 18 with Point of Sale and its kits (`pos_mrp`), and `bf_kitchen`. The inter
 ## Changelog
 
 - 18.0.1.0.0: first release.
+- 18.0.1.0.1: French translation completed.
 
 ## Licence
 

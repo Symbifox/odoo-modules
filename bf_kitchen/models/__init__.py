@@ -12,3 +12,4 @@ from . import kitchen_count
 from . import mrp_bom_stock
 from . import kitchen_consumption
 from . import kitchen_variance
+from . import kitchen_purchase

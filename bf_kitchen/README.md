@@ -3,8 +3,8 @@
 Recipes and plate cost for restaurants, caterers and kitchens, built on Odoo's stock,
 purchase and kits: recipes and plate cost, the kitchen stock (counts, losses, preparations
 made ahead), and what the kitchen consumed between two counts against what it sold (the
-theoretical/actual variance). Supplier orders and menu engineering are planned for later
-releases.
+theoretical/actual variance), and the orders to suppliers. Menu engineering is planned for a
+later release.
 
 ## Features
 
@@ -91,6 +91,14 @@ releases.
   first count for a day before it (that count already saw the food gone). The stock location
   is applied last and closes the count: no other location is applied after it. From a finished
   count, one button gives the variance since the previous one. Kitchen manager only.
+- **Orders to suppliers.** Min and max per item on Odoo's own reordering rules (Kitchen >
+  Purchasing > Stock levels), the delivery days of each food supplier and how many days ahead
+  it must be ordered. The **order guide** of a supplier gives, for its next delivery, each item
+  it sells: on hand, Odoo's forecast until the delivery after (stock, receipts and deliveries
+  under way), the known demand Odoo does not count yet (the school meals ordered, with
+  `bf_kitchen_school_meal`), the min and max, and a suggested quantity in the supplier's unit
+  (below the min, up to the max; at least the supplier's minimum). One button makes Odoo's
+  request for quotation for the delivery date, with the user's own Purchase rights.
 
 ## Units
 
@@ -112,6 +120,11 @@ A purchase unit such as "bunch (60 g)" can be created in the Weight category.
   sales, accounting, manufacturing manager) keeps that access whole. Within that limit, the
   vendor lines of kitchen products are writable too, and the fields that settle accounting
   and valuation are not: taxes, accounts and other properties, cost, category, company, type.
+- The kitchen manager sets the min and max of kitchen items on Odoo's reordering rules, and
+  reads the order guide; making its request for quotation takes Purchase / User as well. Only
+  manual rules are the kitchen's; an automatic rule stays the stock manager's. Odoo's own
+  Replenish button on a product form remains an Inventory right: it makes a draft request for
+  quotation, never sent.
 - Lines to attach and costs to check need Accounting / Billing as well, and so do attaching
   and ignoring a line. Only a kitchen ingredient can be attached. The kitchen fields of a
   bill line (ingredient, format, receipt, cost issue), the link between a receipt and its bill
@@ -125,8 +138,9 @@ A purchase unit such as "bunch (60 g)" can be created in the Weight category.
 ## What the module does not do yet
 
 The stock valuation stays Odoo's: the module never writes the product cost. The variance is
-valued at today's kitchen cost, not at the cost of each day. Supplier orders and menu
-engineering are planned for later releases. The kitchen locations list is the Inventory administrator's (writing a location is
+valued at today's kitchen cost, not at the cost of each day. The order guide does not send the
+order: the request for quotation is Odoo's, sent from Purchase. Menu engineering is planned for
+a later release. The kitchen locations list is the Inventory administrator's (writing a location is
 theirs in Odoo).
 
 ## Requirements
@@ -161,6 +175,10 @@ allergens. The interface is in English with a French (Canada) translation.
   sales with no delivery of their own leave from, and where Received brings the ingredients (the
   first warehouse when none is set). The stock location closes a count: no location is applied
   after it.
+- 18.0.1.3.0: orders to suppliers. Min and max on Odoo's reordering rules for the kitchen
+  manager (kitchen items only), delivery days and order lead of food suppliers, the order guide
+  per supplier and its request for quotation. An allergen still declared by a kitchen item is
+  neither archived nor deleted. French translation completed.
 
 ## Licence
 

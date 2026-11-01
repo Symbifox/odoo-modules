@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 11:19+0000\n"
-"PO-Revision-Date: 2026-10-31 11:19+0000\n"
+"POT-Creation-Date: 2026-10-31 23:12+0000\n"
+"PO-Revision-Date: 2026-10-31 23:12+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -278,6 +278,11 @@ msgid "'Technical sheet - %s' % (object.product_tmpl_id.name)"
 msgstr "'Fiche technique - %s' % (object.product_tmpl_id.name)"
 
 #. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_weekday__code
+msgid "0 is Monday, 6 is Sunday."
+msgstr "0 est lundi, 6 est dimanche."
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_attach_line__pack_qty
 msgid "12000 for a case of 12 x 1 L when the stock unit is the ml."
 msgstr "12000 pour une caisse de 12 x 1 L quand l'unité de stock est le ml."
@@ -300,6 +305,11 @@ msgstr "<span>Écart de la cuisine</span>"
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
 msgid "<span>Makes </span>"
 msgstr "<span>Donne </span>"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_order_guide_view_form
+msgid "<span>Order guide</span>"
+msgstr "<span>Guide de commande</span>"
 
 #. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_kanban
@@ -577,6 +587,16 @@ msgstr "Archivés"
 
 #. module: bf_kitchen
 #. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_purchase.py:0
+msgid ""
+"As a kitchen manager, a stock level is set on a stock location of its "
+"warehouse (%s is not one)."
+msgstr ""
+"En tant que responsable de la cuisine, un niveau de stock se fixe sur un "
+"emplacement de stock de son entrepôt (%s n'en est pas un)."
+
+#. module: bf_kitchen
+#. odoo-python
 #: code:addons/bf_kitchen/models/kitchen_scope.py:0
 msgid ""
 "As a kitchen manager, you can only change kitchen products and recipes "
@@ -655,6 +675,20 @@ msgstr "Avant de compter"
 #: model:ir.model.fields,help:bf_kitchen.field_mrp_bom__bf_price
 msgid "Before taxes."
 msgstr "Avant taxes."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__in_progress
+msgid "Being ordered"
+msgstr "En commande"
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_orderpoint_action
+msgid ""
+"Below the min, the order guide suggests ordering up to the max, in the "
+"supplier's unit."
+msgstr ""
+"Sous le min, le guide de commande propose de commander jusqu'au max, dans "
+"l'unité du fournisseur."
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_stock_location__bf_kitchen_key
@@ -757,6 +791,11 @@ msgid "Choose the two finished counts to compare."
 msgstr "Choisissez les deux comptages terminés à comparer."
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__kind
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_variance_line_view_search
 msgid "Column"
@@ -772,6 +811,8 @@ msgstr "Sociétés"
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__company_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__company_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__company_id
@@ -779,11 +820,18 @@ msgid "Company"
 msgstr "Société"
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_order_guide_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_variance_view_form
 msgid "Compute"
 msgstr "Calculer"
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_order_guide_view_form
+msgid "Compute again"
+msgstr "Calculer de nouveau"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__computed
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__computed
 msgid "Computed"
 msgstr "Calculé"
@@ -1011,9 +1059,19 @@ msgid "Counts"
 msgstr "Comptages"
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__cover_until
+msgid "Covering until"
+msgstr "Couvre jusqu'au"
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
 msgid "Create the kitchen locations"
 msgstr "Créer les emplacements de cuisine"
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_order_guide_view_form
+msgid "Create the request for quotation"
+msgstr "Créer la demande de prix"
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__create_uid
@@ -1021,9 +1079,12 @@ msgstr "Créer les emplacements de cuisine"
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -1033,9 +1094,12 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -1049,6 +1113,16 @@ msgstr ""
 "Crée la fiche fournisseur sur l'ingrédient (code, nom et format du "
 "fournisseur) : la prochaine facture, saisie ou lue par OCR, portera le "
 "produit."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_purchase.py:0
+msgid ""
+"Creating a request for quotation takes the Purchase rights: ask purchasing, "
+"or give the kitchen manager the Purchase user group."
+msgstr ""
+"Créer une demande de prix demande les droits d'Achats : demandez aux achats,"
+" ou donnez au responsable de la cuisine le groupe Achats / Utilisateur."
 
 #. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_product_product__bf_may_contain_ids
@@ -1077,6 +1151,11 @@ msgstr "Retour client"
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
 msgid "Date"
 msgstr "Date"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_weekday
+msgid "Day of the week"
+msgstr "Jour de la semaine"
 
 #. module: bf_kitchen
 #: model:ir.model,name:bf_kitchen.model_bf_kitchen_loss
@@ -1135,6 +1214,7 @@ msgstr ""
 #. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_attach_line__stock_uom_id
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count_line__uom_id
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_order_guide_line__stock_uom_id
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_variance_line__uom_id
 msgid "Default unit of measure used for all stock operations."
 msgstr ""
@@ -1145,6 +1225,12 @@ msgstr ""
 #: code:addons/bf_kitchen/models/kitchen_consumption.py:0
 msgid "Deliveries"
 msgstr "Livraisons"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_partner__bf_kitchen_delivery_day_ids
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_users__bf_kitchen_delivery_day_ids
+msgid "Delivery days"
+msgstr "Jours de livraison"
 
 #. module: bf_kitchen
 #: model:ir.model.fields.selection,name:bf_kitchen.selection__product_template__bf_kitchen_type__dish
@@ -1158,9 +1244,12 @@ msgstr "Plat"
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
 
@@ -1278,6 +1367,11 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr "Icône Font Awesome, p. ex. fa-tasks"
 
 #. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_food_allergen
+msgid "Food allergen"
+msgstr "Allergène alimentaire"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_food_cost_pct
 msgid "Food cost (%)"
 msgstr "Coût matière (%)"
@@ -1289,6 +1383,17 @@ msgid "Food supplier"
 msgstr "Fournisseur alimentaire"
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__delivery_date
+msgid "For the delivery of"
+msgstr "Pour la livraison du"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__forecast
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_orderpoint_view_list
+msgid "Forecast"
+msgstr "Prévu"
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
 msgid "Format"
 msgstr "Format"
@@ -1297,6 +1402,11 @@ msgstr "Format"
 #: model:ir.model.fields,help:bf_kitchen.field_account_move_line__bf_pack_qty
 msgid "Format of the billed unit, in the ingredient's stock unit."
 msgstr "Format de l'unité facturée, dans l'unité de stock de l'ingrédient."
+
+#. module: bf_kitchen
+#: model:bf.kitchen.weekday,name:bf_kitchen.weekday_4
+msgid "Friday"
+msgstr "Vendredi"
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__date_from
@@ -1322,6 +1432,11 @@ msgid "Gross"
 msgstr "Brut"
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__guide_id
+msgid "Guide"
+msgstr "Guide"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__has_message
 msgid "Has Message"
 msgstr "A un message"
@@ -1335,6 +1450,14 @@ msgstr "Tenue en stock"
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
 msgid "Hold in stock"
 msgstr "Tenir en stock"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_partner__bf_kitchen_order_days
+#: model:ir.model.fields,help:bf_kitchen.field_res_users__bf_kitchen_order_days
+msgid "How many days before a delivery the order must reach this supplier."
+msgstr ""
+"Combien de jours avant une livraison la commande doit parvenir à ce "
+"fournisseur."
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__quantity
@@ -1357,9 +1480,12 @@ msgstr "J'ai préparé"
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__id
 msgid "ID"
 msgstr "ID"
 
@@ -1470,12 +1596,14 @@ msgstr "Est l'emplacement de stock"
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__product_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__product_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__product_id
 msgid "Item"
 msgstr "Article"
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__line_ids
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__line_ids
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
 msgid "Items"
 msgstr "Articles"
@@ -1605,6 +1733,18 @@ msgid "Kitchen manager"
 msgstr "Responsable de la cuisine"
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_purchase.py:0
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_order_guide
+msgid "Kitchen order guide"
+msgstr "Guide de commande de la cuisine"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_order_guide_line
+msgid "Kitchen order guide line"
+msgstr "Ligne du guide de commande"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_account_move_line__bf_kitchen_product_id
 msgid "Kitchen product"
 msgstr "Produit de cuisine"
@@ -1629,6 +1769,7 @@ msgstr "Rangement en cuisine"
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_kitchen_type
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_kitchen_type
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_kitchen_type
+#: model:ir.model.fields,field_description:bf_kitchen.field_stock_warehouse_orderpoint__bf_kitchen_type
 msgid "Kitchen type"
 msgstr "Type cuisine"
 
@@ -1657,6 +1798,13 @@ msgid "Kitchen variance: analysis"
 msgstr "Écart de la cuisine : analyse"
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_warehouse_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_warehouse_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid "Kitchen warehouse"
+msgstr "Entrepôt de cuisine"
+
+#. module: bf_kitchen
 #: model:ir.model,name:bf_kitchen.model_bf_kitchen_scope_mixin
 msgid "Kitchen write scope"
 msgstr "Portée d'écriture de la cuisine"
@@ -1679,14 +1827,22 @@ msgstr ""
 "fournisseurs"
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__known_demand
+msgid "Known demand"
+msgstr "Demande connue"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -1696,9 +1852,12 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -1813,6 +1972,12 @@ msgid "Margin per portion"
 msgstr "Marge par portion"
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__max_qty
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_orderpoint_view_list
+msgid "Max"
+msgstr "Max"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_may_contain_ids
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_may_contain_ids
 msgid "May contain"
@@ -1856,9 +2021,30 @@ msgid "Method"
 msgstr "Méthode"
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__min_qty
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_orderpoint_view_list
+msgid "Min"
+msgstr "Min"
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_stock_warehouse_orderpoint
+msgid "Minimum Inventory Rule"
+msgstr "Règle d'inventaire minimum"
+
+#. module: bf_kitchen
+#: model:bf.kitchen.weekday,name:bf_kitchen.weekday_0
+msgid "Monday"
+msgstr "Lundi"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__my_activity_date_deadline
 msgid "My Activity Deadline"
 msgstr "Échéance de mon activité"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__name
+msgid "Name"
+msgstr "Nom"
 
 #. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
@@ -1959,6 +2145,12 @@ msgstr "Rien n'est compté à %s. Saisissez 0 pour un article absent."
 
 #. module: bf_kitchen
 #. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_purchase.py:0
+msgid "Nothing to order: every quantity is 0."
+msgstr "Rien à commander : toutes les quantités sont à 0."
+
+#. module: bf_kitchen
+#. odoo-python
 #: code:addons/bf_kitchen/models/account_move.py:0
 msgid ""
 "Nothing to receive: every ingredient line is already received, comes from a "
@@ -1990,9 +2182,29 @@ msgid "Number of messages with delivery error"
 msgstr "Nombre de messages en erreur de livraison"
 
 #. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_order_guide_line__forecast
+msgid ""
+"Odoo's forecast at the next delivery after this one: stock, receipts and "
+"deliveries under way, in the stock unit."
+msgstr ""
+"La prévision d'Odoo à la livraison suivante : stock, réceptions et "
+"livraisons en route, dans l'unité de stock."
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_cost_oldest_date
 msgid "Oldest ingredient cost"
 msgstr "Plus vieux coût d'ingrédient"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__on_hand
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_orderpoint_view_list
+msgid "On hand"
+msgstr "En stock"
+
+#. module: bf_kitchen
+#: model:ir.model.constraint,message:bf_kitchen.constraint_bf_kitchen_weekday_one_per_day
+msgid "One record per day of the week."
+msgstr "Une fiche par jour de la semaine."
 
 #. module: bf_kitchen
 #. odoo-python
@@ -2057,6 +2269,26 @@ msgstr ""
 "comme n'étant pas un ingrédient."
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_partner__bf_kitchen_order_days
+#: model:ir.model.fields,field_description:bf_kitchen.field_res_users__bf_kitchen_order_days
+msgid "Order ahead (days)"
+msgstr "Commander d'avance (jours)"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_purchase.py:0
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_order_guide_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_order_guide
+msgid "Order guide"
+msgstr "Guide de commande"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_purchase.py:0
+msgid "Order guide: %s"
+msgstr "Guide de commande : %s"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_stock_location__bf_kitchen_count_sequence
 msgid ""
 "Order of this location in a kitchen count: the order a cook walks through "
@@ -2064,6 +2296,22 @@ msgid ""
 msgstr ""
 "Rang de cet emplacement dans un comptage de cuisine : l'ordre dans lequel on"
 " les parcourt."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__uom_id
+msgid "Ordered in"
+msgstr "Commandé en"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_purchase.py:0
+msgid ""
+"Ordering takes the Purchase rights: the kitchen manager sets the stock "
+"levels, purchasing orders (or use the order guide with the Purchase rights)."
+msgstr ""
+"Commander demande les droits d'Achats : le responsable de la cuisine fixe "
+"les niveaux de stock, les achats commandent (ou utilisez le guide de "
+"commande avec les droits d'Achats)."
 
 #. module: bf_kitchen
 #: model:ir.model.fields.selection,name:bf_kitchen.selection__stock_picking__bf_kitchen_source__other
@@ -2158,6 +2406,11 @@ msgstr ""
 " le dernier comptage terminé est plus vieux que cela. Vide : aucun rappel."
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__price_unit
+msgid "Price"
+msgstr "Prix"
+
+#. module: bf_kitchen
 #: model:ir.model,name:bf_kitchen.model_product_template
 msgid "Product"
 msgstr "Produit"
@@ -2177,6 +2430,11 @@ msgstr "Unité d'achat"
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
 msgid "Purchase units"
 msgstr "Unités d'achat"
+
+#. module: bf_kitchen
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_purchase
+msgid "Purchasing"
+msgstr "Achats"
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__qty
@@ -2298,6 +2556,16 @@ msgid "Reports"
 msgstr "Rapports"
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__order_id
+msgid "Request for quotation"
+msgstr "Demande de prix"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_order_guide_line__in_progress
+msgid "Requests for quotation not confirmed yet, in the stock unit."
+msgstr "Demandes de prix pas encore confirmées, dans l'unité de stock."
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__activity_user_id
 msgid "Responsible User"
 msgstr "Responsable"
@@ -2312,6 +2580,11 @@ msgstr "Erreur de livraison du SMS"
 #: code:addons/bf_kitchen/models/kitchen_consumption.py:0
 msgid "Sales orders"
 msgstr "Commandes"
+
+#. module: bf_kitchen
+#: model:bf.kitchen.weekday,name:bf_kitchen.weekday_5
+msgid "Saturday"
+msgstr "Samedi"
 
 #. module: bf_kitchen
 #: model:ir.model,name:bf_kitchen.model_stock_scrap
@@ -2347,6 +2620,11 @@ msgid ""
 msgstr ""
 "Posé par le bouton Reçu de la cuisine : la ligne de facture fournisseur que "
 "cette réception représente."
+
+#. module: bf_kitchen
+#: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_orderpoint_action
+msgid "Set the min and max of your ingredients"
+msgstr "Fixez le min et le max de vos ingrédients"
 
 #. module: bf_kitchen
 #: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_settings_action
@@ -2483,8 +2761,15 @@ msgstr ""
 "unité) : quelques grammes stockés en kg s'arrondiraient à zéro."
 
 #. module: bf_kitchen
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_orderpoint_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_stock_levels
+msgid "Stock levels"
+msgstr "Niveaux de stock"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_attach_line__stock_uom_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__uom_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__stock_uom_id
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_list
 msgid "Stock unit"
@@ -2496,6 +2781,11 @@ msgstr "Unité de stock"
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_supplierinfo__bf_pack_qty
 msgid "Stock units per billed unit"
 msgstr "Unités de stock par unité facturée"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__suggested
+msgid "Suggested"
+msgstr "Proposé"
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_price_suggested
@@ -2510,9 +2800,24 @@ msgid "Suggested price rounding"
 msgstr "Arrondi du prix suggéré"
 
 #. module: bf_kitchen
+#: model:bf.kitchen.weekday,name:bf_kitchen.weekday_6
+msgid "Sunday"
+msgstr "Dimanche"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__partner_id
+msgid "Supplier"
+msgstr "Fournisseur"
+
+#. module: bf_kitchen
 #: model:ir.model,name:bf_kitchen.model_product_supplierinfo
 msgid "Supplier Pricelist"
 msgstr "Liste de prix du fournisseur"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__supplierinfo_id
+msgid "Supplierinfo"
+msgstr "Fiche fournisseur"
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__location_id
@@ -2562,6 +2867,18 @@ msgstr ""
 "Le jour de la vente ou du repas que représente cette consommation. Une "
 "consommation enregistrée après un comptage pour un jour d'avant est signalée"
 " par le rapport d'écart."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_partner__bf_kitchen_delivery_day_ids
+#: model:ir.model.fields,help:bf_kitchen.field_res_users__bf_kitchen_delivery_day_ids
+msgid "The days this supplier delivers. Empty: any day."
+msgstr "Les jours où ce fournisseur livre. Vide : tous les jours."
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_order_guide__cover_until
+msgid ""
+"The delivery after this one: the order covers what is needed until then."
+msgstr "La livraison d'après : la commande couvre les besoins jusque-là."
 
 #. module: bf_kitchen
 #. odoo-python
@@ -2679,6 +2996,12 @@ msgstr ""
 
 #. module: bf_kitchen
 #. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_purchase.py:0
+msgid "The order guide is the kitchen manager's."
+msgstr "Le guide de commande revient au responsable de la cuisine."
+
+#. module: bf_kitchen
+#. odoo-python
 #: code:addons/bf_kitchen/models/account_move.py:0
 msgid ""
 "The plate cost went over its target after %(bills)s. Ingredients: "
@@ -2709,6 +3032,16 @@ msgstr ""
 "L'emplacement de stock ne se saute pas : les ventes, les réceptions et les "
 "préparations y déplacent le stock. Saisissez 0 pour les articles rangés "
 "ailleurs."
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_count.py:0
+msgid ""
+"The stock location is already applied: it closes the count. Count %s before "
+"it, in the next count."
+msgstr ""
+"L'emplacement de stock est déjà appliqué : il ferme le comptage. Comptez %s "
+"avant lui, au prochain comptage."
 
 #. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
@@ -2762,6 +3095,18 @@ msgid "The warehouse of a count that has started cannot change."
 msgstr "L'entrepôt d'un comptage commencé ne change plus."
 
 #. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_res_company__bf_kitchen_warehouse_id
+#: model:ir.model.fields,help:bf_kitchen.field_res_config_settings__bf_kitchen_warehouse_id
+msgid ""
+"The warehouse the kitchen's sales leave from when nothing else says it (an "
+"invoice with no sales order, the school meals) and where the Received button"
+" brings the ingredients. Empty: the company's first warehouse."
+msgstr ""
+"L'entrepôt d'où sortent les ventes de la cuisine quand rien d'autre ne le "
+"dit (une facture sans commande, les repas scolaires) et où le bouton Reçu "
+"entre les ingrédients. Vide : le premier entrepôt de la société."
+
+#. module: bf_kitchen
 #. odoo-python
 #: code:addons/bf_kitchen/models/mrp_bom.py:0
 #: code:addons/bf_kitchen/models/product.py:0
@@ -2804,6 +3149,11 @@ msgstr ""
 " ses lignes de facture."
 
 #. module: bf_kitchen
+#: model:bf.kitchen.weekday,name:bf_kitchen.weekday_3
+msgid "Thursday"
+msgstr "Jeudi"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__date_to
 msgid "To"
 msgstr "Au"
@@ -2817,6 +3167,12 @@ msgstr "À compter"
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__warning_html
 msgid "To know"
 msgstr "À savoir"
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__qty
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_orderpoint_view_list
+msgid "To order"
+msgstr "À commander"
 
 #. module: bf_kitchen
 #: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_count__state__draft
@@ -2859,6 +3215,11 @@ msgid "Transfer"
 msgstr "Transfert"
 
 #. module: bf_kitchen
+#: model:bf.kitchen.weekday,name:bf_kitchen.weekday_1
+msgid "Tuesday"
+msgstr "Mardi"
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr "Type de l'activité en exception sur la fiche."
@@ -2885,6 +3246,7 @@ msgstr "Écart inexpliqué"
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__uom_id
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_orderpoint_view_list
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
 msgid "Unit"
@@ -2997,6 +3359,7 @@ msgstr ""
 #. module: bf_kitchen
 #: model:ir.model,name:bf_kitchen.model_stock_warehouse
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__warehouse_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__warehouse_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__warehouse_id
 msgid "Warehouse"
 msgstr "Entrepôt"
@@ -3010,6 +3373,11 @@ msgstr "Messages du site web"
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__website_message_ids
 msgid "Website communication history"
 msgstr "Historique des échanges sur le site web"
+
+#. module: bf_kitchen
+#: model:bf.kitchen.weekday,name:bf_kitchen.weekday_2
+msgid "Wednesday"
+msgstr "Mercredi"
 
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__product_id
@@ -3041,9 +3409,35 @@ msgstr ""
 "n'expliquent pas."
 
 #. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_order_guide_line__known_demand
+msgid ""
+"What the kitchen knows it will use and Odoo does not count yet (school meals"
+" ordered), in the stock unit."
+msgstr ""
+"Ce que la cuisine sait qu'elle utilisera et qu'Odoo ne compte pas encore "
+"(repas scolaires commandés), dans l'unité de stock."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_order_guide_view_form
+msgid "What to order for the next delivery, in the supplier's unit."
+msgstr ""
+"Quoi commander pour la prochaine livraison, dans l'unité du fournisseur."
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_stock_picking__bf_kitchen_source
 msgid "Where a kitchen consumption comes from."
 msgstr "D'où vient une consommation cuisine."
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
+msgid ""
+"Where the sales that have no delivery of their own leave from (invoices with"
+" no sales order, school meals), and where Received brings the ingredients. "
+"Empty: the first warehouse of the company."
+msgstr ""
+"D'où sortent les ventes qui n'ont pas de livraison à elles (factures sans "
+"commande, repas scolaires), et où Reçu entre les ingrédients. Vide : le "
+"premier entrepôt de la société."
 
 #. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_product_product__bf_kitchen_location_id
@@ -3111,6 +3505,12 @@ msgstr "ex. Saumon entier"
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
 msgid "items"
 msgstr "articles"
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/product.py:0
+msgid "kitchen item(s)"
+msgstr "article(s) de cuisine"
 
 #. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body

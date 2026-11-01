@@ -173,8 +173,13 @@ class TestKitchenSchoolMeal(TestKitchen):
         with self.assertRaises(UserError):
             self.milk.active = False
         self.assertTrue(self.milk.active)
+        chef = self.mkuser("r2a_chef", "bf_kitchen.group_kitchen_manager")
+        with self.assertRaises(UserError):
+            self.milk.with_user(chef).unlink()
+        self.assertTrue(self.milk.exists() and self.students[3].meal_allergen_ids)
         lupin = self.env["bf.food.allergen"].create({"name": "Lupin (essai)"})
         lupin.active = False
+        lupin.unlink()
 
     def test_r2_dish_linked_later(self):
         """A dish linked to a meal after it was served does not take those meals out:
@@ -187,3 +192,21 @@ class TestKitchenSchoolMeal(TestKitchen):
         self.assertEqual(self.plain.bf_kitchen_dish_date, fields.Date.context_today(self.plain))
         self.run_cron()
         self.assertFalse(earlier.bf_kitchen_picking_id, "served before its dish was linked")
+
+    def test_m7_order_guide_counts_meals_ordered(self):
+        """The order guide counts the school meals ordered and not served yet as known demand."""
+        tomorrow = self.day(1)
+        self.order(tomorrow, self.students[0])
+        self.order(tomorrow, self.students[1])
+        guide = self.env["bf.kitchen.order.guide"].create({"partner_id": self.vendor.id})
+        demand = guide._bf_known_demand(self.today + timedelta(days=7))
+        self.assertAlmostEqual(demand.get(self.salmon, 0.0), 480.0)
+        self.assertAlmostEqual(demand.get(self.cream, 0.0), 60.0, msg="the sauce exploded into its cream")
+
+    def test_r2_archived_student_still_counts(self):
+        """An archived student's allergy keeps its allergen: archived students count too."""
+        tree_nut = self.env.ref("bf_food_allergen.allergen_tree_nut")
+        self.students[2].meal_allergen_ids = [Command.set(tree_nut.ids)]
+        self.students[2].active = False
+        with self.assertRaises(UserError):
+            tree_nut.unlink()

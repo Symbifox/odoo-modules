@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 11:23+0000\n"
-"PO-Revision-Date: 2026-10-31 11:23+0000\n"
+"POT-Creation-Date: 2026-10-31 22:20+0000\n"
+"PO-Revision-Date: 2026-10-31 22:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -34,6 +34,11 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen_school_meal
+#: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_dish_date
+msgid "Dish linked on"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
 #: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_food_cost_pct
 msgid "Food cost (%)"
 msgstr ""
@@ -46,6 +51,16 @@ msgstr ""
 #. module: bf_kitchen_school_meal
 #: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_dish_id
 msgid "Kitchen dish"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_day__bf_kitchen_issue
+msgid "Kitchen issue"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model,name:bf_kitchen_school_meal.model_bf_kitchen_order_guide
+msgid "Kitchen order guide"
 msgstr ""
 
 #. module: bf_kitchen_school_meal
@@ -80,6 +95,11 @@ msgid "Meal ordered"
 msgstr ""
 
 #. module: bf_kitchen_school_meal
+#: model:ir.model,name:bf_kitchen_school_meal.model_bf_school_meal_day
+msgid "Menu of the day"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
 #: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_cost
 msgid "Plate cost"
 msgstr ""
@@ -109,6 +129,26 @@ msgid "The kitchen consumption of a meal is set by the kitchen itself."
 msgstr ""
 
 #. module: bf_kitchen_school_meal
+#. odoo-python
+#: code:addons/bf_kitchen_school_meal/models/school_meal.py:0
+msgid ""
+"The meals of %(day)s did not leave the kitchen stock: %(reason)s. They will "
+"be taken out as soon as it is fixed."
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_school_meal.bf_kitchen_school_meal_day_view_form
+msgid "The meals of this day have not left the kitchen stock:"
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,help:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_dish_date
+msgid ""
+"The meals served from this day on leave the stock: those before were not "
+"counted with the dish."
+msgstr ""
+
+#. module: bf_kitchen_school_meal
 #: model:ir.model.fields,help:bf_kitchen_school_meal.field_bf_school_meal_order__bf_kitchen_picking_id
 msgid ""
 "The transfer that took this meal's ingredients out of the stock, at the "
@@ -123,4 +163,17 @@ msgstr ""
 #. module: bf_kitchen_school_meal
 #: model:ir.model.fields,help:bf_kitchen_school_meal.field_stock_picking__bf_kitchen_source
 msgid "Where a kitchen consumption comes from."
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#: model:ir.model.fields,help:bf_kitchen_school_meal.field_bf_school_meal_day__bf_kitchen_issue
+msgid ""
+"Why the meals of this day have not left the kitchen stock yet. The hourly "
+"pass tries again."
+msgstr ""
+
+#. module: bf_kitchen_school_meal
+#. odoo-python
+#: code:addons/bf_kitchen_school_meal/models/school_meal.py:0
+msgid "the company %s has no warehouse"
 msgstr ""

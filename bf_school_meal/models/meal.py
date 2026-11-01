@@ -300,14 +300,10 @@ class MealClose(models.TransientModel):
 class FoodAllergen(models.Model):
     _inherit = "bf.food.allergen"
 
-    def write(self, vals):
-        # The list is shared with the kitchen: archiving an allergen would hide the allergies declared
-        # with it, and a meal containing it would no longer be refused to the student.
-        if "active" in vals and not vals["active"]:
-            students = self.env["res.partner"].sudo().with_context(active_test=False).search_count(
-                [("meal_allergen_ids", "in", self.ids)])
-            if students:
-                raise UserError(_("%(count)s student(s) are declared allergic to %(names)s: the allergen stays "
-                                  "active while it is declared.", count=students,
-                                  names=", ".join(self.mapped("name"))))
-        return super().write(vals)
+    def _bf_allergen_uses(self):
+        uses = super()._bf_allergen_uses()
+        Partner = self.env["res.partner"].sudo().with_context(active_test=False)
+        Item = self.env["bf.school.meal.item"].sudo().with_context(active_test=False)
+        uses[_("student(s)")] = Partner.search_count([("meal_allergen_ids", "in", self.ids)])
+        uses[_("school meal(s)")] = Item.search_count([("allergen_ids", "in", self.ids)])
+        return uses

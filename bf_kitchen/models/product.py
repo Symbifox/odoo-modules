@@ -443,3 +443,14 @@ class ProductSupplierinfo(models.Model):
         return self.filtered(
             lambda s: (s.product_tmpl_id or s.product_id.product_tmpl_id).bf_kitchen_type
             and (not s.product_id or s.product_id.product_tmpl_id.bf_kitchen_type))
+
+
+class FoodAllergen(models.Model):
+    _inherit = "bf.food.allergen"
+
+    def _bf_allergen_uses(self):
+        uses = super()._bf_allergen_uses()
+        Template = self.env["product.template"].sudo().with_context(active_test=False)
+        uses[_("kitchen item(s)")] = Template.search_count([
+            "|", ("bf_allergen_input_ids", "in", self.ids), ("bf_may_contain_ids", "in", self.ids)])
+        return uses

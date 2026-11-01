@@ -52,6 +52,7 @@ tax. The school's accountant confirms before going live.
   (`bf_food_allergen`). The update moves the school's allergens, the students' allergies and
   the meals' allergens to it (an allergen the school added keeps its names), and removes the
   school's own list.
+- 18.0.1.1.1: an allergen a student or a meal declares cannot be archived nor deleted (the list is shared with the kitchen); French translation completed.
 
 ## Licence
 
