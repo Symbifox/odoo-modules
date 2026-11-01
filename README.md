@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**286 modules are BUSL-1.1.** The source is published and auditable, and **you
+**287 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -287,6 +287,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_membership_assembly` | Membres : AGA et votes | 18.0.1.0.3 | BUSL-1.1 | General meetings of members: notice within the legal delays, voters fixed at a record date, attendance, quorum, proxies, show-of-hands or secret-ballot votes |
 | `bf_membership_assembly_governance` | Membres : AGA et registre corporatif | 18.0.1.0.2 | BUSL-1.1 | A proposal adopted at a members' meeting is entered in the corporate governance resolution register, frozen as voted |
 | `bf_membership_portal` | Membres : portail, adhésion en ligne et répertoire | 18.0.1.2.1 | BUSL-1.1 | The member's portal: membership, renewal and online payment, membership card; a public application form and an opt-in member directory |
+| `bf_multi_company_email` | Symbifox — Courriels multi-sociétés | 18.0.5.0.3 | LGPL-3 | Template-driven email signatures per company, quick footer links behind redirectable shortlinks, and a sender address per company |
 | `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.3.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.4.4.0 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on companies, contacts, projects and tasks, each person on their own Nextcloud account (Login Flow v2, SSO-friendly): client folders linked or created from a template, chatter attachments filed to the client folder, folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
 | `bf_nfc` | Gestes par pastille NFC | 18.0.2.6.4 | BUSL-1.1 | NFC tags that play a gesture in Odoo: three doors (app token, browser session, NTAG 424 signed tag), menus and questions, bounded offline taps, QR label twin, tag templates and a setup wizard. Signed chips are written from the app with the server driving, so the AES keys never leave Odoo |
@@ -323,16 +324,22 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_preferred_name_governance` | Symbifox Noms d'usage et pronoms — pont Gouvernance | 18.0.1.0.0 | BUSL-1.1 | Resolutions print the legal name of signatories and directors |
 | `bf_preferred_name_linkpage` | Symbifox Noms d'usage et pronoms — pont Page de liens | 18.0.1.1.0 | BUSL-1.1 | Pronouns and the preferred name on a person's link page; renaming offers to change the addresses that carry the name |
 | `bf_preferred_name_nextcloud` | Symbifox Noms d'usage et pronoms — pont Contacts Nextcloud | 18.0.1.0.0 | BUSL-1.1 | Pronouns and grammatical gender in the cards pushed to Nextcloud Contacts |
+| `bf_preferred_name_partner_legal_name` | Symbifox Noms d'usage et pronoms — pont Partner Legal Name | 18.0.1.0.0 | BUSL-1.1 | One legal name on a person's contact: the protected one; the company legal name stays for companies |
 | `bf_preferred_name_persona` | Symbifox Noms d'usage et pronoms — pont Persona | 18.0.1.0.0 | BUSL-1.1 | The recipients' pronouns in the email composer banner |
 | `bf_preferred_name_receipt` | Symbifox Noms d'usage et pronoms — pont Reçus de dons | 18.0.1.0.0 | BUSL-1.1 | The official donation receipt carries the donor's legal name |
 | `bf_preferred_name_sign` | Symbifox Noms d'usage et pronoms — pont Signature | 18.0.1.0.0 | BUSL-1.1 | The signer's legal name on the signed act, their preferred name everywhere else |
 | `bf_preferred_name_sign_sale` | Symbifox Noms d'usage et pronoms — pont Signature des devis | 18.0.1.0.0 | BUSL-1.1 | A quotation's "Signed by" carries the frozen legal name of the signer |
+| `bf_preferred_name_signature` | Symbifox Noms d'usage et pronoms — pont Signatures | 18.0.1.0.0 | BUSL-1.1 | The email signature shows the pronouns from the person's contact |
 | `bf_process` | Cartographie de processus | 18.0.5.1.0 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.1.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
+| `bf_property_access` | Immeubles : accès des résidents | 18.0.1.1.2 | BUSL-1.1 | Who may open which door: a resident's access is added on move-in and removed once a person confirms the move-out, through orders to the devices or the caretaker; temporary access for visitors, contractors and entries into a dwelling |
+| `bf_property_access_portal` | Immeubles : mes accès au portail | 18.0.1.1.3 | BUSL-1.1 | Residents see on the portal the doors they can open, with which credential, and can give a visitor temporary access to the common doors |
+| `bf_property_access_privacy` | Immeubles : accès et vie privée (Loi 25) | 18.0.1.0.2 | BUSL-1.1 | Access control in the Québec Act 25 processing register, declared versus applied retention, and a prefilled privacy impact assessment template |
 | `bf_property_core` | Immeubles : socle | 18.0.2.10.1 | BUSL-1.1 | The neutral foundation: organisations, buildings, dwellings and occupants, for divided co-ownership and residential rental alike |
 | `bf_property_cx` | Copropriété : satisfaction des occupants | 18.0.1.4.0 | BUSL-1.1 | Ask the occupant how their maintenance request went, once it is closed |
 | `bf_property_finance` | Copropriété : charges et appels de fonds | 18.0.4.7.2 | BUSL-1.1 | Annual budget, allocation of common expenses and calls for contributions |
 | `bf_property_governance` | Copropriété : assemblées | 18.0.2.5.0 | BUSL-1.1 | Co-owners' meetings: notice, quorum, weighted voting and majorities under the Civil Code of Québec |
+| `bf_property_lobby` | Immeubles : portier sur tablette | 18.0.1.0.3 | BUSL-1.1 | A tablet at the entrance: a directory of residents who agree to appear, a call that rings the resident through Symbifox telephony, deliveries announced to the caretaker |
 | `bf_property_operations` | Immeubles : exploitation | 18.0.7.5.1 | BUSL-1.1 | Buildings and teams: where each piece of equipment is, and who answers for the building |
 | `bf_property_operations_portal` | Immeubles : de la demande au travail | 18.0.2.1.1 | BUSL-1.1 | Route an occupant's request to their building's team, and turn it into the work to be done |
 | `bf_property_operations_privacy` | Exploitation : pont vie privée (Loi 25) | 18.0.1.3.0 | BUSL-1.1 | Record in the Law 25 register what a work shift says about employees |
@@ -357,6 +364,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_recruitment_source_expense` | Recrutement : ce que chaque site d'emploi coûte | 18.0.1.0.0 | BUSL-1.1 | Attribute a posting outlay to the board that billed it, and give the cost per application while saying which share of the job's spend it covers |
 | `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.1.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
 | `bf_rental` | Locatif : le bail de logement | 18.0.2.4.1 | BUSL-1.1 | What a residential lease agrees to, the mandatory form it cites, and what the module refuses to make up |
+| `bf_rental_access` | Locatif : accès des locataires | 18.0.1.0.3 | BUSL-1.1 | Lease signatories receive their access when the lease starts; rent end, resiliation or abandonment put their move-out up for confirmation |
 | `bf_rental_notice` | Locatif : les avis | 18.0.1.6.1 | BUSL-1.1 | Lease notices: their deadlines, and the four regimes of silence the Civil Code treats differently |
 | `bf_rental_portal` | Locatif : portail du locataire | 18.0.1.9.1 | BUSL-1.1 | Tenant portal: their lease, their notices and due dates, what they have paid |
 | `bf_rental_privacy` | Locatif : pont vie privée (Loi 25) | 18.0.1.2.0 | BUSL-1.1 | Record in the Law 25 register what a termination notice says about the tenant |
@@ -388,7 +396,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_school_privacy` | Symbifox École : consentements | 18.0.1.0.1 | BUSL-1.1 | Law 25 consents for a school: photos, publication, family contact list, educational platforms, asked each year of the right person |
 | `bf_school_record` | Symbifox École : dossier de l'élève | 18.0.1.0.0 | BUSL-1.1 | The student's file with the eight pieces the regulation requires, the register of enrolment, the transfer to the receiving school and the copy given to the person |
 | `bf_school_report_card` | Symbifox École : bulletins | 18.0.1.0.1 | BUSL-1.1 | Elementary and secondary report cards from the gradebook, sealed when issued, shown to the families with a read receipt, and the written communications the regulation requires |
-| `bf_school_rl24` | Symbifox École : relevé 24 | 18.0.1.0.0 | BUSL-1.1 | Child-care fees paid, by calendar year, payer and child, for the Relevé 24: annual statement on the family portal, export for the school's slip software |
+| `bf_school_rl24` | Symbifox École : relevé 24 | 18.0.1.0.1 | BUSL-1.1 | Child-care fees paid, by calendar year, payer and child, for the Relevé 24: annual statement on the family portal, export for the school's slip software |
 | `bf_school_slides` | Symbifox École : contenus de cours | 18.0.1.0.0 | BUSL-1.1 | Course contents in the eLearning app, given to the students of school groups and their parents, and renewed from one school year to the next |
 | `bf_school_student_portal` | Symbifox École : l'élève au portail | 18.0.1.0.2 | BUSL-1.1 | Students sign in to the family portal with their school directory account, the one that opens the school's computers |
 | `bf_school_timetable` | Symbifox École : horaire | 18.0.1.0.0 | BUSL-1.1 | The timetable in a cycle of school days, rooms with no double booking, the family's week in the portal and a calendar link for each child |
@@ -411,10 +419,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_stepbystep_securetransfer` | Progression: deposit through secure transfer storage | 18.0.1.0.2 | BUSL-1.1 | Client portal deposits go straight to the S3 storage of the secure transfer when it is configured; large files stay there. |
 | `bf_studio_light` | Symbifox — Forge | 18.0.7.1.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.8.2 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
-| `bf_subscription_expense` | Abonnements — notes de frais | 18.0.1.0.1 | BUSL-1.1 | A subscription paid through an expense report counts in the subscription's costs |
 | `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.1.0 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
 | `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.1.0 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
+| `bf_subscription_expense` | Abonnements — notes de frais | 18.0.1.0.1 | BUSL-1.1 | A subscription paid through an expense report counts in the subscription's costs |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
+| `bf_survey_certificate` | Branded Course Certificates | 18.0.1.0.0 | BUSL-1.1 | Certification documents in the company's own brand: a branded PDF, a verifiable certificate number with its public page, and a branded success email |
 | `bf_survey_upload` | BF Survey Upload | 18.0.1.3.0 | LGPL-3 | File-upload question type for Odoo surveys |
 | `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.1.0 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
 | `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.2.0.3 | LGPL-3 | Notifies assignees when their task becomes unblocked |
@@ -455,6 +464,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.3.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
 | `hosting_management` | Gestion d'hébergement | 18.0.2.65.0 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
+| `partner_legal_name` | Symbifox — Partner Legal Name | 18.0.1.0.2 | LGPL-3 | A company's registered legal name next to its trade name, printed in the document header |
 | `personal_budget` | Personal Budget | 18.0.2.1.2 | LGPL-3 | Household budget: personal or shared budgets, subscriptions and dashboard |
 | `privacy_breach_notice` | Vie privée : avis de violation au responsable | 18.0.1.0.1 | BUSL-1.1 | A service provider notifies a client's privacy officer of a breach or attempted breach (Law 25, s. 18.3): structured content, signed and fingerprinted PDF, acknowledgement with a one-time code, and a thread kept as a register |
 | `privacy_breach_notice_hosting` | Vie privée : avis de violation depuis l'hébergement | 18.0.1.0.0 | BUSL-1.1 | Qualifies a hosting security event for privacy and prepares one draft breach notice per affected organisation |
@@ -510,7 +520,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **285 modules: BUSL-1.1.** Production use for your own internal business
+- **287 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Route the "bf_brand" layout to our document; every other layout keeps
+         Odoo's. The xpath anchors on the t-call attribute (never on text:
+         text moves with translation and style, attributes do not). -->
+    <template id="certification_report_view" inherit_id="survey.certification_report_view">
+        <xpath expr="//t[@t-call='survey.certification_report_view_general']" position="replace">
+            <t t-if="user_input.survey_id.certification_report_layout == 'bf_brand'">
+                <!-- The certificate is the participant's document: it renders
+                     in their language, not in the printer's. -->
+                <t t-call="bf_survey_certificate.certification_report_bf_brand"
+                   t-lang="user_input.sudo()._bf_certificate_lang()"/>
+            </t>
+            <t t-else="">
+                <t t-call="survey.certification_report_view_general"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- The branded certificate. One A4 landscape page (1122x793 css px at
+         96 dpi, margins 0). Written for wkhtmltopdf 0.12.6: literal colours
+         (var() is silently ignored), tables and absolute blocks (no grid),
+         images inlined as data URIs (a remote fetch blocks the render).
+         The inline font-family carries !important on purpose: bf_lexend
+         forces Lexend on every report body, and a white-label company set to
+         another font must win over that. -->
+    <template id="certification_report_bf_brand">
+        <t t-set="vals" t-value="user_input.sudo()._bf_certificate_values()"/>
+        <div class="article" t-att-data-oe-model="user_input._name" t-att-data-oe-id="user_input.id"
+             style="page-break-after:always;">
+            <!-- The report bundle offsets the body: 11mm o_body_html
+                 padding in the HTML preview, the .container padding
+                 (16px) in the PDF run. Either one slides this fixed
+                 1122px page to the right and its right edge - the
+                 "ONLINE TRAINING" label, the QR, the bottom band - is
+                 cut at the paper's edge. A full-bleed page cancels the
+                 offset at the source, whatever the mode's value is (the
+                 core certification layout guesses it with -4mm margins
+                 instead). The style sits INSIDE div.article because the
+                 PDF pipeline (_prepare_html) keeps only the article
+                 divs of the rendered page. -->
+            <style>
+                body { margin: 0 !important; padding: 0 !important; }
+            </style>
+            <t t-if="user_input.scoring_success">
+                <t t-set="name_size" t-value="len(vals['learner']) > 45 and '26px' or (len(vals['learner']) > 30 and '32px' or '40px')"/>
+                <div t-attf-style="width:1122px;height:790px;background:#ffffff;position:relative;overflow:hidden;font-family:'#{vals['font']}','Lexend',Arial,sans-serif !important;color:#{vals['dark']};">
+                    <div t-attf-style="height:8px;background:#{vals['primary']};"/>
+                    <div style="padding:42px 68px 0 68px;">
+                        <!-- Every td carries its padding and a transparent
+                             background inline: the tenant's report bundle has
+                             a BARE td rule (grey wash + 1rem padding) that
+                             would wash every cell otherwise. -->
+                        <table style="width:100%;border-collapse:separate;border-spacing:0;border:none;">
+                            <tr style="border:none;background:transparent;">
+                                <td style="vertical-align:middle;padding:0;background:transparent;border:none;">
+                                    <img t-if="vals['logo']" t-att-src="image_data_uri(vals['logo'])"
+                                         style="max-height:64px;max-width:300px;"/>
+                                    <span t-else="" t-attf-style="font-size:26px;font-weight:600;color:#{vals['dark']};"
+                                          t-out="vals['company_name']"/>
+                                </td>
+                                <!-- padding-right = the letter-spacing: Qt
+                                     draws letter-spaced text 3px wider than
+                                     it measures it, and clips the overflow
+                                     at the cell edge - without this pad the
+                                     last glyph loses its right side. -->
+                                <td t-attf-style="text-align:right;vertical-align:middle;padding:0 3px 0 0;background:transparent;border:none;font-size:11px;letter-spacing:3px;color:#{vals['dark']};opacity:.55;">ONLINE TRAINING</td>
+                            </tr>
+                        </table>
+                        <div style="text-align:center;margin-top:40px;">
+                            <div t-attf-style="font-size:24px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#{vals['dark']};">Certificate of Achievement</div>
+                            <div t-attf-style="width:76px;height:3px;background:#{vals['primary']};margin:16px auto 20px auto;"/>
+                            <div t-attf-style="font-size:14px;color:#{vals['dark']};opacity:.62;">awarded to</div>
+                            <div t-attf-style="font-size:#{name_size};font-weight:600;color:#{vals['dark']};margin:6px 0 14px 0;" t-out="vals['learner']"/>
+                            <div t-attf-style="font-size:14px;color:#{vals['dark']};opacity:.62;">for successfully completing</div>
+                            <div t-attf-style="font-size:21px;font-weight:600;color:#{vals['dark']};margin-top:6px;display:inline-block;border-bottom:3px solid #{vals['primary']};padding-bottom:5px;"
+                                 t-out="vals['course']"/>
+                            <div t-attf-style="font-size:13px;color:#{vals['dark']};opacity:.62;margin-top:18px;">
+                                <span>Issued on</span> <span t-out="vals['date']"/>
+                            </div>
+                        </div>
+                    </div>
+                    <table style="width:1122px;border-collapse:separate;border-spacing:0;border:none;position:absolute;left:0;bottom:60px;">
+                        <tr style="border:none;background:transparent;">
+                            <td style="width:50%;padding:0 0 0 68px;vertical-align:bottom;background:transparent;border:none;">
+                                <t t-if="vals['signatory_name']">
+                                    <div t-if="vals['signature']">
+                                        <img t-att-src="image_data_uri(vals['signature'])"
+                                             style="max-height:52px;max-width:220px;"/>
+                                    </div>
+                                    <div style="width:220px;border-top:1px solid #c9ccce;padding-top:6px;">
+                                        <div style="font-size:13px;font-weight:600;" t-out="vals['signatory_name']"/>
+                                        <div t-attf-style="font-size:12px;color:#{vals['dark']};opacity:.62;" t-out="vals['signatory_title']"/>
+                                    </div>
+                                </t>
+                            </td>
+                            <td style="width:50%;padding:0 68px 0 0;vertical-align:bottom;text-align:right;background:transparent;border:none;">
+                                <t t-if="vals['code_display']">
+                                    <table style="border-collapse:separate;border-spacing:0;border:none;margin-left:auto;">
+                                        <tr style="border:none;background:transparent;">
+                                            <td style="text-align:right;vertical-align:bottom;padding:0 14px 0 0;background:transparent;border:none;">
+                                                <div style="font-size:12px;font-weight:600;">
+                                                    <span>Certificate no.</span> <span t-out="vals['code_display']"/>
+                                                </div>
+                                                <div t-attf-style="font-size:11px;color:#{vals['dark']};opacity:.62;max-width:320px;">
+                                                    <span>Verify authenticity:</span><br/>
+                                                    <span style="font-weight:600;" t-out="vals['url_label']"/>
+                                                </div>
+                                            </td>
+                                            <td style="vertical-align:bottom;padding:0;background:transparent;border:none;">
+                                                <img t-if="vals['qr_src']" t-att-src="vals['qr_src']"
+                                                     style="width:96px;height:96px;"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+                    <div t-attf-style="position:absolute;left:0;bottom:0;width:1122px;height:40px;background:#{vals['dark']};">
+                        <table style="width:100%;border-collapse:separate;border-spacing:0;border:none;">
+                            <tr style="border:none;background:transparent;">
+                                <td style="padding:0 0 0 68px;height:40px;background:transparent;border:none;color:#ffffff;font-size:11px;">
+                                    <span>Issued by</span> <span t-out="vals['company_name']"/>
+                                </td>
+                                <td style="padding:0 68px 0 0;height:40px;background:transparent;border:none;color:#ffffff;font-size:11px;text-align:right;opacity:.85;"
+                                    t-out="vals['domain_label']"/>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+            <t t-else="">
+                <div t-attf-style="width:1122px;height:790px;background:#ffffff;position:relative;overflow:hidden;font-family:'#{vals['font']}','Lexend',Arial,sans-serif !important;color:#{vals['dark']};">
+                    <div t-attf-style="height:8px;background:#{vals['primary']};"/>
+                    <div style="text-align:center;margin-top:320px;">
+                        <div t-attf-style="font-size:22px;font-weight:600;color:#{vals['dark']};">Certification not passed</div>
+                        <div t-attf-style="font-size:14px;color:#{vals['dark']};opacity:.62;margin-top:10px;" t-out="vals['course']"/>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </template>
+
+</odoo>

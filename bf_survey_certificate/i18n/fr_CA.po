@@ -1,0 +1,260 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_survey_certificate 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 06:26+0000\n"
+"PO-Revision-Date: 2026-11-01 06:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+msgid "<span>Certificate no.</span>"
+msgstr "<span>Attestation n°</span>"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+msgid "<span>Issued by</span>"
+msgstr "<span>Délivrée par</span>"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+msgid "<span>Issued on</span>"
+msgstr "<span>Délivrée le</span>"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+msgid "<span>Verify authenticity:</span><br/>"
+msgstr "<span>Authenticité vérifiable :</span><br/>"
+
+#. module: bf_survey_certificate
+#: model:mail.template,body_html:bf_survey_certificate.mail_template_certification_branded
+msgid ""
+"<t t-call=\"bf_survey_certificate.mail_body_certification\"/>\n"
+"        "
+msgstr ""
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
+msgid ""
+"Anyone holding the certificate number can confirm its authenticity at the "
+"address below."
+msgstr ""
+"Quiconque détient le numéro d'attestation peut en confirmer l'authenticité à"
+" l'adresse ci-dessous."
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certificate_verify_page
+msgid "Awarded to"
+msgstr "Décernée à"
+
+#. module: bf_survey_certificate
+#: model:mail.template,description:bf_survey_certificate.mail_template_certification_branded
+msgid "Branded certificate email: PDF attached, verification link in the body"
+msgstr ""
+"Courriel d'attestation à la marque : PDF joint, lien de vérification dans le"
+" corps"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,field_description:bf_survey_certificate.field_survey_user_input__bf_certificate_company_id
+msgid "Certificate issuer"
+msgstr "Société émettrice de l'attestation"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certificate_verify_page
+msgid "Certificate no."
+msgstr "Attestation n°"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,field_description:bf_survey_certificate.field_survey_user_input__bf_certificate_code
+msgid "Certificate number"
+msgstr "Numéro d'attestation"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,field_description:bf_survey_certificate.field_survey_user_input__bf_certificate_code_display
+msgid "Certificate number (grouped)"
+msgstr "Numéro d'attestation (groupé)"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
+msgid "Certificate number:"
+msgstr "Numéro d'attestation :"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+msgid "Certificate of Achievement"
+msgstr "Attestation de réussite"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,field_description:bf_survey_certificate.field_res_company__bf_certificate_signatory_name
+msgid "Certificate signatory"
+msgstr "Signataire des attestations"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,field_description:bf_survey_certificate.field_res_company__bf_certificate_signature
+msgid "Certificate signature"
+msgstr "Signature des attestations"
+
+#. module: bf_survey_certificate
+#. odoo-python
+#: code:addons/bf_survey_certificate/controllers/main.py:0
+msgid "Certificate verification"
+msgstr "Vérification d'attestation"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,field_description:bf_survey_certificate.field_survey_user_input__bf_certificate_url
+msgid "Certificate verification link"
+msgstr "Lien de vérification de l'attestation"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.view_company_form_bf_certificate
+msgid "Certificates"
+msgstr "Attestations"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+msgid "Certification not passed"
+msgstr "Certification non réussie"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certificate_verify_page
+msgid "Check the number as printed on the document, dashes included or not."
+msgstr ""
+"Vérifiez le numéro tel qu'imprimé sur le document, avec ou sans les tirets."
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields.selection,name:bf_survey_certificate.selection__survey_survey__certification_report_layout__bf_brand
+msgid "Company brand"
+msgstr "Marque de la société"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certificate_verify_page
+msgid "Completed on"
+msgstr "Réussi le"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
+msgid ""
+"Congratulations! You have successfully completed the course below. Your "
+"certificate is attached to this email."
+msgstr ""
+"Félicitations! Vous avez réussi le cours ci-dessous. Votre attestation est "
+"jointe à ce courriel."
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certificate_verify_page
+msgid "Course"
+msgstr "Cours"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,help:bf_survey_certificate.field_res_company__bf_certificate_signature
+msgid ""
+"Handwritten signature printed on course certificates. Ideally dark ink on a "
+"transparent background."
+msgstr ""
+"Signature manuscrite imprimée sur les attestations de cours. Idéalement à "
+"l'encre foncée sur fond transparent."
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
+msgid "Hello"
+msgstr "Bonjour"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certificate_verify_page
+msgid "Issued by"
+msgstr "Délivrée par"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,help:bf_survey_certificate.field_res_company__bf_certificate_signatory_name
+msgid "Name printed under the signature on course certificates."
+msgstr "Nom imprimé sous la signature sur les attestations de cours."
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certificate_verify_page
+msgid "No certificate matches this number."
+msgstr "Aucune attestation ne correspond à ce numéro."
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+msgid "ONLINE TRAINING"
+msgstr "FORMATION EN LIGNE"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,help:bf_survey_certificate.field_survey_user_input__bf_certificate_code
+msgid ""
+"Random number of the passed certification. The public page "
+"/certificat/<number> confirms the certificate to whoever holds the number."
+msgstr ""
+"Numéro aléatoire de la certification réussie. La page publique "
+"/certificat/<numéro> confirme l'attestation à quiconque détient le numéro."
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,field_description:bf_survey_certificate.field_res_company__bf_certificate_signatory_title
+msgid "Signatory title"
+msgstr "Titre du signataire"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.view_company_form_bf_certificate
+msgid "Signature on certificates"
+msgstr "Signature sur les attestations"
+
+#. module: bf_survey_certificate
+#: model:mail.template,name:bf_survey_certificate.mail_template_certification_branded
+msgid "Survey: Branded Certification Success"
+msgstr "Sondage : réussite de certification à la marque"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certificate_verify_page
+msgid "This certificate is authentic."
+msgstr "Cette attestation est authentique."
+
+#. module: bf_survey_certificate
+#: model:ir.model.constraint,message:bf_survey_certificate.constraint_survey_user_input_bf_certificate_code_uniq
+msgid "This certificate number is already used."
+msgstr "Ce numéro d'attestation est déjà utilisé."
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,help:bf_survey_certificate.field_res_company__bf_certificate_signatory_title
+msgid ""
+"Title printed under the signatory's name, in the participant's language."
+msgstr ""
+"Titre imprimé sous le nom du signataire, dans la langue de la personne "
+"participante."
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+msgid "awarded to"
+msgstr "décernée à"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+msgid "for successfully completing"
+msgstr "pour la réussite du cours"
+
+#. module: bf_survey_certificate
+#: model:mail.template,subject:bf_survey_certificate.mail_template_certification_branded
+msgid "{{ object.survey_id.display_name }}: your certificate"
+msgstr "{{ object.survey_id.display_name }} : votre attestation"
+
+#. module: bf_survey_certificate
+#: model:ir.module.module,shortdesc:base.module_bf_survey_certificate
+msgid "Branded Course Certificates"
+msgstr "Attestations de cours à la marque"
+
+#. module: bf_survey_certificate
+#: model:ir.module.module,summary:base.module_bf_survey_certificate
+msgid ""
+"Certification documents in the company's own brand: a branded PDF, a "
+"verifiable certificate number with its public page, and a branded success "
+"email"
+msgstr ""
+"Documents de certification à la marque de la société : PDF habillé, numéro "
+"d'attestation vérifiable avec sa page publique, et courriel de réussite "
+"habillé"

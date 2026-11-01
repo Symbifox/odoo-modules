@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The body lives in its own QWeb template so its terms export to the
+         module's catalogue once (same convention as bf_calendar_invite).
+         Left updatable on purpose: an upgrade rewrites the body; reword it
+         here, not in Settings. -->
+    <!-- Every translatable piece is a whole sentence (or a whole label):
+         a dynamic value never sits in the middle of a sentence, so the
+         catalogue carries no half-phrases like ". Anyone holding...". -->
+    <template id="mail_body_certification">
+        <div>
+            <p>Hello <t t-out="object.partner_id.name or object.email or ''"/>,</p>
+            <p>Congratulations! You have successfully completed the course below. Your certificate is attached to this email.</p>
+            <p><b t-out="object.survey_id.display_name"/></p>
+            <t t-if="object.bf_certificate_url">
+                <p>Anyone holding the certificate number can confirm its authenticity at the address below.</p>
+                <p>
+                    Certificate number: <b t-out="object.bf_certificate_code_display"/><br/>
+                    <a t-att-href="object.bf_certificate_url" t-out="object.bf_certificate_url"/>
+                </p>
+            </t>
+            <p t-out="object.bf_certificate_company_id.name"/>
+        </div>
+    </template>
+
+    <!-- Installed TURNED OFF: no survey sends it until someone picks it as
+         the survey's "Certified Email Template". survey._mark_done() does the
+         sending; the attached PDF is the certification report, rendered with
+         whatever layout the survey uses. -->
+    <record id="mail_template_certification_branded" model="mail.template">
+        <field name="name">Survey: Branded Certification Success</field>
+        <field name="model_id" ref="survey.model_survey_user_input"/>
+        <field name="subject">{{ object.survey_id.display_name }}: your certificate</field>
+        <field name="email_from">{{ (object.bf_certificate_company_id.catchall_formatted or user.email_formatted or user.company_id.catchall_formatted) }}</field>
+        <field name="email_to">{{ (object.partner_id.email_formatted or object.email) }}</field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
+        <field name="description">Branded certificate email: PDF attached, verification link in the body</field>
+        <field name="report_template_ids" eval="[Command.set([ref('survey.certification_report')])]"/>
+        <field name="body_html" type="html">
+            <t t-call="bf_survey_certificate.mail_body_certification"/>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

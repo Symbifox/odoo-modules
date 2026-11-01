@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Public verification page, standalone on purpose: no website layout,
+         no assets bundle, so the module works without the website module and
+         the page shows nothing but what it means to show. The title comes
+         from the controller: QWeb never translates <title>. -->
+    <template id="certificate_verify_page">
+        <html t-att-lang="lang_short">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex"/>
+                <title t-out="page_title"/>
+                <style>
+                    @font-face { font-family: "Lexend"; src: url("/bf_lexend/static/fonts/Lexend-Regular.ttf") format("truetype"); font-weight: 400; }
+                    @font-face { font-family: "Lexend"; src: url("/bf_lexend/static/fonts/Lexend-SemiBold.ttf") format("truetype"); font-weight: 600; }
+                    body { margin: 0; background: #f3f5f6; font-family: "Lexend", system-ui, Arial, sans-serif; color: #2e3132; }
+                    .card { max-width: 560px; margin: 48px auto; background: #ffffff; border: 1px solid #d8dde0; border-radius: 6px; overflow: hidden; }
+                    .pad { padding: 28px 32px; }
+                    table { border-collapse: collapse; width: 100%; font-size: 15px; }
+                    td { padding: 7px 0; vertical-align: top; }
+                    td.k { color: #5e686c; width: 40%; padding-right: 14px; }
+                    .foot { color: #5e686c; font-size: 12.5px; text-align: center; margin: 0 auto 40px auto; }
+                    @media (max-width: 600px) { .card { margin: 16px; } .pad { padding: 20px 18px; } }
+                </style>
+            </head>
+            <body>
+                <t t-if="found">
+                    <div class="card">
+                        <div t-attf-style="height:8px;background:#{v['primary']};"/>
+                        <div class="pad">
+                            <div style="margin-bottom:18px;">
+                                <img t-if="v['logo']" t-att-src="image_data_uri(v['logo'])"
+                                     style="max-height:48px;max-width:240px;"/>
+                                <span t-else="" style="font-size:20px;font-weight:600;" t-out="v['company_name']"/>
+                            </div>
+                            <p style="font-size:17px;font-weight:600;color:#15803d;margin:0 0 16px 0;">This certificate is authentic.</p>
+                            <table>
+                                <!-- learner_public never holds an email address:
+                                     the partner's name, or a masked form. -->
+                                <tr><td class="k">Awarded to</td><td style="font-weight:600;" t-out="v['learner_public']"/></tr>
+                                <tr><td class="k">Course</td><td t-out="v['course']"/></tr>
+                                <tr><td class="k">Completed on</td><td t-out="v['date']"/></tr>
+                                <tr><td class="k">Issued by</td><td t-out="v['company_name']"/></tr>
+                                <tr><td class="k">Certificate no.</td><td t-out="v['code_display']"/></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <p class="foot" t-out="v['domain_label']"/>
+                </t>
+                <t t-else="">
+                    <div class="card">
+                        <div style="height:8px;background:#9aa5aa;"/>
+                        <div class="pad">
+                            <p style="font-size:17px;font-weight:600;margin:0 0 10px 0;">No certificate matches this number.</p>
+                            <p style="color:#5e686c;margin:0;">Check the number as printed on the document, dashes included or not.</p>
+                        </div>
+                    </div>
+                </t>
+            </body>
+        </html>
+    </template>
+
+</odoo>
