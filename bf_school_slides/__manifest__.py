@@ -1,6 +1,7 @@
 {
     "name": "Symbifox École : contenus de cours",
     "version": "18.0.1.0.0",
+    'auto_install': True,
     "category": "Education/School",
     "summary": "Course contents in the eLearning app, given to the students of school groups "
                "and their parents, and renewed from one school year to the next",

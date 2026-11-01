@@ -33,5 +33,5 @@ chrono en attente que personne ne viendra confirmer.
     ],
     "installable": True,
     "application": False,
-    "auto_install": False,
+    "auto_install": True,
 }

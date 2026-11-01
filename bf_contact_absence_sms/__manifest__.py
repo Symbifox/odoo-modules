@@ -8,6 +8,7 @@
     #   jamais vers en_US, qui est la langue source : un usager réglé en
     #   anglais lisait le module en français.
     "version": "18.0.1.1.0",
+    'auto_install': True,
     "category": "Sales/CRM",
     "summary": "Voir qu'un contact est absent avant de lui texter",
     "description": """

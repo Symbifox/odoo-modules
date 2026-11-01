@@ -58,5 +58,5 @@ Ce que le module ne fait pas
     ],
     "application": False,
     "installable": True,
-    "auto_install": False,
+    "auto_install": True,
 }

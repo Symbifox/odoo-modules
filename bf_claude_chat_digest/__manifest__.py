@@ -12,7 +12,7 @@
     # Satellite à part, comme `bf_hosting_patch_digest` : le relevé ne doit pas
     # imposer le digest, ni l'inverse. Pas d'auto-installation : les comptes
     # n'existent que là où la sonde verse, et ce n'est pas partout.
-    "auto_install": False,
+    "auto_install": True,
     "description": """
 Pont Gen ↔ Digest quotidien
 ===========================

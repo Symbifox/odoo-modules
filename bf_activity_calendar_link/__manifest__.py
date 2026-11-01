@@ -17,5 +17,5 @@
         "views/calendar_event_views.xml",
     ],
     "installable": True,
-    "auto_install": False,
+    "auto_install": True,
 }

@@ -8,7 +8,7 @@
     "license": "LGPL-3",
     "application": False,
     "installable": True,
-    "auto_install": False,
+    "auto_install": True,
     "description": """
 Analyse IA des verbatims de l'expérience client.
 

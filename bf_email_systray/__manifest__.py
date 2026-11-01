@@ -9,6 +9,7 @@
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
     "version": "18.0.2.3.0",
+    'auto_install': True,
     "category": "Tools",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

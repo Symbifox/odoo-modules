@@ -8,7 +8,7 @@
     "license": "Other proprietary",
     "application": False,
     "installable": True,
-    "auto_install": False,
+    "auto_install": True,
     "depends": ["bf_subscription", "hr_expense"],
     "description": """
 Abonnements — notes de frais

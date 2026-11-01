@@ -7,6 +7,7 @@
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
     "version": "18.0.1.2.0",
+    'auto_install': True,
     "category": "Services",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

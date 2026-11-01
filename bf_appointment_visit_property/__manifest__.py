@@ -5,6 +5,7 @@
     #   Immeubles. L'adresse, l'occupant et le régime d'occupation en
     #   descendent, et le logement gagne un bouton « Faire visiter ».
     "version": "18.0.1.0.0",
+    'auto_install': True,
     "category": "Appointments",
     "summary": "Faire visiter un logement du parc, sans ressaisir son adresse",
     "description": """

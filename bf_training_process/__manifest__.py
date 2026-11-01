@@ -43,5 +43,5 @@ plutôt que d'en inventer un autre.
     ],
     "installable": True,
     "application": False,
-    "auto_install": False,
+    "auto_install": True,
 }

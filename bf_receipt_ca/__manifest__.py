@@ -59,5 +59,5 @@ remplacement (les reçus annulés sont conservés, comme l'exige l'ARC).
     ],
     "installable": True,
     "application": False,
-    "auto_install": False,
+    "auto_install": True,
 }

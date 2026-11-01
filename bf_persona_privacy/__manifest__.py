@@ -4,6 +4,7 @@
                "conservation à partir de la fin de la relation, destruction inscrite "
                "au registre, personas classifiables",
     "version": "18.0.1.0.0",
+    'auto_install': True,
     "category": "Sales/CRM",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

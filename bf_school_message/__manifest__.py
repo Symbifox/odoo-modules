@@ -1,6 +1,7 @@
 {
     "name": "Symbifox École : annonces aux familles",
     "version": "18.0.1.0.1",
+    'auto_install': True,
     "category": "Education/School",
     "summary": "School announcements to families, by school or group, with an email that "
                "names the children and a dated read receipt on the portal",

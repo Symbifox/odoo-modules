@@ -1,6 +1,7 @@
 {
     "name": "Registre de formation : ce qu'elle coûte vraiment",
     "version": "18.0.1.0.0",
+    'auto_install': True,
     "category": "Human Resources",
     "summary": "Le coût des formations suivies porté au budget, et les heures dont "
                "le coût manque comptées comme manquantes plutôt que comme zéro",
