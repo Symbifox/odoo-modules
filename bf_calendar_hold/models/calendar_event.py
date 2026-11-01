@@ -271,12 +271,17 @@ class CalendarEvent(models.Model):
         return cibles
 
     def _bf_hold_cibles_google(self):
-        """``[(config, id Google)]`` des plages à retirer de Google plus tard."""
+        """``[(config, id Google)]`` des plages à retirer de Google plus tard.
+
+        Même coupure que les poussées Google de la synchro : une synchro en
+        lecture seule (``nc_to_odoo``) ou archivée ne reçoit rien. L'appel part
+        directement au backend Google, sans passer par la garde de la synchro.
+        """
         cibles = []
         for plage in self:
             config = plage.x_nc_calendar_id.sudo()
             if config.backend_type == "google" and config.sync_direction != "nc_to_odoo" \
-                    and plage.x_nc_uid:
+                    and config.active and plage.x_nc_uid:
                 cibles.append((config, plage.x_nc_uid))
         return cibles
 

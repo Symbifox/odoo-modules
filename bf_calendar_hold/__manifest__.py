@@ -21,7 +21,10 @@
     #   change après coup et quand elle y est rattachée par écriture (elle n'était
     #   copiée qu'à la création), jusque dans Nextcloud ; .pot et fr.po livrés
     #   avec le fr_CA.po.
-    "version": "18.0.1.0.2",
+    # 18.0.1.0.3 : choisir une plage ne retire plus les autres d'un agenda Google
+    #   dont la synchro est archivée : l'appel partait
+    #   directement au backend Google, sans la garde de la synchro.
+    "version": "18.0.1.0.3",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

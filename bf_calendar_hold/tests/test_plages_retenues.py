@@ -342,6 +342,34 @@ class TestPlagesRetenues(TransactionCase):
                 plage.action_bf_hold_choose()
         self.assertFalse(suppression.called)
 
+    def test_choisir_sous_synchro_google_archivee_n_appelle_pas_google(self):
+        google, plage = self._plage_google()
+        google.active = False
+        Google = type(self.env["calendar.google.backend"])
+        with patch.object(Google, "push_delete", return_value=True) as suppression:
+            plage.action_bf_hold_choose()
+        self.assertFalse(plage.exists())
+        self.assertEqual(self.rencontre.start, datetime(2026, 10, 13, 19, 30))
+        suppression.assert_not_called()
+
+    def test_choisir_sous_synchro_google_en_lecture_seule_n_appelle_pas_google(self):
+        google, plage = self._plage_google()
+        google.sync_direction = "nc_to_odoo"
+        Google = type(self.env["calendar.google.backend"])
+        with patch.object(Google, "push_delete", return_value=True) as suppression:
+            plage.action_bf_hold_choose()
+        self.assertFalse(plage.exists())
+        suppression.assert_not_called()
+
+    def test_liberer_sous_synchro_google_archivee_n_appelle_pas_google(self):
+        google, plage = self._plage_google()
+        google.active = False
+        Google = type(self.env["calendar.google.backend"])
+        with patch.object(Google, "push_delete", return_value=True) as suppression:
+            plage.action_bf_hold_release()
+        self.assertFalse(plage.exists())
+        suppression.assert_not_called()
+
     def test_rattacher_par_ecriture_exige_le_droit_sur_la_rencontre(self):
         from odoo.exceptions import AccessError
         from odoo.tests import new_test_user

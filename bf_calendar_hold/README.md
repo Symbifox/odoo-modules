@@ -46,7 +46,8 @@ moved onto it, the slot stayed on top of the meeting, in Odoo and in Nextcloud.
 - Linking an event to a meeting requires the right to change that meeting,
   whether the slot is created or an existing event is edited.
 - Slots in a Google calendar are deleted from Google when a slot is chosen, once
-  the meeting has moved (as for Nextcloud).
+  the meeting has moved (as for Nextcloud). An archived (or read-only) Google
+  synchronisation receives nothing: the slots leave Odoo only.
 - A slot whose Nextcloud address is refused is removed from Odoo, and the user is
   told it is still in Nextcloud.
 
@@ -63,11 +64,15 @@ moved onto it, the slot stayed on top of the meeting, in Odoo and in Nextcloud.
 - A line drawn between a slot and its meeting: the calendar draws none, the ↪
   in the title and the link in the popover stand for it.
 - A dedicated look in Symbifox Mobile.
+- Slots released while their Google synchronisation is archived stay in Google;
+  if it is reactivated, the first full pull brings them back as ordinary events,
+  no longer linked to their meeting.
 
 ## Version history
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 18.0.1.0.3 | 2026-10-31 | Choosing a slot no longer deletes the other slots from a Google calendar whose synchronisation is archived. |
 | 18.0.1.0.2 | 2026-10-18 | A slot follows its meeting's privacy when it changes later or when the slot is linked again, not only at creation, Nextcloud included. |
 | 18.0.1.0.1 | 2026-10-11 | The meeting's list of held slots is in calendar order and shows times to the minute. |
 | 18.0.1.0.0 | 2026-10-11 | First version. |
