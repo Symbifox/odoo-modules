@@ -9,7 +9,8 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.2.11.0",
+    # 18.0.2.11.1: l'icône du module (liste des Applications, catalogue de symbifox.com).
+    "version": "18.0.2.11.1",
     "category": "Tools",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
