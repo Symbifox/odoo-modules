@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**279 modules are BUSL-1.1.** The source is published and auditable, and **you
+**280 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -42,6 +42,7 @@ Five modules self-host fonts rather than calling a font CDN, so no visitor IP ev
 | Module | Typefaces |
 |---|---|
 | `bf_multi_company_email` | Symbifox — Courriels multi-sociétés | 18.0.5.0.3 | LGPL-3 | Template-driven email signatures per company, quick footer links behind redirectable shortlinks, and a sender address per company |
+| `bf_preferred_name_partner_legal_name` | Symbifox Noms d'usage et pronoms — pont Partner Legal Name | 18.0.1.0.0 | BUSL-1.1 | One legal name on a person's contact: the protected one; the company legal name stays for companies |
 | `bf_preferred_name_signature` | Symbifox Noms d'usage et pronoms — pont Signatures | 18.0.1.0.0 | BUSL-1.1 | The email signature shows the pronouns from the person's contact |
 | `bf_sign` | Caveat, Dancing Script, Great Vibes |
 | `bf_lexend` | Lexend |
@@ -503,7 +504,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **279 modules: BUSL-1.1.** Production use for your own internal business
+- **280 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

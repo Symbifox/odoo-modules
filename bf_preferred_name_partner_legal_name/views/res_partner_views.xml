@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_legal_name_company_only" model="ir.ui.view">
+        <field name="name">res.partner.form.legal_name.company_only</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="partner_legal_name.view_partner_form_legal_name"/>
+        <field name="arch" type="xml">
+            <!-- Masqué, pas retiré : le champ n'est pas confidentiel (raison
+                 sociale), on retire seulement l'invitation à y taper le nom
+                 légal d'une personne. -->
+            <xpath expr="//field[@name='legal_name']" position="attributes">
+                <attribute name="invisible">not is_company</attribute>
+                <attribute name="string">Company legal name</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

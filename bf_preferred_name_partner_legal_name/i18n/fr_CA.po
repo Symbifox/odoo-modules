@@ -1,0 +1,37 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_preferred_name_partner_legal_name
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"POT-Creation-Date: 2026-10-26 03:44+0000\n"
+"PO-Revision-Date: 2026-10-26 03:44+0000\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_preferred_name_partner_legal_name
+#: model_terms:ir.ui.view,arch_db:bf_preferred_name_partner_legal_name.view_partner_form_legal_name_company_only
+msgid "Company legal name"
+msgstr "Nom légal de la société"
+
+#. module: bf_preferred_name_partner_legal_name
+#: model:ir.model,name:bf_preferred_name_partner_legal_name.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_preferred_name_partner_legal_name
+#. odoo-python
+#: code:addons/bf_preferred_name_partner_legal_name/models/res_partner.py:0
+msgid ""
+"The company legal name is for companies only. A person's legal name goes in "
+"“Personal legal name”, which only the “Legal names” group can read. To turn "
+"a company into an individual, clear its company legal name first."
+msgstr ""
+"Le nom légal de la société est réservé aux sociétés. Le nom légal d'une "
+"personne va dans « Nom légal de la personne », que seul le groupe « Noms "
+"légaux » peut lire. Pour faire d'une société un particulier, videz d'abord "
+"son nom légal de société."
