@@ -1,0 +1,870 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_lobby
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 03:22+0000\n"
+"PO-Revision-Date: 2026-11-01 00:48+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "%s n'a pas l'accès Immobilier / Consultation."
+msgstr "%s does not have Properties / Consultation access."
+
+#. module: bf_property_lobby
+#: model:mail.template,body_html:bf_property_lobby.mail_template_lobby_notify
+msgid ""
+"<t t-set=\"company\" t-value=\"object.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\"><t t-out=\"ctx.get('lobby_summary') or ''\"/></p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\"><t t-out=\"object.building_id.name or ''\"/></p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 0 20px 0;\">\n"
+"        <tbody>\n"
+"            <tr>\n"
+"                <td t-attf-style=\"border-radius:10px;background-color:{{ brand_primary }};text-align:center;\">\n"
+"                    <a t-att-href=\"ctx.get('lobby_link')\" style=\"display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;\">Ouvrir dans Odoo</a>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </tbody>\n"
+"    </table>\n"
+"    <p style=\"margin:0;font-size:13px;color:#6B7280;\">Vous recevez ce courriel parce que cette tablette prévient aussi par courriel. Le gestionnaire le règle sur la fiche de la tablette.</p>\n"
+"</div>\n"
+"        "
+msgstr ""
+"<t t-set=\"company\" t-value=\"object.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\"><t t-out=\"ctx.get('lobby_summary') or ''\"/></p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\"><t t-out=\"object.building_id.name or ''\"/></p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 0 20px 0;\">\n"
+"        <tbody>\n"
+"            <tr>\n"
+"                <td t-attf-style=\"border-radius:10px;background-color:{{ brand_primary }};text-align:center;\">\n"
+"                    <a t-att-href=\"ctx.get('lobby_link')\" style=\"display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;\">Open in Odoo</a>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </tbody>\n"
+"    </table>\n"
+"    <p style=\"margin:0;font-size:13px;color:#6B7280;\">You are receiving this email because this tablet also notifies by email. The manager sets this on the tablet's record.</p>\n"
+"</div>\n"
+"        "
+
+#. module: bf_property_lobby
+#: model:ir.model.fields.selection,name:bf_property_lobby.selection__bf_property_lobby_call__outcome__rang
+msgid "A sonné"
+msgstr "Rang"
+
+#. module: bf_property_lobby
+#: model:ir.actions.server,name:bf_property_lobby.cron_lobby_purge_ir_actions_server
+msgid "Accès : purger le journal de la tablette (Loi 25)"
+msgstr "Access: purge the lobby tablet log (Act 25)"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__message_needaction
+msgid "Action Needed"
+msgstr "Action Needed"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__active
+msgid "Active"
+msgstr "Active"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__activity_ids
+msgid "Activities"
+msgstr "Activities"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Activity Exception Decoration"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__activity_state
+msgid "Activity State"
+msgstr "Activity State"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Activity Type Icon"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Adresse de la tablette (affichée une seule fois)"
+msgstr "Tablet address (shown only once)"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_access_resident_form_lobby
+msgid "Annuaire de l'entrée"
+msgstr "Lobby directory"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.portal_property_access_lobby
+msgid "Annuaire de l'entrée :"
+msgstr "Lobby directory:"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_access_resident.py:0
+msgid "Annuaire de l'entrée : %s (au portail)."
+msgstr "Lobby directory: %s (on the portal)."
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_organisation.py:0
+msgid ""
+"Annuaire de l'entrée : seuls les résidents qui y consentent au portail y "
+"paraissent (date du consentement consignée), sous le libellé qu'ils "
+"choisissent ; retrait en tout temps (art. 9.1, 14)."
+msgstr ""
+"Lobby directory: only residents who agree on the portal appear on it "
+"(consent date recorded), under the label they choose; they can withdraw at "
+"any time (ss. 9.1, 14)."
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Appareil dissocié par %s."
+msgstr "Device unpaired by %s."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__has_token
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_lobby_kiosk_form
+msgid "Appareil jumelé"
+msgstr "Device paired"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Appareil jumelé par %s (l'adresse précédente ne marche plus)."
+msgstr "Device paired by %s (the previous address no longer works)."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__call_mode
+#: model:ir.model.fields.selection,name:bf_property_lobby.selection__bf_property_lobby_call__kind__call
+msgid "Appel"
+msgstr "Call"
+
+#. module: bf_property_lobby
+#: model:ir.model,name:bf_property_lobby.model_bf_property_lobby_call
+msgid "Appel du portier sur tablette"
+msgstr "Lobby tablet call"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Appel en cours…"
+msgstr "Calling…"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.lobby_page
+msgid "Appeler"
+msgstr "Call"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__call_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_lobby_kiosk_form
+msgid "Appels"
+msgstr "Calls"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_lobby_kiosk_form
+msgid "Archivée"
+msgstr "Archived"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__message_attachment_count
+msgid "Attachment Count"
+msgstr "Attachment Count"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_organisation.py:0
+msgid ""
+"Aucun numéro de téléphone n'est affiché ni transmis à la tablette ; le "
+"numéro du résident joignable sert seulement à faire sonner son téléphone par"
+" la téléphonie de l'organisation."
+msgstr ""
+"No phone number is shown on or sent to the tablet; a reachable resident's "
+"number is used only to ring their phone through the organisation's "
+"telephony."
+
+#. module: bf_property_lobby
+#: model_terms:ir.actions.act_window,help:bf_property_lobby.action_lobby_kiosk
+msgid "Aucune tablette"
+msgstr "No tablets"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__notify_by_email
+msgid "Aussi par courriel"
+msgstr "Also by email"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__sip_channel
+msgid "Canal de la tablette"
+msgstr "Tablet channel"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_access_resident__lobby_label
+msgid "Ce que la tablette affiche. Vide : « Résident »."
+msgstr "What the tablet shows. Empty: \"Resident\"."
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Cette personne n'est pas à l'annuaire."
+msgstr "This person is not in the directory."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.portal_property_access_lobby
+msgid ""
+"Chaque appel fait depuis la tablette est consigné (quelle\n"
+"                       tablette, quel logement, quand) et supprimé après"
+msgstr ""
+"Each call made from the tablet is recorded (which\n"
+"                       tablet, which unit, when) and deleted after"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.lobby_page
+msgid "Chercher un nom ou un logement"
+msgstr "Search for a name or a unit"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_access_resident__lobby_consent_date
+msgid "Consentement à l'annuaire"
+msgstr "Consent to the directory"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__dial_context
+msgid "Contexte de composition"
+msgstr "Dial context"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__create_uid
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__create_date
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: bf_property_lobby
+#: model:mail.activity.type,summary:bf_property_lobby.mail_activity_lobby
+msgid "Demande à l'entrée"
+msgstr "Request at the entrance"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__throttle_stamp
+msgid "Dernière demande"
+msgstr "Last request"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__display_name
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_lobby_kiosk_form
+msgid "Dissocier"
+msgstr "Unpair"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__token_hash
+msgid "Empreinte du jeton"
+msgstr "Token hash"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__notify_by_email
+msgid ""
+"En plus de l'activité, le responsable reçoit un courriel à chaque livraison "
+"ou appel (le logement, jamais le nom du résident)."
+msgstr ""
+"On top of the activity, the person in charge receives an email for each "
+"delivery or call (the unit, never the resident's name)."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.portal_property_access_lobby
+msgid "Enregistrer"
+msgstr "Save"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields.selection,name:bf_property_lobby.selection__bf_property_lobby_kiosk__call_mode__phone
+msgid "Faire sonner le téléphone du résident"
+msgstr "Ring the resident's phone"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__message_follower_ids
+msgid "Followers"
+msgstr "Followers"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Followers (Partners)"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome icon e.g. fa-tasks"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__has_message
+msgid "Has Message"
+msgstr "Has Message"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__id
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__activity_exception_icon
+msgid "Icon"
+msgstr "Icon"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icon to indicate an exception activity."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "If checked, new messages require your attention."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__message_has_error
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "If checked, some messages have a delivery error."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__building_id
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__building_id
+msgid "Immeuble"
+msgstr "Immovable"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__message_is_follower
+msgid "Is Follower"
+msgstr "Is Follower"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__outcome
+msgid "Issue"
+msgstr "Outcome"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_access_resident__lobby_reachable
+msgid "Joignable par la tablette"
+msgstr "Reachable from the tablet"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_organisation.py:0
+msgid ""
+"Journal des appels et livraisons : date, logement, issue ; supprimé au délai"
+" de conservation de l'organisation. Les avis au responsable nomment le "
+"logement, pas la personne."
+msgstr ""
+"Call and delivery log: date, unit, outcome; deleted after the organisation's"
+" retention period. Notices to the person in charge name the unit, not the "
+"person."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_lobby_kiosk_form
+msgid "Jumeler la tablette"
+msgstr "Pair the tablet"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_lobby_kiosk_list
+msgid "Jumelée"
+msgstr "Paired"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.lobby_page
+msgid "L'annuaire est vide. Pour une livraison, touchez « Livraison »."
+msgstr "The directory is empty. For a delivery, tap “Delivery”."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_access_resident__lobby_available
+msgid "L'immeuble a une tablette"
+msgstr "The building has a tablet"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_lobby_kiosk_form
+msgid ""
+"La tablette affiche les résidents qui l'acceptent (page « Mes accès » du portail),\n"
+"                        jamais un numéro. Elle appelle ; la porte s'ouvre par le portier existant."
+msgstr ""
+"The tablet shows the residents who agree to it (the portal's \"My access\" page),\n"
+"                        never a number. It places the call; the door opens through the existing intercom."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.portal_property_access_lobby
+msgid ""
+"La tablette de l'entrée affiche, pour les visiteurs, les résidents qui l'acceptent. Rien\n"
+"                       n'y paraît sans votre accord, et vous pouvez vous retirer en tout temps. Votre numéro\n"
+"                       n'est jamais affiché."
+msgstr ""
+"The lobby tablet shows visitors the residents who agree to it. Nothing\n"
+"                       appears there without your consent, and you can withdraw at any time. Your number\n"
+"                       is never shown."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_access_resident__lobby_reachable
+msgid "La tablette fait sonner son téléphone."
+msgstr "The tablet rings their phone."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.portal_property_access_lobby
+msgid "La tablette peut faire sonner mon téléphone"
+msgstr "The tablet may ring my phone"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__write_uid
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__write_date
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_lobby_kiosk_form
+msgid "Le"
+msgstr "On"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Le concierge est prévenu."
+msgstr "The concierge has been notified."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__sip_channel
+msgid ""
+"Le poste SIP de la tablette, qui sonne d'abord, p. ex. PJSIP/entree-nord."
+msgstr ""
+"The tablet's SIP extension, which rings first, e.g. PJSIP/entree-nord."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_access_resident_form_lobby
+msgid ""
+"Le résident choisit lui-même, au portail, s'il paraît à l'annuaire de la\n"
+"                        tablette et s'il peut y être joint."
+msgstr ""
+"The resident chooses, on the portal, whether they appear in the lobby\n"
+"                        directory and whether they can be reached through it."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.portal_property_access_lobby
+msgid "Libellé affiché"
+msgstr "Displayed label"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_access_resident__lobby_label
+msgid "Libellé à l'annuaire"
+msgstr "Directory label"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields.selection,name:bf_property_lobby.selection__bf_property_lobby_call__kind__delivery
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.lobby_page
+msgid "Livraison"
+msgstr "Delivery"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Livraison à l'entrée « %s »."
+msgstr "Delivery at the \"%s\" entrance."
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Logement %(unit)s demandé à l'entrée « %(kiosk)s »."
+msgstr "Unit %(unit)s requested at the \"%(kiosk)s\" entrance."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__message_has_error
+msgid "Message Delivery error"
+msgstr "Message Delivery error"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "My Activity Deadline"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__kind
+msgid "Nature"
+msgstr "Type"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Next Activity Calendar Event"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Next Activity Deadline"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__activity_summary
+msgid "Next Activity Summary"
+msgstr "Next Activity Summary"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__activity_type_id
+msgid "Next Activity Type"
+msgstr "Next Activity Type"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__name
+msgid "Nom"
+msgstr "Name"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.lobby_page
+msgid "Nom ou logement"
+msgstr "Name or unit"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Number of Actions"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__message_has_error_counter
+msgid "Number of errors"
+msgstr "Number of errors"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Number of messages requiring action"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Number of messages with delivery error"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__organisation_id
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__organisation_id
+msgid "Organisation"
+msgstr "Organisation"
+
+#. module: bf_property_lobby
+#: model:ir.model,name:bf_property_lobby.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr "Organisation responsible for a building"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_organisation.py:0
+msgid ""
+"Page publique sans compte : protégée par une adresse secrète par appareil "
+"(empreinte seulement), plafonnée, non indexée."
+msgstr ""
+"Public page without an account: protected by a secret address per device "
+"(hash only), rate-limited, not indexed."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_access_resident__lobby_listed
+msgid "Paraît à l'annuaire de l'entrée"
+msgstr "Listed in the lobby directory"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.portal_property_access_lobby
+msgid "Paraître à l'annuaire"
+msgstr "Appear in the directory"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_access_resident.py:0
+msgid ""
+"Paraître à l'annuaire de l'entrée se décide par le résident, au portail."
+msgstr ""
+"Appearing in the lobby directory is the resident's decision, made on the "
+"portal."
+
+#. module: bf_property_lobby
+#: model:ir.model,name:bf_property_lobby.model_bf_property_lobby_kiosk
+#: model:mail.activity.type,name:bf_property_lobby.mail_activity_lobby
+msgid "Portier sur tablette"
+msgstr "Lobby tablet"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_organisation.py:0
+msgid "Portier sur tablette : %s"
+msgstr "Lobby tablet: %s"
+
+#. module: bf_property_lobby
+#: model:mail.template,name:bf_property_lobby.mail_template_lobby_notify
+msgid "Portier sur tablette : avis au responsable"
+msgstr "Lobby tablet: notice to the person in charge"
+
+#. module: bf_property_lobby
+#: model:ir.actions.act_window,name:bf_property_lobby.action_lobby_kiosk
+#: model:ir.ui.menu,name:bf_property_lobby.menu_lobby_kiosk
+msgid "Portiers sur tablette"
+msgstr "Lobby tablets"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields.selection,name:bf_property_lobby.selection__bf_property_lobby_kiosk__call_mode__notify
+msgid "Prévenir le responsable"
+msgstr "Notify the person responsible"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__rating_ids
+msgid "Ratings"
+msgstr "Ratings"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__user_id
+msgid "Responsable"
+msgstr "Person responsible"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields.selection,name:bf_property_lobby.selection__bf_property_lobby_call__outcome__notified
+msgid "Responsable prévenu"
+msgstr "Person responsible notified"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__activity_user_id
+msgid "Responsible User"
+msgstr "Responsible User"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_access_resident_form_lobby
+msgid "Retirer ce résident de l'annuaire de l'entrée, à sa demande ?"
+msgstr "Remove this resident from the lobby directory, at their request?"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_access_resident_form_lobby
+msgid "Retirer de l'annuaire"
+msgstr "Remove from the directory"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_access_resident.py:0
+msgid "Retiré de l'annuaire de l'entrée par %s, à la demande du résident."
+msgstr "Removed from the lobby directory by %s, at the resident's request."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__user_id
+msgid "Reçoit les livraisons annoncées et les appels qui n'ont pas pu sonner."
+msgstr "Receives announced deliveries and calls that could not ring through."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.lobby_page
+msgid "Réessayez dans un instant."
+msgstr "Try again in a moment."
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_access_resident.py:0
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Réservé aux gestionnaires."
+msgstr "Reserved for managers."
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Résident"
+msgstr "Resident"
+
+#. module: bf_property_lobby
+#: model:ir.model,name:bf_property_lobby.model_bf_property_access_resident
+msgid "Résident (accès)"
+msgstr "Resident (access)"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__resident_id
+msgid "Résident appelé"
+msgstr "Resident called"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS Delivery error"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__company_id
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__company_id
+msgid "Société"
+msgstr "Company"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_call__kiosk_id
+msgid "Tablette"
+msgstr "Tablet"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.lobby_page
+msgid "Tablette dissociée : avisez le gestionnaire."
+msgstr "Tablet unpaired: let the manager know."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.lobby_page
+msgid ""
+"Touchez « Appeler » à côté d'un logement. Seules les personnes qui l'ont "
+"accepté paraissent ici."
+msgstr "Tap “Call” next to a unit. Only people who have agreed appear here."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__throttle_stamp
+msgid ""
+"Touché à chaque demande pour sérialiser les demandes concurrentes "
+"(plafonds)."
+msgstr "Updated on each request to serialise concurrent requests (caps)."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type of the exception activity on record."
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Un instant : un appel vient d'être fait."
+msgstr "One moment: a call was just made."
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Un instant : une demande vient d'être faite."
+msgstr "One moment: a request was just made."
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_lobby_kiosk.py:0
+msgid "Un résident est demandé à l'entrée « %s »."
+msgstr "A resident is requested at the \"%s\" entrance."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_lobby_kiosk_form
+msgid ""
+"Une nouvelle adresse s'affichera une seule fois ; l'ancienne cessera de "
+"marcher. Continuer ?"
+msgstr ""
+"A new address will be shown only once; the old one will stop working. "
+"Continue?"
+
+#. module: bf_property_lobby
+#: model_terms:ir.actions.act_window,help:bf_property_lobby.action_lobby_kiosk
+msgid ""
+"Une tablette à l'entrée tient lieu d'interphone : l'annuaire des résidents qui l'acceptent,\n"
+"               un appel au résident, une livraison annoncée au concierge."
+msgstr ""
+"A tablet at the entrance stands in for the intercom: a directory of the residents who agree to it,\n"
+"               a call to the resident, a delivery announced to the concierge."
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,field_description:bf_property_lobby.field_bf_property_lobby_kiosk__website_message_ids
+msgid "Website Messages"
+msgstr "Website Messages"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__website_message_ids
+msgid "Website communication history"
+msgstr "Website communication history"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.portal_property_access_lobby
+msgid "jours."
+msgstr "days."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.portal_property_access_lobby
+msgid "le délai que fixe l'organisation."
+msgstr "the period the organisation sets."
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.portal_property_access_lobby
+msgid "p. ex. A. Exemple, ou rien (« Résident »)"
+msgstr "e.g. A. Example, or nothing (\"Resident\")"
+
+#. module: bf_property_lobby
+#: model_terms:ir.ui.view,arch_db:bf_property_lobby.view_lobby_kiosk_form
+msgid "p. ex. Entrée nord"
+msgstr "e.g. North entrance"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__name
+msgid "p. ex. Entrée nord."
+msgstr "e.g. North entrance."
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_access_resident.py:0
+msgid "paraît"
+msgstr "listed"
+
+#. module: bf_property_lobby
+#. odoo-python
+#: code:addons/bf_property_lobby/models/bf_property_access_resident.py:0
+msgid "retiré"
+msgstr "removed"
+
+#. module: bf_property_lobby
+#: model:mail.template,subject:bf_property_lobby.mail_template_lobby_notify
+msgid "{{ ctx.get('lobby_summary') }}"
+msgstr "{{ ctx.get('lobby_summary') }}"
+
+#. module: bf_property_lobby
+#: model:ir.model.fields,help:bf_property_lobby.field_bf_property_lobby_kiosk__call_mode
+msgid ""
+"« Faire sonner » passe par la téléphonie Symbifox (Asterisk) : il faut le "
+"canal de la tablette et le contexte de composition."
+msgstr ""
+"\"Ring the phone\" goes through Symbifox telephony (Asterisk): it needs the "
+"tablet channel and the dial context."

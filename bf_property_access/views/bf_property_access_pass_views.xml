@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_access_pass_list" model="ir.ui.view">
+        <field name="name">bf.property.access.pass.list</field>
+        <field name="model">bf.property.access.pass</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('ended', 'cancelled')" decoration-info="state == 'draft'">
+                <field name="holder_name"/>
+                <field name="holder_company" optional="show"/>
+                <field name="kind"/>
+                <field name="building_id"/>
+                <field name="unit_id" optional="show"/>
+                <field name="date_from" options="{'show_seconds': false}"/>
+                <field name="date_to" options="{'show_seconds': false}"/>
+                <field name="state" widget="badge" decoration-success="state == 'confirmed'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_access_pass_form" model="ir.ui.view">
+        <field name="name">bf.property.access.pass.form</field>
+        <field name="model">bf.property.access.pass</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirmer" class="btn-primary"
+                            invisible="state != 'draft'" groups="bf_property_core.group_bf_property_manager"/>
+                    <button name="action_end" type="object" string="Terminer maintenant"
+                            invisible="state != 'confirmed'" groups="bf_property_core.group_bf_property_manager"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state not in ('draft', 'confirmed')"
+                            groups="bf_property_core.group_bf_property_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,ended"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert" invisible="kind != 'unit_entry'">
+                        Entrée au logement : préavis de 24 heures pour une vérification, des travaux ou la
+                        visite d'un acquéreur éventuel (art. 1931 C.c.Q.). Sans préavis : l'urgence, motivée
+                        par écrit ; la visite d'un locataire éventuel après l'avis de non-reconduction ou de
+                        résiliation du locataire (art. 1930) ; un logement inoccupé. Le locataire peut
+                        refuser une visite ou une vérification avant 9 h ou après 21 h (art. 1932), et des
+                        travaux avant 7 h ou après 19 h (art. 1933), à l'heure de l'immeuble. Travaux
+                        majeurs : avis écrit de 10 jours, ou de 3 mois si l'évacuation dépasse une semaine
+                        (art. 1922).
+                    </div>
+                    <div class="oe_title">
+                        <label for="holder_name"/>
+                        <h1><field name="holder_name" placeholder="p. ex. Plomberie Exemple" readonly="state != 'draft'"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kind" readonly="state != 'draft'"/>
+                            <field name="holder_company" readonly="state != 'draft'"/>
+                            <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="building_id" readonly="state != 'draft'"/>
+                            <field name="unit_id" readonly="state != 'draft'" required="kind == 'unit_entry'"
+                                   invisible="kind != 'unit_entry' and not unit_id"/>
+                        </group>
+                        <group>
+                            <field name="date_from" readonly="state != 'draft'" options="{'show_seconds': false}"/>
+                            <field name="date_to" readonly="state != 'draft'" options="{'show_seconds': false}"/>
+                            <field name="credential_kind" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Entrée au logement" invisible="kind != 'unit_entry'">
+                        <group>
+                            <field name="entry_reason" readonly="state != 'draft'" required="kind == 'unit_entry'"/>
+                            <field name="notice_given_on" readonly="state != 'draft'" options="{'show_seconds': false}"
+                                   invisible="entry_reason in ('urgent', 'vacant', False)"/>
+                            <field name="notice_method" readonly="state != 'draft'"
+                                   invisible="entry_reason in ('urgent', 'vacant', False)"/>
+                            <field name="urgent_reason" readonly="state != 'draft'" invisible="entry_reason != 'urgent'"/>
+                            <field name="tenant_notice_received_on" readonly="state != 'draft'" invisible="entry_reason != 'showing_tenant'"/>
+                            <field name="works_major" readonly="state != 'draft'" invisible="entry_reason != 'works'"/>
+                            <field name="evacuation_over_week" readonly="state != 'draft'" invisible="not works_major"/>
+                        </group>
+                        <group>
+                            <field name="tenant_agreed_outside_hours" readonly="state != 'draft'" invisible="entry_reason == 'urgent'"/>
+                            <field name="tenant_agreement_note" readonly="state != 'draft'" invisible="not tenant_agreed_outside_hours"/>
+                            <field name="accompanied_by" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Points d'accès" name="points">
+                            <field name="point_ids" readonly="state != 'draft'">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="point_type"/>
+                                    <field name="unit_id" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Droits" name="grants" invisible="state == 'draft'">
+                            <field name="grant_ids" readonly="1">
+                                <list>
+                                    <field name="point_id"/>
+                                    <field name="credential_kind"/>
+                                    <field name="external_ref"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="end_reason" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_access_pass_search" model="ir.ui.view">
+        <field name="name">bf.property.access.pass.search</field>
+        <field name="model">bf.property.access.pass</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="holder_name"/>
+                <field name="holder_company"/>
+                <field name="building_id"/>
+                <filter name="current" string="En cours ou à venir" domain="[('state', 'in', ('draft', 'confirmed'))]"/>
+                <filter name="unit_entry" string="Entrées au logement" domain="[('kind', '=', 'unit_entry')]"/>
+                <filter name="visitors" string="Visiteurs" domain="[('kind', '=', 'visitor')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_kind" string="Nature" context="{'group_by': 'kind'}"/>
+                    <filter name="group_building" string="Immeuble" context="{'group_by': 'building_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_access_pass" model="ir.actions.act_window">
+        <field name="name">Accès temporaires</field>
+        <field name="res_model">bf.property.access.pass</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_current': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun accès temporaire</p>
+            <p>Un entrepreneur pour l'après-midi, un visiteur annoncé, l'entrée dans un logement pour
+               des travaux : l'accès est posé pour la plage et retiré à la fin, tout seul.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_access_pass" name="Accès temporaires" parent="menu_access_root"
+              action="action_access_pass" sequence="25"/>
+</odoo>

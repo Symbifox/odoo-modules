@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_access_grant_list" model="ir.ui.view">
+        <field name="name">bf.property.access.grant.list</field>
+        <field name="model">bf.property.access.grant</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-muted="state in ('removed', 'cancelled')"
+                  decoration-warning="state in ('awaiting_consent', 'to_remove')">
+                <field name="holder_label"/>
+                <field name="pass_id" optional="hide"/>
+                <field name="building_id"/>
+                <field name="unit_id" optional="show"/>
+                <field name="point_id"/>
+                <field name="credential_kind"/>
+                <field name="external_ref" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="end_reason" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_access_grant_form" model="ir.ui.view">
+        <field name="name">bf.property.access.grant.form</field>
+        <field name="model">bf.property.access.grant</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_consent_landlord" type="object" string="Consentement du locateur reçu"
+                            invisible="state != 'awaiting_consent' or consent_landlord_date"
+                            groups="bf_property_core.group_bf_property_manager"/>
+                    <button name="action_consent_tenant" type="object" string="Consentement du locataire reçu"
+                            invisible="state != 'awaiting_consent' or consent_tenant_date"
+                            groups="bf_property_core.group_bf_property_manager"/>
+                    <button name="action_report_lost" type="object" string="Perdu ou volé"
+                            invisible="state not in ('to_issue', 'issued')"
+                            groups="bf_property_core.group_bf_property_manager"
+                            confirm="Retirer ce support tout de suite et en émettre un nouveau ?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="to_issue,issued,to_remove,removed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_orders" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="order_count" widget="statinfo" string="Ordres"/>
+                        </button>
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="state != 'awaiting_consent'">
+                        Porte de logement : aucun mécanisme restreignant l'accès au logement ne se pose ni
+                        ne se change sans le consentement du locateur et du locataire (art. 1934 C.c.Q.).
+                        Aucun ordre ne part avant les deux.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="holder_label" readonly="1"/>
+                            <field name="resident_id" readonly="1" invisible="not resident_id"/>
+                            <field name="pass_id" readonly="1" invisible="not pass_id"/>
+                            <field name="point_id" readonly="1"/>
+                            <field name="credential_kind" readonly="state not in ('awaiting_consent', 'to_issue')"/>
+                            <field name="external_ref"/>
+                        </group>
+                        <group>
+                            <field name="end_reason" readonly="1" invisible="not end_reason"/>
+                            <field name="requires_double_consent" invisible="1"/>
+                            <field name="consent_landlord_date" readonly="1" invisible="not requires_double_consent"/>
+                            <field name="consent_landlord_user_id" readonly="1" invisible="not consent_landlord_date"/>
+                            <field name="consent_tenant_date" readonly="1" invisible="not requires_double_consent"/>
+                            <field name="consent_tenant_user_id" readonly="1" invisible="not consent_tenant_date"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_access_grant_search" model="ir.ui.view">
+        <field name="name">bf.property.access.grant.search</field>
+        <field name="model">bf.property.access.grant</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="point_id"/>
+                <field name="building_id"/>
+                <field name="external_ref"/>
+                <filter name="live" string="En vigueur ou à faire"
+                        domain="[('state', 'in', ('awaiting_consent', 'to_issue', 'issued', 'to_remove'))]"/>
+                <filter name="awaiting_consent" string="En attente des consentements" domain="[('state', '=', 'awaiting_consent')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_point" string="Point d'accès" context="{'group_by': 'point_id'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_access_grant" model="ir.actions.act_window">
+        <field name="name">Droits</field>
+        <field name="res_model">bf.property.access.grant</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_live': 1}</field>
+    </record>
+</odoo>

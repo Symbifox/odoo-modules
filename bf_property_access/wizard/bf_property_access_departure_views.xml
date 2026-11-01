@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_property_access_departure_form" model="ir.ui.view">
+        <field name="name">bf.property.access.departure.form</field>
+        <field name="model">bf.property.access.departure</field>
+        <field name="arch" type="xml">
+            <form string="Confirmer le départ">
+                <p class="text-muted">
+                    Les accès de ces personnes seront retirés : un ordre de retrait par
+                    droit, aux appareils ou au responsable de chaque point. Les autres
+                    occupants du logement gardent les leurs.
+                </p>
+                <group>
+                    <field name="resident_ids" widget="many2many_tags" readonly="1"/>
+                    <field name="date_keys"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirmer le départ"
+                            class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le DOCTYPE vient du contrôleur (Markup) : écrit en texte à la racine, il
+         empêchait Odoo d'extraire les chaînes à traduire de toute la page. -->
+    <template id="lobby_page" name="Portier sur tablette">
+        <t t-out="doctype"/>
+        <html t-att-lang="(request.env.lang or 'fr_CA').replace('_', '-')">
+            <head>
+                <meta charset="utf-8"/>
+
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title t-esc="'%s · %s' % (kiosk.building_id.name, kiosk.name)"/>
+                <style>
+                    :root { --bg: #0b1d33; --fg: #ffffff; --accent: #29abe2; --card: #13294a; }
+                    body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+                    header { padding: 24px 28px 8px; }
+                    h1 { margin: 0; font-size: 2rem; }
+                    p.sub { margin: 6px 0 0; font-size: 1.15rem; opacity: .85; }
+                    .bar { display: flex; gap: 12px; padding: 16px 28px; }
+                    input[type=search] { flex: 1; font-size: 1.5rem; padding: 14px 18px; border-radius: 12px; border: 0; }
+                    button { font-size: 1.3rem; padding: 14px 20px; border-radius: 12px; border: 0; cursor: pointer; }
+                    .deliver { background: var(--accent); color: #062033; font-weight: 700; }
+                    ul { list-style: none; margin: 0; padding: 8px 28px 28px; display: grid; gap: 12px;
+                         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+                    li { background: var(--card); border-radius: 14px; padding: 16px; display: flex;
+                         justify-content: space-between; align-items: center; gap: 12px; }
+                    .unit { font-size: 1.6rem; font-weight: 700; }
+                    .label { font-size: 1.15rem; opacity: .9; }
+                    .call { background: #ffffff; color: #062033; font-weight: 700; }
+                    #status { position: fixed; left: 0; right: 0; bottom: 0; padding: 22px; font-size: 1.6rem;
+                              text-align: center; background: var(--accent); color: #062033; display: none; }
+                    .empty { padding: 28px; font-size: 1.3rem; }
+                </style>
+            </head>
+            <body>
+                <header>
+                    <h1 t-esc="kiosk.building_id.name"/>
+                    <p class="sub">Touchez « Appeler » à côté d'un logement. Seules les personnes qui l'ont accepté paraissent ici.</p>
+                </header>
+                <div class="bar">
+                    <input type="search" id="q" placeholder="Nom ou logement" aria-label="Chercher un nom ou un logement"/>
+                    <button type="button" class="deliver" id="delivery">Livraison</button>
+                </div>
+                <div t-if="not directory" class="empty">L'annuaire est vide. Pour une livraison, touchez « Livraison ».</div>
+                <ul id="list">
+                    <li t-foreach="directory" t-as="entry" t-att-data-search="(entry['unit'] + ' ' + entry['label']).lower()">
+                        <div t-att-id="'e%s' % entry['id']">
+                            <div class="unit" t-esc="entry['unit'] or '—'"/>
+                            <div class="label" t-esc="entry['label']"/>
+                        </div>
+                        <button type="button" class="call" t-att-data-id="entry['id']" t-att-id="'b%s' % entry['id']"
+                                t-att-aria-labelledby="'b%s e%s' % (entry['id'], entry['id'])">Appeler</button>
+                    </li>
+                </ul>
+                <div id="status" role="status" aria-live="assertive"></div>
+                <!-- Messages du script, ici pour être traduits. -->
+                <div id="msg-retry" hidden="">Réessayez dans un instant.</div>
+                <div id="msg-unpaired" hidden="">Tablette dissociée : avisez le gestionnaire.</div>
+                <script t-att-data-base="base" id="lobby-script">
+                    (function () {
+                        var base = document.getElementById("lobby-script").dataset.base;
+                        var status = document.getElementById("status");
+                        var buttons = document.querySelectorAll("button");
+                        function beep() {
+                            try {
+                                var ctx = new (window.AudioContext || window.webkitAudioContext)();
+                                var o = ctx.createOscillator(); o.frequency.value = 880;
+                                o.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.2);
+                            } catch (e) { /* pas de son : le message reste à l'écran */ }
+                        }
+                        function show(text) {
+                            // Le message reste jusqu'au geste suivant (pas de délai imposé).
+                            status.textContent = text; status.style.display = "block"; beep();
+                        }
+                        function busy(on) { buttons.forEach(function (b) { b.disabled = on; }); }
+                        function post(path, params) {
+                            busy(true);
+                            return fetch(base + path, {method: "POST", headers: {"Content-Type": "application/json"},
+                                body: JSON.stringify({jsonrpc: "2.0", method: "call", params: params || {}})})
+                                .then(function (r) { return r.json(); })
+                                .then(function (r) { show((r.result &amp;&amp; r.result.message) || "…"); })
+                                .catch(function () { show(document.getElementById("msg-retry").textContent); })
+                                .finally(function () { busy(false); });
+                        }
+                        document.querySelectorAll("button.call").forEach(function (b) {
+                            b.addEventListener("click", function () { post("/call", {resident_id: b.dataset.id}); });
+                        });
+                        document.getElementById("delivery").addEventListener("click", function () { post("/delivery"); });
+                        // Toutes les 5 minutes, l'annuaire se rafraîchit (un retrait, un départ,
+                        // un nouveau jumelage atteignent l'écran) ; jamais pendant une saisie,
+                        // et seulement si le serveur répond : une page d'erreur ne remplace pas
+                        // la page.
+                        var lastInput = 0;
+                        setInterval(function () {
+                            if (Date.now() - lastInput &lt; 60000) { return; }
+                            fetch(location.href, {cache: "no-store"}).then(function (r) {
+                                if (r.status === 200) { location.reload(); }
+                                else if (r.status === 404) { show(document.getElementById("msg-unpaired").textContent); }
+                            }).catch(function () { /* serveur injoignable : on garde la page */ });
+                        }, 300000);
+                        document.getElementById("q").addEventListener("input", function (e) {
+                            lastInput = Date.now();
+                            var q = e.target.value.toLowerCase();
+                            document.querySelectorAll("#list li").forEach(function (li) {
+                                li.style.display = li.dataset.search.indexOf(q) === -1 ? "none" : "";
+                            });
+                        });
+                    })();
+                </script>
+            </body>
+        </html>
+    </template>
+
+    <!-- « Mes accès » : le consentement à l'annuaire de la tablette. -->
+    <template id="portal_property_access_lobby" name="Portier sur tablette : consentement"
+              inherit_id="bf_property_access_portal.portal_property_access">
+        <xpath expr="//div[@t-if='privacy_summary']" position="before">
+            <div t-foreach="lobby_residents or []" t-as="res" class="card mb-4">
+                <div class="card-header">Annuaire de l'entrée : <t t-esc="res.building_id.name"/>
+                    <t t-if="res.unit_id"> / <t t-esc="res.unit_id.name"/></t></div>
+                <div class="card-body">
+                    <p>La tablette de l'entrée affiche, pour les visiteurs, les résidents qui l'acceptent. Rien
+                       n'y paraît sans votre accord, et vous pouvez vous retirer en tout temps. Votre numéro
+                       n'est jamais affiché.</p>
+                    <p class="text-muted small">Chaque appel fait depuis la tablette est consigné (quelle
+                       tablette, quel logement, quand) et supprimé après
+                       <t t-if="(lobby_retention or {}).get(res.id)"><t t-esc="lobby_retention[res.id]"/> jours.</t>
+                       <t t-else="">le délai que fixe l'organisation.</t></p>
+                    <form action="/my/property/access/lobby" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="resident_id" t-att-value="res.id"/>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="listed" value="1"
+                                   t-att-id="'listed_%d' % res.id" t-att-checked="res.lobby_listed or None"/>
+                            <label class="form-check-label" t-att-for="'listed_%d' % res.id">Paraître à l'annuaire</label>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label" t-att-for="'label_%d' % res.id">Libellé affiché</label>
+                            <input class="form-control" type="text" name="label" maxlength="60"
+                                   t-att-id="'label_%d' % res.id" t-att-value="res.lobby_label or ''"
+                                   placeholder="p. ex. A. Exemple, ou rien (« Résident »)"/>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="reachable" value="1"
+                                   t-att-id="'reach_%d' % res.id" t-att-checked="res.lobby_reachable or None"/>
+                            <label class="form-check-label" t-att-for="'reach_%d' % res.id">La tablette peut faire sonner mon téléphone</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

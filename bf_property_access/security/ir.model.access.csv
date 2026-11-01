@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_access_point_user,bf.property.access.point.user,model_bf_property_access_point,bf_property_core.group_bf_property_user,1,0,0,0
+access_access_point_manager,bf.property.access.point.manager,model_bf_property_access_point,bf_property_core.group_bf_property_manager,1,1,1,1
+access_access_resident_user,bf.property.access.resident.user,model_bf_property_access_resident,bf_property_core.group_bf_property_user,1,0,0,0
+access_access_resident_manager,bf.property.access.resident.manager,model_bf_property_access_resident,bf_property_core.group_bf_property_manager,1,1,1,0
+access_access_grant_user,bf.property.access.grant.user,model_bf_property_access_grant,bf_property_core.group_bf_property_user,1,0,0,0
+access_access_grant_manager,bf.property.access.grant.manager,model_bf_property_access_grant,bf_property_core.group_bf_property_manager,1,1,0,0
+access_access_order_user,bf.property.access.order.user,model_bf_property_access_order,bf_property_core.group_bf_property_user,1,0,0,0
+access_access_order_manager,bf.property.access.order.manager,model_bf_property_access_order,bf_property_core.group_bf_property_manager,1,1,0,0
+access_access_connector_user,bf.property.access.connector.user,model_bf_property_access_connector,bf_property_core.group_bf_property_user,1,0,0,0
+access_access_connector_manager,bf.property.access.connector.manager,model_bf_property_access_connector,bf_property_core.group_bf_property_manager,1,1,1,1
+access_access_pass_user,bf.property.access.pass.user,model_bf_property_access_pass,bf_property_core.group_bf_property_user,1,0,0,0
+access_access_pass_manager,bf.property.access.pass.manager,model_bf_property_access_pass,bf_property_core.group_bf_property_manager,1,1,1,0
+access_access_departure_manager,bf.property.access.departure.manager,model_bf_property_access_departure,bf_property_core.group_bf_property_manager,1,1,1,1

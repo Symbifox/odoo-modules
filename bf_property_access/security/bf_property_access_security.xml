@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Cloisonnement multi-société : des noms, des logements et des
+             allées et venues, donc des renseignements personnels. -->
+        <record id="rule_access_point_company" model="ir.rule">
+            <field name="name">Points d'accès : multi-société</field>
+            <field name="model_id" ref="model_bf_property_access_point"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rule_access_resident_company" model="ir.rule">
+            <field name="name">Résidents (accès) : multi-société</field>
+            <field name="model_id" ref="model_bf_property_access_resident"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rule_access_grant_company" model="ir.rule">
+            <field name="name">Droits d'accès : multi-société</field>
+            <field name="model_id" ref="model_bf_property_access_grant"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rule_access_order_company" model="ir.rule">
+            <field name="name">Ordres d'accès : multi-société</field>
+            <field name="model_id" ref="model_bf_property_access_order"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rule_access_pass_company" model="ir.rule">
+            <field name="name">Accès temporaires : multi-société</field>
+            <field name="model_id" ref="model_bf_property_access_pass"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="rule_access_connector_company" model="ir.rule">
+            <field name="name">Connecteurs d'accès : multi-société</field>
+            <field name="model_id" ref="model_bf_property_access_connector"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+    </data>
+
+    <data noupdate="1">
+        <record id="mail_activity_departure" model="mail.activity.type">
+            <field name="name">Départ à confirmer</field>
+            <field name="summary">Confirmer le départ</field>
+            <field name="res_model">bf.property.access.resident</field>
+            <field name="icon">fa-sign-out</field>
+            <field name="delay_count">2</field>
+        </record>
+        <record id="mail_activity_access_order" model="mail.activity.type">
+            <field name="name">Ordre d'accès</field>
+            <field name="summary">Ajouter ou retirer un accès</field>
+            <field name="res_model">bf.property.access.order</field>
+            <field name="icon">fa-key</field>
+            <field name="delay_count">1</field>
+        </record>
+    </data>
+</odoo>

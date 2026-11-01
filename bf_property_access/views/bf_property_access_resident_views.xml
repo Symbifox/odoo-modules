@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_access_resident_list" model="ir.ui.view">
+        <field name="name">bf.property.access.resident.list</field>
+        <field name="model">bf.property.access.resident</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="state == 'departure_pending'" decoration-muted="state in ('left', 'cancelled')"
+                  decoration-info="state == 'upcoming'">
+                <header>
+                    <button name="action_sync_now" type="object" string="Synchroniser"
+                            display="always" groups="bf_property_core.group_bf_property_manager"/>
+                </header>
+                <field name="partner_id"/>
+                <field name="building_id"/>
+                <field name="unit_id"/>
+                <field name="origin"/>
+                <field name="date_arrival"/>
+                <field name="departure_signal_date" optional="show"/>
+                <field name="date_departure" string="Départ" optional="show"/>
+                <field name="state" widget="badge" decoration-warning="state == 'departure_pending'"
+                       decoration-success="state == 'active'" decoration-info="state == 'upcoming'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_access_resident_form" model="ir.ui.view">
+        <field name="name">bf.property.access.resident.form</field>
+        <field name="model">bf.property.access.resident</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_arrive_now" type="object" string="Arrivée maintenant"
+                            invisible="state != 'upcoming'" groups="bf_property_core.group_bf_property_manager"/>
+                    <button name="action_cancel_arrival" type="object" string="Annuler l'arrivée"
+                            invisible="state != 'upcoming'" groups="bf_property_core.group_bf_property_manager"/>
+                    <button name="action_confirm_departure" type="object" string="Confirmer le départ"
+                            class="btn-primary" invisible="state != 'departure_pending'"
+                            groups="bf_property_core.group_bf_property_manager"/>
+                    <button name="action_confirm_departure" type="object" string="Déclarer le départ"
+                            invisible="state != 'active'" groups="bf_property_core.group_bf_property_manager"/>
+                    <button name="action_dismiss_departure" type="object" string="Il ne part pas"
+                            invisible="state != 'departure_pending'" groups="bf_property_core.group_bf_property_manager"
+                            confirm="La personne habite toujours les lieux ? Elle deviendra occupante déclarée : son départ se déclarera à la main."/>
+                    <field name="state" widget="statusbar" statusbar_visible="upcoming,active,departure_pending,left"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_grants" type="object" class="oe_stat_button" icon="fa-key">
+                            <field name="live_grant_count" widget="statinfo" string="Droits"/>
+                        </button>
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="not stale_source_noted or state != 'left'">
+                        Départ confirmé, mais le dossier désigne encore cette personne comme occupante.
+                        Ses accès ne seront pas réémis : mettez le dossier à jour, ou déclarez un retour.
+                    </div>
+                    <field name="stale_source_noted" invisible="1"/>
+                    <div class="alert alert-warning" role="alert" invisible="state != 'departure_pending'">
+                        <strong>Départ à confirmer.</strong> <field name="departure_signal" readonly="1" class="d-inline"/>
+                        Les accès restent en place : ils ne seront retirés qu'une fois la date des clés
+                        remises saisie. Le bail se reconduit de plein droit (art. 1941 C.c.Q.) et seul le
+                        tribunal expulse qui reste dans les lieux (art. 1889).
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="live_grant_count"/>
+                            <field name="building_id" readonly="live_grant_count"/>
+                            <field name="unit_id" readonly="live_grant_count"/>
+                            <field name="origin" readonly="id"/>
+                        </group>
+                        <group>
+                            <field name="date_arrival" readonly="state != 'upcoming'"/>
+                            <field name="date_departure" readonly="1" invisible="not date_departure"/>
+                            <field name="departure_signal_date" readonly="1" invisible="not departure_signal_date"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Droits" name="grants">
+                            <field name="grant_ids" readonly="1">
+                                <list decoration-muted="state in ('removed', 'cancelled')"
+                                      decoration-warning="state in ('awaiting_consent', 'to_remove')">
+                                    <field name="point_id"/>
+                                    <field name="credential_kind"/>
+                                    <field name="external_ref"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="end_reason" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_access_resident_search" model="ir.ui.view">
+        <field name="name">bf.property.access.resident.search</field>
+        <field name="model">bf.property.access.resident</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="building_id"/>
+                <field name="unit_id"/>
+                <filter name="present" string="Présents" domain="[('state', 'in', ('active', 'departure_pending'))]"/>
+                <filter name="departure_pending" string="Départs à confirmer" domain="[('state', '=', 'departure_pending')]"/>
+                <filter name="upcoming" string="À venir" domain="[('state', '=', 'upcoming')]"/>
+                <filter name="gone" string="Partis ou annulés" domain="[('state', 'in', ('left', 'cancelled'))]"/>
+                <separator/>
+                <filter name="declared" string="Occupants déclarés" domain="[('origin', '=', 'declared')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_building" string="Immeuble" context="{'group_by': 'building_id'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_origin" string="Origine" context="{'group_by': 'origin'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_access_resident" model="ir.actions.act_window">
+        <field name="name">Résidents</field>
+        <field name="res_model">bf.property.access.resident</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_present': 1, 'default_origin': 'declared'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun résident</p>
+            <p>Les résidents viennent du dossier (copropriétaires qui occupent leur fraction,
+               occupants, signataires de bail) chaque nuit, ou du bouton « Synchroniser avec le
+               dossier ». Un conjoint ou un enfant majeur qui n'a rien signé se déclare ici.</p>
+        </field>
+    </record>
+
+    <record id="action_access_departure_pending" model="ir.actions.act_window">
+        <field name="name">Départs à confirmer</field>
+        <field name="res_model">bf.property.access.resident</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'departure_pending')]</field>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun départ à confirmer</p>
+            <p>Quand le dossier cesse de désigner quelqu'un comme occupant (propriété cédée, loyer
+               dû jusqu'au atteint, résiliation, déguerpissement), la personne apparaît ici. Ses
+               accès ne sont retirés qu'une fois la date des clés remises confirmée.</p>
+        </field>
+    </record>
+</odoo>

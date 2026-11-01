@@ -1,0 +1,606 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_access_privacy
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 05:04+0000\n"
+"PO-Revision-Date: 2026-10-31 23:02+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_property_access_privacy
+#: model:ir.actions.report,print_report_name:bf_property_access_privacy.action_report_access_efvp
+msgid "'EFVP - Contrôle d\\'accès - %s' % (object.name)"
+msgstr "'PIA - Access control - %s' % (object.name)"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "(deux consentements, art. 1934 C.c.Q.)"
+msgstr "(two consents, art. 1934 CCQ)"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+",\n"
+"                            durée déclarée au registre des traitements :"
+msgstr ""
+",\n"
+"                            period declared in the register of processing activities:"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+".\n"
+"                            La purge supprime chaque nuit les résidents partis, les droits retirés et les ordres clos plus\n"
+"                            vieux que ce délai, ainsi que les accès temporaires terminés ou annulés et, s'il y a une\n"
+"                            tablette à l'entrée, son journal d'appels ; elle ne supprime jamais un retrait encore à faire."
+msgstr ""
+". Every night the purge deletes residents who have moved out, removed access"
+" rights and closed orders older than this period, as well as ended or "
+"cancelled temporary access and, if there is a tablet at the entrance, its "
+"call log; it never deletes a removal still to be done."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+".\n"
+"                            Résidents présents ou à venir :"
+msgstr ""
+".\n"
+"                            Current or upcoming residents:"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+".\n"
+"                        Chaque fabricant ou service qui reçoit des renseignements doit être encadré par une entente écrite\n"
+"                        (art. 18.3) ; s'il les héberge hors Québec, évaluation préalable et entente (art. 17)."
+msgstr ""
+".\n"
+"                        Each manufacturer or service that receives information must be bound by a written agreement\n"
+"                        (s. 18.3); if it hosts it outside Québec, a prior assessment and an agreement are required (s. 17)."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "1. Le projet"
+msgstr "1. The project"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "10. Consultation et approbation"
+msgstr "10. Consultation and approval"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "2. Renseignements personnels visés"
+msgstr "2. Personal information concerned"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "3. Finalité et nécessité (art. 4, 5, 9)"
+msgstr "3. Purpose and necessity (art. 4, 5, 9)"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "4. Proportionnalité : ce qui est exclu"
+msgstr "4. Proportionality: what is excluded"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "5. Conservation et destruction (art. 23)"
+msgstr "5. Retention and destruction (art. 23)"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "6. Communication à des tiers et hors Québec (art. 17, 18.3)"
+msgstr "6. Disclosure to third parties and outside Québec (art. 17, 18.3)"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "7. Mesures de sécurité (art. 10)"
+msgstr "7. Security measures (art. 10)"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "8. Droits des personnes"
+msgstr "8. Rights of the persons concerned"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "9. Risques et mesures"
+msgstr "9. Risks and measures"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"<b>Biométrie</b> : exclue. Loi concernant le cadre juridique des "
+"technologies de l'information, art. 44 et 45 (consentement exprès, "
+"déclaration préalable à la Commission d'accès à l'information) ; le guide de"
+" la Commission sur la biométrie (2022) demande en outre de démontrer "
+"qu'aucun moyen moins intrusif ne suffit et d'offrir une solution de "
+"rechange, le consentement devant rester libre (LPRPSP, art. 14)."
+msgstr ""
+"<b>Biometrics</b>: ruled out. Act to establish a legal framework for "
+"information technology, ss. 44 and 45 (express consent, prior disclosure to "
+"the Commission d'accès à l'information); the Commission's guide on "
+"biometrics (2022) also asks to show that no less intrusive means will do and"
+" to offer an alternative, since consent must remain free (private-sector "
+"Act, s. 14)."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "<b>Codes</b> : jamais conservés ; ils vivent dans l'appareil."
+msgstr "<b>Codes</b>: never kept; they live in the device."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"<b>Non recueillis par le logiciel</b> : codes (NIP), données biométriques, "
+"journal des passages aux portes."
+msgstr ""
+"<b>Not collected by the software</b>: codes (PINs), biometric data, log of "
+"door entries."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"<b>Retrait sur une date</b> : exclu pour un résident. Le bail se reconduit "
+"de plein droit (art. 1941 C.c.Q.) ; un retrait suit un départ confirmé par "
+"une personne. Un accès temporaire (visiteur, entrepreneur), lui, est retiré "
+"à la fin de sa plage."
+msgstr ""
+"<b>Removal on a date</b>: excluded for a resident. The lease is renewed by "
+"operation of law (art. 1941 CCQ); a removal follows a departure confirmed by"
+" a person. A temporary access (visitor, contractor), on the other hand, is "
+"removed at the end of its time window."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Accès par rôles : gestionnaire, consultation ; le responsable d'un point ne "
+"fait que les ordres de ses points."
+msgstr ""
+"Role-based access: manager, consultation; the person responsible for an "
+"access point carries out only the orders for their own points."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Accès temporaires : nom du visiteur, de l'entrepreneur ou du personnel (des "
+"tiers qui n'ont rien consenti), entreprise, plage ; pour une entrée au "
+"logement, motif, préavis, accord du locataire et motif d'urgence en texte "
+"libre (à rédiger sans renseignement de santé)."
+msgstr ""
+"Temporary access: name of the visitor, contractor or staff member (third "
+"parties who have consented to nothing), company, time window; for an entry "
+"into the dwelling, the reason, notice, the lessee's agreement and the reason"
+" for the emergency as free text (to be written without any health "
+"information)."
+
+#. module: bf_property_access_privacy
+#. odoo-python
+#: code:addons/bf_property_access_privacy/models/bf_property_organisation.py:0
+msgid "Aucun (ordres au responsable)"
+msgstr "None (orders to the person responsible)"
+
+#. module: bf_property_access_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_property_access_privacy.purpose_property_access_control
+msgid ""
+"Aucun code ni aucune donnée biométrique n'est conservé par le\n"
+"                logiciel. Vos accès sont retirés une fois votre départ confirmé, et\n"
+"                la trace en est supprimée après la durée fixée par\n"
+"                l'organisation."
+msgstr ""
+"The software keeps no code and no biometric\n"
+"                data. Your access is removed once your move-out is confirmed, and\n"
+"                the record of it is deleted after the period set by\n"
+"                the organisation."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Aucun connecteur relié à un appareil : les ordres vont au\n"
+"                        responsable de chaque point, à l'interne. Aucune communication à un fabricant par le logiciel."
+msgstr ""
+"No connector linked to a device: the orders go to the\n"
+"                        person responsible for each point, internally. The software discloses nothing to any manufacturer."
+
+#. module: bf_property_access_privacy
+#. odoo-python
+#: code:addons/bf_property_access_privacy/models/bf_property_organisation.py:0
+msgid ""
+"Aucune politique de conservation n'est déclarée pour le contrôle d'accès."
+msgstr "No retention policy is declared for access control."
+
+#. module: bf_property_access_privacy
+#: model:privacy.notice,name:bf_property_access_privacy.notice_property_access_control
+msgid "Avis : contrôle d'accès à l'immeuble"
+msgstr "Notice: access control for the immovable"
+
+#. module: bf_property_access_privacy
+#: model:ir.model.fields,help:bf_property_access_privacy.field_bf_property_organisation__access_retention_declared
+msgid ""
+"Ce que la politique de conservation du contrôle d'accès annonce au registre "
+"des activités de traitement."
+msgstr ""
+"What the access control retention policy announces in the register of "
+"processing activities."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Cloisonnement par société ; journal des ordres non modifiable une fois clos."
+msgstr ""
+"Records separated by company; the order log cannot be changed once closed."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Connecteur"
+msgstr "Connector"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Connecteurs déclarés :"
+msgstr "Declared connectors:"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Consentements consignés pour la porte du logement, avec la personne qui les "
+"a consignés."
+msgstr ""
+"Consents recorded for the unit door, with the person who recorded them."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.view_property_organisation_form_access_privacy
+msgid ""
+"Conservation des accès aux portes : droits, ordres, accès temporaires (Loi "
+"25)"
+msgstr ""
+"Door access retention: access rights, orders, temporary access (Québec Act "
+"25)"
+
+#. module: bf_property_access_privacy
+#: model:privacy.purpose,name:bf_property_access_privacy.purpose_property_access_control
+msgid "Contrôle d'accès à l'immeuble"
+msgstr "Access control for the immovable"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Contrôle d'accès à l'immeuble :"
+msgstr "Access control for the immovable:"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Donner accès à l'immeuble aux personnes qui y habitent et le retirer à leur départ\n"
+"                        confirmé. Le contrôle d'accès sert le bail et la sécurité des occupants : il ne repose pas\n"
+"                        sur un consentement, mais sur une information préalable (avis « Contrôle d'accès à\n"
+"                        l'immeuble » au registre des traitements). Une personne qui refuse un identifiant mobile\n"
+"                        reçoit une clé ou une carte."
+msgstr ""
+"Give access to the immovable to the people who live there, and remove it once their departure\n"
+"                        is confirmed. Access control serves the lease and the safety of the occupants: it does not rest\n"
+"                        on consent, but on prior information (the \"Access control for the\n"
+"                        immovable\" notice in the register of processing activities). A person who refuses a mobile credential\n"
+"                        receives a key or a card."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Durée appliquée par l'organisation :"
+msgstr "Period applied by the organisation:"
+
+#. module: bf_property_access_privacy
+#: model:ir.model.fields,field_description:bf_property_access_privacy.field_bf_property_organisation__access_retention_declared
+msgid "Durée déclarée au registre (accès)"
+msgstr "Period declared in the register (access)"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.view_property_organisation_form_access_privacy
+msgid "Gabarit d'EFVP (contrôle d'accès)"
+msgstr "PIA template (access control)"
+
+#. module: bf_property_access_privacy
+#: model:ir.actions.report,name:bf_property_access_privacy.action_report_access_efvp
+msgid "Gabarit d'EFVP : contrôle d'accès"
+msgstr "PIA template: access control"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Gabarit prérempli le"
+msgstr "Template prefilled on"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Immeuble"
+msgstr "Immovable"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"La serrure ne dépend jamais du logiciel : l'appareil valide seul, une panne "
+"retarde un ajout ou un retrait."
+msgstr ""
+"The lock never depends on the software: the device validates on its own, and"
+" an outage only delays an addition or a removal."
+
+#. module: bf_property_access_privacy
+#. odoo-python
+#: code:addons/bf_property_access_privacy/models/bf_property_organisation.py:0
+msgid "Le gabarit d'EFVP est réservé à l'équipe immobilière."
+msgstr "The PIA template is reserved for the property team."
+
+#. module: bf_property_access_privacy
+#. odoo-python
+#: code:addons/bf_property_access_privacy/models/bf_property_organisation.py:0
+msgid ""
+"Le registre des traitements annonce %(declared)d jours, cette organisation "
+"en applique %(applied)d."
+msgstr ""
+"The register of processing activities announces %(declared)d days; this "
+"organisation applies %(applied)d."
+
+#. module: bf_property_access_privacy
+#. odoo-python
+#: code:addons/bf_property_access_privacy/models/bf_property_organisation.py:0
+msgid ""
+"Le registre des traitements annonce %(declared)d jours, et cette "
+"organisation ne purge pas le journal des accès. Ce qui est déclaré n'est pas"
+" ce qui est fait."
+msgstr ""
+"The register of processing activities announces %(declared)d days, and this "
+"organisation does not purge the access log. What is declared is not what is "
+"done."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Le résident voit ses accès au portail et peut en demander la rectification (art. 28). Sur\n"
+"                        demande, les renseignements informatisés recueillis auprès de lui, lui sont communiqués dans un format technologique\n"
+"                        structuré et couramment utilisé (art. 27, al. 3), ce que l'évaluation doit vérifier (art. 3.3) :\n"
+"                        l'export des listes du logiciel le permet."
+msgstr ""
+"Residents see their access on the portal and can ask for it to be corrected "
+"(s. 28). On request, the computerized information collected from them is "
+"released to them in a structured, commonly used technological format (s. 27,"
+" para. 3), which the assessment must check (s. 3.3): the software's list "
+"exports allow it."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Les deux durées diffèrent : ce qui est déclaré doit être ce qui est fait."
+msgstr "The two periods differ: what is declared must be what is done."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Motif de fin d'un droit (départ, perte ou vol) et notes libres sur le "
+"résident et le point d'accès."
+msgstr ""
+"Reason an access right ended (move-out, loss or theft) and free notes on the"
+" resident and the access point."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Nom de la personne, immeuble et fraction, dates d'arrivée et de départ."
+msgstr ""
+"Name of the person, immovable and fraction, arrival and departure dates."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Ordres d'ajout et de retrait : qui les a faits, quand."
+msgstr "Addition and removal orders: who carried them out, and when."
+
+#. module: bf_property_access_privacy
+#: model:ir.model,name:bf_property_access_privacy.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr "Organisation answering for an immovable"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Origine du droit (propriété, bail, occupant déclaré) et signal de départ "
+"tiré du dossier (fin du loyer, résiliation, déguerpissement…)."
+msgstr ""
+"Origin of the right (ownership, lease, declared occupant) and the move-out "
+"signal read from the file (rent end, resiliation, abandonment…)."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Point d'accès"
+msgstr "Access point"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Points d'accès autorisés, type de support et sa référence (numéro de carte, "
+"identifiant d'annuaire)."
+msgstr ""
+"Authorized access points, credential type and its reference (card number, "
+"directory ID)."
+
+#. module: bf_property_access_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_property_access_privacy.purpose_property_access_control
+msgid ""
+"Pour que vous puissiez entrer chez vous, l'organisation tient la\n"
+"                liste des personnes qui ont droit à chaque porte de l'immeuble\n"
+"                (portier, garage, boîte à colis, porte du logement), le support\n"
+"                remis (entrée d'annuaire, carte, code, clé) et sa référence, comme\n"
+"                un numéro de carte."
+msgstr ""
+"So that you can get into your home, the organisation keeps the\n"
+"                list of people entitled to each door of the immovable\n"
+"                (intercom, garage, parcel locker, unit door), the credential\n"
+"                issued (directory entry, card, code, key) and its reference, such as\n"
+"                a card number."
+
+#. module: bf_property_access_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_property_access_privacy.purpose_property_access_control
+msgid ""
+"Pour un visiteur, un entrepreneur ou une entrée dans un logement,\n"
+"                l'organisation consigne aussi un accès temporaire : le nom du titulaire,\n"
+"                son entreprise, la plage, et pour une entrée au logement son motif, le\n"
+"                préavis et l'accord du locataire. Cet accès est retiré à la fin de sa\n"
+"                plage."
+msgstr ""
+"For a visitor, a contractor or an entry into a dwelling,\n"
+"                the organisation also records a temporary access: the holder's name,\n"
+"                their company, the time window, and for an entry into the dwelling its reason, the\n"
+"                notice and the lessee's agreement. This access is removed at the end of its\n"
+"                time window."
+
+#. module: bf_property_access_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_property_access_privacy.purpose_property_access_control
+msgid ""
+"Si l'immeuble a une tablette à l'entrée, vous n'y paraissez que si vous\n"
+"                l'acceptez au portail, sous le libellé que vous choisissez ; chaque appel ou\n"
+"                livraison est consigné (date, logement) et supprimé au délai fixé."
+msgstr ""
+"If the building has a tablet at the entrance, you appear on it only if you "
+"agree on the portal, under the label you choose; each call or delivery is "
+"recorded (date, unit) and deleted after the set period."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Support"
+msgstr "Credential"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"Tenir, pour chaque immeuble, la liste des personnes qui ont droit à chaque point\n"
+"                            d'accès, et transmettre les ajouts et retraits aux appareils ou au responsable de\n"
+"                            chaque point. Immeubles visés :"
+msgstr ""
+"Keep, for each immovable, the list of people entitled to each access\n"
+"                            point, and pass the additions and removals on to the devices or to the person responsible for\n"
+"                            each point. Immovables concerned:"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "aucune purge (0)"
+msgstr "no purge (0)"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"ce que les appareils eux-mêmes enregistrent (journal des passages, images de"
+" la caméra du portier) et où."
+msgstr ""
+"what the devices themselves record (log of door entries, intercom camera "
+"images) and where."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"fournisseurs (logiciel, appareils, nuage), lieu d'hébergement, ententes "
+"signées."
+msgstr ""
+"suppliers (software, devices, cloud), hosting location, signed agreements."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "jours"
+msgstr "days"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "justification de la durée retenue ; conservation par les appareils."
+msgstr "justification for the period chosen; retention by the devices."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"matériel en place (marque, modèle), qui l'exploite, date de mise en service."
+msgstr ""
+"equipment in place (make, model), who operates it, date put into service."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"mesures propres à l'organisation (comptes, sauvegardes, accès physique aux "
+"appareils) ; à vérifier hors du logiciel : les serrures électromagnétiques "
+"des issues se déverrouillent sur alarme incendie et panne de courant (CNB-Q "
+"3.4.6.16)."
+msgstr ""
+"the organisation's own measures (accounts, backups, physical access to the "
+"devices); to check outside the software: magnetic locks on exits release on "
+"fire alarm and power failure (NBC-Québec 3.4.6.16)."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"pourquoi chaque point d'accès est nécessaire ; moyen moins intrusif envisagé"
+" ; comment l'avis est remis à la personne lors de la collecte (bail, "
+"affichage, page « Mes accès » du portail)."
+msgstr ""
+"why each access point is needed; less intrusive means considered; how the "
+"notice reaches the person at collection (lease, posting, the portal's \"My "
+"access\" page)."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"responsable de la protection des renseignements personnels consulté (nom, "
+"date) ; décision ; date de révision."
+msgstr ""
+"person in charge of the protection of personal information consulted (name, "
+"date); decision; review date."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"risques relevés (accès conservé après un départ, carte perdue, fuite de la "
+"liste), probabilité, gravité, mesure."
+msgstr ""
+"risks identified (access kept after a departure, lost card, leak of the "
+"list), likelihood, severity, measure."
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp_case
+msgid "À compléter :"
+msgstr "To be completed:"
+
+#. module: bf_property_access_privacy
+#: model:ir.model.fields,field_description:bf_property_access_privacy.field_bf_property_organisation__access_retention_warning
+msgid "Écart de conservation (accès)"
+msgstr "Retention gap (access)"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid "Évaluation des facteurs relatifs à la vie privée"
+msgstr "Privacy impact assessment"
+
+#. module: bf_property_access_privacy
+#: model_terms:ir.ui.view,arch_db:bf_property_access_privacy.report_access_efvp
+msgid ""
+"à partir\n"
+"                            des données de Symbifox. Loi sur la protection des renseignements personnels dans le\n"
+"                            secteur privé, art. 3.3 : une évaluation est obligatoire pour tout projet\n"
+"                            d'acquisition, de développement ou de refonte d'un système d'information qui\n"
+"                            touche des renseignements personnels, et le responsable de la protection des\n"
+"                            renseignements personnels doit être consulté dès le début. Les faits ci-dessous\n"
+"                            viennent du logiciel ; les cases sont à remplir par l'organisation."
+msgstr ""
+"from\n"
+"                            Symbifox data. Act respecting the protection of personal information in the\n"
+"                            private sector, art. 3.3: an assessment is required for any project\n"
+"                            to acquire, develop or overhaul an information system that\n"
+"                            involves personal information, and the person in charge of the protection of\n"
+"                            personal information must be consulted from the outset. The facts below\n"
+"                            come from the software; the boxes are to be filled in by the organisation."

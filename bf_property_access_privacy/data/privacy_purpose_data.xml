@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Pas de consentement : contrôler qui entre dans un immeuble sert le
+             bail et la sécurité des occupants (LPRPSP art. 4, 5 et 9). On
+             informe (art. 8), on ne demande pas. Une technologie qui identifie
+             ou localise (biométrie, journal de passages) serait autre chose :
+             le module n'en fait pas. -->
+        <record id="purpose_property_access_control" model="privacy.purpose">
+            <field name="code">property_access_control</field>
+            <!-- Sans société : la finalité, l'avis et la politique valent pour toutes
+                 les sociétés de la base (rattachés par défaut à la
+                 société d'installation, ils manquaient aux autres). -->
+            <field name="company_id" eval="False"/>
+            <field name="name">Contrôle d'accès à l'immeuble</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Pour que vous puissiez entrer chez vous, l'organisation tient la
+                liste des personnes qui ont droit à chaque porte de l'immeuble
+                (portier, garage, boîte à colis, porte du logement), le support
+                remis (entrée d'annuaire, carte, code, clé) et sa référence, comme
+                un numéro de carte.</p>
+                <p>Pour un visiteur, un entrepreneur ou une entrée dans un logement,
+                l'organisation consigne aussi un accès temporaire : le nom du titulaire,
+                son entreprise, la plage, et pour une entrée au logement son motif, le
+                préavis et l'accord du locataire. Cet accès est retiré à la fin de sa
+                plage.</p>
+                <p>Si l'immeuble a une tablette à l'entrée, vous n'y paraissez que si vous
+                l'acceptez au portail, sous le libellé que vous choisissez ; chaque appel ou
+                livraison est consigné (date, logement) et supprimé au délai fixé.</p>
+                <p>Aucun code ni aucune donnée biométrique n'est conservé par le
+                logiciel. Vos accès sont retirés une fois votre départ confirmé, et
+                la trace en est supprimée après la durée fixée par
+                l'organisation.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+        </record>
+
+        <record id="notice_property_access_control" model="privacy.notice">
+            <field name="name">Avis : contrôle d'accès à l'immeuble</field>
+            <field name="company_id" eval="False"/>
+            <field name="purpose_id" ref="purpose_property_access_control"/>
+            <field name="body_fr"><![CDATA[
+                <p>L'organisation qui administre votre immeuble inscrit votre nom,
+                votre logement et les portes que vous pouvez ouvrir, avec le support
+                remis et sa référence. Ces renseignements servent à vous donner
+                accès à l'immeuble et à le retirer à votre départ.</p>
+                <p>Les appareils (portier, serrures, boîte à colis) reçoivent votre
+                nom, votre logement et la référence du support remis ; un code, s'il
+                y en a un, n'existe que dans l'appareil. Le logiciel ne conserve
+                aucun code ni aucune donnée biométrique. Vous pouvez demander une clé
+                ou une carte plutôt qu'un identifiant mobile.</p>
+                <p>Si vous annoncez un visiteur et lui donnez un accès, son nom est
+                consigné pour la durée de la visite et supprimé avec le journal. Une
+                entrée dans votre logement est consignée avec son motif, le préavis
+                donné et, s'il y a lieu, votre accord.</p>
+                <p>Si l'immeuble a une tablette à l'entrée, vous n'y paraissez que si vous
+                l'acceptez au portail (« Mes accès »), sous le libellé que vous choisissez,
+                jamais avec votre numéro ; vous pouvez vous en retirer en tout temps. Chaque
+                appel ou livraison est consigné (date, logement) et supprimé au délai fixé.</p>
+                <p>Le fabricant d'un appareil ou le service qui l'administre peut
+                recevoir ces renseignements, sous une entente écrite avec
+                l'organisation ; si ce fournisseur les héberge hors du Québec,
+                l'organisation l'évalue au préalable et vous en informe.</p>
+                <p>Après votre départ, la trace de vos accès est supprimée au délai
+                fixé par l'organisation. Vous pouvez consulter vos accès au
+                portail et demander à les faire corriger.</p>
+            ]]></field>
+            <field name="body_en"><![CDATA[
+                <p>The organisation that administers your building records your
+                name, your unit and the doors you can open, with the credential you
+                were given and its reference. This serves to let you into the
+                building and to remove that access when you move out.</p>
+                <p>The devices (intercom, locks, parcel locker) receive your name,
+                your unit and the reference of the credential you were given; a
+                code, if there is one, exists only in the device. The software keeps
+                no code and no biometric data. You may ask for a key or a card
+                instead of a mobile credential.</p>
+                <p>If you announce a visitor and give them access, their name is kept for
+                the visit and deleted with the journal. An entry into your dwelling is
+                recorded with its reason, the notice given and, where it applies, your
+                agreement.</p>
+                <p>If the building has a tablet at the entrance, you appear on it only if you
+                agree on the portal ("My access"), under the label you choose, never with your
+                number; you can withdraw at any time. Each call or delivery is recorded (date,
+                unit) and deleted after the set period.</p>
+                <p>A device manufacturer or the service that runs it may receive
+                this information, under a written agreement with the organisation;
+                if that provider hosts it outside Québec, the organisation assesses
+                this beforehand and lets you know.</p>
+                <p>After you move out, the record of your access is deleted after
+                the period set by the organisation. You can see your access on the
+                portal and ask for it to be corrected.</p>
+            ]]></field>
+        </record>
+
+        <!-- 90 jours = la valeur PAR DÉFAUT de l'organisation, pas une durée
+             imposée par un texte : aucune disposition ne fixe la conservation
+             d'un journal d'accès. L'écart avec ce que chaque organisation
+             applique est montré à l'écran. -->
+        <record id="retention_property_access_control" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_property_access_control"/>
+            <field name="company_id" eval="False"/>
+            <field name="retention_days">90</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Nom de la personne, immeuble et fraction, origine du droit (propriété, bail, occupant déclaré), points d'accès, type de support et sa référence (numéro de carte, identifiant d'annuaire), dates d'arrivée et de départ, signal de départ tiré du dossier (fin du loyer, résiliation, déguerpissement…), motif de fin d'un droit (départ, perte ou vol), consentements à la porte du logement, notes libres, ordres d'ajout et de retrait (qui, quand). Accès temporaires : nom du titulaire (visiteur, entrepreneur, personnel), entreprise, plage, et pour une entrée au logement motif, préavis, accord du locataire, motif d'urgence (texte libre). Tablette à l'entrée : consentement à l'annuaire (date), libellé choisi, journal des appels et livraisons (date, logement, issue).</field>
+            <field name="notes">La purge est faite chaque nuit par bf_property_access : résidents partis, droits retirés et ordres clos plus vieux que le délai de l'organisation (0 = jamais). Elle ne supprime jamais un retrait encore à faire.</field>
+        </record>
+    </data>
+</odoo>

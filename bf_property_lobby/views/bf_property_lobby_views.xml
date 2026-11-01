@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_lobby_kiosk_list" model="ir.ui.view">
+        <field name="name">bf.property.lobby.kiosk.list</field>
+        <field name="model">bf.property.lobby.kiosk</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="building_id"/>
+                <field name="name"/>
+                <field name="call_mode"/>
+                <field name="has_token" string="Jumelée"/>
+                <field name="user_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_lobby_kiosk_form" model="ir.ui.view">
+        <field name="name">bf.property.lobby.kiosk.form</field>
+        <field name="model">bf.property.lobby.kiosk</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_pair" type="object" string="Jumeler la tablette" class="btn-primary"
+                            groups="bf_property_core.group_bf_property_manager"
+                            confirm="Une nouvelle adresse s'affichera une seule fois ; l'ancienne cessera de marcher. Continuer ?"/>
+                    <button name="action_unpair" type="object" string="Dissocier" invisible="not has_token"
+                            groups="bf_property_core.group_bf_property_manager"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="alert alert-info" role="note">
+                        La tablette affiche les résidents qui l'acceptent (page « Mes accès » du portail),
+                        jamais un numéro. Elle appelle ; la porte s'ouvre par le portier existant.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="p. ex. Entrée nord"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="building_id"/>
+                            <field name="user_id"/>
+                            <field name="notify_by_email"/>
+                            <field name="has_token" string="Appareil jumelé"/>
+                        </group>
+                        <group>
+                            <field name="call_mode"/>
+                            <field name="sip_channel" invisible="call_mode != 'phone'" required="call_mode == 'phone'"/>
+                            <field name="dial_context" invisible="call_mode != 'phone'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Appels" name="calls">
+                            <field name="call_ids" readonly="1">
+                                <list>
+                                    <field name="create_date" string="Le" options="{'show_seconds': false}"/>
+                                    <field name="kind"/>
+                                    <field name="resident_id"/>
+                                    <field name="outcome"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_lobby_kiosk" model="ir.actions.act_window">
+        <field name="name">Portiers sur tablette</field>
+        <field name="res_model">bf.property.lobby.kiosk</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune tablette</p>
+            <p>Une tablette à l'entrée tient lieu d'interphone : l'annuaire des résidents qui l'acceptent,
+               un appel au résident, une livraison annoncée au concierge.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_lobby_kiosk" name="Portiers sur tablette" parent="bf_property_access.menu_access_root"
+              action="action_lobby_kiosk" sequence="55"/>
+
+    <record id="view_access_resident_form_lobby" model="ir.ui.view">
+        <field name="name">bf.property.access.resident.form.lobby</field>
+        <field name="model">bf.property.access.resident</field>
+        <field name="inherit_id" ref="bf_property_access.view_access_resident_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='note']" position="before">
+                <page string="Annuaire de l'entrée" name="lobby" invisible="not lobby_available and not lobby_listed">
+                    <field name="lobby_available" invisible="1"/>
+                    <p class="text-muted">Le résident choisit lui-même, au portail, s'il paraît à l'annuaire de la
+                        tablette et s'il peut y être joint.</p>
+                    <div class="mb-3" invisible="not lobby_listed">
+                        <button name="action_lobby_withdraw" type="object" string="Retirer de l'annuaire"
+                                class="btn-secondary" groups="bf_property_core.group_bf_property_manager"
+                                confirm="Retirer ce résident de l'annuaire de l'entrée, à sa demande ?"/>
+                    </div>
+                    <group>
+                        <field name="lobby_listed" readonly="1"/>
+                        <field name="lobby_label" readonly="1"/>
+                        <field name="lobby_reachable" readonly="1"/>
+                        <field name="lobby_consent_date" readonly="1" options="{'show_seconds': false}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

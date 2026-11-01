@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_access_point_list" model="ir.ui.view">
+        <field name="name">bf.property.access.point.list</field>
+        <field name="model">bf.property.access.point</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="building_id"/>
+                <field name="name"/>
+                <field name="point_type"/>
+                <field name="unit_id" optional="show"/>
+                <field name="credential_kind"/>
+                <field name="connector_id" optional="show"/>
+                <field name="user_id"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_access_point_form" model="ir.ui.view">
+        <field name="name">bf.property.access.point.form</field>
+        <field name="model">bf.property.access.point</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_grants" type="object" class="oe_stat_button" icon="fa-key">
+                            <field name="grant_count" widget="statinfo" string="Droits"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="p. ex. Portier de l'entrée nord"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="building_id"/>
+                            <field name="point_type"/>
+                            <field name="unit_id" required="point_type == 'unit_door'"/>
+                            <field name="requires_double_consent" invisible="not requires_double_consent"/>
+                        </group>
+                        <group>
+                            <field name="credential_kind"/>
+                            <field name="connector_id"/>
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Modèle, emplacement, particularités…"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_access_point_search" model="ir.ui.view">
+        <field name="name">bf.property.access.point.search</field>
+        <field name="model">bf.property.access.point</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="building_id"/>
+                <filter name="no_connector" string="Sans connecteur (manuel)" domain="[('connector_id', '=', False)]"/>
+                <filter name="archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_building" string="Immeuble" context="{'group_by': 'building_id'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'point_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_access_point" model="ir.actions.act_window">
+        <field name="name">Points d'accès</field>
+        <field name="res_model">bf.property.access.point</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Déclarer une porte, un portier ou une boîte à colis</p>
+            <p>Chaque point d'accès dit à qui il sert (tout l'immeuble ou une fraction),
+               ce que le résident reçoit, et qui fait les ajouts et retraits à la main
+               tant qu'aucun connecteur ne relie l'appareil.</p>
+        </field>
+    </record>
+</odoo>

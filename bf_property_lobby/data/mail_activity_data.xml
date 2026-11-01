@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Propre à la tablette : la purge du journal ne touche qu'à ce type. -->
+        <record id="mail_activity_lobby" model="mail.activity.type">
+            <field name="name">Portier sur tablette</field>
+            <field name="summary">Demande à l'entrée</field>
+            <field name="res_model">bf.property.lobby.kiosk</field>
+            <field name="icon">fa-bell</field>
+            <field name="delay_count">0</field>
+        </record>
+    </data>
+</odoo>

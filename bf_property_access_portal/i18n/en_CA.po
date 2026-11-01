@@ -1,0 +1,268 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_access_portal
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 05:04+0000\n"
+"PO-Revision-Date: 2026-10-31 23:02+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid ""
+". Aucun code\n"
+"                    n'est conservé ici : il vit dans l'appareil. Si vous êtes locataire, la porte de\n"
+"                    votre logement ne change pas de mécanisme sans votre consentement (art. 1934 C.c.Q.)."
+msgstr ""
+". No code\n"
+"                    is kept here: it lives in the device. If you are a lessee, the lock of\n"
+"                    your dwelling does not change without your consent (art. 1934 CCQ)."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_deliveries_access
+msgid "Accès"
+msgstr "Access"
+
+#. module: bf_property_access_portal
+#: model:ir.model.fields,field_description:bf_property_access_portal.field_bf_property_visit__access_pass_state
+msgid "Accès du visiteur"
+msgstr "Visitor's access"
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_deliveries_access
+msgid "Accès jusqu'à"
+msgstr "Access until"
+
+#. module: bf_property_access_portal
+#: model:ir.model.fields,field_description:bf_property_access_portal.field_bf_property_visit__access_pass_id
+msgid "Accès temporaire"
+msgstr "Temporary access"
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_deliveries_access
+msgid ""
+"Annoncer quelqu'un prévient l'organisation. Une porte ne s'ouvre pour lui que si vous\n"
+"                    cochez l'accès temporaire : les portes communes, pour la visite seulement. Ce que vous\n"
+"                    inscrivez ici concerne une personne qui n'a rien consenti : le journal ne garde que ce\n"
+"                    qui sert, et il se purge tout seul."
+msgstr ""
+"Announcing someone notifies the organisation. A door only opens for them if "
+"you tick temporary access: the common doors, for the visit only. What you "
+"enter here is about a person who has consented to nothing: the log keeps "
+"only what is needed, and it purges itself."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid ""
+"Aucun accès à votre nom. Si vous venez d'emménager, il apparaîtra le jour de"
+" votre arrivée."
+msgstr ""
+"No access in your name. If you have just moved in, it will appear on the day"
+" you arrive."
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Cette organisation ne permet pas de donner un accès aux visiteurs."
+msgstr "This organisation does not allow giving access to visitors."
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Départ confirmé de l'hôte."
+msgstr "The host's move-out was confirmed."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid "Fraction"
+msgstr "Fraction"
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid "Immeuble"
+msgstr "Building"
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Indiquez la fraction : l'accès dépend de l'immeuble."
+msgstr "Enter the fraction: access depends on the building."
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "L'immeuble n'a aucune porte commune où donner un accès."
+msgstr "The building has no common door to give access to."
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "La plage de la visite est déjà passée."
+msgstr "The visit's time window has already passed."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_deliveries_access
+msgid ""
+"Le visiteur est annoncé, mais l'accès temporaire n'a pas pu être donné : l'organisation ne le\n"
+"                    permet pas, la plage est passée, l'immeuble n'a pas de porte commune reliée, ou vous\n"
+"                    habitez plusieurs immeubles et la fraction n'est pas choisie."
+msgstr ""
+"The visitor is announced, but temporary access could not be given: the "
+"organisation does not allow it, the window has passed, the building has no "
+"connected common door, or you live in several buildings and no unit was "
+"chosen."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_my_home_property_access
+msgid "Les portes que vous pouvez ouvrir, et avec quoi"
+msgstr "The doors you can open, and with what"
+
+#. module: bf_property_access_portal
+#: model:ir.model.fields,help:bf_property_access_portal.field_bf_property_visit__access_pass_state
+msgid ""
+"Lu en élévation : l'hôte n'a pas accès aux accès temporaires eux-mêmes."
+msgstr ""
+"Read with elevated rights: the host has no access to the temporary access "
+"records themselves."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_deliveries_access
+msgid "Lui donner un accès temporaire aux portes communes"
+msgstr "Give them temporary access to the common doors"
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_breadcrumbs_property_access
+msgid "Ma copropriété"
+msgstr "My co-ownership"
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_breadcrumbs_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_my_home_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid "Mes accès"
+msgstr "My access"
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid "Point d'accès"
+msgstr "Access point"
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid "Référence"
+msgstr "Reference"
+
+#. module: bf_property_access_portal
+#: model:ir.model,name:bf_property_access_portal.model_bf_property_access_resident
+msgid "Résident (accès)"
+msgstr "Resident (access)"
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Seul l'hôte donne un accès à son visiteur."
+msgstr "Only the host can give their visitor access."
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Seul un résident de l'immeuble donne un accès à son visiteur."
+msgstr "Only a resident of the building can give their visitor access."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_deliveries_access
+msgid "Seulement si l'organisation gère un stationnement visiteur."
+msgstr "Only if the organisation manages visitor parking."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid "Support"
+msgstr "Credential"
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Un accès se demande au plus 30 jours d'avance."
+msgstr "Access can be requested at most 30 days ahead."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid ""
+"Une carte perdue, un accès qui manque ou qui ne marche pas : écrivez au\n"
+"                    gestionnaire par"
+msgstr ""
+"A lost card, or access that is missing or not working: write to the\n"
+"                    manager through"
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_deliveries_access
+msgid ""
+"Vide : deux heures après l'arrivée prévue. L'organisation fixe un maximum."
+msgstr ""
+"Empty: two hours after the expected arrival. The organisation sets a "
+"maximum."
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Visite annulée par l'hôte."
+msgstr "Visit cancelled by the host."
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Visite annulée."
+msgstr "Visit cancelled."
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Visite modifiée : annoncez de nouveau le visiteur pour un accès."
+msgstr "Visit changed: announce the visitor again to give them access."
+
+#. module: bf_property_access_portal
+#: model:ir.model,name:bf_property_access_portal.model_bf_property_visit
+msgid "Visiteur annoncé"
+msgstr "Announced visitor"
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Visiteur de %(host)s (%(visit)s), demandé au portail."
+msgstr "Visitor of %(host)s (%(visit)s), requested on the portal."
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "Visiteur reparti."
+msgstr "Visitor left."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid "Vos renseignements"
+msgstr "Your information"
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid "une demande"
+msgstr "a request"
+
+#. module: bf_property_access_portal
+#. odoo-python
+#: code:addons/bf_property_access_portal/models/bf_property_visit.py:0
+msgid "« %s » n'attend pas d'accès."
+msgstr "\"%s\" is not awaiting access."
+
+#. module: bf_property_access_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_access_portal.portal_property_access
+msgid "État"
+msgstr "Status"

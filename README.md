@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**280 modules are BUSL-1.1.** The source is published and auditable, and **you
+**285 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -44,6 +44,11 @@ Five modules self-host fonts rather than calling a font CDN, so no visitor IP ev
 | `bf_multi_company_email` | Symbifox — Courriels multi-sociétés | 18.0.5.0.3 | LGPL-3 | Template-driven email signatures per company, quick footer links behind redirectable shortlinks, and a sender address per company |
 | `bf_preferred_name_partner_legal_name` | Symbifox Noms d'usage et pronoms — pont Partner Legal Name | 18.0.1.0.0 | BUSL-1.1 | One legal name on a person's contact: the protected one; the company legal name stays for companies |
 | `bf_preferred_name_signature` | Symbifox Noms d'usage et pronoms — pont Signatures | 18.0.1.0.0 | BUSL-1.1 | The email signature shows the pronouns from the person's contact |
+| `bf_property_access` | Immeubles : accès des résidents | 18.0.1.1.2 | BUSL-1.1 | Who may open which door: a resident's access is added on move-in and removed once a person confirms the move-out, through orders to the devices or the caretaker; temporary access for visitors, contractors and entries into a dwelling |
+| `bf_property_access_portal` | Immeubles : mes accès au portail | 18.0.1.1.3 | BUSL-1.1 | Residents see on the portal the doors they can open, with which credential, and can give a visitor temporary access to the common doors |
+| `bf_property_access_privacy` | Immeubles : accès et vie privée (Loi 25) | 18.0.1.0.2 | BUSL-1.1 | Access control in the Québec Act 25 processing register, declared versus applied retention, and a prefilled privacy impact assessment template |
+| `bf_property_lobby` | Immeubles : portier sur tablette | 18.0.1.0.3 | BUSL-1.1 | A tablet at the entrance: a directory of residents who agree to appear, a call that rings the resident through Symbifox telephony, deliveries announced to the caretaker |
+| `bf_rental_access` | Locatif : accès des locataires | 18.0.1.0.3 | BUSL-1.1 | Lease signatories receive their access when the lease starts; rent end, resiliation or abandonment put their move-out up for confirmation |
 | `bf_sign` | Caveat, Dancing Script, Great Vibes |
 | `bf_lexend` | Lexend |
 | `bf_process` | Lexend |
@@ -504,7 +509,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **280 modules: BUSL-1.1.** Production use for your own internal business
+- **285 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

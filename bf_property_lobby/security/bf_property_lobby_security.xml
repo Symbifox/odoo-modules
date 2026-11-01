@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_lobby_kiosk_company" model="ir.rule">
+        <field name="name">Tablettes : multi-société</field>
+        <field name="model_id" ref="model_bf_property_lobby_kiosk"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_lobby_call_company" model="ir.rule">
+        <field name="name">Appels de la tablette : multi-société</field>
+        <field name="model_id" ref="model_bf_property_lobby_call"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

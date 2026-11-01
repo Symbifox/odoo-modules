@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_access_resident_form_lease" model="ir.ui.view">
+        <field name="name">bf.property.access.resident.form.lease</field>
+        <field name="model">bf.property.access.resident</field>
+        <field name="inherit_id" ref="bf_property_access.view_access_resident_form"/>
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="lease_id" readonly="1" invisible="not lease_id"/>
+            </field>
+        </field>
+    </record>
+    <record id="view_access_resident_list_lease" model="ir.ui.view">
+        <field name="name">bf.property.access.resident.list.lease</field>
+        <field name="model">bf.property.access.resident</field>
+        <field name="inherit_id" ref="bf_property_access.view_access_resident_list"/>
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="lease_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>

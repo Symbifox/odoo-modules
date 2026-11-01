@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_building_form_access" model="ir.ui.view">
+        <field name="name">bf.property.building.form.access</field>
+        <field name="model">bf.property.building</field>
+        <field name="inherit_id" ref="bf_property_core.view_property_building_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Accès" name="access">
+                    <group>
+                        <field name="access_user_id"/>
+                    </group>
+                    <field name="access_point_ids" context="{'default_building_id': id}">
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="point_type"/>
+                            <field name="unit_id" optional="hide"/>
+                            <field name="credential_kind"/>
+                            <field name="connector_id" optional="hide"/>
+                            <field name="user_id"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_property_organisation_form_access" model="ir.ui.view">
+        <field name="name">bf.property.organisation.form.access</field>
+        <field name="model">bf.property.organisation</field>
+        <field name="inherit_id" ref="bf_property_core.view_property_organisation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Accès" name="access">
+                    <group>
+                        <field name="access_log_retention_days"/>
+                        <field name="visitor_pass_enabled"/>
+                        <field name="visitor_pass_max_hours" invisible="not visitor_pass_enabled"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

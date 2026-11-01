@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="portal_my_home_property_access" name="Accès : carte de l'accueil du portail"
+                  inherit_id="portal.portal_my_home" priority="41">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/bf_property_core/static/description/icon.png'"/>
+                    <t t-set="title">Mes accès</t>
+                    <t t-set="text">Les portes que vous pouvez ouvrir, et avec quoi</t>
+                    <t t-set="url" t-value="'/my/property/access'"/>
+                    <t t-set="placeholder_count" t-value="'property_access_count'"/>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="portal_breadcrumbs_property_access" name="Accès : fil d'Ariane"
+                  inherit_id="portal.portal_breadcrumbs" priority="41">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <t t-if="page_name == 'property_access'">
+                    <li class="breadcrumb-item"><a href="/my/property">Ma copropriété</a></li>
+                    <li class="breadcrumb-item active">Mes accès</li>
+                </t>
+            </xpath>
+        </template>
+
+        <!-- Colis et visiteurs : la case de l'accès temporaire et son état. -->
+        <template id="portal_property_deliveries_access" name="Accès : visiteurs"
+                  inherit_id="bf_property_portal.portal_property_deliveries">
+            <xpath expr="//form[@action='/my/property/visitors/new']//button[@type='submit']" position="before">
+                <t t-if="any(syndicats.mapped('visitor_pass_enabled'))">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="bf_access" id="bf_access" value="1"/>
+                    <label class="form-check-label" for="bf_access">
+                        Lui donner un accès temporaire aux portes communes
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="bf_access_until">Accès jusqu'à</label>
+                    <input class="form-control" type="datetime-local" name="bf_access_until" id="bf_access_until"/>
+                    <div class="form-text">Vide : deux heures après l'arrivée prévue. L'organisation fixe un maximum.</div>
+                </div>
+                </t>
+            </xpath>
+            <xpath expr="//div[@t-if=&quot;request.params.get('error') == 'visitor'&quot;]" position="after">
+                <div t-if="request.params.get('error') == 'access'" class="alert alert-warning">
+                    Le visiteur est annoncé, mais l'accès temporaire n'a pas pu être donné : l'organisation ne le
+                    permet pas, la plage est passée, l'immeuble n'a pas de porte commune reliée, ou vous
+                    habitez plusieurs immeubles et la fraction n'est pas choisie.
+                </div>
+            </xpath>
+            <!-- Le socle dit qu'annoncer « n'ouvre aucune porte » : vrai sans ce module,
+                 faux à côté de la case de l'accès temporaire. -->
+            <xpath expr="//form[@action='/my/property/visitors/new']/preceding-sibling::div[@role='note']" position="replace">
+                <div class="alert alert-secondary" role="note">
+                    Annoncer quelqu'un prévient l'organisation. Une porte ne s'ouvre pour lui que si vous
+                    cochez l'accès temporaire : les portes communes, pour la visite seulement. Ce que vous
+                    inscrivez ici concerne une personne qui n'a rien consenti : le journal ne garde que ce
+                    qui sert, et il se purge tout seul.
+                </div>
+            </xpath>
+            <xpath expr="//input[@id='vehicle_plate']" position="attributes">
+                <attribute name="placeholder">Seulement si l'organisation gère un stationnement visiteur.</attribute>
+            </xpath>
+            <xpath expr="//table[@t-if='visits']/thead/tr/th[4]" position="after">
+                <th>Accès</th>
+            </xpath>
+            <xpath expr="//table[@t-if='visits']/tbody/tr/td[4]" position="after">
+                <td><span t-esc="visit.access_pass_state"/></td>
+            </xpath>
+        </template>
+
+        <template id="portal_property_access" name="Mes accès">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Mes accès</t>
+                </t>
+                <h2 class="h4 mt-3 mb-3">Mes accès</h2>
+                <t t-if="not rows">
+                    <div class="alert alert-info" role="status">
+                        Aucun accès à votre nom. Si vous venez d'emménager, il apparaîtra le jour de votre arrivée.
+                    </div>
+                </t>
+                <table t-if="rows" class="table table-sm mb-4">
+                    <thead>
+                        <tr>
+                            <th>Immeuble</th>
+                            <th>Fraction</th>
+                            <th>Point d'accès</th>
+                            <th>Support</th>
+                            <th>Référence</th>
+                            <th>État</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="rows" t-as="row">
+                            <td t-esc="row['building']"/>
+                            <td t-esc="row['unit']"/>
+                            <td t-esc="row['point']"/>
+                            <td t-esc="row['kind']"/>
+                            <td t-esc="row['ref']"/>
+                            <td>
+                                <span t-attf-class="badge #{'text-bg-success' if row['state'] == 'issued' else ('text-bg-warning' if row['state'] == 'to_remove' else 'text-bg-secondary')}"
+                                      t-esc="row['state_label']"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="alert alert-secondary" role="note">
+                    Une carte perdue, un accès qui manque ou qui ne marche pas : écrivez au
+                    gestionnaire par <a href="/my/property/requests">une demande</a>. Aucun code
+                    n'est conservé ici : il vit dans l'appareil. Si vous êtes locataire, la porte de
+                    votre logement ne change pas de mécanisme sans votre consentement (art. 1934 C.c.Q.).
+                </div>
+                <div t-if="privacy_summary" class="card mb-4">
+                    <div class="card-header">Vos renseignements</div>
+                    <div class="card-body" t-out="privacy_summary"/>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_lobby_kiosk_user,bf.property.lobby.kiosk.user,model_bf_property_lobby_kiosk,bf_property_core.group_bf_property_user,1,0,0,0
+access_lobby_kiosk_manager,bf.property.lobby.kiosk.manager,model_bf_property_lobby_kiosk,bf_property_core.group_bf_property_manager,1,1,1,1
+access_lobby_call_user,bf.property.lobby.call.user,model_bf_property_lobby_call,bf_property_core.group_bf_property_user,1,0,0,0
+access_lobby_call_manager,bf.property.lobby.call.manager,model_bf_property_lobby_call,bf_property_core.group_bf_property_manager,1,0,0,1

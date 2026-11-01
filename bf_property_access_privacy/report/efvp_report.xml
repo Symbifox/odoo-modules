@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_access_efvp" model="ir.actions.report">
+        <field name="name">Gabarit d'EFVP : contrôle d'accès</field>
+        <field name="model">bf.property.organisation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_property_access_privacy.report_access_efvp</field>
+        <field name="report_file">bf_property_access_privacy.report_access_efvp</field>
+        <field name="print_report_name">'EFVP - Contrôle d\'accès - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_access_efvp_case">
+        <div style="border: 1px solid #999; min-height: 2.2cm; padding: 4px; margin-bottom: 8px;">
+            <small class="text-muted">À compléter : <t t-esc="consigne"/></small>
+        </div>
+    </template>
+
+    <template id="report_access_efvp">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="v" t-value="doc._efvp_values()"/>
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Évaluation des facteurs relatifs à la vie privée</h2>
+                        <h4>Contrôle d'accès à l'immeuble : <span t-esc="v['org'].name"/></h4>
+                        <p class="text-muted">
+                            Gabarit prérempli le <span t-esc="v['today']" t-options="{'widget': 'date'}"/> à partir
+                            des données de Symbifox. Loi sur la protection des renseignements personnels dans le
+                            secteur privé, art. 3.3 : une évaluation est obligatoire pour tout projet
+                            d'acquisition, de développement ou de refonte d'un système d'information qui
+                            touche des renseignements personnels, et le responsable de la protection des
+                            renseignements personnels doit être consulté dès le début. Les faits ci-dessous
+                            viennent du logiciel ; les cases sont à remplir par l'organisation.
+                        </p>
+
+                        <h5>1. Le projet</h5>
+                        <p>
+                            Tenir, pour chaque immeuble, la liste des personnes qui ont droit à chaque point
+                            d'accès, et transmettre les ajouts et retraits aux appareils ou au responsable de
+                            chaque point. Immeubles visés : <span t-esc="', '.join(v['buildings'].mapped('name')) or 'aucun'"/>.
+                            Résidents présents ou à venir : <span t-esc="v['residents_total']"/>
+                            <t t-if="v['by_origin']">(<t t-foreach="v['by_origin']" t-as="origine"><span t-esc="origine[0]"/> : <span t-esc="origine[1]"/><t t-if="not origine_last">, </t></t>)</t>.
+                        </p>
+                        <table class="table table-sm">
+                            <thead><tr><th>Immeuble</th><th>Point d'accès</th><th>Type</th><th>Support</th><th>Connecteur</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="v['points']" t-as="p">
+                                    <td t-esc="p['building']"/>
+                                    <td><span t-esc="p['name']"/><t t-if="p['unit_door']"> (deux consentements, art. 1934 C.c.Q.)</t></td>
+                                    <td t-esc="p['type']"/>
+                                    <td t-esc="p['kind']"/>
+                                    <td t-esc="p['connector']"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <t t-call="bf_property_access_privacy.report_access_efvp_case"><t t-set="consigne">matériel en place (marque, modèle), qui l'exploite, date de mise en service.</t></t>
+
+                        <h5>2. Renseignements personnels visés</h5>
+                        <ul>
+                            <li>Nom de la personne, immeuble et fraction, dates d'arrivée et de départ.</li>
+                            <li>Points d'accès autorisés, type de support et sa référence (numéro de carte, identifiant d'annuaire).</li>
+                            <li>Origine du droit (propriété, bail, occupant déclaré) et signal de départ tiré du dossier (fin du loyer, résiliation, déguerpissement…).</li>
+                            <li>Motif de fin d'un droit (départ, perte ou vol) et notes libres sur le résident et le point d'accès.</li>
+                            <li>Consentements consignés pour la porte du logement, avec la personne qui les a consignés.</li>
+                            <li>Accès temporaires : nom du visiteur, de l'entrepreneur ou du personnel (des tiers qui n'ont rien consenti), entreprise, plage ; pour une entrée au logement, motif, préavis, accord du locataire et motif d'urgence en texte libre (à rédiger sans renseignement de santé).</li>
+                            <li>Ordres d'ajout et de retrait : qui les a faits, quand.</li>
+                            <li><b>Non recueillis par le logiciel</b> : codes (NIP), données biométriques, journal des passages aux portes.</li>
+                        </ul>
+                        <t t-call="bf_property_access_privacy.report_access_efvp_case"><t t-set="consigne">ce que les appareils eux-mêmes enregistrent (journal des passages, images de la caméra du portier) et où.</t></t>
+                        <t t-foreach="v.get('extras') or []" t-as="extra">
+                            <h5 class="mt-3" t-esc="extra['title']"/>
+                            <ul><li t-foreach="extra['items']" t-as="item" t-esc="item"/></ul>
+                        </t>
+
+                        <h5>3. Finalité et nécessité (art. 4, 5, 9)</h5>
+                        <p>Donner accès à l'immeuble aux personnes qui y habitent et le retirer à leur départ
+                        confirmé. Le contrôle d'accès sert le bail et la sécurité des occupants : il ne repose pas
+                        sur un consentement, mais sur une information préalable (avis « Contrôle d'accès à
+                        l'immeuble » au registre des traitements). Une personne qui refuse un identifiant mobile
+                        reçoit une clé ou une carte.</p>
+                        <t t-call="bf_property_access_privacy.report_access_efvp_case"><t t-set="consigne">pourquoi chaque point d'accès est nécessaire ; moyen moins intrusif envisagé ; comment l'avis est remis à la personne lors de la collecte (bail, affichage, page « Mes accès » du portail).</t></t>
+
+                        <h5>4. Proportionnalité : ce qui est exclu</h5>
+                        <ul>
+                            <li><b>Biométrie</b> : exclue. Loi concernant le cadre juridique des technologies de l'information, art. 44 et 45 (consentement exprès, déclaration préalable à la Commission d'accès à l'information) ; le guide de la Commission sur la biométrie (2022) demande en outre de démontrer qu'aucun moyen moins intrusif ne suffit et d'offrir une solution de rechange, le consentement devant rester libre (LPRPSP, art. 14).</li>
+                            <li><b>Codes</b> : jamais conservés ; ils vivent dans l'appareil.</li>
+                            <li><b>Retrait sur une date</b> : exclu pour un résident. Le bail se reconduit de plein droit (art. 1941 C.c.Q.) ; un retrait suit un départ confirmé par une personne. Un accès temporaire (visiteur, entrepreneur), lui, est retiré à la fin de sa plage.</li>
+                        </ul>
+
+                        <h5>5. Conservation et destruction (art. 23)</h5>
+                        <p>Durée appliquée par l'organisation :
+                            <b><t t-if="v['retention']"><span t-esc="v['retention']"/> jours</t><t t-else="">aucune purge (0)</t></b>,
+                            durée déclarée au registre des traitements : <b><span t-esc="v['declared']"/> jours</b>.
+                            La purge supprime chaque nuit les résidents partis, les droits retirés et les ordres clos plus
+                            vieux que ce délai, ainsi que les accès temporaires terminés ou annulés et, s'il y a une
+                            tablette à l'entrée, son journal d'appels ; elle ne supprime jamais un retrait encore à faire.</p>
+                        <p t-if="v['retention'] != v['declared']" style="color: #a35c00;">
+                            Les deux durées diffèrent : ce qui est déclaré doit être ce qui est fait.
+                        </p>
+                        <t t-call="bf_property_access_privacy.report_access_efvp_case"><t t-set="consigne">justification de la durée retenue ; conservation par les appareils.</t></t>
+
+                        <h5>6. Communication à des tiers et hors Québec (art. 17, 18.3)</h5>
+                        <p t-if="not v['connectors']">Aucun connecteur relié à un appareil : les ordres vont au
+                        responsable de chaque point, à l'interne. Aucune communication à un fabricant par le logiciel.</p>
+                        <p t-if="v['connectors']">Connecteurs déclarés : <span t-esc="', '.join(v['connectors'].mapped('name'))"/>.
+                        Chaque fabricant ou service qui reçoit des renseignements doit être encadré par une entente écrite
+                        (art. 18.3) ; s'il les héberge hors Québec, évaluation préalable et entente (art. 17).</p>
+                        <t t-call="bf_property_access_privacy.report_access_efvp_case"><t t-set="consigne">fournisseurs (logiciel, appareils, nuage), lieu d'hébergement, ententes signées.</t></t>
+
+                        <h5>7. Mesures de sécurité (art. 10)</h5>
+                        <ul>
+                            <li>Accès par rôles : gestionnaire, consultation ; le responsable d'un point ne fait que les ordres de ses points.</li>
+                            <li>Cloisonnement par société ; journal des ordres non modifiable une fois clos.</li>
+                            <li>La serrure ne dépend jamais du logiciel : l'appareil valide seul, une panne retarde un ajout ou un retrait.</li>
+                        </ul>
+                        <t t-call="bf_property_access_privacy.report_access_efvp_case"><t t-set="consigne">mesures propres à l'organisation (comptes, sauvegardes, accès physique aux appareils) ; à vérifier hors du logiciel : les serrures électromagnétiques des issues se déverrouillent sur alarme incendie et panne de courant (CNB-Q 3.4.6.16).</t></t>
+
+                        <h5>8. Droits des personnes</h5>
+                        <p>Le résident voit ses accès au portail et peut en demander la rectification (art. 28). Sur
+                        demande, les renseignements informatisés recueillis auprès de lui, lui sont communiqués dans un format technologique
+                        structuré et couramment utilisé (art. 27, al. 3), ce que l'évaluation doit vérifier (art. 3.3) :
+                        l'export des listes du logiciel le permet.</p>
+
+                        <h5>9. Risques et mesures</h5>
+                        <t t-call="bf_property_access_privacy.report_access_efvp_case"><t t-set="consigne">risques relevés (accès conservé après un départ, carte perdue, fuite de la liste), probabilité, gravité, mesure.</t></t>
+
+                        <h5>10. Consultation et approbation</h5>
+                        <t t-call="bf_property_access_privacy.report_access_efvp_case"><t t-set="consigne">responsable de la protection des renseignements personnels consulté (nom, date) ; décision ; date de révision.</t></t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

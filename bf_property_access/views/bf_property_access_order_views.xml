@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_access_order_list" model="ir.ui.view">
+        <field name="name">bf.property.access.order.list</field>
+        <field name="model">bf.property.access.order</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-warning="state in ('waiting', 'failed')"
+                  decoration-muted="state in ('done', 'cancelled')">
+                <field name="create_date" string="Créé le" options="{'show_seconds': false}"/>
+                <field name="summary"/>
+                <field name="building_id" optional="show"/>
+                <field name="attempts" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="done_by_id" optional="show"/>
+                <field name="date_done" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_access_order_form" model="ir.ui.view">
+        <field name="name">bf.property.access.order.form</field>
+        <field name="model">bf.property.access.order</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_done" type="object" string="Fait" class="btn-primary"
+                            invisible="state not in ('waiting', 'failed', 'pending')"/>
+                    <button name="action_retry" type="object" string="Renvoyer à l'appareil"
+                            invisible="state not in ('waiting', 'failed')"
+                            groups="bf_property_core.group_bf_property_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,waiting,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="summary"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="action"/>
+                            <field name="grant_id"/>
+                            <field name="point_id"/>
+                            <field name="external_ref" readonly="state in ('done', 'cancelled')"/>
+                        </group>
+                        <group>
+                            <field name="attempts"/>
+                            <field name="done_by_id" invisible="not done_by_id"/>
+                            <field name="date_done" invisible="not date_done"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <separator string="Dernier message" invisible="not last_message"/>
+                    <field name="last_message" readonly="1" nolabel="1" invisible="not last_message"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_access_order_search" model="ir.ui.view">
+        <field name="name">bf.property.access.order.search</field>
+        <field name="model">bf.property.access.order</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="point_id"/>
+                <field name="building_id"/>
+                <filter name="todo" string="À faire" domain="[('state', 'in', ('pending', 'waiting', 'failed'))]"/>
+                <filter name="mine" string="Mes points" domain="[('point_id.user_id', '=', uid)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_point" string="Point d'accès" context="{'group_by': 'point_id'}"/>
+                    <filter name="group_action" string="Action" context="{'group_by': 'action'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_access_order" model="ir.actions.act_window">
+        <field name="name">Ordres à faire</field>
+        <field name="res_model">bf.property.access.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_todo': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien à faire</p>
+            <p>Chaque arrivée et chaque départ confirmé produisent un ordre par point d'accès :
+               ajouter ou retirer la personne. Sans connecteur, l'ordre arrive en activité au
+               responsable du point.</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,95 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_rental_access
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 05:04+0000\n"
+"PO-Revision-Date: 2026-11-01 05:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_rental_access
+#: model:ir.model.fields,field_description:bf_rental_access.field_bf_property_access_resident__lease_id
+msgid "Bail"
+msgstr ""
+
+#. module: bf_rental_access
+#: model:ir.model,name:bf_rental_access.model_bf_rental_lease
+msgid "Bail de logement"
+msgstr ""
+
+#. module: bf_rental_access
+#: model:ir.model.fields,help:bf_rental_access.field_bf_property_access_resident__origin
+msgid ""
+"D'où vient le droit. Les origines tirées du dossier (propriété, fraction, "
+"bail) sont suivies chaque jour ; un occupant déclaré ne l'est pas : son "
+"départ se déclare à la main."
+msgstr ""
+
+#. module: bf_rental_access
+#: model:ir.model,name:bf_rental_access.model_bf_rental_abandonment
+msgid "Départ du locataire sans préavis"
+msgstr ""
+
+#. module: bf_rental_access
+#. odoo-python
+#: code:addons/bf_rental_access/models/bf_property_access_resident.py:0
+msgid "Départ sans préavis constaté le %s."
+msgstr ""
+
+#. module: bf_rental_access
+#. odoo-python
+#: code:addons/bf_rental_access/models/bf_property_access_resident.py:0
+msgid "La personne n'est plus signataire du bail %s."
+msgstr ""
+
+#. module: bf_rental_access
+#. odoo-python
+#: code:addons/bf_rental_access/models/bf_property_access_resident.py:0
+msgid "Le bail %s est archivé."
+msgstr ""
+
+#. module: bf_rental_access
+#: model:ir.model.fields,help:bf_rental_access.field_bf_property_access_resident__lease_id
+msgid "Le bail qui fonde le droit, le plus récent quand il y en a plusieurs."
+msgstr ""
+
+#. module: bf_rental_access
+#. odoo-python
+#: code:addons/bf_rental_access/models/bf_property_access_resident.py:0
+msgid "Le loyer n'est dû que jusqu'au %s."
+msgstr ""
+
+#. module: bf_rental_access
+#: model:ir.model.fields,field_description:bf_rental_access.field_bf_property_access_resident__origin
+msgid "Origine"
+msgstr ""
+
+#. module: bf_rental_access
+#: model:ir.model,name:bf_rental_access.model_bf_property_access_resident
+msgid "Résident (accès)"
+msgstr ""
+
+#. module: bf_rental_access
+#. odoo-python
+#: code:addons/bf_rental_access/models/bf_property_access_resident.py:0
+msgid "Résiliation par le locataire effective le %s."
+msgstr ""
+
+#. module: bf_rental_access
+#: model:ir.model.fields.selection,name:bf_rental_access.selection__bf_property_access_resident__origin__lease
+msgid "Signataire du bail"
+msgstr ""
+
+#. module: bf_rental_access
+#. odoo-python
+#: code:addons/bf_rental_access/models/bf_property_access_resident.py:0
+msgid "Un bail plus récent (%(ref)s) a commencé sur ce logement le %(date)s."
+msgstr ""

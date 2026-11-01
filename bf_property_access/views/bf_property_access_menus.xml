@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_access_root" name="Accès" parent="bf_property_core.menu_property_root" sequence="35"/>
+    <menuitem id="menu_access_departure_pending" name="Départs à confirmer" parent="menu_access_root"
+              action="action_access_departure_pending" sequence="10"/>
+    <menuitem id="menu_access_order" name="Ordres à faire" parent="menu_access_root"
+              action="action_access_order" sequence="20"/>
+    <menuitem id="menu_access_resident" name="Résidents" parent="menu_access_root"
+              action="action_access_resident" sequence="30"/>
+    <menuitem id="menu_access_grant" name="Droits" parent="menu_access_root"
+              action="action_access_grant" sequence="40"/>
+    <menuitem id="menu_access_point" name="Points d'accès" parent="menu_access_root"
+              action="action_access_point" sequence="50"/>
+    <menuitem id="menu_access_connector" name="Connecteurs" parent="menu_access_root"
+              action="action_access_connector" sequence="60"
+              groups="bf_property_core.group_bf_property_manager"/>
+</odoo>

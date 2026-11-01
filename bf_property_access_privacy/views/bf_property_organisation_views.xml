@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_organisation_form_access_privacy" model="ir.ui.view">
+        <field name="name">bf.property.organisation.form.access.privacy</field>
+        <field name="model">bf.property.organisation</field>
+        <field name="inherit_id" ref="bf_property_access.view_property_organisation_form_access"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='access']/group" position="after">
+                <group string="Conservation des accès aux portes : droits, ordres, accès temporaires (Loi 25)">
+                    <div class="alert alert-warning" role="alert" colspan="2"
+                         invisible="not access_retention_warning">
+                        <field name="access_retention_warning" readonly="1" nolabel="1"/>
+                    </div>
+                    <field name="access_retention_declared" readonly="1"/>
+                </group>
+                <button name="action_print_access_efvp" type="object" icon="fa-file-text-o"
+                        string="Gabarit d'EFVP (contrôle d'accès)" class="btn-secondary"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

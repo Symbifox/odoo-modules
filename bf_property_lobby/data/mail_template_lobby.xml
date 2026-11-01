@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Option de la tablette « Aussi par courriel » : le responsable reçoit, EN
+         PLUS de l'activité, un courriel à chaque livraison ou appel (une fois par
+         activité nouvelle, pas à chaque pression). Le logement, jamais le nom.
+         Mise en page de marque (bf_mail_layout), comme les autres courriels. -->
+    <record id="mail_template_lobby_notify" model="mail.template">
+        <field name="name">Portier sur tablette : avis au responsable</field>
+        <field name="model_id" ref="model_bf_property_lobby_kiosk"/>
+        <field name="subject">{{ ctx.get('lobby_summary') }}</field>
+        <field name="email_from">{{ object.company_id.email_formatted or user.company_id.email_formatted }}</field>
+        <field name="email_to">{{ object.user_id.email_formatted }}</field>
+        <field name="lang">{{ object.user_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html" type="html">
+<t t-set="company" t-value="object.company_id or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'"/>
+<div style="margin:0;padding:0;">
+    <p style="margin:0 0 16px 0;font-size:15px;"><t t-out="ctx.get('lobby_summary') or ''"/></p>
+    <p style="margin:0 0 16px 0;font-size:15px;"><t t-out="object.building_id.name or ''"/></p>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px 0;">
+        <tbody>
+            <tr>
+                <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                    <a t-att-href="ctx.get('lobby_link')" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">Ouvrir dans Odoo</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="margin:0;font-size:13px;color:#6B7280;">Vous recevez ce courriel parce que cette tablette prévient aussi par courriel. Le gestionnaire le règle sur la fiche de la tablette.</p>
+</div>
+        </field>
+    </record>
+</odoo>

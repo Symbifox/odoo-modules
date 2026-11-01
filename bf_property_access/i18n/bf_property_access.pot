@@ -1,0 +1,2100 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_access
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 05:04+0000\n"
+"PO-Revision-Date: 2026-11-01 05:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid " Pour des travaux sur plusieurs jours, créez un accès par jour."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid "%(who)s (fraction %(unit)s)"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid ""
+"%s Attention : un retrait est encore ouvert pour cette personne à ce point ;"
+" faites-le AVANT cet ajout."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid ""
+"%s confirme que la personne habite toujours les lieux. Elle devient "
+"occupante déclarée : son départ se déclarera à la main."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "%s est déjà arrivé."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "%s n'a pas de départ à confirmer."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_point.py:0
+msgid ""
+"%s n'a pas l'accès Immobilier / Consultation : il ne pourrait pas ouvrir les"
+" ordres qui lui seront confiés."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "%s n'est pas en brouillon."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_building.py:0
+msgid ""
+"%s n'est pas gestionnaire Immobilier : il recevrait des départs à confirmer "
+"qu'il ne peut pas confirmer."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "%s n'est pas présent : rien à confirmer."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "%s n'est pas à venir."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "%s n'ouvre aucun point d'accès."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid ""
+"%s sert une fraction : seule une entrée dans ce logement y donne accès."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid ""
+"%s vient du dossier (bail, propriété) : c'est le dossier qu'il faut "
+"corriger, la synchronisation annulera l'arrivée."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+msgid "<strong>Départ à confirmer.</strong>"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__accompanied_by
+msgid "Accompagné par"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__tenant_agreement_note
+msgid "Accord consigné (qui, quand, comment)"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__tenant_agreed_outside_hours
+msgid "Accord du locataire hors des heures"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.ui.menu,name:bf_property_access.menu_access_root
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_property_building_form_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_property_organisation_form_access
+msgid "Accès"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.actions.server,name:bf_property_access.cron_access_purge_ir_actions_server
+msgid "Accès : purger le journal (Loi 25)"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.actions.server,name:bf_property_access.cron_access_pass_expire_ir_actions_server
+msgid "Accès : retirer les accès temporaires échus"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.actions.server,name:bf_property_access.cron_access_sync_ir_actions_server
+msgid "Accès : résidents d'après le dossier, ordres à envoyer"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model,name:bf_property_access.model_bf_property_access_pass
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__pass_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__pass_id
+msgid "Accès temporaire"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.actions.act_window,name:bf_property_access.action_access_pass
+#: model:ir.ui.menu,name:bf_property_access.menu_access_pass
+msgid "Accès temporaires"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_resident__state__active
+msgid "Actif"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__action
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_order_search
+msgid "Action"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__message_needaction
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__message_needaction
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__message_needaction
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__message_needaction
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__active
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__activity_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__activity_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__activity_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model,name:bf_property_access.model_mail_activity
+msgid "Activity"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__activity_state
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__activity_state
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__activity_state
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__activity_type_icon
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__activity_type_icon
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__activity_type_icon
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/mail_activity.py:0
+msgid ""
+"Activité fermée par %s, qui ne peut pas faire cet ordre : remise au "
+"responsable actuel du point."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__hand_over_activity_id
+msgid "Activité remise"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_connector_form
+msgid "Adresse de l'appareil, licence, contact du fournisseur…"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_order__action__add
+msgid "Ajouter"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid "Ajouter %(who)s à %(point)s : %(kind)s"
+msgstr ""
+
+#. module: bf_property_access
+#: model:mail.activity.type,summary:bf_property_access.mail_activity_access_order
+msgid "Ajouter ou retirer un accès"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_form
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_bf_property_access_departure_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+msgid "Annuler l'arrivée"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__state__cancelled
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_order__state__cancelled
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__state__cancelled
+msgid "Annulé"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_resident__state__cancelled
+msgid "Annulé (jamais arrivé)"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Annulé avant l'arrivée : %s"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "Annulé par %s."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_organisation__access_log_retention_days
+msgid ""
+"Après ce délai, les ordres clos et les résidents partis (avec leurs droits) "
+"sont supprimés. 0 = jamais : à justifier dans l'évaluation des facteurs "
+"relatifs à la vie privée."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_connector__max_attempts
+msgid ""
+"Après ce nombre d'échecs, l'ordre devient une activité au responsable du "
+"point d'accès, qui le fait à la main."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_point_form
+msgid "Archivé"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_point_search
+msgid "Archivés"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__date_arrival
+msgid "Arrivée"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Arrivée : accès à émettre."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Arrivée annulée par %s."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+msgid "Arrivée maintenant"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__evacuation_over_week
+msgid "Art. 1922 : avis de 3 mois."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__works_major
+msgid "Art. 1922 : avis écrit de 10 jours."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__point_type__elevator
+msgid "Ascenseur"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__date_to
+msgid "Au"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_organisation__visitor_pass_enabled
+msgid ""
+"Au portail, en annonçant un visiteur : les portes communes de l'immeuble, "
+"pour la plage de la visite seulement."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.actions.act_window,help:bf_property_access.action_access_pass
+msgid "Aucun accès temporaire"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.actions.act_window,help:bf_property_access.action_access_departure_pending
+msgid "Aucun départ à confirmer"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.actions.act_window,help:bf_property_access.action_access_resident
+msgid "Aucun résident"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__end_reason__other
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__point_type__other
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_resident__origin__other
+msgid "Autre"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__tenant_notice_received_on
+msgid "Avis du locataire reçu le"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__point_type__parcel
+msgid "Boîte à colis"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__credential_kind__card
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__credential_kind__card
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__credential_kind__card
+msgid "Carte ou porte-clés"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_point.py:0
+msgid ""
+"Ce point d'accès a encore des droits en vigueur ou à retirer : archivez-le, "
+"les retraits seront ordonnés."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__departure_signal
+msgid "Ce que le dossier dit, sans rien décider."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_point__credential_kind
+msgid ""
+"Ce que le résident reçoit pour ce point. Aucun code ni secret n'est conservé"
+" ici : seulement une référence (numéro de carte, identifiant d'annuaire)."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid "Cet ordre est déjà clos."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Cette personne est déjà résidente de ce logement."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.actions.act_window,help:bf_property_access.action_access_order
+msgid ""
+"Chaque arrivée et chaque départ confirmé produisent un ordre par point d'accès :\n"
+"               ajouter ou retirer la personne. Sans connecteur, l'ordre arrive en activité au\n"
+"               responsable du point."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.actions.act_window,help:bf_property_access.action_access_point
+msgid ""
+"Chaque point d'accès dit à qui il sert (tout l'immeuble ou une fraction),\n"
+"               ce que le résident reçoit, et qui fait les ajouts et retraits à la main\n"
+"               tant qu'aucun connecteur ne relie l'appareil."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__credential_kind__physical_key
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__credential_kind__physical_key
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__credential_kind__physical_key
+msgid "Clé physique"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_departure__date_keys
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__date_departure
+msgid "Clés remises le"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__credential_kind__pin
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__credential_kind__pin
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__credential_kind__pin
+msgid "Code (NIP)"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_form
+msgid "Confirmer"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+#: model:mail.activity.type,summary:bf_property_access.mail_activity_departure
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_bf_property_access_departure_form
+msgid "Confirmer le départ"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model,name:bf_property_access.model_bf_property_access_departure
+msgid "Confirmer le départ d'un résident"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Confirmer le départ de %s"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__state__confirmed
+msgid "Confirmé"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "Confirmé : accès du %(start)s au %(end)s."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__connector_id
+msgid "Connecteur"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model,name:bf_property_access.model_bf_property_access_connector
+msgid "Connecteur d'accès"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.actions.act_window,name:bf_property_access.action_access_connector
+#: model:ir.ui.menu,name:bf_property_access.menu_access_connector
+msgid "Connecteurs"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__consent_tenant_date
+msgid "Consentement du locataire"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_form
+msgid "Consentement du locataire reçu"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__consent_landlord_date
+msgid "Consentement du locateur"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_form
+msgid "Consentement du locateur reçu"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_organisation__access_log_retention_days
+msgid "Conservation du journal des accès (jours)"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__consent_tenant_user_id
+msgid "Consigné par (locataire)"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__consent_landlord_user_id
+msgid "Consigné par (locateur)"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__partner_id
+msgid "Contact"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_resident__origin__owner
+msgid "Copropriétaire occupant"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__create_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_departure__create_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__create_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__create_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__create_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__create_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__create_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_departure__create_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__create_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__create_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__create_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__create_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_order_list
+msgid "Créé le"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__origin
+msgid ""
+"D'où vient le droit. Les origines tirées du dossier (propriété, fraction, "
+"bail) sont suivies chaque jour ; un occupant déclaré ne l'est pas : son "
+"départ se déclare à la main."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__date_departure
+msgid ""
+"Date du départ confirmée par une personne. C'est elle, et non la fin du "
+"bail, qui retire les accès."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__last_message
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_order_form
+msgid "Dernier message"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__display_name
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_departure__display_name
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__display_name
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__display_name
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__display_name
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__display_name
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "Donner à %(who)s accès à %(point)s : %(kind)s, du %(start)s au %(end)s"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__stale_source_noted
+msgid "Dossier à mettre à jour"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__grant_id
+msgid "Droit"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model,name:bf_property_access.model_bf_property_access_grant
+msgid "Droit d'accès"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.actions.act_window,name:bf_property_access.action_access_grant
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__grant_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__grant_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__grant_ids
+#: model:ir.ui.menu,name:bf_property_access.menu_access_grant
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_form
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_point_form
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+msgid "Droits"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_point.py:0
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Droits : %s"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__grant_count
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__live_grant_count
+msgid "Droits en vigueur"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__date_from
+msgid "Du"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_organisation__visitor_pass_max_hours
+msgid "Durée maximale d'un accès de visiteur (heures)"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+msgid "Déclarer le départ"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.actions.act_window,help:bf_property_access.action_access_point
+msgid "Déclarer une porte, un portier ou une boîte à colis"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+msgid "Déclaré perdu ou volé par %s."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__end_reason__departure
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_list
+msgid "Départ"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Départ confirmé, clés remises le %s : accès à retirer."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+msgid ""
+"Départ confirmé, mais le dossier désigne encore cette personne comme occupante.\n"
+"                        Ses accès ne seront pas réémis : mettez le dossier à jour, ou déclarez un retour."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_resident__state__departure_pending
+#: model:mail.activity.type,name:bf_property_access.mail_activity_departure
+msgid "Départ à confirmer"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid ""
+"Départ à confirmer : %s Les accès restent en place tant que la date des clés"
+" remises n'est pas saisie."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.actions.act_window,name:bf_property_access.action_access_departure_pending
+#: model:ir.ui.menu,name:bf_property_access.menu_access_departure_pending
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_search
+msgid "Départs à confirmer"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__state__awaiting_consent
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_search
+msgid "En attente des consentements"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_search
+msgid "En cours ou à venir"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_search
+msgid "En vigueur ou à faire"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__kind__contractor
+msgid "Entrepreneur ou ouvrier"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__holder_company
+msgid "Entreprise"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__kind__unit_entry
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_form
+msgid "Entrée au logement"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_form
+msgid ""
+"Entrée au logement : préavis de 24 heures pour une vérification, des travaux ou la\n"
+"                        visite d'un acquéreur éventuel (art. 1931 C.c.Q.). Sans préavis : l'urgence, motivée\n"
+"                        par écrit ; la visite d'un locataire éventuel après l'avis de non-reconduction ou de\n"
+"                        résiliation du locataire (art. 1930) ; un logement inoccupé. Le locataire peut\n"
+"                        refuser une visite ou une vérification avant 9 h ou après 21 h (art. 1932), et des\n"
+"                        travaux avant 7 h ou après 19 h (art. 1933), à l'heure de l'immeuble. Travaux\n"
+"                        majeurs : avis écrit de 10 jours, ou de 3 mois si l'évacuation dépasse une semaine\n"
+"                        (art. 1922)."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__point_type__entrance
+msgid "Entrée commune (portier)"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__credential_kind__directory
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__credential_kind__directory
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__credential_kind__directory
+msgid "Entrée d'annuaire (interphone)"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_search
+msgid "Entrées au logement"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__attempts
+msgid "Essais"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__max_attempts
+msgid "Essais avant de passer la main"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__requires_double_consent
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__requires_double_consent
+msgid "Exige deux consentements"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__partner_id
+msgid "Facultatif : un entrepreneur déjà au carnet."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_order__state__done
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_order_form
+msgid "Fait"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__date_done
+msgid "Fait le"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__done_by_id
+msgid "Fait par"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__end_reason
+msgid "Fin"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_grant__activity_type_icon
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_order__activity_type_icon
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__activity_type_icon
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__unit_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__unit_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__unit_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__unit_id
+msgid "Fraction"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__point_type__garage
+msgid "Garage"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__has_message
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__has_message
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__has_message
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__has_message
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid ""
+"Hors urgence, le locateur donne un préavis de 24 heures (art. 1931 C.c.Q.) :"
+" indiquez quand il l'a été."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_departure__id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_grant__activity_exception_icon
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_order__activity_exception_icon
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__activity_exception_icon
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__credential_kind__mobile
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__credential_kind__mobile
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__credential_kind__mobile
+msgid "Identifiant mobile"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_grant__message_needaction
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_order__message_needaction
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__message_needaction
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_point__message_needaction
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_grant__message_has_error
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_order__message_has_error
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__message_has_error
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_point__message_has_error
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+msgid "Il ne part pas"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model,name:bf_property_access.model_bf_property_building
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__building_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__building_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__building_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__building_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__building_id
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_search
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_point_search
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_search
+msgid "Immeuble"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_order__hand_over_activity_id
+msgid ""
+"L'activité que le module a remise au responsable. Seule elle, marquée faite "
+"par la personne à qui elle est assignée, fait foi."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "L'urgence dispense du préavis, et se motive : écrivez pourquoi."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "L'état d'un accès temporaire change par ses boutons."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+msgid ""
+"L'état d'un droit, ses consentements, son résident et son point changent par"
+" ses ordres et ses boutons."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid ""
+"L'état d'un résident change par les boutons « Arrivée maintenant », « "
+"Confirmer le départ » et « Il ne part pas »."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid ""
+"La date des clés remises ne peut pas être future : on confirme un départ, on"
+" ne le prévoit pas."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_point.py:0
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "La fraction %(unit)s n'est pas dans l'immeuble %(building)s."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "La fraction n'est pas dans l'immeuble."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+msgid ""
+"La personne habite toujours les lieux ? Elle deviendra occupante déclarée : "
+"son départ se déclarera à la main."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "La personne n'apparaît plus au dossier comme occupante."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid ""
+"La personne n'est plus copropriétaire de la fraction, ou la fraction est "
+"maintenant louée."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid ""
+"La personne n'est plus l'occupant inscrit à la fraction, ou la fraction "
+"n'est plus marquée louée."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "La plage de %s est déjà passée."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__write_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_departure__write_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__write_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__write_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__write_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__write_uid
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__write_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_departure__write_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__write_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__write_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__write_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__write_date
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_connector.py:0
+msgid "Le connecteur %(name)s (type %(kind)s) n'a pas d'envoi."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid "Le connecteur a échoué %(n)s fois : %(msg)s"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Le dossier désigne de nouveau cette personne comme occupante."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid ""
+"Le départ de %(who)s est confirmé (clés remises le %(date)s), mais le "
+"dossier la désigne encore comme occupante. Ses accès ne seront pas réémis. "
+"Mettez le dossier à jour (bail, registre), ou déclarez un retour à la main."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__stale_source_noted
+msgid ""
+"Le départ est confirmé, mais le dossier désigne encore la personne comme "
+"occupante (p. ex. cotitulaire resté au bail). Les accès ne sont pas réémis :"
+" un retour se déclare à la main."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_departure__date_keys
+msgid ""
+"Le jour où la personne a rendu les clés ou quitté les lieux, constaté. Pas "
+"une date prévue."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__tenant_agreed_outside_hours
+msgid ""
+"Le locataire peut refuser avant 9 h ou après 21 h (visite, vérification) et "
+"avant 7 h ou après 19 h (travaux) : son accord se consigne."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid ""
+"Le locataire peut refuser cette entrée hors de %(first)d h à %(last)d h, "
+"heure de l'immeuble (art. %(article)s C.c.Q.) : consignez son accord, ou "
+"changez la plage."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__accompanied_by
+msgid ""
+"Le locataire peut refuser une visite si le locateur ou son représentant ne "
+"peut être présent (art. 1932 al. 2)."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid ""
+"Le logement n'est pas inoccupé : quelqu'un y réside. Choisissez le motif de "
+"l'entrée."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__holder_name
+msgid "Le nom suffit : un visiteur n'a rien consenti, et la trace se purge."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "Le préavis se consigne une fois donné, pas d'avance."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid "Le rappel de cet ordre avait été supprimé sans que l'ordre soit fait."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+msgid ""
+"Le support d'un droit émis ne change pas : retirez-le et émettez-en un "
+"autre."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+msgid "Le titulaire n'est plus présent."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_bf_property_access_departure_form
+msgid ""
+"Les accès de ces personnes seront retirés : un ordre de retrait par\n"
+"                    droit, aux appareils ou au responsable de chaque point. Les autres\n"
+"                    occupants du logement gardent les leurs."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+msgid ""
+"Les accès restent en place : ils ne seront retirés qu'une fois la date des clés\n"
+"                        remises saisie. Le bail se reconduit de plein droit (art. 1941 C.c.Q.) et seul le\n"
+"                        tribunal expulse qui reste dans les lieux (art. 1889)."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Les clés ne peuvent pas être remises avant l'arrivée."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "Les points d'accès sont ceux de l'immeuble."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_organisation__visitor_pass_enabled
+msgid "Les résidents donnent un accès temporaire à leurs visiteurs"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.actions.act_window,help:bf_property_access.action_access_resident
+msgid ""
+"Les résidents viennent du dossier (copropriétaires qui occupent leur fraction,\n"
+"               occupants, signataires de bail) chaque nuit, ou du bouton « Synchroniser avec le\n"
+"               dossier ». Un conjoint ou un enfant majeur qui n'a rien signé se déclare ici."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__point_type__common_room
+msgid "Local commun"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__entry_reason__vacant
+msgid "Logement inoccupé"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_connector__kind__manual
+msgid "Manuel : activité au responsable"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_order_search
+msgid "Mes points"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__message_has_error
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__message_has_error
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__message_has_error
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__message_has_error
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__message_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__message_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__message_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__message_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Mettre le dossier à jour : %s"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__notice_method
+msgid "Mode du préavis"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_point_form
+msgid "Modèle, emplacement, particularités…"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__entry_reason
+msgid "Motif de l'entrée"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__urgent_reason
+msgid "Motif de l'urgence"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__kind
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_search
+msgid "Nature"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__activity_summary
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__activity_summary
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__activity_summary
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__activity_type_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__activity_type_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__activity_type_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__name
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__name
+msgid "Nom"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__order_count
+msgid "Nombre d'ordres"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__note
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__note
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__note
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__note
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_form
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_form
+msgid "Note"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_grant__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_order__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_point__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_grant__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_order__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_point__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_grant__external_ref
+msgid "Numéro de carte, identifiant d'annuaire. Jamais un code."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_resident__origin__occupant
+msgid "Occupant de la fraction"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_resident__origin__declared
+msgid "Occupant déclaré"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_search
+msgid "Occupants déclarés"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__summary
+msgid "Ordre"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model,name:bf_property_access.model_bf_property_access_order
+#: model:mail.activity.type,name:bf_property_access.mail_activity_access_order
+msgid "Ordre d'accès"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__order_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_form
+msgid "Ordres"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.actions.act_window,name:bf_property_access.action_access_order
+#: model:ir.ui.menu,name:bf_property_access.menu_access_order
+msgid "Ordres à faire"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__organisation_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__organisation_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__organisation_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__organisation_id
+msgid "Organisation"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model,name:bf_property_access.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__origin
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_search
+msgid "Origine"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_resident__state__left
+msgid "Parti"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_search
+msgid "Partis ou annulés"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__end_reason__lost
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_form
+msgid "Perdu ou volé"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__partner_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__partner_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__partner_id
+msgid "Personne"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__kind__staff
+msgid "Personnel"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__end_reason__expired
+msgid "Plage échue"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "Plage échue : retrait ordonné."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model,name:bf_property_access.model_bf_property_access_point
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__point_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__point_id
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_search
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_order_search
+msgid "Point d'accès"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid "Point sans connecteur : à faire à la main."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.actions.act_window,name:bf_property_access.action_access_point
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__point_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_building__access_point_ids
+#: model:ir.ui.menu,name:bf_property_access.menu_access_point
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_form
+msgid "Points d'accès"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_point__point_type__unit_door
+msgid "Porte de logement"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_form
+msgid ""
+"Porte de logement : aucun mécanisme restreignant l'accès au logement ne se pose ni\n"
+"                        ne se change sans le consentement du locateur et du locataire (art. 1934 C.c.Q.).\n"
+"                        Aucun ordre ne part avant les deux."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_grant__requires_double_consent
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_point__requires_double_consent
+msgid ""
+"Porte de logement : aucun mécanisme restreignant l'accès au logement ne se "
+"pose ni ne se change sans le consentement du locateur et du locataire (art. "
+"1934 C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+msgid ""
+"Porte de logement : consentement du locateur et du locataire avant tout "
+"ordre (art. 1934 C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid ""
+"Préavis de 24 heures (art. 1931 C.c.Q.) : donné le %(notice)s, l'entrée est "
+"prévue le %(start)s."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__notice_given_on
+msgid "Préavis donné le"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_search
+msgid "Présents"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.actions.act_window,help:bf_property_access.action_access_departure_pending
+msgid ""
+"Quand le dossier cesse de désigner quelqu'un comme occupant (propriété cédée, loyer\n"
+"               dû jusqu'au atteint, résiliation, déguerpissement), la personne apparaît ici. Ses\n"
+"               accès ne sont retirés qu'une fois la date des clés remises confirmée."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__rating_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__rating_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__rating_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__rating_ids
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+msgid "Recueillir les consentements : %s"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_search
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_order_search
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_search
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_point_search
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_order_form
+msgid "Renvoyer à l'appareil"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__user_id
+msgid "Responsable"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_building__access_user_id
+msgid "Responsable des accès"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__activity_user_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__activity_user_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__activity_user_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_order__action__remove
+msgid "Retirer"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid "Retirer %(who)s de %(point)s : %(kind)s"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_form
+msgid "Retirer ce support tout de suite et en émettre un nouveau ?"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "Retirer l'accès temporaire de %(who)s à %(point)s : %(kind)s"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__state__removed
+msgid "Retiré"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+msgid "Retrait demandé avant que l'ajout soit fait."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_building__access_user_id
+msgid ""
+"Reçoit les activités « départ à confirmer » des résidents de l'immeuble. Les"
+" ordres aux appareils vont, eux, au responsable de chaque point d'accès. "
+"Vide : le responsable du premier point d'accès de l'immeuble."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_point__user_id
+msgid ""
+"Reçoit les ordres à faire à la main (connecteur manuel, ou connecteur en "
+"échec)."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.actions.act_window,help:bf_property_access.action_access_order
+msgid "Rien à faire"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__external_ref
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__external_ref
+msgid "Référence"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+#: code:addons/bf_property_access/wizard/bf_property_access_departure.py:0
+msgid "Réservé aux gestionnaires."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__resident_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__resident_id
+msgid "Résident"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model,name:bf_property_access.model_bf_property_access_resident
+msgid "Résident (accès)"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.actions.act_window,name:bf_property_access.action_access_resident
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_departure__resident_ids
+#: model:ir.ui.menu,name:bf_property_access.menu_access_resident
+msgid "Résidents"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Résidents mis à jour d'après le dossier."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid ""
+"Sans accompagnement du locateur ou de son représentant, le locataire peut "
+"refuser la visite (art. 1932 al. 2 C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_point_search
+msgid "Sans connecteur (manuel)"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid "Seul le responsable du point ou un gestionnaire marque cet ordre fait."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+msgid "Seul un droit émis ou à émettre se déclare perdu."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__departure_signal
+msgid "Signal de départ"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid "Signal de départ levé : %s"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__departure_signal_date
+msgid "Signalé le"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__company_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__company_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__company_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__company_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__company_id
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_resident__origin__subtenant
+msgid "Sous-locataire"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_grant__activity_state
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_order__activity_state
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__activity_state
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__credential_kind
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__credential_kind
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__credential_kind
+msgid "Support"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_list
+msgid "Synchroniser"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_form
+msgid "Terminer maintenant"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__state__ended
+msgid "Terminé"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "Terminé à la main par %s."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__holder_label
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__holder_name
+msgid "Titulaire"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__entry_reason__works
+msgid "Travaux"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__works_major
+msgid "Travaux majeurs"
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid ""
+"Travaux majeurs : avis écrit de %(days)d jours avant le début (art. 1922 "
+"C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_connector__kind
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_point__point_type
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_point_search
+msgid "Type"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_grant__activity_exception_decoration
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_order__activity_exception_decoration
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__activity_exception_decoration
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid ""
+"Un accès confirmé ne se modifie plus : annulez-le et créez-en un autre."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.constraint,message:bf_property_access.constraint_bf_property_access_pass_window
+msgid "Un accès temporaire finit après avoir commencé."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+msgid ""
+"Un droit ne change ni de résident ni de point d'accès : retirez-le et créez-"
+"en un autre."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_grant.py:0
+msgid "Un droit porte soit un résident, soit un accès temporaire, et un seul."
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.actions.act_window,help:bf_property_access.action_access_pass
+msgid ""
+"Un entrepreneur pour l'après-midi, un visiteur annoncé, l'entrée dans un logement pour\n"
+"               des travaux : l'accès est posé pour la plage et retiré à la fin, tout seul."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid ""
+"Un ordre change par ses boutons ; seule sa référence s'écrit à la main."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_order.py:0
+msgid "Un ordre clos ne se modifie plus : il fait partie du journal."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_resident.py:0
+msgid ""
+"Un résident qui a déjà des droits ne change ni de personne ni de logement : "
+"confirmez son départ et créez-en un autre."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "Une entrée au logement donne son motif."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_pass.py:0
+msgid "Une entrée au logement nomme le logement."
+msgstr ""
+
+#. module: bf_property_access
+#. odoo-python
+#: code:addons/bf_property_access/models/bf_property_access_point.py:0
+msgid "Une porte de logement se rattache à sa fraction."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__entry_reason__urgent
+msgid "Urgence"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__valid_to
+msgid "Valide au"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__valid_from
+msgid "Valide du"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__notice_method__verbal
+msgid "Verbal"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_point__connector_id
+msgid "Vide : chaque ordre devient une activité au responsable."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_point__unit_id
+msgid ""
+"Vide : le point sert tout l'immeuble (entrée, garage, colis). Rempli : il ne"
+" sert que les résidents de cette fraction (porte du logement, casier "
+"attitré)."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_resident__unit_id
+msgid ""
+"Vide pour une chambre ou un bail sans fraction inscrite : la personne n'a "
+"alors que les points communs de l'immeuble."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__entry_reason__showing_buyer
+msgid "Visite d'un acquéreur éventuel"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__entry_reason__showing_tenant
+msgid "Visite d'un locataire éventuel"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,help:bf_property_access.field_bf_property_access_pass__tenant_notice_received_on
+msgid ""
+"Visite d'un locataire éventuel sans préavis : seulement après que le "
+"locataire a avisé qu'il ne reconduit pas son bail ou le résilie (art. "
+"1930-1931 C.c.Q.). Sans cette date, le préavis de 24 h s'applique."
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__kind__visitor
+msgid "Visiteur"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_search
+msgid "Visiteurs"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__entry_reason__verification
+msgid "Vérifier l'état du logement"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_pass_form
+msgid "p. ex. Plomberie Exemple"
+msgstr ""
+
+#. module: bf_property_access
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_point_form
+msgid "p. ex. Portier de l'entrée nord"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_order__state__pending
+msgid "À envoyer"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_order__state__waiting
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_order_search
+msgid "À faire"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__state__to_remove
+msgid "À retirer"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_resident__state__upcoming
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_search
+msgid "À venir"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__state__to_issue
+msgid "À émettre"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_order__state__failed
+msgid "Échec"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_pass__notice_method__written
+msgid "Écrit"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields.selection,name:bf_property_access.selection__bf_property_access_grant__state__issued
+msgid "Émis"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_grant__state
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_order__state
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__state
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_resident__state
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_grant_search
+#: model_terms:ir.ui.view,arch_db:bf_property_access.view_access_resident_search
+msgid "État"
+msgstr ""
+
+#. module: bf_property_access
+#: model:ir.model.fields,field_description:bf_property_access.field_bf_property_access_pass__evacuation_over_week
+msgid "Évacuation de plus d'une semaine"
+msgstr ""
