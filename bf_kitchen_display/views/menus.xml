@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_kitchen_service" name="Service" parent="bf_kitchen.menu_kitchen_root" sequence="5"
+              groups="bf_kitchen.group_kitchen_cook"/>
+    <menuitem id="menu_kitchen_display" name="Kitchen screen" parent="menu_kitchen_service" sequence="10"
+              action="bf_kitchen_display_action" groups="bf_kitchen.group_kitchen_cook"/>
+    <menuitem id="menu_kitchen_tickets" name="Kitchen tickets" parent="menu_kitchen_service" sequence="20"
+              action="bf_kitchen_ticket_action" groups="bf_kitchen.group_kitchen_cook"/>
+    <menuitem id="menu_kitchen_stations" name="Kitchen stations" parent="bf_kitchen.menu_kitchen_config" sequence="30"
+              action="bf_kitchen_station_action" groups="bf_kitchen.group_kitchen_manager"/>
+</odoo>

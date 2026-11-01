@@ -189,7 +189,7 @@ class TestKitchenSchoolMeal(TestKitchen):
         plain_day = self.day(-2)
         earlier = self.order(plain_day, self.students[0], self.plain)
         self.plain.bf_kitchen_dish_id = self.dish
-        self.assertEqual(self.plain.bf_kitchen_dish_date, fields.Date.context_today(self.plain))
+        self.assertEqual(self.plain.bf_kitchen_dish_date, self.today, "the school's day")
         self.run_cron()
         self.assertFalse(earlier.bf_kitchen_picking_id, "served before its dish was linked")
 
@@ -210,3 +210,21 @@ class TestKitchenSchoolMeal(TestKitchen):
         self.students[2].active = False
         with self.assertRaises(UserError):
             tree_nut.unlink()
+
+    def test_r3_dish_linked_in_another_time_zone(self):
+        """A dish linked by a user whose day is already tomorrow (or UTC, in the evening): its day is the
+        school's, and today's meals leave the stock."""
+        self.env.user.tz = "Pacific/Kiritimati"
+        self.meal.bf_kitchen_dish_id = False
+        self.meal.with_context(tz="Pacific/Kiritimati").bf_kitchen_dish_id = self.dish
+        self.assertEqual(self.meal.bf_kitchen_dish_date, self.today)
+        orders = self.order(self.day(0), self.students[0])
+        self.assertEqual(self.run_cron(), orders)
+
+    def test_r4_known_demand_on_the_school_s_day(self):
+        """The order guide counts today's meals not served yet, whatever the user's time zone."""
+        self.env.user.tz = "Pacific/Kiritimati"
+        self.order(self.day(0), self.students[0])
+        guide = self.env["bf.kitchen.order.guide"].with_context(tz="Pacific/Kiritimati").create({"partner_id": self.vendor.id})
+        demand = guide._bf_known_demand(self.today + timedelta(days=7))
+        self.assertAlmostEqual(demand.get(self.salmon, 0.0), 240.0)

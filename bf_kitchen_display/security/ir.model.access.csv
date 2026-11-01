@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_station_cook,station cook,model_bf_kitchen_station,bf_kitchen.group_kitchen_cook,1,0,0,0
+access_station_manager,station manager,model_bf_kitchen_station,bf_kitchen.group_kitchen_manager,1,1,1,1
+access_station_pos_user,station register,model_bf_kitchen_station,point_of_sale.group_pos_user,1,0,0,0
+access_ticket_cook,ticket cook,model_bf_kitchen_ticket,bf_kitchen.group_kitchen_cook,1,0,0,0
+access_transfer_none,transfer (code only),model_bf_kitchen_transfer,base.group_no_one,0,0,0,0
+access_ticket_line_cook,ticket line cook,model_bf_kitchen_ticket_line,bf_kitchen.group_kitchen_cook,1,0,0,0

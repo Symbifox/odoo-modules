@@ -1,6 +1,6 @@
 {
     "name": "Symbifox: kitchen and register",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.0",
     "category": "Inventory/Inventory",
     "summary": "Dishes sold at Odoo's register take their ingredients out of the kitchen stock; a dish "
                "refunded at the register is a loss, not stock back on the shelf",
@@ -15,7 +15,9 @@ Kitchen and register
   is done, they leave again as a loss, reason Customer return (the plate came back to the
   kitchen, not to the shelf); an item sold as it is (a bottle) goes back to the stock;
 - the variance report of the kitchen shows the register's sales in their own column, and a
-  count warns of register orders still open.
+  count warns of register orders still open;
+- the product information of the register shows a dish's allergens, its recipe's included,
+  and what it may contain.
 """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -24,6 +26,11 @@ Kitchen and register
     "data": [
         "views/mrp_bom_views.xml",
     ],
+    "assets": {
+        "point_of_sale._assets_pos": [
+            "bf_kitchen_pos/static/src/**/*",
+        ],
+    },
     "installable": True,
     "auto_install": True,
     "application": False,

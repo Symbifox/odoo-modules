@@ -1,0 +1,589 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_kitchen_display
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 03:33+0000\n"
+"PO-Revision-Date: 2026-11-01 03:33+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_kitchen_display
+#. odoo-python
+#: code:addons/bf_kitchen_display/models/ticket.py:0
+msgid "%s has no warehouse to take the loss from."
+msgstr "%s n'a pas d'entrepôt d'où sortir la perte."
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,help:bf_kitchen_display.field_bf_kitchen_ticket__acknowledged
+msgid "A cook decided on the cancellation."
+msgstr "Un cuisinier a tranché sur l'annulation."
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,help:bf_kitchen_display.field_pos_config__bf_kitchen_display
+msgid ""
+"A kitchen station shows this register's orders: Order sends them at once."
+msgstr ""
+"Un poste de cuisine montre les commandes de cette caisse : Commander les "
+"envoie aussitôt."
+
+#. module: bf_kitchen_display
+#: model_terms:ir.actions.act_window,help:bf_kitchen_display.bf_kitchen_station_action
+msgid ""
+"A station shows the dishes its registers send: the hot line, the cold line, the bar. Choose its\n"
+"               register categories, or none for every dish."
+msgstr ""
+"Un poste montre les plats que ses caisses envoient : la ligne chaude, le garde-manger, le bar. Choisissez ses\n"
+"               catégories de caisse, ou aucune pour tous les plats."
+
+#. module: bf_kitchen_display
+#. odoo-python
+#: code:addons/bf_kitchen_display/models/pos_order.py:0
+msgid "A table moves onto an open order of the same register."
+msgstr "Une table se déplace sur une commande ouverte de la même caisse."
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__acknowledged
+msgid "Acknowledged"
+msgstr "Tranché"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_kitchen_display
+#: model_terms:ir.actions.act_window,help:bf_kitchen_display.bf_kitchen_station_action
+msgid "Add a kitchen station"
+msgstr "Ajoutez un poste de cuisine"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "All stations"
+msgstr "Tous les postes"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__allergens
+msgid "Allergens"
+msgstr "Allergènes"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Back"
+msgstr "Revenir"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__cancel_reason
+msgid "Cancel Reason"
+msgstr "Motif d'annulation"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.js:0
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__state__cancelled
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_display.bf_kitchen_ticket_view_search
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__cancelled_at
+msgid "Cancelled At"
+msgstr "Annulé le"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__company_id
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__company_id
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__customer_count
+msgid "Covers"
+msgstr "Couverts"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_transfer__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__create_date
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__create_date
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__create_date
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_transfer__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__cancel_reason__taken_off
+msgid "Dishes taken off after they were sent"
+msgstr "Plats retirés après leur envoi"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__display_name
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__display_name
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__display_name
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_transfer__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_kitchen_display
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_display.bf_kitchen_ticket_view_search
+msgid "Group By"
+msgstr "Regrouper par"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__id
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__id
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__id
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_transfer__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.js:0
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__state__progress
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__state_before_cancel__progress
+msgid "In progress"
+msgstr "En cours"
+
+#. module: bf_kitchen_display
+#: model:ir.model,name:bf_kitchen_display.model_bf_kitchen_transfer
+msgid "Kitchen dishes moved with a table"
+msgstr "Plats de cuisine déplacés avec une table"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_pos_config__bf_kitchen_display
+msgid "Kitchen display"
+msgstr "Écran de cuisine"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+#: model:ir.actions.client,name:bf_kitchen_display.bf_kitchen_display_action
+#: model:ir.ui.menu,name:bf_kitchen_display.menu_kitchen_display
+msgid "Kitchen screen"
+msgstr "Écran de cuisine"
+
+#. module: bf_kitchen_display
+#: model:ir.model,name:bf_kitchen_display.model_bf_kitchen_station
+msgid "Kitchen station"
+msgstr "Poste de cuisine"
+
+#. module: bf_kitchen_display
+#: model:ir.actions.act_window,name:bf_kitchen_display.bf_kitchen_station_action
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_pos_config__bf_kitchen_station_ids
+#: model:ir.ui.menu,name:bf_kitchen_display.menu_kitchen_stations
+msgid "Kitchen stations"
+msgstr "Postes de cuisine"
+
+#. module: bf_kitchen_display
+#: model:ir.model,name:bf_kitchen_display.model_bf_kitchen_ticket
+msgid "Kitchen ticket"
+msgstr "Bon de cuisine"
+
+#. module: bf_kitchen_display
+#: model:ir.model,name:bf_kitchen_display.model_bf_kitchen_ticket_line
+msgid "Kitchen ticket line"
+msgstr "Ligne de bon de cuisine"
+
+#. module: bf_kitchen_display
+#: model:ir.actions.act_window,name:bf_kitchen_display.bf_kitchen_ticket_action
+#: model:ir.ui.menu,name:bf_kitchen_display.menu_kitchen_tickets
+msgid "Kitchen tickets"
+msgstr "Bons de cuisine"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_transfer__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__write_date
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__write_date
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__write_date
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_transfer__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__line_ids
+msgid "Line"
+msgstr "Ligne"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__line_uuid
+msgid "Line Uuid"
+msgstr "UUID de la ligne"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Loss"
+msgstr "Perte"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__loss_decision
+msgid "Loss Decision"
+msgstr "Décision de perte"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__loss_decision__loss
+msgid "Loss declared"
+msgstr "Perte déclarée"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__scrap_ids
+msgid "Losses"
+msgstr "Pertes"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.js:0
+msgid "Mark ready"
+msgstr "Prêt"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.js:0
+msgid "Mark served"
+msgstr "Servi"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__name
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,help:bf_kitchen_display.field_bf_kitchen_ticket_line__qty
+msgid "Negative: taken off the order after it was sent."
+msgstr "Négative : retirée de la commande après son envoi."
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Not started"
+msgstr "Pas commencé"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__loss_decision__none
+msgid "Not started: no loss"
+msgstr "Pas commencé : aucune perte"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__general_note
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__note
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_transfer__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__note_updated
+msgid "Note Updated"
+msgstr "Note mise à jour"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Note changed"
+msgstr "Note changée"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Note removed"
+msgstr "Note retirée"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Nothing to prepare."
+msgstr "Rien à préparer."
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Nothing was started: no loss"
+msgstr "Rien n'était commencé : aucune perte"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Odoo cannot be reached: the screen tries again every few seconds."
+msgstr "Odoo ne répond pas : l'écran réessaie toutes les quelques secondes."
+
+#. module: bf_kitchen_display
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_display.bf_kitchen_ticket_view_search
+msgid "On the screen"
+msgstr "À l'écran"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__order_id
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__order_ref
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_transfer__order_id
+msgid "Order"
+msgstr "Commande"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Order cancelled after it was sent"
+msgstr "Commande annulée après son envoi"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__cancel_reason__deleted
+msgid "Order deleted after it was sent"
+msgstr "Commande supprimée après son envoi"
+
+#. module: bf_kitchen_display
+#: model:ir.model,name:bf_kitchen_display.model_pos_config
+msgid "Point of Sale Configuration"
+msgstr "Configuration du point de vente"
+
+#. module: bf_kitchen_display
+#: model:ir.model,name:bf_kitchen_display.model_pos_order
+msgid "Point of Sale Orders"
+msgstr "Commandes du point de vente"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__product_id
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_transfer__product_id
+msgid "Product"
+msgstr "Produit"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_transfer__qty
+msgid "Qty"
+msgstr "Qté"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__qty
+msgid "Quantity"
+msgstr "Quantité"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.js:0
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__state__ready
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__state_before_cancel__ready
+msgid "Ready"
+msgstr "Prêt"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__ready_at
+msgid "Ready At"
+msgstr "Prêt à"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__config_id
+msgid "Register"
+msgstr "Caisse"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__pos_categ_ids
+msgid "Register categories"
+msgstr "Catégories de caisse"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__pos_config_ids
+msgid "Registers"
+msgstr "Caisses"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Replaced"
+msgstr "Remplacé"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__sending
+msgid "Sending"
+msgstr "Envoi"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__sent_at
+msgid "Sent At"
+msgstr "Envoyé à"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__sent_by
+msgid "Sent by"
+msgstr "Envoyé par"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_station__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__state__served
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__state_before_cancel__served
+msgid "Served"
+msgstr "Servi"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__served_at
+msgid "Served At"
+msgstr "Servi à"
+
+#. module: bf_kitchen_display
+#: model:ir.ui.menu,name:bf_kitchen_display.menu_kitchen_service
+msgid "Service"
+msgstr "Service"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__session_id
+msgid "Session"
+msgstr "Session"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.js:0
+msgid "Start cooking"
+msgstr "Commencer"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__started_at
+msgid "Started At"
+msgstr "Commencé à"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__state
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_display.bf_kitchen_ticket_view_search
+msgid "State"
+msgstr "État"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__state_before_cancel
+msgid "State Before Cancel"
+msgstr "État avant l'annulation"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__station_id
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_display.bf_kitchen_ticket_view_search
+msgid "Station"
+msgstr "Poste"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__table_id
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket__table_name
+msgid "Table"
+msgstr "Table"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Taken off"
+msgstr "Retiré"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "Taken off after it was sent"
+msgstr "Retiré après son envoi"
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,help:bf_kitchen_display.field_bf_kitchen_ticket_line__allergens
+msgid "The dish's allergens when it was sent."
+msgstr "Les allergènes du plat au moment de l'envoi."
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,help:bf_kitchen_display.field_bf_kitchen_station__pos_categ_ids
+msgid "The dishes of these categories reach this station. None: every dish."
+msgstr ""
+"Les plats de ces catégories arrivent à ce poste. Aucune : tous les plats."
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "The dishes were started: they go out as a loss"
+msgstr "Les plats étaient commencés : ils sortent en perte"
+
+#. module: bf_kitchen_display
+#. odoo-python
+#: code:addons/bf_kitchen_display/models/ticket.py:0
+msgid "The kitchen screen is for the kitchen staff."
+msgstr "L'écran de cuisine est réservé au personnel de cuisine."
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,help:bf_kitchen_display.field_bf_kitchen_ticket__note_updated
+msgid "The order's note changed after this ticket was sent."
+msgstr "La note de la commande a changé après l'envoi de ce bon."
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,help:bf_kitchen_display.field_bf_kitchen_ticket__sending
+msgid "The press of Order this ticket came from."
+msgstr "L'appui sur Commander d'où vient ce bon."
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,help:bf_kitchen_display.field_bf_kitchen_station__pos_config_ids
+msgid "The registers whose orders reach this station."
+msgstr "Les caisses dont les commandes arrivent à ce poste."
+
+#. module: bf_kitchen_display
+#. odoo-python
+#: code:addons/bf_kitchen_display/models/ticket.py:0
+msgid "This ticket cannot go back."
+msgstr "Ce bon ne peut pas revenir en arrière."
+
+#. module: bf_kitchen_display
+#. odoo-python
+#: code:addons/bf_kitchen_display/models/ticket.py:0
+msgid "This ticket is %s."
+msgstr "Ce bon est %s."
+
+#. module: bf_kitchen_display
+#: model:ir.model.fields,field_description:bf_kitchen_display.field_bf_kitchen_ticket_line__ticket_id
+msgid "Ticket"
+msgstr "Bon"
+
+#. module: bf_kitchen_display
+#. odoo-python
+#: code:addons/bf_kitchen_display/models/ticket.py:0
+msgid "Ticket %s"
+msgstr "Bon %s"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.js:0
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__state__new
+#: model:ir.model.fields.selection,name:bf_kitchen_display.selection__bf_kitchen_ticket__state_before_cancel__new
+msgid "To do"
+msgstr "À faire"
+
+#. module: bf_kitchen_display
+#: model_terms:ir.ui.view,arch_db:bf_kitchen_display.bf_kitchen_ticket_view_search
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "min"
+msgstr "min"
+
+#. module: bf_kitchen_display
+#. odoo-javascript
+#: code:addons/bf_kitchen_display/static/src/display/kitchen_display.xml:0
+msgid "ticket(s)"
+msgstr "bon(s)"

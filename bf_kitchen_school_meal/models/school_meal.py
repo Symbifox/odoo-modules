@@ -60,16 +60,23 @@ class MealItem(models.Model):
             if dish.company_id and dish.company_id != item.company_id:
                 raise ValidationError(_("The dish of a meal belongs to the school's company."))
 
+    def _bf_kitchen_mark_dish_date(self):
+        """The day the dish was linked, in the school's time zone, as the meals' days are: in the user's
+        (or UTC, for a user without one), a dish linked in the evening was dated the next day, and that
+        day's meals never left the stock."""
+        for item in self.filtered("bf_kitchen_dish_id").sudo():
+            item.bf_kitchen_dish_date = item.school_id._school_now().date()
+
     @api.model_create_multi
     def create(self, vals_list):
         items = super().create(vals_list)
-        items.filtered("bf_kitchen_dish_id").sudo().bf_kitchen_dish_date = fields.Date.context_today(self)
+        items._bf_kitchen_mark_dish_date()
         return items
 
     def write(self, vals):
         res = super().write(vals)
         if vals.get("bf_kitchen_dish_id"):
-            self.sudo().write({"bf_kitchen_dish_date": fields.Date.context_today(self)})
+            self._bf_kitchen_mark_dish_date()
         return res
 
     def _school_allergens(self):
@@ -211,6 +218,11 @@ class KitchenVariance(models.TransientModel):
 class KitchenOrderGuide(models.TransientModel):
     _inherit = "bf.kitchen.order.guide"
 
+    def _bf_school_today(self):
+        """Today in the schools' time zone (the meals' days), not the user's."""
+        schools = self.env["bf.school"].sudo().search([("company_id", "=", self.company_id.id)])
+        return min((s._school_now().date() for s in schools), default=fields.Date.context_today(self))
+
     def _bf_known_demand(self, date_to):
         """The school meals ordered until `date_to` and not taken out of the stock yet: Odoo's
         forecast does not see them, the order guide must."""
@@ -221,7 +233,7 @@ class KitchenOrderGuide(models.TransientModel):
         orders = self.env["bf.school.meal.order"].sudo().search([
             ("state", "=", "ordered"), ("bf_kitchen_picking_id", "=", False),
             ("item_id.bf_kitchen_dish_id", "!=", False), ("company_id", "=", self.company_id.id),
-            ("date", ">=", fields.Date.context_today(self)), ("date", "<=", date_to)])
+            ("date", ">=", self._bf_school_today()), ("date", "<=", date_to)])
         portions = defaultdict(float)
         for order in orders:
             portions[order.item_id.bf_kitchen_dish_id] += 1.0

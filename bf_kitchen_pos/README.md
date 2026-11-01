@@ -18,6 +18,9 @@ both there.
   goes back to the stock.
 - In the kitchen's variance report, the register's sales have their own column ("Register");
   a count warns of register orders still open.
+- **Allergens at the register**: the product information of a dish, at the register, shows its
+  allergens (its recipe's and sub-recipes' included) and what it may contain, to the cashier
+  or the waiter who reads neither recipes nor ingredients.
 
 ## What the module does not do
 
@@ -31,9 +34,10 @@ Odoo 18 with Point of Sale and its kits (`pos_mrp`), and `bf_kitchen`. The inter
 
 - 18.0.1.0.0: first release.
 - 18.0.1.0.1: French translation completed.
+- 18.0.1.1.0: the register's product information shows a dish's allergens and what it may contain.
 
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-10-31 for this one. In the meantime, use in production for
+its Change Date: 2030-11-01 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

@@ -157,3 +157,26 @@ class TestKitchenPos(TestKitchen):
         scrap = self.env["stock.scrap"].with_user(cook).with_context(
             default_bf_kitchen_return_move_id=move.id).create(vals)
         self.assertFalse(scrap.bf_kitchen_return_move_id)
+
+    def test_p5a_allergens_in_the_product_information(self):
+        """The register's product information shows a dish's allergens, its recipe's included, and
+        what it may contain, to a cashier who reads neither recipes nor ingredients."""
+        sesame = self.env.ref("bf_food_allergen.allergen_sesame")
+        milk = self.env.ref("bf_food_allergen.allergen_milk")
+        mustard = self.env.ref("bf_food_allergen.allergen_mustard")
+        self.cream.product_tmpl_id.bf_allergen_input_ids = [Command.set(milk.ids)]
+        self.dish.product_tmpl_id.bf_allergen_input_ids = [Command.set(sesame.ids)]
+        self.dish.product_tmpl_id.bf_may_contain_ids = [Command.set((mustard | milk).ids)]
+        (self.dish | self.beer).taxes_id = [Command.clear()]  # the fixtures' taxes belong to another company
+        cashier = self.env["res.users"].create({
+            "name": "Caissière essai", "login": "p5a_cashier", "company_id": self.config.company_id.id,
+            "company_ids": [Command.set((self.company | self.config.company_id).ids)],
+            "groups_id": [Command.set([self.env.ref("base.group_user").id,
+                                       self.env.ref("point_of_sale.group_pos_user").id])]})
+        info = self.dish.with_user(cashier).get_product_info_pos(self.dish.lst_price, 1, self.config.id)
+        self.assertTrue(info["bf_kitchen"])
+        self.assertEqual(set(info["bf_allergens"]), {sesame.name, milk.name}, "the sauce's milk comes with it")
+        self.assertEqual(info["bf_may_contain"], [mustard.name], "what it contains is not repeated")
+        self.assertIn("all_prices", info, "the native information stays")
+        plain = self.beer.with_user(cashier).get_product_info_pos(7.0, 1, self.config.id)
+        self.assertEqual(plain["bf_allergens"], [])

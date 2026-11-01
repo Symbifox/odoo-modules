@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="bf_kitchen_pos.ProductInfoPopup" t-inherit="point_of_sale.ProductInfoPopup" t-inherit-mode="extension">
+        <xpath expr="//ProductInfoBanner" position="after">
+            <div class="section-bf-allergens mt-3 mb-4 pb-4 border-bottom text-start" t-if="props.info.productInfo.bf_kitchen">
+                <h3 class="section-title">Allergens</h3>
+                <div t-if="props.info.productInfo.bf_allergens.length" class="d-flex flex-wrap gap-2 mb-2">
+                    <t t-foreach="props.info.productInfo.bf_allergens" t-as="allergen" t-key="allergen_index">
+                        <span class="badge rounded-pill text-bg-danger fs-6" t-esc="allergen"/>
+                    </t>
+                </div>
+                <div t-else="" class="text-muted mb-2">No declared allergen.</div>
+                <div t-if="props.info.productInfo.bf_may_contain.length">
+                    <span class="fw-bold">May contain:</span>
+                    <t t-esc="props.info.productInfo.bf_may_contain.join(', ')"/>
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,14 @@
+.o_bf_kitchen_display {
+    background: $o-webclient-background-color;
+    .o_bf_kd_grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+        gap: 1rem;
+        align-items: start;
+    }
+    .o_bf_kd_card .card-header { border-top: 0.4rem solid $gray-500; }
+    .o_bf_kd_new .card-header { border-top-color: $info; }
+    .o_bf_kd_progress .card-header { border-top-color: $warning; }
+    .o_bf_kd_ready .card-header { border-top-color: $success; }
+    .o_bf_kd_cancelled { opacity: 0.9; .card-header { border-top-color: $danger; } }
+}

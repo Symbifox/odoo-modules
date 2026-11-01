@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**285 modules are BUSL-1.1.** The source is published and auditable, and **you
+**286 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -260,10 +260,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_job_search` | Job Search | 18.0.1.0.3 | LGPL-3 | Track your job applications with the good habits built in: follow-ups, interviews, thank-you notes, referees and a job search log |
 | `bf_key_management` | Symbifox Keys | 18.0.1.0.15 | BUSL-1.1 | Who holds which key, card or remote of the premises, which doors each one opens, and nothing forgotten when someone leaves |
 | `bf_kitchen` | Symbifox: kitchen | 18.0.1.3.0 | BUSL-1.1 | Kitchen management for restaurants, caterers and kitchens: recipes and plate cost from the last vendor bill, kitchen counts and losses, theoretical/actual variance, supplier orders by delivery day |
-| `bf_kitchen_pos` | Symbifox: kitchen and register | 18.0.1.0.1 | BUSL-1.1 | Dishes sold at Odoo's register take their ingredients out of the kitchen stock; a dish refunded at the register is a loss, not stock back on the shelf |
+| `bf_kitchen_display` | Symbifox: kitchen display | 18.0.1.0.0 | BUSL-1.1 | The dishes a waiter sends from Odoo's register reach a kitchen screen, station by station: to do, in progress, ready, served; a dish cancelled after it was sent is a loss the cook decides on |
+| `bf_kitchen_pos` | Symbifox: kitchen and register | 18.0.1.1.0 | BUSL-1.1 | Dishes sold at Odoo's register take their ingredients out of the kitchen stock; a dish refunded at the register is a loss, not stock back on the shelf; the register shows a dish's allergens |
 | `bf_kitchen_sale` | Symbifox: kitchen and sales | 18.0.1.0.0 | BUSL-1.1 | Dishes sold on quotations and invoices take their ingredients out of the kitchen stock, an invoice with no sales order too |
 | `bf_kitchen_sales_import` | Symbifox: kitchen sales from another register | 18.0.1.0.1 | BUSL-1.1 | The sales of a register that is not Odoo's, imported from its CSV or Excel export, take the dishes' ingredients out of the kitchen stock |
-| `bf_kitchen_school_meal` | Symbifox: kitchen and school meals | 18.0.1.1.0 | BUSL-1.1 | A meal of the school menu points to its kitchen dish: cost and allergens from the recipe, the meals served leave the stock |
+| `bf_kitchen_school_meal` | Symbifox: kitchen and school meals | 18.0.1.1.1 | BUSL-1.1 | A meal of the school menu points to its kitchen dish: cost and allergens from the recipe, the meals served leave the stock |
 | `bf_labour_relations` | Relations de travail | 18.0.1.0.0 | BUSL-1.1 | Certification, collective agreement, seniority, grievances and union dues, from the employer's side as much as the union's |
 | `bf_labour_relations_employer` | Relations de travail : côté employeur | 18.0.1.1.0 | BUSL-1.1 | Obligations and reminders, the posted seniority list, job postings and movements, dues remittance preparation, the joint committee |
 | `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |

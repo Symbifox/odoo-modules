@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_kitchen_display.KitchenDisplay">
+        <div class="o_bf_kitchen_display d-flex flex-column h-100 overflow-auto p-3">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <h2 class="m-0">Kitchen screen</h2>
+                <select class="form-select w-auto" t-on-change="chooseStation" aria-label="Station">
+                    <option value="" t-att-selected="!state.station">All stations</option>
+                    <t t-foreach="state.stations" t-as="s" t-key="s.id">
+                        <option t-att-value="s.id" t-att-selected="state.station == s.id" t-esc="s.name"/>
+                    </t>
+                </select>
+                <span class="ms-auto text-muted"><t t-esc="state.tickets.length"/> ticket(s)</span>
+            </div>
+            <div t-if="state.offline" class="alert alert-warning">Odoo cannot be reached: the screen tries again every few seconds.</div>
+            <div t-if="!state.tickets.length" class="text-center text-muted fs-3 mt-5">Nothing to prepare.</div>
+            <div class="o_bf_kd_grid">
+                <t t-foreach="state.tickets" t-as="ticket" t-key="ticket.id">
+                    <div t-attf-class="o_bf_kd_card o_bf_kd_{{ticket.state}} card shadow-sm">
+                        <div class="card-header d-flex align-items-baseline gap-2">
+                            <span class="fs-4 fw-bold" t-esc="ticket.table or ticket.order"/>
+                            <span t-if="ticket.covers" class="text-nowrap"><i class="fa fa-user" aria-hidden="true"/> <t t-esc="ticket.covers"/></span>
+                            <span class="ms-auto fw-bold text-nowrap" t-attf-class="{{ minutes(ticket) >= 15 ? 'text-danger' : '' }}"><t t-esc="minutes(ticket)"/> min</span>
+                        </div>
+                        <div class="card-body py-2">
+                            <div class="small text-muted mb-1">
+                                <t t-esc="stateLabel(ticket)"/><t t-if="ticket.station"> · <t t-esc="ticket.station"/></t><t t-if="ticket.sent_by"> · <t t-esc="ticket.sent_by"/></t>
+                            </div>
+                            <div t-if="ticket.cancel_reason == 'deleted'" class="fw-bold text-danger mb-1">Order cancelled after it was sent</div>
+                            <div t-if="ticket.cancel_reason == 'taken_off'" class="fw-bold text-danger mb-1">Taken off after it was sent</div>
+                            <div t-if="ticket.note" class="fst-italic mb-1"><span t-if="ticket.note_updated" class="badge text-bg-warning me-1">Note changed</span><t t-esc="ticket.note"/></div>
+                            <div t-elif="ticket.note_updated" class="mb-1"><span class="badge text-bg-warning">Note removed</span></div>
+                            <ul class="list-unstyled m-0">
+                                <t t-foreach="ticket.lines" t-as="line" t-key="line.id">
+                                    <li t-attf-class="mb-1 {{ line.taken_off ? 'text-danger text-decoration-line-through' : '' }}">
+                                        <span class="fs-5 fw-bold"><t t-esc="line.qty"/> × <t t-esc="line.name"/></span>
+                                        <t t-if="line.taken_off and ticket.state == 'cancelled'"> <span class="badge text-bg-danger">Taken off</span></t><t t-elif="line.taken_off"> <span class="badge text-bg-secondary">Replaced</span></t>
+                                        <div t-if="line.note" class="ps-3 fw-bold" t-esc="line.note"/>
+                                        <div t-if="line.allergens" class="ps-3 small text-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"/> <t t-esc="line.allergens"/></div>
+                                    </li>
+                                </t>
+                            </ul>
+                        </div>
+                        <div class="card-footer d-flex gap-2">
+                            <t t-if="ticket.state == 'cancelled'">
+                                <button class="btn btn-danger flex-grow-1" title="The dishes were started: they go out as a loss" t-on-click="() => this.run('bf_declare_loss', ticket)">Loss</button>
+                                <button class="btn btn-secondary flex-grow-1" title="Nothing was started: no loss" t-on-click="() => this.run('bf_no_loss', ticket)">Not started</button>
+                            </t>
+                            <t t-else="">
+                                <button class="btn btn-primary btn-lg flex-grow-1" t-on-click="() => this.run('bf_advance', ticket)" t-esc="actionLabel(ticket)"/>
+                                <button t-if="ticket.state != 'new'" class="btn btn-secondary" title="Back" aria-label="Back" t-on-click="() => this.run('bf_back', ticket)"><i class="fa fa-undo"/></button>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

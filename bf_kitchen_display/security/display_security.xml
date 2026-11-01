@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_station_company" model="ir.rule">
+        <field name="name">Kitchen stations: own companies</field>
+        <field name="model_id" ref="model_bf_kitchen_station"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_ticket_company" model="ir.rule">
+        <field name="name">Kitchen tickets: own companies</field>
+        <field name="model_id" ref="model_bf_kitchen_ticket"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_ticket_line_company" model="ir.rule">
+        <field name="name">Kitchen ticket lines: own companies</field>
+        <field name="model_id" ref="model_bf_kitchen_ticket_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

@@ -1,6 +1,6 @@
 {
     "name": "Symbifox: kitchen and school meals",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.1.1",
     "category": "Inventory/Inventory",
     "summary": "A meal of the school menu points to its kitchen dish: its cost and allergens come from "
                "the recipe, and the meals served take their ingredients out of the stock",

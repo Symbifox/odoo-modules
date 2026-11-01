@@ -34,9 +34,10 @@ Odoo 18, `bf_kitchen` and `bf_school_meal`. The interface is in English with a F
 
 - 18.0.1.0.0: first release.
 - 18.0.1.1.0: the order guide of the kitchen counts the school meals ordered and not served yet as known demand; French translation completed.
+- 18.0.1.1.1: the day a dish is linked to a meal is the school's, not the user's: a dish linked in the evening (or by a user in another time zone) no longer leaves that day's meals out of the stock.
 
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-10-31 for this one. In the meantime, use in production for
+its Change Date: 2030-11-01 for this one. In the meantime, use in production for
 your own internal business operations is permitted.
