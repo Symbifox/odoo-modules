@@ -198,4 +198,4 @@ request leaves nothing behind (savepoint).
 ## Licence
 
 Business Source License 1.1, see `LICENSE`. This version becomes available
-under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-10-25).
+under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-11-01).

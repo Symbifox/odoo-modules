@@ -5,7 +5,7 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.1.1",
     "category": "Productivity",
     "summary": "Le menu des applications devient une grille d'icônes cherchable au clavier",
     "description": """

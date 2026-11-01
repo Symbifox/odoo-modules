@@ -51,6 +51,17 @@ def _max_dt(*values):
     return max(values) if values else None
 
 
+def _like_exact(text):
+    """La valeur d'un `=ilike` qui ne doit rien attraper d'autre qu'elle-même.
+
+    🔴 `_` et `%` sont des jokers : sans échappement, « jean_paul@exemple.test »
+    rapprocherait aussi « jeanXpaul@exemple.test » (même échappement que
+    bf_membership).
+    """
+    return text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
+
 class BfDavServiceCaldav(models.AbstractModel):
     _inherit = "bf.dav.service"
 
@@ -1554,7 +1565,8 @@ class BfDavServiceCaldav(models.AbstractModel):
             rcp = etree.SubElement(resp, C("recipient"))
             rcp.append(X.href_el("mailto:%s" % email))
             user = self.env["res.users"].sudo().search(
-                ["|", ("login", "=ilike", email), ("partner_id.email", "=ilike", email),
+                ["|", ("login", "=ilike", _like_exact(email)),
+                 ("partner_id.email", "=ilike", _like_exact(email)),
                  ("share", "=", False), ("active", "=", True)], limit=1)
             if not user:
                 etree.SubElement(resp, C("request-status")).text = "3.7;Invalid calendar user"

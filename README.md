@@ -102,7 +102,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.18.1 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.2.0 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_appointment_visit_property` | Visites de propriétés — pont Immeubles | 18.0.1.0.0 | LGPL-3 | Show a dwelling from your portfolio without retyping its address: address, occupant and the 24-hour notice for a rented unit come from the Immeubles socle |
-| `bf_apps_menu` | Menu des applications cherchable | 18.0.1.1.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
+| `bf_apps_menu` | Menu des applications cherchable | 18.0.1.1.1 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.2.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
 | `bf_avatar` | Symbifox Avatars | 18.0.1.0.1 | BUSL-1.1 | An avatar in your house style for anyone without a photo, and a builder to make your own |
 | `bf_avatar_gamification` | Symbifox Avatars pour Fox Quest | 18.0.1.0.1 | BUSL-1.1 | Unlock avatar parts with the XP earned in Fox Quest |
@@ -190,7 +190,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.1.0 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.6.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
-| `bf_dav_server` | Calendar and contacts sync (CalDAV, CardDAV) | 18.0.1.2.0 | BUSL-1.1 | Thunderbird, Apple Calendar and Contacts, and Android (DAVx5) read and write the Odoo agenda and contacts directly, reminders and their state included |
+| `bf_dav_server` | Calendar and contacts sync (CalDAV, CardDAV) | 18.0.1.2.2 | BUSL-1.1 | Thunderbird, Apple Calendar and Contacts, and Android (DAVx5) read and write the Odoo agenda and contacts directly, reminders and their state included |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.2.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_export` | Policies & Procedures Export | 18.0.1.1.2 | BUSL-1.1 | Reproduce the policy and procedure registry as a folder tree: ZIP export with best-practice templates, classification plans, master list and manifest |
@@ -246,7 +246,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.15.6 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
 | `bf_helpdesk_digest` | Helpdesk — Section du digest quotidien | 18.0.1.0.3 | LGPL-3 | Adds an « Assistance » section to the daily digest: the reader's open tickets and their daily helpdesk notifications |
 | `bf_helpdesk_merge` | Helpdesk — Doublons, fusion et incidents | 18.0.1.3.2 | AGPL-3 | Complete ticket merge (timesheets, attachments, followers, internal notes), duplicate suggestions at creation, parent incidents with a grouped reply |
-| `bf_home` | Accueil Symbifox | 18.0.2.1.1 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
+| `bf_home` | Accueil Symbifox | 18.0.2.1.2 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.6.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
 | `bf_hosting_patch_digest` | Hébergement — Mises à jour système : section du digest | 18.0.1.2.0 | LGPL-3 | Fleet update section for the daily digest: silent when all is well, always present when a machine stops reporting |
 | `bf_hosting_status` | Hosting Status Page | 18.0.1.4.1 | BUSL-1.1 | A status page per hosted client, opened by a private link: services, versions, health and recent updates. |
