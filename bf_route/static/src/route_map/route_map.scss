@@ -1,0 +1,41 @@
+.o_bf_route_map {
+    height: 320px;
+    width: 100%;
+    border-radius: $border-radius;
+    border: 1px solid var(--bs-border-color, #{$border-color});
+    // Above the map panes of Leaflet, below Odoo's dropdowns and dialogs.
+    z-index: 0;
+}
+
+.o_bf_route_day_map .o_bf_route_map {
+    height: 420px;
+}
+
+.o_bf_route_line {
+    stroke: $o-brand-primary;
+}
+
+.o_bf_route_pin {
+    span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        font-weight: bold;
+        font-size: 13px;
+        color: #fff;
+        background-color: #495057;
+    }
+    &.o_bf_pin_todo span { background-color: $o-brand-primary; }
+    &.o_bf_pin_done span { background-color: #198754; }
+    &.o_bf_pin_absent span,
+    &.o_bf_pin_postponed span { background-color: #ffc107; color: #000; }
+    &.o_bf_pin_missed span { background-color: #dc3545; }
+    &.o_bf_pin_depot span,
+    &.o_bf_pin_start span,
+    &.o_bf_pin_end span { background-color: #212529; }
+}

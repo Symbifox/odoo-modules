@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bf_route 18.0.1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 07:49+0000\n"
+"POT-Creation-Date: 2026-10-30 08:00+0000\n"
 "PO-Revision-Date: 2026-10-11 07:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (Canada)\n"
@@ -70,6 +70,12 @@ msgstr ""
 "%s est un véhicule lourd : faites la ronde de sécurité avant de partir."
 
 #. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "%s other stop(s) not marked will be counted as missed."
+msgstr "%s autre(s) arrêt(s) non marqué(s) seront comptés comme manqués."
+
+#. module: bf_route
 #. odoo-python
 #: code:addons/bf_route/models/bf_route.py:0
 msgid "%s route day(s) created."
@@ -81,6 +87,16 @@ msgstr "%s journée(s) de route créée(s)."
 msgid "%s stop(s) not marked will be counted as missed. Finish anyway?"
 msgstr ""
 "%s arrêt(s) non marqué(s) seront comptés comme manqués. Terminer quand même?"
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid ""
+"%s stop(s) where you arrived are not marked yet: they will be counted as "
+"missed."
+msgstr ""
+"%s arrêt(s) où l'arrivée est enregistrée ne sont pas encore marqués : ils "
+"seront comptés comme manqués."
 
 #. module: bf_route
 #: model:ir.model.fields,help:bf_route.field_bf_route__interval_weeks
@@ -279,9 +295,21 @@ msgid "Alerts"
 msgstr "Alertes"
 
 #. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "An arrival was not recorded: %s"
+msgstr "Une arrivée n'a pas été enregistrée : %s"
+
+#. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__app_key
 msgid "App Key"
 msgstr "Clé de l'application"
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "Apple Maps"
+msgstr "Plans d'Apple"
 
 #. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
@@ -290,10 +318,38 @@ msgid "Archived"
 msgstr "Archivée"
 
 #. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Arrival"
+msgstr "Arrivée"
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__arrived_clock
+msgid "Arrived"
+msgstr "Arrivée"
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__arrived_at
+msgid "Arrived at"
+msgstr "Arrivée à"
+
+#. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route__message_attachment_count
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_attachment_count
 msgid "Attachment Count"
 msgstr "Nombre de pièces jointes"
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid ""
+"Background of the route maps, an https address with {z}, {x} and {y}. Empty:"
+" OpenStreetMap's tiles, fetched by the viewer's browser."
+msgstr ""
+"Fond des cartes des routes, une adresse https avec {z}, {x} et {y}. Vide : "
+"les tuiles d'OpenStreetMap, chargées par le navigateur de la personne qui "
+"regarde."
 
 #. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_res_company__bf_route_notice_version
@@ -469,6 +525,7 @@ msgstr "Dépôt"
 
 #. module: bf_route
 #. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "Directions"
 msgstr "Itinéraire"
@@ -542,6 +599,12 @@ msgstr "Messages en échec"
 
 #. module: bf_route
 #. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "Finish anyway?"
+msgstr "Terminer quand même?"
+
+#. module: bf_route
+#. odoo-javascript
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "Finish the day"
 msgstr "Terminer la journée"
@@ -585,6 +648,11 @@ msgid "From"
 msgstr "Du"
 
 #. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__on_site_minutes
+msgid "From the arrival to the mark that closed the stop."
+msgstr "De l'arrivée à la marque qui a fermé l'arrêt."
+
+#. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__template_stop_id
 msgid "From the route"
 msgstr "Venu de la route"
@@ -598,6 +666,12 @@ msgstr "Latitude"
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__longitude
 msgid "Geo Longitude"
 msgstr "Longitude"
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "Google Maps"
+msgstr "Google Maps"
 
 #. module: bf_route
 #: model:ir.model.fields,help:bf_route.field_bf_route_day__heavy_vehicle
@@ -632,6 +706,12 @@ msgstr "Véhicule lourd"
 #. module: bf_route
 #. odoo-javascript
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Hide the map"
+msgstr "Cacher la carte"
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "I did the pre-trip inspection of this heavy vehicle"
 msgstr "J'ai fait la ronde de sécurité de ce véhicule lourd"
 
@@ -645,6 +725,12 @@ msgstr "Que je conduis"
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "I have read the notice"
 msgstr "J'ai lu l'avis"
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "I'm here"
+msgstr "Je suis sur place"
 
 #. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route__id
@@ -782,6 +868,12 @@ msgstr "Lieu de départ (dépôt)"
 
 #. module: bf_route
 #. odoo-javascript
+#: code:addons/bf_route/static/src/route_map/route_map.xml:0
+msgid "Loading the map…"
+msgstr "Chargement de la carte…"
+
+#. module: bf_route
+#. odoo-javascript
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "Loading…"
 msgstr "Chargement…"
@@ -792,6 +884,7 @@ msgid "Local time of the person responsible."
 msgstr "Heure locale de la personne responsable."
 
 #. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__arrived_clock
 #: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__done_clock
 #: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__planned_clock
 msgid "Local time, in the route's time zone."
@@ -818,6 +911,25 @@ msgstr "Localiser sur la carte (routes)"
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__longitude
 msgid "Longitude"
 msgstr "Longitude"
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_form
+msgid "Map"
+msgstr "Carte"
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_config_settings__bf_route_tile_url
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Map tiles"
+msgstr "Tuiles de la carte"
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_config_settings__bf_route_tile_attribution
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Map tiles credit"
+msgstr "Crédit des tuiles"
 
 #. module: bf_route
 #. odoo-javascript
@@ -1058,6 +1170,12 @@ msgid "No network. Try again when it is back."
 msgstr "Pas de réseau. Réessayez à son retour."
 
 #. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/route_map/route_map.js:0
+msgid "No network: the map will show when it is back."
+msgstr "Pas de réseau : la carte s'affichera à son retour."
+
+#. module: bf_route
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_engine.py:0
 msgid "No optimizer: enter the VROOM address in the Routes settings."
@@ -1138,6 +1256,12 @@ msgstr ""
 "Pas encore localisés (le géocodeur n'a pas eu le temps de les traiter) : %s."
 " Localisez-les depuis les contacts (Action, Localiser sur la carte "
 "(routes)), puis réessayez."
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/route_map/route_map.xml:0
+msgid "Not on the map (no coordinates):"
+msgstr "Hors de la carte (sans coordonnées) :"
 
 #. module: bf_route
 #. odoo-javascript
@@ -1241,6 +1365,11 @@ msgstr "Odomètre à la fin"
 #: model:ir.model.fields.selection,name:bf_route.selection__bf_route__recurrence__none
 msgid "On demand"
 msgstr "Sur demande"
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__on_site_minutes
+msgid "On site (min)"
+msgstr "Sur place (min)"
 
 #. module: bf_route
 #: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day__state__in_progress
@@ -1578,6 +1707,12 @@ msgid "Saturday"
 msgstr "Samedi"
 
 #. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/route_map/route_map.xml:0
+msgid "Save the day to see its map."
+msgstr "Enregistrez la journée pour voir sa carte."
+
+#. module: bf_route
 #: model:res.groups,comment:bf_route.group_route_user
 msgid "Sees and drives their own route days, from the phone or the office."
 msgstr ""
@@ -1629,6 +1764,12 @@ msgid "Settings"
 msgstr "Paramètres"
 
 #. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Shown on the map, as the tile server's licence asks."
+msgstr ""
+"Affiché sur la carte, comme le demande la licence du serveur de tuiles."
+
+#. module: bf_route
 #. odoo-javascript
 #: code:addons/bf_route/static/src/ma_route/ma_route.js:0
 msgid "Sign in again to continue."
@@ -1662,6 +1803,12 @@ msgstr ""
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "Start the day"
 msgstr "Commencer la journée"
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Start the day before arriving at its stops."
+msgstr "Commencez la journée avant d'arriver à ses arrêts."
 
 #. module: bf_route
 #. odoo-python
@@ -1793,6 +1940,12 @@ msgstr ""
 "Retiré de la route : %s. Toujours sur cette journée, retouchée à la main."
 
 #. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Tap “I'm here” again, or call the office."
+msgstr "Touchez « Je suis sur place » de nouveau, ou appelez le bureau."
+
+#. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__notice
 msgid "Text read"
 msgstr "Texte lu"
@@ -1826,6 +1979,12 @@ msgstr ""
 msgid ""
 "The depot. Its coordinates are used to plan the distance and the order."
 msgstr "Le dépôt. Ses coordonnées servent à planifier la distance et l'ordre."
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/route_map/route_map.js:0
+msgid "The map could not be loaded."
+msgstr "La carte n'a pas pu être chargée."
 
 #. module: bf_route
 #. odoo-python
@@ -1970,6 +2129,22 @@ msgstr "Ces endroits n'ont pas encore de coordonnées : %s."
 #. module: bf_route
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_day.py:0
+msgid "This day is finished: nothing more can be recorded on it. Call the office."
+msgstr ""
+"Cette journée est terminée : plus rien ne peut y être enregistré. Appelez "
+"le bureau."
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "This day was cancelled: nothing can be recorded on it. Call the office."
+msgstr ""
+"Cette journée a été annulée : rien ne peut y être enregistré. Appelez le "
+"bureau."
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
 msgid "This route day is not yours."
 msgstr "Cette journée de route n'est pas la vôtre."
 
@@ -2015,6 +2190,7 @@ msgstr "Aujourd'hui"
 #. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_list
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_mileage_list
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_stop_list
 msgid "Total"
 msgstr "Total"
 
@@ -2079,6 +2255,12 @@ msgstr "Visites"
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "Waiting for the network"
 msgstr "En attente du réseau"
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "Waze"
+msgstr "Waze"
 
 #. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
@@ -2188,6 +2370,11 @@ msgid "http://vroom:3000"
 msgstr "http://vroom:3000"
 
 #. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+msgstr "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+
+#. module: bf_route
 #. odoo-javascript
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "planned"
@@ -2204,3 +2391,9 @@ msgstr "jusqu'à %s"
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "waiting"
 msgstr "en attente"
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "· left at"
+msgstr "· départ à"

@@ -5,6 +5,7 @@ import { ConnectionLostError, RPCError } from "@web/core/network/rpc";
 import { registry } from "@web/core/registry";
 import { user } from "@web/core/user";
 import { useService } from "@web/core/utils/hooks";
+import { RouteMap } from "../route_map/route_map";
 
 const RETRY_MS = 30000;
 // A refused mark stays on the phone this long at most (the office was told about it).
@@ -60,6 +61,22 @@ function readPosition() {
     });
 }
 
+/** The phone's system: the maps apps it can open differ. */
+function platform() {
+    const agent = navigator.userAgent || "";
+    // iPadOS presents itself as a Mac; it is the Mac with a touch screen.
+    if (/iPhone|iPad|iPod/.test(agent) || (/Macintosh/.test(agent) && navigator.maxTouchPoints > 1)) {
+        return "ios";
+    }
+    return /Android/.test(agent) ? "android" : "other";
+}
+
+/** "HH:MM" of the phone's clock, shown until the server answers with its own. */
+function clockNow() {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+}
+
 /** The server said "your session is over": like no network, the marks wait. */
 function isSessionExpired(error) {
     return (
@@ -81,6 +98,7 @@ function isSessionExpired(error) {
  */
 export class MyRoute extends Component {
     static template = "bf_route.MyRoute";
+    static components = { RouteMap };
     static props = ["*"];
 
     setup() {
@@ -104,8 +122,12 @@ export class MyRoute extends Component {
             reading: false,
             forms: {},
             openNote: null,
+            openNav: null,
+            openMap: {},
+            mapRefresh: 0,
             notes: {},
         });
+        this.platform = platform();
         this.onOnline = () => {
             this.state.online = true;
             this.flush();
@@ -207,7 +229,10 @@ export class MyRoute extends Component {
     applyQueue() {
         for (const item of this.state.queue) {
             const stop = this.findStop(item.stopId);
-            if (stop) {
+            if (stop && item.kind === "arrive") {
+                stop.arrived_at = stop.arrived_at || item.clock;
+                stop.pending = true;
+            } else if (stop) {
                 stop.state = item.state;
                 stop.pending = true;
             }
@@ -216,6 +241,7 @@ export class MyRoute extends Component {
             const stop = this.findStop(item.stopId);
             if (stop && stop.state === "todo") {
                 stop.refusal = item.reason;
+                stop.refusalKind = item.kind || false;
                 if (!this.restored.has(item.key)) {
                     this.restored.add(item.key);
                     this.restoreItem(stop, item);
@@ -258,12 +284,53 @@ export class MyRoute extends Component {
         return day.stops.find((s) => s.state === "todo");
     }
 
-    mapUrl(stop) {
-        const label = encodeURIComponent(stop.partner);
-        if (stop.latitude && stop.longitude) {
-            return `geo:${stop.latitude},${stop.longitude}?q=${stop.latitude},${stop.longitude}(${label})`;
+    /**
+     * The links that start the navigation to a stop, in the phone's own apps. Android: one geo:
+     * link, the phone asks which app (Maps, Waze...). An iPhone does not open geo: links: Apple
+     * Plans, Google Maps and Waze, each by its https link (the app opens when it is installed,
+     * the web page otherwise; CarPlay follows the phone). A computer: Google Maps on the web.
+     * What leaves the phone is the stop's coordinates, or its address when it has none, and
+     * only when the worker taps. ⚠️ Never the customer's name alone (Quebec Law 25): without
+     * coordinates nor address, no link at all. ``external``: an https link opens in a new tab;
+     * a geo: link is handed to the phone's apps (a new tab would stay empty on Android).
+     */
+    navLinks(stop) {
+        const point = stop.latitude && stop.longitude ? `${stop.latitude},${stop.longitude}` : null;
+        if (!point && !stop.address) {
+            return [];
         }
-        return `geo:0,0?q=${encodeURIComponent(stop.address || stop.partner)}`;
+        const where = encodeURIComponent(point || stop.address);
+        const google = `https://www.google.com/maps/dir/?api=1&destination=${where}`;
+        if (this.platform === "android") {
+            const label = encodeURIComponent(stop.partner);
+            return [{
+                label: _t("Directions"),
+                url: point ? `geo:${point}?q=${point}(${label})` : `geo:0,0?q=${where}`,
+                external: false,
+            }];
+        }
+        if (this.platform === "ios") {
+            return [
+                { label: _t("Apple Maps"), url: `https://maps.apple.com/?daddr=${where}`, external: true },
+                { label: _t("Google Maps"), url: google, external: true },
+                {
+                    label: _t("Waze"),
+                    url: point
+                        ? `https://waze.com/ul?ll=${point}&navigate=yes`
+                        : `https://waze.com/ul?q=${where}&navigate=yes`,
+                    external: true,
+                },
+            ];
+        }
+        return [{ label: _t("Directions"), url: google, external: true }];
+    }
+
+    toggleNav(stop) {
+        this.state.openNav = this.state.openNav === stop.id ? null : stop.id;
+    }
+
+    toggleMap(day) {
+        this.state.openMap[day.id] = !this.state.openMap[day.id];
     }
 
     stateLabel(stop) {
@@ -309,8 +376,21 @@ export class MyRoute extends Component {
     }
 
     async finish(day) {
-        const left = day.stops.filter((s) => s.state === "todo").length;
-        if (left && !window.confirm(_t("%s stop(s) not marked will be counted as missed. Finish anyway?", left))) {
+        const left = day.stops.filter((s) => s.state === "todo");
+        // An arrival alone does not close a stop: said apart, it is easy to forget.
+        const arrived = left.filter((s) => s.arrived_at).length;
+        const others = left.length - arrived;
+        let question = null;
+        if (arrived) {
+            question = [
+                _t("%s stop(s) where you arrived are not marked yet: they will be counted as missed.", arrived),
+                others ? _t("%s other stop(s) not marked will be counted as missed.", others) : "",
+                _t("Finish anyway?"),
+            ].filter(Boolean).join("\n");
+        } else if (others) {
+            question = _t("%s stop(s) not marked will be counted as missed. Finish anyway?", others);
+        }
+        if (question && !window.confirm(question)) {
             return;
         }
         await this.flush();
@@ -342,6 +422,35 @@ export class MyRoute extends Component {
         }
     }
 
+    /** "I'm here": the arrival at the stop, queued and sent like a mark. No position. */
+    async arrive(stop) {
+        if (stop.arrived_at || stop.state !== "todo") {
+            return;
+        }
+        const item = {
+            kind: "arrive",
+            stopId: stop.id,
+            dayId: this.dayOf(stop.id)?.id,
+            label: stop.partner,
+            state: "arrived",
+            prevState: stop.state,
+            note: null,
+            clock: clockNow(),
+            clientTime: new Date().toISOString(),
+            key: newKey(),
+        };
+        // A new arrival replaces an old refused one; a refused mark of the stop stays.
+        this.removeRefused((r) => r.stopId === stop.id && r.kind === "arrive");
+        const left = this.state.refused.find((r) => r.stopId === stop.id);
+        stop.refusal = left ? left.reason : false;
+        stop.refusalKind = left ? left.kind : false;
+        stop.arrived_at = item.clock;
+        stop.pending = true;
+        this.state.queue.push(item);
+        this.mergeQueue();
+        await this.flush();
+    }
+
     async mark(stop, newState) {
         const extra = this.extraFor(stop, newState);
         if (extra === false) {
@@ -368,6 +477,7 @@ export class MyRoute extends Component {
         // A new mark of this stop replaces an old refusal.
         this.removeRefused((r) => r.stopId === stop.id);
         stop.refusal = false;
+        stop.refusalKind = false;
         stop.state = newState;
         stop.pending = true;
         this.state.openNote = null;
@@ -450,17 +560,23 @@ export class MyRoute extends Component {
         }
         this.flushing = (async () => {
             this.mergeQueue();
+            let recorded = false;
             while (this.state.queue.length) {
                 const item = this.state.queue[0];
                 try {
-                    const fresh = await this.orm.call("bf.route.day.stop", "app_mark", [item.stopId], {
-                        state: item.state,
-                        note: item.note,
-                        position: item.position,
-                        client_time: item.clientTime,
-                        app_key: item.key,
-                        ...(item.extra || {}),
-                    });
+                    const fresh = item.kind === "arrive"
+                        ? await this.orm.call("bf.route.day.stop", "app_arrive", [item.stopId], {
+                              client_time: item.clientTime,
+                              app_key: item.key,
+                          })
+                        : await this.orm.call("bf.route.day.stop", "app_mark", [item.stopId], {
+                              state: item.state,
+                              note: item.note,
+                              position: item.position,
+                              client_time: item.clientTime,
+                              app_key: item.key,
+                              ...(item.extra || {}),
+                          });
                     const stop = this.findStop(item.stopId);
                     if (fresh._notice) {
                         this.state.notice = fresh._notice;
@@ -469,6 +585,7 @@ export class MyRoute extends Component {
                     if (stop) {
                         Object.assign(stop, fresh, { pending: false });
                     }
+                    recorded = true;
                     this.state.online = true;
                     this.state.sessionExpired = false;
                 } catch (error) {
@@ -496,12 +613,19 @@ export class MyRoute extends Component {
                     const stop = this.findStop(item.stopId);
                     if (stop) {
                         stop.state = item.prevState || "todo";
+                        if (item.kind === "arrive") {
+                            stop.arrived_at = false;
+                        }
                         stop.pending = false;
                         stop.refusal = reason;
+                        stop.refusalKind = item.kind || false;
                         this.restored.add(item.key);
                         this.restoreItem(stop, item);
                     }
-                    this.notification.add(_t("A mark was not recorded: %s", reason), {
+                    const told = item.kind === "arrive"
+                        ? _t("An arrival was not recorded: %s", reason)
+                        : _t("A mark was not recorded: %s", reason);
+                    this.notification.add(told, {
                         type: "danger",
                         sticky: true,
                     });
@@ -509,6 +633,13 @@ export class MyRoute extends Component {
                 this.markSent(item.key);
                 this.state.queue.shift();
                 this.mergeQueue();
+                // ⚠️ The server's answer is the stop as it stands: another queued mark of the
+                // same stop (an arrival sent, "Absent" still waiting) is shown again over it.
+                this.applyQueue();
+            }
+            if (recorded) {
+                // The map's pins follow the marks: redrawn once per pass, not per mark.
+                this.state.mapRefresh++;
             }
             if (this.state.online && !this.state.sessionExpired) {
                 for (const item of this.state.refused.filter((r) => !r.reported)) {
@@ -544,6 +675,7 @@ export class MyRoute extends Component {
         await this.flush();
         this.state.loading = true;
         await this.load();
+        this.state.mapRefresh++;
     }
 }
 

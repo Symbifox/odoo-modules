@@ -35,6 +35,64 @@ class TestAccess(RouteCase):
         with self.assertRaises(AccessError):
             self.route.with_user(self.worker).write({"name": "Mine now"})
 
+    def test_a_contact_or_a_vehicle_of_another_company_is_refused(self):
+        """The app_* methods read the stops' contacts, the depot and the truck in sudo: a
+        manager of this company must not put those of another one on a route, and read them
+        back through the phone's methods. A contact shared by all companies stays allowed."""
+        other = self.env["res.company"].create({"name": "Company B"})
+        secret = self.env["res.partner"].create({"name": "Secret of B", "company_id": other.id,
+                                                 "phone": "+1 514 555 0199"})
+        brand = self.env["fleet.vehicle.model.brand"].create({"name": "Brand B"})
+        model = self.env["fleet.vehicle.model"].create({"name": "Van", "brand_id": brand.id})
+        van = self.env["fleet.vehicle"].create({"model_id": model.id, "company_id": other.id})
+        day = self.make_day()
+        stop = day.stop_ids.sorted("sequence")[0]
+        Stop = self.env["bf.route.day.stop"].with_user(self.manager)
+        with self.assertRaises(UserError):
+            Stop.create({"day_id": day.id, "partner_id": secret.id})
+        with self.assertRaises(UserError):
+            stop.with_user(self.manager).write({"partner_id": secret.id})
+        route = self.route.with_user(self.manager)
+        with self.assertRaises(UserError):
+            route.write({"stop_ids": [(0, 0, {"partner_id": secret.id})]})
+        with self.assertRaises(UserError):
+            route.stop_ids[0].write({"partner_id": secret.id})
+        for field in ("start_partner_id", "end_partner_id"):
+            with self.assertRaises(UserError, msg=field):
+                route.write({field: secret.id})
+        with self.assertRaises(UserError):
+            route.write({"vehicle_id": van.id})
+        with self.assertRaises(UserError):
+            day.with_user(self.manager).write({"vehicle_id": van.id})
+        # Not in sudo either (the satellites, a postponed stop).
+        with self.assertRaises(UserError):
+            Stop.sudo().create({"day_id": day.id, "partner_id": secret.id})
+        self.assertNotIn(secret, day.stop_ids.partner_id | self.route.stop_ids.partner_id)
+        # A contact without a company, and one of this company, still go on a stop.
+        mine = self.env["res.partner"].create({"name": "Mine", "company_id": self.company.id})
+        added = Stop.create({"day_id": day.id, "partner_id": mine.id})
+        added.write({"partner_id": self.alice.id})
+        self.assertEqual(added.partner_id, self.alice)
+
+    def test_a_route_that_cannot_make_its_days_does_not_stop_the_others(self):
+        """A stop saved with another company's contact before the check existed: its route
+        makes no day, the other routes still get theirs from the watcher."""
+        other = self.env["res.company"].create({"name": "Company B"})
+        secret = self.env["res.partner"].create({"name": "Secret of B", "company_id": other.id})
+        broken = self.route.copy({"name": "Broken"})
+        (self.route | broken).with_context(bf_route_no_refresh=True).write({
+            "date_start": fields.Date.today() - timedelta(days=7),
+            "mon": True, "tue": True, "wed": True, "thu": True, "fri": True, "sat": True, "sun": True})
+        self.env.cr.execute("UPDATE bf_route_stop SET partner_id = %s WHERE route_id = %s",
+                            (secret.id, broken.id))
+        self.env.invalidate_all()
+        self.assertFalse((self.route | broken).day_ids)
+        with self.assertLogs("odoo.addons.bf_route.models.bf_route", level="ERROR") as logged:
+            self.env["bf.route"]._cron_watch()
+        self.assertTrue(self.route.day_ids, "the sound route got its days")
+        self.assertFalse(broken.day_ids)
+        self.assertTrue(any("route %s could not" % broken.id in line for line in logged.output))
+
     def test_worker_cannot_run_manager_actions(self):
         for method in ("action_generate_days", "action_compute_distance", "action_optimize",
                        "action_plan_day"):
@@ -141,6 +199,8 @@ class TestPosition(RouteCase):
         alice = self.mark_alice().sudo()
         alice.done_at = fields.Datetime.now() - timedelta(days=91)
         closed = self.env["res.company"].create({"name": "Closed company"})
+        # The truck goes with the route (a vehicle of the old company would be refused).
+        self.truck.company_id = False
         self.route.sudo().company_id = closed
         self.assertEqual(alice.company_id, closed)
         self.assertTrue(alice.latitude)

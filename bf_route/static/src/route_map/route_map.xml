@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_route.RouteMap">
+        <div class="o_bf_route_map_box">
+            <div t-ref="map" class="o_bf_route_map"/>
+            <div t-if="state.loading" class="small text-muted mt-1">Loading the map…</div>
+            <div t-if="state.error" class="small text-warning mt-1"><t t-esc="state.error"/></div>
+            <div t-if="state.missing.length" class="small text-muted mt-1">
+                Not on the map (no coordinates): <t t-esc="state.missing.join(', ')"/>
+            </div>
+        </div>
+    </t>
+    <t t-name="bf_route.RouteDayMapWidget">
+        <div class="o_bf_route_day_map w-100">
+            <RouteMap t-if="props.record.resId" dayId="props.record.resId" refresh="refresh"/>
+            <div t-else="" class="text-muted small">Save the day to see its map.</div>
+        </div>
+    </t>
+</templates>

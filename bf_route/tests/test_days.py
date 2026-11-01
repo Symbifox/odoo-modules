@@ -112,7 +112,8 @@ class TestDays(RouteCase):
         self.assertEqual(log.mapped("value"), [1085.0], "the odometer is logged to the vehicle")
         self.truck.invalidate_recordset(["odometer"])
         self.assertEqual(self.truck.odometer, 1085.0)
-        activity = day.activity_ids
+        # Only the missed stops: a satellite may add its own (time sheets with a project set).
+        activity = day.activity_ids.filtered(lambda a: (a.summary or "").startswith("Stops missed"))
         self.assertEqual(len(activity), 1)
         self.assertEqual(activity.user_id, self.manager)
         self.assertIn("Carol Clinic", activity.note)

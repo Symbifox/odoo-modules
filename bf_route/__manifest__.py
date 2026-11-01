@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Work Routes",
-    "version": "18.0.1.1.1",
+    "version": "18.0.1.2.0",
     "category": "Services/Field Service",
     "summary": "Recurring routes for people on the road: stops in order, proof at each stop, "
                "mileage, alerts, and a phone screen for the worker",
@@ -17,9 +17,14 @@ technicians, sales representatives.
 - route days are created a few days ahead from the template; a stop can be
   added to one day without touching the template;
 - the worker follows the day on the phone ("My route"): the stops in order, a
-  link to the phone's maps app, one tap to mark a stop done, absent or
-  postponed, with a note. Marks made without network are sent later and keep
-  the phone's time;
+  link to the phone's maps app (Android's choice of apps; Apple Maps, Google Maps
+  or Waze on an iPhone), "I'm here" on arrival, then one tap to mark the stop
+  done, absent or postponed, with a note: the time on site is the difference.
+  Marks made without network are sent later and keep the phone's time;
+- a map of the day, on the phone and on the day's form: the stops numbered in
+  order and coloured by their state, and the road between them from the
+  self-hosted OSRM. Background tiles from OpenStreetMap by default (fetched by
+  the viewer's browser), or from the tile server set in the settings;
 - proof at the stop: the time, and the position read once when the stop is
   marked, only if the company turned it on and the worker has read the notice
   (Quebec Law 25, s. 8.1). Positions are erased after the retention period.
@@ -57,6 +62,9 @@ technicians, sales representatives.
     "assets": {
         "web.assets_backend": [
             "bf_route/static/src/window_time/window_time_field.js",
+            "bf_route/static/src/route_map/route_map.js",
+            "bf_route/static/src/route_map/route_map.xml",
+            "bf_route/static/src/route_map/route_map.scss",
             "bf_route/static/src/ma_route/ma_route.js",
             "bf_route/static/src/ma_route/ma_route.xml",
             "bf_route/static/src/ma_route/ma_route.scss",

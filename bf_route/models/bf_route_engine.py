@@ -9,6 +9,7 @@ city, postal code, province and country of a contact without coordinates, never 
 name, a phone or an email.
 """
 import logging
+import re
 import time
 
 import requests
@@ -21,9 +22,23 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 TIMEOUT = 20
+# The map waits for its road at most this long, then draws straight lines.
+LINE_TIMEOUT = 3
 OSRM_PARAM = "bf_route.osrm_url"
 VROOM_PARAM = "bf_route.vroom_url"
 NOMINATIM_PARAM = "bf_route.nominatim_url"
+TILE_PARAM = "bf_route.tile_url"
+TILE_ATTRIBUTION_PARAM = "bf_route.tile_attribution"
+# The map's background. OpenStreetMap's tiles by default (light use allowed, attribution
+# required): the viewer's browser fetches them, so the OSM Foundation sees the area looked at.
+# An administrator can point to a tile server of their own instead.
+DEFAULT_TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+DEFAULT_TILE_ATTRIBUTION = "© OpenStreetMap contributors"
+DEFAULT_TILE_ATTRIBUTION_URL = "https://www.openstreetmap.org/copyright"
+# https, no credentials ("user:pass@"), and no braces but Leaflet's own placeholders.
+TILE_URL_RE = re.compile(r"https://(?:[^\s\"'<>`\\@{}]|\{[zxysr]\})+")
+# The road drawn on the map: enough for a screen, not a dump of the whole geometry.
+MAX_LINE_POINTS = 4000
 # Nominatim's rank of a result: 30 a building, 28 a house number placed along its street,
 # 26 and 27 a street, 16 a town. Coarser than a street, the point can be kilometres from the
 # door: refused. A street is good enough to plan the kilometres, not to send the worker to:
@@ -175,14 +190,22 @@ class BfRouteEngine(models.AbstractModel):
                               response.status_code))
 
     @api.model
+    def _object(self, data):
+        """The engine's answer when it is a JSON object, else a UserError (a list or a string
+        would fail further on as an AttributeError, past every fallback)."""
+        if not isinstance(data, dict):
+            raise UserError(_("The routing engine sent an unreadable answer (HTTP %s).", "200"))
+        return data
+
+    @api.model
     def _route(self, points):
         """Distance (m) and duration (s) of the road through ``points``, and of each leg."""
         base = self._url(OSRM_PARAM)
         if not base:
             raise UserError(_("No routing engine: enter the OSRM address in the Routes settings."))
         coords = ";".join("%.6f,%.6f" % (lon, lat) for lon, lat in points)
-        data = self._call("GET", "%s/route/v1/driving/%s" % (base, coords),
-                          params={"overview": "false", "steps": "false"})
+        data = self._object(self._call("GET", "%s/route/v1/driving/%s" % (base, coords),
+                                       params={"overview": "false", "steps": "false"}))
         if data.get("code") != "Ok" or not data.get("routes"):
             raise UserError(_("The routing engine found no road (%s).",
                               data.get("message") or data.get("code") or "-"))
@@ -197,6 +220,47 @@ class BfRouteEngine(models.AbstractModel):
             }
         except (KeyError, TypeError, ValueError, IndexError):
             raise UserError(_("The routing engine sent an unreadable answer (HTTP %s).", "200"))
+
+    @api.model
+    def _route_line(self, points):
+        """The road through ``points`` ([lon, lat]) as [[lat, lon], ...], for the map, or False
+        when it has fewer than two places."""
+        base = self._url(OSRM_PARAM)
+        if not base:
+            raise UserError(_("No routing engine: enter the OSRM address in the Routes settings."))
+        coords = ";".join("%.6f,%.6f" % (lon, lat) for lon, lat in points)
+        data = self._object(self._call("GET", "%s/route/v1/driving/%s" % (base, coords),
+                                       params={"overview": "full", "geometries": "geojson",
+                                               "steps": "false"},
+                                       timeout=LINE_TIMEOUT))
+        if data.get("code") != "Ok" or not data.get("routes"):
+            raise UserError(_("The routing engine found no road (%s).",
+                              data.get("message") or data.get("code") or "-"))
+        try:
+            coordinates = data["routes"][0]["geometry"]["coordinates"]
+            step = max(1, -(-len(coordinates) // MAX_LINE_POINTS))
+            line = []
+            for lon, lat in coordinates[::step] + coordinates[-1:]:
+                lat, lon = float(lat), float(lon)
+                if not (-90 <= lat <= 90 and -180 <= lon <= 180):
+                    raise ValueError(lat)
+                line.append([round(lat, 6), round(lon, 6)])
+            # Fewer than two places is no road: False, so the map joins the stops by straight
+            # lines and frames them ([] would stop both).
+            return line if len({tuple(point) for point in line}) >= 2 else False
+        except (KeyError, TypeError, ValueError, IndexError):
+            raise UserError(_("The routing engine sent an unreadable answer (HTTP %s).", "200"))
+
+    @api.model
+    def _tiles(self):
+        """The tile server of the map: the administrator's, when it is a plain https address
+        with {z}, {x} and {y}, or else OpenStreetMap's. The attribution is plain text."""
+        url = self._url(TILE_PARAM)
+        if url and TILE_URL_RE.fullmatch(url) and all(k in url for k in ("{z}", "{x}", "{y}")):
+            text = (self.env["ir.config_parameter"].sudo().get_param(TILE_ATTRIBUTION_PARAM) or "").strip()
+            return {"url": url, "attribution": text[:200], "attribution_url": False}
+        return {"url": DEFAULT_TILE_URL, "attribution": DEFAULT_TILE_ATTRIBUTION,
+                "attribution_url": DEFAULT_TILE_ATTRIBUTION_URL}
 
     @staticmethod
     def _number(value):
@@ -233,7 +297,7 @@ class BfRouteEngine(models.AbstractModel):
             # Without the geometry, VROOM leaves the distance of the summary empty.
             "options": {"g": True},
         }
-        data = self._call("POST", base + "/", json=payload)
+        data = self._object(self._call("POST", base + "/", json=payload))
         if data.get("code") != 0:
             raise UserError(_("The optimizer could not order the stops (%s).",
                               data.get("error") or data.get("code")))

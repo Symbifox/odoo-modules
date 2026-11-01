@@ -94,8 +94,11 @@
                                     <field name="window_end" widget="bf_window_time" optional="show"/>
                                     <field name="planned_clock" optional="show"/>
                                     <field name="planned_time" optional="hide" options="{'show_seconds': false}"/>
+                                    <field name="arrived_clock" optional="show"/>
                                     <field name="state" widget="badge"/>
                                     <field name="done_clock" optional="show"/>
+                                    <field name="on_site_minutes" optional="show" invisible="not on_site_minutes"/>
+                                    <field name="arrived_at" optional="hide" options="{'show_seconds': false}"/>
                                     <field name="done_at" optional="hide" options="{'show_seconds': false}"/>
                                     <field name="sent_later" optional="hide"/>
                                     <field name="note" optional="show"/>
@@ -105,6 +108,9 @@
                                     <field name="template_stop_id" column_invisible="1"/>
                                 </list>
                             </field>
+                        </page>
+                        <page string="Map" name="map">
+                            <widget name="bf_route_day_map"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -239,7 +245,9 @@
                 <field name="partner_id"/>
                 <field name="user_id" widget="many2one_avatar_user"/>
                 <field name="state" widget="badge"/>
+                <field name="arrived_at" optional="show" options="{'show_seconds': false}"/>
                 <field name="done_at" options="{'show_seconds': false}"/>
+                <field name="on_site_minutes" optional="show" sum="Total"/>
                 <field name="note" optional="show"/>
             </list>
         </field>

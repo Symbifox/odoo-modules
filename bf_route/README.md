@@ -17,7 +17,7 @@ deliveries with a vehicle and a driver), but nothing that says in which order
 to visit customers, nothing the worker follows on a phone, and no proof that a
 stop was made. The route tools on the market send every address and every
 position to a third party, usually outside Canada. This module keeps both on
-your server.
+your server (the map's background tiles excepted, see *Known limits*).
 
 ## Features
 
@@ -31,9 +31,27 @@ your server.
   days that have not started; stops added by hand to one day are kept.
 - **"My route"** (`/odoo/my-route`, installable on the phone's home screen as
   an app through `/scoped_app?app_id=bf_route&path=odoo/my-route`): the day's
-  stops in order, a link to the phone's maps app, a call button, a note, and
-  one tap to mark a stop **done**, **customer absent** or **postponed**. A
-  postponed stop moves to the next planned day of the route.
+  stops in order, directions in the phone's own maps app, a call button, a
+  note, **"I'm here"** on arrival, and one tap to mark a stop **done**,
+  **customer absent** or **postponed**. A postponed stop moves to the next
+  planned day of the route.
+- **Directions**: on Android, one `geo:` link and the phone offers its maps
+  apps (Google Maps, Waze...). An iPhone does not open `geo:` links: it gets
+  Apple Maps, Google Maps and Waze, each by its https link (the app opens when
+  it is installed, CarPlay follows). On a computer, Google Maps on the web.
+  The stop's coordinates (or, when it has none, its address with the postal
+  code and the province) go to that app, and only when the worker taps. Never
+  the customer's name: a stop with neither coordinates nor address gets no
+  directions link.
+- **Arrival and departure**: "I'm here" stamps the arrival, once (sent later
+  without network, like a mark); the mark that follows is the departure. The
+  time on site shows on the day's stops and in *Visits*. Marking without the
+  arrival still works. No position is read at the arrival.
+- **Map of the day**, on the phone (*Map*) and on the day's form (*Map* tab):
+  the depot, the stops numbered in order and coloured by their state, the
+  return point, and the road between them from OSRM (straight lines without
+  it). Customers' places only, never a position read from the phone. A place
+  without coordinates is named under the map.
 - **Without network**: a mark is shown at once and queued on the phone; the
   queue is sent when the network comes back, with the phone's time of the
   mark. Each mark carries a key, so a mark sent twice counts once. A phone
@@ -103,7 +121,7 @@ Positions are visible to route managers only.
 ## Configuration
 
 1. *Settings › Work routes*: position at the stops (off by default), notice,
-   retention, alert delay, OSRM, VROOM and Nominatim addresses.
+   retention, alert delay, OSRM, VROOM and Nominatim addresses, map tiles.
 2. Give the contacts their coordinates (Nominatim does it from the address),
    and the depot (the company by default).
 3. *Routes › Routes*: create a route, its stops and its days.
@@ -141,7 +159,12 @@ reported to the office on the day's chatter with one activity per day.
 - The app needs the network to open: marks wait on the phone, but a phone
   restarted without network cannot open "My route" until it is back.
 - Marks waiting for the network keep their position on the phone until sent.
-- No map at the office yet, no signature or photo at the stop.
+- No signature or photo at the stop.
+- The map's background tiles are OpenStreetMap's by default: the viewer's
+  browser fetches them from the OpenStreetMap Foundation (United Kingdom),
+  which learns the area looked at (no name, no address). Their usage policy
+  allows light use with the credit shown. Point *Settings › Work routes › Map
+  tiles* to a tile server of your own to keep that on your side too.
 - The mileage log counts the odometer's kilometres: a day without both
   readings counts 0 km, even when OSRM planned its distance. Its "Leaving
   from" is the route's depot, not where the worker actually left from.
@@ -159,3 +182,6 @@ reported to the office on the day's chatter with one activity per day.
 Business Source License 1.1, see `LICENSE`. Production use for your own
 internal operations is allowed; providing it as a service to third parties
 requires an agreement with Les services de consultation Blue Fox, Inc.
+
+Bundled: [Leaflet](https://leafletjs.com) 1.9.4 (`static/lib/leaflet`), BSD 2-Clause
+License, see `static/lib/leaflet/LICENSE`.

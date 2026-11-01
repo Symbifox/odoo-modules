@@ -43,6 +43,14 @@
                         <setting string="Nominatim" help="Self-hosted geocoder: coordinates of the contacts from their address. e.g. http://nominatim:8080">
                             <field name="bf_route_nominatim_url" placeholder="http://nominatim:8080"/>
                         </setting>
+                        <setting string="Map tiles"
+                                 help="Background of the route maps, an https address with {z}, {x} and {y}. Empty: OpenStreetMap's tiles, fetched by the viewer's browser.">
+                            <field name="bf_route_tile_url" placeholder="https://tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+                        </setting>
+                        <setting string="Map tiles credit" invisible="not bf_route_tile_url"
+                                 help="Shown on the map, as the tile server's licence asks.">
+                            <field name="bf_route_tile_attribution"/>
+                        </setting>
                     </block>
                 </app>
             </xpath>

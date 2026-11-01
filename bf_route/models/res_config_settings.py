@@ -8,6 +8,9 @@ class ResConfigSettings(models.TransientModel):
     bf_route_vroom_url = fields.Char(string="VROOM address", config_parameter="bf_route.vroom_url")
     bf_route_nominatim_url = fields.Char(string="Nominatim address",
                                          config_parameter="bf_route.nominatim_url")
+    bf_route_tile_url = fields.Char(string="Map tiles", config_parameter="bf_route.tile_url")
+    bf_route_tile_attribution = fields.Char(string="Map tiles credit",
+                                            config_parameter="bf_route.tile_attribution")
     bf_route_position_mode = fields.Selection(related="company_id.bf_route_position_mode",
                                               readonly=False)
     bf_route_notice = fields.Html(related="company_id.bf_route_notice", readonly=False)

@@ -29,6 +29,9 @@ class BfRoute(models.Model):
     _description = "Work route"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
+    # ⚠️ The depot, the return point and the truck reach the phone in sudo (app_map, _app_data):
+    # a place or a vehicle of another company would be read through a route of this one.
+    _check_company_auto = True
 
     name = fields.Char(string="Route", required=True, tracking=True)
     active = fields.Boolean(default=True)
@@ -39,7 +42,7 @@ class BfRoute(models.Model):
     user_id = fields.Many2one(
         "res.users", string="Worker", tracking=True,
         help="Who drives the route by default. Each day can be given to someone else.")
-    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle", tracking=True)
+    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle", tracking=True, check_company=True)
     recurrence = fields.Selection(
         [("none", "On demand"), ("weekly", "Weekly")], string="Runs", default="weekly",
         required=True, tracking=True)
@@ -59,9 +62,11 @@ class BfRoute(models.Model):
                               help="Local time of the person responsible.")
     start_partner_id = fields.Many2one(
         "res.partner", string="Leaves from", default=lambda self: self.env.company.partner_id,
+        check_company=True,
         help="The depot. Its coordinates are used to plan the distance and the order.")
     end_partner_id = fields.Many2one(
-        "res.partner", string="Returns to", default=lambda self: self.env.company.partner_id)
+        "res.partner", string="Returns to", default=lambda self: self.env.company.partner_id,
+        check_company=True)
     days_ahead = fields.Integer(string="Days created ahead", default=7)
     stop_ids = fields.One2many("bf.route.stop", "route_id", string="Stops", copy=True)
     stop_count = fields.Integer(compute="_compute_counts")
@@ -296,11 +301,24 @@ class BfRoute(models.Model):
     # Watcher
     # ------------------------------------------------------------------
     @api.model
+    def _cron_generate_days(self):
+        """Each route in its own savepoint: one that cannot make its days (a stop whose contact
+        belongs to another company, saved before 18.0.1.2.0 checked it) must not stop the
+        days of all the other routes."""
+        for route in self.sudo().search([("recurrence", "=", "weekly")]):
+            try:
+                with self.env.cr.savepoint():
+                    route._generate_days()
+            except Exception:
+                _logger.exception("bf_route: the days of route %s could not be created", route.id)
+                self.env.invalidate_all()
+
+    @api.model
     def _cron_watch(self):
         """Three jobs, each in its own savepoint: one that fails (a bad setting, an odd
         record) must not stop the others, least of all the erasing of old positions."""
         jobs = [
-            ("days", lambda: self.sudo().search([("recurrence", "=", "weekly")])._generate_days()),
+            ("days", self._cron_generate_days),
             ("alerts", lambda: self.env["bf.route.day"].sudo()._watch()),
             ("positions", lambda: self.env["bf.route.day.stop"].sudo()._purge_positions()),
         ]
@@ -317,11 +335,14 @@ class BfRouteStop(models.Model):
     _name = "bf.route.stop"
     _description = "Stop of a work route"
     _order = "route_id, sequence, id"
+    # ⚠️ The customer's name, phone, address and place reach the phone in sudo: never a
+    # contact of another company (a contact shared by all companies is fine).
+    _check_company_auto = True
 
     route_id = fields.Many2one("bf.route", required=True, ondelete="cascade", index=True)
     company_id = fields.Many2one(related="route_id.company_id", store=True)
     sequence = fields.Integer(default=10)
-    partner_id = fields.Many2one("res.partner", string="Customer", required=True)
+    partner_id = fields.Many2one("res.partner", string="Customer", required=True, check_company=True)
     address = fields.Char(related="partner_id.contact_address", string="Address")
     latitude = fields.Float(related="partner_id.partner_latitude", readonly=False)
     longitude = fields.Float(related="partner_id.partner_longitude", readonly=False)

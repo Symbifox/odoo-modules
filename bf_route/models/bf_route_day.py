@@ -13,7 +13,11 @@ overwrite its time and position, or sell twice.
 
 ⚠️ Position (Quebec Law 25, s. 8.1): read once when a stop is marked, and kept only
 when the company turned it on AND the worker acknowledged the current notice.
-Erased after the retention period by the watcher.
+Erased after the retention period by the watcher. The arrival at a stop reads none.
+
+Arrival and departure: "I'm here" stamps the arrival (once, from the phone, sent later
+without network like any mark); the mark that follows (done, absent, postponed) is the
+departure. Their difference is the time on site. Marking without the arrival still works.
 """
 import re
 from datetime import timedelta
@@ -25,6 +29,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
 from .tools import local_to_utc, local_today, parse_client_time, utc_to_local
+from .bf_route_engine import OSRM_PARAM
 
 DAY_STATES = [
     ("planned", "Planned"),
@@ -86,6 +91,8 @@ class BfRouteDay(models.Model):
     _description = "Route day"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date desc, date_planned_start, id"
+    # The truck reaches the phone in sudo (_app_data): never one of another company.
+    _check_company_auto = True
 
     name = fields.Char(compute="_compute_name", store=True)
     route_id = fields.Many2one("bf.route", string="Route", required=True, ondelete="restrict",
@@ -101,7 +108,7 @@ class BfRouteDay(models.Model):
         string="Edited by hand", readonly=True, copy=False,
         help="The office changed this day: changes to the route no longer overwrite it.")
     user_id = fields.Many2one("res.users", string="Worker", index=True, tracking=True)
-    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle", tracking=True)
+    vehicle_id = fields.Many2one("fleet.vehicle", string="Vehicle", tracking=True, check_company=True)
     heavy_vehicle = fields.Boolean(related="vehicle_id.bf_route_heavy")
     date_planned_start = fields.Datetime(string="Planned start")
     state = fields.Selection(DAY_STATES, default="planned", required=True, index=True,
@@ -213,12 +220,31 @@ class BfRouteDay(models.Model):
         return self.env.user.has_group("bf_route.group_route_manager")
 
     def _check_driver(self):
-        """The worker of the day, or a route manager. Anyone else is refused."""
-        if self.env.su or self._is_manager():
+        """The worker of the day, or a route manager. Anyone else is refused.
+
+        ⚠️ The callers go on in sudo: the access rules are read here first. A manager sees
+        every day, but only in their own companies (rule_day_company)."""
+        if self.env.su:
+            return
+        self.check_access("read")
+        if self._is_manager():
             return
         for day in self:
             if day.user_id != self.env.user:
                 raise AccessError(_("This route day is not yours."))
+
+    def _check_on_the_road(self, not_started):
+        """The day is on the road, or the phone is told why not: ``not_started`` for a planned
+        day; a day the office finished or cancelled says so (starting it is not the answer)."""
+        self.ensure_one()
+        if self.state == "done":
+            raise UserError(_("This day is finished: nothing more can be recorded on it. "
+                              "Call the office."))
+        if self.state == "canceled":
+            raise UserError(_("This day was cancelled: nothing can be recorded on it. "
+                              "Call the office."))
+        if self.state != "in_progress":
+            raise UserError(not_started)
 
     def _check_manager(self):
         if not (self.env.su or self._is_manager()):
@@ -463,7 +489,10 @@ class BfRouteDay(models.Model):
             stop = Stop
         who = stop.partner_id.display_name if stop else _(
             "%s (name sent by the phone, stop removed)", str(label or "?")[:120])
-        carried = [str(state or "")[:20], str(note or "")[:NOTE_MAX]] + Stop._refusal_details(extra, stop)
+        # What the phone carried, in words: the office reads "Arrival", not the code "arrived".
+        labels = dict(Stop._fields["state"]._description_selection(self.env), arrived=_("Arrival"))
+        state = str(state or "")[:20]
+        carried = [labels.get(state, state), str(note or "")[:NOTE_MAX]] + Stop._refusal_details(extra, stop)
         lines = [_("A mark from the phone was refused: %s", str(reason or "")[:500]),
                  _("It carried: %s", " · ".join(part for part in carried if part))]
         day.message_post(body=Markup("<p><b>%s</b></p><ul>%s</ul>") % (
@@ -529,11 +558,62 @@ class BfRouteDay(models.Model):
         self.action_finish(odometer=odometer, client_time=client_time)
         return self._app_data()
 
+    def app_map(self):
+        """What the map of the day draws: the start, the stops in order, the return point and
+        the road between them (OSRM), with the tile server to draw them on.
+
+        ⚠️ Customers' places only (their coordinates, or else the point of their street): never
+        a position read from the worker's phone. A place without coordinates is listed with
+        none and left off the map; nothing is geocoded here. Without OSRM, or when it fails,
+        the stops are joined by straight lines on the phone.
+        """
+        self = clean_env(self)
+        self.ensure_one()
+        self._check_driver()
+        day = self.sudo()
+        route = day.route_id
+        start = route.start_partner_id or route.company_id.partner_id
+        end = route.end_partner_id or start
+        Engine = self.env["bf.route.engine"]
+
+        def place(partner):
+            if partner.partner_latitude or partner.partner_longitude:
+                return partner.partner_latitude, partner.partner_longitude
+            if partner.bf_route_street_latitude or partner.bf_route_street_longitude:
+                return partner.bf_route_street_latitude, partner.bf_route_street_longitude
+            # False, not None: XML-RPC cannot send None.
+            return False, False
+
+        points = []
+
+        def add(kind, partner, **extra):
+            lat, lon = place(partner)
+            points.append(dict(extra, kind=kind, label=partner.display_name or "", lat=lat, lon=lon))
+
+        add("depot" if start == end else "start", start)
+        for rank, stop in enumerate(day.stop_ids.sorted("sequence"), 1):
+            add("stop", stop.partner_id, rank=rank, state=stop.state, stop_id=stop.id)
+        if end != start:
+            add("end", end)
+        located = [[p["lon"], p["lat"]] for p in points if p["lat"] is not False]
+        if end == start and points[0]["lat"] is not False:
+            located.append([points[0]["lon"], points[0]["lat"]])
+        line = False
+        if len(located) >= 2 and Engine._url(OSRM_PARAM):
+            try:
+                line = Engine._route_line(located)
+            except UserError:
+                line = False
+        return {"points": points, "line": line, "tiles": Engine._tiles()}
+
 
 class BfRouteDayStop(models.Model):
     _name = "bf.route.day.stop"
     _description = "Stop of a route day"
     _order = "day_id, sequence, id"
+    # ⚠️ The customer's name, phone, address and place reach the phone in sudo (app_map,
+    # app_arrive, app_mark): never a contact of another company.
+    _check_company_auto = True
 
     day_id = fields.Many2one("bf.route.day", required=True, ondelete="cascade", index=True)
     company_id = fields.Many2one(related="day_id.company_id", store=True)
@@ -546,7 +626,7 @@ class BfRouteDayStop(models.Model):
         default="manual", required=True, readonly=True, copy=False,
         help="Where the stop comes from. The route's template replaces only its own copies.")
     sequence = fields.Integer(default=100)
-    partner_id = fields.Many2one("res.partner", string="Customer", required=True)
+    partner_id = fields.Many2one("res.partner", string="Customer", required=True, check_company=True)
     address = fields.Char(related="partner_id.contact_address", string="Address")
     window_start = fields.Float(string="Not before")
     window_end = fields.Float(string="Not after")
@@ -556,6 +636,12 @@ class BfRouteDayStop(models.Model):
     planned_clock = fields.Char(string="Planned time", compute="_compute_clocks",
                                 help="Local time, in the route's time zone.")
     state = fields.Selection(STOP_STATES, default="todo", required=True, index=True, copy=False)
+    arrived_at = fields.Datetime(string="Arrived at", readonly=True, copy=False)
+    arrived_clock = fields.Char(string="Arrived", compute="_compute_clocks",
+                                help="Local time, in the route's time zone.")
+    # Stored: the Visits list adds it up and groups it.
+    on_site_minutes = fields.Integer(string="On site (min)", compute="_compute_on_site", store=True,
+                                     help="From the arrival to the mark that closed the stop.")
     done_at = fields.Datetime(string="Marked at", readonly=True, copy=False)
     done_by = fields.Many2one("res.users", string="Marked by", readonly=True, copy=False)
     done_clock = fields.Char(string="Marked time", compute="_compute_clocks",
@@ -609,7 +695,11 @@ class BfRouteDayStop(models.Model):
             "id": self.id,
             "state": self.state,
             "partner": partner.display_name,
-            "address": ", ".join(p for p in (partner.street, partner.street2, partner.city) if p),
+            # The postal code and the province: a common street name exists in many towns, and
+            # this is what the directions links send when the stop has no coordinates.
+            "address": ", ".join(p for p in (partner.street, partner.street2, partner.city,
+                                             " ".join(q for q in (partner.state_id.code, partner.zip) if q))
+                                 if p),
             "phone": partner.mobile or partner.phone or False,
             "latitude": partner.partner_latitude or False,
             "longitude": partner.partner_longitude or False,
@@ -618,6 +708,7 @@ class BfRouteDayStop(models.Model):
             "instructions": self.instructions or False,
             "note": self.note or False,
             "done_at": local(self.done_at),
+            "arrived_at": local(self.arrived_at),
         }
 
     def _window_label(self):
@@ -652,7 +743,7 @@ class BfRouteDayStop(models.Model):
         tz = self.day_id.route_id.sudo()._tz()
         return lambda value: value and utc_to_local(tz, value).strftime("%H:%M")
 
-    @api.depends("planned_time", "done_at", "day_id.route_id")
+    @api.depends("planned_time", "done_at", "arrived_at", "day_id.route_id")
     def _compute_clocks(self):
         """The time alone, as the day's list shows it: the date is the day's."""
         for stop in self:
@@ -662,10 +753,43 @@ class BfRouteDayStop(models.Model):
                 if stop.planned_time else False
             stop.done_clock = utc_to_local(tz, stop.done_at).strftime("%H:%M") \
                 if stop.done_at else False
+            stop.arrived_clock = utc_to_local(tz, stop.arrived_at).strftime("%H:%M") \
+                if stop.arrived_at else False
+
+    @api.depends("arrived_at", "done_at", "state")
+    def _compute_on_site(self):
+        """⚠️ Not for a stop the office put back to "to do": its old mark stays in ``done_at``
+        but closes nothing, and the Visits list would add it up."""
+        for stop in self:
+            if stop.state != "todo" and stop.arrived_at and stop.done_at and stop.done_at >= stop.arrived_at:
+                stop.on_site_minutes = round((stop.done_at - stop.arrived_at).total_seconds() / 60)
+            else:
+                stop.on_site_minutes = 0
 
     def _is_resend(self, app_key):
         self.ensure_one()
         return bool(app_key) and self.app_key == str(app_key)[:64]
+
+    def app_arrive(self, client_time=None, app_key=None):
+        """The worker is at the stop ("I'm here"). Once per stop: a second arrival, or the same
+        one sent twice by the phone, keeps the first time. No position is read at the arrival.
+        ``app_key`` is accepted for the phone's queue and not stored."""
+        self = clean_env(self)
+        self.ensure_one()
+        day = self.day_id
+        day._check_driver()
+        if self.arrived_at:
+            return self._app_result()
+        day._check_on_the_road(_("Start the day before arriving at its stops."))
+        if self.state != "todo":
+            raise UserError(_("This stop is already marked (%s). Ask the office to change it.",
+                              dict(self._fields["state"]._description_selection(self.env))[self.state]))
+        now = fields.Datetime.now()
+        # The phone's clock may run a few minutes ahead: an arrival is never in the future
+        # (the departure is kept at or after it).
+        arrived = min(parse_client_time(client_time, now, day.date_started) or now, now)
+        self.sudo().with_context(bf_route_auto=True).write({"arrived_at": arrived})
+        return self._app_result()
 
     def app_mark(self, state, note=None, position=None, client_time=None, app_key=None, **extra):
         """Mark one stop from the phone. Safe to send twice: the same ``app_key`` is ignored.
@@ -681,13 +805,15 @@ class BfRouteDayStop(models.Model):
             return self._app_result()
         if state not in APP_STOP_STATES:
             raise UserError(_("A stop can be marked done, absent or postponed."))
-        if day.state != "in_progress":
-            raise UserError(_("Start the day before marking its stops."))
+        day._check_on_the_road(_("Start the day before marking its stops."))
         if self.state != "todo":
             raise UserError(_("This stop is already marked (%s). Ask the office to change it.",
                               dict(self._fields["state"]._description_selection(self.env))[self.state]))
         now = fields.Datetime.now()
         marked = parse_client_time(client_time, now, day.date_started) or now
+        # The departure is never before the arrival: the time on site cannot be negative.
+        if self.arrived_at and marked < self.arrived_at:
+            marked = self.arrived_at
         vals = {
             "state": state,
             "done_at": marked,
