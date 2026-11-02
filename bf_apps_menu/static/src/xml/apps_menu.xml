@@ -39,7 +39,7 @@
                     focus que le dropdown pose de son côté.
                 -->
                 <div class="o_apps_menu_search o-navigable">
-                    <i class="oi oi-search" role="img" aria-hidden="true"/>
+                    <i class="oi oi-search" aria-hidden="true"/>
                     <input type="text"
                            class="o_apps_menu_search_input"
                            placeholder="Search for an app"
@@ -63,17 +63,125 @@
                              t-att-src="app.webIconData"
                              alt=""/>
                         <span t-else="" class="o_apps_menu_icon o_apps_menu_icon_fallback">
-                            <i class="oi oi-apps" role="img" aria-hidden="true"/>
+                            <i class="oi oi-apps" aria-hidden="true"/>
                         </span>
                         <span class="o_apps_menu_name" t-esc="app.name"/>
                     </DropdownItem>
                 </div>
 
-                <div t-if="!appsMenuApps.length" class="o_apps_menu_empty">
+                <div t-if="appsSearch.query.trim() and !appsMenuApps.length"
+                     class="o_apps_menu_empty" role="status">
                     No app matches this search.
                 </div>
 
             </t>
+        </xpath>
+    </t>
+
+    <!--
+        Le tiroir mobile : la même recherche, portée là où Odoo l'ignore.
+
+        Sur téléphone (`ui.isSmall` vrai), Odoo ne monte pas le panneau
+        ci-dessus : il rend `web.NavBar.AppsMenu.Sidebar`, un tiroir porté dans
+        le `body`, avec deux listes — les menus de l'application ouverte, et
+        « Toutes les applications » derrière le bouton du haut. C'est cette
+        seconde liste qu'on ne pouvait pas viser : sur une instance fournie, il
+        y a des dizaines d'applications à parcourir au pouce.
+
+        On ne touche ni au tiroir, ni à ses gestes (balayage, fermeture), ni à
+        la forme de ses lignes — une par ligne, grande icône, cible large au
+        doigt. On ajoute un champ au-dessus de la liste, et on filtre la boucle
+        par le même `appsMenuApps` que le panneau du poste de travail.
+    -->
+    <t t-name="bf_apps_menu.AppsMenuSidebar"
+       t-inherit="web.NavBar.AppsMenu.Sidebar"
+       t-inherit-mode="extension">
+
+        <!--
+            Le champ est épinglé en tête de la zone défilante, dans un `<ul>` à
+            lui, frère du `<ul>` des applications et placé avant lui.
+
+            🔴 Deux raisons, et aucune n'est de la mise en page.
+
+            1. L'héritage des couleurs. Le `<li>` doit vivre dans un `<ul>` du
+               `<nav class="o_burger_menu_content">` : c'est de là qu'il tient
+               le fond du tiroir et la couleur de texte des lignes (règles
+               `.o_burger_menu_content ul li` et `.o_burger_menu_content li,
+               button` d'Odoo), sans que le module nomme une seule couleur.
+               Posé en frère du `<nav>`, le champ était clair sur un tiroir
+               anthracite.
+            2. 🔴 `li:nth-of-type(n)`. Un `<li>` de plus dans le `<ul>` DES
+               APPLICATIONS décale les sélecteurs de position d'Odoo :
+               `li:nth-of-type(2)` désignerait la PREMIÈRE application. Trois
+               essais d'Odoo visent cette position
+               (`web/static/tests/webclient/mobile/burger_menu.test.js`, dont
+               `.o_burger_menu_app > ul > li:nth-of-type(2)`), et
+               `web.assets_unit_tests_setup` charge `web.assets_backend`, donc
+               ce gabarit-ci. Un `<ul>` séparé garde les deux : les règles `li`
+               d'Odoo et de l'habillage s'appliquent toujours, et le `<ul>` des
+               applications n'a pas une ligne de plus.
+
+            C'est le `<ul>` qui porte le `sticky`, pas le `<li>` — voir le
+            commentaire du bloc « tiroir » de `apps_menu.scss`.
+
+            `hasclass` tiendrait dans un gabarit OWL (l'héritage est appliqué
+            par le NAVIGATEUR, `@web/core/template_inheritance`, dont
+            `getXpath()` réécrit `hasclass(x)` en
+            `contains(concat(' ', @class, ' '), ' x ')`), mais on n'en a pas
+            besoin : le tiroir n'a qu'un `<nav>` et qu'un `<ul>`.
+        -->
+        <xpath expr="//nav/ul" position="before">
+            <ul t-if="state.isAllAppsMenuOpened"
+                class="o_apps_menu_sidebar_search_list list-unstyled ps-0 mb-0">
+                <li class="o_apps_menu_search o_apps_menu_sidebar_search">
+                    <i class="oi oi-search" aria-hidden="true"/>
+                    <!-- `type="search"` + `enterkeyhint="go"` : ce qu'on vient
+                         chercher, c'est la touche « aller » du clavier mobile à
+                         la place de « retour ». Ce n'est PAS une croix
+                         d'effacement : ni Safari iOS ni Chrome Android ne
+                         rendent `::-webkit-search-cancel-button`, et Échap vide
+                         le champ de toute façon. -->
+                    <input type="search"
+                           class="o_apps_menu_search_input"
+                           placeholder="Search for an app"
+                           aria-label="Search for an app"
+                           autocomplete="off"
+                           enterkeyhint="go"
+                           t-model="appsSearch.query"
+                           t-on-keydown="onAppsMenuSidebarSearchKeydown"/>
+                </li>
+            </ul>
+        </xpath>
+
+        <!--
+            La liste des applications suit la recherche.
+
+            Et la clé passe de `app_index` à `app.id` : la clé d'une liste qui
+            change d'ordre et de longueur doit désigner la donnée, pas sa
+            position. Owl rapièce correctement dans les deux cas — 25 transitions
+            de filtre éprouvées sans une incohérence — mais l'index n'était juste
+            que parce que la liste ne bougeait jamais.
+        -->
+        <xpath expr="//t[@t-foreach='apps']" position="attributes">
+            <attribute name="t-foreach">appsMenuApps</attribute>
+            <attribute name="t-key">app.id</attribute>
+        </xpath>
+
+        <!-- Sans ce mot, une recherche sans résultat donne un tiroir vide, qui
+             a l'air cassé plutôt que vide. Même phrase que sur le bureau : même
+             `msgid`, donc déjà traduite.
+
+             Dans le `<ul>` des applications, lui : hors d'un `<ul>`, il
+             hériterait de la couleur de texte du `<nav>` — un gris foncé,
+             illisible sur le tiroir anthracite d'une marque. Et il ne décale
+             aucun `nth-of-type` : il n'est rendu que lorsque la liste filtrée
+             est VIDE, donc il n'y a alors aucune application à décaler. -->
+        <xpath expr="//ul/t[@t-else='']" position="after">
+            <li t-if="state.isAllAppsMenuOpened and appsSearch.query.trim() and !appsMenuApps.length"
+                class="o_apps_menu_sidebar_empty"
+                role="status">
+                No app matches this search.
+            </li>
         </xpath>
     </t>
 

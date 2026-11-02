@@ -102,7 +102,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.18.1 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.2.0 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_appointment_visit_property` | Visites de propriétés — pont Immeubles | 18.0.1.0.0 | LGPL-3 | Show a dwelling from your portfolio without retyping its address: address, occupant and the 24-hour notice for a rented unit come from the Immeubles socle |
-| `bf_apps_menu` | Menu des applications cherchable | 18.0.1.1.1 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
+| `bf_apps_menu` | Menu des applications cherchable | 18.0.1.2.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons; on a phone, Odoo's own drawer gets the same search field |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.2.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
 | `bf_avatar` | Symbifox Avatars | 18.0.1.0.1 | BUSL-1.1 | An avatar in your house style for anyone without a photo, and a builder to make your own |
 | `bf_avatar_gamification` | Symbifox Avatars pour Fox Quest | 18.0.1.0.1 | BUSL-1.1 | Unlock avatar parts with the XP earned in Fox Quest |

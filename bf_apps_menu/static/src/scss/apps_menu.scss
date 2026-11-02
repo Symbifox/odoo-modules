@@ -12,19 +12,7 @@
 // Les deux nombres à toucher si le format ne convient pas :
 //   largeur → 40vw     hauteur → 55vh
 
-.o_apps_menu_panel.o-dropdown--menu {
-    width: 40vw;
-    min-width: 21rem;   // en deçà, la grille tombe à une colonne étriquée
-    max-width: 46rem;   // au-delà, les tuiles s'espacent sans rien gagner
-    max-height: 55vh;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;   // le défilement appartient à la grille, pas au panneau
-    border: 1px solid var(--brand-line, #dee2e6);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
-
-    // — la recherche, épinglée en tête
+@mixin bf-apps-menu-search {
     .o_apps_menu_search {
         display: flex;
         align-items: center;
@@ -55,6 +43,22 @@
             opacity: 1;
         }
     }
+}
+
+.o_apps_menu_panel.o-dropdown--menu {
+    width: 40vw;
+    min-width: 21rem;   // en deçà, la grille tombe à une colonne étriquée
+    max-width: 46rem;   // au-delà, les tuiles s'espacent sans rien gagner
+    max-height: 55vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;   // le défilement appartient à la grille, pas au panneau
+    border: 1px solid var(--brand-line, #dee2e6);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
+
+    // — la recherche, épinglée en tête
+    @include bf-apps-menu-search;
 
     // — la grille, seule zone qui défile
     .o_apps_menu_grid {
@@ -129,11 +133,129 @@
 }
 
 // Sur mobile, Odoo passe par le tiroir latéral (`AppsMenu.Sidebar`) et ce
-// panneau n'est jamais monté. La règle ci-dessous ne sert donc que les fenêtres
-// étroites d'un poste de travail, où 40vw devient trop mince.
+// panneau n'est jamais monté : la règle ci-dessous ne sert que les fenêtres
+// étroites d'un poste de travail, où 40vw devient trop mince. Le téléphone,
+// lui, est servi par le bloc suivant.
 @media (max-width: 768px) {
     .o_apps_menu_panel.o-dropdown--menu {
         width: 92vw;
         max-width: none;
+    }
+}
+
+// 🔴 Sous 1024 px, c'est très souvent un téléphone en PAYSAGE ou une tablette —
+// et c'est ce panneau-ci qu'ils reçoivent, pas le tiroir : `ui.isSmall` d'Odoo
+// s'arrête à 767 px, donc tout l'intervalle 768-1023 px tombe ici. Or Safari iOS
+// zoome la page quand on met le curseur dans un champ sous 16 px, et le panneau
+// sort alors de l'écran. La même règle que le tiroir, pour la même raison.
+@media (max-width: 1023.98px) {
+    .o_apps_menu_panel.o-dropdown--menu .o_apps_menu_search_input {
+        font-size: 1rem;
+    }
+}
+
+// — Le tiroir du téléphone ---------------------------------------------------
+//
+// Odoo porte le tiroir dans le `body` et le dispose en colonne flex : la barre
+// du haut, puis le `<nav class="o_burger_menu_content">` défilant. Le champ vit
+// DANS ce `<nav>`, dans un `<ul>` à lui, frère du `<ul>` des applications et
+// placé avant lui. Le mixin `bf-apps-menu-search` du panneau du poste de
+// travail n'est PAS inclus ici : il nomme des couleurs, et le tiroir n'en veut
+// aucune.
+//
+// 🔴 Le tiroir porte bel et bien un fond, et c'est pour cela que le champ ne
+// doit pas en nommer un : un Odoo nu met `$o-burger-base-bg` sur
+// `.o_burger_menu_content.o_burger_menu_app`, et `bluefox_branding` met
+// `var(--brand-dark)` (#2E3132) sur `.o_app_menu_sidebar` tout entier. Un fond
+// en dur serait clair sur l'un des deux. D'où la chaîne : `<ul>` et `<li>` en
+// `background-color: inherit`, `<input>` en `color: inherit`.
+//
+// 🔴 Et c'est le `<ul>` qui porte le `sticky`, pas le `<li>` : un élément
+// collant ne sort jamais de la boîte de son parent, et un `<ul>` à la hauteur
+// exacte de son unique `<li>` ne lui laisserait aucune course — il partirait
+// avec la liste au premier glissement. Collé au `<nav>` défilant, il a toute la
+// hauteur de la liste.
+//
+// Largeur du tiroir, gestes, forme des lignes : ceux d'Odoo, intouchés.
+.o_app_menu_sidebar {
+    // 🔴 Le maillon qui porte tout le reste. Sans lui, l'héritage s'arrête sur
+    // le `transparent` du `<ul>` et la barre épinglée laisse défiler la liste
+    // derrière elle.
+    .o_burger_menu_content > ul {
+        background-color: inherit;
+    }
+
+    // Le `<ul>` du champ : seul élément collant du tiroir. Son fond lui vient
+    // de la règle ci-dessus, donc du tiroir.
+    .o_apps_menu_sidebar_search_list {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    // La règle `li:last-child` d'Odoo pose une marge sous la DERNIÈRE ligne d'un
+    // `<ul>` : notre `<li>` est seul dans le sien, il la prenait et creusait un
+    // vide de 8 px entre le champ et la première application.
+    // ⚠️ Il faut cette chaîne complète : la règle d'Odoo est
+    // `.o_app_menu_sidebar .o_burger_menu_content ul li:last-child`, et trois
+    // classes ne la battent pas.
+    .o_burger_menu_content > ul.o_apps_menu_sidebar_search_list > li.o_apps_menu_sidebar_search:last-child {
+        margin-bottom: 0;
+    }
+
+    .o_apps_menu_search.o_apps_menu_sidebar_search {
+        background-color: inherit;   // le fond du tiroir, quel qu'il soit
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        // `padding-left` vient de la règle `li` d'Odoo : on ne complète que le
+        // reste, pour une cible confortable au pouce (~44px de haut).
+        padding-top: .55rem;
+        padding-bottom: .55rem;
+        padding-right: .85rem;
+
+        > .oi {
+            opacity: .6;             // la couleur vient du tiroir
+        }
+    }
+
+    .o_apps_menu_search_input {
+        flex: 1 1 auto;
+        min-width: 0;
+        border: 0;
+        outline: 0;
+        color: inherit;              // la couleur de texte des lignes du tiroir
+        // 🔴 Repli D'ABORD, `color-mix` ensuite : les deux déclarations sont
+        // nécessaires. Le module est publié dans un catalogue public, il ne
+        // choisit donc pas son parc ; là où `color-mix` manque (Chrome < 111,
+        // Safari < 16.2, Firefox < 113), la déclaration tombe et l'`<input>`
+        // revient au fond blanc de l'agent utilisateur — blanc sur blanc dans un
+        // tiroir sombre, où le texte est clair. Un gris neutre translucide
+        // assombrit un tiroir clair et éclaircit un tiroir sombre : il se voit
+        // dans les deux cas, sans nommer la couleur du tiroir.
+        background-color: rgba(128, 128, 128, .25);
+        // Quand `color-mix` est là, la pastille se tire de la couleur du texte,
+        // donc du tiroir lui-même : claire sur un fond sombre, sombre sur un
+        // fond clair.
+        background-color: color-mix(in srgb, currentColor 12%, transparent);
+        border-radius: .375rem;
+        padding: .4rem .6rem;
+        // 🔴 Jamais moins de 16px : en deçà, Safari iOS zoome la page à la mise
+        // au point et le tiroir sort de l'écran. C'est la règle qui décide de
+        // cette taille, pas le dessin.
+        font-size: 1rem;
+        line-height: 1.4;
+
+        &::placeholder {
+            color: currentColor;
+            opacity: .6;
+        }
+    }
+
+    .o_apps_menu_sidebar_empty {
+        padding: 1.25rem .85rem 1.5rem;
+        text-align: center;
+        font-size: .875rem;
+        opacity: .7;                 // la couleur vient du tiroir
     }
 }
