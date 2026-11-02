@@ -37,7 +37,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "\"%s\" exceeds the %s MB limit and was not sent."
-msgstr "« %s » depasse la limite de %s Mo et n'a pas ete envoye."
+msgstr "« %s » dépasse la limite de %s Mo et n'a pas été envoyé."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -127,13 +127,13 @@ msgstr "%s a déjà un dossier : %s."
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "%s files exceed the %s MB limit and were not sent."
-msgstr "%s fichiers depassent la limite de %s Mo et n'ont pas ete envoyes."
+msgstr "%s fichiers dépassent la limite de %s Mo et n'ont pas été envoyés."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "%s files uploaded."
-msgstr "%s fichiers televerses."
+msgstr "%s fichiers téléversés."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -184,7 +184,7 @@ msgstr "(expire le %s)"
 #. module: bf_nextcloud_browser
 #: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_task_form2_nc_browser
 msgid "(optional) task-specific subfolder"
-msgstr "(optionnel) sous-dossier propre a la tache"
+msgstr "(optionnel) sous-dossier propre à la tâche"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -214,9 +214,9 @@ msgid ""
 "                            then close that window. You can remove the access at any time,\n"
 "                            here or in Nextcloud (Settings, Security, Devices and sessions)."
 msgstr ""
-"Une fenetre Nextcloud va s'ouvrir. Approuvez l'acces demande par Odoo,\n"
-"                            puis fermez cette fenetre. Vous pourrez retirer l'acces a tout moment,\n"
-"                            ici ou dans Nextcloud (Parametres, Securite, Appareils et sessions)."
+"Une fenêtre Nextcloud va s'ouvrir. Approuvez l'accès demandé par Odoo,\n"
+"                            puis fermez cette fenêtre. Vous pourrez retirer l'accès à tout moment,\n"
+"                            ici ou dans Nextcloud (Paramètres, Sécurité, Appareils et sessions)."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -240,7 +240,7 @@ msgstr "Un dossier client ne peut pas être la racine '/'."
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
 msgid "A file or folder with this name already exists at the destination."
-msgstr "Un fichier ou dossier portant ce nom existe deja a destination."
+msgstr "Un fichier ou dossier portant ce nom existe déjà à destination."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -285,13 +285,13 @@ msgstr "Connexion Nextcloud d'une personne"
 #. modules: bf_nextcloud_browser, hosting_management
 #: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__access
 msgid "Access"
-msgstr "Acces"
+msgstr "Accès"
 
 #. module: bf_nextcloud_browser
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
 msgid "Access to the Nextcloud browser is not allowed."
-msgstr "Acces au navigateur Nextcloud non autorise."
+msgstr "Accès au navigateur Nextcloud non autorisé."
 
 #. module: bf_nextcloud_browser
 #. modules: bf_nextcloud_browser, hosting_management
@@ -519,7 +519,7 @@ msgid ""
 "Color (hex) of the folder icons in the browser. Default: charcoal. Set the "
 "accent color (#29ABE2) for contrast."
 msgstr ""
-"Couleur (hex) des icones de dossier dans le navigateur. Defaut: anthracite. "
+"Couleur (hex) des icônes de dossier dans le navigateur. Défaut: anthracite. "
 "Mettre la couleur d'accent (#29ABE2) pour du contraste."
 
 #. module: bf_nextcloud_browser
@@ -562,12 +562,12 @@ msgstr "Connectez votre compte Nextcloud pour parcourir ces fichiers."
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields.selection,name:bf_nextcloud_browser.selection__bf_nc_user_credential__state__connected
 msgid "Connected"
-msgstr "Connecte"
+msgstr "Connecté"
 
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__connected_on
 msgid "Connected on"
-msgstr "Connecte le"
+msgstr "Connecté le"
 
 #. module: bf_nextcloud_browser
 #: model:ir.ui.menu,name:bf_nextcloud_browser.menu_bf_nc_user_credential
@@ -606,7 +606,7 @@ msgstr "Copier le lien interne (s'ouvre pour qui a déjà accès dans Nextcloud)
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
 msgid "Could not create the share link."
-msgstr "Impossible de creer le lien de partage."
+msgstr "Impossible de créer le lien de partage."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -666,7 +666,7 @@ msgstr "Crée un lien public : il s'ouvre pour quiconque le reçoit."
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "Default link"
-msgstr "Lien par defaut"
+msgstr "Lien par défaut"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -692,14 +692,14 @@ msgstr "Supprimer la sélection"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "Disconnect"
-msgstr "Deconnecter"
+msgstr "Déconnecter"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "Disconnect Nextcloud"
-msgstr "Deconnecter Nextcloud"
+msgstr "Déconnecter Nextcloud"
 
 #. module: bf_nextcloud_browser
 #. modules: bf_corporate_governance, bf_credentials,
@@ -720,7 +720,7 @@ msgstr "Nom d'affichage"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "Download"
-msgstr "Telecharger"
+msgstr "Télécharger"
 
 #. module: bf_nextcloud_browser
 #: model_terms:ir.actions.act_window,help:bf_nextcloud_browser.action_bf_nc_user_credential
@@ -729,7 +729,7 @@ msgid ""
 "               Deleting a line also revokes their access on the Nextcloud side."
 msgstr ""
 "Chaque personne connecte son propre compte depuis le navigateur de fichiers.\n"
-"               Supprimer une ligne revoque aussi son acces cote Nextcloud."
+"               Supprimer une ligne révoque aussi son accès côté Nextcloud."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -785,7 +785,7 @@ msgstr "Erreur lors de la suppression: %s"
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
 msgid "Error while moving: %s"
-msgstr "Erreur lors du deplacement: %s"
+msgstr "Erreur lors du déplacement: %s"
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -807,9 +807,9 @@ msgid ""
 "prefix (e.g. /Company/). Defense in depth on top of each record's own "
 "folder."
 msgstr ""
-"Tout chemin atteignable depuis le navigateur de fichiers embarque doit etre "
-"sous ce prefixe (ex: /Entreprise/). Defense en profondeur en plus du dossier"
-" propre a chaque enregistrement."
+"Tout chemin atteignable depuis le navigateur de fichiers embarqué doit être "
+"sous ce préfixe (ex: /Entreprise/). Défense en profondeur en plus du dossier"
+" propre à chaque enregistrement."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -841,8 +841,8 @@ msgid ""
 "Extensions (comma-separated) whose click opens the file directly in "
 "Nextcloud (e.g. Collabora) rather than in the built-in preview."
 msgstr ""
-"Extensions (separees par des virgules) dont le clic ouvre le fichier "
-"directement dans Nextcloud (ex. Collabora) plutot que dans l'apercu integre."
+"Extensions (séparées par des virgules) dont le clic ouvre le fichier "
+"directement dans Nextcloud (ex. Collabora) plutôt que dans l'aperçu intégré."
 
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_open_extensions
@@ -859,7 +859,7 @@ msgstr "Externe"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "Failed for: %s"
-msgstr "Echec pour : %s"
+msgstr "Échec pour : %s"
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -897,7 +897,7 @@ msgstr "Classer des pièces au dossier client"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "File linked."
-msgstr "Fichier lie."
+msgstr "Fichier lié."
 
 #. module: bf_nextcloud_browser
 #. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
@@ -917,13 +917,13 @@ msgstr "Fichier n° %s"
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
 msgid "File too large (at most %s MB per upload)."
-msgstr "Fichier trop volumineux (maximum %s Mo par televersement)."
+msgstr "Fichier trop volumineux (maximum %s Mo par téléversement)."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "File uploaded."
-msgstr "Fichier televerse."
+msgstr "Fichier téléversé."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -989,7 +989,7 @@ msgstr "Pour"
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_share_preset__password_protected
 msgid "Generates a random password for the link."
-msgstr "Genere un mot de passe aleatoire pour le lien."
+msgstr "Génère un mot de passe aléatoire pour le lien."
 
 #. module: bf_nextcloud_browser
 #: model:res.groups,comment:bf_nextcloud_browser.group_nc_browser_user
@@ -1012,9 +1012,9 @@ msgid ""
 " systray. Same rule as the width: it is a starting value, replaced by each "
 "person's preference."
 msgstr ""
-"Hauteur, en pourcentage de la fenetre, du panneau embarque ouvert depuis la "
-"barre systeme. Meme regle que la largeur: c'est une valeur de depart, que la"
-" preference de chacun remplace."
+"Hauteur, en pourcentage de la fenêtre, du panneau embarqué ouvert depuis la "
+"barre système. Même règle que la largeur: c'est une valeur de départ, que la"
+" préférence de chacun remplace."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -1210,7 +1210,7 @@ msgstr "Lien copié."
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "Link copied. Password: %s"
-msgstr "Lien copie. Mot de passe : %s"
+msgstr "Lien copié. Mot de passe : %s"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -1228,7 +1228,7 @@ msgstr "Lier le fichier"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "Link to the matrix / Knowledge"
-msgstr "Lier a la matrice / Knowledge"
+msgstr "Lier à la matrice / Knowledge"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -1260,13 +1260,13 @@ msgstr "Chargement…"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "Matrix item"
-msgstr "Element de matrice"
+msgstr "Élément de matrice"
 
 #. module: bf_nextcloud_browser
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
 msgid "Matrix item not found."
-msgstr "Element de matrice introuvable."
+msgstr "Élément de matrice introuvable."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -1278,7 +1278,7 @@ msgstr "Modèle non pris en charge : %s"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "Modified"
-msgstr "Modifie"
+msgstr "Modifié"
 
 #. module: bf_nextcloud_browser
 #. modules: bf_corporate_governance, bf_credentials,
@@ -1385,8 +1385,8 @@ msgstr "Compte Nextcloud : %s"
 msgid ""
 "Nextcloud answered with an address that is not the configured server's."
 msgstr ""
-"Nextcloud a repondu avec une adresse qui n'est pas celle du serveur "
-"configure."
+"Nextcloud a répondu avec une adresse qui n'est pas celle du serveur "
+"configuré."
 
 #. module: bf_nextcloud_browser
 #: model:res.groups,name:bf_nextcloud_browser.group_nc_browser_user
@@ -1408,7 +1408,7 @@ msgstr "Config Nextcloud"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "Nextcloud connected: %s"
-msgstr "Nextcloud connecte : %s"
+msgstr "Nextcloud connecté : %s"
 
 #. module: bf_nextcloud_browser
 #: model:ir.actions.act_window,name:bf_nextcloud_browser.action_bf_nc_user_credential
@@ -1438,7 +1438,7 @@ msgstr "Fichier Nextcloud"
 #. module: bf_nextcloud_browser
 #: model:ir.model,name:bf_nextcloud_browser.model_bf_nc_browser
 msgid "Nextcloud file browser RPC facade"
-msgstr "Facade RPC navigateur de fichiers Nextcloud"
+msgstr "Façade RPC navigateur de fichiers Nextcloud"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -1502,14 +1502,14 @@ msgstr "Dossiers Nextcloud"
 msgid ""
 "Nextcloud granted access, but refuses to say which account it belongs to."
 msgstr ""
-"Nextcloud a delivre un acces, mais refuse de dire a quel compte il "
+"Nextcloud a délivré un accès, mais refuse de dire à quel compte il "
 "appartient."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
 msgid "Nextcloud identity refused."
-msgstr "Identite Nextcloud refusee."
+msgstr "Identité Nextcloud refusée."
 
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields,field_description:bf_nextcloud_browser.field_bf_nc_user_credential__nc_login
@@ -1526,7 +1526,7 @@ msgstr "Chemin Nextcloud"
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
 msgid "Nextcloud refused the connection (HTTP %s)."
-msgstr "Nextcloud a refuse la connexion (HTTP %s)."
+msgstr "Nextcloud a refusé la connexion (HTTP %s)."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -1538,7 +1538,7 @@ msgstr "Nextcloud a refusé le dépôt : HTTP %s"
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
 msgid "Nextcloud refused to open a connection (HTTP %s)."
-msgstr "Nextcloud a refuse d'ouvrir une connexion (HTTP %s)."
+msgstr "Nextcloud a refusé d'ouvrir une connexion (HTTP %s)."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -1546,7 +1546,7 @@ msgstr "Nextcloud a refuse d'ouvrir une connexion (HTTP %s)."
 msgid ""
 "Nextcloud refused your connection: it was revoked. Reconnect your account."
 msgstr ""
-"Nextcloud a refuse votre connexion : elle a ete revoquee. Reconnectez votre "
+"Nextcloud a refusé votre connexion : elle a été révoquée. Reconnectez votre "
 "compte."
 
 #. module: bf_nextcloud_browser
@@ -1556,7 +1556,7 @@ msgid ""
 "Nextcloud refuses access to your account for now (account disabled, or "
 "server under maintenance)."
 msgstr ""
-"Nextcloud refuse l'acces a votre compte pour le moment (compte desactive, ou"
+"Nextcloud refuse l'accès à votre compte pour le moment (compte désactivé, ou"
 " serveur en maintenance)."
 
 #. module: bf_nextcloud_browser
@@ -1568,12 +1568,12 @@ msgstr "Erreur de recherche Nextcloud : HTTP %s"
 #. module: bf_nextcloud_browser
 #: model:ir.model,name:bf_nextcloud_browser.model_nextcloud_share_preset
 msgid "Nextcloud share preset"
-msgstr "Prereglage de partage Nextcloud"
+msgstr "Préréglage de partage Nextcloud"
 
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields,field_description:bf_nextcloud_browser.field_project_task__nc_task_subfolder
 msgid "Nextcloud subfolder (task)"
-msgstr "Sous-dossier Nextcloud (tache)"
+msgstr "Sous-dossier Nextcloud (tâche)"
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -1585,7 +1585,7 @@ msgstr "Aucune configuration Nextcloud disponible."
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
 msgid "No Nextcloud folder is set for this record."
-msgstr "Aucun dossier Nextcloud n'est configure pour cet enregistrement."
+msgstr "Aucun dossier Nextcloud n'est configuré pour cet enregistrement."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -1625,7 +1625,7 @@ msgstr "Aucun fichier ni dossier ne porte ce nom."
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "No matrix item for this project."
-msgstr "Aucun element de matrice pour ce projet."
+msgstr "Aucun élément de matrice pour ce projet."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -1644,7 +1644,7 @@ msgstr ""
 #. module: bf_nextcloud_browser
 #: model_terms:ir.actions.act_window,help:bf_nextcloud_browser.action_bf_nc_user_credential
 msgid "Nobody has connected their Nextcloud yet."
-msgstr "Personne n'a encore connecte son Nextcloud."
+msgstr "Personne n'a encore connecté son Nextcloud."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -1738,8 +1738,8 @@ msgid ""
 "Optional subpath under the project's Nextcloud folder, specific to this task"
 " (e.g. 'Attachments')."
 msgstr ""
-"Sous-chemin optionnel sous le dossier Nextcloud du projet, propre a cette "
-"tache (ex: 'Pieces jointes')."
+"Sous-chemin optionnel sous le dossier Nextcloud du projet, propre à cette "
+"tâche (ex: 'Pièces jointes')."
 
 #. module: bf_nextcloud_browser
 #. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
@@ -1768,7 +1768,7 @@ msgstr "Largeur du panneau (%)"
 #. modules: bf_nextcloud_browser, bf_securetransfer
 #: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_share_preset__password_protected
 msgid "Password protected"
-msgstr "Protege par mot de passe"
+msgstr "Protégé par mot de passe"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -1803,13 +1803,13 @@ msgstr "Connexions des personnes"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "Permanently delete \"%s\"?"
-msgstr "Supprimer definitivement « %s » ?"
+msgstr "Supprimer définitivement « %s » ?"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "Permanently delete %s item(s)?"
-msgstr "Supprimer definitivement %s element(s) ?"
+msgstr "Supprimer définitivement %s élément(s) ?"
 
 #. module: bf_nextcloud_browser
 #. modules: bf_nextcloud_browser, bf_security_awareness
@@ -1851,7 +1851,7 @@ msgstr "Lien public"
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields.selection,name:bf_nextcloud_browser.selection__nextcloud_share_preset__access__read_write
 msgid "Read / write"
-msgstr "Lecture / ecriture"
+msgstr "Lecture / écriture"
 
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields.selection,name:bf_nextcloud_browser.selection__nextcloud_share_preset__access__read
@@ -1890,7 +1890,7 @@ msgstr "Enregistrement introuvable."
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "Refresh"
-msgstr "Rafraichir"
+msgstr "Rafraîchir"
 
 #. module: bf_nextcloud_browser
 #. modules: bf_nextcloud_browser, hosting_management
@@ -1929,7 +1929,7 @@ msgstr "Renommer"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "Reopen the window"
-msgstr "Rouvrir la fenetre"
+msgstr "Rouvrir la fenêtre"
 
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__nc_require_email_match
@@ -1964,7 +1964,7 @@ msgstr "Racine"
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__browser_root_prefix
 msgid "Root prefix (browser)"
-msgstr "Prefixe racine (navigateur)"
+msgstr "Préfixe racine (navigateur)"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -1988,7 +1988,7 @@ msgstr "Recherche dans tous les dossiers…"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "Selection deleted."
-msgstr "Selection supprimee."
+msgstr "Sélection supprimée."
 
 #. module: bf_nextcloud_browser
 #. modules: bf_credentials, bf_document_nextcloud_sync, bf_nextcloud_browser,
@@ -2056,7 +2056,7 @@ msgstr "Lien de partage"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "Share link copied to the clipboard."
-msgstr "Lien de partage copie dans le presse-papiers."
+msgstr "Lien de partage copié dans le presse-papiers."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -2069,7 +2069,7 @@ msgstr "Mot de passe du partage, à transmettre séparément : %s"
 #: model:ir.model.fields,field_description:bf_nextcloud_browser.field_nextcloud_document_config__share_preset_ids
 #: model_terms:ir.ui.view,arch_db:bf_nextcloud_browser.view_nextcloud_document_config_form_browser
 msgid "Share presets"
-msgstr "Prereglages de partage"
+msgstr "Préréglages de partage"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -2153,14 +2153,14 @@ msgid ""
 "The Nextcloud server that issued the app password. It is never sent anywhere"
 " else."
 msgstr ""
-"Le serveur Nextcloud qui a delivre le mot de passe d'application. Il n'est "
-"jamais envoye ailleurs."
+"Le serveur Nextcloud qui a délivré le mot de passe d'application. Il n'est "
+"jamais envoyé ailleurs."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
 msgid "The Odoo Knowledge app is not installed on this instance."
-msgstr "L'application Odoo Knowledge n'est pas installee sur cette instance."
+msgstr "L'application Odoo Knowledge n'est pas installée sur cette instance."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -2170,9 +2170,9 @@ msgid ""
 "Nextcloud with your own account, then try again. An administrator can turn "
 "off this check on the configuration."
 msgstr ""
-"Le compte Nextcloud approuve ne correspond pas a votre identifiant Odoo. "
-"Connectez-vous a Nextcloud avec votre propre compte, puis recommencez. Un "
-"administrateur peut desactiver cette verification sur la configuration."
+"Le compte Nextcloud approuvé ne correspond pas à votre identifiant Odoo. "
+"Connectez-vous à Nextcloud avec votre propre compte, puis recommencez. Un "
+"administrateur peut désactiver cette vérification sur la configuration."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -2197,7 +2197,7 @@ msgid ""
 "The browser requires a root prefix. Set \"Root prefix (browser)\" (e.g. "
 "/Company/) on the Nextcloud configuration."
 msgstr ""
-"Le navigateur requiert un prefixe racine. Definissez « Prefixe racine "
+"Le navigateur requiert un préfixe racine. Définissez « Préfixe racine "
 "(navigateur) » (ex: /Entreprise/) sur la configuration Nextcloud."
 
 #. module: bf_nextcloud_browser
@@ -2207,8 +2207,8 @@ msgid ""
 "The browser will no longer have access to your files, and the access given "
 "to Odoo will be removed from your Nextcloud."
 msgstr ""
-"Le navigateur n'aura plus acces a vos fichiers, et l'acces donne a Odoo sera"
-" supprime de votre Nextcloud."
+"Le navigateur n'aura plus accès à vos fichiers, et l'accès donné à Odoo sera"
+" supprimé de votre Nextcloud."
 
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields,help:bf_nextcloud_browser.field_project_project__nc_client_folder_id
@@ -2228,7 +2228,7 @@ msgstr "La racine des dossiers clients ne peut pas être '/'."
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields,help:bf_nextcloud_browser.field_bf_nc_client_folder__partner_id
 msgid "The company, or the person who is a client themselves."
-msgstr "L'entreprise, ou la personne qui est elle-meme cliente."
+msgstr "L'entreprise, ou la personne qui est elle-même cliente."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -2254,7 +2254,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/js/nc_browser.js:0
 msgid "The connection request expired. Start again."
-msgstr "La demande de connexion a expire. Recommencez."
+msgstr "La demande de connexion a expiré. Recommencez."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -2278,7 +2278,7 @@ msgstr "Le chemin du dossier est obligatoire."
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
 msgid "The panel %(dim)s must be between 40 and 100."
-msgstr "La %(dim)s du panneau doit etre comprise entre 40 et 100."
+msgstr "La %(dim)s du panneau doit être comprise entre 40 et 100."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -2301,7 +2301,7 @@ msgstr ""
 #: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
 msgid "The record's Nextcloud folder cannot be the root '/'."
 msgstr ""
-"Le dossier Nextcloud de l'enregistrement ne peut pas etre la racine '/'."
+"Le dossier Nextcloud de l'enregistrement ne peut pas être la racine '/'."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -2316,7 +2316,7 @@ msgid ""
 "The standalone browser requires a root prefix. Set \"Root prefix (browser)\""
 " (e.g. /Company/) on the Nextcloud configuration before using this app."
 msgstr ""
-"Le navigateur autonome requiert un prefixe racine. Definissez « Prefixe "
+"Le navigateur autonome requiert un préfixe racine. Définissez « Préfixe "
 "racine (navigateur) » (ex: /Entreprise/) sur la configuration Nextcloud "
 "avant d'utiliser cette application."
 
@@ -2368,7 +2368,7 @@ msgid ""
 "This folder cannot be found in your Nextcloud, or it is not shared with you."
 msgstr ""
 "Ce dossier est introuvable dans votre Nextcloud, ou il ne vous est pas "
-"partage."
+"partagé."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -2473,20 +2473,20 @@ msgstr "Réponse illisible de Nextcloud (partages)."
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_user_credential.py:0
 msgid "Unreadable answer from Nextcloud."
-msgstr "Reponse de Nextcloud illisible."
+msgstr "Réponse de Nextcloud illisible."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
 msgid "Unsupported model: %s"
-msgstr "Modele non supporte: %s"
+msgstr "Modèle non supporté: %s"
 
 #. module: bf_nextcloud_browser
 #. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "Upload"
-msgstr "Televerser"
+msgstr "Téléverser"
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -2498,7 +2498,7 @@ msgstr "Voir dans Nextcloud (nouvel onglet)"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "Waiting for your approval in the Nextcloud window…"
-msgstr "En attente de votre approbation dans la fenetre Nextcloud…"
+msgstr "En attente de votre approbation dans la fenêtre Nextcloud…"
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -2526,11 +2526,11 @@ msgid ""
 "which only an administrator can change. Without this check, a login page "
 "forwarded to someone else would connect the sender to the recipient's files."
 msgstr ""
-"Quand une personne connecte son compte Nextcloud, le compte approuve (son "
-"identifiant ou son adresse courriel Nextcloud) doit correspondre a "
+"Quand une personne connecte son compte Nextcloud, le compte approuvé (son "
+"identifiant ou son adresse courriel Nextcloud) doit correspondre à "
 "l'identifiant de son utilisateur Odoo, que seul un administrateur peut "
-"changer. Sans cette verification, une page de connexion transmise a "
-"quelqu'un d'autre connecterait l'expediteur aux fichiers du destinataire."
+"changer. Sans cette vérification, une page de connexion transmise à "
+"quelqu'un d'autre connecterait l'expéditeur aux fichiers du destinataire."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -2545,9 +2545,9 @@ msgid ""
 "systray. Starting value only: each person can then resize the panel, and "
 "their preference wins."
 msgstr ""
-"Largeur, en pourcentage de la fenetre, du panneau embarque ouvert depuis la "
-"barre systeme. Valeur de depart seulement: chaque personne peut ensuite "
-"redimensionner le panneau, et sa preference a priorite."
+"Largeur, en pourcentage de la fenêtre, du panneau embarqué ouvert depuis la "
+"barre système. Valeur de départ seulement: chaque personne peut ensuite "
+"redimensionner le panneau, et sa préférence a priorité."
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -2562,7 +2562,7 @@ msgid ""
 "Your connection was revoked in Nextcloud. Reconnect your account to "
 "continue."
 msgstr ""
-"Votre connexion a ete revoquee dans Nextcloud. Reconnectez votre compte pour"
+"Votre connexion a été révoquée dans Nextcloud. Reconnectez votre compte pour"
 " continuer."
 
 #. module: bf_nextcloud_browser
@@ -2676,7 +2676,7 @@ msgstr "fois"
 #. odoo-javascript
 #: code:addons/bf_nextcloud_browser/static/src/xml/nc_browser.xml:0
 msgid "to:"
-msgstr "a :"
+msgstr "à :"
 
 #. module: bf_nextcloud_browser
 #. odoo-python

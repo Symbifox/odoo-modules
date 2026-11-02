@@ -340,6 +340,8 @@ Upload wizard for sending files to Nextcloud and creating version records.
 
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The notes posted on a document when a share link is created or a new version is uploaded follow the user who acts, and their formatting now renders instead of showing as tags; the share password never appears in them. The file size shown on a document uses the reader's units (KB or Ko). What the daily change check writes (the draft version's summary and changelog, the activity for the owner) follows the document's owner, else its author, else its company, and the configuration's last check message follows the configuration's company. A language still held by a contact or a company but deactivated since is passed over for an installed one, so the check never fails after it has recorded a change. On upgrade, the shipped scheduled job and onboarding steps switch to English only where the database still holds the text that was shipped; a renamed job keeps its name. A network failure while downloading now carries the underlying `requests` error as its cause, so a caller can recognise it whatever the language of the message.
 
+18.0.1.6.1: the French translation gets its accents back; it had shipped without them ("modifie" for "modifié", "Verification" for "Vérification"). An upgrade never replaces a translation already in the database, so this version reloads the French catalogue over it.
+
 ## Cron Jobs
 
 | Cron | Interval | Method | Description |
@@ -427,6 +429,7 @@ The same audit revealed weaknesses in `calendar_nextcloud_sync` and `contacts_ne
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 18.0.1.6.1 | 2026-11-01 | French translation: accents restored; the upgrade reloads the French catalogue over the existing translations. |
 | 18.0.1.6.0 | 2026-10-21 | Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Share and upload notes render their formatting and follow the user who acts; the change check writes in the language of the document's owner, passing over a deactivated language; a download network failure keeps its cause. See the Languages section. |
 | 18.0.1.5.0 | 2026-09-15 | Path hardening: `_sanitize_nc_path()` now **refuses** any path containing a percent escape that would decode (`%2e%2e`, `%2F`, `%20`…) instead of decoding it. Decoding made the function non-idempotent: each WebDAV/OCS helper sanitized the already-sanitized path again, so a value could pass the check in one form and reach Nextcloud in another, escaping the project folder. A literal `%` that does not form an escape (`Invoice 100%.txt`) is still accepted. New `tests/test_paths.py` covers refusal, idempotence, the prefix boundary and proves no request leaves with an encoded path. |
 | 18.0.1.3.0 | 2026-06-21 | Synchronisation documentation et métadonnées (licence/LICENSE). Voir l'historique git pour le détail des correctifs intermédiaires. |

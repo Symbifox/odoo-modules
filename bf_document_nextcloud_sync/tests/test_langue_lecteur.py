@@ -85,7 +85,7 @@ class TestLangue(TransactionCase):
     def test_televersement_note_en_html_dans_la_langue_de_qui_televerse(self):
         """document_nc_upload_wizard.py:181 : balises rendues, nom de fichier échappé."""
         fr = self._televerser("fr_CA")
-        self.assertIn("<strong>Nouvelle version televersee sur Nextcloud</strong>", fr)
+        self.assertIn("<strong>Nouvelle version téléversée sur Nextcloud</strong>", fr)
         self.assertIn("R&amp;D.pdf", fr)
         self.assertNotIn("&lt;strong&gt;", fr)
         en = self._televerser("en_CA")
@@ -153,12 +153,12 @@ class TestLangue(TransactionCase):
         doc = self._doc("CRF-1", owner=self.franco, author=self.anglo)
         self._verifier(doc, "en_US")
         version = self._version(doc)
-        self.assertEqual(version.change_summary, "Modification detectee sur Nextcloud")
+        self.assertEqual(version.change_summary, "Modification détectée sur Nextcloud")
         self.assertIn("Modification détectée automatiquement sur Nextcloud.", version.changelog)
         self.assertIn("- Modifié le : 2026-10-19 12:00:00", version.changelog)
         activite = self._activite(doc)
-        self.assertEqual(activite.summary, "Fichier modifie sur Nextcloud: Politique CRF-1")
-        self.assertIn("a ete modifie sur Nextcloud", str(activite.note))
+        self.assertEqual(activite.summary, "Fichier modifié sur Nextcloud: Politique CRF-1")
+        self.assertIn("a été modifié sur Nextcloud", str(activite.note))
 
     def test_travail_planifie_sans_responsable_l_auteur(self):
         """_nc_reader_lang : sans responsable, l'auteur."""
@@ -188,7 +188,7 @@ class TestLangue(TransactionCase):
         doc = self._doc("CRS-2", owner=self.anglo)
         self.config.company_id.partner_id.lang = "fr_CA"
         self._verifier(doc, "en_US")
-        self.assertEqual(self.config.last_sync_message, "Verification: 1 modifie(s) sur 1 documents")
+        self.assertEqual(self.config.last_sync_message, "Vérification: 1 modifié(s) sur 1 documents")
 
     # ------------------------------------------------------------------
     # Langue désactivée gardée par la société (_nc_installed_lang)
@@ -214,9 +214,9 @@ class TestLangue(TransactionCase):
         self._societe_en_langue_inactive(doc)
         self._verifier(doc, "fr_CA")
         self.assertEqual(doc.nc_etag, "etag-apres")
-        self.assertEqual(self._version(doc).change_summary, "Modification detectee sur Nextcloud")
+        self.assertEqual(self._version(doc).change_summary, "Modification détectée sur Nextcloud")
         self.assertEqual(self.config.last_sync_status, "success")
-        self.assertEqual(self.config.last_sync_message, "Verification: 1 modifie(s) sur 1 documents")
+        self.assertEqual(self.config.last_sync_message, "Vérification: 1 modifié(s) sur 1 documents")
 
     def test_langue_inactive_sans_langue_au_travail_repli_installe(self):
         """Sans langue au contexte : une langue installée (en_US sur la base de BF), pas d'erreur."""
@@ -242,6 +242,8 @@ class TestLangue(TransactionCase):
         ("bf_onb_step_config", "title", "Configurer le mapping de dossiers", "Set up the folder mapping"),
         ("bf_onboarding_panel", "name", "Sync Nextcloud — Documents", "Nextcloud sync: documents"),
     )
+
+    CATALOGUE_FR = {"Documents: Verifier modifications Nextcloud": "Documents: Vérifier modifications Nextcloud"}
 
     def _porteur(self, xmlid):
         rec = self.env.ref("bf_document_nextcloud_sync." + xmlid)
@@ -274,6 +276,8 @@ class TestLangue(TransactionCase):
         self._monter()
         for xmlid, champ, fr, en in self.CAS:
             self.assertEqual(self._lire(xmlid, champ, "en_US"), en, (xmlid, champ))
+            # Le catalogue porte le français accentué depuis 18.0.1.6.1.
+            fr = self.CATALOGUE_FR.get(fr, fr)
             self.assertEqual(self._lire(xmlid, champ, "fr_CA"), fr, (xmlid, champ))
 
     def test_migration_18_0_1_6_0_retouche_gardee(self):
@@ -281,4 +285,30 @@ class TestLangue(TransactionCase):
         self._poser("ir_cron_check_nc_modifications", "name", {"en_US": "Veille des politiques"})
         self._monter()
         self.assertEqual(self._lire("ir_cron_check_nc_modifications", "name", "en_US"), "Veille des politiques")
+        self.assertEqual(self._lire("ir_cron_check_nc_modifications", "name", "fr_CA"), "Veille des politiques")
+
+    def _monter_1_6_1(self):
+        chemin = get_module_path("bf_document_nextcloud_sync") + "/migrations/18.0.1.6.1/end-migrate.py"
+        spec = importlib.util.spec_from_file_location("bf_doc_sync_mig_1_6_1", chemin)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.migrate(self.env.cr, "18.0.1.6.0")
+        self.env.invalidate_all()
+
+    def test_migration_18_0_1_6_1_nom_du_travail_accentue(self):
+        """Le nom fr_CA livré sans accents (noupdate, que le catalogue n'écrase pas) est accentué."""
+        self._poser("ir_cron_check_nc_modifications", "name", {
+            "en_US": "Documents: check Nextcloud changes",
+            "fr_CA": "Documents: Verifier modifications Nextcloud"})
+        self._monter_1_6_1()
+        self.assertEqual(self._lire("ir_cron_check_nc_modifications", "name", "fr_CA"),
+                         "Documents: Vérifier modifications Nextcloud")
+        self.assertEqual(self._lire("ir_cron_check_nc_modifications", "name", "en_US"),
+                         "Documents: check Nextcloud changes")
+
+    def test_migration_18_0_1_6_1_nom_retouche_garde(self):
+        """Un nom fr_CA retouché à la main n'est pas touché."""
+        self._poser("ir_cron_check_nc_modifications", "name", {
+            "en_US": "Documents: check Nextcloud changes", "fr_CA": "Veille des politiques"})
+        self._monter_1_6_1()
         self.assertEqual(self._lire("ir_cron_check_nc_modifications", "name", "fr_CA"), "Veille des politiques")

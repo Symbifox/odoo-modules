@@ -1,6 +1,6 @@
 {
     "name": "Nextcloud File Browser",
-    "summary": "Navigateur WebDAV Nextcloud embarque dans les fiches Odoo (clients, projets, taches) + application autonome",
+    "summary": "Navigateur WebDAV Nextcloud embarqué dans les fiches Odoo (clients, projets, tâches) + application autonome",
     # 18.0.4.3.2: l'onglet « Dossier Nextcloud » des entreprises ne paraît plus sans racine
     #   des dossiers clients (ses deux boutons ne menaient qu'à une erreur, chez chaque
     #   locataire sans dossiers clients) ; description de l'appli et README à jour.
@@ -11,7 +11,9 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.4.4.0",
+    # 18.0.4.4.1: la traduction française retrouve ses accents (« Modifié », « tâche »,
+    #   « fenêtre »…), rechargée en écrasant à la montée.
+    "version": "18.0.4.4.1",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
