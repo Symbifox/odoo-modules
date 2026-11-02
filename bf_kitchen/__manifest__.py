@@ -1,9 +1,10 @@
 {
     "name": "Symbifox: kitchen",
-    "version": "18.0.1.3.0",
+    "version": "18.0.1.4.0",
     "category": "Inventory/Inventory",
     "summary": "Kitchen management for restaurants, caterers and kitchens: recipes and plate cost from "
-               "the last vendor bill, kitchen counts and losses, theoretical/actual variance",
+               "the last vendor bill, kitchen counts and losses, theoretical/actual variance, supplier orders, "
+               "menu engineering",
     "description": """
 Kitchen
 =======
@@ -36,10 +37,14 @@ Recipes and plate cost, kitchen counts and losses.
   with no sales order, school meals, sales imported from another register);
 - the variance between two counts: bought, consumed by sales (by source), lost (by reason),
   used and made in the kitchen, and the unexplained variance, at kitchen cost, with the ten
-  biggest variances and the variance as a share of purchases;
+  biggest variances and the variance as a share of purchases; the food sales of the period and the
+  theoretical and actual food cost as a share of them;
 - supplier orders: min and max on Odoo's reordering rules, the supplier's delivery days, and an
   order guide per supplier (forecast, known demand, rounded to the supplier's unit) that makes
-  Odoo's request for quotation.
+  Odoo's request for quotation;
+- menu engineering: each dish of the menu by popularity and margin within its section (star,
+  plowhorse, puzzle, dog), from the sales of every source; the effect of an ingredient price
+  increase on the dishes, through their preparations.
 
 The stock valuation stays Odoo's: the module never writes the product cost.
 """,
@@ -59,6 +64,7 @@ The stock valuation stays Odoo's: the module never writes the product cost.
         "wizard/attach_line_views.xml",
         "views/kitchen_stock_views.xml",
         "views/kitchen_variance_views.xml",
+        "views/kitchen_menu_views.xml",
         "views/kitchen_purchase_views.xml",
         "report/kitchen_reports.xml",
         "report/kitchen_templates.xml",

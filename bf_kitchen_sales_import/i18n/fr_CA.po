@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 21:28+0000\n"
-"PO-Revision-Date: 2026-10-31 21:28+0000\n"
+"POT-Creation-Date: 2026-11-02 01:30+0000\n"
+"PO-Revision-Date: 2026-11-02 01:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,9 +27,7 @@ msgstr "%(count)s jour(s) de ventes sorti(s) du stock de la cuisine."
 msgid ""
 "%s item(s) of the register are not matched to a dish yet (or marked not "
 "food)."
-msgstr ""
-"%s article(s) de la caisse ne sont pas encore rattachés à un plat (ni "
-"marqués « Pas de la nourriture »)."
+msgstr "%s article(s) de la caisse ne sont pas encore rattachés à un plat (ni marqués « Pas de la nourriture »)."
 
 #. module: bf_kitchen_sales_import
 #: model:ir.model.fields,help:bf_kitchen_sales_import.field_bf_kitchen_sales_mapping__ignored
@@ -41,9 +39,7 @@ msgstr "Une carte-cadeau, des frais de livraison : rien ne sort du stock."
 msgid ""
 "A register that is not Odoo's (Square, Lightspeed, Toast, Clover): its sales export\n"
 "               takes the dishes' ingredients out of the kitchen stock, one day at a time."
-msgstr ""
-"Une caisse qui n'est pas celle d'Odoo (Square, Lightspeed, Toast, Clover) : son export des ventes\n"
-"               sort du stock de la cuisine les ingrédients des plats, un jour à la fois."
+msgstr "Une caisse qui n'est pas celle d'Odoo (Square, Lightspeed, Toast, Clover) : son export des ventes\n               sort du stock de la cuisine les ingrédients des plats, un jour à la fois."
 
 #. module: bf_kitchen_sales_import
 #: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_needaction
@@ -76,23 +72,25 @@ msgstr "Un import avance par ses propres boutons."
 #. odoo-python
 #: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
 msgid "An imported file took food out of the stock: cancel it first."
-msgstr ""
-"Un fichier importé a sorti de la nourriture du stock : annulez-le d'abord."
+msgstr "Un fichier importé a sorti de la nourriture du stock : annulez-le d'abord."
 
 #. module: bf_kitchen_sales_import
 #. odoo-python
 #: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
 msgid "An item is either matched to a dish or not food, not both."
-msgstr ""
-"Un article est rattaché à un plat ou n'est pas de la nourriture, pas les "
-"deux."
+msgstr "Un article est rattaché à un plat ou n'est pas de la nourriture, pas les deux."
 
 #. module: bf_kitchen_sales_import
 #. odoo-python
 #: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
 msgid "An item of the register is matched to a kitchen dish or item."
-msgstr ""
-"Un article de la caisse se rattache à un plat ou à un article de la cuisine."
+msgstr "Un article de la caisse se rattache à un plat ou à un article de la cuisine."
+
+#. module: bf_kitchen_sales_import
+#. odoo-python
+#: code:addons/bf_kitchen_sales_import/models/kitchen_menu.py:0
+msgid "Another register"
+msgstr "Autre caisse"
 
 #. module: bf_kitchen_sales_import
 #: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_source_view_form
@@ -198,10 +196,7 @@ msgid ""
 "Export the item sales of the register (CSV or Excel: date, item, quantity), add the\n"
 "               file here, match each item to its dish once, and the dishes leave the stock as their\n"
 "               ingredients, one day at a time."
-msgstr ""
-"Exportez les ventes par article de la caisse (CSV ou Excel : date, article, quantité), ajoutez le\n"
-"               fichier ici, rattachez une fois chaque article à son plat, et les plats sortent du stock en\n"
-"               ingrédients, un jour à la fois."
+msgstr "Exportez les ventes par article de la caisse (CSV ou Excel : date, article, quantité), ajoutez le\n               fichier ici, rattachez une fois chaque article à son plat, et les plats sortent du stock en\n               ingrédients, un jour à la fois."
 
 #. module: bf_kitchen_sales_import
 #: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__failed_message_ids
@@ -244,9 +239,7 @@ msgstr "A un message"
 msgid ""
 "How the export writes a date like 03/04/2026. A date written 2026-04-03 is "
 "read in any case."
-msgstr ""
-"Comment l'export écrit une date comme 03/04/2026. Une date écrite 2026-04-03"
-" est lue dans tous les cas."
+msgstr "Comment l'export écrit une date comme 03/04/2026. Une date écrite 2026-04-03 est lue dans tous les cas."
 
 #. module: bf_kitchen_sales_import
 #: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__id
@@ -389,8 +382,12 @@ msgstr "Rattaché"
 #. odoo-python
 #: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
 msgid "Matching the register's items is the kitchen manager's."
-msgstr ""
-"Rattacher les articles de la caisse revient au responsable de la cuisine."
+msgstr "Rattacher les articles de la caisse revient au responsable de la cuisine."
+
+#. module: bf_kitchen_sales_import
+#: model:ir.model,name:bf_kitchen_sales_import.model_bf_kitchen_menu
+msgid "Menu engineering"
+msgstr "Ingénierie de menu"
 
 #. module: bf_kitchen_sales_import
 #: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import__message_content
@@ -449,9 +446,7 @@ msgstr "Nouveau"
 msgid ""
 "No date, quantity and item columns were found in the first rows of the file."
 " Expected columns: Date, Item (or Code), Quantity."
-msgstr ""
-"Aucune colonne de date, de quantité et d'article dans les premières lignes "
-"du fichier. Colonnes attendues : Date, Article (ou Code), Quantité."
+msgstr "Aucune colonne de date, de quantité et d'article dans les premières lignes du fichier. Colonnes attendues : Date, Article (ou Code), Quantité."
 
 #. module: bf_kitchen_sales_import
 #: model:ir.model.fields,field_description:bf_kitchen_sales_import.field_bf_kitchen_sales_import_line__ignored
@@ -611,17 +606,14 @@ msgstr "Le fichier n'a aucune vente."
 #. odoo-python
 #: code:addons/bf_kitchen_sales_import/models/sales_import.py:0
 msgid "The file of an import already read is not replaced: make a new import."
-msgstr ""
-"Le fichier d'un import déjà lu ne se remplace pas : faites un nouvel import."
+msgstr "Le fichier d'un import déjà lu ne se remplace pas : faites un nouvel import."
 
 #. module: bf_kitchen_sales_import
 #: model_terms:ir.ui.view,arch_db:bf_kitchen_sales_import.bf_kitchen_sales_import_view_form
 msgid ""
 "The food these sales took out goes back in stock, and their days can be "
 "imported again."
-msgstr ""
-"La nourriture que ces ventes ont sortie revient en stock, et leurs jours "
-"pourront être importés de nouveau."
+msgstr "La nourriture que ces ventes ont sortie revient en stock, et leurs jours pourront être importés de nouveau."
 
 #. module: bf_kitchen_sales_import
 #. odoo-python
@@ -651,9 +643,7 @@ msgstr "Le stock dont ses ventes sortent."
 msgid ""
 "These days are already imported for this register: %s. Cancel that import "
 "first, or remove these days from the file."
-msgstr ""
-"Ces jours sont déjà importés pour cette caisse : %s. Annulez d'abord cet "
-"import, ou retirez ces jours du fichier."
+msgstr "Ces jours sont déjà importés pour cette caisse : %s. Annulez d'abord cet import, ou retirez ces jours du fichier."
 
 #. module: bf_kitchen_sales_import
 #. odoo-python
@@ -719,9 +709,7 @@ msgstr "Historique des échanges sur le site web"
 msgid ""
 "What this item takes out of the stock: a dish (its ingredients), or an item "
 "sold as it is."
-msgstr ""
-"Ce que cet article sort du stock : un plat (ses ingrédients), ou un article "
-"vendu tel quel."
+msgstr "Ce que cet article sort du stock : un plat (ses ingrédients), ou un article vendu tel quel."
 
 #. module: bf_kitchen_sales_import
 #: model:ir.model.fields,help:bf_kitchen_sales_import.field_stock_picking__bf_kitchen_source
@@ -738,6 +726,4 @@ msgstr "p. ex. Square, salle à manger"
 msgid ""
 "sale(s) of items the register has not\n"
 "                        matched yet: choose their dish, or tick « Not food »."
-msgstr ""
-"vente(s) d'articles que la caisse n'a pas encore\n"
-"                        rattachés : choisissez leur plat, ou cochez « Pas de la nourriture »."
+msgstr "vente(s) d'articles que la caisse n'a pas encore\n                        rattachés : choisissez leur plat, ou cochez « Pas de la nourriture »."

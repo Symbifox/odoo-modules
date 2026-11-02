@@ -39,6 +39,10 @@
               groups="bf_kitchen.group_kitchen_manager"/>
     <menuitem id="menu_kitchen_variance" name="Variance between counts" parent="menu_kitchen_reports" sequence="10"
               action="bf_kitchen_variance_action"/>
+    <menuitem id="menu_kitchen_menu_engineering" name="Menu engineering" parent="menu_kitchen_reports" sequence="20"
+              action="bf_kitchen_menu_action"/>
+    <menuitem id="menu_kitchen_price_impact" name="If an ingredient goes up" parent="menu_kitchen_reports" sequence="30"
+              action="bf_kitchen_price_impact_action"/>
 
     <menuitem id="menu_kitchen_config" name="Configuration" parent="menu_kitchen_root" sequence="90"
               groups="bf_kitchen.group_kitchen_manager"/>

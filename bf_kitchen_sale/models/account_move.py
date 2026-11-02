@@ -16,6 +16,10 @@ class AccountMove(models.Model):
     bf_kitchen_consumption_ids = fields.One2many(
         "stock.picking", "bf_kitchen_invoice_id", "Kitchen consumptions", readonly=True)
     bf_kitchen_consumption_count = fields.Integer(compute="_compute_bf_kitchen_consumption_count")
+    bf_kitchen_cancels = fields.Boolean(
+        "Cancels its invoice", readonly=True, copy=False,
+        help="A credit note made to cancel its invoice (the credit note's modify mode): the dishes were not "
+             "served as invoiced. A plain credit note is a commercial gesture: the dishes were served.")
 
     @api.depends("bf_kitchen_consumption_ids")
     def _compute_bf_kitchen_consumption_count(self):
@@ -57,6 +61,8 @@ class AccountMove(models.Model):
         reverses = super()._reverse_moves(default_values_list, cancel=cancel)
         if cancel:
             self._bf_kitchen_return_invoice()
+        if cancel or self.env.context.get("bf_kitchen_modify"):
+            reverses.filtered(lambda m: m.move_type == "out_refund").sudo().bf_kitchen_cancels = True
         return reverses
 
     def button_cancel(self):

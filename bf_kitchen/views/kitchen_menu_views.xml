@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu engineering -->
+    <record id="bf_kitchen_menu_view_form" model="ir.ui.view">
+        <field name="name">bf.kitchen.menu.form</field>
+        <field name="model">bf.kitchen.menu</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_compute" type="object" string="Compute" class="btn-primary"/>
+                    <button name="action_open_matrix" type="object" string="See the matrix" invisible="not computed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><span>Menu engineering</span></h1>
+                        <div class="text-muted">
+                            Each dish by popularity and margin, within its section of the menu.
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="computed" invisible="1"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group invisible="not computed">
+                            <field name="revenue"/>
+                            <field name="food_cost_pct"/>
+                            <field name="margin"/>
+                            <field name="portions"/>
+                            <field name="revenue_no_recipe" invisible="not revenue_no_recipe"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="not revenue_no_recipe">
+                        Some dishes sold have no recipe: their sales are left out of the food cost and the margin. Give them their recipe.
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="not estimated">
+                        Sales imported from another register carry quantities only: they are counted at the dish's selling price.
+                    </div>
+                    <group invisible="not computed" string="The matrix">
+                        <group>
+                            <field name="star_count"/>
+                            <field name="plowhorse_count"/>
+                        </group>
+                        <group>
+                            <field name="puzzle_count"/>
+                            <field name="dog_count"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" invisible="not computed" nolabel="1">
+                        <list decoration-muted="no_recipe">
+                            <field name="no_recipe" column_invisible="True"/>
+                            <field name="section"/>
+                            <field name="product_id"/>
+                            <field name="quadrant" widget="badge" decoration-success="quadrant == 'star'"
+                                   decoration-warning="quadrant == 'plowhorse'" decoration-info="quadrant == 'puzzle'"
+                                   decoration-danger="quadrant == 'dog'"/>
+                            <field name="qty" sum="Total"/>
+                            <field name="popularity_pct"/>
+                            <field name="currency_id" column_invisible="True"/>
+                            <field name="price_avg"/>
+                            <field name="cost_portion"/>
+                            <field name="margin_unit"/>
+                            <field name="margin_total" sum="Total"/>
+                            <field name="food_cost_pct" optional="hide"/>
+                            <field name="estimated" optional="hide"/>
+                            <field name="sources" optional="hide"/>
+                            <field name="advice" optional="show"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_menu_line_view_kanban" model="ir.ui.view">
+        <field name="name">bf.kitchen.menu.line.kanban</field>
+        <field name="model">bf.kitchen.menu.line</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="quadrant" create="0" group_create="0" group_delete="0" group_edit="0"
+                    records_draggable="0" quick_create="0">
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="card">
+                        <field name="product_id" class="fw-bold"/>
+                        <field name="section" class="text-muted small"/>
+                        <field name="no_recipe" invisible="1"/>
+                        <span t-if="record.no_recipe.raw_value" class="badge text-bg-warning">No recipe</span>
+                        <div class="d-flex justify-content-between small">
+                            <field name="summary"/>
+                            <field name="margin_unit" widget="monetary"/>
+                        </div>
+                        <field name="advice" class="small text-muted"/>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="bf_kitchen_menu_line_view_list" model="ir.ui.view">
+        <field name="name">bf.kitchen.menu.line.list</field>
+        <field name="model">bf.kitchen.menu.line</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="section"/>
+                <field name="product_id"/>
+                <field name="quadrant"/>
+                <field name="qty" sum="Total"/>
+                <field name="popularity_pct"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="price_avg"/>
+                <field name="cost_portion"/>
+                <field name="margin_unit"/>
+                <field name="margin_total" sum="Total"/>
+                <field name="advice"/>
+            </list>
+        </field>
+    </record>
+    <record id="bf_kitchen_menu_line_view_pivot" model="ir.ui.view">
+        <field name="name">bf.kitchen.menu.line.pivot</field>
+        <field name="model">bf.kitchen.menu.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Menu engineering">
+                <field name="section" type="row"/>
+                <field name="quadrant" type="col"/>
+                <field name="qty" type="measure"/>
+                <field name="margin_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="bf_kitchen_menu_action" model="ir.actions.act_window">
+        <field name="name">Menu engineering</field>
+        <field name="res_model">bf.kitchen.menu</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
+    <!-- If an ingredient goes up -->
+    <record id="bf_kitchen_price_impact_view_form" model="ir.ui.view">
+        <field name="name">bf.kitchen.price.impact.form</field>
+        <field name="model">bf.kitchen.price.impact</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_compute" type="object" string="Compute" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><span>If an ingredient goes up</span></h1>
+                        <div class="text-muted">
+                            The dishes that use it, sub-recipes included, and the ones that would go over their target.
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="computed" invisible="1"/>
+                            <field name="product_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="increase_pct"/>
+                        </group>
+                        <group invisible="not computed">
+                            <field name="over_count" decoration-danger="over_count &gt; 0"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" invisible="not computed" nolabel="1">
+                        <list decoration-danger="newly_over" decoration-warning="over_after and not newly_over">
+                            <field name="product_tmpl_id"/>
+                            <field name="currency_id" column_invisible="True"/>
+                            <field name="price"/>
+                            <field name="cost_before"/>
+                            <field name="cost_after"/>
+                            <field name="pct_before"/>
+                            <field name="pct_after"/>
+                            <field name="target_pct"/>
+                            <field name="newly_over"/>
+                            <field name="price_suggested" invisible="not over_after"/>
+                            <field name="over_after" column_invisible="True"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="bf_kitchen_price_impact_action" model="ir.actions.act_window">
+        <field name="name">If an ingredient goes up</field>
+        <field name="res_model">bf.kitchen.price.impact</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

@@ -22,6 +22,7 @@ one day at a time.
   same register, is refused. An import is cancelled as a whole: the food goes back in stock and
   its days are free again, to import a corrected file.
 - In the kitchen's variance report, these sales have their own column ("Imported sales").
+- **Menu engineering.** The imported dishes feed the kitchen's menu engineering, at their selling price (the file has no amounts), said estimated.
 
 ## Rights
 
@@ -42,9 +43,10 @@ Odoo 18 and `bf_kitchen`. Excel files are read with `openpyxl`. The interface is
 
 - 18.0.1.0.0: first release.
 - 18.0.1.0.1: French translation completed.
+- 18.0.1.1.0: the imported dishes feed the kitchen's menu engineering, at their selling price.
 
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-10-31 for this one. In the meantime, use in production for
+its Change Date: 2030-11-01 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 11:21+0000\n"
-"PO-Revision-Date: 2026-10-31 11:21+0000\n"
+"POT-Creation-Date: 2026-11-02 01:29+0000\n"
+"PO-Revision-Date: 2026-11-02 01:29+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,9 +16,29 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: bf_kitchen_sale
+#: model:ir.model.fields,help:bf_kitchen_sale.field_account_bank_statement_line__bf_kitchen_cancels
+#: model:ir.model.fields,help:bf_kitchen_sale.field_account_move__bf_kitchen_cancels
+msgid ""
+"A credit note made to cancel its invoice (the credit note's modify mode): "
+"the dishes were not served as invoiced. A plain credit note is a commercial "
+"gesture: the dishes were served."
+msgstr ""
+
+#. module: bf_kitchen_sale
+#: model:ir.model,name:bf_kitchen_sale.model_account_move_reversal
+msgid "Account Move Reversal"
+msgstr ""
+
+#. module: bf_kitchen_sale
 #: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_bank_statement_line__bf_kitchen_consumption_count
 #: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_move__bf_kitchen_consumption_count
 msgid "Bf Kitchen Consumption Count"
+msgstr ""
+
+#. module: bf_kitchen_sale
+#: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_bank_statement_line__bf_kitchen_cancels
+#: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_move__bf_kitchen_cancels
+msgid "Cancels its invoice"
 msgstr ""
 
 #. module: bf_kitchen_sale
@@ -36,6 +56,12 @@ msgstr ""
 #. module: bf_kitchen_sale
 #: model:ir.model.fields,field_description:bf_kitchen_sale.field_stock_picking__bf_kitchen_invoice_id
 msgid "Invoice consumed"
+msgstr ""
+
+#. module: bf_kitchen_sale
+#. odoo-python
+#: code:addons/bf_kitchen_sale/models/kitchen_menu.py:0
+msgid "Invoices"
 msgstr ""
 
 #. module: bf_kitchen_sale
@@ -57,6 +83,11 @@ msgid "Kitchen consumptions"
 msgstr ""
 
 #. module: bf_kitchen_sale
+#: model:ir.model,name:bf_kitchen_sale.model_bf_kitchen_menu
+msgid "Menu engineering"
+msgstr ""
+
+#. module: bf_kitchen_sale
 #: model:ir.model.fields,help:bf_kitchen_sale.field_stock_picking__bf_kitchen_invoice_id
 msgid ""
 "The customer invoice with no sales order whose dishes this consumption took "
@@ -75,12 +106,6 @@ msgstr ""
 msgid ""
 "The dishes of this invoice did not leave the kitchen stock: the company %s "
 "has no warehouse."
-msgstr ""
-
-#. module: bf_kitchen_sale
-#. odoo-python
-#: code:addons/bf_kitchen_sale/models/stock_picking.py:0
-msgid "The kitchen source of a transfer is set by the kitchen itself."
 msgstr ""
 
 #. module: bf_kitchen_sale

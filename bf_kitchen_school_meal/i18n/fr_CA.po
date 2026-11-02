@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 22:19+0000\n"
-"PO-Revision-Date: 2026-10-31 22:19+0000\n"
+"POT-Creation-Date: 2026-11-02 01:30+0000\n"
+"PO-Revision-Date: 2026-11-02 01:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -31,9 +31,7 @@ msgstr "Allergènes du plat"
 msgid ""
 "Carried up from the recipe's ingredients; they count with the meal's own "
 "allergens."
-msgstr ""
-"Remontés des ingrédients de la recette ; ils comptent avec les allergènes "
-"propres au repas."
+msgstr "Remontés des ingrédients de la recette ; ils comptent avec les allergènes propres au repas."
 
 #. module: bf_kitchen_school_meal
 #: model:ir.model.fields,field_description:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_dish_date
@@ -97,6 +95,11 @@ msgid "Meal ordered"
 msgstr "Repas commandé"
 
 #. module: bf_kitchen_school_meal
+#: model:ir.model,name:bf_kitchen_school_meal.model_bf_kitchen_menu
+msgid "Menu engineering"
+msgstr "Ingénierie de menu"
+
+#. module: bf_kitchen_school_meal
 #: model:ir.model,name:bf_kitchen_school_meal.model_bf_school_meal_day
 msgid "Menu of the day"
 msgstr "Menu du jour"
@@ -107,6 +110,8 @@ msgid "Plate cost"
 msgstr "Coût de l'assiette"
 
 #. module: bf_kitchen_school_meal
+#. odoo-python
+#: code:addons/bf_kitchen_school_meal/models/kitchen_menu.py:0
 #: model:ir.model.fields.selection,name:bf_kitchen_school_meal.selection__stock_picking__bf_kitchen_source__school_meal
 msgid "School meals"
 msgstr "Repas scolaires"
@@ -122,16 +127,13 @@ msgstr "Le plat d'un repas appartient à la société de l'école."
 msgid ""
 "The dish of the kitchen this meal is: its recipe gives the cost and the "
 "allergens, and the meals served take its ingredients out of the stock."
-msgstr ""
-"Le plat de la cuisine qu'est ce repas : sa recette donne le coût et les "
-"allergènes, et les repas servis sortent ses ingrédients du stock."
+msgstr "Le plat de la cuisine qu'est ce repas : sa recette donne le coût et les allergènes, et les repas servis sortent ses ingrédients du stock."
 
 #. module: bf_kitchen_school_meal
 #. odoo-python
 #: code:addons/bf_kitchen_school_meal/models/school_meal.py:0
 msgid "The kitchen consumption of a meal is set by the kitchen itself."
-msgstr ""
-"La consommation cuisine d'un repas est posée par la cuisine elle-même."
+msgstr "La consommation cuisine d'un repas est posée par la cuisine elle-même."
 
 #. module: bf_kitchen_school_meal
 #. odoo-python
@@ -139,33 +141,26 @@ msgstr ""
 msgid ""
 "The meals of %(day)s did not leave the kitchen stock: %(reason)s. They will "
 "be taken out as soon as it is fixed."
-msgstr ""
-"Les repas du %(day)s ne sont pas sortis du stock de la cuisine : %(reason)s."
-" Ils sortiront dès que ce sera corrigé."
+msgstr "Les repas du %(day)s ne sont pas sortis du stock de la cuisine : %(reason)s. Ils sortiront dès que ce sera corrigé."
 
 #. module: bf_kitchen_school_meal
 #: model_terms:ir.ui.view,arch_db:bf_kitchen_school_meal.bf_kitchen_school_meal_day_view_form
 msgid "The meals of this day have not left the kitchen stock:"
-msgstr ""
-"Les repas de cette journée ne sont pas sortis du stock de la cuisine :"
+msgstr "Les repas de cette journée ne sont pas sortis du stock de la cuisine :"
 
 #. module: bf_kitchen_school_meal
 #: model:ir.model.fields,help:bf_kitchen_school_meal.field_bf_school_meal_item__bf_kitchen_dish_date
 msgid ""
 "The meals served from this day on leave the stock: those before were not "
 "counted with the dish."
-msgstr ""
-"Les repas servis à partir de ce jour sortent du stock : ceux d'avant "
-"n'étaient pas comptés avec le plat."
+msgstr "Les repas servis à partir de ce jour sortent du stock : ceux d'avant n'étaient pas comptés avec le plat."
 
 #. module: bf_kitchen_school_meal
 #: model:ir.model.fields,help:bf_kitchen_school_meal.field_bf_school_meal_order__bf_kitchen_picking_id
 msgid ""
 "The transfer that took this meal's ingredients out of the stock, at the "
 "cancellation hour."
-msgstr ""
-"Le transfert qui a sorti du stock les ingrédients de ce repas, à l'heure "
-"limite d'annulation."
+msgstr "Le transfert qui a sorti du stock les ingrédients de ce repas, à l'heure limite d'annulation."
 
 #. module: bf_kitchen_school_meal
 #: model:ir.model,name:bf_kitchen_school_meal.model_stock_picking
@@ -182,9 +177,7 @@ msgstr "D'où vient une consommation cuisine."
 msgid ""
 "Why the meals of this day have not left the kitchen stock yet. The hourly "
 "pass tries again."
-msgstr ""
-"Pourquoi les repas de cette journée ne sont pas encore sortis du stock de la"
-" cuisine. Le passage horaire réessaie."
+msgstr "Pourquoi les repas de cette journée ne sont pas encore sortis du stock de la cuisine. Le passage horaire réessaie."
 
 #. module: bf_kitchen_school_meal
 #. odoo-python

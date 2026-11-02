@@ -166,3 +166,15 @@ class TestSalesImport(TestKitchen):
         self.assertEqual(imp.state, "done")
         imp.action_cancel()
         self.assertEqual(imp.state, "cancel")
+
+    def test_i_menu_counts_the_imports_estimated(self):
+        """Menu engineering counts the imported dishes at their selling price, said estimated."""
+        imp = self.new_import(CSV_FR)
+        imp.action_read()
+        self.match_all(imp)
+        imp.action_import()
+        menu = self.env["bf.kitchen.menu"].create({"date_from": date(2026, 10, 30), "date_to": date(2026, 10, 31)})
+        menu.action_compute()
+        line = menu.line_ids.filtered(lambda l: l.product_id == self.dish)
+        self.assertEqual((line.qty, line.revenue, line.estimated), (5.0, 100.0, True))
+        self.assertTrue(menu.estimated)

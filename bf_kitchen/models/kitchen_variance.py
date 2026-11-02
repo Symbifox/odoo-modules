@@ -59,6 +59,23 @@ class KitchenVariance(models.TransientModel):
     unexplained_value = fields.Monetary("Unexplained variance", compute="_compute_totals",
                                         currency_field="currency_id")
     unexplained_pct = fields.Float("Unexplained (% of purchases)", compute="_compute_totals", digits=(16, 1))
+    sales_value = fields.Monetary(
+        "Food sales", currency_field="currency_id", readonly=True,
+        help="What the kitchen sold in the period from this warehouse (dishes, and items sold as they are), "
+             "before taxes, from every source the kitchen knows.")
+    sales_estimated = fields.Boolean(
+        "Some sales estimated", readonly=True,
+        help="Sales imported from another register carry quantities only: counted at the selling price.")
+    theoretical_pct = fields.Float(
+        "Theoretical food cost (%)", compute="_compute_totals", digits=(16, 1),
+        help="What the recipes say the sales consumed, as a share of the food sales.")
+    actual_value = fields.Monetary(
+        "Actual food cost", compute="_compute_totals", currency_field="currency_id",
+        help="What left the stock between the two counts: consumed by the sales, lost, and the unexplained "
+             "variance.")
+    actual_pct = fields.Float(
+        "Actual food cost (%)", compute="_compute_totals", digits=(16, 1),
+        help="The actual food cost as a share of the food sales.")
     warning_html = fields.Html("To know", readonly=True)
 
     @api.depends("count_from_id", "count_to_id")
@@ -96,6 +113,11 @@ class KitchenVariance(models.TransientModel):
             report.unexplained_value = value("unexplained")
             report.unexplained_pct = (100.0 * report.unexplained_value / report.purchase_value
                                       if report.purchase_value else 0.0)
+            # Bought less what the stock gained = consumed + lost - unexplained (negative when missing).
+            report.actual_value = report.consumption_value + report.loss_value - report.unexplained_value
+            sales = report.sales_value
+            report.theoretical_pct = 100.0 * report.consumption_value / sales if sales else 0.0
+            report.actual_pct = 100.0 * report.actual_value / sales if sales else 0.0
             unexplained = lines.filtered(lambda l: l.kind == "unexplained" and not float_is_zero(
                 l.value, precision_rounding=report.currency_id.rounding or 0.01))
             report.top_line_ids = unexplained.sorted(lambda l: -abs(l.value))[:10]
@@ -151,9 +173,13 @@ class KitchenVariance(models.TransientModel):
             value = qty * product.bf_cost_unit
             vals.append({"product_id": product_id, "kind": kind, "reason": reason, "source": source,
                          "qty": qty, "value": value, "value_abs": abs(value)})
+        # The sales that left from this warehouse, every kitchen item (a dish, a bottle sold as it is).
+        sales = self.env["bf.kitchen.menu"]._bf_menu_sales(company, date_from, date_to, warehouse=self.warehouse_id)
         self.line_ids.unlink()
         self.write({"line_ids": [Command.create(v) for v in vals], "date_from": date_from, "date_to": date_to,
-                    "computed": True, "warning_html": self._bf_variance_warnings(date_from, date_to)})
+                    "computed": True, "warning_html": self._bf_variance_warnings(date_from, date_to),
+                    "sales_value": sum(r["revenue"] for r in sales.values()),
+                    "sales_estimated": any(r["estimated"] for r in sales.values())})
         return {"type": "ir.actions.act_window", "res_model": self._name, "res_id": self.id,
                 "view_mode": "form", "target": "current", "name": _("Kitchen variance")}
 

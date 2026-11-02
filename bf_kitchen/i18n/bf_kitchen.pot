@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 23:12+0000\n"
-"PO-Revision-Date: 2026-10-31 23:12+0000\n"
+"POT-Creation-Date: 2026-11-02 01:29+0000\n"
+"PO-Revision-Date: 2026-11-02 01:29+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -61,6 +61,12 @@ msgstr ""
 msgid ""
 "%(lines)s: already received into stock. Cancel the bill to send the "
 "ingredients back, or return the receipt from Inventory, before deleting it."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "%(portions)s portions, %(share)s %% of the section"
 msgstr ""
 
 #. module: bf_kitchen
@@ -180,6 +186,12 @@ msgstr ""
 
 #. module: bf_kitchen
 #. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "%s portions"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
 #: code:addons/bf_kitchen/models/kitchen_count.py:0
 msgid ""
 "%s register order(s) are still open: their dishes have not left the stock "
@@ -243,6 +255,11 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_price_impact_view_form
+msgid "<span>If an ingredient goes up</span>"
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_variance_view_form
 msgid "<span>Kitchen variance</span>"
 msgstr ""
@@ -250,6 +267,11 @@ msgstr ""
 #. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.technical_sheet_body
 msgid "<span>Makes </span>"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_view_form
+msgid "<span>Menu engineering</span>"
 msgstr ""
 
 #. module: bf_kitchen
@@ -387,6 +409,16 @@ msgid "Activity Type Icon"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__actual_value
+msgid "Actual food cost"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__actual_pct
+msgid "Actual food cost (%)"
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_preparation_action
 msgid "Add a preparation"
 msgstr ""
@@ -394,6 +426,11 @@ msgstr ""
 #. module: bf_kitchen
 #: model_terms:ir.actions.act_window,help:bf_kitchen.bf_kitchen_ingredient_action
 msgid "Add the ingredients you buy"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__advice
+msgid "Advice"
 msgstr ""
 
 #. module: bf_kitchen
@@ -568,6 +605,11 @@ msgid "Attachment Count"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__price_avg
+msgid "Average price"
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
 msgid "Back to the count"
 msgstr ""
@@ -686,6 +728,12 @@ msgstr ""
 
 #. module: bf_kitchen
 #. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "Choose the ingredients that go up."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
 #: code:addons/bf_kitchen/models/kitchen_variance.py:0
 msgid "Choose the two finished counts to compare."
 msgstr ""
@@ -711,16 +759,20 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__company_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__company_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__company_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__company_id
 msgid "Company"
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_order_guide_view_form
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_price_impact_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_variance_view_form
 msgid "Compute"
 msgstr ""
@@ -731,7 +783,9 @@ msgid "Compute again"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__computed
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__computed
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__computed
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__computed
 msgid "Computed"
 msgstr ""
@@ -963,9 +1017,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__create_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__create_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__create_uid
@@ -978,9 +1036,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__create_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__create_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__create_date
@@ -1012,6 +1074,10 @@ msgstr ""
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count__currency_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__currency_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__currency_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__currency_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__currency_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__currency_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__currency_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__currency_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_currency_id
@@ -1103,9 +1169,31 @@ msgid "Delivery days"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__product_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__product_tmpl_id
 #: model:ir.model.fields.selection,name:bf_kitchen.selection__product_template__bf_kitchen_type__dish
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.report_allergen_sheet
 msgid "Dish"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__line_ids
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__line_ids
+msgid "Dishes"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__over_count
+msgid "Dishes going over their target"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_menu__revenue_no_recipe
+msgid ""
+"Dishes sold without a recipe: their cost is unknown, they are left out of "
+"the food cost and margin."
 msgstr ""
 
 #. module: bf_kitchen
@@ -1114,9 +1202,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__display_name
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__display_name
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__display_name
@@ -1124,8 +1216,33 @@ msgid "Display Name"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_menu_line__quadrant__dog
+msgid "Dog"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__dog_count
+msgid "Dogs"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_count__state__done
 msgid "Done"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_view_form
+msgid "Each dish by popularity and margin, within its section of the menu."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_price_impact
+msgid "Effect of an ingredient price increase"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_price_impact_line
+msgid "Effect of an ingredient price increase: dish"
 msgstr ""
 
 #. module: bf_kitchen
@@ -1205,6 +1322,12 @@ msgid "Failed Messages"
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "Few sold, thin margin: replace it, or keep it for a good reason."
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
 msgid "Finish the count"
 msgstr ""
@@ -1240,8 +1363,40 @@ msgid "Food allergen"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__cost_total
+msgid "Food cost"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__food_cost_pct
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__food_cost_pct
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_food_cost_pct
 msgid "Food cost (%)"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__pct_after
+msgid "Food cost after (%)"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__pct_before
+msgid "Food cost now (%)"
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_variance_view_form
+msgid "Food cost of the period"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__cost
+msgid "Food cost of the sales"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__sales_value
+msgid "Food sales"
 msgstr ""
 
 #. module: bf_kitchen
@@ -1277,6 +1432,7 @@ msgid "Friday"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__date_from
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__date_from
 msgid "From"
 msgstr ""
@@ -1291,6 +1447,19 @@ msgstr ""
 #: code:addons/bf_kitchen/wizard/loss.py:0
 #: code:addons/bf_kitchen/wizard/prepared.py:0
 msgid "Give a quantity above 0."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__newly_over
+msgid "Goes over its target"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid ""
+"Good margin, few sold: show it better (place on the menu, name, the servers'"
+" suggestion), or lower its price."
 msgstr ""
 
 #. module: bf_kitchen
@@ -1346,9 +1515,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__id
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__id
@@ -1366,6 +1539,20 @@ msgid "Icon to indicate an exception activity."
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "If %(items)s go up %(pct)s %%"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_price_impact_action
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_price_impact
+msgid "If an ingredient goes up"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr ""
@@ -1374,6 +1561,18 @@ msgstr ""
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__message_has_error
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_count__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__impact_id
+msgid "Impact"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_menu_line__estimated
+msgid ""
+"Imported from another register without amounts: counted at the selling "
+"price."
 msgstr ""
 
 #. module: bf_kitchen
@@ -1390,6 +1589,11 @@ msgstr ""
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_variance_line__qty
 msgid ""
 "In the item's stock unit. Unexplained variance: counted minus expected."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__increase_pct
+msgid "Increase (%)"
 msgstr ""
 
 #. module: bf_kitchen
@@ -1412,6 +1616,7 @@ msgstr ""
 
 #. module: bf_kitchen
 #: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_ingredient_action
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__product_ids
 #: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_ingredients
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
 msgid "Ingredients"
@@ -1483,6 +1688,12 @@ msgstr ""
 #. module: bf_kitchen
 #: model:ir.model,name:bf_kitchen.model_account_move_line
 msgid "Journal Item"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "Keep it as it is: in view, consistent, its price watched."
 msgstr ""
 
 #. module: bf_kitchen
@@ -1693,9 +1904,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__write_uid
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__write_uid
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__write_uid
@@ -1708,9 +1923,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_step__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_order_guide_line__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_prepared__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact__write_date
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance_line__write_date
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_weekday__write_date
@@ -1817,6 +2036,12 @@ msgid "Makes"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__margin
+msgid "Margin"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__margin_unit
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_margin
 msgid "Margin per portion"
 msgstr ""
@@ -1831,6 +2056,44 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_may_contain_ids
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_may_contain_ids
 msgid "May contain"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__menu_id
+msgid "Menu"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+#: model:ir.actions.act_window,name:bf_kitchen.bf_kitchen_menu_action
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_menu
+#: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_menu_engineering
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_line_view_pivot
+msgid "Menu engineering"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "Menu engineering %(start)s → %(end)s"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "Menu engineering is the kitchen manager's: it shows the costs."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model,name:bf_kitchen.model_bf_kitchen_menu_line
+msgid "Menu engineering: dish"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "Menu engineering: the matrix"
 msgstr ""
 
 #. module: bf_kitchen
@@ -1947,6 +2210,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_kitchen/models/kitchen_variance.py:0
 msgid "No reason"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__no_recipe
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_line_view_kanban
+msgid "No recipe"
 msgstr ""
 
 #. module: bf_kitchen
@@ -2153,6 +2422,11 @@ msgid "Other moves"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__over_after
+msgid "Over its target after"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_over_target
 msgid "Over target"
 msgstr ""
@@ -2169,10 +2443,21 @@ msgid "Per unit made"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__cost_portion
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_cost_portion
 #: model:mail.activity.type,name:bf_kitchen.mail_activity_plate_cost
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
 msgid "Plate cost"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__cost_after
+msgid "Plate cost after"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__cost_before
+msgid "Plate cost now"
 msgstr ""
 
 #. module: bf_kitchen
@@ -2187,6 +2472,16 @@ msgid "Plate cost over target: %s"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_menu_line__quadrant__plowhorse
+msgid "Plowhorse"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__plowhorse_count
+msgid "Plowhorses"
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_step_view_form
 msgid "Plus"
 msgstr ""
@@ -2194,6 +2489,25 @@ msgstr ""
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__qty_stock
 msgid "Plus, in stock units"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__popular
+msgid "Popular"
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid ""
+"Popular, thin margin: lower its cost (portion, recipe) or raise its price a "
+"little."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__portions
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__qty
+msgid "Portions sold"
 msgstr ""
 
 #. module: bf_kitchen
@@ -2245,6 +2559,11 @@ msgid "Product Variant"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__profitable
+msgid "Profitable"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_count_line__purchase_uom_id
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
 msgid "Purchase unit"
@@ -2258,6 +2577,26 @@ msgstr ""
 #. module: bf_kitchen
 #: model:ir.ui.menu,name:bf_kitchen.menu_kitchen_purchase
 msgid "Purchasing"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_menu_line__quadrant__puzzle
+msgid "Puzzle"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__puzzle_count
+msgid "Puzzles"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__quadrant
+msgid "Quadrant"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__quadrant_seq
+msgid "Quadrant Seq"
 msgstr ""
 
 #. module: bf_kitchen
@@ -2312,6 +2651,8 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__bom_id
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__bom_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_product__bf_kitchen_bom_id
 #: model:ir.model.fields,field_description:bf_kitchen.field_product_template__bf_kitchen_bom_id
 #: model:ir.model.fields.selection,name:bf_kitchen.selection__product_product__bf_cost_source__recipe
@@ -2395,9 +2736,46 @@ msgid "SMS Delivery error"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__revenue
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__revenue
+msgid "Sales"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__estimated
+msgid "Sales estimated"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_variance__sales_estimated
+msgid ""
+"Sales imported from another register carry quantities only: counted at the "
+"selling price."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_menu__estimated
+msgid ""
+"Sales imported from another register carry quantities only: their sales are "
+"counted at the dish's selling price."
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_view_form
+msgid ""
+"Sales imported from another register carry quantities only: they are counted"
+" at the dish's selling price."
+msgstr ""
+
+#. module: bf_kitchen
 #. odoo-python
 #: code:addons/bf_kitchen/models/kitchen_consumption.py:0
 msgid "Sales orders"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__revenue_no_recipe
+msgid "Sales without a recipe"
 msgstr ""
 
 #. module: bf_kitchen
@@ -2416,11 +2794,27 @@ msgid "Scrap Reason Tag"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__section
+msgid "Section"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__section_margin_avg
+msgid "Section's average margin"
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_form
 msgid "See"
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_view_form
+msgid "See the matrix"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__price
 #: model:ir.model.fields,field_description:bf_kitchen.field_mrp_bom__bf_price
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_product_view_form
 msgid "Selling price"
@@ -2454,6 +2848,11 @@ msgstr ""
 msgid ""
 "Share of the bill taxes that belongs in the ingredient cost. 0 when the "
 "taxes are claimed back."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__popularity_pct
+msgid "Share of the section (%)"
 msgstr ""
 
 #. module: bf_kitchen
@@ -2495,6 +2894,35 @@ msgid "Sold through"
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "Sold without a recipe: its cost is unknown. Give it its recipe."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_menu_line__no_recipe
+msgid "Sold, but without a recipe: its cost is unknown."
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_view_form
+msgid ""
+"Some dishes sold have no recipe: their sales are left out of the food cost "
+"and the margin. Give them their recipe."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__estimated
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__sales_estimated
+msgid "Some sales estimated"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__sources
+msgid "Sources"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:stock.scrap.reason.tag,name:bf_kitchen.scrap_reason_spilled
 msgid "Spilled or dropped"
 msgstr ""
@@ -2502,6 +2930,16 @@ msgstr ""
 #. module: bf_kitchen
 #: model:stock.scrap.reason.tag,name:bf_kitchen.scrap_reason_staff_meal
 msgid "Staff meal"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields.selection,name:bf_kitchen.selection__bf_kitchen_menu_line__quadrant__star
+msgid "Star"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__star_count
+msgid "Stars"
 msgstr ""
 
 #. module: bf_kitchen
@@ -2596,10 +3034,20 @@ msgid "Suggested price"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__price_suggested
+msgid "Suggested price after"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_res_company__bf_kitchen_price_rounding
 #: model:ir.model.fields,field_description:bf_kitchen.field_res_config_settings__bf_kitchen_price_rounding
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.res_config_settings_view_form_kitchen
 msgid "Suggested price rounding"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__summary
+msgid "Summary"
 msgstr ""
 
 #. module: bf_kitchen
@@ -2625,6 +3073,11 @@ msgstr ""
 #. module: bf_kitchen
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_loss__location_id
 msgid "Taken from"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_price_impact_line__target_pct
+msgid "Target (%)"
 msgstr ""
 
 #. module: bf_kitchen
@@ -2656,6 +3109,11 @@ msgid "Technical sheet with costs"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_variance__actual_pct
+msgid "The actual food cost as a share of the food sales."
+msgstr ""
+
+#. module: bf_kitchen
 #. odoo-python
 #: code:addons/bf_kitchen/models/account_move.py:0
 msgid "The company %s has no warehouse."
@@ -2678,6 +3136,13 @@ msgstr ""
 #: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_order_guide__cover_until
 msgid ""
 "The delivery after this one: the order covers what is needed until then."
+msgstr ""
+
+#. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_price_impact_view_form
+msgid ""
+"The dishes that use it, sub-recipes included, and the ones that would go "
+"over their target."
 msgstr ""
 
 #. module: bf_kitchen
@@ -2762,6 +3227,11 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_view_form
+msgid "The matrix"
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_stock_warehouse__bf_kitchen_consumption_type_id
 msgid ""
 "The operation type of what the kitchen sends out without a delivery: "
@@ -2784,6 +3254,12 @@ msgstr ""
 
 #. module: bf_kitchen
 #. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "The period starts after it ends."
+msgstr ""
+
+#. module: bf_kitchen
+#. odoo-python
 #: code:addons/bf_kitchen/models/account_move.py:0
 msgid ""
 "The plate cost went over its target after %(bills)s. Ingredients: "
@@ -2794,6 +3270,30 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_kitchen/wizard/prepared.py:0
 msgid "The preparation could not be recorded (%s)."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_menu_line__price_avg
+msgid ""
+"The price really obtained (sales / portions); the selling price when nothing"
+" sold."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_price_impact_line__price_suggested
+msgid "The price that brings a dish over its target back to it."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_menu_line__section
+msgid ""
+"The section of the menu (the register's category, or the product category): "
+"dishes are compared within their section."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_menu_line__quadrant_seq
+msgid "The stars first, the dogs last, then the dishes without a recipe."
 msgstr ""
 
 #. module: bf_kitchen
@@ -2878,6 +3378,11 @@ msgid "The yield must be above 0 and at most 100%."
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__theoretical_pct
+msgid "Theoretical food cost (%)"
+msgstr ""
+
+#. module: bf_kitchen
 #. odoo-python
 #: code:addons/bf_kitchen/wizard/attach_line.py:0
 msgid "This line already has a product: its cost is read from it."
@@ -2897,6 +3402,12 @@ msgid ""
 msgstr ""
 
 #. module: bf_kitchen
+#. odoo-python
+#: code:addons/bf_kitchen/models/kitchen_menu.py:0
+msgid "This report is for a company you do not work in."
+msgstr ""
+
+#. module: bf_kitchen
 #: model:ir.model.fields,help:bf_kitchen.field_product_supplierinfo__bf_pack_qty
 msgid ""
 "This vendor's format, in the product's stock unit: 12000 for a case of 12 x "
@@ -2910,6 +3421,7 @@ msgid "Thursday"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu__date_to
 #: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_variance__date_to
 msgid "To"
 msgstr ""
@@ -2956,13 +3468,25 @@ msgid "To the next dollar"
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_menu_line__cost_portion
+msgid "Today's plate cost of the recipe."
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bill_line_view_list
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_bom_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_count_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_menu_view_form
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_scrap_view_list
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_variance_line_view_list
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_variance_view_form
 msgid "Total"
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,field_description:bf_kitchen.field_bf_kitchen_menu_line__margin_total
+msgid "Total margin"
 msgstr ""
 
 #. module: bf_kitchen
@@ -3147,6 +3671,13 @@ msgid "What is left of an opened unit, in the stock unit (g, ml, unit)."
 msgstr ""
 
 #. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_variance__actual_value
+msgid ""
+"What left the stock between the two counts: consumed by the sales, lost, and"
+" the unexplained variance."
+msgstr ""
+
+#. module: bf_kitchen
 #: model_terms:ir.ui.view,arch_db:bf_kitchen.bf_kitchen_variance_view_form
 msgid ""
 "What left the stock between two counts, and what the sales do not explain."
@@ -3157,6 +3688,18 @@ msgstr ""
 msgid ""
 "What the kitchen knows it will use and Odoo does not count yet (school meals"
 " ordered), in the stock unit."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_variance__sales_value
+msgid ""
+"What the kitchen sold in the period from this warehouse (dishes, and items "
+"sold as they are), before taxes, from every source the kitchen knows."
+msgstr ""
+
+#. module: bf_kitchen
+#: model:ir.model.fields,help:bf_kitchen.field_bf_kitchen_variance__theoretical_pct
+msgid "What the recipes say the sales consumed, as a share of the food sales."
 msgstr ""
 
 #. module: bf_kitchen

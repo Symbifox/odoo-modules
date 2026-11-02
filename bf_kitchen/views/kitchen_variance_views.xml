@@ -45,6 +45,17 @@
                             <field name="unexplained_pct" decoration-danger="unexplained_pct &lt; 0"/>
                         </group>
                     </group>
+                    <group invisible="not computed or not sales_value" string="Food cost of the period">
+                        <group>
+                            <field name="sales_value"/>
+                            <field name="sales_estimated" invisible="not sales_estimated"/>
+                        </group>
+                        <group>
+                            <field name="theoretical_pct"/>
+                            <field name="actual_value"/>
+                            <field name="actual_pct" decoration-danger="actual_pct &gt; theoretical_pct"/>
+                        </group>
+                    </group>
                     <notebook invisible="not computed">
                         <page string="Biggest unexplained variances" name="top">
                             <field name="top_line_ids" nolabel="1">

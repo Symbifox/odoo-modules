@@ -20,6 +20,7 @@ caterer that cooks in the same Symbifox as the school. Installed on its own when
 - **Cancelled after the hour.** A meal cancelled, or a day closed, after that hour puts nothing
   back in stock (the food is cooked): in the kitchen's variance report, it moves from
   consumption to losses ("Meal cancelled after the cut-off"), by the dish's current recipe.
+- **Menu engineering.** The school meals ordered, at the price paid, feed the kitchen's menu engineering; a meal cancelled or credited is not a sale.
 
 ## What the module does not do
 
@@ -35,6 +36,7 @@ Odoo 18, `bf_kitchen` and `bf_school_meal`. The interface is in English with a F
 - 18.0.1.0.0: first release.
 - 18.0.1.1.0: the order guide of the kitchen counts the school meals ordered and not served yet as known demand; French translation completed.
 - 18.0.1.1.1: the day a dish is linked to a meal is the school's, not the user's: a dish linked in the evening (or by a user in another time zone) no longer leaves that day's meals out of the stock.
+- 18.0.1.2.0: the school meals ordered feed the kitchen's menu engineering.
 
 ## Licence
 

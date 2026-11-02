@@ -228,3 +228,19 @@ class TestKitchenSchoolMeal(TestKitchen):
         guide = self.env["bf.kitchen.order.guide"].with_context(tz="Pacific/Kiritimati").create({"partner_id": self.vendor.id})
         demand = guide._bf_known_demand(self.today + timedelta(days=7))
         self.assertAlmostEqual(demand.get(self.salmon, 0.0), 240.0)
+
+    def test_menu_counts_the_meals(self):
+        """Menu engineering counts the school meals ordered at the price paid; a cancelled meal and a meal
+        with no kitchen dish are left out."""
+        day = self.day()
+        self.order(day, self.students[0])
+        self.order(day, self.students[1])
+        cancelled = self.order(day, self.students[2])
+        # A meal cancelled before the day (its button refuses once the day has begun).
+        self.env.cr.execute("UPDATE bf_school_meal_order SET state = 'cancelled' WHERE id = %s", [cancelled.id])
+        cancelled.invalidate_recordset(["state"])
+        self.order(day, self.students[3], self.plain)
+        menu = self.env["bf.kitchen.menu"].create({"date_from": self.today, "date_to": self.today})
+        menu.action_compute()
+        line = menu.line_ids.filtered(lambda l: l.product_id == self.dish)
+        self.assertEqual((line.qty, line.revenue), (2.0, 40.0))

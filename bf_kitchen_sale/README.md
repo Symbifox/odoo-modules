@@ -23,6 +23,7 @@ own when `bf_kitchen` and `sale_mrp` are both there.
   note on the invoice.
 - In the kitchen's variance report, these sales have their own column ("Invoice without a
   sales order", "Sales orders").
+- **Menu engineering.** The posted invoices and credit notes (with or without a sales order) feed the kitchen's menu engineering; an invoice of a register order is the register's. A plain credit note lowers the sales, not the portions served; a credit note that cancels its invoice (the modify mode, marked on it) takes them back.
 
 ## What the module does not do
 
@@ -37,9 +38,10 @@ Odoo 18 with Sales and its kits (`sale_mrp`), and `bf_kitchen`. The interface is
 ## Changelog
 
 - 18.0.1.0.0: first release.
+- 18.0.1.1.0: the invoiced sales feed the kitchen's menu engineering.
 
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-10-31 for this one. In the meantime, use in production for
+its Change Date: 2030-11-01 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

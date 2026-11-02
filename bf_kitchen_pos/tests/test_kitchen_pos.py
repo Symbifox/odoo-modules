@@ -180,3 +180,33 @@ class TestKitchenPos(TestKitchen):
         self.assertIn("all_prices", info, "the native information stays")
         plain = self.beer.with_user(cashier).get_product_info_pos(7.0, 1, self.config.id)
         self.assertEqual(plain["bf_allergens"], [])
+
+    def test_p_menu_counts_the_register(self):
+        """Menu engineering counts the register's sales before taxes, refunds deducted."""
+        starters = self.env["pos.category"].create({"name": "Entrées essai"})
+        self.dish.pos_categ_ids = [Command.set(starters.ids)]
+        self.sell([(self.dish, 3)])
+        self.refund(self.sell([(self.dish, 1)]))
+        menu = self.env["bf.kitchen.menu"].create({"date_from": self.today, "date_to": self.today})
+        menu.action_compute()
+        line = menu.line_ids.filtered(lambda l: l.product_id == self.dish)
+        self.assertEqual((line.qty, line.revenue), (3.0, 60.0))
+        self.assertTrue(line.sources, "the source is named")
+        self.assertEqual(line.section, "Entrées essai", "the register's category is the menu's section")
+
+    def test_p_food_cost_counts_items_sold_as_they_are(self):
+        """A bottle of beer sold as it is: in the food sales of the warehouse (its consumption is in the
+        food cost), not on the menu's matrix."""
+        self.sell([(self.dish, 1), (self.beer, 2)])
+        Menu = self.env["bf.kitchen.menu"]
+        menu = Menu.create({"date_from": self.today, "date_to": self.today})
+        start, end = menu._bf_bounds()
+        sales = Menu._bf_menu_sales(self.company, start, end, warehouse=self.warehouse)
+        self.assertEqual(sales[self.beer.id]["qty"], 2.0)
+        self.assertEqual(sales[self.beer.id]["type"], "ingredient")
+        menu.action_compute()
+        self.assertNotIn(self.beer, menu.line_ids.product_id)
+        # Another warehouse (one that exists: creating one calls out on some databases).
+        other = self.env["stock.warehouse"].sudo().search([("id", "!=", self.warehouse.id)], limit=1)
+        if other:
+            self.assertFalse(Menu._bf_menu_sales(self.company, start, end, warehouse=other))

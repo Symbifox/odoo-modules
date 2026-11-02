@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 11:20+0000\n"
-"PO-Revision-Date: 2026-10-31 11:20+0000\n"
+"POT-Creation-Date: 2026-11-02 01:29+0000\n"
+"PO-Revision-Date: 2026-11-02 01:29+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,10 +16,30 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: bf_kitchen_sale
+#: model:ir.model.fields,help:bf_kitchen_sale.field_account_bank_statement_line__bf_kitchen_cancels
+#: model:ir.model.fields,help:bf_kitchen_sale.field_account_move__bf_kitchen_cancels
+msgid ""
+"A credit note made to cancel its invoice (the credit note's modify mode): "
+"the dishes were not served as invoiced. A plain credit note is a commercial "
+"gesture: the dishes were served."
+msgstr "Un avoir fait pour annuler sa facture (le mode Modifier de l'avoir) : les plats n'ont pas été servis comme facturés. Un avoir simple est un geste commercial : les plats ont été servis."
+
+#. module: bf_kitchen_sale
+#: model:ir.model,name:bf_kitchen_sale.model_account_move_reversal
+msgid "Account Move Reversal"
+msgstr "Extourne d'écriture comptable"
+
+#. module: bf_kitchen_sale
 #: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_bank_statement_line__bf_kitchen_consumption_count
 #: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_move__bf_kitchen_consumption_count
 msgid "Bf Kitchen Consumption Count"
 msgstr "Nombre de consommations cuisine"
+
+#. module: bf_kitchen_sale
+#: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_bank_statement_line__bf_kitchen_cancels
+#: model:ir.model.fields,field_description:bf_kitchen_sale.field_account_move__bf_kitchen_cancels
+msgid "Cancels its invoice"
+msgstr "Annule sa facture"
 
 #. module: bf_kitchen_sale
 #. odoo-python
@@ -37,6 +57,12 @@ msgstr "Plats sortis du stock de la cuisine : %s."
 #: model:ir.model.fields,field_description:bf_kitchen_sale.field_stock_picking__bf_kitchen_invoice_id
 msgid "Invoice consumed"
 msgstr "Facture consommée"
+
+#. module: bf_kitchen_sale
+#. odoo-python
+#: code:addons/bf_kitchen_sale/models/kitchen_menu.py:0
+msgid "Invoices"
+msgstr "Factures"
 
 #. module: bf_kitchen_sale
 #: model:ir.model,name:bf_kitchen_sale.model_account_move
@@ -57,19 +83,22 @@ msgid "Kitchen consumptions"
 msgstr "Consommations cuisine"
 
 #. module: bf_kitchen_sale
+#: model:ir.model,name:bf_kitchen_sale.model_bf_kitchen_menu
+msgid "Menu engineering"
+msgstr "Ingénierie de menu"
+
+#. module: bf_kitchen_sale
 #: model:ir.model.fields,help:bf_kitchen_sale.field_stock_picking__bf_kitchen_invoice_id
 msgid ""
 "The customer invoice with no sales order whose dishes this consumption took "
 "out."
-msgstr ""
-"La facture client sans commande dont cette consommation a sorti les plats."
+msgstr "La facture client sans commande dont cette consommation a sorti les plats."
 
 #. module: bf_kitchen_sale
 #. odoo-python
 #: code:addons/bf_kitchen_sale/models/account_move.py:0
 msgid "The dishes of this invoice did not leave the kitchen stock: %s"
-msgstr ""
-"Les plats de cette facture ne sont pas sortis du stock de la cuisine : %s"
+msgstr "Les plats de cette facture ne sont pas sortis du stock de la cuisine : %s"
 
 #. module: bf_kitchen_sale
 #. odoo-python
@@ -77,15 +106,7 @@ msgstr ""
 msgid ""
 "The dishes of this invoice did not leave the kitchen stock: the company %s "
 "has no warehouse."
-msgstr ""
-"Les plats de cette facture ne sont pas sortis du stock de la cuisine : la "
-"société %s n'a pas d'entrepôt."
-
-#. module: bf_kitchen_sale
-#. odoo-python
-#: code:addons/bf_kitchen_sale/models/stock_picking.py:0
-msgid "The kitchen source of a transfer is set by the kitchen itself."
-msgstr "La source cuisine d'un transfert est posée par la cuisine elle-même."
+msgstr "Les plats de cette facture ne sont pas sortis du stock de la cuisine : la société %s n'a pas d'entrepôt."
 
 #. module: bf_kitchen_sale
 #: model:ir.model,name:bf_kitchen_sale.model_stock_picking

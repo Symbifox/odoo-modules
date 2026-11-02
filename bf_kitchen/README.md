@@ -3,8 +3,7 @@
 Recipes and plate cost for restaurants, caterers and kitchens, built on Odoo's stock,
 purchase and kits: recipes and plate cost, the kitchen stock (counts, losses, preparations
 made ahead), and what the kitchen consumed between two counts against what it sold (the
-theoretical/actual variance), and the orders to suppliers. Menu engineering is planned for a
-later release.
+theoretical/actual variance), the orders to suppliers, and menu engineering.
 
 ## Features
 
@@ -99,6 +98,29 @@ later release.
   `bf_kitchen_school_meal`), the min and max, and a suggested quantity in the supplier's unit
   (below the min, up to the max; at least the supplier's minimum). One button makes Odoo's
   request for quotation for the delivery date, with the user's own Purchase rights.
+- **Menu engineering.** For a period (Kitchen > Reports > Menu engineering), each dish of the
+  menu by popularity and margin, within its section (its register category with `bf_kitchen_pos`,
+  otherwise its product category: a dessert is compared with the desserts). Popular: it sells at least 70 % of an even share of its section's
+  portions; profitable: its margin per portion (the price really obtained, less today's plate
+  cost) reaches the section's average margin, weighted by what sold. **Star**, **plowhorse**
+  (popular, thin margin), **puzzle** (good margin, few sold) or **dog**, each with its advice,
+  in a list, a board by quadrant and a pivot. The sales come from every source the bridges know
+  (register, invoices, another register, school meals); sales imported without amounts count at
+  the dish's selling price, said estimated. A dish for sale that sold nothing is on the matrix too;
+  a dish sold without a recipe is shown, not classified, and its sales are kept out of the food cost
+  and the margin (said apart). The period is in the restaurant's time zone
+  (the company's), whoever looks. A plain credit note lowers the sales, not the portions served;
+  one that cancels the invoice takes its portions back.
+- **Food cost of the period.** The variance report also gives the food sales of the period, the
+  theoretical food cost (what the recipes say the sales consumed) and the actual food cost (what
+  left the stock: consumed, lost and unexplained), each as a share of the sales that left from that
+  warehouse (dishes, and items sold as they are). An invoice without a sales order, a school meal and
+  an imported day count when their food left the stock, as the stock moves are read; a sales order's
+  invoice and a credit note by their day.
+- **If an ingredient goes up.** Choose ingredients (or preparations) and a percentage (Kitchen >
+  Reports > If an ingredient goes up): every dish that uses them, through its preparations and
+  the dishes of a set menu, with its plate cost and food cost now and after, the ones that go over
+  their target, and the price that brings those back to it.
 
 ## Units
 
@@ -139,8 +161,8 @@ A purchase unit such as "bunch (60 g)" can be created in the Weight category.
 
 The stock valuation stays Odoo's: the module never writes the product cost. The variance is
 valued at today's kitchen cost, not at the cost of each day. The order guide does not send the
-order: the request for quotation is Odoo's, sent from Purchase. Menu engineering is planned for
-a later release. The kitchen locations list is the Inventory administrator's (writing a location is
+order: the request for quotation is Odoo's, sent from Purchase. Menu engineering values at today's
+plate cost; a sales order delivered but not invoiced yet is not in its sales. The kitchen locations list is the Inventory administrator's (writing a location is
 theirs in Odoo).
 
 ## Requirements
@@ -179,9 +201,12 @@ allergens. The interface is in English with a French (Canada) translation.
   manager (kitchen items only), delivery days and order lead of food suppliers, the order guide
   per supplier and its request for quotation. An allergen still declared by a kitchen item is
   neither archived nor deleted. French translation completed.
+- 18.0.1.4.0: menu engineering (popularity and margin by section, from the sales of every source),
+  the food cost of the period in the variance report (theoretical and actual, as a share of the food
+  sales), and the effect of an ingredient price increase on the dishes.
 
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-10-31 for this one. In the meantime, use in production for
+its Change Date: 2030-11-01 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

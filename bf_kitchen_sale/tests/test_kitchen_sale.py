@@ -2,6 +2,7 @@
 
 The fixtures are bf_kitchen's TestKitchen (a dish of 240 g of salmon, 30 g of a cream sauce and
 3 g of salt). Odoo 18 runs only the test methods a class defines itself."""
+from datetime import timedelta
 from unittest.mock import patch
 
 from odoo import Command
@@ -189,3 +190,59 @@ class TestKitchenSale(TestKitchen):
         new = self.env["account.move"].browse(action["res_id"])
         new.action_post()
         self.assertAlmostEqual(self.on_stock(self.salmon), -4 * 240.0, msg="4 dishes, not 8")
+
+    def reverse(self, move, modify):
+        wizard = self.env["account.move.reversal"].with_context(
+            active_model="account.move", active_ids=move.ids).create({"journal_id": move.journal_id.id})
+        return wizard.modify_moves() if modify else wizard.refund_moves()
+
+    def menu_line(self):
+        menu = self.env["bf.kitchen.menu"].create({"date_from": self.today, "date_to": self.today})
+        menu.action_compute()
+        return menu.line_ids.filtered(lambda l: l.product_id == self.dish)
+
+    def test_s_menu_counts_the_invoices(self):
+        """Menu engineering counts the posted invoices, drafts left out. A plain credit note
+        lowers the sales, not the portions served; a credit note that cancels its invoice (modify) takes its
+        portions back, and the new invoice counts its own."""
+        move = self.invoice(4.0)
+        self.invoice(9.0, post=False)
+        action = self.reverse(move, modify=False)
+        refund = self.env["account.move"].browse(action["res_id"])
+        if refund.state == "posted":
+            refund.button_draft()
+        refund.invoice_line_ids.write({"quantity": 1.0, "price_unit": 5.0})
+        refund.action_post()
+        corrected = self.invoice(2.0)
+        new = self.env["account.move"].browse(self.reverse(corrected, modify=True)["res_id"])
+        new.action_post()
+        line = self.menu_line()
+        self.assertEqual((line.qty, line.revenue), (6.0, 115.0))
+
+    def test_s_menu_sales_order_corrected(self):
+        """A sales order's invoice corrected by the modify mode: 4 portions, not 8."""
+        order = self.env["sale.order"].create({
+            "partner_id": self.customer.id,
+            "order_line": [Command.create({"product_id": self.dish.id, "product_uom_qty": 4.0, "price_unit": 20.0,
+                                           "tax_id": [Command.clear()]})]})
+        order.action_confirm()
+        invoice = order._create_invoices()
+        invoice.invoice_date = self.today
+        invoice.action_post()
+        new = self.env["account.move"].browse(self.reverse(invoice, modify=True)["res_id"])
+        new.invoice_date = self.today
+        new.action_post()
+        line = self.menu_line()
+        self.assertEqual((line.qty, line.revenue, line.price_avg), (4.0, 80.0, 20.0))
+
+    def test_s_food_cost_by_the_moment_the_food_left(self):
+        """Between two counts, an invoice without a sales order counts when its food left the stock:
+        the same period as its consumption."""
+        move = self.invoice(3.0)
+        left = move.bf_kitchen_consumption_ids.date_done
+        Menu = self.env["bf.kitchen.menu"]
+        warehouse = move.bf_kitchen_consumption_ids.picking_type_id.warehouse_id
+        sales = Menu._bf_menu_sales(self.company, left - timedelta(hours=1), left + timedelta(minutes=1), warehouse=warehouse)
+        self.assertEqual(sales[self.dish.id]["qty"], 3.0)
+        self.assertFalse(Menu._bf_menu_sales(self.company, left + timedelta(minutes=1), left + timedelta(days=1),
+                                             warehouse=warehouse))

@@ -21,6 +21,7 @@ both there.
 - **Allergens at the register**: the product information of a dish, at the register, shows its
   allergens (its recipe's and sub-recipes' included) and what it may contain, to the cashier
   or the waiter who reads neither recipes nor ingredients.
+- **Menu engineering.** The register's sales (paid orders, refunds deducted, before taxes) feed the kitchen's menu engineering.
 
 ## What the module does not do
 
@@ -35,6 +36,7 @@ Odoo 18 with Point of Sale and its kits (`pos_mrp`), and `bf_kitchen`. The inter
 - 18.0.1.0.0: first release.
 - 18.0.1.0.1: French translation completed.
 - 18.0.1.1.0: the register's product information shows a dish's allergens and what it may contain.
+- 18.0.1.2.0: the register's sales feed the kitchen's menu engineering.
 
 ## Licence
 
