@@ -1,0 +1,229 @@
+# Translation of Document Requests: Privacy Bridge (Quebec Law 25) - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_document_request_privacy 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 02:25+0000\n"
+"PO-Revision-Date: 2026-11-01 02:25+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/secure_transfer.py:0
+msgid ""
+"\n"
+"Upload deadline: %s"
+msgstr ""
+"\n"
+"Échéance de dépôt : %s"
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/secure_transfer.py:0
+msgid ""
+"%(basis)s\n"
+"\n"
+"Period applied: %(days)s day(s), under the expiry policy \"%(policy)s\", attached to the retention rule \"%(code)s\"."
+msgstr ""
+"%(basis)s\n"
+"\n"
+"Durée appliquée : %(days)s jour(s), selon la politique d'expiration « %(policy)s », rattachée à la règle de conservation « %(code)s »."
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/bf_document_expiry_policy.py:0
+msgid "%(days)s day(s), within the %(total)s of rule \"%(code)s\"."
+msgstr ""
+"%(days)s jour(s), dans la limite des %(total)s de la règle « %(code)s »."
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/secure_transfer.py:0
+msgid "(unknown client)"
+msgstr "(client inconnu)"
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/secure_transfer.py:0
+msgid "(unknown requester)"
+msgstr "(demandeur inconnu)"
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/secure_transfer.py:0
+msgid "(unnamed)"
+msgstr "(sans nom)"
+
+#. module: bf_document_request_privacy
+#: model:ir.model.fields,field_description:bf_document_request_privacy.field_bf_document_expiry_policy__privacy_alignment_note
+msgid "Alignment"
+msgstr "Alignement"
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/secure_transfer.py:0
+msgid ""
+"Document request \"%(request)s\": documents requested from %(client)s by %(agent)s.\n"
+"Requested documents: %(pieces)s"
+msgstr ""
+"Demande de pièces « %(request)s » : pièces réclamées à %(client)s par %(agent)s.\n"
+"Pièces demandées : %(pieces)s"
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/bf_document_expiry_policy.py:0
+msgid ""
+"No retention rule attached: this period does not derive from any documented "
+"rule."
+msgstr ""
+"Aucune règle de conservation rattachée : cette durée ne découle d'aucune "
+"règle documentée."
+
+#. module: bf_document_request_privacy
+#: model:ir.model.fields,field_description:bf_document_request_privacy.field_bf_document_type__privacy_pi_category
+msgid "Personal information category"
+msgstr "Catégorie de RP"
+
+#. module: bf_document_request_privacy
+#: model:ir.model.fields,field_description:bf_document_request_privacy.field_bf_document_expiry_policy__retention_calendar_id
+msgid "Retention rule"
+msgstr "Règle de conservation"
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/bf_document_expiry_policy.py:0
+msgid ""
+"Rule \"%(code)s\" sets no period: this policy carries it (%(days)s day(s))."
+msgstr ""
+"La règle « %(code)s » ne fixe pas de durée : c'est cette politique qui la "
+"porte (%(days)s jour(s))."
+
+#. module: bf_document_request_privacy
+#: model:ir.model.fields,field_description:bf_document_request_privacy.field_bf_document_expiry_policy__retention_calendar_days
+msgid "Rule retention (days)"
+msgstr "Rétention de la règle (jours)"
+
+#. module: bf_document_request_privacy
+#: model:ir.model.fields,help:bf_document_request_privacy.field_bf_document_type__privacy_pi_category
+msgid ""
+"The category of personal information this document carries. Carried as is "
+"into the destruction register. Empty = not declared; the register will say "
+"so rather than guess."
+msgstr ""
+"La catégorie de renseignement personnel que cette pièce porte. Reprise telle"
+" quelle au registre de destruction. Vide = non déclarée ; le registre le "
+"dira ainsi plutôt que de deviner."
+
+#. module: bf_document_request_privacy
+#: model:ir.model.fields,help:bf_document_request_privacy.field_bf_document_expiry_policy__retention_calendar_id
+msgid ""
+"The retention schedule rule this policy applies. It carries the legal basis,"
+" the final disposition and the destruction method; it is the one quoted in "
+"the register."
+msgstr ""
+"La règle du calendrier de conservation dont cette politique est "
+"l'application. Elle porte la base légale, le sort final et la méthode de "
+"destruction ; c'est elle qui sera citée au registre."
+
+#. module: bf_document_request_privacy
+#: model:ir.model.fields,help:bf_document_request_privacy.field_bf_document_expiry_policy__retention_calendar_days
+msgid "Total retention period in days"
+msgstr "Durée totale de conservation en jours"
+
+#. module: bf_document_request_privacy
+#: model:ir.model.fields,help:bf_document_request_privacy.field_bf_document_expiry_policy__privacy_alignment_note
+msgid "What the policy and its retention rule say about each other."
+msgstr ""
+"Ce que la politique et sa règle de conservation disent l'une de l'autre."
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/secure_transfer.py:0
+msgid "category not declared: %s"
+msgstr "catégorie non déclarée : %s"
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/secure_transfer.py:0
+msgid "none"
+msgstr "aucune"
+
+#. module: bf_document_request_privacy
+#. odoo-python
+#: code:addons/bf_document_request_privacy/models/bf_document_expiry_policy.py:0
+msgid ""
+"⚠️ %(days)s day(s) here, %(total)s under rule \"%(code)s\". The document "
+"will live longer than the rule provides."
+msgstr ""
+"⚠️ %(days)s jour(s) ici, %(total)s selon la règle « %(code)s ». La pièce "
+"vivra plus longtemps que la règle ne le prévoit."
+
+#. module: bf_document_request_privacy
+#: model:privacy.purpose,name:bf_document_request_privacy.purpose_document_request
+msgid "Collection of documents requested from the client"
+msgstr "Collecte de pièces réclamées au client"
+
+#. module: bf_document_request_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_document_request_privacy.purpose_document_request
+msgid ""
+"To complete your file, you are asked to provide certain\n"
+"                documents, for example an identity document, a proof of\n"
+"                address, a proof of insurance or a proof of income. You receive\n"
+"                a link by email or by text message, you photograph each\n"
+"                document with your phone or attach it as a file, and the\n"
+"                documents are placed on encrypted storage."
+msgstr ""
+"Pour compléter votre dossier, on vous demande de fournir\n"
+"                certaines pièces, par exemple une pièce d'identité, une preuve\n"
+"                de résidence, une preuve d'assurance ou une preuve de revenu.\n"
+"                Vous recevez un lien par courriel ou par message texte, vous\n"
+"                photographiez chaque pièce depuis votre téléphone ou la joignez\n"
+"                en fichier, et les documents sont déposés sur un stockage\n"
+"                chiffré."
+
+#. module: bf_document_request_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_document_request_privacy.purpose_document_request
+msgid ""
+"Your email address or mobile number is used to send you this\n"
+"                link and to record who uploaded what, and when. The link stops\n"
+"                working at the deadline shown."
+msgstr ""
+"Votre adresse courriel ou votre numéro de mobile sert à vous\n"
+"                adresser ce lien et à consigner qui a déposé quoi, et quand. Le\n"
+"                lien cesse de fonctionner au temps limite indiqué."
+
+#. module: bf_document_request_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_document_request_privacy.purpose_document_request
+msgid ""
+"The images are deleted from the storage at the end of the\n"
+"                retention period that applies to the document. The request\n"
+"                record and the access log are kept without the images, because\n"
+"                they are the proof of what was requested and uploaded."
+msgstr ""
+"Les images sont supprimées du stockage au terme de la durée\n"
+"                de conservation applicable à la pièce. La fiche de la demande\n"
+"                et le journal des accès sont conservés sans les images, parce\n"
+"                qu'ils font la preuve de ce qui a été demandé et déposé."
+
+#. module: bf_document_request_privacy
+#: model:ir.module.module,shortdesc:base.module_bf_document_request_privacy
+msgid "Document Requests: Privacy Bridge (Quebec Law 25)"
+msgstr "Demande de pièces : pont vie privée (Loi 25)"
+
+#. module: bf_document_request_privacy
+#: model:ir.module.module,summary:base.module_bf_document_request_privacy
+msgid ""
+"Attach the expiry policy to the retention schedule, and record in the "
+"destruction register what a request's expiry deletes"
+msgstr ""
+"Rattacher la politique d'expiration au calendrier de conservation, et "
+"inscrire au registre de destruction ce que l'expiration d'une demande "
+"supprime"

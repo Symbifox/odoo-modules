@@ -1,0 +1,125 @@
+# Translation of Secure Transfer: Privacy Bridge (Quebec Law 25) - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_securetransfer_privacy 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 02:27+0000\n"
+"PO-Revision-Date: 2026-11-01 02:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_securetransfer_privacy
+#. odoo-python
+#: code:addons/bf_securetransfer_privacy/models/secure_transfer.py:0
+msgid ""
+"\n"
+"Trigger recorded in the access log: %s"
+msgstr ""
+"\n"
+"Déclencheur consigné au journal d'accès : %s"
+
+#. module: bf_securetransfer_privacy
+#. odoo-python
+#: code:addons/bf_securetransfer_privacy/models/secure_transfer.py:0
+msgid "(unnamed)"
+msgstr "(sans nom)"
+
+#. module: bf_securetransfer_privacy
+#. odoo-python
+#: code:addons/bf_securetransfer_privacy/models/secure_transfer.py:0
+msgid "Content uploaded by the sender: not classified, categories unknown"
+msgstr "Contenu déposé par l'expéditeur : non classifié, catégories inconnues"
+
+#. module: bf_securetransfer_privacy
+#. odoo-python
+#: code:addons/bf_securetransfer_privacy/models/secure_transfer.py:0
+msgid ""
+"Retention period of the secure transfer, applied by the module's purge job. "
+"Section 23 of the Quebec private sector privacy act: personal information is"
+" destroyed once the purpose for which it was collected has been achieved."
+msgstr ""
+"Durée de conservation du transfert sécurisé, appliquée par le cron de purge "
+"du module. Art. 23 LPRPSP : le renseignement est détruit lorsque la fin pour"
+" laquelle il a été recueilli est accomplie."
+
+#. module: bf_securetransfer_privacy
+#. odoo-python
+#: code:addons/bf_securetransfer_privacy/models/secure_transfer.py:0
+msgid ""
+"Secure transfer \"%(transfer)s\": %(count)s file(s) deleted from object storage (%(origin)s).\n"
+"Files: %(names)s"
+msgstr ""
+"Transfert sécurisé « %(transfer)s » : %(count)s fichier(s) supprimé(s) du stockage objet (%(origin)s).\n"
+"Fichiers : %(names)s"
+
+#. module: bf_securetransfer_privacy
+#. odoo-python
+#: code:addons/bf_securetransfer_privacy/models/secure_transfer.py:0
+msgid "abandoned draft, collected by the automatic clean-up"
+msgstr "brouillon abandonné, récolté par le ménage automatique"
+
+#. module: bf_securetransfer_privacy
+#. odoo-python
+#: code:addons/bf_securetransfer_privacy/models/secure_transfer.py:0
+msgid "expired transfer, purged by the retention job"
+msgstr "transfert expiré, purgé par le cron de rétention"
+
+#. module: bf_securetransfer_privacy
+#. odoo-python
+#: code:addons/bf_securetransfer_privacy/models/secure_transfer.py:0
+msgid "uploaded files (object storage)"
+msgstr "fichiers déposés (stockage objet)"
+
+#. module: bf_securetransfer_privacy
+#: model:privacy.purpose,name:bf_securetransfer_privacy.purpose_securetransfer
+msgid "File delivery by secure transfer"
+msgstr "Remise de fichiers par transfert sécurisé"
+
+#. module: bf_securetransfer_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_securetransfer_privacy.purpose_securetransfer
+msgid ""
+"When a document is delivered to you through a secure link, the\n"
+"                file is placed on encrypted storage and the link that leads to\n"
+"                it expires on a date set in advance. Your email address is used\n"
+"                to send you this link and to record who downloaded what, and\n"
+"                when."
+msgstr ""
+"Lorsqu'un document vous est remis par lien sécurisé, le\n"
+"                fichier est déposé sur un stockage chiffré et le lien qui y\n"
+"                mène expire à une date fixée d'avance. Votre adresse courriel\n"
+"                sert à vous adresser ce lien et à consigner qui a téléchargé\n"
+"                quoi, et quand."
+
+#. module: bf_securetransfer_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_securetransfer_privacy.purpose_securetransfer
+msgid ""
+"Once the expiry date has passed, the file is deleted from the\n"
+"                storage. The access log and the transfer record are kept without\n"
+"                the content, because they are the proof of what was\n"
+"                delivered."
+msgstr ""
+"Passé la date d'expiration, le fichier est supprimé du\n"
+"                stockage. Le journal des accès et la fiche du transfert sont\n"
+"                conservés sans le contenu, parce qu'ils font la preuve de ce\n"
+"                qui a été remis."
+
+#. module: bf_securetransfer_privacy
+#: model:ir.module.module,shortdesc:base.module_bf_securetransfer_privacy
+msgid "Secure Transfer: Privacy Bridge (Quebec Law 25)"
+msgstr "Transfert sécurisé : pont vie privée (Loi 25)"
+
+#. module: bf_securetransfer_privacy
+#: model:ir.module.module,summary:base.module_bf_securetransfer_privacy
+msgid ""
+"Record in the destruction register what the secure transfer purge already "
+"deletes, and declare the purpose in the register of processing activities"
+msgstr ""
+"Inscrire au registre de destruction ce que la purge du transfert sécurisé "
+"supprime déjà, et déclarer la finalité au registre des traitements"

@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**288 modules are BUSL-1.1.** The source is published and auditable, and **you
+**291 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -197,6 +197,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_document_export` | Policies & Procedures Export | 18.0.1.1.2 | BUSL-1.1 | Reproduce the policy and procedure registry as a folder tree: ZIP export with best-practice templates, classification plans, master list and manifest |
 | `bf_document_export_nextcloud` | Policies & Procedures Export - Nextcloud | 18.0.1.2.2 | BUSL-1.1 | Deposit the exported registry in a Nextcloud folder (only what changed, never overwriting, never deleting) and read the Nextcloud files behind external documents |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.6.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
+| `bf_document_request` | Secure Transfer: Document Requests | 18.0.1.2.2 | BUSL-1.1 | Request documents from a client by email or text message, which they photograph or attach from their phone or computer: catalogue, deadline, per-document retention, hash-chained log |
+| `bf_document_request_privacy` | Document Requests: Privacy Bridge (Quebec Law 25) | 18.0.1.1.1 | BUSL-1.1 | Attach the expiry policy to the retention schedule, and record in the destruction register what a request's expiry deletes |
 | `bf_editorial` | Atelier éditorial | 18.0.1.11.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
 | `bf_editorial_audience` | Atelier éditorial — audience | 18.0.1.3.0 | BUSL-1.1 | An article's readership once the crawlers Odoo does not recognise are taken out, recorded daily before the visitor purge takes the trace away |
 | `bf_editorial_bluesky` | Atelier éditorial — Bluesky | 18.0.1.1.0 | BUSL-1.1 | Post to Bluesky from the editorial workshop, over the AT protocol with an app password |
@@ -405,6 +407,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_school_timetable_calendar` | Symbifox École : horaire et calendrier scolaire | 18.0.1.0.0 | BUSL-1.1 | The timetable follows the school calendar: the office enters each day once |
 | `bf_school_work` | Symbifox École : remise de travaux | 18.0.1.0.2 | BUSL-1.1 | Students hand in their work on the portal, the teacher returns a corrected copy with a mark; scored quizzes through Surveys |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.22.0 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe; open-audience data rooms where a link names nobody and each visitor self-declares an email or mobile, confirms a one-time code on that channel, and gets a per-person download budget and watermark |
+| `bf_securetransfer_privacy` | Secure Transfer: Privacy Bridge (Quebec Law 25) | 18.0.1.2.1 | BUSL-1.1 | Record in the destruction register what the secure transfer purge already deletes, and declare the purpose in the register of processing activities |
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.3.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
 | `bf_security_awareness` | Security Awareness | 18.0.2.3.2 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, an aggregate campaign report that names nobody (to hand to a supplier or insurer), a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
 | `bf_session_cookie_domain` | BF Session Cookie Domain | 18.0.2.0.0 | LGPL-3 | Share the session cookie across the subdomains of one configured apex domain |
@@ -523,7 +526,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **287 modules: BUSL-1.1.** Production use for your own internal business
+- **291 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_document_expiry_policy_view_list" model="ir.ui.view">
+        <field name="model">bf.document.expiry.policy</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="retention_days"/>
+                <field name="doc_type"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_document_expiry_policy_view_form" model="ir.ui.view">
+        <field name="model">bf.document.expiry.policy</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="retention_days"/>
+                            <field name="doc_type"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Internal notes…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_document_expiry_policy" model="ir.actions.act_window">
+        <field name="name">Document expiry</field>
+        <field name="res_model">bf.document.expiry.policy</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create an expiry policy</p>
+            <p>
+                E.g. "Short (24 h)" (1 day), "Long (30 days)". The duration must be one
+                the brand offers (1, 7 or 30 days, depending on its ceiling).
+                Then link it to a brand as its "Default expiry".
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bf_document_expiry_policy"
+              name="Document expiry"
+              parent="bf_securetransfer.menu_config"
+              action="action_bf_document_expiry_policy"
+              sequence="30"/>
+</odoo>

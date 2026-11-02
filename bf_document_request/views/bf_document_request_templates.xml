@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The client's mobile page. Standalone, like the base's pages: no
+         website layout (the website router must never hijack a brand's Host).
+         Context provided by controllers/request_portal.py:
+             brand, visuals, locale, req, submitted, page_title, config_json,
+             asset_version,
+             doctype (added by the base's _render_page)
+         ⚠ The doctype is NOT written here: Odoo skips the translation of a
+         whole view whose arch starts with one, and the page would stay in
+         the source language for every visitor. It comes from `doctype`.
+         The DOM ids are the contract of static/src/js/bf_document_request.js:
+         do not rename them without changing the script. -->
+    <template id="page_request" name="Document upload">
+        <t t-out="doctype"/>
+        <html t-att-lang="(locale or 'fr_CA')[:2]">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title><t t-esc="page_title"/> — <t t-esc="visuals['name']"/></title>
+                <link t-if="visuals['favicon_url']" rel="icon" t-att-href="visuals['favicon_url']"/>
+                <link rel="stylesheet" href="/bf_securetransfer/static/src/css/st_public.css"/>
+                <link rel="stylesheet" t-attf-href="/bf_document_request/static/src/css/bf_document_request.css?v=#{asset_version}"/>
+                <t t-call="bf_securetransfer.brand_style"/>
+            </head>
+            <body>
+                <main class="st-wrap dr-wrap">
+                    <header class="st-header">
+                        <img t-if="visuals['logo_url']" class="st-logo"
+                             t-att-src="visuals['logo_url']" t-att-alt="visuals['name']"/>
+                        <span class="st-brand-name"><t t-esc="visuals['name']"/></span>
+                    </header>
+
+                    <!-- File already sent: no upload is offered again. -->
+                    <t t-if="submitted">
+                        <section class="st-card">
+                            <h1 class="st-title">Documents sent</h1>
+                            <p class="st-subtitle">Thank you. Your documents have been received
+                                and sent to <strong t-esc="req.user_id.name"/>.
+                                There is nothing else for you to do.</p>
+                        </section>
+                    </t>
+
+                    <t t-else="">
+                        <section class="st-card">
+                            <h1 class="st-title">Your documents</h1>
+                            <p class="st-subtitle">
+                                <t t-if="req.message"><t t-esc="req.message"/></t>
+                                <t t-else="">Photograph each document requested below,
+                                    or attach it as a file (image or PDF). Your documents are
+                                    encrypted, are only used for this file and are deleted
+                                    automatically when they expire.</t>
+                            </p>
+                            <p t-if="req.deadline" class="dr-deadline">
+                                Please upload them before
+                                <strong t-esc="deadline_text"/>.
+                            </p>
+
+                            <noscript>
+                                <div class="st-error">JavaScript is required to upload
+                                    your documents on this page.</div>
+                            </noscript>
+
+                            <div id="dr-error" class="st-error" hidden="hidden"></div>
+
+                            <!-- bf_document_request.js fills this list from
+                                 #dr-config: one card per requested document. -->
+                            <ul id="dr-lines" class="dr-lines"></ul>
+
+                            <button id="dr-submit" type="button"
+                                    class="st-btn dr-submit" disabled="disabled">
+                                Finish and send
+                            </button>
+                        </section>
+
+                        <section id="dr-done" class="st-card" hidden="hidden">
+                            <h1 class="st-title">Documents sent</h1>
+                            <p class="st-subtitle">Thank you. Your documents have been received.
+                                There is nothing else for you to do.</p>
+                        </section>
+                    </t>
+
+                    <footer class="st-footer">
+                        <span t-if="visuals.get('powered_by')">Powered by <t t-esc="visuals['powered_by_name']"/></span>
+                    </footer>
+                </main>
+
+                <script type="application/json" id="dr-config" t-out="config_json"/>
+                <script t-attf-src="/bf_document_request/static/src/js/bf_document_request.js?v=#{asset_version}"></script>
+            </body>
+        </html>
+    </template>
+
+</odoo>

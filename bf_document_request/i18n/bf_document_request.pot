@@ -1,0 +1,1788 @@
+# Translation template for Secure Transfer: Document Requests.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_document_request 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 03:39+0000\n"
+"PO-Revision-Date: 2026-11-01 03:39+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "\"%(doc)s\" uploaded (%(filename)s)"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "%(brand)s: %(n)s document(s) to upload"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "%(n)s document(s) to upload: %(url)s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "%(who)s, from %(brand)s, is asking you for the following documents:"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "%(who)s, from %(brand)s, is still waiting for the following documents:"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.page_request
+msgid ""
+".\n"
+"                                There is nothing else for you to do."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "<span class=\"o_stat_text\">Transfer</span>"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__message
+msgid "A line of context shown at the top of the mobile page."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/secure_transfer.py:0
+msgid ""
+"A maximum number of reminders of zero amounts to turning automatic reminders"
+" off."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "A note to the client, shown at the top of their page."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_expiry_policy__name
+msgid "A readable label, e.g. \"Short (24 h)\" or \"Long (30 days)\"."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"A request that has been sent cannot be deleted: its log must be kept. Use "
+"\"Cancel\"."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"A requested document does not move from one request to another: remove it, "
+"then add it to the other request."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_type__code
+msgid ""
+"A short, stable identifier, e.g. \"identity\". Used by integrations; never "
+"shown to the client."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "Access certificate (PDF)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_secure_transfer_access_log__action
+msgid "Action"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__active
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Add at least one document to request."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__deadline
+msgid ""
+"After this date, the client's link stops working. This is the time allowed "
+"to RESPOND, not to be confused with retention, which is how long the "
+"documents live once uploaded. Without a deadline, the request is closed "
+"automatically 30 days after it was sent (parameter "
+"bf_document_request.max_open_days, 0 = never)."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "An error occurred. Please try again later."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_expiry_policy__doc_type
+msgid "An indicative label for the kind of document this policy covers."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request_line__required
+msgid "An optional document does not prevent the client from submitting."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Automatic reminder %(i)s/%(max)s %(via)s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Automatic reminder sent %(via)s (%(i)s of %(max)s)."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__reminder_count
+msgid "Automatic reminders"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_secure_transfer_brand__bf_document_reminder_enabled
+msgid "Automatically remind document requests"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__brand_id
+msgid "Brand"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_secure_transfer_brand__bf_document_reminder_max
+msgid ""
+"Budget of AUTOMATIC reminders per request. The employee's manual reminders "
+"do not use it up."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__state__cancelled
+msgid "Cancelled"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Choose a file"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Choose another file"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.actions.act_window,help:bf_document_request.action_bf_document_request
+msgid ""
+"Choose the client, tick the documents you need, send.\n"
+"               They receive a link by email or by text message, photograph or\n"
+"               attach their documents, and you receive them encrypted."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Choose your organisation's brand."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_search
+msgid "Client"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__access_url
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "Client link"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__code
+msgid "Code"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__company_id
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__company_id
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Confirm sending"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.actions.act_window,help:bf_document_request.action_bf_document_expiry_policy
+msgid "Create an expiry policy"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__create_uid
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__create_uid
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__create_uid
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__create_date
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__create_date
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__create_date
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__deadline
+msgid "Deadline"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Deadline passed on %s"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_secure_transfer_brand__bf_document_default_expiry_policy_id
+msgid "Default expiry (document requests)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_secure_transfer_brand__bf_document_reminder_delay_hours
+msgid "Delay between reminders (h)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__display_name
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__display_name
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__display_name
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__doc_count
+msgid "Documents requested"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_list
+msgid "Docs received"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__document_type_id
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__name
+msgid "Document"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.ui.menu,name:bf_document_request.menu_bf_document_expiry_policy
+#: model:ir.actions.act_window,name:bf_document_request.action_bf_document_expiry_policy
+msgid "Document expiry"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model,name:bf_document_request.model_bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_secure_transfer__bf_document_request_ids
+msgid "Document request"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__secure_transfer_access_log__action__bf_document_request_sent
+msgid "Document request sent (email or text message)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.actions.act_window,name:bf_document_request.action_bf_document_request
+#: model:ir.ui.menu,name:bf_document_request.menu_bf_document_requests
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_list
+msgid "Document requests"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.actions.server,name:bf_document_request.cron_bf_document_expire_requests_ir_actions_server
+msgid "Document requests: close overdue requests"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.actions.server,name:bf_document_request.cron_bf_document_send_reminders_ir_actions_server
+msgid "Document requests: remind incomplete files"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__doc_type
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_type_view_form
+msgid "Document type"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.actions.act_window,name:bf_document_request.action_bf_document_type
+#: model:ir.ui.menu,name:bf_document_request.menu_bf_document_types
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_type_view_list
+msgid "Document types"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__secure_transfer_access_log__action__bf_document_doc_received
+msgid "Document uploaded by the client"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.page_request
+msgid "Documents sent"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Documents uploaded by %s (request %s)."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.actions.act_window,help:bf_document_request.action_bf_document_expiry_policy
+msgid ""
+"E.g. \"Short (24 h)\" (1 day), \"Long (30 days)\". The duration must be one\n"
+"                the brand offers (1, 7 or 30 days, depending on its ceiling).\n"
+"                Then link it to a brand as its \"Default expiry\"."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__email
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__channel__email
+msgid "Email"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Empty or unreadable file."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__secure_transfer__locale__en_us
+msgid "English (United States)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request_line__state__pending
+msgid "Expected"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__state__expired
+msgid "Expired"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_secure_transfer__bf_document_expiry_policy_id
+msgid "Expiry (document request)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model,name:bf_document_request.model_bf_document_expiry_policy
+msgid "Expiry policy (role / document type)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_secure_transfer_brand__bf_document_default_expiry_policy_id
+msgid ""
+"Expiry policy applied to this brand's transfers. Takes precedence over the "
+"retention chosen when sending."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__link_mail_state__failed
+msgid "Failed"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__file_id
+msgid "File"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "File too large (maximum %s MB)."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "File too large."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+#: model_terms:ir.ui.view,arch_db:bf_document_request.page_request
+msgid "Finish and send"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_type_view_form
+msgid "Front and back, lying flat, without glare."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Hello %s,"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Hello,"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_type__expiry_policy_id
+msgid ""
+"How long the document lives once uploaded. Empty = the brand's policy "
+"applies."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_expiry_policy__retention_days
+msgid ""
+"How long the link lives before it expires automatically. 1 = 24 h, 7 = one "
+"week, 30 = 30 days, depending on what the brand offers; any other duration "
+"makes the sending fail."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_secure_transfer_brand__bf_document_reminder_delay_hours
+msgid ""
+"How long to wait after the last sending before reminding. Counted from the "
+"last reminder, manual or automatic."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__channel
+msgid ""
+"How the client receives their link. By default: text message when it is set "
+"up on this database, email otherwise."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__id
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__id
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__id
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_type_view_form
+#: model:bf.document.type,name:bf_document_request.doc_type_identity
+msgid "Identity document"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__message_has_error
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "If the button does not work, copy this link into your browser:"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__instructions
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__instructions
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_type_view_form
+msgid "Instructions to the client"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_expiry_policy_view_form
+msgid "Internal notes…"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"Invalid client email address: a single, complete address is needed to send "
+"them the link."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Invalid mobile number."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"Invalid mobile number: a 10-digit North American number is needed to reach "
+"the client by text message."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Invalid or expired link."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.page_request
+msgid ""
+"JavaScript is required to upload\n"
+"                                    your documents on this page."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_secure_transfer__locale
+msgid "Language"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__write_uid
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__write_uid
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__write_uid
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__write_date
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__write_date
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__write_date
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__link_mail_id
+msgid "Last link email"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__link_mail_state
+msgid "Last link email (status)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__last_reminder_at
+msgid "Last reminder"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__secure_transfer_access_log__action__bf_document_request_destination_changed
+msgid "Link destination changed (old link revoked)"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Link destination changed by %(who)s: %(dest)s; the old link is revoked"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"Link destination changed: %(dest)s. The old link no longer works; the new "
+"one will go out with the next reminder, manual (\"Resend\") or automatic."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__brand_id
+msgid ""
+"Look and domain of the page the client will open: the brand of your "
+"organisation, not the software's."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "MMMM d, y 'at' HH:mm"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Manual reminder by email to %s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Manual reminder by text message to %s"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_secure_transfer_brand__bf_document_reminder_max
+msgid "Maximum number of reminders"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__phone
+msgid "Mobile"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_search
+msgid "My requests"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "New"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "No deadline: request closed automatically %s days after it was sent."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "No document has been uploaded."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "No file to confirm for this document."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request_line__state__skipped
+msgid "Not provided"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message
+msgid "Note to the client"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__note
+msgid "Notes"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__link_mail_state__none
+msgid "Nothing pending"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"On your phone, you can photograph each document; on a computer, attach a "
+"file (image or PDF). Your documents are encrypted and deleted automatically "
+"when they expire."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Only an open request can be resent."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__link_mail_state
+msgid ""
+"Only sees immediate refusals from the outgoing mail server: an email that "
+"was accepted, then bounced later (address does not exist, mailbox full), "
+"does not show here."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_search
+msgid "Open"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Optional"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__state__partial
+msgid "Partially received"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_search
+msgid "Past deadline"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.page_request
+msgid ""
+"Photograph each document requested below,\n"
+"                                    or attach it as a file (image or PDF). Your documents are\n"
+"                                    encrypted, are only used for this file and are deleted\n"
+"                                    automatically when they expire."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.page_request
+msgid "Please upload them before"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Please upload them before %s."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.page_request
+msgid "Powered by"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__link_mail_state__queued
+msgid "Queued"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__state__received
+msgid "Received"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__received_at
+msgid "Received At"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__received_count
+msgid "Documents received"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__completed_at
+msgid "Received on"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_search
+msgid "Received requests"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Reminder"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Reminder sent by email to %s."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Reminder sent by text message to %s."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Reminder: %(n)s document(s) to upload for %(brand)s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Reminder: %(n)s document(s) to upload. %(url)s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Reminder: please confirm sending your documents to %(brand)s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Reminder: please confirm sending your documents. %(url)s"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_secure_transfer__bf_document_expiry_policy_id
+msgid "Replaces the retention for this transfer. Empty = the brand's default."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__name
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__request_id
+#: model:ir.model.fields,field_description:bf_document_request.field_secure_transfer__bf_document_request_id
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "Request"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Request %(name)s completed: %(n)s document(s) sent to %(who)s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"Request %(name)s: %(n)s document(s) requested from %(who)s, email to "
+"%(email)s, deadline %(deadline)s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"Request %(name)s: %(n)s document(s) requested from %(who)s, text message to "
+"%(phone)s, deadline %(deadline)s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"Request %s has already been sent: only its requester, a secure transfer "
+"manager or the administrator can change its channel, address, mobile number "
+"or requester."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__secure_transfer_access_log__action__bf_document_request_cancelled
+msgid "Request cancelled"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Request cancelled by %s"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__secure_transfer_access_log__action__bf_document_request_completed
+msgid "Request completed"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.actions.act_window,help:bf_document_request.action_bf_document_request
+msgid "Request documents from a client"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__secure_transfer_access_log__action__bf_document_request_expired
+msgid "Request expired (deadline)"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "Request for documents"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__secure_transfer_access_log__action__bf_document_reminder_sent
+msgid "Request reminder (email or text message)"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Request sent by email to %(email)s, %(n)s document(s)."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Request sent by text message to %(phone)s, %(n)s document(s)."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_list
+msgid "Requested"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model,name:bf_document_request.model_bf_document_request_line
+msgid "Requested document"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model,name:bf_document_request.model_bf_document_type
+msgid "Requested document type"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "Requested documents"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__user_id
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_search
+msgid "Requester"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_search
+msgid "Requests"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__required
+msgid "Required"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "Resend by email"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "Resend by text message"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Retake"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__expiry_policy_id
+msgid "Retention"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__retention_days
+msgid "Retention (days)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.constraint,message:bf_document_request.constraint_bf_document_expiry_policy_retention_positive
+msgid "Retention must be at least 1 day."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__channel__sms
+msgid "SMS"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__channel
+msgid "Send by"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "Send by email"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "Send by text message"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Sending…"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_secure_transfer_brand__bf_document_reminder_enabled
+msgid ""
+"Sends the request's link again, by email or by text message according to "
+"each request's channel, as long as the file is incomplete, following the "
+"delay and the maximum number below."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request__state__sent
+msgid "Sent"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__sent_at
+msgid "Sent on"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_expiry_policy__sequence
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__sequence
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request_line__instructions
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_type__instructions
+msgid ""
+"Shown under the document name on the mobile page, e.g. \"Front and back, "
+"lying flat, without glare\"."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request_line__state
+msgid "State"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__state
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_search
+msgid "Status"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Still missing: %s."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Take a photo"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Thank you, your documents have been sent."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.page_request
+msgid ""
+"Thank you. Your documents have been received\n"
+"                                and sent to"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.page_request
+msgid ""
+"Thank you. Your documents have been received.\n"
+"                                There is nothing else for you to do."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__email
+msgid ""
+"The address that will receive the link by email. Filled in from the client's"
+" contact; can be changed here without touching the address book. Once sent, "
+"changing it replaces the link: the old one stops working, and the new one "
+"goes out with the next reminder, manual (\"Resend\") or automatic."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"The client uploaded %(n)s document(s). They have been sent to you by email."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_type__two_sided
+msgid ""
+"Marks a document that has two sides, such as a driver's licence. The page "
+"asks for one file per document: say in the instructions how to show both "
+"sides (both in one photo, or a PDF)."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "The client's link will stop working immediately. Continue?"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "The deadline of this request has passed."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/secure_transfer.py:0
+msgid ""
+"The delay between reminders must be at least one hour, otherwise the "
+"scheduled job reminds at every run."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/secure_transfer_access_log.py:0
+msgid ""
+"The document request module cannot be uninstalled: %s access log entry(ies) "
+"carry a document request action, and this log is append-only. Removing or "
+"rewriting them would break the SHA-256 integrity chain. Export the log, then"
+" go through the retention garbage collector."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__user_id
+msgid ""
+"The employee making the request. They are the one who will receive the "
+"documents."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "The file did not arrive in full. Please take the photo again."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"The file, status and date received of a requested document can only be "
+"changed by the client's upload."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_type__name
+msgid "The label the client sees on their phone, e.g. \"Identity document\"."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid ""
+"The last link email could not go out: check the\n"
+"                    client's address, then click \"Resend\"."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "The link of request %s cannot be replaced: it is not open."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__phone
+msgid ""
+"The number that will receive the link by text message. Filled in from the "
+"client's contact; can be changed here without touching the address book. "
+"Once sent, changing it replaces the link: the old one stops working, and the"
+" new one goes out with the next reminder, manual (\"Resend\") or automatic."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__partner_id
+msgid "The person the documents are requested from."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"The requester \"%s\" has no valid email address: they could not receive the "
+"documents."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"The status of a document request, its transfer, its token, its sent and "
+"received dates and its reminders can only be changed through its buttons "
+"(Send, Resend, Cancel)."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"The text message channel is not set up (VoIP.ms). Without it, the client "
+"cannot receive their link: send it by email, or see Configuration › "
+"Settings."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "The text message could not be delivered to %s."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"The text message could not be delivered to %s. The request stays a draft: "
+"check the number and try again."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"The transfer is waiting for a confirmation that has no place in a document "
+"request. Please notify the administrator."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "This action is reserved for secure transfer users."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid ""
+"This banner only sees immediate refusals from the\n"
+"                        outgoing mail server: an email that was accepted, then\n"
+"                        bounced later (address does not exist, mailbox full),\n"
+"                        does not show here."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.constraint,message:bf_document_request.constraint_bf_document_type_code_uniq
+msgid "This document code already exists for this company."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.constraint,message:bf_document_request.constraint_bf_document_request_line_doc_type_uniq
+msgid "This document is already requested in this request."
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid ""
+"This link IS the key to the upload: it was sent to the\n"
+"                                client, by email or by text message, and should not travel\n"
+"                                any other way. Cancelling the request kills it on the spot."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "This link is no longer valid."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"This link is personal: do not forward it. If you were not expecting this "
+"request, ignore this email."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "This request goes out by email: use \"Resend\"."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "This request has already been sent."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "This request has no transfer yet."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"This request has no transfer yet: the certificate only exists once it has "
+"been sent."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "This request is no longer open."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "This request no longer accepts documents."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__token
+msgid "Token"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Too many requests. Please try again in a minute."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__transfer_id
+msgid "Transfer"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_type__two_sided
+msgid "Two-sided"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Unknown document for this request."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Unknown document."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "Upload my documents"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Upload page opened"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields.selection,name:bf_document_request.selection__secure_transfer_access_log__action__bf_document_request_opened
+msgid "Upload page opened by the client"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+#: model:ir.model.fields.selection,name:bf_document_request.selection__bf_document_request_line__state__received
+msgid "Uploaded"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+msgid "Uploading…"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,field_description:bf_document_request.field_bf_document_request__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.model.fields,help:bf_document_request.field_bf_document_request__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/controllers/request_portal.py:0
+#: model_terms:ir.ui.view,arch_db:bf_document_request.page_request
+msgid "Your documents"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"Your documents are uploaded, but %(who)s, from %(brand)s, has not received "
+"them yet: all that is left is to confirm, with the \"Finish and send\" "
+"button on the page."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "by email"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "by email to %s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "by text message"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "by text message to %s"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "email to %s"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_type_view_form
+msgid "identity"
+msgstr ""
+
+#. module: bf_document_request
+#: model_terms:ir.ui.view,arch_db:bf_document_request.bf_document_request_view_form
+msgid "name@example.com"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "none"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "optional"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid "text message to %s"
+msgstr ""
+
+#. module: bf_document_request
+#: model:bf.document.expiry.policy,name:bf_document_request.policy_short_24h
+msgid "Short (24 h)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:bf.document.expiry.policy,name:bf_document_request.policy_long_30d
+msgid "Long (30 days)"
+msgstr ""
+
+#. module: bf_document_request
+#: model:bf.document.type,instructions:bf_document_request.doc_type_identity
+msgid ""
+"A valid photo ID. Front and back, lying flat. Avoid glare and make sure the "
+"number is readable."
+msgstr ""
+
+#. module: bf_document_request
+#: model:bf.document.type,name:bf_document_request.doc_type_address
+msgid "Proof of address"
+msgstr ""
+
+#. module: bf_document_request
+#: model:bf.document.type,instructions:bf_document_request.doc_type_address
+msgid ""
+"A recent bill (electricity, phone) in your name, at your current address."
+msgstr ""
+
+#. module: bf_document_request
+#: model:bf.document.type,name:bf_document_request.doc_type_insurance
+msgid "Proof of insurance"
+msgstr ""
+
+#. module: bf_document_request
+#: model:bf.document.type,instructions:bf_document_request.doc_type_insurance
+msgid ""
+"The insurance card currently in force. The expiry date must be readable."
+msgstr ""
+
+#. module: bf_document_request
+#: model:bf.document.type,name:bf_document_request.doc_type_income
+msgid "Proof of income"
+msgstr ""
+
+#. module: bf_document_request
+#: model:bf.document.type,instructions:bf_document_request.doc_type_income
+msgid "Your most recent pay stub, or another proof of income."
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.module.module,shortdesc:base.module_bf_document_request
+msgid "Secure Transfer: Document Requests"
+msgstr ""
+
+#. module: bf_document_request
+#: model:ir.module.module,summary:base.module_bf_document_request
+msgid ""
+"Request documents from a client by email or text message, which they "
+"photograph or attach from their phone or computer: catalogue, deadline, per-"
+"document retention, hash-chained log"
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/bf_document_request.py:0
+msgid ""
+"A document the client has already uploaded cannot be removed from the "
+"request: its upload is recorded in the log."
+msgstr ""
+
+#. module: bf_document_request
+#. odoo-python
+#: code:addons/bf_document_request/models/secure_transfer.py:0
+msgid "Link sent to: %s (no receipt to the client)"
+msgstr ""

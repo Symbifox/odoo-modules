@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="brand_view_form_bf_document_request" model="ir.ui.view">
+        <field name="model">secure.transfer.brand</field>
+        <field name="inherit_id" ref="bf_securetransfer.brand_view_form"/>
+        <field name="arch" type="xml">
+            <field name="max_retention_days" position="after">
+                <field name="bf_document_default_expiry_policy_id"/>
+                <field name="bf_document_reminder_enabled"/>
+                <field name="bf_document_reminder_delay_hours"
+                       invisible="not bf_document_reminder_enabled"
+                       required="bf_document_reminder_enabled"/>
+                <field name="bf_document_reminder_max"
+                       invisible="not bf_document_reminder_enabled"
+                       required="bf_document_reminder_enabled"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="secure_transfer_view_form_bf_document_request" model="ir.ui.view">
+        <field name="model">secure.transfer</field>
+        <field name="inherit_id" ref="bf_securetransfer.secure_transfer_view_form"/>
+        <field name="arch" type="xml">
+            <field name="retention_days" position="after">
+                <field name="bf_document_expiry_policy_id"
+                       readonly="state != 'draft'"/>
+            </field>
+        </field>
+    </record>
+</odoo>

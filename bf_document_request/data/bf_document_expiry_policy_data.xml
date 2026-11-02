@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Two starting policies: a short one for documents that are only needed
+         for the time of a transaction, and a long one for a file that must be
+         kept a while. Durations the base offers (EXPIRY_CHOICES = 1, 7, 30):
+         any other duration makes the sending fail. 24 h is offered on every
+         brand; 30 days only on a brand whose ceiling reaches 30 (the free tier
+         stops at 7).
+         noupdate: the organisation adjusts its durations and names, an update
+         must not overwrite them. -->
+    <record id="policy_short_24h" model="bf.document.expiry.policy">
+        <field name="name">Short (24 h)</field>
+        <field name="retention_days">1</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="policy_long_30d" model="bf.document.expiry.policy">
+        <field name="name">Long (30 days)</field>
+        <field name="retention_days">30</field>
+        <field name="sequence">20</field>
+    </record>
+</odoo>

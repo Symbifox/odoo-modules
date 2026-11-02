@@ -1,0 +1,150 @@
+/* Document request: the client's upload page.
+ *
+ * Sits ON TOP of the base's st_public.css (loaded first): it does not repeat
+ * the card, the buttons or the brand variables, only what the list of
+ * documents adds.
+ *
+ * Designed for the thumb, not the mouse: 48 px minimum touch target, one card
+ * per document, no columns. */
+
+.dr-wrap {
+    /* The base's body is a flex column that stretches its children: without
+     * centering, a capped width leaves the page stuck to the left on a wide
+     * screen. border-box keeps the padding inside the 100% on a phone. */
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 36rem;
+    margin: 0 auto;
+}
+
+.dr-deadline {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    opacity: 0.75;
+}
+
+.dr-lines {
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+}
+
+.dr-line {
+    border: 1px solid rgba(128, 128, 128, 0.28);
+    border-radius: 0.6rem;
+    padding: 1rem;
+    margin-bottom: 0.85rem;
+    transition: border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.dr-line.dr-received {
+    border-color: var(--st-primary, #d92b2b);
+}
+
+.dr-line.dr-busy {
+    opacity: 0.65;
+}
+
+.dr-line-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+}
+
+.dr-line-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.dr-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 1rem;
+    white-space: nowrap;
+}
+
+.dr-badge-optional {
+    border: 1px solid rgba(128, 128, 128, 0.45);
+    opacity: 0.8;
+}
+
+/* The ✓ carries the brand colour: it is the only solid colour on the page,
+   hence the only place the eye should land. */
+.dr-badge-ok {
+    background: var(--st-primary, #d92b2b);
+    color: #fff;
+}
+
+.dr-line-hint {
+    margin: 0 0 0.6rem;
+    font-size: 0.88rem;
+    opacity: 0.75;
+    line-height: 1.4;
+}
+
+.dr-line-file {
+    margin: 0 0 0.6rem;
+    font-size: 0.82rem;
+    opacity: 0.6;
+    word-break: break-all;
+}
+
+.dr-line-status {
+    margin: 0 0 0.6rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+/* Off screen rather than display:none: a hidden input cannot always be
+   triggered by .click() on mobile. */
+.dr-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dr-capture,
+.dr-submit {
+    width: 100%;
+    min-height: 48px;
+}
+
+.dr-line.dr-received .dr-capture {
+    background: transparent;
+    color: inherit;
+    border: 1px solid rgba(128, 128, 128, 0.45);
+}
+
+/* "Choose a file": under the photo button, less prominent. It is the path for
+   a PDF received by email, not the main gesture on a phone. */
+.dr-choose {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 0.5rem;
+    background: transparent;
+    color: inherit;
+    border: 1px solid rgba(128, 128, 128, 0.45);
+}
+
+.dr-choose:disabled,
+.dr-capture:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.dr-submit {
+    margin-top: 0.5rem;
+    font-size: 1.05rem;
+}
+
+.dr-submit:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}

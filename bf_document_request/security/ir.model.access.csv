@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_document_expiry_policy_user,bf.document.expiry.policy.user,model_bf_document_expiry_policy,bf_securetransfer.group_securetransfer_user,1,0,0,0
+access_bf_document_expiry_policy_manager,bf.document.expiry.policy.manager,model_bf_document_expiry_policy,bf_securetransfer.group_securetransfer_manager,1,1,1,1
+access_bf_document_type_user,bf.document.type.user,model_bf_document_type,bf_securetransfer.group_securetransfer_user,1,0,0,0
+access_bf_document_type_manager,bf.document.type.manager,model_bf_document_type,bf_securetransfer.group_securetransfer_manager,1,1,1,1
+access_bf_document_request_user,bf.document.request.user,model_bf_document_request,bf_securetransfer.group_securetransfer_user,1,1,1,0
+access_bf_document_request_manager,bf.document.request.manager,model_bf_document_request,bf_securetransfer.group_securetransfer_manager,1,1,1,1
+access_bf_document_request_line_user,bf.document.request.line.user,model_bf_document_request_line,bf_securetransfer.group_securetransfer_user,1,1,1,1
+access_bf_document_request_line_manager,bf.document.request.line.manager,model_bf_document_request_line,bf_securetransfer.group_securetransfer_manager,1,1,1,1

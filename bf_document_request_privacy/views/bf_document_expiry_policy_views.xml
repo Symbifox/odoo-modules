@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_document_expiry_policy_view_form_privacy" model="ir.ui.view">
+        <field name="model">bf.document.expiry.policy</field>
+        <field name="inherit_id" ref="bf_document_request.bf_document_expiry_policy_view_form"/>
+        <field name="arch" type="xml">
+            <field name="retention_days" position="after">
+                <field name="retention_calendar_id"/>
+                <field name="retention_calendar_days"
+                       invisible="not retention_calendar_id"/>
+                <field name="privacy_alignment_note" readonly="1"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="bf_document_expiry_policy_view_list_privacy" model="ir.ui.view">
+        <field name="model">bf.document.expiry.policy</field>
+        <field name="inherit_id" ref="bf_document_request.bf_document_expiry_policy_view_list"/>
+        <field name="arch" type="xml">
+            <field name="doc_type" position="after">
+                <field name="retention_calendar_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="bf_document_type_view_form_privacy" model="ir.ui.view">
+        <field name="model">bf.document.type</field>
+        <field name="inherit_id" ref="bf_document_request.bf_document_type_view_form"/>
+        <field name="arch" type="xml">
+            <field name="expiry_policy_id" position="after">
+                <field name="privacy_pi_category"/>
+            </field>
+        </field>
+    </record>
+</odoo>

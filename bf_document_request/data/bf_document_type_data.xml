@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- A starting catalogue of documents commonly requested from a client.
+         noupdate: the organisation adjusts the labels and the instructions,
+         an update of the module must not overwrite them.
+
+         ⚠️ No retention is set here ON PURPOSE. How long each document may
+         live is the organisation's decision, tied to why it collects it.
+         Guessing it here would decide in its place. Without a policy, the
+         brand's retention applies: a safe and visible behaviour. -->
+
+    <record id="doc_type_identity" model="bf.document.type">
+        <field name="name">Identity document</field>
+        <field name="code">identity</field>
+        <field name="sequence">10</field>
+        <field name="two_sided" eval="True"/>
+        <field name="instructions">A valid photo ID. Front and back, lying flat. Avoid glare and make sure the number is readable.</field>
+    </record>
+
+    <record id="doc_type_address" model="bf.document.type">
+        <field name="name">Proof of address</field>
+        <field name="code">address</field>
+        <field name="sequence">20</field>
+        <field name="instructions">A recent bill (electricity, phone) in your name, at your current address.</field>
+    </record>
+
+    <record id="doc_type_insurance" model="bf.document.type">
+        <field name="name">Proof of insurance</field>
+        <field name="code">insurance</field>
+        <field name="sequence">30</field>
+        <field name="instructions">The insurance card currently in force. The expiry date must be readable.</field>
+    </record>
+
+    <record id="doc_type_income" model="bf.document.type">
+        <field name="name">Proof of income</field>
+        <field name="code">income</field>
+        <field name="sequence">40</field>
+        <field name="instructions">Your most recent pay stub, or another proof of income.</field>
+    </record>
+
+</odoo>

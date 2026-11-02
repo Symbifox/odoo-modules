@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            The purpose: requesting from a person documents they photograph
+            themselves, to complete a file.
+
+            `requires_consent` is False, and it is not an oversight. The ground
+            relied on is necessity: without these documents, the file cannot be
+            completed. Declaring consent would suggest it can be refused without
+            the file stopping, which would be false, and would lead people to
+            expect a consent record that nothing here produces. A register that
+            promises a proof that does not exist is worth less than no register
+            at all.
+
+            ⚠️ The person responsible for the processing is the organisation
+            that requests the documents, not the operator of the instance. It
+            is up to that organisation to confirm its own ground and to adapt
+            this text: it is not written in its place.
+        -->
+        <record id="purpose_document_request" model="privacy.purpose">
+            <field name="code">document_request_collection</field>
+            <field name="name">Collection of documents requested from the client</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>To complete your file, you are asked to provide certain
+                documents, for example an identity document, a proof of
+                address, a proof of insurance or a proof of income. You receive
+                a link by email or by text message, you photograph each
+                document with your phone or attach it as a file, and the
+                documents are placed on encrypted storage.</p>
+                <p>Your email address or mobile number is used to send you this
+                link and to record who uploaded what, and when. The link stops
+                working at the deadline shown.</p>
+                <p>The images are deleted from the storage at the end of the
+                retention period that applies to the document. The request
+                record and the access log are kept without the images, because
+                they are the proof of what was requested and uploaded.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="context_scope">general</field>
+            <!-- Email or text message depending on the request: the selection
+                 does not offer both at once, hence "all channels". -->
+            <field name="channel_scope">all</field>
+        </record>
+
+        <!--
+            The retention rule. Zero years on purpose: the actual period is the
+            one of the attached expiry policy, which may be 24 hours for one
+            document and 30 days for another. The rule documents the regime
+            (legal basis, final disposition, method); it does not replace it.
+
+            ⚠️ `requires_approval` is False, against the model's default. The
+            scheduled job `_cron_expire_requests` expires requests without
+            anyone approving anything. Keeping the default would declare in the
+            register an approval that nothing asks for.
+        -->
+        <record id="retention_document_request" model="privacy.retention.calendar">
+            <field name="name">Document requests: images uploaded by the client</field>
+            <field name="code">DOC-REQUEST</field>
+            <field name="document_type">other</field>
+            <field name="legal_basis">Section 23 of the Quebec private sector privacy act: personal information is destroyed once the purpose for which it was collected or used has been achieved. Here, the purpose is handing over to the requester the documents they asked for to complete the file. Section 3.2 of the same act for keeping this schedule. The exact period is the one of the attached expiry policy; the person responsible for the processing must confirm that it is compatible with their own retention obligations.</field>
+            <field name="active_retention_years">0</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="False"/>
+            <field name="applies_to_model">bf.document.request</field>
+            <field name="description">Images of identity, address, insurance and income documents, photographed or attached as a file by the person concerned and placed on the secure transfer's object storage.</field>
+            <field name="notes">The period is not carried here but by "bf.document.expiry.policy" (Configuration › Document expiry), each record of which is attached to this rule. This bridge destroys nothing: destruction goes through the secure transfer's scheduled job, and the bridge records it in the register afterwards. A policy longer than this rule is flagged on its own form, not corrected automatically.</field>
+        </record>
+
+        <!--
+            The purpose's retention policy. A direct link between the expiry
+            policies and this model is not possible: `privacy.retention.policy`
+            is unique per purpose, whereas expiry policies are several. It is
+            therefore declared once, so that the purpose is not left without a
+            policy in the register of processing activities, and the schedule,
+            of the same granularity, carries the link.
+        -->
+        <record id="retention_policy_document_request" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_document_request"/>
+            <field name="retention_days">0</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Images of documents provided by the person concerned (identity, address, insurance, income), email address or mobile number, name, access log (timestamp, IP address, user agent).</field>
+            <field name="notes">Period set to 0 days: destruction follows each request's own expiry date, computed from the expiry policy of the shortest-lived document in the file. The value is there so that the purpose has a policy attached, not to trigger a purge.</field>
+        </record>
+
+        <!--
+            Link of the two policies delivered by bf_document_request. The
+            records belong to that module and stay `noupdate` there: the link
+            is only set, once, when this bridge is installed.
+        -->
+        <record id="bf_document_request.policy_short_24h" model="bf.document.expiry.policy">
+            <field name="retention_calendar_id" ref="retention_document_request"/>
+        </record>
+        <record id="bf_document_request.policy_long_30d" model="bf.document.expiry.policy">
+            <field name="retention_calendar_id" ref="retention_document_request"/>
+        </record>
+
+        <!--
+            Personal information category of the four delivered document types.
+            Only what is known is declared: a proof of income is financial
+            information, an identity document is identification information.
+            The types an organisation adds itself stay without a category, and
+            the register will say so.
+        -->
+        <record id="bf_document_request.doc_type_identity" model="bf.document.type">
+            <field name="privacy_pi_category">identification</field>
+        </record>
+        <record id="bf_document_request.doc_type_address" model="bf.document.type">
+            <field name="privacy_pi_category">identification</field>
+        </record>
+        <record id="bf_document_request.doc_type_insurance" model="bf.document.type">
+            <field name="privacy_pi_category">identification</field>
+        </record>
+        <record id="bf_document_request.doc_type_income" model="bf.document.type">
+            <field name="privacy_pi_category">financial</field>
+        </record>
+
+    </data>
+</odoo>

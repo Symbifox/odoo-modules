@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            A secure transfer delivers a file to someone, at the sender's
+            request. The ground is not the consent of the person concerned: it
+            is carrying out what was agreed with the client. Asking for consent
+            here would suggest it can be refused without the engagement
+            stopping.
+        -->
+        <record id="purpose_securetransfer" model="privacy.purpose">
+            <field name="code">securetransfer_delivery</field>
+            <field name="name">File delivery by secure transfer</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>When a document is delivered to you through a secure link, the
+                file is placed on encrypted storage and the link that leads to
+                it expires on a date set in advance. Your email address is used
+                to send you this link and to record who downloaded what, and
+                when.</p>
+                <p>Once the expiry date has passed, the file is deleted from the
+                storage. The access log and the transfer record are kept without
+                the content, because they are the proof of what was
+                delivered.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="context_scope">project</field>
+            <field name="channel_scope">email</field>
+        </record>
+
+        <!--
+            ⚠️ The period declared here does not DRIVE anything: the purge is
+            already done by the module's scheduled job, according to each
+            transfer's own expiry date (itself capped by the brand's
+            `max_retention_days`). This rule documents the regime, it does not
+            replace it. Routing the same files to a second destruction
+            mechanism would risk certifying what nobody did.
+        -->
+        <record id="retention_securetransfer" model="privacy.retention.calendar">
+            <field name="name">Secure transfers: uploaded content</field>
+            <field name="code">ST-CONTENT</field>
+            <field name="document_type">correspondence</field>
+            <field name="legal_basis">Section 23 of the Quebec private sector privacy act: personal information is destroyed once the purpose for which it was collected or used has been achieved. Here, the purpose is delivering the file to its recipient.</field>
+            <field name="active_retention_years">0</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="applies_to_model">secure.transfer</field>
+            <field name="notes">The actual period is the transfer's expiry date, chosen when sending and capped by the brand's "Maximum retention". The `_cron_purge_expired` job deletes the object storage files of expired transfers, and `_cron_gc_drafts` collects abandoned drafts. This bridge destroys nothing itself: it records in the register what these jobs have just done.</field>
+        </record>
+
+        <record id="retention_policy_securetransfer" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_securetransfer"/>
+            <field name="retention_days">0</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Files uploaded by the sender (unclassified content), recipients' email addresses, access log (timestamp, IP address, user agent).</field>
+            <field name="notes">Period set to 0 days: destruction follows each transfer's own expiry date, not a fixed delay. The value is there so that the purpose has a policy attached, not to trigger a purge.</field>
+        </record>
+
+    </data>
+</odoo>
