@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Les services de consultation Blue Fox, Inc. - License LGPL-3 -->
+<odoo>
+    <!-- Le formulaire du tableau met `related_model_instance` en <h1> À
+         L'INTÉRIEUR du bouton `open_origin`, et masque `res_name`. Quand la
+         garde laisse la référence vide (modèle hors sélection), le bouton
+         perdait son seul libellé : il n'y avait plus rien à lire ni à viser
+         pour ouvrir la fiche. On montre `res_name` dans ce cas précis, et on
+         replie le <h1> vide. Pour une ligne normale, rien ne change. -->
+    <record id="mail_activity_view_form_board_guard" model="ir.ui.view">
+        <field name="name">mail.activity.boards.view.form (bf_activity_board_guard)</field>
+        <field name="model">mail.activity</field>
+        <field name="inherit_id" ref="mail_activity_board.mail_activity_view_form_board" />
+        <field name="arch" type="xml">
+            <field name="res_name" position="attributes">
+                <attribute name="invisible">related_model_instance</attribute>
+            </field>
+            <field name="related_model_instance" position="attributes">
+                <attribute name="invisible">not related_model_instance</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
