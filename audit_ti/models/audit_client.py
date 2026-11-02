@@ -47,7 +47,10 @@ RAG_CONFIG = {
 
 class AuditClient(models.Model):
     _name = "audit.client"
-    _inherit = ["mail.thread"]
+    # mail.activity.mixin : les suivis planifiés sur un client audité
+    # (valider la synthèse, relancer un fournisseur) s'affichent sur sa
+    # fiche, au chatter.
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Client audité"
     _order = "name"
 

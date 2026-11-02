@@ -12,7 +12,11 @@ class BfProcess(models.Model):
 
     _name = "bf.process"
     _description = "Process mapping"
-    _inherit = ["mail.thread"]
+    # mail.activity.mixin: a follow-up scheduled on a map ("validate v1.1")
+    # shows on the map itself. `activity_ids` has been in
+    # MODIFIABLE_APRES_VALIDATION from the start: a frozen map still accepts
+    # a scheduled follow-up.
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name, version"
 
     name = fields.Char(string="Process", required=True, tracking=True)

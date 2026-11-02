@@ -5,7 +5,11 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.5.1.0",
+    # 18.0.5.2.0: `bf.process` carries `mail.activity.mixin`. Activities
+    #   scheduled on a map were invisible on the map, and an activity on a
+    #   model without the mixin takes the activity board down: see
+    #   `bf_activity_board_guard`.
+    "version": "18.0.5.2.0",
     "category": "Services/Project",
     "summary": "Cartographies BPMN vivantes : le modèle est la vérité, le PDF et"
                " les deux XML n'en sont que des rendus",
