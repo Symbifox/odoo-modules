@@ -428,7 +428,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.1.0 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
 | `bf_subscription_expense` | Abonnements — notes de frais | 18.0.1.0.1 | BUSL-1.1 | A subscription paid through an expense report counts in the subscription's costs |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
-| `bf_survey_certificate` | Branded Course Certificates | 18.0.1.0.0 | BUSL-1.1 | Certification documents in the company's own brand: a branded PDF, a verifiable certificate number with its public page, and a branded success email |
+| `bf_survey_certificate` | Branded Course Certificates | 18.0.1.1.0 | BUSL-1.1 | Certification documents in the company's own brand: a branded PDF, a verifiable certificate number with its public page, and a branded success email |
 | `bf_survey_upload` | BF Survey Upload | 18.0.1.3.0 | LGPL-3 | File-upload question type for Odoo surveys |
 | `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.1.0 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
 | `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.2.0.3 | LGPL-3 | Notifies assignees when their task becomes unblocked |
@@ -526,7 +526,11 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
+<<<<<<< HEAD
 - **291 modules: BUSL-1.1.** Production use for your own internal business
+=======
+- **291 modules: BUSL-1.1.** Production use for your own internal business
+>>>>>>> 344cf03a (bf_survey_certificate: three branded layouts, course name, withdrawal screen (v18.0.1.1.0))
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

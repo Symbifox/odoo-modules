@@ -1,10 +1,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_survey_certificate 18.0.1.0.0\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-01 06:26+0000\n"
-"PO-Revision-Date: 2026-11-01 06:26+0000\n"
+"POT-Creation-Date: 2026-11-01 23:37+0000\n"
+"PO-Revision-Date: 2026-11-01 23:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_CA\n"
@@ -14,22 +14,34 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_survey_certificate
-#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_classic
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_sleek
 msgid "<span>Certificate no.</span>"
 msgstr "<span>Attestation n°</span>"
 
 #. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+msgid "<span>Certificate no.</span><br/>"
+msgstr "<span>Attestation n°</span><br/>"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_classic
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_sleek
 msgid "<span>Issued by</span>"
 msgstr "<span>Délivrée par</span>"
 
 #. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_classic
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_sleek
 msgid "<span>Issued on</span>"
 msgstr "<span>Délivrée le</span>"
 
 #. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_classic
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_sleek
 msgid "<span>Verify authenticity:</span><br/>"
 msgstr "<span>Authenticité vérifiable :</span><br/>"
 
@@ -62,6 +74,11 @@ msgstr ""
 " corps"
 
 #. module: bf_survey_certificate
+#: model:ir.model.fields,field_description:bf_survey_certificate.field_survey_user_input__bf_certificate_course_name
+msgid "Certificate course name"
+msgstr "Nom du cours sur l'attestation"
+
+#. module: bf_survey_certificate
 #: model:ir.model.fields,field_description:bf_survey_certificate.field_survey_user_input__bf_certificate_company_id
 msgid "Certificate issuer"
 msgstr "Société émettrice de l'attestation"
@@ -73,6 +90,8 @@ msgstr "Attestation n°"
 
 #. module: bf_survey_certificate
 #: model:ir.model.fields,field_description:bf_survey_certificate.field_survey_user_input__bf_certificate_code
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.survey_user_input_view_form
 msgid "Certificate number"
 msgstr "Numéro d'attestation"
 
@@ -82,12 +101,21 @@ msgid "Certificate number (grouped)"
 msgstr "Numéro d'attestation (groupé)"
 
 #. module: bf_survey_certificate
+#. odoo-python
+#: code:addons/bf_survey_certificate/models/survey_user_input.py:0
+msgid "Certificate number withdrawn."
+msgstr "Numéro d'attestation retiré."
+
+#. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
 msgid "Certificate number:"
 msgstr "Numéro d'attestation :"
 
 #. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_classic
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_sleek
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
 msgid "Certificate of Achievement"
 msgstr "Attestation de réussite"
 
@@ -95,6 +123,11 @@ msgstr "Attestation de réussite"
 #: model:ir.model.fields,field_description:bf_survey_certificate.field_res_company__bf_certificate_signatory_name
 msgid "Certificate signatory"
 msgstr "Signataire des attestations"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,field_description:bf_survey_certificate.field_res_company__bf_certificate_signatory_title
+msgid "Certificate signatory title"
+msgstr "Titre du signataire des attestations"
 
 #. module: bf_survey_certificate
 #: model:ir.model.fields,field_description:bf_survey_certificate.field_res_company__bf_certificate_signature
@@ -118,7 +151,7 @@ msgid "Certificates"
 msgstr "Attestations"
 
 #. module: bf_survey_certificate
-#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_failed
 msgid "Certification not passed"
 msgstr "Certification non réussie"
 
@@ -129,14 +162,29 @@ msgstr ""
 "Vérifiez le numéro tel qu'imprimé sur le document, avec ou sans les tirets."
 
 #. module: bf_survey_certificate
+#: model:ir.model.fields.selection,name:bf_survey_certificate.selection__survey_survey__certification_report_layout__bf_brand_classic
+msgid "Company brand — classic"
+msgstr "Marque de la société — classique"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields.selection,name:bf_survey_certificate.selection__survey_survey__certification_report_layout__bf_brand_sleek
+msgid "Company brand — minimal"
+msgstr "Marque de la société — épuré"
+
+#. module: bf_survey_certificate
 #: model:ir.model.fields.selection,name:bf_survey_certificate.selection__survey_survey__certification_report_layout__bf_brand
-msgid "Company brand"
-msgstr "Marque de la société"
+msgid "Company brand — panel"
+msgstr "Marque de la société — panneau"
 
 #. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certificate_verify_page
 msgid "Completed on"
 msgstr "Réussi le"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
+msgid "Congratulations!"
+msgstr "Félicitations!"
 
 #. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
@@ -183,8 +231,17 @@ msgstr "Aucune attestation ne correspond à ce numéro."
 
 #. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_classic
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_sleek
 msgid "ONLINE TRAINING"
 msgstr "FORMATION EN LIGNE"
+
+#. module: bf_survey_certificate
+#. odoo-python
+#: code:addons/bf_survey_certificate/models/survey_user_input.py:0
+msgid "Only survey managers may withdraw a certificate number."
+msgstr ""
+"Seuls les gestionnaires de sondage peuvent retirer un numéro d'attestation."
 
 #. module: bf_survey_certificate
 #: model:ir.model.fields,help:bf_survey_certificate.field_survey_user_input__bf_certificate_code
@@ -196,11 +253,6 @@ msgstr ""
 "/certificat/<numéro> confirme l'attestation à quiconque détient le numéro."
 
 #. module: bf_survey_certificate
-#: model:ir.model.fields,field_description:bf_survey_certificate.field_res_company__bf_certificate_signatory_title
-msgid "Signatory title"
-msgstr "Titre du signataire"
-
-#. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.view_company_form_bf_certificate
 msgid "Signature on certificates"
 msgstr "Signature sur les attestations"
@@ -209,6 +261,11 @@ msgstr "Signature sur les attestations"
 #: model:mail.template,name:bf_survey_certificate.mail_template_certification_branded
 msgid "Survey: Branded Certification Success"
 msgstr "Sondage : réussite de certification à la marque"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.survey_user_input_view_form
+msgid "The public page will stop answering for this number. Withdraw it?"
+msgstr "La page publique cessera de répondre pour ce numéro. Le retirer ?"
 
 #. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certificate_verify_page
@@ -229,32 +286,60 @@ msgstr ""
 "participante."
 
 #. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.survey_user_input_view_form
+msgid "Verification page"
+msgstr "Page de vérification"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
+msgid "Verify authenticity"
+msgstr "Vérifier l'authenticité"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
+msgid "Verify the certificate"
+msgstr "Vérifier l'attestation"
+
+#. module: bf_survey_certificate
+#: model:ir.model.fields,help:bf_survey_certificate.field_survey_user_input__bf_certificate_course_name
+msgid ""
+"What the certificate and its email call the course: the eLearning course's "
+"name when the certification belongs to one (the survey's own title often "
+"reads \"Certification: X\"), otherwise the survey's title."
+msgstr ""
+"Ce que l'attestation et son courriel nomment comme cours : le nom du cours "
+"eLearning quand la certification en fait partie (le titre du sondage lui-"
+"même se lit souvent « Attestation : X »), sinon le titre du sondage."
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.survey_user_input_view_form
+msgid "Withdraw the certificate number"
+msgstr "Retirer le numéro d'attestation"
+
+#. module: bf_survey_certificate
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.mail_body_certification
+msgid ""
+"You have successfully completed the course below. Your certificate is "
+"attached to this email."
+msgstr ""
+"Vous avez réussi le cours ci-dessous. Votre attestation est jointe à ce "
+"courriel."
+
+#. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_classic
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_sleek
 msgid "awarded to"
 msgstr "décernée à"
 
 #. module: bf_survey_certificate
 #: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_classic
+#: model_terms:ir.ui.view,arch_db:bf_survey_certificate.certification_report_bf_brand_sleek
 msgid "for successfully completing"
 msgstr "pour la réussite du cours"
 
 #. module: bf_survey_certificate
 #: model:mail.template,subject:bf_survey_certificate.mail_template_certification_branded
-msgid "{{ object.survey_id.display_name }}: your certificate"
-msgstr "{{ object.survey_id.display_name }} : votre attestation"
-
-#. module: bf_survey_certificate
-#: model:ir.module.module,shortdesc:base.module_bf_survey_certificate
-msgid "Branded Course Certificates"
-msgstr "Attestations de cours à la marque"
-
-#. module: bf_survey_certificate
-#: model:ir.module.module,summary:base.module_bf_survey_certificate
-msgid ""
-"Certification documents in the company's own brand: a branded PDF, a "
-"verifiable certificate number with its public page, and a branded success "
-"email"
-msgstr ""
-"Documents de certification à la marque de la société : PDF habillé, numéro "
-"d'attestation vérifiable avec sa page publique, et courriel de réussite "
-"habillé"
+msgid "{{ object.bf_certificate_course_name }}: your certificate"
+msgstr "{{ object.bf_certificate_course_name }} : votre attestation"

@@ -1,6 +1,9 @@
+import base64
+import io
 import re
 from unittest.mock import patch
 
+from odoo.exceptions import AccessError
 from odoo.tests import HttpCase, TransactionCase, tagged
 
 from ..models.survey_user_input import _CODE_ALPHABET, _CODE_LENGTH
@@ -124,6 +127,23 @@ class CertificateCase(TransactionCase):
         html = self._render(user_input)
         self.assertIn("not passed", html)
 
+    def test_failed_certification_renders_in_all_three_layouts(self):
+        # the failure page is SHARED by the three layouts (t-call context):
+        # each layout must reach it and it must carry the brand's primary
+        self.survey.scoring_success_min = 100
+        user_input = self.env["survey.user_input"].create({
+            "survey_id": self.survey.id,
+            "partner_id": self.partner_en.id,
+        })
+        user_input._mark_done()
+        self.assertFalse(user_input.scoring_success)
+        for layout in ("bf_brand", "bf_brand_sleek", "bf_brand_classic"):
+            self.survey.certification_report_layout = layout
+            html = self._render(user_input)
+            self.assertIn("not passed", html, "%s failure page missing" % layout)
+            self.assertIn("#1A2B3C", html,
+                          "%s failure page must carry the primary colour" % layout)
+
     def test_other_layouts_keep_core_template(self):
         self.survey.certification_report_layout = "modern_blue"
         user_input = self._passed_input()
@@ -202,6 +222,37 @@ class CertificateCase(TransactionCase):
         self.assertEqual(slide.channel_id, sited_channel)
         self.assertEqual(user_input._bf_certificate_company(), sited_company)
 
+    def test_slide_prefers_published_channel(self):
+        if "slide.slide" not in self.env or "website" not in self.env:
+            self.skipTest("eLearning not installed")
+        # two channels with a website: the first by id is unpublished, the
+        # later one is published - the published one (the course people
+        # actually see) must win anyway
+        website = self.env["website"].create({
+            "name": "Published Pref Site", "company_id": self.company.id,
+        })
+        hidden_channel = self.env["slide.channel"].create({
+            "name": "Hidden Channel", "website_id": website.id,
+        })
+        hidden_channel.is_published = False
+        self.env["slide.slide"].create({
+            "name": "Hidden slide", "channel_id": hidden_channel.id,
+            "slide_category": "certification", "survey_id": self.survey.id,
+            "is_published": False,
+        })
+        published_channel = self.env["slide.channel"].create({
+            "name": "Published Channel", "website_id": website.id,
+        })
+        published_channel.is_published = True
+        self.env["slide.slide"].create({
+            "name": "Published slide", "channel_id": published_channel.id,
+            "slide_category": "certification", "survey_id": self.survey.id,
+            "is_published": False,
+        })
+        user_input = self._passed_input()
+        self.assertEqual(user_input._bf_certificate_slide().channel_id,
+                         published_channel)
+
     def test_send_mail_guard_only_for_survey_model(self):
         # The layout guard repairs survey's forced light layout for OUR
         # templates only: a template of another model that declares its own
@@ -249,6 +300,156 @@ class CertificateCase(TransactionCase):
         self.assertIn(user_input.bf_certificate_url, mail.body_html)
         self.assertTrue(mail.attachment_ids, "certificate PDF not attached")
 
+
+    def test_three_layouts_render(self):
+        # one structural marker per layout, plus the brand on all three
+        markers = {
+            "bf_brand": "border-radius:50%",          # the panel's circles
+            "bf_brand_sleek": "width:6px;height:792px",  # the edge rule
+            "bf_brand_classic": "border:2px solid #1A2B3C",  # the outer frame
+        }
+        user_input = self._passed_input()
+        for layout, marker in markers.items():
+            self.survey.certification_report_layout = layout
+            html = self._render(user_input)
+            self.assertIn(marker, html, "%s marker missing" % layout)
+            self.assertIn("#1A2B3C", html)
+            self.assertIn(user_input.bf_certificate_code_display, html)
+
+    def test_course_name_prefers_channel(self):
+        if "slide.slide" not in self.env or "website" not in self.env:
+            self.skipTest("eLearning not installed")
+        # without a slide, the survey's title names the course
+        user_input = self._passed_input()
+        self.assertEqual(user_input.bf_certificate_course_name,
+                         "Branded Certificate Course")
+        # with a slide, the course's (channel's) name wins: real surveys are
+        # titled "Certification: X" and that must not reach the diploma
+        website = self.env["website"].create({
+            "name": "Course Name Site", "company_id": self.company.id,
+        })
+        channel = self.env["slide.channel"].create({
+            "name": "Mastering Nextcloud", "website_id": website.id,
+        })
+        self.env["slide.slide"].create({
+            "name": "Certification slide", "channel_id": channel.id,
+            "slide_category": "certification", "survey_id": self.survey.id,
+            "is_published": False,
+        })
+        user_input.invalidate_recordset()
+        self.assertEqual(user_input.bf_certificate_course_name,
+                         "Mastering Nextcloud")
+        vals = user_input._bf_certificate_values()
+        self.assertEqual(vals["course"], "Mastering Nextcloud")
+        html = self._render(user_input)
+        self.assertIn("Mastering Nextcloud", html)
+        self.assertNotIn("Branded Certificate Course", html)
+        # the email's SUBJECT names the channel too, not the survey's title
+        template = self.env.ref(
+            "bf_survey_certificate.mail_template_certification_branded")
+        subject = template._render_field("subject", user_input.ids)[user_input.id]
+        self.assertIn("Mastering Nextcloud", subject)
+        self.assertNotIn("Branded Certificate Course", subject)
+
+    def test_faded_logo(self):
+        from PIL import Image
+        buffer = io.BytesIO()
+        Image.new("RGB", (40, 20), (10, 120, 200)).save(buffer, format="PNG")
+        self.company.logo = base64.b64encode(buffer.getvalue())
+        # the watermark belongs to the classic layout alone: the other
+        # layouts never pay the PIL work
+        self.survey.certification_report_layout = "bf_brand_classic"
+        user_input = self._passed_input()
+        vals = user_input._bf_certificate_values()
+        self.assertTrue(vals["logo_faded"], "faded watermark missing")
+        faded = Image.open(io.BytesIO(base64.b64decode(vals["logo_faded"])))
+        # a true 13% on white: (10,120,200) must land near (223,237,248).
+        # Each channel is BRACKETED - a lower bound alone would also accept
+        # the double-fade bug (13% of 13% = 1.7%, near (251,252,254)).
+        r, g, b = faded.convert("RGB").getpixel((5, 5))
+        self.assertTrue(215 <= r <= 232, "R=%d, expected ~223 (13%% on white)" % r)
+        self.assertTrue(229 <= g <= 245, "G=%d, expected ~237 (13%% on white)" % g)
+        self.assertTrue(240 <= b <= 253, "B=%d, expected ~248 (13%% on white)" % b)
+        # the other layouts skip the watermark entirely
+        self.survey.certification_report_layout = "bf_brand"
+        self.assertFalse(user_input._bf_certificate_values()["logo_faded"])
+        self.survey.certification_report_layout = "bf_brand_classic"
+        # no logo, no watermark; an unreadable logo drops it silently
+        self.company.logo = False
+        self.assertFalse(user_input._bf_certificate_values()["logo_faded"])
+        self.assertFalse(
+            self.env["survey.user_input"]._bf_faded_logo(base64.b64encode(b"not an image")))
+
+    def test_email_body_matches_layout(self):
+        template = self.env.ref(
+            "bf_survey_certificate.mail_template_certification_branded")
+        user_input = self._passed_input()
+        cases = {
+            "bf_brand": "panel",
+            "bf_brand_sleek": "sleek",
+            "bf_brand_classic": "classic",
+            "modern_blue": "plain",
+        }
+        for layout, variant in cases.items():
+            self.survey.certification_report_layout = layout
+            body = template._render_field("body_html", user_input.ids)[user_input.id]
+            self.assertIn('data-bf-variant="%s"' % variant, body,
+                          "layout %s must use the %s body" % (layout, variant))
+            self.assertIn(user_input.bf_certificate_code_display, body)
+            self.assertIn(user_input.bf_certificate_url, body)
+            if variant != "plain":
+                self.assertIn("#1A2B3C", body, "brand colour missing in the email")
+
+    def test_withdraw_clears_code_and_is_guarded(self):
+        user_input = self._passed_input()
+        self.assertTrue(user_input.bf_certificate_code)
+        # not even an internal user, unless a survey manager
+        intruder = self.env["res.users"].create({
+            "name": "No Rights", "login": "norights27243@example.test",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+        })
+        with self.assertRaises(AccessError):
+            user_input.with_user(intruder).action_bf_certificate_withdraw()
+        self.assertTrue(user_input.bf_certificate_code)
+        # a survey manager may withdraw; the number and the link are gone
+        manager = self.env["res.users"].create({
+            "name": "Survey Manager",
+            "login": "manager27243@example.test",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("survey.group_survey_manager").id])],
+        })
+        # the chatter trace is asserted by COUNT, not by substring: the
+        # message is translated (fr_CA users on this base) and a substring
+        # match would turn red the moment the catalogue loads
+        messages_before = len(user_input.message_ids)
+        user_input.with_user(manager).action_bf_certificate_withdraw()
+        self.assertFalse(user_input.bf_certificate_code)
+        self.assertFalse(user_input.bf_certificate_code_display)
+        self.assertFalse(user_input.bf_certificate_url)
+        # the withdrawal leaves its trace in the chatter
+        self.assertGreaterEqual(
+            len(user_input.message_ids) - messages_before, 1,
+            "the withdrawal must post a chatter message")
+
+    def test_withdraw_without_code_is_a_noop(self):
+        # a participation that never had a number: no exception, no chatter
+        self.survey.scoring_success_min = 100
+        user_input = self.env["survey.user_input"].create({
+            "survey_id": self.survey.id,
+            "partner_id": self.partner_en.id,
+        })
+        user_input._mark_done()
+        self.assertFalse(user_input.bf_certificate_code)
+        manager = self.env["res.users"].create({
+            "name": "Codeless Manager",
+            "login": "codeless27243@example.test",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("survey.group_survey_manager").id])],
+        })
+        messages_before = len(user_input.message_ids)
+        user_input.with_user(manager).action_bf_certificate_withdraw()
+        self.assertEqual(len(user_input.message_ids), messages_before,
+                         "withdrawing nothing must not post to the chatter")
 
     def test_codes_are_distinct(self):
         # three successes in one transaction: three different random codes

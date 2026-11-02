@@ -8,11 +8,88 @@
     <!-- Every translatable piece is a whole sentence (or a whole label):
          a dynamic value never sits in the middle of a sentence, so the
          catalogue carries no half-phrases like ". Anyone holding...". -->
+    <!-- The body matches the survey's certificate layout (panel, minimal,
+         classic); a survey kept on one of Odoo's layouts gets the plain
+         body. Colours follow the issuing company, like the PDF. The
+         data-bf-variant attribute is the tests' hook, nothing else reads
+         it. -->
     <template id="mail_body_certification">
-        <div>
+        <t t-set="col_primary" t-value="object.bf_certificate_company_id.report_brand_primary or object.bf_certificate_company_id.primary_color or '#714B67'"/>
+        <t t-set="col_dark" t-value="object.bf_certificate_company_id.report_brand_dark or object.bf_certificate_company_id.secondary_color or '#212529'"/>
+        <t t-set="variant" t-value="object.survey_id.certification_report_layout"/>
+
+        <!-- White text only ever sits on col_dark, like the PDF (col_primary
+             can be light: white on it is unreadable). -->
+        <div t-if="variant == 'bf_brand'" data-bf-variant="panel">
+            <div t-attf-style="background:#{col_dark};border-radius:8px;padding:20px 24px;margin:0 0 18px 0;">
+                <div style="font-size:21px;font-weight:600;color:#ffffff;">Congratulations!</div>
+                <div style="font-size:14px;color:#ffffff;opacity:.9;margin-top:4px;" t-out="object.bf_certificate_course_name"/>
+            </div>
+            <p>Hello <t t-out="object.partner_id.name or object.email or ''"/>,</p>
+            <p>You have successfully completed the course below. Your certificate is attached to this email.</p>
+            <p><b t-out="object.bf_certificate_course_name"/></p>
+            <t t-if="object.bf_certificate_url">
+                <div t-attf-style="background:#{col_dark};border-radius:8px;display:inline-block;padding:10px 16px;margin:0 0 16px 0;">
+                    <div style="font-size:12px;color:#ffffff;opacity:.7;">Certificate number</div>
+                    <div t-attf-style="font-size:15px;font-weight:600;letter-spacing:1px;color:#ffffff;" t-out="object.bf_certificate_code_display"/>
+                </div>
+                <div style="margin:0 0 10px 0;">
+                    <a t-att-href="object.bf_certificate_url"
+                       t-attf-style="display:inline-block;border:1px solid #{col_primary};color:#{col_primary};background:transparent;border-radius:6px;padding:10px 24px;font-weight:600;font-size:13px;text-decoration:none;">Verify the certificate</a>
+                </div>
+                <p style="font-size:11px;color:#8a9094;margin:0 0 4px 0;">Anyone holding the certificate number can confirm its authenticity at the address below.</p>
+                <p style="font-size:11px;color:#8a9094;margin:0 0 16px 0;">
+                    <a t-att-href="object.bf_certificate_url" t-out="object.bf_certificate_url"/></p>
+            </t>
+            <p t-out="object.bf_certificate_company_id.name"/>
+        </div>
+
+        <div t-elif="variant == 'bf_brand_sleek'" data-bf-variant="sleek">
             <p>Hello <t t-out="object.partner_id.name or object.email or ''"/>,</p>
             <p>Congratulations! You have successfully completed the course below. Your certificate is attached to this email.</p>
-            <p><b t-out="object.survey_id.display_name"/></p>
+            <div t-attf-style="font-size:19px;font-weight:600;color:#{col_dark};margin:18px 0;" t-out="object.bf_certificate_course_name"/>
+            <t t-if="object.bf_certificate_url">
+                <div style="border:1px solid #e4e6e8;border-radius:8px;padding:16px 18px;margin:0 0 16px 0;">
+                    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#8a9094;">Certificate number</div>
+                    <div t-attf-style="font-size:18px;font-weight:600;letter-spacing:1px;color:#{col_dark};margin:6px 0 10px 0;" t-out="object.bf_certificate_code_display"/>
+                    <div style="font-size:12px;color:#6b7176;">Anyone holding the certificate number can confirm its authenticity at the address below.</div>
+                    <div style="margin-top:8px;">
+                        <a t-att-href="object.bf_certificate_url"
+                           t-attf-style="color:#{col_primary};font-weight:600;font-size:13px;"
+                           t-out="object.bf_certificate_url"/>
+                    </div>
+                </div>
+            </t>
+            <p t-out="object.bf_certificate_company_id.name"/>
+        </div>
+
+        <div t-elif="variant == 'bf_brand_classic'" data-bf-variant="classic">
+            <p>Hello <t t-out="object.partner_id.name or object.email or ''"/>,</p>
+            <p>Congratulations! You have successfully completed the course below. Your certificate is attached to this email.</p>
+            <div style="text-align:center;margin:20px 0;">
+                <div t-attf-style="font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#{col_dark};">Certificate of Achievement</div>
+                <div style="width:60px;height:1px;background:#c9ccce;margin:10px auto;"/>
+                <div t-attf-style="font-size:18px;font-weight:600;color:#{col_dark};" t-out="object.bf_certificate_course_name"/>
+            </div>
+            <t t-if="object.bf_certificate_url">
+                <div style="border:1px dashed #b9bec2;border-radius:4px;padding:14px;text-align:center;margin:0 0 16px 0;">
+                    <div style="font-size:12px;color:#6b7176;">Certificate number</div>
+                    <div t-attf-style="font-size:17px;font-weight:600;letter-spacing:2px;color:#{col_dark};margin-top:4px;" t-out="object.bf_certificate_code_display"/>
+                </div>
+                <p style="font-size:12px;color:#6b7176;">Anyone holding the certificate number can confirm its authenticity at the address below.</p>
+                <div style="text-align:center;margin:0 0 18px 0;">
+                    <a t-att-href="object.bf_certificate_url"
+                       t-attf-style="display:inline-block;border:1px solid #{col_primary};color:#{col_primary};border-radius:4px;padding:9px 22px;font-weight:600;font-size:13px;text-decoration:none;">Verify authenticity</a>
+                </div>
+                <p style="font-size:11px;color:#8a9094;"><a t-att-href="object.bf_certificate_url" t-out="object.bf_certificate_url"/></p>
+            </t>
+            <p t-out="object.bf_certificate_company_id.name"/>
+        </div>
+
+        <div t-else="" data-bf-variant="plain">
+            <p>Hello <t t-out="object.partner_id.name or object.email or ''"/>,</p>
+            <p>Congratulations! You have successfully completed the course below. Your certificate is attached to this email.</p>
+            <p><b t-out="object.bf_certificate_course_name"/></p>
             <t t-if="object.bf_certificate_url">
                 <p>Anyone holding the certificate number can confirm its authenticity at the address below.</p>
                 <p>
@@ -31,7 +108,7 @@
     <record id="mail_template_certification_branded" model="mail.template">
         <field name="name">Survey: Branded Certification Success</field>
         <field name="model_id" ref="survey.model_survey_user_input"/>
-        <field name="subject">{{ object.survey_id.display_name }}: your certificate</field>
+        <field name="subject">{{ object.bf_certificate_course_name }}: your certificate</field>
         <field name="email_from">{{ (object.bf_certificate_company_id.catchall_formatted or user.email_formatted or user.company_id.catchall_formatted) }}</field>
         <field name="email_to">{{ (object.partner_id.email_formatted or object.email) }}</field>
         <field name="lang">{{ object.partner_id.lang }}</field>

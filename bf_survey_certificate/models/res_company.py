@@ -23,7 +23,10 @@ class ResCompany(models.Model):
         help="Name printed under the signature on course certificates.",
     )
     bf_certificate_signatory_title = fields.Char(
-        string="Signatory title",
+        # "Certificate signatory title", not "Signatory title": the shorter
+        # label collides with bf_letter_writer's field of the same name in
+        # the translation catalogues.
+        string="Certificate signatory title",
         translate=True,
         help="Title printed under the signatory's name, in the participant's "
              "language.",

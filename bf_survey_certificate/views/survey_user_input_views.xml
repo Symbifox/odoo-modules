@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The certificate number on the participation, with its withdrawal
+         button (the learner's documented right: once withdrawn, the public
+         page stops answering for the number). Internal users only; the
+         button is further restricted to survey managers, and the method
+         repeats the check (a view group never protects an RPC call). -->
+    <record id="survey_user_input_view_form" model="ir.ui.view">
+        <field name="name">survey.user_input.form.bf.certificate</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_bf_certificate_withdraw" type="object"
+                        string="Withdraw the certificate number"
+                        confirm="The public page will stop answering for this number. Withdraw it?"
+                        invisible="not bf_certificate_code"
+                        groups="survey.group_survey_manager"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="bf_certificate_code" invisible="1"/>
+                <field name="bf_certificate_code_display" string="Certificate number"
+                       invisible="not bf_certificate_code"/>
+                <field name="bf_certificate_url" string="Verification page" widget="url"
+                       invisible="not bf_certificate_code"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

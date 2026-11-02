@@ -1,9 +1,12 @@
+import base64
+import io
 import secrets
 from urllib.parse import quote
 
 import pytz
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 from odoo.tools import format_date
 
 # Alphabet of the certificate number: no vowels (no words), none of the
@@ -42,6 +45,14 @@ class SurveyUserInput(models.Model):
     bf_certificate_company_id = fields.Many2one(
         "res.company", string="Certificate issuer",
         compute="_compute_bf_certificate_company", compute_sudo=True,
+    )
+    bf_certificate_course_name = fields.Char(
+        string="Certificate course name",
+        compute="_compute_bf_certificate_course_name", compute_sudo=True,
+        help="What the certificate and its email call the course: the "
+             "eLearning course's name when the certification belongs to one "
+             "(the survey's own title often reads \"Certification: X\"), "
+             "otherwise the survey's title.",
     )
 
     # ------------------------------------------------------------------
@@ -89,18 +100,22 @@ class SurveyUserInput(models.Model):
     def _bf_certificate_slide(self):
         """The slide this certification belongs to, used to resolve the
         brand. A survey can sit on several slides (shared certification,
-        archived copy): prefer the ones whose channel is published on a
-        website - those carry a brand - with a stable order (lowest id),
-        then any slide at all. eLearning is optional, hence the registry
-        check."""
+        archived copy): prefer the ones whose channel is PUBLISHED on a
+        website - the course the participant actually sees - then any
+        channel with a website (it still carries a brand), then any slide
+        at all, each tier in a stable order (lowest id). eLearning is
+        optional, hence the registry check."""
         self.ensure_one()
         if "slide.slide" not in self.env:
             return None
         Slide = self.env["slide.slide"].sudo()
         domain = [("survey_id", "=", self.survey_id.id)]
         return (
-            Slide.search(domain + [("channel_id.website_id", "!=", False)],
+            Slide.search(domain + [("channel_id.is_published", "=", True),
+                                   ("channel_id.website_id", "!=", False)],
                          order="id", limit=1)
+            or Slide.search(domain + [("channel_id.website_id", "!=", False)],
+                            order="id", limit=1)
             or Slide.search(domain, order="id", limit=1)
         )
 
@@ -116,6 +131,23 @@ class SurveyUserInput(models.Model):
             if company:
                 return company
         return self.create_uid.sudo().company_id or self.env.company
+
+    # The real dependency - the slide/channel the survey sits on - cannot be
+    # expressed in @api.depends (the link points AT the survey from
+    # slide.slide). The field is not stored, so the only risk is the
+    # transaction cache serving a value computed before the slide was linked
+    # in the same transaction (assumed; tests invalidate_recordset() after
+    # linking a slide). The channel's name is a translated field, so the
+    # cache is keyed by language (depends_context): rendering the same
+    # record in two languages inside one transaction serves each its own.
+    @api.depends("survey_id.title")
+    @api.depends_context("lang")
+    def _compute_bf_certificate_course_name(self):
+        for user_input in self:
+            slide = user_input._bf_certificate_slide()
+            channel = slide.channel_id if slide else None
+            user_input.bf_certificate_course_name = (
+                channel.name if channel else user_input.survey_id.display_name)
 
     def _bf_certificate_lang(self):
         """The certificate is the participant's document: it renders in
@@ -199,12 +231,20 @@ class SurveyUserInput(models.Model):
             # real family name
             "font": (company.font or "Lexend").replace("_", " "),
             "logo": company.logo,
+            # the classic layout's watermark: Qt (wkhtmltopdf) ignores CSS
+            # opacity on images, so the fading is baked into the pixels -
+            # and only the classic layout pays for it (PIL work per render)
+            "logo_faded": (
+                self._bf_faded_logo(company.logo)
+                if company.logo
+                and self.survey_id.certification_report_layout == "bf_brand_classic"
+                else False),
             "signature": company.bf_certificate_signature,
             "signatory_name": company.bf_certificate_signatory_name,
             "signatory_title": company.bf_certificate_signatory_title,
             "learner": self.partner_id.name or email,
             "learner_public": self.partner_id.name or masked,
-            "course": me.survey_id.display_name,
+            "course": me.bf_certificate_course_name,
             # "long" is babel's named format: "1 novembre 2026" in French,
             # "November 1, 2026" in English - the date a diploma expects
             # (fr_CA's default date format is the ISO 2026-11-01).
@@ -216,3 +256,41 @@ class SurveyUserInput(models.Model):
             "domain_label": domain_label,
             "qr_src": qr_src,
         }
+
+    @api.model
+    def _bf_faded_logo(self, logo_b64):
+        """The company logo flattened onto white at 13% strength, as base64
+        PNG bytes (what image_data_uri expects). The logo is first composed
+        onto white at FULL strength, then that flat image is blended into
+        white at 13%: blending the RGBA source directly would fade the alpha
+        channel too and square the factor (13% of 13%, an invisible 1.7%).
+        A logo that PIL cannot read simply drops the watermark rather than
+        failing the certificate."""
+        try:
+            from PIL import Image
+            source = Image.open(io.BytesIO(base64.b64decode(logo_b64))).convert("RGBA")
+            white = Image.new("RGBA", source.size, (255, 255, 255, 255))
+            flat = Image.alpha_composite(white, source)
+            light = Image.blend(white, flat, 0.13)
+            buffer = io.BytesIO()
+            light.convert("RGB").save(buffer, format="PNG")
+            return base64.b64encode(buffer.getvalue())
+        except Exception:
+            return False
+
+    # ------------------------------------------------------------------
+    # Withdrawal (the learner's documented right: the public page stops
+    # answering for the number)
+    # ------------------------------------------------------------------
+
+    def action_bf_certificate_withdraw(self):
+        """Clears the certificate number. Guarded in the method itself, not
+        only in the view: a public method is callable over RPC by anyone
+        with portal access."""
+        if not self.env.user.has_group("survey.group_survey_manager"):
+            raise AccessError(_("Only survey managers may withdraw a certificate number."))
+        for user_input in self:
+            if not user_input.bf_certificate_code:
+                continue
+            user_input.sudo().write({"bf_certificate_code": False})
+            user_input.sudo().message_post(body=_("Certificate number withdrawn."))
