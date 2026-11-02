@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            La chaîne d'agent utilisateur relevée par bf_editorial_audience sur
+            chaque visiteur du site public.
+
+            ⚠️ Pas de consentement à recueillir. La chaîne sert à classer
+            l'agent (lecteur ou robot), pas à suivre la personne : elle n'est
+            croisée avec rien, ne sert à aucun profil et ne quitte pas la base.
+            Demander un consentement laisserait croire qu'un refus empêche le
+            serveur de recevoir ce que le navigateur lui envoie de lui-même à
+            chaque requête, ce qui est faux.
+        -->
+        <record id="purpose_editorial_audience" model="privacy.purpose">
+            <field name="code">editorial_audience_agent</field>
+            <field name="name">Mesure d'audience du site — agent utilisateur</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Quand vous consultez notre site, votre navigateur nous
+                transmet de lui-même une courte description de lui-même :
+                son nom, sa version, votre système d'exploitation et parfois
+                le modèle de votre appareil. Nous la conservons avec la trace
+                de votre visite.</p>
+                <p>Elle sert à une seule chose : distinguer les lecteurs des
+                robots dans nos mesures d'audience, pour savoir combien de
+                personnes lisent vraiment nos articles.</p>
+                <p>Elle est effacée 60 jours après votre dernière visite. Nous
+                en gardons le classement qui en a été tiré (lecteur ou robot),
+                qui ne permet pas à lui seul de reconnaître votre appareil.</p>
+                <p>La trace de votre visite elle-même (le témoin de votre
+                navigateur, votre pays, votre langue et les pages consultées)
+                suit d'autres règles. Si vous n'êtes pas connecté à un compte
+                et ne nous avez pas écrit par un formulaire ni inscrit à un
+                événement, le site la supprime au terme du délai qu'il applique
+                aux visiteurs inactifs. Sinon, elle reste rattachée à votre dossier.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <!-- `general`, pas `marketing` : une mesure d'audience sans
+                 consentement ne doit pas se lire comme du marketing. -->
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <!--
+            🔴 C'est CE nombre qui pilote le ménage quotidien tant que le pont
+            est installé et la politique active (voir
+            models/website_visitor.py). Le paramètre
+            bf_editorial_audience.ua_retention_days n'est alors plus lu.
+
+            `trigger_on` n'accepte que expiration / withdrawal / both : pas de
+            valeur « depuis la dernière visite ». « expiration » est le plus
+            proche, aucun consentement n'étant demandé.
+        -->
+        <record id="retention_policy_editorial_audience" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_editorial_audience"/>
+            <field name="retention_days">60</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Chaîne d'agent utilisateur déclarée par le navigateur ou le robot (nom et version du navigateur, système d'exploitation, parfois le modèle de l'appareil), relevée sur le visiteur du site (website.visitor.user_agent). Le verdict (robot déclaré) et la famille d'agent qui en sont tirés sont conservés après l'effacement ; à eux seuls, ils ne permettent pas de reconnaître un appareil. Le visiteur lui-même (témoin de navigateur visitor_uuid, pays, langue, fuseau horaire, pages vues) n'est pas visé par cette politique : il reste jusqu'à la purge native d'Odoo, ou sans borne tant qu'il est rattaché à un contact, à un prospect ou à une inscription à un événement.</field>
+            <field name="notes">Durée comptée depuis la dernière visite ; fixée à la borne de la purge native d'Odoo (website.visitor.live.days, 60 par défaut). Le ménage quotidien de bf_editorial_audience lit cette durée tant que la politique est active ; le paramètre bf_editorial_audience.ua_retention_days n'est plus lu. Cette durée-ci est la seule APPLIQUÉE. ⚠️ Le résumé en langage simple de la finalité écrit UN seul nombre en clair, « effacée 60 jours après votre dernière visite », qui vient de CETTE politique : à reprendre si elle change. La trace de la visite y est décrite SANS nombre, par renvoi au délai qu'Odoo applique aux visiteurs inactifs (website.visitor.live.days), qui ne dépend pas de cette politique. La règle AUD-001 et les entrées du registre de destruction n'en recopient pas le nombre. ⚠️ Archiver cette politique rend le ménage au paramètre du module (une valeur à 0 = rien n'est effacé) : reprendre alors le résumé public, qui promet encore un effacement. ⚠️ L'effacement ne touche ni les sauvegardes de la base, ni les journaux d'accès du serveur web, qui consignent aussi l'agent de chaque requête.</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!--
+        ⚠️ Ce cron NE DÉTRUIT RIEN. Il dépose les lignes échues dans une
+        `privacy.destruction.campaign` laissée en révision ; c'est le
+        responsable de la vie privée qui approuve puis exécute, et c'est la
+        campagne qui écrit au registre.
+
+        Livré INACTIF quand même : une file de destruction qui se remplit toute
+        seule est déjà une décision. L'administrateur ouvre Paramètres → Inbox
+        unifiée (vie privée), lit l'aperçu, puis l'active.
+
+        Quotidien plutôt qu'horaire : l'échéance se compte en années, et une
+        passe par jour laisse le temps de voir venir une erreur de règle.
+    -->
+    <record id="cron_bf_email_destroy_expired" model="ir.cron">
+        <field name="name">Courriels : proposer la destruction du contenu échu (Loi 25)</field>
+        <field name="model_id" ref="bf_email_management.model_bf_email"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_privacy_propose_destruction()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

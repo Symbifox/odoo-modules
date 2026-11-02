@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            RENC-001 — le compte rendu.
+
+            Aligné sur PRJ-001 (dossiers de projets, 5 ans) parce que c'est ce
+            qu'un compte rendu EST : une pièce du dossier de projet. S'y ajoute
+            une année semi-active, le temps qu'un désaccord sur ce qui avait été
+            convenu se déclare — la prescription de droit commun est de trois
+            ans (art. 2925 C.c.Q.) et court du jour où le droit naît, pas du
+            jour de la rencontre.
+
+            ⚠️ « Suppression » veut dire suppression. La méthode générique de
+            `privacy_consent` se serait contentée d'ARCHIVER un modèle qui porte
+            un champ `active`, et `meeting.record` en porte un ; le pont
+            surcharge `_execute_destruction` pour faire un vrai `unlink`, ou
+            lever. Voir models/privacy_destruction_campaign.py.
+        -->
+        <record id="retention_meeting_record" model="privacy.retention.calendar">
+            <field name="name">Comptes rendus de rencontre</field>
+            <field name="code">RENC-001</field>
+            <field name="document_type">meeting_record</field>
+            <field name="description">Comptes rendus de rencontre : résumé, sujets abordés, décisions et leurs décideurs, présences et absences, suites données. Les ordres du jour suivent la même règle.</field>
+            <field name="legal_basis">Art. 3.2 LPRPSP : l'entreprise établit un cadre de conservation et de destruction des renseignements personnels. Durée alignée sur le dossier de projet (PRJ-001, 5 ans), plus une année semi-active couvrant la prescription de droit commun (art. 2925 C.c.Q.).</field>
+            <field name="active_retention_years">5</field>
+            <field name="semi_active_retention_years">1</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">meeting.record</field>
+            <field name="notes">Rien ne s'exécute tout seul sous cette règle : la destruction passe par une campagne (`privacy.destruction.campaign`), qui exige une approbation et le groupe « Responsable de la vie privée ». ⚠️ La suppression d'un compte rendu emporte en cascade ses présences, ses décisions et ses sujets, et met à NULL — sans le dire — le lien des ordres du jour et des tâches qui pointaient vers lui.</field>
+        </record>
+
+        <!--
+            RENC-002 — la matière première.
+
+            Elle vit plus longtemps que sa raison d'être : une fois le compte
+            rendu écrit et transmis, la transcription mot à mot n'a plus de fin
+            à servir, et c'est exactement la situation que vise l'art. 23.
+
+            ⚠️ Un an, pas six. Garder un verbatim aussi longtemps que le compte
+            rendu reviendrait à conserver six ans le mot à mot de ce que des
+            gens ont dit, alors que le document qui en fait la synthèse suffit.
+
+            🔴 Ce que cette règle NE couvre PAS : le fichier audio au bout de
+            `source_nc_path`. Il est sur Nextcloud, Odoo n'a pas la main
+            dessus. La purge conserve le chemin — l'effacer retirerait le seul
+            moyen d'aller supprimer le fichier — et l'entrée de registre nomme
+            le fichier comme matière encore détenue hors d'Odoo.
+        -->
+        <record id="retention_meeting_raw_material" model="privacy.retention.calendar">
+            <field name="name">Rencontres — matière première (transcriptions brutes)</field>
+            <field name="code">RENC-002</field>
+            <field name="document_type">meeting_record</field>
+            <field name="description">Transcription brute des propos tenus en rencontre (champs `verbatim` et `verbatim_html` du compte rendu), produite par Whisper à partir de l'enregistrement.</field>
+            <field name="legal_basis">Art. 23 LPRPSP : le renseignement personnel est détruit lorsque la fin pour laquelle il a été recueilli ou utilisé est accomplie. La fin de la transcription brute est accomplie lorsque le compte rendu est rédigé et transmis.</field>
+            <field name="active_retention_years">1</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">meeting.record</field>
+            <field name="notes">Appliquée par le bouton « Purger la transcription brute » sur le compte rendu, ou par le cron « Rencontres — purge de la matière première », livré DÉSACTIVÉ. ⚠️ Une campagne de destruction REFUSE cette règle : elle n'écrirait au registre que « destruction du compte rendu », ce qui serait faux — seul le verbatim s'en va, le compte rendu reste.</field>
+        </record>
+
+        <!--
+            🔴 Cron livré DÉSACTIVÉ (`active` à False), et il faut que ça reste
+            une décision.
+
+            Sur une base déjà remplie, la quasi-totalité des comptes rendus
+            portent une transcription brute, dont certaines vieilles de plus
+            d'un an. Allumer ce cron le jour de l'installation effacerait des
+            verbatims sans retour dès le premier anniversaire, sans que
+            personne n'ait décidé quoi que ce soit. Une purge irréversible ne
+            doit jamais être un effet de bord d'une installation.
+        -->
+        <record id="cron_privacy_purge_raw_material" model="ir.cron">
+            <field name="name">Rencontres — purge de la matière première (RENC-002)</field>
+            <field name="model_id" ref="bf_meeting.model_meeting_record"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_privacy_purge_raw_material()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

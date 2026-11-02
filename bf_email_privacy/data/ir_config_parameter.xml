@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            Plafond de lignes détruites par passage. La destruction est un
+            `unlink` qui entraîne la cascade des pièces jointes : sur le
+            rattrapage initial d'un arriéré, un lot borné évite de tenir une
+            transaction et le filestore pendant des minutes. La passe suivante
+            reprend là où celle-ci s'arrête.
+        -->
+        <record id="bf_email_privacy_batch_size" model="ir.config_parameter">
+            <field name="key">bf_email_privacy.batch_size</field>
+            <field name="value">500</field>
+        </record>
+
+
+        <!--
+            Silence exigé avant de tenir un dossier pour clos. Aucun signal
+            déclaratif ne dit la clôture : « archivé », « étape repliée » et
+            « date de fin posée » couvrent chacun des dossiers encore vivants.
+            Seul le silence discrimine.
+        -->
+        <record id="bf_email_privacy_closure_quiet_days" model="ir.config_parameter">
+            <field name="key">bf_email_privacy.closure_quiet_days</field>
+            <field name="value">180</field>
+        </record>
+
+    </data>
+</odoo>

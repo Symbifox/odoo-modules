@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            La sensibilisation n'est pas un traitement consenti. L'entreprise
+            teste et forme ses gens parce que l'article 10 LPRPSP lui impose
+            des mesures de sécurité propres à protéger les renseignements
+            personnels qu'elle détient. Poser un consentement ici laisserait
+            croire qu'un employé peut refuser d'être testé sans conséquence,
+            alors que la mesure ne tient que si elle est générale.
+        -->
+        <record id="purpose_security_awareness" model="privacy.purpose">
+            <field name="code">security_awareness</field>
+            <field name="name">Sensibilisation à la sécurité — simulations et profil de risque</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Votre employeur envoie de faux courriels d'hameçonnage pour
+                mesurer si son organisation sait les reconnaître. Ce qui est
+                consigné à votre nom : si le courriel a été ouvert, si le lien
+                a été cliqué, si le faux formulaire a été rempli, et si vous
+                avez signalé le courriel. La <em>longueur</em> de ce qui est
+                tapé dans le faux formulaire est notée ; jamais sa valeur —
+                aucun mot de passe n'est enregistré, nulle part.</p>
+                <p>De ces observations est calculé un score de risque, qui sert
+                à décider qui reçoit quelle formation. Il ne sert pas à
+                l'évaluation de votre rendement.</p>
+                <p>Ce dossier est conservé tant que vous faites partie de
+                l'organisation, parce que c'est là qu'il sert. À votre départ,
+                il est détruit selon le calendrier de conservation, et la
+                destruction est inscrite au registre.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">email</field>
+        </record>
+
+        <!--
+            ⚠️ L'ancrage est le DÉPART de la personne, pas la date de la
+            campagne. Un profil de risque n'a de sens que sur quelqu'un qui
+            fait encore partie de l'organisation ; le jour du départ, la fin
+            pour laquelle il a été recueilli est accomplie (art. 23 LPRPSP).
+            Une durée fixe comptée depuis la campagne dirait le contraire :
+            elle détruirait le dossier de gens encore en poste et garderait
+            celui de gens partis.
+
+            « 0 année » n'est donc pas un oubli : la conservation court
+            jusqu'au départ, et pas au-delà. Le délai d'application, lui, est
+            le paramètre `purge_grace_days` — il couvre la saisie tardive
+            d'un départ, il ne prolonge pas la conservation.
+        -->
+        <record id="retention_security_awareness" model="privacy.retention.calendar">
+            <field name="name">Sensibilisation — profil de risque et résultats de simulation</field>
+            <field name="code">SA-PROFIL</field>
+            <field name="document_type">hr_file</field>
+            <field name="legal_basis">Art. 10 LPRPSP : l'entreprise prend les mesures de sécurité propres à assurer la protection des renseignements personnels qu'elle détient — la simulation d'hameçonnage et la formation en font partie. Art. 23 LPRPSP : le renseignement est détruit lorsque la fin pour laquelle il a été recueilli est accomplie. Cette fin prend fin au départ de la personne de l'organisation.</field>
+            <field name="active_retention_years">0</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="False"/>
+            <field name="applies_to_model">bf.security.profile</field>
+            <field name="description">Profil de risque par personne (bf.security.profile), résultats de simulation d'hameçonnage (bf.phishing.result), assignations de formation (bf.training.assignment) et traces d'envoi de masse rattachées aux résultats.</field>
+            <field name="notes">⚠️ La tâche planifiée qui applique cette règle est livrée ÉTEINTE : l'allumer est une décision du responsable de la vie privée, pas un effet de l'installation. Cette règle GOUVERNE cette tâche : si elle est archivée, ou si son sort final passe à autre chose que « Destruction », la passe ne détruit plus rien. Sa durée s'ajoute à la date de départ, avec le paramètre `bf_security_awareness_privacy.purge_grace_days` (30 jours par défaut).
+
+⚠️ Une personne sans fiche employé liée n'a pas de date de départ résolvable : rien n'est détruit pour elle, et le nombre de ces cas est journalisé à chaque passage. Le champ « Conservation » sur le profil le montre à l'écran.
+
+⚠️ Hors de cette règle : les signalements de courriel et les retraits (traitement d'incident), et l'inscription au cours dans le LMS (dossier employé).</field>
+        </record>
+
+        <record id="retention_policy_security_awareness" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_security_awareness"/>
+            <field name="retention_days">0</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Comportement observé lors des simulations : ouverture, clic, soumission du faux formulaire, signalement. Score de risque et niveau de risque calculés. Adresse courriel ciblée, adresse IP et agent utilisateur du clic, pays déduit. Longueur des champs saisis dans le faux formulaire — jamais leur valeur. Cours assignés et avancement.</field>
+            <field name="notes">Le déclencheur « après expiration » se lit ici comme le départ de la personne : c'est l'événement qui accomplit la finalité. La durée à 0 jour dit que rien n'est conservé au-delà. Le détail opérationnel vit dans la règle du calendrier SA-PROFIL.</field>
+        </record>
+
+    </data>
+</odoo>

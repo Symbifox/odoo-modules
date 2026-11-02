@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            La finalité : pourquoi l'inbox unifiée existe. Le fondement n'est
+            pas le consentement de la personne concernée — on ne demande pas à
+            un correspondant la permission de lire le courriel qu'il vient
+            d'envoyer. C'est l'exécution du mandat et la tenue du dossier.
+        -->
+        <record id="purpose_bf_email" model="privacy.purpose">
+            <field name="code">bf_email_inbox</field>
+            <field name="name">Inbox unifiée — correspondance client</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Les courriels échangés avec vous sont réunis dans une boîte
+                unique à l'intérieur de notre système de gestion, pour que la
+                personne qui s'occupe de votre dossier retrouve l'échange sans
+                le chercher dans plusieurs boîtes.</p>
+                <p>Un courriel qui concerne un dossier y est versé et suit sa
+                durée de conservation : cinq ans après la clôture du projet.
+                Un courriel qui n'a été versé à aucun dossier est conservé
+                trois ans à compter de sa réception, puis détruit.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="context_scope">project</field>
+            <field name="channel_scope">email</field>
+        </record>
+
+        <!--
+            ⚠️ RÉGIME 1 — le courriel qui dort dans la boîte.
+            Ici la ligne bf.email EST la copie : le corps est stocké et
+            `raw_rfc822` porte le message RFC 2822 entier. La durée reprend
+            celle de COR-001 « Correspondance », déjà semée par privacy_consent,
+            pour n'avoir qu'un seul régime de correspondance à défendre.
+
+            ⚠️ Cette durée ne peut PAS descendre sous `bf_email.reconcile_days`
+            + 30 jours : `_cron_imap_reconcile` rebalaie INBOX et Sent sur cette
+            fenêtre et re-crée toute ligne dont le Message-ID a disparu. Le cron
+            vérifie l'écart et s'arrête plutôt que d'alimenter la boucle.
+        -->
+        <record id="retention_bf_email_unfiled" model="privacy.retention.calendar">
+            <field name="name">Inbox unifiée — courriel non versé à un dossier</field>
+            <field name="code">COR-BFMAIL-1</field>
+            <field name="document_type">correspondence</field>
+            <field name="description">Lignes bf.email sans enregistrement lié (`res_model` vide) : le courriel ingéré par IMAP qui n'a jamais été classé. La ligne porte le corps stocké et, pour une ingestion directe, la copie RFC 2822 complète.</field>
+            <field name="legal_basis">Art. 23 LPRPSP — le renseignement personnel est détruit lorsque la fin pour laquelle il a été recueilli ou utilisé est accomplie. Durée alignée sur la règle COR-001 « Correspondance » : 3 ans.</field>
+            <field name="active_retention_years">3</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="False"/>
+            <field name="applies_to_model">bf.email</field>
+            <field name="notes">Ancrage : la date de réception du courriel. La destruction retire la ligne et sa copie RFC 2822 de la base Odoo. Les sauvegardes gardent l'état antérieur aussi longtemps que leur propre rotation le conserve (selon la politique de sauvegarde de l'exploitant, profondeur réelle à vérifier au dépôt). La copie sur le serveur IMAP n'est pas visée.</field>
+        </record>
+
+        <!--
+            ⚠️ RÉGIME 2 — le courriel versé à un dossier.
+            Ici la ligne est un POINTEUR : le corps est une projection du
+            mail.message, qui vit dans le chatter du dossier client. Le détruire
+            sur son âge propre casserait le pointeur sans rien supprimer. Sa fin
+            n'est pas accomplie tant que le dossier vit.
+
+            ⚠️ L'ancrage est la clôture du PROJET, pas la date du courriel.
+            Un courriel classé sur un modèle sans projet rattaché n'a pas
+            d'ancrage : il est conservé, et compté à part sur l'écran de
+            réglages. On ne devine pas une date pour pouvoir détruire.
+        -->
+        <record id="retention_bf_email_filed" model="privacy.retention.calendar">
+            <field name="name">Inbox unifiée — courriel versé à un dossier</field>
+            <field name="code">COR-BFMAIL-2</field>
+            <field name="document_type">correspondence</field>
+            <field name="description">Lignes bf.email liées à un enregistrement (`res_model` rempli) dont on sait remonter au projet : project.project, project.task, et les six modèles qui portent un project_id en propre (meeting.record, sale.order, helpdesk.ticket, project.document, meeting.agenda, project.knowledge.item). Le corps est une projection du mail.message versé au chatter du dossier.</field>
+            <field name="legal_basis">Art. 23 LPRPSP — la fin d'un courriel versé au dossier n'est accomplie qu'à la clôture du dossier. Durée alignée sur la règle PRJ-001 « Dossiers de projets » : 5 ans après la clôture, pour couvrir la prescription des réclamations contractuelles (art. 2925 C.c.Q.).</field>
+            <field name="active_retention_years">5</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="False"/>
+            <field name="applies_to_model">bf.email</field>
+            <field name="notes">Ancrage : la date de clôture du projet, lue dans sa date de fin puis, à défaut, dans le suivi du passage en étape repliée. Un projet clos sans date de clôture lisible laisse ses courriels CONSERVÉS — l'écran de réglages les compte pour qu'on puisse aller poser la date.</field>
+        </record>
+
+        <record id="retention_policy_bf_email" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_bf_email"/>
+            <field name="retention_days">1095</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Adresses courriel et noms des correspondants, objet et corps du message, en-têtes RFC 2822, pièces jointes, et tout renseignement personnel que le correspondant y a déposé sans qu'il ait été classifié au cas par cas.</field>
+            <field name="notes">Déclencheur « après expiration » faute de mieux : le modèle ne propose que expiration / révocation / les deux, et un courriel ne se révoque pas. 1 095 jours = 3 ans, soit le régime du courriel non versé à un dossier. Le courriel versé suit la clôture de son projet (5 ans), qui ne s'exprime pas en délai fixe depuis la création : voir la règle COR-BFMAIL-2 du calendrier de conservation.</field>
+        </record>
+
+    </data>
+</odoo>

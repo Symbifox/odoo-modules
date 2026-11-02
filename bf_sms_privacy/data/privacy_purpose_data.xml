@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            L'archive de messagerie n'avait aucune fiche au registre des
+            traitements, alors que c'est le deuxième gisement de
+            renseignements personnels de l'instance après l'inbox unifiée :
+            des dizaines de milliers de messages, des milliers de journaux
+            d'appels, et des pièces jointes MMS qui pèsent le plus lourd.
+
+            ⚠️ Pas de consentement à recueillir, et ce n'est pas une
+            commodité. Conserver la trace de ses propres communications relève
+            de l'intérêt légitime de l'entreprise et de l'exécution de ses
+            mandats ; demander son consentement au correspondant laisserait
+            croire qu'il peut refuser que l'échange qu'il vient d'avoir soit
+            consigné, ce qui est faux. Un consentement qu'on ne peut pas
+            refuser n'est pas un consentement, et le présenter comme tel vicie
+            tous les autres.
+        -->
+        <record id="purpose_sms_call_archive" model="privacy.purpose">
+            <field name="code">sms_call_archive</field>
+            <field name="name">Archive des messages et des appels</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Les messages texte échangés avec nous, et le journal des
+                appels passés ou reçus, sont conservés dans nos systèmes : le
+                contenu du message, votre numéro, le nom rattaché à ce numéro, la date et l'heure, et pour un appel sa durée. Les
+                photos et les fichiers envoyés par MMS sont conservés avec le
+                message auquel ils appartiennent.</p>
+                <p>Cette trace sert à retrouver ce qui a été dit et convenu,
+                et à rattacher un échange au mandat auquel il se rapporte.</p>
+                <p>Elle est détruite au terme du calendrier de conservation.
+                Un appel dont un compte rendu de rencontre fait état se
+                conserve plus longtemps, avec le dossier dont il fait partie.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">sms</field>
+            <field name="sequence">25</field>
+        </record>
+
+        <!--
+            ⚠️ La durée déclarée ici documente le régime ; ce qui PILOTE le
+            balayage, ce sont les règles TEL-001/002/003 du calendrier de
+            conservation. C'est là qu'un vérificateur les cherche, avec leur
+            base légale, et c'est ce que le registre cite.
+
+            `trigger_on` n'accepte que expiration / withdrawal / both — il n'y
+            a pas de valeur « à la création ». « expiration » est le bon
+            déclencheur : la durée court depuis l'échange, pas depuis un
+            consentement qui n'est pas demandé.
+        -->
+        <record id="retention_policy_sms_call_archive" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_sms_call_archive"/>
+            <field name="retention_days">1095</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Corps des messages SMS, pièces jointes MMS (images, vidéos, sons), numéros de téléphone, noms de contacts, horodatages, sens de l'échange, durée et type des appels, liens vers les enregistrements d'appels conservés chez le fournisseur.</field>
+            <field name="notes">1 095 jours = 3 ans, la durée de TEL-001 et TEL-002. Les appels versés à un compte rendu de rencontre relèvent de TEL-003 (6 ans) et ne suivent pas cette politique. ⚠️ La destruction ne touche ni l'appareil Android dont l'archive est une copie, ni les fichiers XML de sauvegarde déplacés vers « done/ », ni le journal du fournisseur VOIP.ms.</field>
+        </record>
+
+    </data>
+</odoo>

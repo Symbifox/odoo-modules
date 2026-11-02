@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Délai d'application, pas une conservation supplémentaire :
+             il couvre la saisie tardive d'un départ et la révision de la
+             personne responsable. À zéro, la destruction suit le départ. -->
+        <record id="param_purge_grace_days" model="ir.config_parameter">
+            <field name="key">bf_security_awareness_privacy.purge_grace_days</field>
+            <field name="value">30</field>
+        </record>
+
+        <record id="cron_privacy_purge_departed" model="ir.cron">
+            <field name="name">Sensibilisation : détruire le profil de risque des personnes parties</field>
+            <field name="model_id" ref="bf_security_awareness.model_bf_security_profile"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_privacy_purge_departed()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <!-- 🔴 Livré ÉTEINT depuis la 18.0.1.2.0, et il faut que ça reste
+                 une décision. Ce module est `auto_install` : le poser à côté
+                 de privacy_consent suffisait à détruire, dans les 24 h, les
+                 profils des personnes parties depuis plus de 30 jours, sans
+                 approbation. Une purge irréversible ne doit jamais être un
+                 effet de bord d'une installation, pas plus ici que dans
+                 bf_meeting_privacy, qui le dit déjà. `noupdate="1"` : chez qui
+                 l'a déjà allumé, il le reste. -->
+            <field name="active" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

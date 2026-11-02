@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf.email.privacy</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Inbox unifiée — vie privée"
+                     string="Inbox unifiée — vie privée"
+                     name="bf_email_privacy">
+
+                    <block title="Durées de conservation"
+                           name="bf_email_privacy_retention_block">
+                        <setting string="Courriel non versé à un dossier"
+                                 help="La ligne est la seule copie côté Odoo : elle porte le corps et, pour une ingestion IMAP directe, le message RFC 2822 entier. La conservation court à compter de la réception. Aligné par défaut sur la règle « Correspondance » (COR-001) déjà semée par le module Vie privée.">
+                            <div class="content-group">
+                                <div>
+                                    <field name="bf_email_unfiled_years" class="oe_inline"/>
+                                    <span class="ms-2">années</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Silence avant de tenir un dossier pour clos"
+                                 help="Aucun signal déclaratif ne dit la clôture : « archivé », « étape repliée » et « date de fin posée » couvrent chacun des dossiers encore actifs. Le silence, lui, les écarte tous. Un dossier qui repart repousse sa propre date de clôture.">
+                            <div class="content-group">
+                                <div>
+                                    <field name="bf_email_closure_quiet_days" class="oe_inline"/>
+                                    <span class="ms-2">jours sans message ni feuille de temps</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Courriel versé à un dossier"
+                                 help="La ligne est un pointeur : le corps vit dans le chatter du dossier. La conservation court à compter de la CLÔTURE du projet qui la gouverne, pas de la date du courriel. Aligné par défaut sur la règle « Dossiers de projets » (PRJ-001).">
+                            <div class="content-group">
+                                <div>
+                                    <field name="bf_email_filed_years" class="oe_inline"/>
+                                    <span class="ms-2">années après la clôture du projet</span>
+                                </div>
+                                <div class="mt-2">
+                                    <button name="action_bf_email_open_calendar" type="object"
+                                            string="Ouvrir les règles au calendrier de conservation"
+                                            class="btn-link"
+                                            help="Les deux durées vivent sur les règles du calendrier, avec leur base légale. Cet écran n'en est qu'une façade."/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+
+                    <block title="Destruction" name="bf_email_privacy_destroy_block">
+                        <setting string="Proposition automatique"
+                                 help="Bascule le cron quotidien. Il NE DÉTRUIT RIEN : il dépose les courriels échus dans une campagne de destruction laissée en révision, que le responsable de la vie privée approuve puis exécute. Livré éteint — une file de destruction qui se remplit seule est déjà une décision.">
+                            <field name="bf_email_propose_active"/>
+                            <div class="mt-2">
+                                <label for="bf_email_batch_size" string="Lignes par passage"/>
+                                <field name="bf_email_batch_size" class="oe_inline"/>
+                            </div>
+                            <div class="mt-2">
+                                <button name="action_bf_email_dry_run" type="object"
+                                        string="Simuler un passage"
+                                        class="btn btn-secondary"
+                                        help="Compte ce qui serait proposé, sans créer de campagne ni rien supprimer."/>
+                                <button name="action_bf_email_open_campaigns" type="object"
+                                        string="Voir les campagnes"
+                                        class="btn-link"
+                                        help="Les campagnes de destruction alimentées par ce cron. C'est là que l'approbation et l'exécution se font."/>
+                            </div>
+                        </setting>
+                        <setting string="Ce que la destruction ne couvre pas">
+                            <div class="alert alert-warning" role="alert">
+                                <p class="mb-1"><strong>Rien ne part sans approbation</strong> :
+                                le cron propose, le responsable de la vie privée approuve,
+                                puis exécute. C'est la campagne qui inscrit au registre.</p>
+                                <p class="mb-1">La destruction retire la ligne et sa copie
+                                RFC 2822 de la base Odoo. Le bloc quitte le filestore au
+                                passage suivant du ramasse-miettes des pièces jointes.</p>
+                                <p class="mb-1">Les <strong>sauvegardes</strong> gardent l'état
+                                antérieur aussi longtemps que leur propre rotation le conserve
+                                (selon votre politique de sauvegarde). ⚠️ Leur profondeur réelle se
+                                <strong>vérifie au dépôt</strong> : une politique annoncée ne
+                                prouve pas la profondeur réelle, et l'élagage peut laisser en
+                                place des instantanés bien plus anciens qu'elle.</p>
+                                <p class="mb-1">N'est pas visée : la copie sur le
+                                <strong>serveur IMAP</strong>, le module écrivant vers la boîte
+                                sans la vider.</p>
+                                <p class="mb-0">La méthode inscrite au registre est donc
+                                « suppression », jamais « effacement sécurisé ».</p>
+                            </div>
+                        </setting>
+                    </block>
+
+                    <block title="Aperçu de la prochaine passe"
+                           name="bf_email_privacy_preview_block">
+                        <setting string="Lignes échues"
+                                 help="Ce que la passe détruirait. C'est le balayage du cron lui-même qui écrit ce chiffre, à chaque passage comme à chaque simulation : il ne peut donc pas diverger de ce que la passe fera. En revanche c'est une photo — voyez sa date ci-dessous.">
+                            <field name="bf_email_expired_count" readonly="1" class="oe_inline"/>
+                        </setting>
+                        <setting string="Date de l'aperçu"
+                                 help="Le balayage coûte quelques secondes sur les données réelles, et la page Paramètres calcule tous ses onglets à l'ouverture : on relit une mesure datée plutôt que de faire attendre. « Simuler un passage » la rafraîchit.">
+                            <field name="bf_email_preview_taken_at" readonly="1" class="oe_inline"/>
+                        </setting>
+                        <setting string="Conservés faute d'ancrage"
+                                 help="Ce que le cron refuse de détruire, et pourquoi. « Projet clos sans date de clôture lisible » se répare en posant la date de fin du projet ; « modèle sans projet rattaché » demande d'étendre la résolution.">
+                            <field name="bf_email_held_summary" readonly="1" widget="text" nolabel="1"/>
+                        </setting>
+                        <setting string="Plancher de réconciliation IMAP"
+                                 help="Sous cette durée, une ligne détruite serait re-créée par la réconciliation IMAP au passage suivant : la destruction ne détruirait rien et le registre certifierait du vent. Le cron s'arrête plutôt que de le faire.">
+                            <div class="content-group">
+                                <field name="bf_email_reconcile_floor" readonly="1" class="oe_inline"/>
+                                <span class="ms-2">jours</span>
+                            </div>
+                        </setting>
+                    </block>
+
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

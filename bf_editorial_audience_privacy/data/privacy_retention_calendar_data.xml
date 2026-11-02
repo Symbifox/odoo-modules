@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            AUD-001 — la chaîne d'agent utilisateur des visiteurs du site.
+
+            Zéro an au calendrier, comme ST-CONTENT, SA-PROFIL et les deux
+            règles COR-BFMAIL : le calendrier compte en années, la durée réelle
+            est portée par la politique de conservation de la
+            finalité. La règle existe pour ce qu'un vérificateur y cherche : la
+            base légale, le sort final, et la citation que le registre de
+            destruction lui rattache.
+
+            `requires_approval` à False, contre le défaut du modèle : le ménage
+            efface sans que personne n'approuve. Laisser le défaut ferait
+            déclarer une approbation que rien ne réclame.
+        -->
+        <record id="retention_editorial_audience_agent" model="privacy.retention.calendar">
+            <field name="name">Mesure d'audience — agent utilisateur des visiteurs du site</field>
+            <field name="code">AUD-001</field>
+            <field name="document_type">other</field>
+            <field name="description">Chaîne d'agent utilisateur relevée sur chaque visiteur du site public par bf_editorial_audience (website.visitor.user_agent). Le verdict (robot déclaré) et la famille d'agent qui en sont tirés survivent à l'effacement de la chaîne, et le visiteur aussi (témoin de navigateur, pays, langue, pages vues) jusqu'à la purge native d'Odoo, ou sans borne tant qu'il est rattaché à un contact, à un prospect ou à une inscription.</field>
+            <field name="legal_basis">Art. 23 LPRPSP : le renseignement personnel est détruit lorsque la fin pour laquelle il a été recueilli est accomplie. La fin est le classement de l'agent et son reclassement quand une signature de robot s'ajoute. La durée est celle de la politique de conservation de la finalité « Mesure d'audience du site — agent utilisateur » ; elle est fixée à la borne de la purge native d'Odoo (website.visitor.live.days), au-delà de laquelle le visiteur anonyme est supprimé et ne peut plus être reclassé (hors visiteurs liés à un prospect ou à une inscription à un événement, qu'Odoo garde).</field>
+            <field name="active_retention_years">0</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="False"/>
+            <field name="applies_to_model">website.visitor</field>
+            <field name="notes">La durée, comptée depuis la dernière visite, est celle de la politique de conservation de la finalité « Mesure d'audience du site — agent utilisateur » : c'est la seule durée appliquée, elle n'est pas recopiée ici. Deux chemins effacent, et chacun inscrit une entrée de lot au registre, par société du site : le ménage quotidien de bf_editorial_audience (portée partielle, la chaîne part, le visiteur reste) et la purge native d'Odoo des visiteurs inactifs non rattachés à un contact, hors ceux liés à un prospect ou à une inscription (portée entière). ⚠️ Une inscription en échec bloque le ménage (rien n'est effacé ce jour-là ; si l'échec dure, le ménage s'arrête et Odoo finit par désactiver son cron, l'administrateur en est averti : les anonymes partent quand même avec la purge native, mais les chaînes des visiteurs rattachés sont alors gardées au-delà de la durée) ; elle ne bloque jamais la purge native : la suppression se fait et l'échec est journalisé. ⚠️ Ni les sauvegardes de la base ni les journaux d'accès du serveur web ne sont atteints.</field>
+        </record>
+
+    </data>
+</odoo>

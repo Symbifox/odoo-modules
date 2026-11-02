@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le statut de conservation se lit à l'écran, sinon le seul endroit où
+         « aucune date de départ résolvable » apparaît est le journal du
+         serveur — et personne ne l'y cherche. -->
+    <record id="bf_security_profile_view_form_privacy" model="ir.ui.view">
+        <field name="name">bf.security.profile.form.privacy</field>
+        <field name="model">bf.security.profile</field>
+        <field name="inherit_id" ref="bf_security_awareness.bf_security_profile_view_form"/>
+        <field name="arch" type="xml">
+            <!-- `string` n'est pas un sélecteur d'héritage recevable en 18 :
+                 on vise le groupe conteneur, pas le libellé « Risque ». -->
+            <xpath expr="//sheet/group" position="inside">
+                <group string="Conservation (Loi 25)">
+                    <field name="privacy_retention_status" widget="badge"
+                           decoration-danger="privacy_retention_status == 'due'"
+                           decoration-warning="privacy_retention_status == 'unknown'"/>
+                    <field name="privacy_departure_date"
+                           groups="privacy_consent.group_privacy_officer"/>
+                    <field name="privacy_retention_due_date"
+                           groups="privacy_consent.group_privacy_officer"
+                           invisible="not privacy_departure_date"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_security_profile_view_list_privacy" model="ir.ui.view">
+        <field name="name">bf.security.profile.list.privacy</field>
+        <field name="model">bf.security.profile</field>
+        <field name="inherit_id" ref="bf_security_awareness.bf_security_profile_view_list"/>
+        <field name="arch" type="xml">
+            <field name="last_failed_date" position="after">
+                <field name="privacy_retention_status" widget="badge" optional="show"
+                       decoration-danger="privacy_retention_status == 'due'"
+                       decoration-warning="privacy_retention_status == 'unknown'"/>
+                <field name="privacy_departure_date" optional="hide"
+                       groups="privacy_consent.group_privacy_officer"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Les deux filtres qu'un responsable de la vie privée cherche : ce qui
+         est échu, et ce que la règle n'atteint pas faute d'ancrage. -->
+    <record id="bf_security_profile_view_search_privacy" model="ir.ui.view">
+        <field name="name">bf.security.profile.search.privacy</field>
+        <field name="model">bf.security.profile</field>
+        <field name="inherit_id" ref="bf_security_awareness.bf_security_profile_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="high" position="after">
+                <separator/>
+                <filter name="privacy_due" string="Conservation échue"
+                        domain="[('privacy_retention_status', '=', 'due')]"/>
+                <filter name="privacy_unknown" string="Sans date de départ"
+                        domain="[('privacy_retention_status', '=', 'unknown')]"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

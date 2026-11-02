@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**291 modules are BUSL-1.1.** The source is published and auditable, and **you
+**296 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -201,12 +201,14 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_document_request_privacy` | Document Requests: Privacy Bridge (Quebec Law 25) | 18.0.1.1.1 | BUSL-1.1 | Attach the expiry policy to the retention schedule, and record in the destruction register what a request's expiry deletes |
 | `bf_editorial` | Atelier éditorial | 18.0.1.11.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
 | `bf_editorial_audience` | Atelier éditorial — audience | 18.0.1.3.0 | BUSL-1.1 | An article's readership once the crawlers Odoo does not recognise are taken out, recorded daily before the visitor purge takes the trace away |
+| `bf_editorial_audience_privacy` | Atelier éditorial — audience : pont vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Déclarer au registre des traitements la chaîne d'agent utilisateur relevée sur les visiteurs du site, en régler la durée par une politique de conservation, et inscrire chaque effacement au registre de destruction |
 | `bf_editorial_bluesky` | Atelier éditorial — Bluesky | 18.0.1.1.0 | BUSL-1.1 | Post to Bluesky from the editorial workshop, over the AT protocol with an app password |
 | `bf_editorial_genfox` | Atelier éditorial — Gen | 18.0.1.5.0 | BUSL-1.1 | Article suggestion, review and expansion by Gen, as proposals a human reads before applying |
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.1.0 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.2.0 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.6.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
 | `bf_email_management` | Gestion des courriels | 18.0.11.64.2 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_privacy` | Gestion des courriels — pont Vie privée (Loi 25) | 18.0.3.4.0 | BUSL-1.1 | Rétention et destruction du contenu de bf.email, adossées au calendrier de conservation, avec inscription au registre |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.3.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.1.2 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.1.0 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |
@@ -285,6 +287,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_meeting` | Rencontres | 18.0.3.72.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.1.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.3.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
+| `bf_meeting_privacy` | Rencontres — Pont vie privée (Loi 25) | 18.0.1.2.0 | BUSL-1.1 | Déclarer au registre des traitements ce que les comptes rendus collectent, rendre les rencontres classifiables, et poser une règle de conservation sur les transcriptions et les enregistrements |
 | `bf_meeting_timer` | Chronomètre de rencontre | 18.0.1.5.2 | BUSL-1.1 | The real time each agenda topic actually took, and the projected end of the meeting while it is still running. |
 | `bf_membership` | Membres | 18.0.1.0.6 | BUSL-1.1 | The member register of an association, a non-profit or a federation: categories, memberships, renewals and delegates, without depending on an invoice |
 | `bf_membership_account` | Membres : facturation et reçus fiscaux | 18.0.1.0.2 | BUSL-1.1 | Invoices the membership fee in Odoo, follows its payment on the membership, and issues a registered charity's partial tax receipt for money actually received |
@@ -410,6 +413,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_securetransfer_privacy` | Secure Transfer: Privacy Bridge (Quebec Law 25) | 18.0.1.2.1 | BUSL-1.1 | Record in the destruction register what the secure transfer purge already deletes, and declare the purpose in the register of processing activities |
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.3.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
 | `bf_security_awareness` | Security Awareness | 18.0.2.3.2 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, an aggregate campaign report that names nobody (to hand to a supplier or insurer), a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
+| `bf_security_awareness_privacy` | Sensibilisation à la sécurité — Pont vie privée (Loi 25) | 18.0.1.3.0 | BUSL-1.1 | Déclarer la finalité du profil de risque, le conserver jusqu'au départ de la personne, et inscrire sa destruction au registre |
 | `bf_session_cookie_domain` | BF Session Cookie Domain | 18.0.2.0.0 | LGPL-3 | Share the session cookie across the subdomains of one configured apex domain |
 | `bf_shift` | Symbifox Quarts de travail | 18.0.1.2.1 | BUSL-1.1 | Shift scheduling for regular and unionised employees: labour standards checks, premiums, call lists, swaps, taxable benefits, payroll export |
 | `bf_sign` | Symbifox — Signature électronique | 18.0.3.30.0 | BUSL-1.1 | Native electronic signature (SES): parallel or sequential multi-signer requests, drag-and-drop pad placement on the PDF with reusable layout templates that can carry their own PDF (a request starts from one pick above the upload), draw/type/upload signature and initials with embedded handwriting fonts, signer-fillable text and date fields plus boxed cells for pre-printed forms and server-validated choice lists, optional email OTP identity verification of signers, refusal flow with reason, branded public signing pages and transactional emails, completion certificate (times in UTC, then local time with its zone named), optional PAdES cryptographic seal (pyHanko) with in-app certificate generation, optional RFC 3161 trusted timestamping, hash-chained tamper-evident audit trail with one-click integrity verification, a public verification page (optional QR stamped on the document) where any holder can drop their own copy and have it hashed in-browser to confirm it matches, link expiry cron, an audited manager-only link reveal (the token itself is readable by administrators only), signing state and proof that only the signing flow can write, attachments included, and a mixin to send any Odoo record for signature with post-back of the signed document |
@@ -419,6 +423,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.2.0 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
 | `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.2.2.0 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
 | `bf_sms_archive` | SMS & Calls | 18.0.5.27.4 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
+| `bf_sms_privacy` | SMS et appels — pont Vie privée (Loi 25) | 18.0.1.1.1 | BUSL-1.1 | Rétention et destruction des messages SMS/MMS et des journaux d'appels, adossées au calendrier de conservation, avec inscription au registre |
 | `bf_softphone` | Symbifox — Téléphone SIP | 18.0.2.11.1 | LGPL-3 | WebRTC softphone (JsSIP) in the web client, backed by an Asterisk PBX, with PBX-dialled calls for clients without a SIP stack and a push wake for a phone whose app is closed |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.4.5 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression, plus a token-protected client portal where the client sees their steps and deposits the expected documents. |
 | `bf_stepbystep_securetransfer` | Progression: deposit through secure transfer storage | 18.0.1.0.2 | BUSL-1.1 | Client portal deposits go straight to the S3 storage of the secure transfer when it is configured; large files stay there. |
@@ -527,9 +532,9 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 file inside each module governs and carries its exact parameters.
 
 <<<<<<< HEAD
-- **291 modules: BUSL-1.1.** Production use for your own internal business
+- **296 modules: BUSL-1.1.** Production use for your own internal business
 =======
-- **291 modules: BUSL-1.1.** Production use for your own internal business
+- **296 modules: BUSL-1.1.** Production use for your own internal business
 >>>>>>> 344cf03a (bf_survey_certificate: three branded layouts, course name, withdrawal screen (v18.0.1.1.0))
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            TEL-001 — les messages SMS/MMS.
+
+            Trois ans, alignés sur COR-001 (correspondance) et sur COR-BFMAIL-1
+            (le courriel qui n'est versé à aucun dossier). C'est de la
+            correspondance : elle n'a pas de raison de vivre plus longtemps
+            parce qu'elle est arrivée par le réseau cellulaire plutôt que par
+            SMTP.
+
+            Un régime unique couvre l'archive du téléphone et la ligne
+            d'affaires VOIP.ms. Un second régime ancré sur le dossier client —
+            le patron COR-BFMAIL-2 — coûterait plus à bâtir et à défendre qu'il
+            ne rapporterait tant qu'une poignée de fils seulement portent un
+            partenaire.
+
+            ⚠️ Les pièces jointes MMS n'ont PAS de durée propre : elles
+            tombent avec le message. Le patron RENC-002 — la matière première
+            meurt avant le document — ne s'applique pas, une photo reçue par
+            MMS n'étant pas la matière première d'un document qui la
+            résumerait. Elle EST le message.
+        -->
+        <record id="retention_sms_message" model="privacy.retention.calendar">
+            <field name="name">Messages SMS et MMS</field>
+            <field name="code">TEL-001</field>
+            <field name="document_type">correspondence</field>
+            <field name="description">Messages SMS et MMS archivés : corps du message, numéro et nom du correspondant, horodatage, sens de l'échange, et les pièces jointes MMS (photos, vidéos, sons) qui les accompagnent. Couvre l'archive importée de l'appareil Android comme les messages de la ligne d'affaires VOIP.ms.</field>
+            <field name="legal_basis">Art. 3.2 LPRPSP : l'entreprise établit un cadre de conservation et de destruction des renseignements personnels. Durée alignée sur COR-001 (correspondance, 3 ans) : le canal ne change pas la nature du document.</field>
+            <field name="active_retention_years">3</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">sms.archive.message</field>
+            <field name="notes">Rien ne s'exécute tout seul sous cette règle. Le cron du pont `bf_sms_privacy` dépose les lignes échues dans une campagne de destruction laissée EN RÉVISION ; l'approbation et l'exécution appartiennent au responsable de la vie privée. ⚠️ La suppression emporte les parties MMS et leurs pièces jointes — elles sont retirées par l'ORM, et non par la cascade SQL, sans quoi les fichiers resteraient orphelins au filestore.</field>
+        </record>
+
+        <!--
+            TEL-002 — les journaux d'appels.
+
+            Même durée, même raisonnement : qui a appelé qui, quand, et
+            combien de temps. Un journal d'appel en dit parfois plus qu'un
+            message sur les fréquentations d'une personne ; il n'y a aucune
+            raison de le garder plus longtemps que le message.
+        -->
+        <record id="retention_call_log" model="privacy.retention.calendar">
+            <field name="name">Journaux d'appels</field>
+            <field name="code">TEL-002</field>
+            <field name="document_type">correspondence</field>
+            <field name="description">Journaux d'appels archivés : numéro et nom du correspondant, horodatage, durée, sens de l'appel, présentation du numéro, et le lien vers un enregistrement le cas échéant.</field>
+            <field name="legal_basis">Art. 3.2 LPRPSP. Durée alignée sur COR-001 et sur TEL-001 : le journal d'appel est de la correspondance au même titre que le message.</field>
+            <field name="active_retention_years">3</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">call.archive.call</field>
+            <field name="notes">Ne s'applique QU'AUX appels qu'aucun compte rendu de rencontre ne cite. Ceux qui en sont cités relèvent de TEL-003. ⚠️ Le lien vers l'enregistrement conservé chez VOIP.ms disparaît avec la ligne ; le fichier chez le fournisseur, lui, n'est pas atteint.</field>
+        </record>
+
+        <!--
+            TEL-003 — l'appel versé à un compte rendu de rencontre.
+
+            Des comptes rendus portent un `call_archive_id`, le lien posé par
+            `bf_meeting_call_archive`. Un compte rendu se
+            conserve six ans (RENC-001 : cinq ans plus une année semi-active
+            couvrant la prescription de droit commun, art. 2925 C.c.Q.).
+
+            🔴 Laisser l'appel mourir à trois ans viderait EN SILENCE le renvoi
+            de comptes rendus encore sous conservation : le Many2one n'a pas
+            d'`ondelete` déclaré, donc rien ne casse — le compte rendu perd sa
+            pièce sans que personne ne le voie passer. C'est exactement ce
+            qu'un calendrier de conservation est là pour empêcher.
+
+            L'appel versé à une rencontre n'est plus une communication
+            personnelle isolée : c'est une pièce du dossier, et il suit le
+            dossier.
+        -->
+        <record id="retention_call_meeting" model="privacy.retention.calendar">
+            <field name="name">Appels versés à un compte rendu de rencontre</field>
+            <field name="code">TEL-003</field>
+            <field name="document_type">meeting_record</field>
+            <field name="description">Journal d'appel cité par au moins un compte rendu de rencontre (`meeting.record.call_archive_id`). L'appel est alors la trace de la tenue de la rencontre, et non une communication personnelle isolée.</field>
+            <field name="legal_basis">Art. 3.2 LPRPSP. Durée alignée sur RENC-001 (comptes rendus de rencontre) : la pièce suit le document qui la cite, faute de quoi le document survivrait à sa propre preuve.</field>
+            <field name="active_retention_years">5</field>
+            <field name="semi_active_retention_years">1</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">call.archive.call</field>
+            <field name="notes">L'ancrage est la date du compte rendu le plus RÉCENT qui cite l'appel, pas la date de l'appel : un appel cité par deux comptes rendus se conserve aussi longtemps que le dernier d'entre eux. ⚠️ Les comptes rendus ARCHIVÉS comptent : ranger n'est pas clore, et un compte rendu archivé reste conservé et consultable.</field>
+        </record>
+
+    </data>
+</odoo>

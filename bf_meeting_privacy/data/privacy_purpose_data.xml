@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            ⚠️ Les finalités « enregistrement » et « transcription » existent
+            DÉJÀ dans `privacy_consent` (purpose_recording, purpose_transcription,
+            purpose_recording_audio). On ne les redéclare pas : deux fiches pour
+            la même finalité feraient deux régimes concurrents, et le
+            consentement recueilli sur l'une ne dirait rien de l'autre.
+
+            Ce qui manquait, c'est le compte rendu LUI-MÊME. Il survit à
+            l'enregistrement : la transcription est jetable une fois le compte
+            rendu écrit, alors que le compte rendu, lui, reste au dossier de
+            projet. Aucune fiche ne le décrivait.
+        -->
+        <record id="purpose_meeting_minutes" model="privacy.purpose">
+            <field name="code">meeting_minutes</field>
+            <field name="name">Compte rendu de rencontre</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Quand nous tenons une rencontre dans le cadre d'un mandat,
+                nous en rédigeons un compte rendu : les sujets abordés, les
+                décisions prises, qui était présent, et les suites à donner.
+                Ce document fait la mémoire du mandat — il sert à savoir ce qui
+                a été convenu, et à le prouver.</p>
+                <p>Votre nom y apparaît si vous étiez à la rencontre, de même
+                que les décisions qui vous sont attribuées. Le compte rendu est
+                conservé avec le dossier de projet, puis détruit selon le
+                calendrier de conservation.</p>
+                <p>Le compte rendu est distinct de l'enregistrement et de sa
+                transcription : ceux-là servent à l'écrire, et sont détruits
+                plus tôt.</p>
+            ]]></field>
+            <!--
+                Pas de consentement à demander, et c'est délibéré. Documenter ce
+                qui a été convenu dans un mandat est l'exécution du contrat, pas
+                une faveur. Demander un consentement laisserait croire qu'il
+                peut être refusé sans que le mandat s'arrête, ce qui est faux :
+                un consentement qu'on ne peut pas refuser n'est pas un
+                consentement, et le présenter comme tel vicie tous les autres.
+            -->
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <field name="context_scope">meeting</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">23</field>
+        </record>
+
+        <!--
+            Ce qui arrive à la matière première quand le consentement tombe.
+
+            ⚠️ 30 jours, pas 0. Un retrait de consentement doit être suivi
+            d'effet, mais l'effet passe par une intervention humaine : le
+            responsable de la vie privée vérifie qu'il ne détruit pas la
+            matière d'un compte rendu encore en rédaction. Annoncer « immédiat »
+            alors que rien ne tourne dans la minute serait un engagement qu'on
+            ne tient pas.
+        -->
+        <record id="retention_policy_recording" model="privacy.retention.policy">
+            <field name="purpose_id" ref="privacy_consent.purpose_recording"/>
+            <field name="retention_days">30</field>
+            <field name="trigger_on">both</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Enregistrement de la rencontre (fichier audio ou vidéo déposé sur le stockage), et transcription brute qui en est tirée.</field>
+            <field name="notes">Le retrait du consentement porte sur la captation, pas sur le compte rendu : celui-ci documente le mandat et relève de la règle RENC-001. ⚠️ Le fichier audio vit sur Nextcloud et n'est pas atteignable depuis Odoo — sa destruction est une opération sur le stockage, à faire à la main.</field>
+        </record>
+
+        <record id="retention_policy_transcription" model="privacy.retention.policy">
+            <field name="purpose_id" ref="privacy_consent.purpose_transcription"/>
+            <field name="retention_days">30</field>
+            <field name="trigger_on">both</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Transcription brute des propos tenus en rencontre, attribués à des personnes nommées.</field>
+            <field name="notes">Appliquée par « Purger la transcription brute » sur le compte rendu, ou par le cron RENC-002. La purge efface les champs `verbatim` et `verbatim_html` et inscrit au registre ce qui a disparu.</field>
+        </record>
+
+        <!--
+            ⚠️ Rien non plus pour `purpose_meeting_minutes`. Une
+            `privacy.retention.policy` ne se déclenche que sur l'expiration ou
+            le retrait d'un consentement (`trigger_on`), et le compte rendu
+            n'en repose sur aucun. Lui en attacher une pour faire joli
+            afficherait un déclencheur qui ne se produira jamais. Sa durée est
+            portée par la règle RENC-001 du calendrier de conservation, qui est
+            l'instrument prévu pour ça.
+
+            ⚠️ Rien pour `purpose_recording_audio` : cette finalité vise
+            l'enregistrement des APPELS. Les appels sont détenus par
+            `bf_sms_archive` (`call.archive.call`) et relèvent de son propre
+            régime. Poser ici une durée sur une donnée qu'un autre module
+            détient fabriquerait deux régimes sur la même donnée, et le premier
+            des deux à s'exécuter certifierait ce que l'autre n'a pas fait.
+        -->
+
+    </data>
+</odoo>

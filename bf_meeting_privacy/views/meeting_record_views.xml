@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="meeting_record_view_form_privacy" model="ir.ui.view">
+        <field name="name">meeting.record.form.privacy</field>
+        <field name="model">meeting.record</field>
+        <field name="inherit_id" ref="bf_meeting.meeting_record_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[@name='verbatim']" position="after">
+                <page string="Vie privée" name="privacy">
+                    <group>
+                        <group string="Consentement à l'enregistrement">
+                            <field name="privacy_is_recorded" readonly="1"/>
+                            <field name="privacy_consent_state" widget="badge"
+                                   decoration-success="privacy_consent_state == 'ok'"
+                                   decoration-danger="privacy_consent_state == 'missing'"
+                                   decoration-muted="privacy_consent_state == 'na'"
+                                   readonly="1"/>
+                            <field name="privacy_external_partner_ids"
+                                   widget="many2many_tags" readonly="1"
+                                   invisible="not privacy_external_partner_ids"/>
+                            <field name="privacy_missing_consent_partner_ids"
+                                   widget="many2many_tags" readonly="1"
+                                   invisible="privacy_consent_state != 'missing'"/>
+                        </group>
+                        <group string="Matière première">
+                            <field name="privacy_raw_material_purged" readonly="1"/>
+                            <button name="action_privacy_purge_raw_material"
+                                    type="object"
+                                    string="Purger la transcription brute"
+                                    class="btn-secondary"
+                                    icon="fa-eraser"
+                                    groups="privacy_consent.group_privacy_officer"
+                                    invisible="not verbatim and not verbatim_html"
+                                    confirm="Effacer la transcription brute de ce compte rendu ? Le compte rendu lui-même — résumé, sujets, décisions, présences — est conservé. L'opération est inscrite au registre de destruction, qui ne se corrige pas."/>
+                        </group>
+                    </group>
+                    <div class="text-muted mt-3">
+                        <p>
+                            Deux régimes s'appliquent à cette rencontre, et ils
+                            n'ont pas la même durée.
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>RENC-001 — le compte rendu</strong> : 5 ans
+                                actifs, plus 1 an semi-actif, avec le dossier de
+                                projet. Sa destruction passe par une campagne
+                                approuvée.
+                            </li>
+                            <li>
+                                <strong>RENC-002 — la matière première</strong> :
+                                1 an. La transcription brute n'a plus de fin à
+                                servir une fois le compte rendu écrit et transmis.
+                            </li>
+                        </ul>
+                        <p>
+                            L'indicateur de consentement se lit maintenant, pas au
+                            jour de la rencontre : il dit l'état du dossier
+                            aujourd'hui. Les participants internes n'y figurent
+                            pas — pour l'équipe, le fondement est le lien d'emploi
+                            et l'exécution du mandat, pas le consentement.
+                        </p>
+                        <p>
+                            Le fichier audio déposé sur Nextcloud n'est pas
+                            atteignable depuis Odoo. La purge efface la
+                            transcription, garde le chemin pour qu'on puisse
+                            retrouver le fichier, et ne certifie pas sa
+                            destruction.
+                        </p>
+                    </div>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
