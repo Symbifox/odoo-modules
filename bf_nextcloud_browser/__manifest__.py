@@ -13,7 +13,8 @@
     #   en français.
     # 18.0.4.4.1: la traduction française retrouve ses accents (« Modifié », « tâche »,
     #   « fenêtre »…), rechargée en écrasant à la montée.
-    "version": "18.0.4.4.1",
+    # 18.0.4.4.2: typographie de la traduction française : une espace avant le deux-points, « ex. » au lieu de « ex: ».
+    "version": "18.0.4.4.2",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

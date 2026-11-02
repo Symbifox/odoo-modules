@@ -7,7 +7,10 @@
     #   en français.
     # 18.0.1.6.1: la traduction française retrouve ses accents (« modifié », « Vérification »,
     #   « téléversé »…), rechargée en écrasant à la montée, nom du travail planifié compris.
-    "version": "18.0.1.6.1",
+    # 18.0.1.6.2: typographie de la traduction française : une espace avant le deux-points, « ex. »,
+    #   et des coquilles (« ID de fichier Nextcloud », « Archivé », « Connexion réussie. »,
+    #   nom du travail planifié).
+    "version": "18.0.1.6.2",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

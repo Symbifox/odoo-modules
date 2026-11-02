@@ -519,8 +519,8 @@ msgid ""
 "Color (hex) of the folder icons in the browser. Default: charcoal. Set the "
 "accent color (#29ABE2) for contrast."
 msgstr ""
-"Couleur (hex) des icônes de dossier dans le navigateur. Défaut: anthracite. "
-"Mettre la couleur d'accent (#29ABE2) pour du contraste."
+"Couleur (hex) des icônes de dossier dans le navigateur. Défaut : anthracite."
+" Mettre la couleur d'accent (#29ABE2) pour du contraste."
 
 #. module: bf_nextcloud_browser
 #. modules: bf_nextcloud_browser, bf_securetransfer, bf_security_awareness,
@@ -779,13 +779,13 @@ msgstr "Erreur lors de la copie : %s"
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
 msgid "Error while deleting: %s"
-msgstr "Erreur lors de la suppression: %s"
+msgstr "Erreur lors de la suppression : %s"
 
 #. module: bf_nextcloud_browser
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
 msgid "Error while moving: %s"
-msgstr "Erreur lors du déplacement: %s"
+msgstr "Erreur lors du déplacement : %s"
 
 #. module: bf_nextcloud_browser
 #. odoo-python
@@ -808,7 +808,7 @@ msgid ""
 "folder."
 msgstr ""
 "Tout chemin atteignable depuis le navigateur de fichiers embarqué doit être "
-"sous ce préfixe (ex: /Entreprise/). Défense en profondeur en plus du dossier"
+"sous ce préfixe (ex. /Entreprise/). Défense en profondeur en plus du dossier"
 " propre à chaque enregistrement."
 
 #. module: bf_nextcloud_browser
@@ -1013,8 +1013,8 @@ msgid ""
 "person's preference."
 msgstr ""
 "Hauteur, en pourcentage de la fenêtre, du panneau embarqué ouvert depuis la "
-"barre système. Même règle que la largeur: c'est une valeur de départ, que la"
-" préférence de chacun remplace."
+"barre système. Même règle que la largeur : c'est une valeur de départ, que "
+"la préférence de chacun remplace."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -1739,7 +1739,7 @@ msgid ""
 " (e.g. 'Attachments')."
 msgstr ""
 "Sous-chemin optionnel sous le dossier Nextcloud du projet, propre à cette "
-"tâche (ex: 'Pièces jointes')."
+"tâche (ex. « Pièces jointes »)."
 
 #. module: bf_nextcloud_browser
 #. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
@@ -2028,7 +2028,7 @@ msgid ""
 "/Company/(Clients)/)."
 msgstr ""
 "Définissez « Racine des dossiers clients » sur la configuration Nextcloud "
-"(ex: /Entreprise/(Clients)/)."
+"(ex. /Entreprise/(Clients)/)."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -2198,7 +2198,7 @@ msgid ""
 "/Company/) on the Nextcloud configuration."
 msgstr ""
 "Le navigateur requiert un préfixe racine. Définissez « Préfixe racine "
-"(navigateur) » (ex: /Entreprise/) sur la configuration Nextcloud."
+"(navigateur) » (ex. /Entreprise/) sur la configuration Nextcloud."
 
 #. module: bf_nextcloud_browser
 #. odoo-javascript
@@ -2317,7 +2317,7 @@ msgid ""
 " (e.g. /Company/) on the Nextcloud configuration before using this app."
 msgstr ""
 "Le navigateur autonome requiert un préfixe racine. Définissez « Préfixe "
-"racine (navigateur) » (ex: /Entreprise/) sur la configuration Nextcloud "
+"racine (navigateur) » (ex. /Entreprise/) sur la configuration Nextcloud "
 "avant d'utiliser cette application."
 
 #. module: bf_nextcloud_browser
@@ -2479,7 +2479,7 @@ msgstr "Réponse de Nextcloud illisible."
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/bf_nc_browser.py:0
 msgid "Unsupported model: %s"
-msgstr "Modèle non supporté: %s"
+msgstr "Modèle non pris en charge : %s"
 
 #. module: bf_nextcloud_browser
 #. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
@@ -2510,13 +2510,13 @@ msgstr "Erreur WebDAV COPY : HTTP %s"
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
 msgid "WebDAV DELETE error: HTTP %s"
-msgstr "Erreur WebDAV DELETE: HTTP %s"
+msgstr "Erreur WebDAV DELETE : HTTP %s"
 
 #. module: bf_nextcloud_browser
 #. odoo-python
 #: code:addons/bf_nextcloud_browser/models/nextcloud_document_config.py:0
 msgid "WebDAV MOVE error: HTTP %s"
-msgstr "Erreur WebDAV MOVE: HTTP %s"
+msgstr "Erreur WebDAV MOVE : HTTP %s"
 
 #. module: bf_nextcloud_browser
 #: model:ir.model.fields,help:bf_nextcloud_browser.field_nextcloud_document_config__nc_require_email_match
@@ -2546,7 +2546,7 @@ msgid ""
 "their preference wins."
 msgstr ""
 "Largeur, en pourcentage de la fenêtre, du panneau embarqué ouvert depuis la "
-"barre système. Valeur de départ seulement: chaque personne peut ensuite "
+"barre système. Valeur de départ seulement : chaque personne peut ensuite "
 "redimensionner le panneau, et sa préférence a priorité."
 
 #. module: bf_nextcloud_browser

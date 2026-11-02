@@ -342,6 +342,8 @@ Labels and messages are written in English in the source; the French ships in `i
 
 18.0.1.6.1: the French translation gets its accents back; it had shipped without them ("modifie" for "modifié", "Verification" for "Vérification"). An upgrade never replaces a translation already in the database, so this version reloads the French catalogue over it.
 
+18.0.1.6.2: French typography: a space before the colon, and "ex." instead of "ex:"; translations fixed ("Nextcloud file ID", "Archived", "Connection succeeded", the scheduled job name). The upgrade reloads the French catalogue again, scheduled job name included.
+
 ## Cron Jobs
 
 | Cron | Interval | Method | Description |
@@ -429,6 +431,7 @@ The same audit revealed weaknesses in `calendar_nextcloud_sync` and `contacts_ne
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 18.0.1.6.2 | 2026-11-02 | French typography (space before the colon, "ex."), three translations fixed; the upgrade reloads the French catalogue. |
 | 18.0.1.6.1 | 2026-11-01 | French translation: accents restored; the upgrade reloads the French catalogue over the existing translations. |
 | 18.0.1.6.0 | 2026-10-21 | Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Share and upload notes render their formatting and follow the user who acts; the change check writes in the language of the document's owner, passing over a deactivated language; a download network failure keeps its cause. See the Languages section. |
 | 18.0.1.5.0 | 2026-09-15 | Path hardening: `_sanitize_nc_path()` now **refuses** any path containing a percent escape that would decode (`%2e%2e`, `%2F`, `%20`…) instead of decoding it. Decoding made the function non-idempotent: each WebDAV/OCS helper sanitized the already-sanitized path again, so a value could pass the check in one form and reach Nextcloud in another, escaping the project folder. A literal `%` that does not form an escape (`Invoice 100%.txt`) is still accepted. New `tests/test_paths.py` covers refusal, idempotence, the prefix boundary and proves no request leaves with an encoded path. |

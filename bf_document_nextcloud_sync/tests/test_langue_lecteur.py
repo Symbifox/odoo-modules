@@ -157,7 +157,7 @@ class TestLangue(TransactionCase):
         self.assertIn("Modification détectée automatiquement sur Nextcloud.", version.changelog)
         self.assertIn("- Modifié le : 2026-10-19 12:00:00", version.changelog)
         activite = self._activite(doc)
-        self.assertEqual(activite.summary, "Fichier modifié sur Nextcloud: Politique CRF-1")
+        self.assertEqual(activite.summary, "Fichier modifié sur Nextcloud : Politique CRF-1")
         self.assertIn("a été modifié sur Nextcloud", str(activite.note))
 
     def test_travail_planifie_sans_responsable_l_auteur(self):
@@ -188,7 +188,7 @@ class TestLangue(TransactionCase):
         doc = self._doc("CRS-2", owner=self.anglo)
         self.config.company_id.partner_id.lang = "fr_CA"
         self._verifier(doc, "en_US")
-        self.assertEqual(self.config.last_sync_message, "Vérification: 1 modifié(s) sur 1 documents")
+        self.assertEqual(self.config.last_sync_message, "Vérification : 1 modifié(s) sur 1 documents")
 
     # ------------------------------------------------------------------
     # Langue désactivée gardée par la société (_nc_installed_lang)
@@ -216,7 +216,7 @@ class TestLangue(TransactionCase):
         self.assertEqual(doc.nc_etag, "etag-apres")
         self.assertEqual(self._version(doc).change_summary, "Modification détectée sur Nextcloud")
         self.assertEqual(self.config.last_sync_status, "success")
-        self.assertEqual(self.config.last_sync_message, "Vérification: 1 modifié(s) sur 1 documents")
+        self.assertEqual(self.config.last_sync_message, "Vérification : 1 modifié(s) sur 1 documents")
 
     def test_langue_inactive_sans_langue_au_travail_repli_installe(self):
         """Sans langue au contexte : une langue installée (en_US sur la base de BF), pas d'erreur."""
@@ -243,7 +243,7 @@ class TestLangue(TransactionCase):
         ("bf_onboarding_panel", "name", "Sync Nextcloud — Documents", "Nextcloud sync: documents"),
     )
 
-    CATALOGUE_FR = {"Documents: Verifier modifications Nextcloud": "Documents: Vérifier modifications Nextcloud"}
+    CATALOGUE_FR = {"Documents: Verifier modifications Nextcloud": "Documents : vérifier les modifications Nextcloud"}
 
     def _porteur(self, xmlid):
         rec = self.env.ref("bf_document_nextcloud_sync." + xmlid)
@@ -311,4 +311,28 @@ class TestLangue(TransactionCase):
         self._poser("ir_cron_check_nc_modifications", "name", {
             "en_US": "Documents: check Nextcloud changes", "fr_CA": "Veille des politiques"})
         self._monter_1_6_1()
+        self.assertEqual(self._lire("ir_cron_check_nc_modifications", "name", "fr_CA"), "Veille des politiques")
+
+    def _monter_1_6_2(self):
+        chemin = get_module_path("bf_document_nextcloud_sync") + "/migrations/18.0.1.6.2/end-migrate.py"
+        spec = importlib.util.spec_from_file_location("bf_doc_sync_mig_1_6_2", chemin)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.migrate(self.env.cr, "18.0.1.6.1")
+        self.env.invalidate_all()
+
+    def test_migration_18_0_1_6_2_nom_du_travail_espace(self):
+        """Les deux noms fr_CA livrés (sans accents, puis sans espace) prennent la forme corrigée."""
+        for livre in ("Documents: Verifier modifications Nextcloud", "Documents: Vérifier modifications Nextcloud"):
+            self._poser("ir_cron_check_nc_modifications", "name", {
+                "en_US": "Documents: check Nextcloud changes", "fr_CA": livre})
+            self._monter_1_6_2()
+            self.assertEqual(self._lire("ir_cron_check_nc_modifications", "name", "fr_CA"),
+                             "Documents : vérifier les modifications Nextcloud", livre)
+
+    def test_migration_18_0_1_6_2_nom_retouche_garde(self):
+        """Un nom fr_CA retouché à la main n'est pas touché."""
+        self._poser("ir_cron_check_nc_modifications", "name", {
+            "en_US": "Documents: check Nextcloud changes", "fr_CA": "Veille des politiques"})
+        self._monter_1_6_2()
         self.assertEqual(self._lire("ir_cron_check_nc_modifications", "name", "fr_CA"), "Veille des politiques")

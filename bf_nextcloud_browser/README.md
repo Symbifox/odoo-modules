@@ -281,6 +281,8 @@ Labels and messages are written in English in the source; the French ships in `i
 
 18.0.4.4.1: the French translation gets its accents back; it had shipped without them ("Modifie" for "Modifié", "tache" for "tâche"). An upgrade never replaces a translation already in the database, so this version reloads the French catalogue over it.
 
+18.0.4.4.2: French typography: a space before the colon, and "ex." instead of "ex:". The upgrade reloads the French catalogue again.
+
 ## Configuration
 
 1. Open **Nextcloud → Configuration** (admin only).

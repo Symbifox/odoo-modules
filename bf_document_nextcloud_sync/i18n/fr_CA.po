@@ -89,8 +89,8 @@ msgid ""
 "<p><strong>New version uploaded to Nextcloud</strong></p><p>File: "
 "%s</p><p>Size: %s bytes</p>"
 msgstr ""
-"<p><strong>Nouvelle version téléversée sur Nextcloud</strong></p><p>Fichier:"
-" %s</p><p>Taille: %s octets</p>"
+"<p><strong>Nouvelle version téléversée sur Nextcloud</strong></p><p>Fichier "
+": %s</p><p>Taille : %s octets</p>"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
@@ -179,7 +179,7 @@ msgstr "Archivé"
 #. hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_search
 msgid "Archived"
-msgstr "Archives"
+msgstr "Archivé"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
@@ -197,12 +197,12 @@ msgstr "Créer automatiquement un enregistrement project.document.version"
 msgid ""
 "Base URL of the Nextcloud instance (e.g. https://nextcloud.example.com)"
 msgstr ""
-"URL de base de l'instance Nextcloud (ex: https://nextcloud.example.com)"
+"URL de base de l'instance Nextcloud (ex. https://nextcloud.example.com)"
 
 #. module: bf_document_nextcloud_sync
 #: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__webdav_path
 msgid "Base WebDAV path (e.g. /remote.php/dav/files/)"
-msgstr "Chemin WebDAV de base (ex: /remote.php/dav/files/)"
+msgstr "Chemin WebDAV de base (ex. /remote.php/dav/files/)"
 
 #. module: bf_document_nextcloud_sync
 #: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__ca_bundle_path
@@ -256,13 +256,13 @@ msgstr "Type de modification"
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
 msgid "Check: %d changed out of %d documents"
-msgstr "Vérification: %d modifié(s) sur %d documents"
+msgstr "Vérification : %d modifié(s) sur %d documents"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
 msgid "Check: %d changed, %d error(s) out of %d documents"
-msgstr "Vérification: %d modifié(s), %d erreur(s) sur %d documents"
+msgstr "Vérification : %d modifié(s), %d erreur(s) sur %d documents"
 
 #. module: bf_document_nextcloud_sync
 #. modules: bf_corporate_governance, bf_credentials,
@@ -291,7 +291,7 @@ msgstr "Connexion établie"
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 msgid "Connection succeeded. Nextcloud server reachable."
-msgstr "Connexion réussie! Serveur Nextcloud accessible."
+msgstr "Connexion réussie. Serveur Nextcloud accessible."
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
@@ -372,12 +372,12 @@ msgstr "Document"
 #. module: bf_document_nextcloud_sync
 #: model:ir.actions.server,name:bf_document_nextcloud_sync.ir_cron_check_nc_modifications_ir_actions_server
 msgid "Documents: check Nextcloud changes"
-msgstr "Documents: Vérifier modifications Nextcloud"
+msgstr "Documents : vérifier les modifications Nextcloud"
 
 #. module: bf_document_nextcloud_sync
 #: model:ir.model.fields,help:bf_document_nextcloud_sync.field_document_nc_upload_wizard__version_number
 msgid "E.g. 1.0, 2.1, etc."
-msgstr "Ex: 1.0, 2.1, etc."
+msgstr "Ex. 1.0, 2.1, etc."
 
 #. module: bf_document_nextcloud_sync
 #: model:ir.model.fields.selection,name:bf_document_nextcloud_sync.selection__document_nc_upload_wizard__change_type__editorial
@@ -420,31 +420,31 @@ msgstr "Erreur"
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 msgid "Error while creating the folder: %s"
-msgstr "Erreur lors de la création du dossier: %s"
+msgstr "Erreur lors de la création du dossier : %s"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 msgid "Error while downloading: %s"
-msgstr "Erreur lors du téléchargement: %s"
+msgstr "Erreur lors du téléchargement : %s"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
 msgid "Error while querying Nextcloud: %s"
-msgstr "Erreur lors de la consultation Nextcloud: %s"
+msgstr "Erreur lors de la consultation Nextcloud : %s"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 msgid "Error while uploading: %s"
-msgstr "Erreur lors du téléversement: %s"
+msgstr "Erreur lors du téléversement : %s"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
 msgid "Expiry: %s"
-msgstr "Expiration: %s"
+msgstr "Expiration : %s"
 
 #. module: bf_document_nextcloud_sync
 #. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
@@ -458,7 +458,7 @@ msgstr "Fichier"
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
 msgid "File changed on Nextcloud: %s"
-msgstr "Fichier modifié sur Nextcloud: %s"
+msgstr "Fichier modifié sur Nextcloud : %s"
 
 #. module: bf_document_nextcloud_sync
 #. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
@@ -473,7 +473,7 @@ msgstr "Nom du fichier"
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 #: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
 msgid "File not found on Nextcloud: %s"
-msgstr "Fichier introuvable sur Nextcloud: %s"
+msgstr "Fichier introuvable sur Nextcloud : %s"
 
 #. module: bf_document_nextcloud_sync
 #: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_file_size
@@ -489,7 +489,7 @@ msgstr "Fichier à téléverser sur Nextcloud"
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/wizard/document_nc_upload_wizard.py:0
 msgid "File uploaded to Nextcloud: %s"
-msgstr "Fichier téléversé sur Nextcloud: %s"
+msgstr "Fichier téléversé sur Nextcloud : %s"
 
 #. module: bf_document_nextcloud_sync
 #: model:ir.model.fields,help:bf_document_nextcloud_sync.field_document_nc_upload_wizard__nc_file_path
@@ -700,7 +700,7 @@ msgstr "Fichier Nextcloud"
 #. module: bf_document_nextcloud_sync
 #: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_project_document__nc_file_id
 msgid "Nextcloud file ID"
-msgstr "File ID Nextcloud"
+msgstr "ID de fichier Nextcloud"
 
 #. module: bf_document_nextcloud_sync
 #. modules: bf_document_nextcloud_sync, bf_nextcloud_browser
@@ -751,13 +751,13 @@ msgstr "Non synchronisé NC"
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 msgid "OCS error creating the share: HTTP %s"
-msgstr "Erreur OCS création de partage: HTTP %s"
+msgstr "Erreur OCS lors de la création du partage : HTTP %s"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 msgid "OCS error while creating the share: %s"
-msgstr "Erreur OCS lors de la création du partage: %s"
+msgstr "Erreur OCS lors de la création du partage : %s"
 
 #. module: bf_document_nextcloud_sync
 #: model:onboarding.onboarding.step,step_image_alt:bf_document_nextcloud_sync.bf_onb_step_config
@@ -791,7 +791,7 @@ msgstr "Mot de passe sur les partages"
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
 msgid "Password: %s"
-msgstr "Mot de passe: %s"
+msgstr "Mot de passe : %s"
 
 #. module: bf_document_nextcloud_sync
 #: model:ir.model.fields.selection,name:bf_document_nextcloud_sync.selection__document_nc_upload_wizard__change_type__patch
@@ -804,7 +804,7 @@ msgid ""
 "Path of the documents folder on Nextcloud (e.g. /Blue Fox/Documents/). New "
 "documents will use this path as a prefix."
 msgstr ""
-"Chemin du dossier documents sur Nextcloud (ex: /Blue Fox/Documents/). Les "
+"Chemin du dossier documents sur Nextcloud (ex. /Blue Fox/Documents/). Les "
 "nouveaux documents utiliseront ce chemin comme préfixe."
 
 #. module: bf_document_nextcloud_sync
@@ -812,7 +812,7 @@ msgstr ""
 msgid ""
 "Path of the file on Nextcloud (e.g. /Blue Fox/Documents/POL-SEC-FR.pdf)"
 msgstr ""
-"Chemin du fichier sur Nextcloud (ex: /Blue Fox/Documents/POL-SEC-FR.pdf)"
+"Chemin du fichier sur Nextcloud (ex. /Blue Fox/Documents/POL-SEC-FR.pdf)"
 
 #. module: bf_document_nextcloud_sync
 #: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__ca_bundle_path
@@ -990,7 +990,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/project_document.py:0
 msgid "The file name contains forbidden characters (%s): %s"
-msgstr "Le nom de fichier contient des caractères interdits (%s): %s"
+msgstr "Le nom de fichier contient des caractères interdits (%s) : %s"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
@@ -1083,32 +1083,32 @@ msgstr "Voir la config"
 #: model:ir.model.fields,help:bf_document_nextcloud_sync.field_nextcloud_document_config__allow_insecure
 msgid "WARNING: disables TLS verification. Use only in development/testing."
 msgstr ""
-"ATTENTION: désactive la vérification TLS. À utiliser uniquement en "
+"ATTENTION : désactive la vérification TLS. À utiliser uniquement en "
 "développement/test."
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 msgid "WebDAV GET error: HTTP %s"
-msgstr "Erreur WebDAV GET: HTTP %s"
+msgstr "Erreur WebDAV GET : HTTP %s"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 msgid "WebDAV MKCOL error: HTTP %s"
-msgstr "Erreur WebDAV MKCOL: HTTP %s"
+msgstr "Erreur WebDAV MKCOL : HTTP %s"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 msgid "WebDAV PROPFIND error: HTTP %s"
-msgstr "Erreur WebDAV PROPFIND: HTTP %s"
+msgstr "Erreur WebDAV PROPFIND : HTTP %s"
 
 #. module: bf_document_nextcloud_sync
 #. odoo-python
 #: code:addons/bf_document_nextcloud_sync/models/nextcloud_document_config.py:0
 msgid "WebDAV PUT error: HTTP %s"
-msgstr "Erreur WebDAV PUT: HTTP %s"
+msgstr "Erreur WebDAV PUT : HTTP %s"
 
 #. module: bf_document_nextcloud_sync
 #: model:ir.model.fields,field_description:bf_document_nextcloud_sync.field_nextcloud_document_config__webdav_path
@@ -1128,7 +1128,7 @@ msgstr ""
 #. module: bf_document_nextcloud_sync
 #: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
 msgid "e.g. Blue Fox Nextcloud"
-msgstr "ex: Nextcloud Blue Fox"
+msgstr "ex. Nextcloud Blue Fox"
 
 #. module: bf_document_nextcloud_sync
 #: model_terms:ir.ui.view,arch_db:bf_document_nextcloud_sync.view_nextcloud_document_config_form
