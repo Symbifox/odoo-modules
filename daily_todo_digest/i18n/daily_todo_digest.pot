@@ -1,22 +1,36 @@
-# Translation template for Daily To-Do Digest.
-# The module's source strings are written in English.
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* daily_todo_digest
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: daily_todo_digest 18.0.2.3.0\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 06:18+0000\n"
-"PO-Revision-Date: 2026-09-14 06:18+0000\n"
+"POT-Creation-Date: 2026-11-02 03:42+0000\n"
+"PO-Revision-Date: 2026-11-02 03:42+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
 #. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid " and "
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%(label)s: %(count)s overdue reminder(s)"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%(label)s: %(count)s reminder(s)"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -34,6 +48,12 @@ msgstr ""
 #. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%s in the news"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "%s meeting(s)"
 msgstr ""
 
@@ -41,6 +61,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "%s overdue"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%s task(s) waiting on someone else"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -83,7 +109,26 @@ msgstr ""
 
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Folded reminders:</strong> the\n"
+"                                        recurring activities a scheduler creates\n"
+"                                        — backup checks, log reviews, update\n"
+"                                        checks — repeat the same wording many\n"
+"                                        times a day. Name their model here and\n"
+"                                        they become one line per model."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
 msgid "<strong>Quotes:</strong> a random quote is picked from the collection."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Recipients:</strong> named people and every member of the recipient "
+"groups. A person receives <strong>one</strong> digest: when several "
+"templates cover them, the one with the lowest sequence wins."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -91,7 +136,9 @@ msgstr ""
 msgid ""
 "<strong>Sending time:</strong> the scheduled job checks every hour. The "
 "digest goes out at the configured hour <strong>in each recipient's time "
-"zone</strong> (Timezone field of their user record)."
+"zone</strong> (Timezone field of their user record). Each recipient may set "
+"their own hour, frequency and sections in their preferences; what they leave"
+" empty follows this template."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -112,9 +159,36 @@ msgstr ""
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
 msgid ""
+"<strong>Waiting tasks:</strong> a task\n"
+"                                        waiting on a client or a colleague is\n"
+"                                        not a gesture of your day. Left\n"
+"                                        unticked, those tasks are counted in one\n"
+"                                        line instead of filling the list."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Watched subjects:</strong> what the RSS lists that watch a name "
+"retained since your last digest (bf_flux). Nothing is shown when that module"
+" is not installed."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
 "<strong>Weather:</strong> uses the free Open-Meteo API. The default city and"
 " coordinates above apply, but each recipient can set their own city in their"
 " preferences (Weather city (digest))."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"A digest that lists everything is read by\n"
+"                                    nobody. Two levers here take the noise out\n"
+"                                    without hiding anything: a folded line\n"
+"                                    always says how many, and links to the list."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -142,6 +216,15 @@ msgid "A room of one's own and five hundred a year."
 msgstr ""
 
 #. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid ""
+"A section left empty follows the digest template that\n"
+"                            covers you, and so do an empty hour and an empty\n"
+"                            frequency."
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_47
 msgid "A society is judged by the way it treats its most vulnerable members."
 msgstr ""
@@ -166,6 +249,14 @@ msgstr ""
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
 msgid "Activities"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__activity_fold_model_ids
+msgid ""
+"Activities on these models are not listed one by one: one folded line per "
+"model gives the count and a link. Meant for the recurring reminders a "
+"scheduler creates, which are read as a batch and not acted on one at a time."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -223,6 +314,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "All day"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__recipient_user_ids
+msgid "All recipients"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -351,6 +447,11 @@ msgid "Calendar events"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_calendar_events
+msgid "Calendar events (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_51
 msgid ""
 "Caring for myself is not self-indulgence, it is self-preservation, and that "
@@ -372,6 +473,14 @@ msgstr ""
 #: model:daily.digest.quote,author:daily_todo_digest.quote_62
 #: model:daily.digest.quote,author:daily_todo_digest.quote_63
 msgid "Chinese proverb"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__daily_digest_config__frequency__custom
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_frequency__custom
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid "Chosen days"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -479,6 +588,20 @@ msgid ""
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__frequency
+msgid ""
+"Default frequency for this template. Each recipient may replace it in their "
+"preferences. \"Chosen days\" reads the weekday boxes of the recipient; a "
+"weekly digest is that, with a single day ticked."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid "Delivery"
+msgstr ""
+
+#. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "Dense drizzle"
@@ -493,6 +616,16 @@ msgstr ""
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
 msgid "Digest configuration"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_frequency
+msgid "Digest frequency"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_send_hour
+msgid "Digest hour"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -573,9 +706,22 @@ msgid "Event"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__daily_digest_config__frequency__daily
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_frequency__daily
+msgid "Every day"
+msgstr ""
+
+#. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/inspirational_quote.py:0
 msgid "Every day is a new opportunity to do better."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__group_ids
+msgid ""
+"Every member of these groups receives this digest, without being named. "
+"Their own preferences still override it."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -620,6 +766,16 @@ msgid "Fog"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__activity_fold_model_ids
+msgid "Fold activities from"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Folded reminders"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_115
 msgid "Frantz Fanon"
 msgstr ""
@@ -636,10 +792,20 @@ msgid "Freezing fog"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__frequency
+msgid "Frequency"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_27
 #: model:daily.digest.quote,author:daily_todo_digest.quote_28
 #: model:daily.digest.quote,author:daily_todo_digest.quote_29
 msgid "Frida Kahlo"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_friday
+msgid "Friday (digest)"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -837,6 +1003,12 @@ msgid ""
 msgstr ""
 
 #. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "In the news since your last digest"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_calendar_events
 msgid ""
 "Include the events of the recipient's day that they attend and have not "
@@ -876,6 +1048,11 @@ msgid "Inspiring quote"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_quote
+msgid "Inspiring quote (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:ir.actions.act_window,name:daily_todo_digest.action_daily_digest_quote
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_quote_list
 msgid "Inspiring quotes"
@@ -896,6 +1073,13 @@ msgstr ""
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_67
 msgid "It is not the mountain we conquer, but ourselves."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_flux_subjects
+msgid ""
+"Items retained since the last digest by the RSS lists that watch a name "
+"(bf_flux). Silent when that module is absent."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -957,10 +1141,28 @@ msgid "Latitude"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_res_users__digest_frequency
+msgid ""
+"Leave empty to keep the template's frequency. A weekly digest is \"Chosen "
+"days\" with a single day ticked."
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:ir.model.fields,help:daily_todo_digest.field_res_users__digest_weather_city
 msgid ""
 "Leave empty to use the digest's default city. Otherwise, also fill in the "
 "latitude and longitude below."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Left out of the day: nothing to do until they move."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Less noise"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1020,6 +1222,11 @@ msgstr ""
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_44
 msgid "Lilla Watson"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_waiting_tasks
+msgid "List waiting tasks"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1108,6 +1315,11 @@ msgid "Meetings (agendas + minutes)"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_meetings
+msgid "Meetings (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_11
 msgid "Melancholy is the happiness of being sad."
 msgstr ""
@@ -1154,6 +1366,23 @@ msgid "Modern proverb"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_monday
+msgid "Monday (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid "More sections"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid "Morning digest"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_92
 msgid "Music can change the world because it can change people."
 msgstr ""
@@ -1170,13 +1399,48 @@ msgid "My daily digest"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.actions.act_window,name:daily_todo_digest.action_digest_hidden_tasks
+msgid "My hidden tasks with a deadline"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_117
 msgid "My mouth shall be the mouth of those calamities that have no mouth."
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.actions.act_window,name:daily_todo_digest.action_digest_my_activities
+msgid "My reminders"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.actions.act_window,name:daily_todo_digest.action_digest_folded_activities
+msgid "My reminders of this kind"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.actions.act_window,name:daily_todo_digest.action_digest_waiting_tasks
+msgid "My tasks waiting on someone else"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+#: model:ir.actions.act_window,name:daily_todo_digest.action_digest_deadline_tasks
+msgid "My tasks with a deadline"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__name
 msgid "Name"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__recipient_user_ids
+msgid ""
+"Named recipients plus every member of the recipient groups. Searchable: a "
+"module asking \"does a digest cover this person?\" must read this and not "
+"`user_ids`, which misses anyone covered only by a group."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1204,9 +1468,35 @@ msgid ""
 msgstr ""
 
 #. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "News"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Next %s day(s)"
+msgstr ""
+
+#. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "Next 7 days at a glance"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_calendar_events__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_flux_subjects__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_meetings__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_overdue_activities__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_overdue_tasks__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_quote__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_today_activities__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_today_tasks__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_upcoming_tasks__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_weather__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_week_preview__no
+msgid "No"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1267,6 +1557,19 @@ msgid "Number of days to preview (1-7)"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_waiting_tasks
+msgid ""
+"Off: tasks waiting on someone else leave the day's list and are counted in "
+"one folded line. On: they are listed like the others."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Older items are in the Flux app."
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_21
 msgid "One is not born, but rather becomes, a woman."
 msgstr ""
@@ -1284,6 +1587,13 @@ msgstr ""
 #. module: daily_todo_digest
 #: model:ir.model.constraint,message:daily_todo_digest.constraint_daily_digest_send_log_uniq_config_user
 msgid "Only one send log per recipient and per digest."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__sequence
+msgid ""
+"Order in which templates are tried. A person receives ONE digest: the first "
+"template, by sequence then id, that lists them or one of their groups."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1320,10 +1630,20 @@ msgid "Overdue activities"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_overdue_activities
+msgid "Overdue activities (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_overdue_tasks
 msgid "Overdue tasks"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_overdue_tasks
+msgid "Overdue tasks (digest)"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1373,6 +1693,14 @@ msgstr ""
 #: model:daily.digest.quote,author:daily_todo_digest.quote_03
 #: model:daily.digest.quote,author:daily_todo_digest.quote_04
 msgid "Peter Kropotkin"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/res_users.py:0
+msgid ""
+"Pick at least one day for the morning digest, or change its frequency: with "
+"no day picked, it would never be sent."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1426,14 +1754,36 @@ msgid ""
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__group_ids
+msgid "Recipient groups"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__user_ids
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
 msgid "Recipients"
 msgstr ""
 
 #. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Recurring reminders, read as a batch."
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_23
 msgid "Revolution is not showing life to people, but making them live."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_saturday
+msgid "Saturday (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid "Sections"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1458,6 +1808,11 @@ msgstr ""
 #: model:daily.digest.quote,author:daily_todo_digest.quote_95
 #: model:daily.digest.quote,author:daily_todo_digest.quote_98
 msgid "Seneca"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__sequence
+msgid "Sequence"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1518,6 +1873,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "Subtasks with \"Show in project\" turned off."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_sunday
+msgid "Sunday (digest)"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1594,6 +1954,13 @@ msgid "The happiness of others is essential to our own happiness."
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_res_users__digest_send_hour
+msgid ""
+"The hour your digest is sent, read in YOUR time zone. Leave empty to keep "
+"the hour of the digest template that covers you."
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_50
 msgid "The master's tools will never dismantle the master's house."
 msgstr ""
@@ -1631,6 +1998,11 @@ msgstr ""
 msgid ""
 "The real voyage of discovery consists not in seeking new landscapes, but in "
 "having new eyes."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_week_preview
+msgid "The seven-day grid counting tasks and activities per day."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1686,6 +2058,11 @@ msgid "Thunderstorm with light hail"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_thursday
+msgid "Thursday (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "Time"
@@ -1696,6 +2073,11 @@ msgstr ""
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_today_activities
 msgid "Today's activities"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_today_activities
+msgid "Today's activities (digest)"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1712,14 +2094,30 @@ msgid "Today's tasks"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_today_tasks
+msgid "Today's tasks (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_06
 msgid "True emancipation begins in woman's soul."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_tuesday
+msgid "Tuesday (digest)"
 msgstr ""
 
 #. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "Unknown"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Unsupported operator %s on recipients."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1732,6 +2130,11 @@ msgstr ""
 #. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_upcoming_tasks
 msgid "Upcoming tasks"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_upcoming_tasks
+msgid "Upcoming tasks (digest)"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1778,8 +2181,29 @@ msgid "Virginia Woolf"
 msgstr ""
 
 #. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Waiting tasks"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_105
 msgid "Walls were built by those who were afraid of those who are different."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Watched subjects"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_flux_subjects
+msgid "Watched subjects (RSS)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_flux_subjects
+msgid "Watched subjects (digest)"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1802,7 +2226,14 @@ msgstr ""
 #. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_weather
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
 msgid "Weather"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_weather
+msgid "Weather (digest)"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1823,6 +2254,27 @@ msgstr ""
 #. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_weather_longitude
 msgid "Weather longitude (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_wednesday
+msgid "Wednesday (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_week_preview
+msgid "Week preview"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_week_preview
+msgid "Week preview (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__daily_digest_config__frequency__weekdays
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_frequency__weekdays
+msgid "Weekdays only"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1865,6 +2317,21 @@ msgstr ""
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_38
 msgid "Work is love made visible."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_calendar_events__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_flux_subjects__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_meetings__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_overdue_activities__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_overdue_tasks__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_quote__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_today_activities__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_today_tasks__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_upcoming_tasks__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_weather__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_week_preview__yes
+msgid "Yes"
 msgstr ""
 
 #. module: daily_todo_digest

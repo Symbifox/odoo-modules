@@ -20,7 +20,19 @@ class TestDigestLanguage(TransactionCase):
         super().setUpClass()
         cls.env["res.lang"]._activate_lang("fr_CA")
         cls.env["ir.module.module"]._load_module_terms(["daily_todo_digest"], ["fr_CA"], overwrite=True)
-        cls.env.company.name = "Digest Language Co"
+        # L'en-tête et le pied lisent le SITE et le COURRIEL de la société,
+        # pas seulement son nom : sur une base tirée d'une instance réelle ils
+        # restent ceux de cette instance, et l'essai rougissait sans que le
+        # code soit en cause. Le logo de l'en-tête est servi par
+        # `web.base.url`, qui reste lui aussi celui de l'instance : sans ce
+        # réglage, l'essai rougissait sur une adresse d'image, pas sur le pied.
+        cls.env["ir.config_parameter"].sudo().set_param(
+            "web.base.url", "https://digest-language.example.com")
+        cls.env.company.write({
+            "name": "Digest Language Co",
+            "website": "https://digest-language.example.com",
+            "email": "bonjour@digest-language.example.com",
+        })
         cls.francoise = cls.env["res.users"].create({
             "name": "Françoise Digest", "login": "francoise.digest@example.com",
             "email": "francoise.digest@example.com", "lang": "fr_CA",

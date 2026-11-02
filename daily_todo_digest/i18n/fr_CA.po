@@ -24,6 +24,18 @@ msgstr " et "
 #. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%(label)s: %(count)s overdue reminder(s)"
+msgstr "%(label)s : %(count)s rappel(s) en retard"
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%(label)s: %(count)s reminder(s)"
+msgstr "%(label)s : %(count)s rappel(s)"
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "%s event(s)"
 msgstr "%s événement(s)"
 
@@ -36,6 +48,12 @@ msgstr "%s tâche(s) non visible(s)"
 #. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%s in the news"
+msgstr "%s dans les nouvelles"
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "%s meeting(s)"
 msgstr "%s rencontre(s)"
 
@@ -44,6 +62,12 @@ msgstr "%s rencontre(s)"
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "%s overdue"
 msgstr "%s en retard"
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%s task(s) waiting on someone else"
+msgstr "%s tâche(s) en attente de quelqu'un d'autre"
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -62,9 +86,7 @@ msgstr "(sans nom)"
 msgid ""
 "<strong>Activities:</strong> activities (mail.activity) assigned to the "
 "recipients are included."
-msgstr ""
-"<strong>Activités:</strong> Les activités (mail.activity) assignées aux "
-"destinataires sont incluses."
+msgstr "<strong>Activités:</strong> Les activités (mail.activity) assignées aux destinataires sont incluses."
 
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
@@ -83,30 +105,41 @@ msgid ""
 "                                    Québec: 46.8139, -71.2080<br/>\n"
 "                                    Toronto: 43.6532, -79.3832<br/>\n"
 "                                    Ottawa: 45.4215, -75.6972"
-msgstr ""
-"<strong>Coordonnées communes:</strong><br/>\n"
-"                                    Montréal: 45.5017, -73.5673<br/>\n"
-"                                    Québec: 46.8139, -71.2080<br/>\n"
-"                                    Toronto: 43.6532, -79.3832<br/>\n"
-"                                    Ottawa: 45.4215, -75.6972"
+msgstr "<strong>Coordonnées communes:</strong><br/>\n                                    Montréal: 45.5017, -73.5673<br/>\n                                    Québec: 46.8139, -71.2080<br/>\n                                    Toronto: 43.6532, -79.3832<br/>\n                                    Ottawa: 45.4215, -75.6972"
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Folded reminders:</strong> the\n"
+"                                        recurring activities a scheduler creates\n"
+"                                        — backup checks, log reviews, update\n"
+"                                        checks — repeat the same wording many\n"
+"                                        times a day. Name their model here and\n"
+"                                        they become one line per model."
+msgstr "<strong>Rappels repliés :</strong> les activités récurrentes qu'un planificateur crée — contrôle des sauvegardes, revue des journaux, vérification des mises à jour — répètent le même libellé plusieurs fois par jour. Nommez leur modèle ici et elles tiennent une ligne par modèle."
 
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
 msgid "<strong>Quotes:</strong> a random quote is picked from the collection."
-msgstr ""
-"<strong>Citations:</strong> Une citation aléatoire est sélectionnée parmi la"
-" collection."
+msgstr "<strong>Citations:</strong> Une citation aléatoire est sélectionnée parmi la collection."
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Recipients:</strong> named people and every member of the recipient "
+"groups. A person receives <strong>one</strong> digest: when several "
+"templates cover them, the one with the lowest sequence wins."
+msgstr "<strong>Destinataires :</strong> les personnes nommées et tous les membres des groupes destinataires. Une personne reçoit <strong>un seul</strong> briefing : quand plusieurs gabarits la couvrent, celui dont la séquence est la plus basse gagne."
 
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
 msgid ""
 "<strong>Sending time:</strong> the scheduled job checks every hour. The "
 "digest goes out at the configured hour <strong>in each recipient's time "
-"zone</strong> (Timezone field of their user record)."
-msgstr ""
-"<strong>Heure d'envoi:</strong> Le cron vérifie toutes les heures. Le digest"
-" part à l'heure configurée <strong>dans le fuseau horaire de chaque "
-"destinataire</strong> (champ Fuseau de sa fiche utilisateur)."
+"zone</strong> (Timezone field of their user record). Each recipient may set "
+"their own hour, frequency and sections in their preferences; what they leave"
+" empty follows this template."
+msgstr "<strong>Heure d'envoi :</strong> la tâche planifiée vérifie à chaque heure. Le briefing part à l'heure réglée <strong>dans le fuseau de chaque destinataire</strong> (champ Fuseau horaire de sa fiche). Chacun peut régler son heure, sa fréquence et ses sections dans ses préférences ; ce qu'il laisse vide suit ce gabarit."
 
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
@@ -114,19 +147,32 @@ msgid ""
 "<strong>Tasks:</strong> project tasks assigned to the recipients are "
 "included (subtasks included). The \"today\" window is computed in each "
 "recipient's time zone."
-msgstr ""
-"<strong>Tâches:</strong> Les tâches de projet assignées aux destinataires "
-"sont incluses (incluant les sous-tâches). La fenêtre « du jour » est "
-"calculée dans le fuseau de chaque destinataire."
+msgstr "<strong>Tâches:</strong> Les tâches de projet assignées aux destinataires sont incluses (incluant les sous-tâches). La fenêtre « du jour » est calculée dans le fuseau de chaque destinataire."
 
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
 msgid ""
 "<strong>Upcoming tasks:</strong> preview of the tasks of the next days (1 to"
 " 7 days, configurable)."
-msgstr ""
-"<strong>Tâches à venir:</strong> Aperçu des tâches des prochains jours (1 à "
-"7 jours configurables)."
+msgstr "<strong>Tâches à venir:</strong> Aperçu des tâches des prochains jours (1 à 7 jours configurables)."
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Waiting tasks:</strong> a task\n"
+"                                        waiting on a client or a colleague is\n"
+"                                        not a gesture of your day. Left\n"
+"                                        unticked, those tasks are counted in one\n"
+"                                        line instead of filling the list."
+msgstr "<strong>Tâches en attente :</strong> une tâche qui attend un client ou un collègue n'est pas un geste de votre journée. Décochée, ces tâches sont comptées en une ligne au lieu de remplir la liste."
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Watched subjects:</strong> what the RSS lists that watch a name "
+"retained since your last digest (bf_flux). Nothing is shown when that module"
+" is not installed."
+msgstr "<strong>Sujets surveillés :</strong> ce que les listes RSS qui surveillent un nom ont retenu depuis votre dernier briefing (bf_flux). Rien ne paraît quand ce module n'est pas installé."
 
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
@@ -134,20 +180,23 @@ msgid ""
 "<strong>Weather:</strong> uses the free Open-Meteo API. The default city and"
 " coordinates above apply, but each recipient can set their own city in their"
 " preferences (Weather city (digest))."
-msgstr ""
-"<strong>Météo:</strong> Utilise l'API gratuite Open-Meteo. La "
-"ville/coordonnées par défaut ci-dessus s'appliquent, mais chaque "
-"destinataire peut définir sa propre ville dans ses préférences (Ville météo "
-"(digest))."
+msgstr "<strong>Météo:</strong> Utilise l'API gratuite Open-Meteo. La ville/coordonnées par défaut ci-dessus s'appliquent, mais chaque destinataire peut définir sa propre ville dans ses préférences (Ville météo (digest))."
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"A digest that lists everything is read by\n"
+"                                    nobody. Two levers here take the noise out\n"
+"                                    without hiding anything: a folded line\n"
+"                                    always says how many, and links to the list."
+msgstr "Un briefing qui liste tout n'est lu par personne. Deux leviers ici retirent le bruit sans rien cacher : une ligne repliée dit toujours combien, et mène à la liste."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_52
 msgid ""
 "A dreamer is one who can only find his way by moonlight, and his punishment "
 "is that he sees the dawn before the rest of the world."
-msgstr ""
-"Un rêveur est quelqu'un qui ne trouve son chemin qu'au clair de lune, et sa "
-"punition est de voir l'aube avant le reste du monde."
+msgstr "Un rêveur est quelqu'un qui ne trouve son chemin qu'au clair de lune, et sa punition est de voir l'aube avant le reste du monde."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_94
@@ -159,9 +208,7 @@ msgstr "Un bon arbre peut abriter dix mille oiseaux."
 msgid ""
 "A map of the world that does not include Utopia is not worth even glancing "
 "at."
-msgstr ""
-"La carte du monde qui n'inclut pas l'Utopie ne vaut pas qu'on y jette un "
-"coup d'œil."
+msgstr "La carte du monde qui n'inclut pas l'Utopie ne vaut pas qu'on y jette un coup d'œil."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_86
@@ -169,11 +216,18 @@ msgid "A room of one's own and five hundred a year."
 msgstr "Une chambre à soi et cinq cents livres de rente."
 
 #. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid ""
+"A section left empty follows the digest template that\n"
+"                            covers you, and so do an empty hour and an empty\n"
+"                            frequency."
+msgstr "Une section laissée vide suit le gabarit de briefing qui vous couvre, et il en va de même d'une heure vide et d'une fréquence vide."
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_47
 msgid "A society is judged by the way it treats its most vulnerable members."
-msgstr ""
-"Une société se juge à la façon dont elle traite ses membres les plus "
-"vulnérables."
+msgstr "Une société se juge à la façon dont elle traite ses membres les plus vulnérables."
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -196,6 +250,14 @@ msgstr "Actif"
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
 msgid "Activities"
 msgstr "Activités"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__activity_fold_model_ids
+msgid ""
+"Activities on these models are not listed one by one: one folded line per "
+"model gives the count and a link. Meant for the recurring reminders a "
+"scheduler creates, which are read as a batch and not acted on one at a time."
+msgstr "Les activités de ces modèles ne sont pas listées une par une : une ligne repliée par modèle en donne le nombre et un lien. Pensé pour les rappels récurrents qu'un planificateur crée, qui se lisent en lot et ne se font pas un à la fois."
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -255,6 +317,11 @@ msgid "All day"
 msgstr "Toute la journée"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__recipient_user_ids
+msgid "All recipients"
+msgstr "Tous les destinataires"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_61
 msgid "Alone we go faster, together we go further."
 msgstr "Seul on va plus vite, ensemble on va plus loin."
@@ -309,8 +376,7 @@ msgstr "Arthur Rimbaud"
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_16
 msgid "As I did not worry about being born, I do not worry about dying."
-msgstr ""
-"Comme je ne me suis pas soucié de naître, je ne me soucie pas de mourir."
+msgstr "Comme je ne me suis pas soucié de naître, je ne me soucie pas de mourir."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_49
@@ -381,13 +447,16 @@ msgid "Calendar events"
 msgstr "Événements du calendrier"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_calendar_events
+msgid "Calendar events (digest)"
+msgstr "Événements d'agenda (briefing)"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_51
 msgid ""
 "Caring for myself is not self-indulgence, it is self-preservation, and that "
 "is an act of political warfare."
-msgstr ""
-"Prendre soin de moi n'est pas de l'auto-complaisance, c'est de l'auto-"
-"préservation, et c'est un acte de guerre politique."
+msgstr "Prendre soin de moi n'est pas de l'auto-complaisance, c'est de l'auto-préservation, et c'est un acte de guerre politique."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_99
@@ -405,6 +474,14 @@ msgstr "Chef Seattle"
 #: model:daily.digest.quote,author:daily_todo_digest.quote_63
 msgid "Chinese proverb"
 msgstr "Proverbe chinois"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__daily_digest_config__frequency__custom
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_frequency__custom
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid "Chosen days"
+msgstr "Jours choisis"
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_111
@@ -508,9 +585,21 @@ msgstr "Jours à venir"
 msgid ""
 "Default city. Each recipient can replace it in their preferences (Weather "
 "city (digest) on their user record)."
-msgstr ""
-"Ville par défaut. Chaque destinataire peut la remplacer dans ses préférences"
-" (Ville météo (digest) sur sa fiche utilisateur)."
+msgstr "Ville par défaut. Chaque destinataire peut la remplacer dans ses préférences (Ville météo (digest) sur sa fiche utilisateur)."
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__frequency
+msgid ""
+"Default frequency for this template. Each recipient may replace it in their "
+"preferences. \"Chosen days\" reads the weekday boxes of the recipient; a "
+"weekly digest is that, with a single day ticked."
+msgstr "Fréquence par défaut de ce gabarit. Chaque destinataire peut la remplacer dans ses préférences. « Jours choisis » lit les cases de jours du destinataire ; un briefing hebdomadaire, c'est cela, avec un seul jour coché."
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid "Delivery"
+msgstr "Livraison"
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -528,6 +617,16 @@ msgstr "Bruine verglaçante dense"
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
 msgid "Digest configuration"
 msgstr "Configuration Digest"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_frequency
+msgid "Digest frequency"
+msgstr "Fréquence du briefing"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_send_hour
+msgid "Digest hour"
+msgstr "Heure du briefing"
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -558,9 +657,7 @@ msgstr "Échéance"
 msgid ""
 "Each generation must, out of relative obscurity, discover its mission, "
 "fulfil it, or betray it."
-msgstr ""
-"Chaque génération doit, dans une relative opacité, découvrir sa mission, la "
-"remplir ou la trahir."
+msgstr "Chaque génération doit, dans une relative opacité, découvrir sa mission, la remplir ou la trahir."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_67
@@ -583,9 +680,7 @@ msgstr "L'éducation est l'arme la plus puissante pour changer le monde."
 msgid ""
 "Emancipate yourselves from mental slavery. None but ourselves can free our "
 "minds."
-msgstr ""
-"Émancipez-vous de l'esclavage mental. Personne d'autre que nous-mêmes ne "
-"peut libérer nos esprits."
+msgstr "Émancipez-vous de l'esclavage mental. Personne d'autre que nous-mêmes ne peut libérer nos esprits."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_05
@@ -611,19 +706,30 @@ msgid "Event"
 msgstr "Événement"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__daily_digest_config__frequency__daily
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_frequency__daily
+msgid "Every day"
+msgstr "Chaque jour"
+
+#. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/inspirational_quote.py:0
 msgid "Every day is a new opportunity to do better."
 msgstr "Chaque jour est une nouvelle opportunité de faire mieux."
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__group_ids
+msgid ""
+"Every member of these groups receives this digest, without being named. "
+"Their own preferences still override it."
+msgstr "Tous les membres de ces groupes reçoivent ce briefing, sans être nommés. Leurs propres préférences le surchargent quand même."
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_90
 msgid ""
 "Everybody is a genius. But if you judge a fish by its ability to climb a "
 "tree, it will live its whole life believing that it is stupid."
-msgstr ""
-"Tout le monde est un génie. Mais si vous jugez un poisson sur sa capacité à "
-"grimper à un arbre, il passera sa vie à croire qu'il est stupide."
+msgstr "Tout le monde est un génie. Mais si vous jugez un poisson sur sa capacité à grimper à un arbre, il passera sa vie à croire qu'il est stupide."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_68
@@ -646,9 +752,7 @@ msgstr "Pieds, pourquoi en ai-je besoin si j'ai des ailes pour voler?"
 msgid ""
 "Feminism has never meant hating men. It means fighting for equality between "
 "the sexes."
-msgstr ""
-"Le féminisme n'a jamais signifié haïr les hommes. Il signifie lutter pour "
-"l'égalité des sexes."
+msgstr "Le féminisme n'a jamais signifié haïr les hommes. Il signifie lutter pour l'égalité des sexes."
 
 #. module: daily_todo_digest
 #: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__company_id
@@ -660,6 +764,16 @@ msgstr "Filtrer les tâches par cette compagnie uniquement"
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "Fog"
 msgstr "Brouillard"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__activity_fold_model_ids
+msgid "Fold activities from"
+msgstr "Replier les activités de"
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Folded reminders"
+msgstr "Rappels repliés"
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_115
@@ -678,11 +792,21 @@ msgid "Freezing fog"
 msgstr "Brouillard givrant"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__frequency
+msgid "Frequency"
+msgstr "Fréquence"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_27
 #: model:daily.digest.quote,author:daily_todo_digest.quote_28
 #: model:daily.digest.quote,author:daily_todo_digest.quote_29
 msgid "Frida Kahlo"
 msgstr "Frida Kahlo"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_friday
+msgid "Friday (digest)"
+msgstr "Vendredi (briefing)"
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_59
@@ -797,25 +921,19 @@ msgstr "Je vais rêver, mais non dormir."
 msgid ""
 "I am not free while any woman is unfree, even when her shackles are very "
 "different from my own."
-msgstr ""
-"Je ne suis pas libre tant qu'une seule femme ne l'est pas, même si ses "
-"chaînes sont très différentes des miennes."
+msgstr "Je ne suis pas libre tant qu'une seule femme ne l'est pas, même si ses chaînes sont très différentes des miennes."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_116
 msgid ""
 "I am talking about millions of men in whom fear, the inferiority complex, "
 "trembling, kneeling, despair and servility have been cunningly instilled."
-msgstr ""
-"Je parle de millions d'hommes à qui on a inculqué savamment la peur, le "
-"complexe d'infériorité, le tremblement, l'agenouillement, le désespoir, le "
-"larbinisme."
+msgstr "Je parle de millions d'hommes à qui on a inculqué savamment la peur, le complexe d'infériorité, le tremblement, l'agenouillement, le désespoir, le larbinisme."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_29
 msgid "I do not paint dreams or nightmares, I paint my own reality."
-msgstr ""
-"Je ne peins pas des rêves ou des cauchemars, je peins ma propre réalité."
+msgstr "Je ne peins pas des rêves ou des cauchemars, je peins ma propre réalité."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_32
@@ -840,8 +958,7 @@ msgstr "Je me révolte, donc nous sommes."
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_12
 msgid "I want to do with you what spring does with the cherry trees."
-msgstr ""
-"Je voudrais faire avec toi ce que le printemps fait avec les cerisiers."
+msgstr "Je voudrais faire avec toi ce que le printemps fait avec les cerisiers."
 
 #. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__id
@@ -861,17 +978,13 @@ msgid ""
 "If you have come here to help me, you are wasting your time. But if you have"
 " come because your liberation is bound up with mine, then let us work "
 "together."
-msgstr ""
-"Si tu es venu ici pour m'aider, tu perds ton temps. Mais si tu es venu parce"
-" que ta libération est liée à la mienne, alors travaillons ensemble."
+msgstr "Si tu es venu ici pour m'aider, tu perds ton temps. Mais si tu es venu parce que ta libération est liée à la mienne, alors travaillons ensemble."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_101
 msgid ""
 "If you want to go fast, go alone. If you want to go far, let us go together."
-msgstr ""
-"Si tu veux aller vite, marche seul. Si tu veux aller loin, marchons "
-"ensemble."
+msgstr "Si tu veux aller vite, marche seul. Si tu veux aller loin, marchons ensemble."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_120
@@ -887,9 +1000,13 @@ msgstr "Dans une avalanche, aucun flocon ne se sent responsable."
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_17
 msgid ""
 "In the midst of winter, I found there was, within me, an invincible summer."
-msgstr ""
-"En plein milieu de l'hiver, j'apprenais enfin qu'il y avait en moi un été "
-"invincible."
+msgstr "En plein milieu de l'hiver, j'apprenais enfin qu'il y avait en moi un été invincible."
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "In the news since your last digest"
+msgstr "Dans les nouvelles depuis votre dernier briefing"
 
 #. module: daily_todo_digest
 #: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_calendar_events
@@ -908,9 +1025,7 @@ msgstr "Inclure les tâches des prochains jours"
 msgid ""
 "Include upcoming meetings with an agenda to prepare and past meetings whose "
 "minutes are still to complete (bf_meeting cycle)."
-msgstr ""
-"Inclure les rencontres à venir avec OdJ à préparer et les comptes rendus des"
-" rencontres passées encore à compléter (cycle bf_meeting)."
+msgstr "Inclure les rencontres à venir avec OdJ à préparer et les comptes rendus des rencontres passées encore à compléter (cycle bf_meeting)."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_113
@@ -933,6 +1048,11 @@ msgid "Inspiring quote"
 msgstr "Citation inspirante"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_quote
+msgid "Inspiring quote (digest)"
+msgstr "Citation inspirante (briefing)"
+
+#. module: daily_todo_digest
 #: model:ir.actions.act_window,name:daily_todo_digest.action_daily_digest_quote
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_quote_list
 msgid "Inspiring quotes"
@@ -948,14 +1068,19 @@ msgstr "Cela semble toujours impossible jusqu'à ce que ce soit fait."
 msgid ""
 "It is not because things are difficult that we do not dare; it is because we"
 " do not dare that they are difficult."
-msgstr ""
-"Ce n'est pas parce que les choses sont difficiles que nous n'osons pas, "
-"c'est parce que nous n'osons pas qu'elles sont difficiles."
+msgstr "Ce n'est pas parce que les choses sont difficiles que nous n'osons pas, c'est parce que nous n'osons pas qu'elles sont difficiles."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_67
 msgid "It is not the mountain we conquer, but ourselves."
 msgstr "Ce n'est pas la montagne que nous conquérons, mais nous-mêmes."
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_flux_subjects
+msgid ""
+"Items retained since the last digest by the RSS lists that watch a name "
+"(bf_flux). Silent when that module is absent."
+msgstr "Les éléments retenus depuis le dernier briefing par les listes RSS qui surveillent un nom (bf_flux). Silencieux quand ce module est absent."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_106
@@ -1016,13 +1141,29 @@ msgid "Latitude"
 msgstr "Latitude"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_res_users__digest_frequency
+msgid ""
+"Leave empty to keep the template's frequency. A weekly digest is \"Chosen "
+"days\" with a single day ticked."
+msgstr "Laissez vide pour garder la fréquence du gabarit. Un briefing hebdomadaire, c'est « Jours choisis » avec un seul jour coché."
+
+#. module: daily_todo_digest
 #: model:ir.model.fields,help:daily_todo_digest.field_res_users__digest_weather_city
 msgid ""
 "Leave empty to use the digest's default city. Otherwise, also fill in the "
 "latitude and longitude below."
-msgstr ""
-"Laisser vide pour utiliser la ville par défaut du digest. Sinon, renseignez "
-"aussi la latitude/longitude ci-dessous."
+msgstr "Laisser vide pour utiliser la ville par défaut du digest. Sinon, renseignez aussi la latitude/longitude ci-dessous."
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Left out of the day: nothing to do until they move."
+msgstr "Hors du jour : rien à faire tant qu'elles n'avancent pas."
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Less noise"
+msgstr "Moins de bruit"
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_58
@@ -1034,9 +1175,7 @@ msgstr "Lewis Carroll"
 msgid ""
 "Life is not about waiting for the storm to pass, it is about learning to "
 "dance in the rain."
-msgstr ""
-"La vie, ce n'est pas d'attendre que l'orage passe, c'est d'apprendre à "
-"danser sous la pluie."
+msgstr "La vie, ce n'est pas d'attendre que l'orage passe, c'est d'apprendre à danser sous la pluie."
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -1086,12 +1225,15 @@ msgid "Lilla Watson"
 msgstr "Lilla Watson"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_waiting_tasks
+msgid "List waiting tasks"
+msgstr "Lister les tâches en attente"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_79
 msgid ""
 "Live as if you were to die tomorrow. Learn as if you were to live forever."
-msgstr ""
-"Vis comme si tu devais mourir demain. Apprends comme si tu devais vivre "
-"toujours."
+msgstr "Vis comme si tu devais mourir demain. Apprends comme si tu devais vivre toujours."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_89
@@ -1173,6 +1315,11 @@ msgid "Meetings (agendas + minutes)"
 msgstr "Rencontres (OdJ + CR)"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_meetings
+msgid "Meetings (digest)"
+msgstr "Rencontres (briefing)"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_11
 msgid "Melancholy is the happiness of being sad."
 msgstr "La mélancolie, c'est le bonheur d'être triste."
@@ -1219,6 +1366,23 @@ msgid "Modern proverb"
 msgstr "Proverbe moderne"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_monday
+msgid "Monday (digest)"
+msgstr "Lundi (briefing)"
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid "More sections"
+msgstr "Autres sections"
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid "Morning digest"
+msgstr "Briefing matinal"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_92
 msgid "Music can change the world because it can change people."
 msgstr "La musique peut changer le monde parce qu'elle peut changer les gens."
@@ -1235,14 +1399,49 @@ msgid "My daily digest"
 msgstr "Mon digest quotidien"
 
 #. module: daily_todo_digest
+#: model:ir.actions.act_window,name:daily_todo_digest.action_digest_hidden_tasks
+msgid "My hidden tasks with a deadline"
+msgstr "Mes tâches cachées qui ont une échéance"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_117
 msgid "My mouth shall be the mouth of those calamities that have no mouth."
 msgstr "Ma bouche sera la bouche des malheurs qui n'ont point de bouche."
 
 #. module: daily_todo_digest
+#: model:ir.actions.act_window,name:daily_todo_digest.action_digest_my_activities
+msgid "My reminders"
+msgstr "Mes rappels"
+
+#. module: daily_todo_digest
+#: model:ir.actions.act_window,name:daily_todo_digest.action_digest_folded_activities
+msgid "My reminders of this kind"
+msgstr "Mes rappels de ce genre"
+
+#. module: daily_todo_digest
+#: model:ir.actions.act_window,name:daily_todo_digest.action_digest_waiting_tasks
+msgid "My tasks waiting on someone else"
+msgstr "Mes tâches qui attendent quelqu'un d'autre"
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+#: model:ir.actions.act_window,name:daily_todo_digest.action_digest_deadline_tasks
+msgid "My tasks with a deadline"
+msgstr "Mes tâches qui ont une échéance"
+
+#. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__name
 msgid "Name"
 msgstr "Nom"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__recipient_user_ids
+msgid ""
+"Named recipients plus every member of the recipient groups. Searchable: a "
+"module asking \"does a digest cover this person?\" must read this and not "
+"`user_ids`, which misses anyone covered only by a group."
+msgstr "Les destinataires nommés et tous les membres des groupes destinataires. Cherchable : un module qui demande « un briefing couvre-t-il cette personne ? » doit lire ce champ et non `user_ids`, qui rate quelqu'un couvert seulement par un groupe."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_65
@@ -1266,9 +1465,18 @@ msgstr "Nelson Mandela"
 msgid ""
 "Never ask directions from someone who knows the way, because you will not be"
 " able to get lost."
-msgstr ""
-"Ne demande jamais ton chemin à quelqu'un qui le connaît, car tu ne pourras "
-"pas t'égarer."
+msgstr "Ne demande jamais ton chemin à quelqu'un qui le connaît, car tu ne pourras pas t'égarer."
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "News"
+msgstr "Nouvelles"
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Next %s day(s)"
+msgstr "Les %s prochains jours"
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -1277,13 +1485,26 @@ msgid "Next 7 days at a glance"
 msgstr "Aperçu des 7 prochains jours"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_calendar_events__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_flux_subjects__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_meetings__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_overdue_activities__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_overdue_tasks__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_quote__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_today_activities__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_today_tasks__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_upcoming_tasks__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_weather__no
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_week_preview__no
+msgid "No"
+msgstr "Non"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_110
 msgid ""
 "No one educates anyone else, no one educates themselves; people educate each"
 " other through the world."
-msgstr ""
-"Personne n'éduque autrui, personne ne s'éduque seul, les hommes s'éduquent "
-"ensemble par l'intermédiaire du monde."
+msgstr "Personne n'éduque autrui, personne ne s'éduque seul, les hommes s'éduquent ensemble par l'intermédiaire du monde."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_07
@@ -1322,9 +1543,7 @@ msgstr "Aucun de nous n'est aussi intelligent que nous tous ensemble."
 msgid ""
 "Normality is a paved road: it is comfortable to walk, but no flowers grow on"
 " it."
-msgstr ""
-"La normalité est une route pavée : on y marche aisément mais les fleurs n'y "
-"poussent pas."
+msgstr "La normalité est une route pavée : on y marche aisément mais les fleurs n'y poussent pas."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_55
@@ -1336,6 +1555,19 @@ msgstr "Rien n'est plus dangereux qu'une idée quand on n'en a qu'une."
 #: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__upcoming_days
 msgid "Number of days to preview (1-7)"
 msgstr "Nombre de jours à afficher en aperçu (1-7)"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_waiting_tasks
+msgid ""
+"Off: tasks waiting on someone else leave the day's list and are counted in "
+"one folded line. On: they are listed like the others."
+msgstr "Décoché : les tâches en attente de quelqu'un d'autre quittent la liste du jour et sont comptées en une ligne repliée. Coché : elles sont listées comme les autres."
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Older items are in the Flux app."
+msgstr "Le reste est dans l'application Flux."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_21
@@ -1358,6 +1590,13 @@ msgid "Only one send log per recipient and per digest."
 msgstr "Un seul journal d'envoi par destinataire et par digest."
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__sequence
+msgid ""
+"Order in which templates are tried. A person receives ONE digest: the first "
+"template, by sequence then id, that lists them or one of their groups."
+msgstr "Ordre dans lequel les gabarits sont essayés. Une personne reçoit UN seul briefing : le premier gabarit, par séquence puis par identifiant, qui la nomme ou nomme un de ses groupes."
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_34
 #: model:daily.digest.quote,author:daily_todo_digest.quote_35
 #: model:daily.digest.quote,author:daily_todo_digest.quote_36
@@ -1375,9 +1614,7 @@ msgstr "Notre maison est en feu. Je veux que vous paniquiez."
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_73
 msgid ""
 "Our lives begin to end the day we become silent about things that matter."
-msgstr ""
-"Nos vies commencent à prendre fin le jour où nous gardons le silence sur les"
-" choses qui comptent."
+msgstr "Nos vies commencent à prendre fin le jour où nous gardons le silence sur les choses qui comptent."
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -1393,11 +1630,21 @@ msgid "Overdue activities"
 msgstr "Activités en retard"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_overdue_activities
+msgid "Overdue activities (digest)"
+msgstr "Activités en retard (briefing)"
+
+#. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_overdue_tasks
 msgid "Overdue tasks"
 msgstr "Tâches en retard"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_overdue_tasks
+msgid "Overdue tasks (digest)"
+msgstr "Tâches en retard (briefing)"
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_12
@@ -1435,9 +1682,7 @@ msgstr "Pearl S. Buck"
 msgid ""
 "People will forget what you said, people will forget what you did, but "
 "people will never forget how you made them feel."
-msgstr ""
-"Les gens oublieront ce que tu as dit, ils oublieront ce que tu as fait, mais"
-" ils n'oublieront jamais ce que tu leur as fait ressentir."
+msgstr "Les gens oublieront ce que tu as dit, ils oublieront ce que tu as fait, mais ils n'oublieront jamais ce que tu leur as fait ressentir."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_102
@@ -1449,6 +1694,14 @@ msgstr "Proverbe persan"
 #: model:daily.digest.quote,author:daily_todo_digest.quote_04
 msgid "Peter Kropotkin"
 msgstr "Pierre Kropotkine"
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/res_users.py:0
+msgid ""
+"Pick at least one day for the morning digest, or change its frequency: with "
+"no day picked, it would never be sent."
+msgstr "Choisissez au moins un jour pour le briefing du matin, ou changez son rythme : sans aucun jour coché, il ne partirait jamais."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_01
@@ -1486,8 +1739,7 @@ msgstr "Citations"
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_19
 msgid "Real generosity towards the future lies in giving all to the present."
-msgstr ""
-"La vraie générosité envers l'avenir consiste à tout donner au présent."
+msgstr "La vraie générosité envers l'avenir consiste à tout donner au présent."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_26
@@ -1499,9 +1751,12 @@ msgstr "Rabbi Nachman de Bratslav"
 msgid ""
 "Receive every morning a summary of your overdue and today's activities and tasks,\n"
 "                with the weather and an inspiring quote."
-msgstr ""
-"Recevez chaque matin un résumé de vos activités et tâches en retard ou du jour,\n"
-"                avec la météo et une citation inspirante."
+msgstr "Recevez chaque matin un résumé de vos activités et tâches en retard ou du jour,\n                avec la météo et une citation inspirante."
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__group_ids
+msgid "Recipient groups"
+msgstr "Groupes destinataires"
 
 #. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__user_ids
@@ -1510,11 +1765,26 @@ msgid "Recipients"
 msgstr "Destinataires"
 
 #. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Recurring reminders, read as a batch."
+msgstr "Rappels récurrents, qui se lisent en lot."
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_23
 msgid "Revolution is not showing life to people, but making them live."
-msgstr ""
-"La révolution ne consiste pas à montrer la vie aux gens, mais à les faire "
-"vivre."
+msgstr "La révolution ne consiste pas à montrer la vie aux gens, mais à les faire vivre."
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_saturday
+msgid "Saturday (digest)"
+msgstr "Samedi (briefing)"
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
+msgid "Sections"
+msgstr "Sections"
 
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
@@ -1531,9 +1801,7 @@ msgstr "Heure d'envoi"
 msgid ""
 "Sending hour (0-23), evaluated in each recipient's time zone (res.users.tz, "
 "default America/Montreal)."
-msgstr ""
-"Heure d'envoi (0-23), évaluée dans le fuseau horaire de chaque destinataire "
-"(res.users.tz, défaut America/Montreal)."
+msgstr "Heure d'envoi (0-23), évaluée dans le fuseau horaire de chaque destinataire (res.users.tz, défaut America/Montreal)."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_100
@@ -1543,13 +1811,16 @@ msgid "Seneca"
 msgstr "Sénèque"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_80
 msgid ""
 "Silence becomes cowardice when the occasion demands speaking out the whole "
 "truth and acting accordingly."
-msgstr ""
-"Le silence devient lâcheté quand l'occasion exige de dire toute la vérité et"
-" d'agir en conséquence."
+msgstr "Le silence devient lâcheté quand l'occasion exige de dire toute la vérité et d'agir en conséquence."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_21
@@ -1573,16 +1844,13 @@ msgstr "Socrate"
 msgid ""
 "Some painters transform the sun into a yellow spot, others transform a "
 "yellow spot into the sun."
-msgstr ""
-"Certains peintres transforment le soleil en un point jaune, d'autres "
-"transforment un point jaune en soleil."
+msgstr "Certains peintres transforment le soleil en un point jaune, d'autres transforment un point jaune en soleil."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_104
 msgid ""
 "Speech is silver, but silence is golden... except in the face of injustice."
-msgstr ""
-"La parole est d'argent, mais le silence est d'or... sauf face à l'injustice."
+msgstr "La parole est d'argent, mais le silence est d'or... sauf face à l'injustice."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_70
@@ -1599,15 +1867,18 @@ msgstr "Stewart Brand"
 msgid ""
 "Strength does not come from physical capacity. It comes from an indomitable "
 "will."
-msgstr ""
-"La force ne vient pas des capacités physiques, elle vient d'une volonté "
-"indomptable."
+msgstr "La force ne vient pas des capacités physiques, elle vient d'une volonté indomptable."
 
 #. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "Subtasks with \"Show in project\" turned off."
 msgstr "Sous-tâches avec « Afficher dans le projet » désactivé."
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_sunday
+msgid "Sunday (digest)"
+msgstr "Dimanche (briefing)"
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -1657,18 +1928,14 @@ msgstr "Le bambou qui plie est plus fort que le chêne qui résiste."
 msgid ""
 "The best time to plant a tree was twenty years ago. The second best time is "
 "now."
-msgstr ""
-"Le meilleur moment pour planter un arbre était il y a vingt ans. Le deuxième"
-" meilleur moment, c'est maintenant."
+msgstr "Le meilleur moment pour planter un arbre était il y a vingt ans. Le deuxième meilleur moment, c'est maintenant."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_48
 msgid ""
 "The degree of a people's civilisation can be judged by the way it treats its"
 " animals."
-msgstr ""
-"On reconnaît le degré de civilisation d'un peuple à la manière dont il "
-"traite ses animaux."
+msgstr "On reconnaît le degré de civilisation d'un peuple à la manière dont il traite ses animaux."
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -1679,14 +1946,19 @@ msgstr "Le digest a été envoyé aux destinataires."
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_66
 msgid "The earth does not belong to man; man belongs to the earth."
-msgstr ""
-"La terre n'appartient pas à l'homme, c'est l'homme qui appartient à la "
-"terre."
+msgstr "La terre n'appartient pas à l'homme, c'est l'homme qui appartient à la terre."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_04
 msgid "The happiness of others is essential to our own happiness."
 msgstr "Le bonheur des autres est indispensable à notre propre bonheur."
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_res_users__digest_send_hour
+msgid ""
+"The hour your digest is sent, read in YOUR time zone. Leave empty to keep "
+"the hour of the digest template that covers you."
+msgstr "L'heure à laquelle votre briefing part, lue dans VOTRE fuseau. Laissez vide pour garder l'heure du gabarit de briefing qui vous couvre."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_50
@@ -1696,8 +1968,7 @@ msgstr "Les outils du maître ne détruiront jamais la maison du maître."
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_88
 msgid "The most courageous act is still to think for yourself. Aloud."
-msgstr ""
-"Le plus courageux des actes est encore de penser par soi-même. À voix haute."
+msgstr "Le plus courageux des actes est encore de penser par soi-même. À voix haute."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_102
@@ -1707,72 +1978,61 @@ msgstr "L'océan est fait de gouttes d'eau."
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_58
 msgid "The only way to achieve the impossible is to believe it is possible."
-msgstr ""
-"La seule façon d'atteindre l'impossible, c'est de croire que c'est possible."
+msgstr "La seule façon d'atteindre l'impossible, c'est de croire que c'est possible."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_22
 msgid ""
 "The present is not a potential past; it is the moment of choice and action."
-msgstr ""
-"Le présent n'est pas un passé en puissance, il est le moment du choix et de "
-"l'action."
+msgstr "Le présent n'est pas un passé en puissance, il est le moment du choix et de l'action."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_72
 msgid ""
 "The question is not whether we will be extremists, but what kind of "
 "extremists we will be."
-msgstr ""
-"La question n'est pas de savoir si nous allons être des extrémistes, mais de"
-" savoir quel type d'extrémistes nous serons."
+msgstr "La question n'est pas de savoir si nous allons être des extrémistes, mais de savoir quel type d'extrémistes nous serons."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_46
 msgid ""
 "The real voyage of discovery consists not in seeking new landscapes, but in "
 "having new eyes."
-msgstr ""
-"Le vrai voyage de découverte ne consiste pas à chercher de nouveaux "
-"paysages, mais à avoir de nouveaux yeux."
+msgstr "Le vrai voyage de découverte ne consiste pas à chercher de nouveaux paysages, mais à avoir de nouveaux yeux."
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_week_preview
+msgid "The seven-day grid counting tasks and activities per day."
+msgstr "La grille de sept jours qui compte les tâches et les activités par jour."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_114
 msgid ""
 "The ultimate measure of a man is not where he stands in moments of comfort "
 "and convenience, but where he stands at times of challenge and controversy."
-msgstr ""
-"La vraie mesure d'un homme n'est pas comment il se comporte dans les moments"
-" de confort, mais comment il se tient dans les moments de défi et de "
-"controverse."
+msgstr "La vraie mesure d'un homme n'est pas comment il se comporte dans les moments de confort, mais comment il se tient dans les moments de défi et de controverse."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_33
 msgid "The world is a book and those who do not travel read only one page."
-msgstr ""
-"Le monde est un livre et ceux qui ne voyagent pas n'en lisent qu'une page."
+msgstr "Le monde est un livre et ceux qui ne voyagent pas n'en lisent qu'une page."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_118
 msgid ""
 "The world will not be destroyed by those who do evil, but by those who watch"
 " them without doing anything."
-msgstr ""
-"Le monde ne sera pas détruit par ceux qui font le mal, mais par ceux qui les"
-" regardent sans rien faire."
+msgstr "Le monde ne sera pas détruit par ceux qui font le mal, mais par ceux qui les regardent sans rien faire."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_84
 msgid "There is no greater agony than bearing an untold story inside you."
-msgstr ""
-"Il n'y a pas de plus grande agonie que de porter en soi une histoire jamais "
-"racontée."
+msgstr "Il n'y a pas de plus grande agonie que de porter en soi une histoire jamais racontée."
 
 #. module: daily_todo_digest
 #: model_terms:ir.actions.act_window,help:daily_todo_digest.action_daily_digest_quote
 msgid "These quotes will appear in rotation in the daily digest emails."
-msgstr ""
-"Ces citations apparaîtront en rotation dans les emails du digest quotidien."
+msgstr "Ces citations apparaîtront en rotation dans les emails du digest quotidien."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_10
@@ -1798,6 +2058,11 @@ msgid "Thunderstorm with light hail"
 msgstr "Orage avec grêle légère"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_thursday
+msgid "Thursday (digest)"
+msgstr "Jeudi (briefing)"
+
+#. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "Time"
@@ -1809,6 +2074,11 @@ msgstr "Heure"
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_today_activities
 msgid "Today's activities"
 msgstr "Activités du jour"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_today_activities
+msgid "Today's activities (digest)"
+msgstr "Activités du jour (briefing)"
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -1824,9 +2094,19 @@ msgid "Today's tasks"
 msgstr "Tâches du jour"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_today_tasks
+msgid "Today's tasks (digest)"
+msgstr "Tâches du jour (briefing)"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_06
 msgid "True emancipation begins in woman's soul."
 msgstr "La vraie émancipation commence dans l'âme de la femme."
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_tuesday
+msgid "Tuesday (digest)"
+msgstr "Mardi (briefing)"
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -1835,18 +2115,27 @@ msgid "Unknown"
 msgstr "Inconnu"
 
 #. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Unsupported operator %s on recipients."
+msgstr "Opérateur %s non pris en charge sur les destinataires."
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_43
 msgid ""
 "Until the lions have their own historians, the history of the hunt will "
 "always glorify the hunter."
-msgstr ""
-"Jusqu'à ce que les lions aient leurs propres historiens, l'histoire de la "
-"chasse glorifiera toujours le chasseur."
+msgstr "Jusqu'à ce que les lions aient leurs propres historiens, l'histoire de la chasse glorifiera toujours le chasseur."
 
 #. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_upcoming_tasks
 msgid "Upcoming tasks"
 msgstr "Tâches à venir"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_upcoming_tasks
+msgid "Upcoming tasks (digest)"
+msgstr "Tâches à venir (briefing)"
 
 #. module: daily_todo_digest
 #: model:ir.model,name:daily_todo_digest.model_res_users
@@ -1865,10 +2154,7 @@ msgid ""
 "Utopia is on the horizon. I take two steps, it moves two steps away. I take "
 "ten steps and the horizon runs ten steps further. So what is utopia for? It "
 "is for this: to keep walking."
-msgstr ""
-"L'utopie est à l'horizon. Je fais deux pas, elle s'éloigne de deux pas. Je "
-"fais dix pas et l'horizon recule de dix pas. Alors à quoi sert l'utopie? "
-"Elle sert à ça : à marcher."
+msgstr "L'utopie est à l'horizon. Je fais deux pas, elle s'éloigne de deux pas. Je fais dix pas et l'horizon recule de dix pas. Alors à quoi sert l'utopie? Elle sert à ça : à marcher."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_10
@@ -1895,40 +2181,60 @@ msgid "Virginia Woolf"
 msgstr "Virginia Woolf"
 
 #. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Waiting tasks"
+msgstr "Tâches en attente"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_105
 msgid "Walls were built by those who were afraid of those who are different."
-msgstr ""
-"Les murs ont été construits par ceux qui avaient peur de ceux qui sont "
-"différents."
+msgstr "Les murs ont été construits par ceux qui avaient peur de ceux qui sont différents."
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Watched subjects"
+msgstr "Sujets surveillés"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_flux_subjects
+msgid "Watched subjects (RSS)"
+msgstr "Sujets surveillés (RSS)"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_flux_subjects
+msgid "Watched subjects (digest)"
+msgstr "Sujets surveillés (briefing)"
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_35
 msgid "We are all in the gutter, but some of us are looking at the stars."
-msgstr ""
-"Nous sommes tous dans le caniveau, mais certains d'entre nous regardent les "
-"étoiles."
+msgstr "Nous sommes tous dans le caniveau, mais certains d'entre nous regardent les étoiles."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_65
 msgid ""
 "We do not inherit the earth from our ancestors, we borrow it from our "
 "children."
-msgstr ""
-"Nous n'héritons pas de la terre de nos ancêtres, nous l'empruntons à nos "
-"enfants."
+msgstr "Nous n'héritons pas de la terre de nos ancêtres, nous l'empruntons à nos enfants."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_60
 msgid "We do not see things as they are, we see them as we are."
-msgstr ""
-"Nous ne voyons pas les choses comme elles sont, nous les voyons comme nous "
-"sommes."
+msgstr "Nous ne voyons pas les choses comme elles sont, nous les voyons comme nous sommes."
 
 #. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_weather
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_digest_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_users_form_simple_modif_digest_weather
 msgid "Weather"
 msgstr "Météo"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_weather
+msgid "Weather (digest)"
+msgstr "Météo (briefing)"
 
 #. module: daily_todo_digest
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__weather_city
@@ -1951,47 +2257,57 @@ msgid "Weather longitude (digest)"
 msgstr "Longitude météo (digest)"
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_wednesday
+msgid "Wednesday (digest)"
+msgstr "Mercredi (briefing)"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_week_preview
+msgid "Week preview"
+msgstr "Aperçu de la semaine"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_opt_week_preview
+msgid "Week preview (digest)"
+msgstr "Aperçu de la semaine (briefing)"
+
+#. module: daily_todo_digest
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__daily_digest_config__frequency__weekdays
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_frequency__weekdays
+msgid "Weekdays only"
+msgstr "Jours ouvrables seulement"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_59
 msgid "What does not kill me makes me stronger... but first, it really hurts."
-msgstr ""
-"Ce qui ne me tue pas me rend plus fort... mais d'abord, ça fait vraiment "
-"mal."
+msgstr "Ce qui ne me tue pas me rend plus fort... mais d'abord, ça fait vraiment mal."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_109
 msgid ""
 "When education is not liberating, the dream of the oppressed is to become "
 "the oppressor."
-msgstr ""
-"Quand l'éducation n'est pas libératrice, le rêve de l'opprimé est de devenir"
-" l'oppresseur."
+msgstr "Quand l'éducation n'est pas libératrice, le rêve de l'opprimé est de devenir l'oppresseur."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_64
 msgid ""
 "When the last tree has been cut down, the last river poisoned and the last "
 "fish caught, only then will you realise that money cannot be eaten."
-msgstr ""
-"Quand le dernier arbre sera abattu, la dernière rivière empoisonnée, le "
-"dernier poisson capturé, alors seulement vous réaliserez que l'argent ne se "
-"mange pas."
+msgstr "Quand le dernier arbre sera abattu, la dernière rivière empoisonnée, le dernier poisson capturé, alors seulement vous réaliserez que l'argent ne se mange pas."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_45
 msgid ""
 "When they came for the communists, I said nothing; I was not a communist..."
-msgstr ""
-"Quand ils sont venus chercher les communistes, je n'ai rien dit, je n'étais "
-"pas communiste..."
+msgstr "Quand ils sont venus chercher les communistes, je n'ai rien dit, je n'étais pas communiste..."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_103
 msgid ""
 "Whoever asks a question looks foolish for five minutes; whoever does not "
 "stays foolish for life."
-msgstr ""
-"Celui qui pose une question est bête cinq minutes, celui qui n'en pose pas "
-"le reste toute sa vie."
+msgstr "Celui qui pose une question est bête cinq minutes, celui qui n'en pose pas le reste toute sa vie."
 
 #. module: daily_todo_digest
 #: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
@@ -2004,6 +2320,21 @@ msgid "Work is love made visible."
 msgstr "Le travail est l'amour rendu visible."
 
 #. module: daily_todo_digest
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_calendar_events__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_flux_subjects__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_meetings__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_overdue_activities__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_overdue_tasks__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_quote__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_today_activities__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_today_tasks__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_upcoming_tasks__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_weather__yes
+#: model:ir.model.fields.selection,name:daily_todo_digest.selection__res_users__digest_opt_week_preview__yes
+msgid "Yes"
+msgstr "Oui"
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_108
 msgid "You are never too small to make a difference."
 msgstr "Vous n'êtes jamais trop petit pour faire la différence."
@@ -2011,15 +2342,12 @@ msgstr "Vous n'êtes jamais trop petit pour faire la différence."
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_13
 msgid "You can cut all the flowers but you cannot keep spring from coming."
-msgstr ""
-"Vous pouvez couper toutes les fleurs, mais vous ne pouvez pas empêcher le "
-"printemps de revenir."
+msgstr "Vous pouvez couper toutes les fleurs, mais vous ne pouvez pas empêcher le printemps de revenir."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_81
 msgid "You cannot dismantle the master's house with the master's tools."
-msgstr ""
-"On ne peut pas démanteler la maison du maître avec les outils du maître."
+msgstr "On ne peut pas démanteler la maison du maître avec les outils du maître."
 
 #. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_87
@@ -2031,9 +2359,7 @@ msgstr "On ne peut trouver la paix en évitant la vie."
 msgid ""
 "You cannot stop the birds of sorrow from flying over your head, but you can "
 "stop them from nesting there."
-msgstr ""
-"On ne peut pas empêcher les oiseaux de la tristesse de voler au-dessus de "
-"nos têtes, mais on peut les empêcher d'y faire leur nid."
+msgstr "On ne peut pas empêcher les oiseaux de la tristesse de voler au-dessus de nos têtes, mais on peut les empêcher d'y faire leur nid."
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -2046,9 +2372,7 @@ msgstr "Votre agenda du jour"
 msgid ""
 "Your children are not your children. They are the sons and daughters of "
 "Life's longing for itself."
-msgstr ""
-"Vos enfants ne sont pas vos enfants. Ils sont les fils et les filles de "
-"l'appel de la Vie à elle-même."
+msgstr "Vos enfants ne sont pas vos enfants. Ils sont les fils et les filles de l'appel de la Vie à elle-même."
 
 #. module: daily_todo_digest
 #. odoo-python
@@ -2083,3 +2407,4 @@ msgstr "jusqu'au %s"
 #: model:daily.digest.quote,author:daily_todo_digest.quote_55
 msgid "Émile Chartier (Alain)"
 msgstr "Émile Chartier (Alain)"
+

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+    Les domaines des liens du briefing vivent ICI, côté serveur.
+
+    🔴 Odoo 18 ne lit aucun domaine passé dans l'URL : le routeur du client web
+    ne retient que `resId`, `action`, `active_id` et `model`, et un `model=`
+    sans `action=` retombe sur l'action d'accueil. Un `&domain=` dans un lien
+    de courriel ne filtre donc rien — il ouvrait l'écran d'accueil, ou la liste
+    entière.
+
+    Le client évalue le domaine d'une action avec le contexte de la personne
+    qui clique : `uid` est le sien, jamais celui du cron qui a posté le
+    courriel, et `active_id` vient de l'URL (/odoo/<active_id>/action-<id>).
+    ⚠️ `active_id` n'est porté au contexte que s'il est VRAI : un domaine qui
+    le lit lève une erreur quand l'URL ne le porte pas.
+    -->
+
+    <record id="action_digest_my_activities" model="ir.actions.act_window">
+        <field name="name">My reminders</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('user_id','=',uid)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!--
+    ⚠️ Sans borne de date, à dessein. Le client évalue `context_today()` dans le
+    fuseau du NAVIGATEUR, pas dans celui du profil Odoo : mesuré au banc, un
+    navigateur en UTC et un profil à Montréal décalaient la liste d'un jour —
+    le défaut même que cette version corrige dans le courriel. Le compte exact
+    reste dans la ligne repliée ; la liste, elle, est juste partout.
+    -->
+    <record id="action_digest_folded_activities" model="ir.actions.act_window">
+        <field name="name">My reminders of this kind</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('user_id','=',uid),('res_model_id','=',active_id)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_digest_waiting_tasks" model="ir.actions.act_window">
+        <field name="name">My tasks waiting on someone else</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('user_ids','in',[uid]),('state','in',['04_waiting_normal','05_waiting_client','06_waiting_external'])]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_digest_hidden_tasks" model="ir.actions.act_window">
+        <field name="name">My hidden tasks with a deadline</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('user_ids','in',[uid]),('display_in_project','=',False),('date_deadline','!=',False),('state','not in',['1_done','1_canceled'])]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_digest_deadline_tasks" model="ir.actions.act_window">
+        <field name="name">My tasks with a deadline</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('user_ids','in',[uid]),('date_deadline','!=',False),('state','not in',['1_done','1_canceled'])]</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

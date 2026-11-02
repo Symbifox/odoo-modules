@@ -12,19 +12,23 @@ user's activities and tasks, the local weather and an inspirational quote.
 | **Weather** | Current temperature with emoji, min/max, precipitation for the configured city (default: Montreal) |
 | **Today's calendar** | `calendar.event` records of the recipient's day that they attend (declined and cancelled events left out), with times in their time zone and in their secondary calendar time zone |
 | **Overdue activities** | `mail.activity` records with a past due date |
-| **Today's activities** | `mail.activity` records due today |
+| **Today's activities** | `mail.activity` records due today. Reminders created by a scheduler fold into **one line per model**, with their count and a link to the list |
 | **Overdue tasks** | `project.task` records with a past deadline |
-| **Today's tasks** | `project.task` records due today |
+| **Today's tasks** | `project.task` records due today. Tasks waiting on a client or a colleague leave the list and are counted in one line, unless `include_waiting_tasks` is on |
+| **Upcoming tasks** | Tasks due in the next 1 to 7 days, when `include_upcoming_tasks` is on |
+| **Watched subjects** | What the RSS lists that watch a name retained since the last digest, read from the RSS module **at runtime** (no manifest dependency), and only for lists that carry watched subjects |
 | **7-day outlook** | A clickable visual grid of the next 7 days with colour-coded counters (green/amber/red) |
 | **Hidden tasks** | A summary of tasks with `display_in_project=False` (clickable link) |
 | **Inspirational quote** | A random quote from 120 artists, poets and thinkers |
 
 ### Technical characteristics
 
-- **Time zone**: automatic UTC → America/Montreal conversion for date comparisons
+- **Time zone**: every date is read in the **recipient's** own time zone (`res.users.tz`), including the day boundaries, the delivery hour and the "already sent today" guard — so one template delivers at the local morning hour for recipients in different zones
 - **Visibility filter**: excludes tasks with `display_in_project=False` from the detailed listing
 - **Symbifox branding**: HTML template using the brand's colours and typefaces
-- **Clickable links**: every task/activity carries a direct link to the Odoo record
+- **Clickable links**: every task and activity carries a direct link to its Odoo record. A link to a **filtered list** (a folded line, the waiting tasks, the hidden tasks, a day of the grid) points at a window action whose domain lives server-side and is evaluated with the identity of whoever clicks: Odoo 18 reads no domain from a URL, so a `&domain=` in an email filters nothing
+- **Per-recipient preferences**: each person sets their own delivery hour, their own rhythm (daily, weekdays, chosen days) and each section to yes, no or "whatever the template says", from their own user form — no administrator needed
+- **Templates target groups**: a template can aim at `res.groups` instead of naming people. When several templates cover the same person, the first by sequence wins and that person receives exactly **one** digest
 - **Configurable cron**: checks hourly, sends at the configured hour
 - **Email preheader**: a quick preview in mail clients (e.g. "3 overdue | 5 today | ☀️ -8°C")
 - **Weather emoji**: visual icons matching the conditions (☀️🌧️❄️⛈️ and so on)
@@ -145,8 +149,37 @@ Daily digest configuration.
 | `weather_latitude` | Float | Latitude |
 | `weather_longitude` | Float | Longitude |
 | `include_quote` | Boolean | Include a quote |
-| `company_id` | Many2one | Company (optional) |
-| `last_sent` | Datetime | Last send |
+| `company_id` | Many2one | Company (optional): a template bound to a company does not reach users of the others |
+| `sequence` | Integer | Order that decides which template serves a person covered by several |
+| `group_ids` | Many2many | Recipient groups: every member receives the digest without being named |
+| `recipient_user_ids` | Many2many | Named recipients plus every member of the recipient groups (computed, searchable) |
+| `frequency` | Selection | Daily, weekdays, or the days each person picked |
+| `activity_fold_model_ids` | Many2many | Models whose reminders fold into one line |
+| `include_waiting_tasks` | Boolean | Keep tasks waiting on someone else in the day's list (default: off) |
+| `include_upcoming_tasks` | Boolean | Include the upcoming tasks section |
+| `include_week_preview` | Boolean | Include the 7-day grid |
+| `include_flux_subjects` | Boolean | Include the watched subjects section |
+| `last_sent` | Datetime | Last send (any recipient) |
+
+### `res.users` (per-recipient preferences)
+
+Each person reads and writes these on their **own** profile; an administrator
+cannot be in the way, and nobody can set them on somebody else's.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `digest_send_hour` | Selection | Own delivery hour, empty = the template's |
+| `digest_frequency` | Selection | Own rhythm, empty = the template's |
+| `digest_monday` … `digest_sunday` | Boolean | The days picked, when the rhythm is "chosen days" |
+| `digest_opt_<section>` | Selection | Yes / No / empty for each of the eleven sections; empty means the template decides |
+| `digest_weather_city` | Char | Own city for the weather |
+
+### `daily.digest.send.log`
+
+One row per (template, recipient), carrying the last send. The "already sent
+today" guard asks whether **this person** received their digest today, through
+any template — so changing who a template covers mid-morning does not send a
+second one.
 
 ### `daily.digest.quote`
 
@@ -227,6 +260,18 @@ env.cr.commit()
 - `requests` (ships with Odoo)
 
 ## Changelog
+
+### 18.0.3.0.0
+- **Less noise.** Reminders created by a scheduler fold into one line per model, with their count and a link to the list: measured on a real digest, half the activities of the day were identical reminder titles repeated. Tasks waiting on a client or a colleague leave the day's list and are counted in one line — nothing can be done about them today. Both are switchable (`activity_fold_model_ids`, `include_waiting_tasks`).
+- **Per-recipient preferences.** Delivery hour, rhythm (daily, weekdays, chosen days) and each of the eleven sections, set by each person on their own user form. A section has three states: the person said yes, the person said no, or the person said nothing and the template decides. A recipient who turns every section off receives nothing.
+- **Templates that target groups.** A template can aim at `res.groups`; every member receives the digest without being named. When several templates cover the same person, the first by `sequence` wins, so that person receives exactly one digest.
+- **Watched subjects.** A section listing what the RSS lists that watch a name retained since the last digest, read from the RSS module at runtime — no manifest dependency, and nothing happens when that module is absent.
+- **Deadlines are shown in the recipient's time zone.** They were computed in the server's zone: a recipient reading their digest on the other side of the world saw the wrong date on most of their tasks.
+- **The "upcoming tasks" section is rendered.** It was gathered for several versions and never shown, and its toggle reached no form. The upgrade leaves it off, since nobody had ever seen it.
+- **Texts are escaped.** A task or activity title carrying `<` or `&` could break the email's HTML.
+- **List links work.** The four links to a filtered list carried their filter in the URL, which Odoo 18 never reads: they opened the home screen, or the unfiltered list. Their domains now live in window actions, evaluated with the identity of whoever clicks — so a link shows that person's records, not the scheduled job's.
+- **A failing recipient no longer costs the others their digest.** Each recipient is sent inside its own savepoint, so one SQL error no longer aborts the cursor for everyone after them.
+- A delivery hour that **does not exist** on the day the clocks move forward is sent at the next hour that does, instead of being skipped in silence.
 
 ### 18.0.2.3.0
 - **Today's calendar.** A new section, placed before what is due, lists the events of the recipient's local day. An event belongs to someone through their **attendance**, not its organizer: events synchronised from Nextcloud are organized by the system user and would otherwise be missed. Declined events are left out, and so are meetings marked cancelled when `bf_calendar_invite` is installed. Times read in the recipient's time zone, with a second line in their secondary calendar time zone when they set one; all-day and multi-day events are handled, and a web address in the call or location field becomes a **Join** link. The preheader counts the events. Toggle: `include_calendar_events`. The section is skipped when the Calendar app is not installed.

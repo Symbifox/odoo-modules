@@ -472,7 +472,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bluefox_branding` | Symbifox Branding | 18.0.3.26.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.28.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
-| `daily_todo_digest` | Daily To-Do Digest | 18.0.2.3.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
+| `daily_todo_digest` | Daily To-Do Digest | 18.0.3.0.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
 | `hosting_management` | Gestion d'hébergement | 18.0.2.65.0 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
 | `partner_legal_name` | Symbifox — Partner Legal Name | 18.0.1.0.2 | LGPL-3 | A company's registered legal name next to its trade name, printed in the document header |
 | `personal_budget` | Personal Budget | 18.0.2.1.2 | LGPL-3 | Household budget: personal or shared budgets, subscriptions and dashboard |

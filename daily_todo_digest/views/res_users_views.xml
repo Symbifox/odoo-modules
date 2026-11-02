@@ -3,32 +3,122 @@
 
     <!-- Full backend user form (admins) -->
     <record id="view_users_form_digest_weather" model="ir.ui.view">
-        <field name="name">res.users.form.digest.weather</field>
+        <field name="name">res.users.form.digest</field>
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
             <field name="tz" position="after">
-                <field name="digest_weather_city"/>
-                <field name="digest_weather_latitude"
-                       invisible="not digest_weather_city"/>
-                <field name="digest_weather_longitude"
-                       invisible="not digest_weather_city"/>
+                <separator string="Morning digest"/>
+                <group>
+                    <group string="Delivery">
+                        <field name="digest_send_hour"/>
+                        <field name="digest_frequency"/>
+                    </group>
+                    <group string="Chosen days" invisible="digest_frequency != 'custom'">
+                        <field name="digest_monday"/>
+                        <field name="digest_tuesday"/>
+                        <field name="digest_wednesday"/>
+                        <field name="digest_thursday"/>
+                        <field name="digest_friday"/>
+                        <field name="digest_saturday"/>
+                        <field name="digest_sunday"/>
+                    </group>
+                </group>
+                <group>
+                    <group string="Sections">
+                        <field name="digest_opt_calendar_events"/>
+                        <field name="digest_opt_overdue_activities"/>
+                        <field name="digest_opt_today_activities"/>
+                        <field name="digest_opt_overdue_tasks"/>
+                        <field name="digest_opt_today_tasks"/>
+                        <field name="digest_opt_upcoming_tasks"/>
+                    </group>
+                    <group string="More sections">
+                        <field name="digest_opt_meetings"/>
+                        <field name="digest_opt_flux_subjects"/>
+                        <field name="digest_opt_week_preview"/>
+                        <field name="digest_opt_weather"/>
+                        <field name="digest_opt_quote"/>
+                    </group>
+                </group>
+                <group>
+                    <group string="Weather">
+                        <field name="digest_weather_city"/>
+                        <field name="digest_weather_latitude"
+                               invisible="not digest_weather_city"/>
+                        <field name="digest_weather_longitude"
+                               invisible="not digest_weather_city"/>
+                    </group>
+                    <group>
+                        <div class="text-muted">
+                            A section left empty follows the digest template that
+                            covers you, and so do an empty hour and an empty
+                            frequency.
+                        </div>
+                    </group>
+                </group>
             </field>
         </field>
     </record>
 
-    <!-- Preferences dialog (each user editing their own profile) -->
+    <!-- Preferences dialog (each user editing their own profile).
+         The same block: a form arch is not QWeb, so there is nothing to
+         share it with. Change one, change the other. -->
     <record id="view_users_form_simple_modif_digest_weather" model="ir.ui.view">
-        <field name="name">res.users.preferences.digest.weather</field>
+        <field name="name">res.users.preferences.digest</field>
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
         <field name="arch" type="xml">
             <field name="tz" position="after">
-                <field name="digest_weather_city"/>
-                <field name="digest_weather_latitude"
-                       invisible="not digest_weather_city"/>
-                <field name="digest_weather_longitude"
-                       invisible="not digest_weather_city"/>
+                <separator string="Morning digest"/>
+                <group>
+                    <group string="Delivery">
+                        <field name="digest_send_hour"/>
+                        <field name="digest_frequency"/>
+                    </group>
+                    <group string="Chosen days" invisible="digest_frequency != 'custom'">
+                        <field name="digest_monday"/>
+                        <field name="digest_tuesday"/>
+                        <field name="digest_wednesday"/>
+                        <field name="digest_thursday"/>
+                        <field name="digest_friday"/>
+                        <field name="digest_saturday"/>
+                        <field name="digest_sunday"/>
+                    </group>
+                </group>
+                <group>
+                    <group string="Sections">
+                        <field name="digest_opt_calendar_events"/>
+                        <field name="digest_opt_overdue_activities"/>
+                        <field name="digest_opt_today_activities"/>
+                        <field name="digest_opt_overdue_tasks"/>
+                        <field name="digest_opt_today_tasks"/>
+                        <field name="digest_opt_upcoming_tasks"/>
+                    </group>
+                    <group string="More sections">
+                        <field name="digest_opt_meetings"/>
+                        <field name="digest_opt_flux_subjects"/>
+                        <field name="digest_opt_week_preview"/>
+                        <field name="digest_opt_weather"/>
+                        <field name="digest_opt_quote"/>
+                    </group>
+                </group>
+                <group>
+                    <group string="Weather">
+                        <field name="digest_weather_city"/>
+                        <field name="digest_weather_latitude"
+                               invisible="not digest_weather_city"/>
+                        <field name="digest_weather_longitude"
+                               invisible="not digest_weather_city"/>
+                    </group>
+                    <group>
+                        <div class="text-muted">
+                            A section left empty follows the digest template that
+                            covers you, and so do an empty hour and an empty
+                            frequency.
+                        </div>
+                    </group>
+                </group>
             </field>
         </field>
     </record>
