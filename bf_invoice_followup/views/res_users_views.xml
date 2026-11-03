@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Per-user opt-in + cadence, shown in the user's own Preferences tab. -->
+    <record id="res_users_view_form_followup_digest" model="ir.ui.view">
+        <field name="name">res.users.form.bf.followup.digest</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences']" position="inside">
+                <group string="Recevables en retard" name="bf_followup_digest_group"
+                       groups="account.group_account_invoice">
+                    <field name="bf_followup_digest"/>
+                    <field name="bf_followup_digest_interval"
+                           invisible="not bf_followup_digest"/>
+                    <field name="bf_followup_digest_last_sent" readonly="1"
+                           invisible="not bf_followup_digest"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

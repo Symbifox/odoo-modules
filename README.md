@@ -7,13 +7,13 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**97 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**98 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**296 modules are BUSL-1.1.** The source is published and auditable, and **you
+**301 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -257,12 +257,18 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_hosting_patch_digest` | Hébergement — Mises à jour système : section du digest | 18.0.1.2.0 | LGPL-3 | Fleet update section for the daily digest: silent when all is well, always present when a machine stops reporting |
 | `bf_hosting_status` | Hosting Status Page | 18.0.1.4.1 | BUSL-1.1 | A status page per hosted client, opened by a private link: services, versions, health and recent updates. |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.16.0 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
+| `bf_hour_bank_daily_digest` | Banque d'heures — section du digest quotidien | 18.0.1.0.4 | LGPL-3 | Ajoute une section « Paliers franchis » au digest quotidien |
 | `bf_household_base` | Household Base | 18.0.1.0.0 | LGPL-3 | The household group of a Symbifox Personal instance: who belongs to the household, at most ten accounts, and never an administrator among them |
 | `bf_household_family` | Household Family | 18.0.1.1.0 | LGPL-3 | The family of a household instance: members and their roles, children, family papers and emergency cards |
 | `bf_household_family_celebrations` | Household Family: Celebrations | 18.0.1.0.1 | LGPL-3 | The birthdays of the household's children, in Celebrations and the calendar |
 | `bf_household_family_health` | Household Family: Healthy Fox | 18.0.1.0.2 | LGPL-3 | A child of the household is one record, in the family and in Healthy Fox |
 | `bf_impersonate` | Impersonate a User | 18.0.1.0.5 | LGPL-3 | See Symbifox as one of your users, read-only by default, with a reason, a time limit, a notice to the person and a journal no access right can rewrite |
+| `bf_invoice_followup` | Relances de factures | 18.0.1.3.0 | BUSL-1.1 | Suivi et relances des factures clients en retard (statut manuel, activités automatiques, digest hebdomadaire) |
+| `bf_invoice_followup_digest` | Recevables en retard — section du digest quotidien | 18.0.1.0.4 | BUSL-1.1 | Ajoute une section « Factures en retard » au digest quotidien et retire le courriel séparé de bf_invoice_followup |
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
+| `bf_irregularity` | BF Irregularities | 18.0.1.0.1 | BUSL-1.1 | Shared registry of irregularities: late, off-process, hazardous, silent, orphaned or abnormal records |
+| `bf_irregularity_digest` | BF Irregularities — Daily digest section | 18.0.1.0.1 | BUSL-1.1 | Adds the reader's open irregularities to the daily digest |
+| `bf_irregularity_project` | BF Irregularities — Projects and timesheets | 18.0.1.2.0 | BUSL-1.1 | Detectors for tasks stuck waiting, orphaned tasks and days without a timesheet |
 | `bf_job_search` | Job Search | 18.0.1.0.3 | LGPL-3 | Track your job applications with the good habits built in: follow-ups, interviews, thank-you notes, referees and a job search log |
 | `bf_key_management` | Symbifox Keys | 18.0.1.0.15 | BUSL-1.1 | Who holds which key, card or remote of the premises, which doors each one opens, and nothing forgotten when someone leaves |
 | `bf_kitchen` | Symbifox: kitchen | 18.0.1.4.0 | BUSL-1.1 | Kitchen management for restaurants, caterers and kitchens: recipes and plate cost from the last vendor bill, kitchen counts and losses, theoretical/actual variance, supplier orders by delivery day, menu engineering by popularity and margin |
@@ -533,14 +539,14 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 file inside each module governs and carries its exact parameters.
 
 <<<<<<< HEAD
-- **296 modules: BUSL-1.1.** Production use for your own internal business
+- **301 modules: BUSL-1.1.** Production use for your own internal business
 =======
-- **296 modules: BUSL-1.1.** Production use for your own internal business
+- **301 modules: BUSL-1.1.** Production use for your own internal business
 >>>>>>> 344cf03a (bf_survey_certificate: three branded layouts, course name, withdrawal screen (v18.0.1.1.0))
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **97 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **98 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

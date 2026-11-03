@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate : une fois posé, le gabarit appartient à qui l'installe. Ses
+         retouches survivent donc aux montées de version du module. -->
+    <data noupdate="1">
+        <record id="mail_template_relance_facture" model="mail.template">
+            <field name="name">Relance facture en retard</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="subject">Facture {{ object.name }} échue depuis {{ object.bf_days_overdue }} jours</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="email_from">{{ object.invoice_user_id.email_formatted or object.company_id.email_formatted }}</field>
+            <field name="description">Relance ouverte dans le compositeur depuis la facture, modifiable avant l'envoi</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html" type="html">
+                <div style="margin:0px;padding:0px;font-size:13px;">
+                    <p>Bonjour,</p>
+                    <p>
+                        Notre facture <strong t-out="object.name or ''">INV/2026/0001</strong>,
+                        d'un montant de
+                        <strong t-out="format_amount(object.amount_residual, object.currency_id) or ''">100,00 $</strong>,
+                        était due le
+                        <strong t-out="format_date(object.invoice_date_due) or ''">1 janvier 2026</strong>
+                        et demeure impayée à ce jour.
+                    </p>
+                    <p>
+                        Si le paiement est déjà parti, merci de ne pas tenir compte de cet avis.
+                        Si quelque chose bloque, écrivez-nous : nous trouverons une entente.
+                    </p>
+                    <p>Merci de votre attention,</p>
+                    <p t-out="object.invoice_user_id.name or object.company_id.name or ''">Service de la facturation</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

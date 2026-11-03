@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="detector_activity_overdue" model="bf.irregularity.detector">
+        <field name="name">Activity overdue for too long</field>
+        <field name="code">activity_overdue</field>
+        <field name="sequence">10</field>
+        <field name="family">late</field>
+        <field name="severity">warning</field>
+        <field name="threshold">7</field>
+        <field name="threshold_label">days past the deadline</field>
+        <field name="description">A planned activity whose deadline passed more than the threshold ago: nobody escalated it or rescheduled it.</field>
+    </record>
+    <record id="detector_activity_inactive_user" model="bf.irregularity.detector">
+        <field name="name">Activity assigned to an archived user</field>
+        <field name="code">activity_inactive_user</field>
+        <field name="sequence">20</field>
+        <field name="family">orphan</field>
+        <field name="severity">warning</field>
+        <field name="description">A planned activity assigned to someone whose account is archived: nobody will ever see it.</field>
+    </record>
+    <record id="detector_scheduled_message_stuck" model="bf.irregularity.detector">
+        <field name="name">Scheduled message not sent</field>
+        <field name="code">scheduled_message_stuck</field>
+        <field name="sequence">30</field>
+        <field name="family">late</field>
+        <field name="severity">critical</field>
+        <field name="threshold">1</field>
+        <field name="threshold_label">hours past the scheduled time</field>
+        <field name="description">A scheduled message whose time has passed but which is still waiting to be posted.</field>
+    </record>
+    <record id="detector_mail_failed" model="bf.irregularity.detector">
+        <field name="name">Outgoing email failed</field>
+        <field name="code">mail_failed</field>
+        <field name="sequence">40</field>
+        <field name="family">hazard</field>
+        <field name="severity">critical</field>
+        <field name="description">An outgoing email in error: the recipient never received it.</field>
+    </record>
+</odoo>

@@ -1,0 +1,514 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_irregularity
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-25 02:33+0000\n"
+"PO-Revision-Date: 2026-09-25 02:33+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_irregularity
+#. odoo-python
+#: code:addons/bf_irregularity/models/irregularity.py:0
+msgid "(deleted)"
+msgstr ""
+
+#. module: bf_irregularity
+#. odoo-python
+#: code:addons/bf_irregularity/models/irregularity_detector.py:0
+msgid "(no subject)"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.constraint,message:bf_irregularity.constraint_bf_irregularity_detector_code_unique
+msgid "A detector code must be unique."
+msgstr ""
+
+#. module: bf_irregularity
+#: model:bf.irregularity.detector,description:bf_irregularity.detector_activity_inactive_user
+msgid ""
+"A planned activity assigned to someone whose account is archived: nobody "
+"will ever see it."
+msgstr ""
+
+#. module: bf_irregularity
+#: model:bf.irregularity.detector,description:bf_irregularity.detector_activity_overdue
+msgid ""
+"A planned activity whose deadline passed more than the threshold ago: nobody"
+" escalated it or rescheduled it."
+msgstr ""
+
+#. module: bf_irregularity
+#: model:bf.irregularity.detector,description:bf_irregularity.detector_scheduled_message_stuck
+msgid ""
+"A scheduled message whose time has passed but which is still waiting to be "
+"posted."
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity_detector__family__abnormal
+msgid "Abnormal"
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_form
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_list
+msgid "Acknowledge"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity__state__acknowledged
+msgid "Acknowledged"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:bf.irregularity.detector,name:bf_irregularity.detector_activity_inactive_user
+msgid "Activity assigned to an archived user"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:bf.irregularity.detector,name:bf_irregularity.detector_activity_overdue
+msgid "Activity overdue for too long"
+msgstr ""
+
+#. module: bf_irregularity
+#. odoo-python
+#: code:addons/bf_irregularity/models/irregularity_detector.py:0
+msgid ""
+"Activity “%(summary)s” is assigned to %(user)s, whose account is archived"
+msgstr ""
+
+#. module: bf_irregularity
+#. odoo-python
+#: code:addons/bf_irregularity/models/irregularity_detector.py:0
+msgid "Activity “%(summary)s” overdue for %(days)s days"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__age_days
+msgid "Age (days)"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.constraint,message:bf_irregularity.constraint_bf_irregularity_detector_key_unique
+msgid "An irregularity is unique per detector and key."
+msgstr ""
+
+#. module: bf_irregularity
+#: model:bf.irregularity.detector,description:bf_irregularity.detector_mail_failed
+msgid "An outgoing email in error: the recipient never received it."
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_detector_form
+msgid "Archived"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__code
+msgid "Code"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__create_uid
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__create_date
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity__severity__critical
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity_detector__severity__critical
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_search
+msgid "Critical"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__description
+msgid "Description"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__detector_id
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_search
+msgid "Detector"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,help:bf_irregularity.field_bf_irregularity_detector__threshold
+msgid "Detector-specific threshold, usually a number of days."
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.actions.act_window,name:bf_irregularity.action_bf_irregularity_detector
+#: model:ir.ui.menu,name:bf_irregularity.menu_bf_irregularity_detector
+msgid "Detectors"
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.actions.act_window,help:bf_irregularity.action_bf_irregularity
+msgid ""
+"Detectors run every hour and list here what is late, off-process, hazardous,"
+" silent, orphaned or abnormal."
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__display_name
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_irregularity
+#. odoo-python
+#: code:addons/bf_irregularity/models/irregularity_detector.py:0
+msgid "Email “%(subject)s” failed: %(reason)s"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__default_owner_id
+msgid "Fallback owner"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__family
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__family
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_search
+msgid "Family"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__first_seen
+msgid "First Seen"
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_search
+msgid "Group By"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity_detector__family__hazard
+msgid "Hazardous"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__id
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity__severity__info
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity_detector__severity__info
+msgid "Info"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.actions.act_window,name:bf_irregularity.action_bf_irregularity
+#: model:ir.ui.menu,name:bf_irregularity.menu_bf_irregularity
+#: model:ir.ui.menu,name:bf_irregularity.menu_bf_irregularity_root
+msgid "Irregularities"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.actions.server,name:bf_irregularity.ir_cron_bf_irregularity_run_ir_actions_server
+msgid "Irregularities: run detectors"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model,name:bf_irregularity.model_bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__name
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__irregularity_ids
+msgid "Irregularity"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model,name:bf_irregularity.model_bf_irregularity_detector
+msgid "Irregularity detector"
+msgstr ""
+
+#. module: bf_irregularity
+#. odoo-python
+#: code:addons/bf_irregularity/models/irregularity.py:0
+msgid "Irregularity: %s"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__key
+msgid "Key"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__last_error
+msgid "Last Error"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__last_run
+msgid "Last Run"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__last_seen
+msgid "Last Seen"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__write_uid
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__write_date
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity_detector__family__late
+msgid "Late"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,help:bf_irregularity.field_bf_irregularity_detector__code
+msgid "Links the record to the method _detect_<code>."
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_search
+msgid "Mine"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__res_model
+msgid "Model"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__mute_until
+msgid "Mute Until"
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_form
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_list
+msgid "Mute for 30 days"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity__state__muted
+msgid "Muted"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_irregularity
+#. odoo-python
+#: code:addons/bf_irregularity/models/irregularity_detector.py:0
+msgid "No method _detect_%s is installed."
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_search
+msgid "Not resolved"
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.actions.act_window,help:bf_irregularity.action_bf_irregularity
+msgid "Nothing irregular right now"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity_detector__family__off_process
+msgid "Off-process"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity__state__open
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_detector_form
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_search
+msgid "Open"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__open_count
+msgid "Open Count"
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_form
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_list
+msgid "Open record"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity_detector__family__orphan
+msgid "Orphaned"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:bf.irregularity.detector,name:bf_irregularity.detector_mail_failed
+msgid "Outgoing email failed"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__owner_id
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_search
+msgid "Owner"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,help:bf_irregularity.field_bf_irregularity_detector__default_owner_id
+msgid ""
+"Receives the irregularities for which no responsible person can be found."
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__res_name
+msgid "Record"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__res_id
+msgid "Record ID"
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_form
+msgid "Reopen"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity__state__resolved
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_search
+msgid "Resolved"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__resolved_date
+msgid "Resolved Date"
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_detector_form
+msgid "Run now"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__notify_activity
+msgid "Schedule an activity"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:bf.irregularity.detector,name:bf_irregularity.detector_scheduled_message_stuck
+msgid "Scheduled message not sent"
+msgstr ""
+
+#. module: bf_irregularity
+#. odoo-python
+#: code:addons/bf_irregularity/models/irregularity_detector.py:0
+msgid "Scheduled message “%(subject)s” should have gone out on %(date)s"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__severity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__severity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_search
+msgid "Severity"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__severity_rank
+msgid "Severity Rank"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity_detector__family__silent
+msgid "Silent"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__state
+msgid "State"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity__state_rank
+msgid "State Rank"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__threshold
+msgid "Threshold"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,field_description:bf_irregularity.field_bf_irregularity_detector__threshold_label
+msgid "Threshold Label"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity__severity__warning
+#: model:ir.model.fields.selection,name:bf_irregularity.selection__bf_irregularity_detector__severity__warning
+msgid "Warning"
+msgstr ""
+
+#. module: bf_irregularity
+#: model_terms:ir.ui.view,arch_db:bf_irregularity.view_bf_irregularity_detector_form
+msgid "What this detector looks for, and why it matters."
+msgstr ""
+
+#. module: bf_irregularity
+#: model:ir.model.fields,help:bf_irregularity.field_bf_irregularity_detector__notify_activity
+msgid ""
+"When a new irregularity appears, schedule a to-do for its owner on the "
+"affected record."
+msgstr ""
+
+#. module: bf_irregularity
+#: model:bf.irregularity.detector,threshold_label:bf_irregularity.detector_activity_overdue
+msgid "days past the deadline"
+msgstr ""
+
+#. module: bf_irregularity
+#: model:bf.irregularity.detector,threshold_label:bf_irregularity.detector_scheduled_message_stuck
+msgid "hours past the scheduled time"
+msgstr ""
+
+#. module: bf_irregularity
+#. odoo-python
+#: code:addons/bf_irregularity/models/irregularity_detector.py:0
+msgid "unknown reason"
+msgstr ""

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Un constat nomme le dossier visé : chacun ne voit que les siens,
+         l'administrateur voit tout. -->
+    <record id="rule_bf_irregularity_own" model="ir.rule">
+        <field name="name">Irregularities: own</field>
+        <field name="model_id" ref="model_bf_irregularity"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_bf_irregularity_all" model="ir.rule">
+        <field name="name">Irregularities: all (administrators)</field>
+        <field name="model_id" ref="model_bf_irregularity"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+</odoo>

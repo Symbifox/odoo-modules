@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================= -->
+    <!-- Form: clickable relance status + "Envoyer relance" button     -->
+    <!-- ============================================================= -->
+    <record id="view_move_form_followup" model="ir.ui.view">
+        <field name="name">account.move.form.followup</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="bf_followup_state" widget="statusbar"
+                       options="{'clickable': '1'}"
+                       invisible="move_type not in ('out_invoice', 'out_refund')"/>
+                <button name="action_send_followup_relance" type="object"
+                        string="Envoyer relance" class="btn-secondary" icon="fa-envelope"
+                        invisible="move_type not in ('out_invoice', 'out_refund') or state != 'posted'"
+                        groups="account.group_account_invoice"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- List: Factures en retard                                      -->
+    <!-- ============================================================= -->
+    <record id="view_move_list_followup" model="ir.ui.view">
+        <field name="name">account.move.list.followup</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <list string="Factures en retard" create="0"
+                  decoration-warning="bf_days_overdue &gt; 0 and bf_days_overdue &lt;= 30"
+                  decoration-danger="bf_days_overdue &gt; 30">
+                <field name="name" string="Facture"/>
+                <field name="invoice_date" string="Date"/>
+                <field name="partner_id" string="Client"/>
+                <field name="invoice_date_due" string="Échéance"/>
+                <field name="bf_days_overdue" string="Retard (j)"/>
+                <field name="amount_total" optional="hide"/>
+                <field name="amount_residual" string="Solde dû"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="invoice_user_id" string="Vendeur" widget="many2one_avatar_user"/>
+                <field name="bf_followup_state" string="Relance"/>
+                <field name="payment_state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- Search: filters, age buckets, group-by                        -->
+    <!-- ============================================================= -->
+    <record id="view_move_search_followup" model="ir.ui.view">
+        <field name="name">account.move.search.followup</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <search string="Factures en retard">
+                <field name="name" string="Facture"/>
+                <field name="partner_id" string="Client"/>
+                <field name="invoice_user_id" string="Vendeur"/>
+
+                <filter name="overdue" string="En retard"
+                        domain="[('invoice_date_due', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="state_none" string="Aucune relance"
+                        domain="[('bf_followup_state', '=', 'none')]"/>
+                <filter name="state_rappel_1" string="1er rappel"
+                        domain="[('bf_followup_state', '=', 'rappel_1')]"/>
+                <filter name="state_rappel_2" string="2e rappel"
+                        domain="[('bf_followup_state', '=', 'rappel_2')]"/>
+                <filter name="state_mise_en_demeure" string="Mise en demeure"
+                        domain="[('bf_followup_state', '=', 'mise_en_demeure')]"/>
+                <separator/>
+                <filter name="age_0_7" string="0–7 j"
+                        domain="[('invoice_date_due', '&lt;', context_today().strftime('%Y-%m-%d')),
+                                 ('invoice_date_due', '&gt;=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="age_8_30" string="8–30 j"
+                        domain="[('invoice_date_due', '&lt;', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d')),
+                                 ('invoice_date_due', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <filter name="age_31_60" string="31–60 j"
+                        domain="[('invoice_date_due', '&lt;', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d')),
+                                 ('invoice_date_due', '&gt;=', (context_today() - relativedelta(days=60)).strftime('%Y-%m-%d'))]"/>
+                <filter name="age_60p" string="60 j +"
+                        domain="[('invoice_date_due', '&lt;', (context_today() - relativedelta(days=60)).strftime('%Y-%m-%d'))]"/>
+
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_salesperson" string="Vendeur"
+                            context="{'group_by': 'invoice_user_id'}"/>
+                    <filter name="group_followup" string="Statut de relance"
+                            context="{'group_by': 'bf_followup_state'}"/>
+                    <filter name="group_partner" string="Client"
+                            context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- Action + menu                                                 -->
+    <!-- ============================================================= -->
+    <record id="action_invoice_followup" model="ir.actions.act_window">
+        <field name="name">Factures en retard</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_move_list_followup"/>
+        <field name="search_view_id" ref="view_move_search_followup"/>
+        <field name="domain">[('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('payment_state', 'in', ('not_paid', 'partial'))]</field>
+        <field name="context">{'search_default_overdue': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune facture client en retard 🎉</p>
+            <p>Les factures clients comptabilisées, impayées et échues apparaissent ici.
+               Faites évoluer leur statut de relance et utilisez « Envoyer relance ».</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_invoice_followup"
+              name="Factures en retard"
+              parent="account.menu_finance_receivables"
+              action="action_invoice_followup"
+              sequence="25"/>
+
+</odoo>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_irregularity_list" model="ir.ui.view">
+        <field name="name">bf.irregularity.list</field>
+        <field name="model">bf.irregularity</field>
+        <field name="arch" type="xml">
+            <list create="false"
+                  decoration-danger="severity == 'critical' and state == 'open'"
+                  decoration-warning="severity == 'warning' and state == 'open'"
+                  decoration-muted="state in ('muted', 'resolved')">
+                <field name="severity" widget="badge"
+                       decoration-danger="severity == 'critical'"
+                       decoration-warning="severity == 'warning'"
+                       decoration-info="severity == 'info'"/>
+                <field name="detector_id"/>
+                <field name="name"/>
+                <field name="res_name"/>
+                <field name="owner_id" widget="many2one_avatar_user"/>
+                <field name="first_seen" widget="remaining_days" optional="hide"/>
+                <field name="age_days"/>
+                <field name="state" widget="badge" optional="show"/>
+                <button name="action_open_record" type="object" icon="fa-external-link" title="Open record"/>
+                <button name="action_acknowledge" type="object" icon="fa-check" title="Acknowledge" invisible="state != 'open'"/>
+                <button name="action_mute" type="object" icon="fa-bell-slash" title="Mute for 30 days" invisible="state not in ('open', 'acknowledged')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_irregularity_form" model="ir.ui.view">
+        <field name="name">bf.irregularity.form</field>
+        <field name="model">bf.irregularity</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_open_record" type="object" string="Open record" class="btn-primary"/>
+                    <button name="action_acknowledge" type="object" string="Acknowledge" invisible="state != 'open'"/>
+                    <button name="action_mute" type="object" string="Mute for 30 days" invisible="state not in ('open', 'acknowledged')"/>
+                    <button name="action_reopen" type="object" string="Reopen" invisible="state == 'open'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,acknowledged,resolved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="detector_id"/>
+                            <field name="family"/>
+                            <field name="severity"/>
+                            <field name="owner_id" widget="many2one_avatar_user"/>
+                        </group>
+                        <group>
+                            <field name="res_name"/>
+                            <field name="res_model" groups="base.group_no_one"/>
+                            <field name="first_seen"/>
+                            <field name="last_seen"/>
+                            <field name="resolved_date" invisible="not resolved_date"/>
+                            <field name="mute_until" invisible="state != 'muted'"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_irregularity_search" model="ir.ui.view">
+        <field name="name">bf.irregularity.search</field>
+        <field name="model">bf.irregularity</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="detector_id"/>
+                <field name="owner_id"/>
+                <filter name="filter_mine" string="Mine" domain="[('owner_id', '=', uid)]"/>
+                <separator/>
+                <filter name="filter_open" string="Open" domain="[('state', '=', 'open')]"/>
+                <filter name="filter_active" string="Not resolved" domain="[('state', '!=', 'resolved')]"/>
+                <filter name="filter_resolved" string="Resolved" domain="[('state', '=', 'resolved')]"/>
+                <separator/>
+                <filter name="filter_critical" string="Critical" domain="[('severity', '=', 'critical')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_detector" string="Detector" context="{'group_by': 'detector_id'}"/>
+                    <filter name="group_family" string="Family" context="{'group_by': 'family'}"/>
+                    <filter name="group_severity" string="Severity" context="{'group_by': 'severity'}"/>
+                    <filter name="group_owner" string="Owner" context="{'group_by': 'owner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_irregularity" model="ir.actions.act_window">
+        <field name="name">Irregularities</field>
+        <field name="res_model">bf.irregularity</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_open': 1, 'search_default_group_detector': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing irregular right now</p>
+            <p>Detectors run every hour and list here what is late, off-process, hazardous, silent, orphaned or abnormal.</p>
+        </field>
+    </record>
+</odoo>

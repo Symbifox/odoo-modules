@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="detector_task_waiting_too_long" model="bf.irregularity.detector">
+        <field name="name">Task waiting for too long</field>
+        <field name="code">task_waiting_too_long</field>
+        <field name="sequence">50</field>
+        <field name="family">silent</field>
+        <field name="severity">warning</field>
+        <field name="threshold">21</field>
+        <field name="threshold_label">days in a waiting state (critical at twice that)</field>
+        <field name="description">A task in “Waiting – Client” or “Waiting – External” for longer than the threshold: the wait has no end date, so nobody is reminded.</field>
+    </record>
+    <record id="detector_task_in_archived_project" model="bf.irregularity.detector">
+        <field name="name">Open task in an archived project</field>
+        <field name="code">task_in_archived_project</field>
+        <field name="sequence">60</field>
+        <field name="family">orphan</field>
+        <field name="severity">warning</field>
+        <field name="description">A task that is still open although its project is archived: it no longer shows up anywhere.</field>
+    </record>
+    <record id="detector_task_unassigned" model="bf.irregularity.detector">
+        <field name="name">Open task with nobody assigned</field>
+        <field name="code">task_unassigned</field>
+        <field name="sequence">70</field>
+        <field name="family">orphan</field>
+        <field name="severity">info</field>
+        <!-- Inactif par défaut : beaucoup d'équipes laissent des tâches sans
+             assigné à dessein (gabarits, idées, notes), ce qui noierait le
+             registre sous des constats voulus. -->
+        <field name="active" eval="False"/>
+        <field name="description">An open task in an active project with nobody assigned to it.</field>
+    </record>
+    <record id="detector_timesheet_missing_day" model="bf.irregularity.detector">
+        <field name="name">Working day without a timesheet</field>
+        <field name="code">timesheet_missing_day</field>
+        <field name="sequence">80</field>
+        <field name="family">silent</field>
+        <field name="severity">warning</field>
+        <field name="threshold">5</field>
+        <field name="threshold_label">working days checked</field>
+        <field name="description">A working day, according to the employee's calendar, on which no time was logged on any project.</field>
+    </record>
+</odoo>
