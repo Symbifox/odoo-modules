@@ -1,0 +1,151 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_project_number
+# Source strings are written in English.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_project_number 18.0.1.1.0\n"
+"POT-Creation-Date: 2026-11-03 09:22+0000\n"
+"PO-Revision-Date: 2026-11-03 09:22+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_project_number
+#. odoo-python
+#: code:addons/bf_project_number/models/project_project.py:0
+msgid "A project number takes digits only: %s is refused."
+msgstr "Le numéro de projet ne prend que des chiffres : %s est refusé."
+
+#. module: bf_project_number
+#: model_terms:ir.ui.view,arch_db:bf_project_number.view_project_list_number
+msgid "No."
+msgstr "N°"
+
+#. module: bf_project_number
+#: model:ir.model.fields,help:bf_project_number.field_project_project__bf_project_number
+msgid ""
+"Number assigned at creation, taking the smallest number still free. Editable"
+" by hand as long as the target number is not already taken."
+msgstr ""
+"Numéro attribué à la création, au plus petit numéro encore libre. Modifiable"
+" à la main tant que le numéro visé n'est pas déjà pris."
+
+#. module: bf_project_number
+#: model:ir.model,name:bf_project_number.model_project_project
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_project_number
+#: model:ir.model.fields,field_description:bf_project_number.field_project_project__bf_project_number
+#: model_terms:ir.ui.view,arch_db:bf_project_number.view_project_search_number
+msgid "Project Number"
+msgstr "N° de projet"
+
+#. module: bf_project_number
+#. odoo-python
+#: code:addons/bf_project_number/models/project_project.py:0
+msgid ""
+"Project number %(numero)s cannot be given to %(nombre)s projects at once: it"
+" designates only one."
+msgstr ""
+"Le numéro de projet %(numero)s ne peut pas être donné à %(nombre)s projets à"
+" la fois : il n'en désigne qu'un."
+
+#. module: bf_project_number
+#. odoo-python
+#: code:addons/bf_project_number/models/project_project.py:0
+msgid ""
+"Project number %(numero)s is already taken by “%(projet)s”. Free it first, "
+"or choose another number."
+msgstr ""
+"Le numéro de projet %(numero)s est déjà pris par « %(projet)s ». Libérez-le "
+"d'abord, ou choisissez un autre numéro."
+
+#. module: bf_project_number
+#. odoo-python
+#: code:addons/bf_project_number/models/project_project.py:0
+msgid ""
+"Project number %s is already taken by a project you do not have access to. "
+"Choose another number."
+msgstr ""
+"Le numéro de projet %s est déjà pris par un projet auquel vous n'avez pas "
+"accès. Choisissez un autre numéro."
+
+#. module: bf_project_number
+#. odoo-python
+#: code:addons/bf_project_number/models/project_project.py:0
+msgid "Project number %s is requested twice in the same batch."
+msgstr "Le numéro de projet %s est demandé deux fois dans la même fournée."
+
+#. module: bf_project_number
+#. odoo-python
+#: code:addons/bf_project_number/models/project_project.py:0
+msgid "Project numbers start at 1: %s is refused."
+msgstr "Le numéro de projet commence à 1 : %s est refusé."
+
+#. module: bf_project_number
+#: model:ir.model.constraint,message:bf_project_number.constraint_project_project_bf_project_number_uniq
+msgid "Two projects cannot carry the same project number."
+msgstr "Deux projets ne peuvent pas porter le même numéro de projet."
+
+#. module: bf_project_number
+#: model_terms:ir.ui.view,arch_db:bf_project_number.view_project_form_number
+msgid "assigned on its own"
+msgstr "attribué tout seul"
+
+#. module: bf_project_number
+#: model:ir.module.module,shortdesc:base.module_bf_project_number
+msgid "BF Project Number"
+msgstr "BF Numéro de projet"
+
+#. module: bf_project_number
+#: model:ir.module.module,summary:base.module_bf_project_number
+msgid ""
+"A project number assigned on its own, taking the smallest free number, "
+"editable by hand"
+msgstr ""
+"Un numéro de projet attribué tout seul, au plus petit numéro libre, et "
+"modifiable à la main"
+
+#. module: bf_project_number
+#: model:ir.module.module,description:base.module_bf_project_number
+msgid ""
+"\n"
+"Project number\n"
+"==============\n"
+"\n"
+"Every project carries a three-digit number (001, 002, 003…) assigned when it is\n"
+"created. The number taken is **the smallest one still free**: a number freed by\n"
+"a deleted or renumbered project is given to the next project, instead of\n"
+"leaving a hole.\n"
+"\n"
+"The number stays **editable by hand**, as long as the target number is not\n"
+"already taken by another project. A taken number is refused, naming the project\n"
+"that holds it.\n"
+"\n"
+"The number reads to the left of the name in the project list, as a badge on the\n"
+"kanban card, and answers the search bar. It does not touch the project name:\n"
+"nothing to rename.\n"
+msgstr ""
+"\n"
+"Numéro de projet\n"
+"================\n"
+"\n"
+"Chaque projet porte un numéro à trois chiffres (001, 002, 003…) attribué à sa\n"
+"création. Le numéro retenu est **le plus petit encore libre** : un numéro rendu\n"
+"libre par un projet effacé ou renuméroté est repris au projet suivant, au lieu\n"
+"de laisser un trou.\n"
+"\n"
+"Le numéro reste **modifiable à la main**, tant que le numéro visé n'est pas déjà\n"
+"pris par un autre projet. Un numéro déjà pris est refusé en nommant le projet\n"
+"qui le détient.\n"
+"\n"
+"Le numéro se lit à gauche du nom dans la liste des projets, en pastille sur la\n"
+"carte kanban, et se cherche depuis la barre de recherche. Il ne touche pas au\n"
+"nom du projet : rien à renommer.\n"

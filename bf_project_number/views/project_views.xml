@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Liste : le numéro à gauche du nom, à droite de l'étoile des favoris.
+         Ancré sur le nom du champ, jamais sur un libellé : un libellé traduit
+         change de texte et l'xpath ne trouve plus rien. -->
+    <record id="view_project_list_number" model="ir.ui.view">
+        <field name="name">project.project.list.bf.number</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_name']" position="before">
+                <field name="bf_project_number" string="No." optional="show" width="80"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Kanban : une pastille sobre devant le nom. Classes Bootstrap déjà
+         chargées par le backend, donc aucun style maison à compiler. -->
+    <record id="view_project_kanban_number" model="ir.ui.view">
+        <field name="name">project.project.kanban.bf.number</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//t[@t-name='card']//field[@name='display_name']" position="before">
+                <!-- Dans le titre, juste à gauche du nom. Classes Bootstrap déjà
+                     chargées par le backend : aucun style maison à compiler. -->
+                <span t-if="record.bf_project_number.value"
+                      class="badge text-bg-secondary me-1">
+                    <field name="bf_project_number"/>
+                </span>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Formulaire : dans le premier groupe, au-dessus du nom des tâches. -->
+    <record id="view_project_form_number" model="ir.ui.view">
+        <field name="name">project.project.form.bf.number</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='label_tasks']" position="before">
+                <field name="bf_project_number" placeholder="assigned on its own"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Recherche : par numéro, et le numéro dans la recherche par nom. -->
+    <record id="view_project_search_number" model="ir.ui.view">
+        <field name="name">project.project.select.bf.number</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_project_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="filter_domain">['|', ('name', 'ilike', self), ('bf_project_number', 'ilike', self)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="bf_project_number" string="Project Number"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

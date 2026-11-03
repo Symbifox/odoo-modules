@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**98 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**99 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -350,6 +350,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_preferred_name_signature` | Symbifox Noms d'usage et pronoms — pont Signatures | 18.0.1.0.0 | BUSL-1.1 | The email signature shows the pronouns from the person's contact |
 | `bf_process` | Cartographie de processus | 18.0.5.2.0 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.1.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
+| `bf_project_number` | BF Project Number | 18.0.1.1.0 | LGPL-3 | A project number assigned on its own, taking the smallest free number, editable by hand |
 | `bf_property_access` | Immeubles : accès des résidents | 18.0.1.1.2 | BUSL-1.1 | Who may open which door: a resident's access is added on move-in and removed once a person confirms the move-out, through orders to the devices or the caretaker; temporary access for visitors, contractors and entries into a dwelling |
 | `bf_property_access_portal` | Immeubles : mes accès au portail | 18.0.1.1.3 | BUSL-1.1 | Residents see on the portal the doors they can open, with which credential, and can give a visitor temporary access to the common doors |
 | `bf_property_access_privacy` | Immeubles : accès et vie privée (Loi 25) | 18.0.1.0.2 | BUSL-1.1 | Access control in the Québec Act 25 processing register, declared versus applied retention, and a prefilled privacy impact assessment template |
@@ -546,7 +547,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **98 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **99 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising
