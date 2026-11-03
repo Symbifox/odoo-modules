@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+          Trois référentiels livrés, nommés par ce qu'ils MESURENT.
+
+          ⚠️ Aucun NOM DE MARQUE d'éditeur dans le code : ni « DiSC », ni
+          « Everything DiSC », ni « MBTI », ni « Myers-Briggs », qui appartiennent
+          à leurs éditeurs. Chaque référentiel est nommé par ce qu'il mesure, et
+          « DISC » en majuscules n'apparaît qu'entre parenthèses, comme acronyme
+          générique du modèle de Marston, pour que le client reconnaisse la
+          famille de son atelier. Le module n'administre aucun questionnaire : il
+          enregistre un résultat obtenu ailleurs, et le client nomme lui-même son
+          instrument dans « Instrument ou fournisseur ».
+
+          ⚠️ Le C de cette famille s'appelle « Compliance » et non
+          « Conscientiousness » : ce dernier est le C du Big Five, et les deux
+          portaient le même libellé anglais, donc une seule traduction pour deux
+          facteurs qui ne veulent pas dire la même chose.
+
+          ⚠️ Les textes des seize types ne recopient aucun portrait d'éditeur :
+          chacun est composé des quatre dichotomies de son code.
+
+          🔴 `noupdate="1"` : le client renomme ses types et ajuste les textes,
+          et une montée n'a pas à écraser son travail. Le prix est connu :
+          corriger un texte livré demande une migration, pas un `-u`.
+        -->
+
+        <record id="framework_behaviour4" model="bf.ex.profile.framework">
+            <field name="code">behaviour4</field>
+            <field name="name">Four behavioural styles (DISC family)</field>
+            <field name="sequence">10</field>
+            <field name="result_mode">scored</field>
+            <field name="scale_min">0</field>
+            <field name="scale_max">100</field>
+            <field name="description">Four behavioural styles, each scored. Most reports of this family give a score on all four and a dominant one; the dominant style is computed here from the scores rather than entered twice.</field>
+        </record>
+
+        <record id="type_behaviour4_d" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_behaviour4"/>
+            <field name="code">d</field>
+            <field name="abbr">D</field>
+            <field name="name">Dominance</field>
+            <field name="sequence">10</field>
+            <field name="description">Gets to the point, takes the decision, dislikes being slowed down.</field>
+            <field name="working_with">Direct and quick. Lead with the conclusion and the decision you want.</field>
+        </record>
+
+        <record id="type_behaviour4_i" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_behaviour4"/>
+            <field name="code">i</field>
+            <field name="abbr">I</field>
+            <field name="name">Influence</field>
+            <field name="sequence">20</field>
+            <field name="description">Convinces, brings people along, needs the room to react.</field>
+            <field name="working_with">Talk it through before writing it down, and say out loud what you agree with.</field>
+        </record>
+
+        <record id="type_behaviour4_s" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_behaviour4"/>
+            <field name="code">s</field>
+            <field name="abbr">S</field>
+            <field name="name">Steadiness</field>
+            <field name="sequence">30</field>
+            <field name="description">Steady, reliable, takes a change badly when it arrives unannounced.</field>
+            <field name="working_with">Give notice before a change, and say what stays the same.</field>
+        </record>
+
+        <record id="type_behaviour4_c" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_behaviour4"/>
+            <field name="code">c</field>
+            <field name="abbr">C</field>
+            <field name="name">Compliance</field>
+            <field name="sequence">40</field>
+            <field name="description">Checks, documents, will not sign off on an approximation.</field>
+            <field name="working_with">Send the detail in writing first, and expect questions on the detail.</field>
+        </record>
+
+        <record id="framework_types16" model="bf.ex.profile.framework">
+            <field name="code">types16</field>
+            <field name="name">Sixteen types (Jungian dichotomies)</field>
+            <field name="sequence">20</field>
+            <field name="result_mode">single</field>
+            <field name="description">Sixteen types built from four dichotomies. One type per person, named by its four letters.</field>
+        </record>
+
+        <record id="type_types16_istj" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">istj</field>
+            <field name="abbr"></field>
+            <field name="name">ISTJ</field>
+            <field name="sequence">10</field>
+            <field name="description">Introverted, sensing, thinking, judging.</field>
+            <field name="working_with">Thinks before speaking, so leave a silence after a question. Wants the concrete facts first, not the intention behind them. Decides on stated criteria, so name them. Wants the matter settled, so say when it will be.</field>
+        </record>
+
+        <record id="type_types16_istp" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">istp</field>
+            <field name="abbr"></field>
+            <field name="name">ISTP</field>
+            <field name="sequence">20</field>
+            <field name="description">Introverted, sensing, thinking, perceiving.</field>
+            <field name="working_with">Thinks before speaking, so leave a silence after a question. Wants the concrete facts first, not the intention behind them. Decides on stated criteria, so name them. Wants the options kept open, so say what is still reversible.</field>
+        </record>
+
+        <record id="type_types16_isfj" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">isfj</field>
+            <field name="abbr"></field>
+            <field name="name">ISFJ</field>
+            <field name="sequence">30</field>
+            <field name="description">Introverted, sensing, feeling, judging.</field>
+            <field name="working_with">Thinks before speaking, so leave a silence after a question. Wants the concrete facts first, not the intention behind them. Decides on the effect upon people, so name who is affected. Wants the matter settled, so say when it will be.</field>
+        </record>
+
+        <record id="type_types16_isfp" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">isfp</field>
+            <field name="abbr"></field>
+            <field name="name">ISFP</field>
+            <field name="sequence">40</field>
+            <field name="description">Introverted, sensing, feeling, perceiving.</field>
+            <field name="working_with">Thinks before speaking, so leave a silence after a question. Wants the concrete facts first, not the intention behind them. Decides on the effect upon people, so name who is affected. Wants the options kept open, so say what is still reversible.</field>
+        </record>
+
+        <record id="type_types16_intj" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">intj</field>
+            <field name="abbr"></field>
+            <field name="name">INTJ</field>
+            <field name="sequence">50</field>
+            <field name="description">Introverted, intuitive, thinking, judging.</field>
+            <field name="working_with">Thinks before speaking, so leave a silence after a question. Wants the whole picture before the detail. Decides on stated criteria, so name them. Wants the matter settled, so say when it will be.</field>
+        </record>
+
+        <record id="type_types16_intp" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">intp</field>
+            <field name="abbr"></field>
+            <field name="name">INTP</field>
+            <field name="sequence">60</field>
+            <field name="description">Introverted, intuitive, thinking, perceiving.</field>
+            <field name="working_with">Thinks before speaking, so leave a silence after a question. Wants the whole picture before the detail. Decides on stated criteria, so name them. Wants the options kept open, so say what is still reversible.</field>
+        </record>
+
+        <record id="type_types16_infj" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">infj</field>
+            <field name="abbr"></field>
+            <field name="name">INFJ</field>
+            <field name="sequence">70</field>
+            <field name="description">Introverted, intuitive, feeling, judging.</field>
+            <field name="working_with">Thinks before speaking, so leave a silence after a question. Wants the whole picture before the detail. Decides on the effect upon people, so name who is affected. Wants the matter settled, so say when it will be.</field>
+        </record>
+
+        <record id="type_types16_infp" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">infp</field>
+            <field name="abbr"></field>
+            <field name="name">INFP</field>
+            <field name="sequence">80</field>
+            <field name="description">Introverted, intuitive, feeling, perceiving.</field>
+            <field name="working_with">Thinks before speaking, so leave a silence after a question. Wants the whole picture before the detail. Decides on the effect upon people, so name who is affected. Wants the options kept open, so say what is still reversible.</field>
+        </record>
+
+        <record id="type_types16_estj" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">estj</field>
+            <field name="abbr"></field>
+            <field name="name">ESTJ</field>
+            <field name="sequence">90</field>
+            <field name="description">Extraverted, sensing, thinking, judging.</field>
+            <field name="working_with">Thinks out loud, so an unfinished idea is not a decision. Wants the concrete facts first, not the intention behind them. Decides on stated criteria, so name them. Wants the matter settled, so say when it will be.</field>
+        </record>
+
+        <record id="type_types16_estp" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">estp</field>
+            <field name="abbr"></field>
+            <field name="name">ESTP</field>
+            <field name="sequence">100</field>
+            <field name="description">Extraverted, sensing, thinking, perceiving.</field>
+            <field name="working_with">Thinks out loud, so an unfinished idea is not a decision. Wants the concrete facts first, not the intention behind them. Decides on stated criteria, so name them. Wants the options kept open, so say what is still reversible.</field>
+        </record>
+
+        <record id="type_types16_esfj" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">esfj</field>
+            <field name="abbr"></field>
+            <field name="name">ESFJ</field>
+            <field name="sequence">110</field>
+            <field name="description">Extraverted, sensing, feeling, judging.</field>
+            <field name="working_with">Thinks out loud, so an unfinished idea is not a decision. Wants the concrete facts first, not the intention behind them. Decides on the effect upon people, so name who is affected. Wants the matter settled, so say when it will be.</field>
+        </record>
+
+        <record id="type_types16_esfp" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">esfp</field>
+            <field name="abbr"></field>
+            <field name="name">ESFP</field>
+            <field name="sequence">120</field>
+            <field name="description">Extraverted, sensing, feeling, perceiving.</field>
+            <field name="working_with">Thinks out loud, so an unfinished idea is not a decision. Wants the concrete facts first, not the intention behind them. Decides on the effect upon people, so name who is affected. Wants the options kept open, so say what is still reversible.</field>
+        </record>
+
+        <record id="type_types16_entj" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">entj</field>
+            <field name="abbr"></field>
+            <field name="name">ENTJ</field>
+            <field name="sequence">130</field>
+            <field name="description">Extraverted, intuitive, thinking, judging.</field>
+            <field name="working_with">Thinks out loud, so an unfinished idea is not a decision. Wants the whole picture before the detail. Decides on stated criteria, so name them. Wants the matter settled, so say when it will be.</field>
+        </record>
+
+        <record id="type_types16_entp" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">entp</field>
+            <field name="abbr"></field>
+            <field name="name">ENTP</field>
+            <field name="sequence">140</field>
+            <field name="description">Extraverted, intuitive, thinking, perceiving.</field>
+            <field name="working_with">Thinks out loud, so an unfinished idea is not a decision. Wants the whole picture before the detail. Decides on stated criteria, so name them. Wants the options kept open, so say what is still reversible.</field>
+        </record>
+
+        <record id="type_types16_enfj" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">enfj</field>
+            <field name="abbr"></field>
+            <field name="name">ENFJ</field>
+            <field name="sequence">150</field>
+            <field name="description">Extraverted, intuitive, feeling, judging.</field>
+            <field name="working_with">Thinks out loud, so an unfinished idea is not a decision. Wants the whole picture before the detail. Decides on the effect upon people, so name who is affected. Wants the matter settled, so say when it will be.</field>
+        </record>
+
+        <record id="type_types16_enfp" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_types16"/>
+            <field name="code">enfp</field>
+            <field name="abbr"></field>
+            <field name="name">ENFP</field>
+            <field name="sequence">160</field>
+            <field name="description">Extraverted, intuitive, feeling, perceiving.</field>
+            <field name="working_with">Thinks out loud, so an unfinished idea is not a decision. Wants the whole picture before the detail. Decides on the effect upon people, so name who is affected. Wants the options kept open, so say what is still reversible.</field>
+        </record>
+
+        <record id="framework_bigfive" model="bf.ex.profile.framework">
+            <field name="code">bigfive</field>
+            <field name="name">Five factors (Big Five)</field>
+            <field name="sequence">30</field>
+            <field name="result_mode">scored</field>
+            <field name="scale_min">0</field>
+            <field name="scale_max">100</field>
+            <field name="description">Five factors, each scored. The model and the public item pools built on it are in the public domain, unlike most commercial instruments. No factor is good or bad, and the highest one does not summarise a person.</field>
+        </record>
+
+        <record id="type_bigfive_openness" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_bigfive"/>
+            <field name="code">openness</field>
+            <field name="abbr">O</field>
+            <field name="name">Openness to experience</field>
+            <field name="sequence">10</field>
+            <field name="description">Taste for the new, the abstract and the untried.</field>
+            <field name="working_with">Pitch the new idea as an experiment, not as a settled plan.</field>
+        </record>
+
+        <record id="type_bigfive_conscientiousness" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_bigfive"/>
+            <field name="code">conscientiousness</field>
+            <field name="abbr">C</field>
+            <field name="name">Conscientiousness</field>
+            <field name="sequence">20</field>
+            <field name="description">Organisation, follow-through, respect for a commitment.</field>
+            <field name="working_with">Agree on the deadline and on what done looks like.</field>
+        </record>
+
+        <record id="type_bigfive_extraversion" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_bigfive"/>
+            <field name="code">extraversion</field>
+            <field name="abbr">E</field>
+            <field name="name">Extraversion</field>
+            <field name="sequence">30</field>
+            <field name="description">Energy drawn from company and from exchange.</field>
+            <field name="working_with">A spoken exchange costs less here than a long written one.</field>
+        </record>
+
+        <record id="type_bigfive_agreeableness" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_bigfive"/>
+            <field name="code">agreeableness</field>
+            <field name="abbr">A</field>
+            <field name="name">Agreeableness</field>
+            <field name="sequence">40</field>
+            <field name="description">Cooperation, trust, avoidance of conflict.</field>
+            <field name="working_with">Ask the question twice: a first agreement may be politeness.</field>
+        </record>
+
+        <record id="type_bigfive_neuroticism" model="bf.ex.profile.type">
+            <field name="framework_id" ref="framework_bigfive"/>
+            <field name="code">neuroticism</field>
+            <field name="abbr">N</field>
+            <field name="name">Neuroticism</field>
+            <field name="sequence">50</field>
+            <field name="description">Sensitivity to stress and to uncertainty. A high score is not a flaw and says nothing about competence.</field>
+            <field name="working_with">Say what is settled and what is not. Uncertainty costs more here than bad news.</field>
+        </record>
+
+    </data>
+</odoo>

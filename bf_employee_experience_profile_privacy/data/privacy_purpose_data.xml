@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="purpose_ex_profile" model="privacy.purpose">
+            <field name="code">ex_profile</field>
+            <field name="name">Types de profil et styles de travail</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Si vous nous le dites, nous notons le résultat d'un
+                questionnaire de style de comportement ou de personnalité
+                (quatre styles, seize types, cinq grands facteurs). Cela sert à
+                une seule chose : savoir comment travailler avec vous, et vous
+                aider à savoir comment travailler avec les autres.</p>
+                <p>Rien ne vous oblige à le déclarer, et une déclaration se
+                retire. Un résultat absent reste absent : nous ne le devinons
+                pas à partir d'autre chose.</p>
+                <p>La fiche est lue par vous, par votre gestionnaire direct et
+                par les personnes qui administrent le dossier. Vos collègues
+                n'y ont pas accès, et le système ne permet pas de trier le
+                personnel par type.</p>
+                <p><strong>Ce n'est pas une évaluation.</strong> Un type de
+                profil ne mesure ni la compétence ni le rendement, et il n'a pas
+                à servir à décider d'une embauche, d'une promotion ou d'une
+                affectation. La loi appelle « profilage » le fait d'évaluer des
+                caractéristiques d'une personne, notamment pour analyser son
+                rendement au travail : nous vous le disons d'avance, et c'est
+                justement l'usage que nous écartons.</p>
+                <p>La déclaration est détruite lorsque vous quittez
+                l'entreprise : elle n'a plus de raison d'être.</p>
+            ]]></field>
+            <!--
+                ⚠️ Consentement EXPRES. Une mesure de personnalité est un
+                renseignement sur la personne, pas sur son poste, et sa collecte
+                est volontaire : l'art. 12 al. 2 LPRPSP exige un consentement
+                manifeste, libre et éclairé, donné à des fins spécifiques.
+                ⚠️ Et la finalité NOMME le profilage de l'art. 8.1, parce que le
+                gestionnaire direct lit la fiche. Dire « ce n'est pas une
+                évaluation » dans un module que le gestionnaire consulte est le
+                minimum ; l'interdire pour vrai reste une décision d'entreprise.
+            -->
+            <field name="requires_consent" eval="True"/>
+            <field name="requires_express_opt_in" eval="True"/>
+            <field name="default_validity_days">0</field>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">32</field>
+        </record>
+
+    </data>
+</odoo>

@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**301 modules are BUSL-1.1.** The source is published and auditable, and **you
+**303 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -218,6 +218,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_employee_experience_health` | Expérience employé — allergies | 18.0.1.3.0 | BUSL-1.1 | Allergies and food allergies, readable only by the person and by whoever organises |
 | `bf_employee_experience_health_privacy` | Expérience employé — allergies, pont vie privée (Loi 25) | 18.0.1.0.1 | BUSL-1.1 | Express consent, retention tied to the employment relationship, destruction on departure |
 | `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
+| `bf_employee_experience_profile` | Expérience employé : types de profil | 18.0.1.0.0 | BUSL-1.1 | A declared profile type, never guessed, and never a performance assessment |
+| `bf_employee_experience_profile_privacy` | Expérience employé : types de profil, pont vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Express consent, profiling named, retention tied to the employment relationship, destruction on departure |
 | `bf_employee_experience_pulse` | Expérience employé : pulse | 18.0.1.2.3 | BUSL-1.1 | Anonymous mood pulse and eNPS: separate invitation and answer registers, shuffled batch hand-off, and display thresholds that hold because the answers are readable by no one |
 | `bf_employee_photo_age` | Symbifox Âge de la photo des employés | 18.0.1.0.1 | BUSL-1.1 | Know how old an employee's photo is, and remind them to update it |
 | `bf_expense_ocr` | Lecture des reçus | 18.0.2.2.0 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
@@ -539,9 +541,9 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 file inside each module governs and carries its exact parameters.
 
 <<<<<<< HEAD
-- **301 modules: BUSL-1.1.** Production use for your own internal business
+- **303 modules: BUSL-1.1.** Production use for your own internal business
 =======
-- **301 modules: BUSL-1.1.** Production use for your own internal business
+- **303 modules: BUSL-1.1.** Production use for your own internal business
 >>>>>>> 344cf03a (bf_survey_certificate: three branded layouts, course name, withdrawal screen (v18.0.1.1.0))
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to

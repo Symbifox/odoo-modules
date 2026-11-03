@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!--
+          ⚠️ LA MOITIE SENSIBLE DU MODULE.
+
+          Un type de profil dit quelque chose de la personne, pas du poste, et
+          la définition du profilage de l'art. 8.1 LPRPSP couvre l'évaluation de
+          caractéristiques « notamment à des fins d'analyse du rendement au
+          travail ». Le parti retenu :
+
+            * LIRE   : la personne, son gestionnaire direct, l'administration.
+            * ECRIRE : la personne et l'administration. Pas le gestionnaire.
+
+          C'est un écart ASSUME par rapport aux allergies, où le gestionnaire
+          n'a rien : un style de communication ne sert à rien si la personne qui
+          doit communiquer ne le voit pas.
+
+          🔴 Deux règles pour le même groupe se combinent par OU. La règle de
+          lecture est donc séparée de la règle d'écriture, et celle d'écriture
+          porte `perm_read` à faux : sans ça, elle élargirait la lecture au lieu
+          de restreindre l'écriture, et les deux diraient la même chose.
+        -->
+
+        <record id="rule_profile_read" model="ir.rule">
+            <field name="name">Profil : je lis le mien et celui de mon équipe directe</field>
+            <field name="model_id" ref="model_bf_ex_profile"/>
+            <field name="domain_force">['|', ('employee_id.user_id', '=', user.id), ('employee_id.parent_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_profile_write_own" model="ir.rule">
+            <field name="name">Profil : je ne modifie que le mien</field>
+            <field name="model_id" ref="model_bf_ex_profile"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_profile_hr" model="ir.rule">
+            <field name="name">Profil : l'administration voit tout</field>
+            <field name="model_id" ref="model_bf_ex_profile"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+        </record>
+
+        <record id="rule_profile_company" model="ir.rule">
+            <field name="name">Profil : société</field>
+            <field name="model_id" ref="model_bf_ex_profile"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <!--
+          Les scores portent exactement le même renseignement que la déclaration
+          qui les tient. Une règle plus généreuse ici rendrait la précédente
+          décorative : c'est par la ligne de score qu'on lirait le profil.
+        -->
+
+        <record id="rule_score_read" model="ir.rule">
+            <field name="name">Score : je lis le mien et celui de mon équipe directe</field>
+            <field name="model_id" ref="model_bf_ex_profile_score"/>
+            <field name="domain_force">['|', ('profile_id.employee_id.user_id', '=', user.id), ('profile_id.employee_id.parent_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_score_write_own" model="ir.rule">
+            <field name="name">Score : je ne modifie que le mien</field>
+            <field name="model_id" ref="model_bf_ex_profile_score"/>
+            <field name="domain_force">[('profile_id.employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_score_hr" model="ir.rule">
+            <field name="name">Score : l'administration voit tout</field>
+            <field name="model_id" ref="model_bf_ex_profile_score"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+        </record>
+
+        <record id="rule_score_company" model="ir.rule">
+            <field name="name">Score : société</field>
+            <field name="model_id" ref="model_bf_ex_profile_score"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

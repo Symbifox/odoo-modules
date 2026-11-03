@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_framework_user,Référentiel (lecture),model_bf_ex_profile_framework,base.group_user,1,0,0,0
+access_framework_hr,Référentiel (administration),model_bf_ex_profile_framework,hr.group_hr_user,1,1,1,1
+access_type_user,Type de profil (lecture),model_bf_ex_profile_type,base.group_user,1,0,0,0
+access_type_hr,Type de profil (administration),model_bf_ex_profile_type,hr.group_hr_user,1,1,1,1
+access_profile_user,Profil (le mien et celui de mon équipe),model_bf_ex_profile,base.group_user,1,1,1,1
+access_profile_hr,Profil (administration),model_bf_ex_profile,hr.group_hr_user,1,1,1,1
+access_score_user,Score de dimension (le mien et celui de mon équipe),model_bf_ex_profile_score,base.group_user,1,1,1,1
+access_score_hr,Score de dimension (administration),model_bf_ex_profile_score,hr.group_hr_user,1,1,1,1

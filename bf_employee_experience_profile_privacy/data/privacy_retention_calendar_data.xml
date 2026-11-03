@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            RH-EX-3 : les déclarations de type de profil.
+
+            ⚠️ Zéro année active, et ce n'est pas un oubli. La durée de vie
+            d'une déclaration n'est pas une horloge : c'est le lien d'emploi.
+            La fin poursuivie est accomplie le jour du départ, et l'art. 23
+            commande alors la destruction.
+
+            ⚠️ Ce n'est PAS un document médical, contrairement aux allergies.
+            Un questionnaire de style de comportement n'est pas un acte de
+            santé et n'entre pas dans le dossier de santé au travail : la règle
+            porte donc « dossier employé ». Le classer « médical » l'alignerait
+            par erreur sur MED-001 et ses 7 ans.
+
+            🔴 L'exécution passe par le cron « purge après départ », LIVRE
+            DESACTIVE, ou par une campagne visant les déclarations classifiées.
+        -->
+        <record id="retention_ex_profile" model="privacy.retention.calendar">
+            <field name="name">Types de profil et styles de travail</field>
+            <field name="code">RH-EX-3</field>
+            <field name="document_type">hr_file</field>
+            <field name="description">Déclarations de type de profil (bf.ex.profile) : le référentiel, le type ou les scores par dimension, la date du passage et la note. Renseignement sur la personne et non sur le poste.</field>
+            <field name="legal_basis">Art. 23 LPRPSP : le renseignement personnel est détruit lorsque la fin pour laquelle il a été recueilli ou utilisé est accomplie. La fin d'une déclaration de type de profil est accomplie au départ de la personne. Art. 12 al. 2 : consentement manifeste, libre et éclairé, donné à des fins spécifiques. Art. 8.1 : la définition du profilage couvre l'évaluation de caractéristiques d'une personne, notamment à des fins d'analyse du rendement au travail.</field>
+            <field name="active_retention_years">0</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">bf.ex.profile</field>
+            <field name="notes">Le déclencheur est le DEPART, pas une durée. Exécution par le cron « Types de profil : purge après départ », livré désactivé, avec un délai de grâce de 90 jours parce qu'un départ se défait parfois dans les premières semaines. ⚠️ L'entrée de registre ne nomme jamais le type ni les scores : les inscrire reviendrait à conserver pour toujours ce qu'on vient de détruire. ⚠️ Aucun agrégat n'est gardé : la répartition des types d'un effectif parti ne sert aucune décision.</field>
+        </record>
+
+        <!--
+            🔴 Cron livré DESACTIVE, et il faut que ça reste une décision.
+            Une purge irréversible ne doit jamais être un effet de bord d'une
+            installation. Quelqu'un doit l'allumer, et choisir son délai.
+        -->
+        <record id="cron_privacy_purge_departed_profiles" model="ir.cron">
+            <field name="name">Types de profil : purge après départ (RH-EX-3)</field>
+            <field name="model_id" ref="bf_employee_experience_profile.model_bf_ex_profile"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_privacy_purge_departed()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

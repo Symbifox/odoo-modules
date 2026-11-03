@@ -1,0 +1,1213 @@
+# Translation of Expérience employé : types de profil, French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-03 03:33+0000\n"
+"PO-Revision-Date: 2026-11-03 03:33+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"\"%(framework)s\" already carries scored declarations: it cannot become a "
+"framework that names one type per person."
+msgstr ""
+"« %(framework)s » porte déjà des déclarations chiffrées : il ne peut pas "
+"devenir un référentiel qui nomme un type par personne."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"\"%(framework)s\" names one type per person, so scores have no meaning here."
+msgstr ""
+"« %(framework)s » nomme un type par personne : des scores n'ont pas de sens "
+"ici."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"\"%(framework)s\" names one type per person: a score has no meaning on that "
+"declaration."
+msgstr ""
+"« %(framework)s » nomme un type par personne : un score n'a pas de sens sur "
+"cette déclaration."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid "\"%(framework)s\" names one type per person: pick it."
+msgstr "« %(framework)s » nomme un type par personne : choisissez-le."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"\"%(framework)s\" reports a score per dimension: the dominant one is "
+"computed, not entered."
+msgstr ""
+"« %(framework)s » rend un score par dimension : la plus élevée est calculée,"
+" pas saisie."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"\"%(name)s\" is archived: it cannot carry a new declaration. An existing one"
+" keeps it."
+msgstr ""
+"« %(name)s » est archivé : il ne peut pas porter une nouvelle déclaration. "
+"Une déclaration existante le garde."
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_form
+msgid ""
+"A profile type describes the person, not the job. It is read by the person, "
+"by their direct manager and by administration. It is not a performance "
+"assessment, and the profiling definition of s. 8.1 of the Quebec private "
+"sector act covers using it as one."
+msgstr ""
+"Un type de profil décrit la personne, pas le poste. Il est lu par la "
+"personne, par son gestionnaire direct et par l'administration. Ce n'est pas "
+"une évaluation du rendement, et la définition du profilage de l'art. 8.1 de "
+"la Loi sur le secteur privé couvre le fait de s'en servir comme telle."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid "A result cannot be dated in the future."
+msgstr "Un résultat ne peut pas être daté dans le futur."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"A score of %(value)s is already recorded on \"%(framework)s\": the scale "
+"cannot exclude it."
+msgstr ""
+"Un score de %(value)s est déjà enregistré sur « %(framework)s » : l'échelle "
+"ne peut pas l'exclure."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid "A score on \"%(framework)s\" runs from %(low)s to %(high)s."
+msgstr "Un score sur « %(framework)s » va de %(low)s à %(high)s."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields.selection,name:bf_employee_experience_profile.selection__bf_ex_profile_framework__result_mode__scored
+msgid "A score per dimension"
+msgstr "Un score par dimension"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_bigfive_extraversion
+msgid "A spoken exchange costs less here than a long written one."
+msgstr "Un échange parlé coûte moins cher ici qu'un long écrit."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__acknowledged_on
+msgid "Accepted on"
+msgstr "Accepté le"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__active
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_bigfive_conscientiousness
+msgid "Agree on the deadline and on what done looks like."
+msgstr "Entendez-vous sur l'échéance et sur ce que « fait » veut dire."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_bigfive_agreeableness
+msgid "Agreeableness"
+msgstr "Agréabilité"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_bigfive_agreeableness
+msgid "Ask the question twice: a first agreement may be politeness."
+msgstr ""
+"Posez la question deux fois : un premier accord peut n'être que de la "
+"politesse."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__assessed_on
+msgid "Assessed on"
+msgstr "Passé le"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__headline
+msgid "At a glance"
+msgstr "En un coup d'œil"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_behaviour4_c
+msgid "Checks, documents, will not sign off on an approximation."
+msgstr "Vérifie, documente, ne signera pas une approximation."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__code
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__company_id
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_behaviour4_c
+msgid "Compliance"
+msgstr "Conformité"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile__dominant_type_id
+msgid ""
+"Computed from the scores, never entered. On a framework where no single "
+"dimension summarises a person, read the scores instead."
+msgstr ""
+"Calculé à partir des scores, jamais saisi. Sur un référentiel où aucune "
+"dimension ne résume une personne, lisez plutôt les scores."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_bigfive_conscientiousness
+msgid "Conscientiousness"
+msgstr "Conscienciosité"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_behaviour4_i
+msgid "Convinces, brings people along, needs the room to react."
+msgstr "Convainc, embarque les gens, a besoin de place pour réagir."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_bigfive_agreeableness
+msgid "Cooperation, trust, avoidance of conflict."
+msgstr "Coopération, confiance, évitement du conflit."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__create_uid
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__create_uid
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__create_uid
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__create_date
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__create_date
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__create_date
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields.selection,name:bf_employee_experience_profile.selection__bf_ex_profile__source__self
+msgid "Declared by the person"
+msgstr "Déclaré par la personne"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model,name:bf_employee_experience_profile.model_bf_ex_profile
+msgid "Declared profile type"
+msgstr "Type de profil déclaré"
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_my_profile_form
+msgid ""
+"Declaring a profile type is voluntary. What is here is read by you, by your "
+"direct manager and by administration, never by the rest of the company. You "
+"can withdraw your acceptance, or delete the declaration, at any time."
+msgstr ""
+"Déclarer un type de profil est volontaire. Ce qui est ici est lu par vous, "
+"par votre gestionnaire direct et par l'administration, jamais par le reste "
+"de l'entreprise. Vous pouvez retirer votre accord, ou supprimer la "
+"déclaration, à tout moment."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__description
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__description
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_framework_form
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__type_id
+msgid "Dimension"
+msgstr "Dimension"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_behaviour4_d
+msgid "Direct and quick. Lead with the conclusion and the decision you want."
+msgstr ""
+"Direct et rapide. Commencez par la conclusion et par la décision voulue."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__display_name
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__display_name
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__display_name
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_behaviour4_d
+msgid "Dominance"
+msgstr "Dominance"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_enfj
+msgid "ENFJ"
+msgstr "ENFJ"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_enfp
+msgid "ENFP"
+msgstr "ENFP"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_entj
+msgid "ENTJ"
+msgstr "ENTJ"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_entp
+msgid "ENTP"
+msgstr "ENTP"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_esfj
+msgid "ESFJ"
+msgstr "ESFJ"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_esfp
+msgid "ESFP"
+msgstr "ESFP"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_estj
+msgid "ESTJ"
+msgstr "ESTJ"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_estp
+msgid "ESTP"
+msgstr "ESTP"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model,name:bf_employee_experience_profile.model_hr_employee
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__employee_id
+msgid "Employee"
+msgstr "Employé"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_bigfive_extraversion
+msgid "Energy drawn from company and from exchange."
+msgstr "Énergie puisée dans la compagnie et dans l'échange."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__declared_by_id
+msgid "Entered by"
+msgstr "Saisi par"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields.selection,name:bf_employee_experience_profile.selection__bf_ex_profile__source__hr
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_search
+msgid "Entered by administration"
+msgstr "Saisi par l'administration"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_bigfive_extraversion
+msgid "Extraversion"
+msgstr "Extraversion"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_enfj
+msgid "Extraverted, intuitive, feeling, judging."
+msgstr "Extraverti, intuition, sentiment, jugement."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_enfp
+msgid "Extraverted, intuitive, feeling, perceiving."
+msgstr "Extraverti, intuition, sentiment, perception."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_entj
+msgid "Extraverted, intuitive, thinking, judging."
+msgstr "Extraverti, intuition, pensée, jugement."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_entp
+msgid "Extraverted, intuitive, thinking, perceiving."
+msgstr "Extraverti, intuition, pensée, perception."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_esfj
+msgid "Extraverted, sensing, feeling, judging."
+msgstr "Extraverti, sensation, sentiment, jugement."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_esfp
+msgid "Extraverted, sensing, feeling, perceiving."
+msgstr "Extraverti, sensation, sentiment, perception."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_estj
+msgid "Extraverted, sensing, thinking, judging."
+msgstr "Extraverti, sensation, pensée, jugement."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_estp
+msgid "Extraverted, sensing, thinking, perceiving."
+msgstr "Extraverti, sensation, pensée, perception."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.framework,name:bf_employee_experience_profile.framework_bigfive
+msgid "Five factors (Big Five)"
+msgstr "Cinq grands facteurs (Big Five)"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.framework,description:bf_employee_experience_profile.framework_bigfive
+msgid ""
+"Five factors, each scored. The model and the public item pools built on it "
+"are in the public domain, unlike most commercial instruments. No factor is "
+"good or bad, and the highest one does not summarise a person."
+msgstr ""
+"Cinq facteurs, chacun chiffré. Le modèle et les banques d'items publiques "
+"bâties dessus sont du domaine public, contrairement à la plupart des "
+"instruments commerciaux. Aucun facteur n'est bon ou mauvais, et le plus "
+"élevé ne résume pas une personne."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.framework,name:bf_employee_experience_profile.framework_behaviour4
+msgid "Four behavioural styles (DISC family)"
+msgstr "Quatre styles de comportement (famille DISC)"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.framework,description:bf_employee_experience_profile.framework_behaviour4
+msgid ""
+"Four behavioural styles, each scored. Most reports of this family give a "
+"score on all four and a dominant one; the dominant style is computed here "
+"from the scores rather than entered twice."
+msgstr ""
+"Quatre styles de comportement, chacun chiffré. La plupart des rapports de "
+"cette famille donnent un score sur les quatre et un style dominant ; ici le "
+"dominant est calculé à partir des scores plutôt que saisi deux fois."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__framework_id
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__framework_id
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__framework_id
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_search
+msgid "Framework"
+msgstr "Référentiel"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_behaviour4_d
+msgid "Gets to the point, takes the decision, dislikes being slowed down."
+msgstr "Va au but, tranche, n'aime pas être ralenti."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_behaviour4_s
+msgid "Give notice before a change, and say what stays the same."
+msgstr "Annoncez un changement d'avance, et dites ce qui ne change pas."
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__dominant_type_id
+msgid "Highest dimension"
+msgstr "Dimension la plus élevée"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__scale_max
+msgid "Highest score"
+msgstr "Score le plus haut"
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_my_profile_form
+msgid "I have seen and accepted this"
+msgstr "J'ai vu et j'accepte"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__id
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__id
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__id
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_infj
+msgid "INFJ"
+msgstr "INFJ"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_infp
+msgid "INFP"
+msgstr "INFP"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_intj
+msgid "INTJ"
+msgstr "INTJ"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_intp
+msgid "INTP"
+msgstr "INTP"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_isfj
+msgid "ISFJ"
+msgstr "ISFJ"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_isfp
+msgid "ISFP"
+msgstr "ISFP"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_istj
+msgid "ISTJ"
+msgstr "ISTJ"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_types16_istp
+msgid "ISTP"
+msgstr "ISTP"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_behaviour4_i
+msgid "Influence"
+msgstr "Influence"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__provider
+msgid "Instrument or provider"
+msgstr "Instrument ou fournisseur"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_infj
+msgid "Introverted, intuitive, feeling, judging."
+msgstr "Introverti, intuition, sentiment, jugement."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_infp
+msgid "Introverted, intuitive, feeling, perceiving."
+msgstr "Introverti, intuition, sentiment, perception."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_intj
+msgid "Introverted, intuitive, thinking, judging."
+msgstr "Introverti, intuition, pensée, jugement."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_intp
+msgid "Introverted, intuitive, thinking, perceiving."
+msgstr "Introverti, intuition, pensée, perception."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_isfj
+msgid "Introverted, sensing, feeling, judging."
+msgstr "Introverti, sensation, sentiment, jugement."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_isfp
+msgid "Introverted, sensing, feeling, perceiving."
+msgstr "Introverti, sensation, sentiment, perception."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_istj
+msgid "Introverted, sensing, thinking, judging."
+msgstr "Introverti, sensation, pensée, jugement."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_types16_istp
+msgid "Introverted, sensing, thinking, perceiving."
+msgstr "Introverti, sensation, pensée, perception."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__item_count
+msgid "Items"
+msgstr "Éléments"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__write_uid
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__write_uid
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__write_uid
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__write_date
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__write_date
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__write_date
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__scale_min
+msgid "Lowest score"
+msgstr "Score le plus bas"
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+#: model:ir.actions.server,name:bf_employee_experience_profile.action_my_profile
+#: model:ir.ui.menu,name:bf_employee_experience_profile.menu_my_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_my_profile_form
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_my_profile_list
+msgid "My profile"
+msgstr "Mon profil"
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+#: model:ir.actions.server,name:bf_employee_experience_profile.action_team_profile
+#: model:ir.ui.menu,name:bf_employee_experience_profile.menu_team_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_team_profile_list
+msgid "My team's profiles"
+msgstr "Les profils de mon équipe"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__name
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_bigfive_neuroticism
+msgid "Neuroticism"
+msgstr "Névrosisme"
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"No employee record is linked to your account, so no team can be worked out."
+msgstr ""
+"Aucune fiche employé n'est liée à votre compte : aucune équipe ne peut en "
+"être déduite."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"No employee record is linked to your account, so there is nobody to attach a"
+" profile to. Administration can create one."
+msgstr ""
+"Aucune fiche employé n'est liée à votre compte : il n'y a personne à qui "
+"rattacher un profil. L'administration peut en créer une."
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_search
+msgid "Not accepted yet"
+msgstr "Pas encore accepté"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__note
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_my_profile_form
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_form
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid "On a scored framework, the highest score must be above the lowest one."
+msgstr ""
+"Sur un référentiel chiffré, le score le plus haut doit être au-dessus du "
+"plus bas."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields.selection,name:bf_employee_experience_profile.selection__bf_ex_profile_framework__result_mode__single
+msgid "One type per person"
+msgstr "Un type par personne"
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"Only the person concerned can accept or withdraw their own profile. "
+"Administration cannot do it on their behalf."
+msgstr ""
+"Seule la personne concernée peut accepter ou retirer son propre profil. "
+"L'administration ne peut pas le faire à sa place."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"Only the person concerned can accept their own profile. Administration "
+"cannot accept on their behalf."
+msgstr ""
+"Seule la personne concernée peut accepter son propre profil. "
+"L'administration ne peut pas accepter à sa place."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile__acknowledged
+msgid ""
+"Only the person concerned can set this. Administration cannot accept on "
+"somebody else's behalf, and neither can a copy."
+msgstr ""
+"Seule la personne concernée peut le poser. L'administration ne peut pas "
+"accepter à la place de quelqu'un d'autre, et une copie non plus."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid "Only the person concerned can withdraw their own acceptance."
+msgstr "Seule la personne concernée peut retirer son propre accord."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_bigfive_openness
+msgid "Openness to experience"
+msgstr "Ouverture à l'expérience"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_bigfive_conscientiousness
+msgid "Organisation, follow-through, respect for a commitment."
+msgstr "Organisation, suivi, respect d'un engagement."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_bigfive_openness
+msgid "Pitch the new idea as an experiment, not as a settled plan."
+msgstr "Présentez l'idée neuve comme un essai, pas comme un plan arrêté."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__profile_id
+msgid "Profile"
+msgstr "Profil"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model,name:bf_employee_experience_profile.model_bf_ex_profile_score
+msgid "Profile dimension score"
+msgstr "Score de dimension"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model,name:bf_employee_experience_profile.model_bf_ex_profile_framework
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_framework_form
+msgid "Profile framework"
+msgstr "Référentiel de profil"
+
+#. module: bf_employee_experience_profile
+#: model:ir.actions.act_window,name:bf_employee_experience_profile.action_framework
+#: model:ir.ui.menu,name:bf_employee_experience_profile.menu_framework
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_framework_list
+msgid "Profile frameworks"
+msgstr "Référentiels de profil"
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_form
+msgid "Profile type"
+msgstr "Type de profil"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model,name:bf_employee_experience_profile.model_bf_ex_profile_type
+msgid "Profile type or dimension"
+msgstr "Type ou dimension de profil"
+
+#. module: bf_employee_experience_profile
+#: model:ir.actions.act_window,name:bf_employee_experience_profile.action_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_hr_employee__ex_profile_ids
+#: model:ir.ui.menu,name:bf_employee_experience_profile.menu_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_hr_employee_form_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_list
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_search
+msgid "Profile types"
+msgstr "Types de profil"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile_type__working_with
+msgid ""
+"Read by the person and by their manager. This is what makes the module "
+"useful; the rest is filing."
+msgstr ""
+"Lu par la personne et par son gestionnaire. C'est ce qui rend le module "
+"utile ; le reste n'est que du rangement."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields.selection,name:bf_employee_experience_profile.selection__bf_ex_profile__source__vendor
+msgid "Received from the provider"
+msgstr "Reçu du fournisseur"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__result_mode
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__result_mode
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__result_mode
+msgid "Result"
+msgstr "Résultat"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_bigfive_neuroticism
+msgid ""
+"Say what is settled and what is not. Uncertainty costs more here than bad "
+"news."
+msgstr ""
+"Dites ce qui est tranché et ce qui ne l'est pas. L'incertitude coûte plus "
+"cher ici qu'une mauvaise nouvelle."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_score__value
+msgid "Score"
+msgstr "Score"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__score_ids
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_my_profile_form
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_form
+msgid "Scores"
+msgstr "Scores"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__acknowledged
+msgid "Seen and accepted by the person"
+msgstr "Vu et accepté par la personne"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_behaviour4_c
+msgid "Send the detail in writing first, and expect questions on the detail."
+msgstr ""
+"Envoyez le détail par écrit d'abord, et attendez-vous à des questions sur le"
+" détail."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_bigfive_neuroticism
+msgid ""
+"Sensitivity to stress and to uncertainty. A high score is not a flaw and "
+"says nothing about competence."
+msgstr ""
+"Sensibilité au stress et à l'incertitude. Un score élevé n'est pas un défaut"
+" et ne dit rien de la compétence."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__sequence
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__abbr
+msgid "Short form"
+msgstr "Forme courte"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.framework,name:bf_employee_experience_profile.framework_types16
+msgid "Sixteen types (Jungian dichotomies)"
+msgstr "Seize types (dichotomies jungiennes)"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.framework,description:bf_employee_experience_profile.framework_types16
+msgid ""
+"Sixteen types built from four dichotomies. One type per person, named by its"
+" four letters."
+msgstr ""
+"Seize types bâtis sur quatre dichotomies. Un type par personne, nommé par "
+"ses quatre lettres."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile__result_mode
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile_framework__result_mode
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile_type__result_mode
+msgid ""
+"Some instruments name a type, others report a score on every dimension. The "
+"catalogue of items serves both."
+msgstr ""
+"Certains instruments nomment un type, d'autres rendent un score sur chaque "
+"dimension. Le même catalogue d'items sert aux deux."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__source
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_search
+msgid "Source"
+msgstr "Source"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,name:bf_employee_experience_profile.type_behaviour4_s
+msgid "Steadiness"
+msgstr "Stabilité"
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_behaviour4_s
+msgid "Steady, reliable, takes a change badly when it arrives unannounced."
+msgstr "Stable, fiable, prend mal un changement qui arrive sans préavis."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_behaviour4_i
+msgid ""
+"Talk it through before writing it down, and say out loud what you agree "
+"with."
+msgstr ""
+"Parlez-en avant de l'écrire, et dites à voix haute ce avec quoi vous êtes "
+"d'accord."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,description:bf_employee_experience_profile.type_bigfive_openness
+msgid "Taste for the new, the abstract and the untried."
+msgstr "Goût du neuf, de l'abstrait et de ce qui n'a pas été essayé."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile_framework__code
+msgid "Technical identifier, stable across languages and installations."
+msgstr ""
+"Identifiant technique, stable d'une langue et d'une installation à l'autre."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.constraint,message:bf_employee_experience_profile.constraint_bf_ex_profile_score_profile_type_uniq
+msgid "That dimension is already scored on this profile."
+msgstr "Cette dimension porte déjà un score sur ce profil."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"The acceptance date follows the acceptance itself: accept or withdraw, and "
+"the date comes with it."
+msgstr ""
+"La date d'acceptation suit l'acceptation elle-même : acceptez ou retirez, et"
+" la date vient avec."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"The dimension \"%(dimension)s\" belongs to another framework: changing the "
+"framework does not carry the old scores over."
+msgstr ""
+"La dimension « %(dimension)s » appartient à un autre référentiel : changer "
+"de référentiel ne reporte pas les anciens scores."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid "The dimension \"%(dimension)s\" does not belong to \"%(framework)s\"."
+msgstr "La dimension « %(dimension)s » n'appartient pas à « %(framework)s »."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile__headline
+msgid "The named type, or the highest dimension of a scored result."
+msgstr "Le type nommé, ou la dimension la plus élevée d'un résultat chiffré."
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_form
+msgid ""
+"The person has not yet said they have seen and accepted this. Only they can:"
+" administration cannot accept on their behalf."
+msgstr ""
+"La personne n'a pas encore dit qu'elle a vu et accepté ceci. Elle seule peut"
+" le faire : l'administration ne peut pas accepter à sa place."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid "The type \"%(type)s\" belongs to another framework than \"%(framework)s\"."
+msgstr ""
+"Le type « %(type)s » appartient à un autre référentiel que « %(framework)s "
+"»."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile__type_id
+msgid "The type named by the result, on a framework that names one."
+msgstr "Le type nommé par le résultat, sur un référentiel qui en nomme un."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_istj
+msgid ""
+"Thinks before speaking, so leave a silence after a question. Wants the "
+"concrete facts first, not the intention behind them. Decides on stated "
+"criteria, so name them. Wants the matter settled, so say when it will be."
+msgstr ""
+"Pense avant de parler : laissez un silence après une question. Veut les "
+"faits concrets d'abord, pas l'intention derrière. Décide sur des critères "
+"énoncés : nommez-les. Veut que ce soit tranché : dites quand ça le sera."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_istp
+msgid ""
+"Thinks before speaking, so leave a silence after a question. Wants the "
+"concrete facts first, not the intention behind them. Decides on stated "
+"criteria, so name them. Wants the options kept open, so say what is still "
+"reversible."
+msgstr ""
+"Pense avant de parler : laissez un silence après une question. Veut les "
+"faits concrets d'abord, pas l'intention derrière. Décide sur des critères "
+"énoncés : nommez-les. Veut garder les options ouvertes : dites ce qui est "
+"encore réversible."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_isfj
+msgid ""
+"Thinks before speaking, so leave a silence after a question. Wants the "
+"concrete facts first, not the intention behind them. Decides on the effect "
+"upon people, so name who is affected. Wants the matter settled, so say when "
+"it will be."
+msgstr ""
+"Pense avant de parler : laissez un silence après une question. Veut les "
+"faits concrets d'abord, pas l'intention derrière. Décide sur l'effet sur les"
+" personnes : nommez qui est touché. Veut que ce soit tranché : dites quand "
+"ça le sera."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_isfp
+msgid ""
+"Thinks before speaking, so leave a silence after a question. Wants the "
+"concrete facts first, not the intention behind them. Decides on the effect "
+"upon people, so name who is affected. Wants the options kept open, so say "
+"what is still reversible."
+msgstr ""
+"Pense avant de parler : laissez un silence après une question. Veut les "
+"faits concrets d'abord, pas l'intention derrière. Décide sur l'effet sur les"
+" personnes : nommez qui est touché. Veut garder les options ouvertes : dites"
+" ce qui est encore réversible."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_intj
+msgid ""
+"Thinks before speaking, so leave a silence after a question. Wants the whole"
+" picture before the detail. Decides on stated criteria, so name them. Wants "
+"the matter settled, so say when it will be."
+msgstr ""
+"Pense avant de parler : laissez un silence après une question. Veut "
+"l'ensemble avant le détail. Décide sur des critères énoncés : nommez-les. "
+"Veut que ce soit tranché : dites quand ça le sera."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_intp
+msgid ""
+"Thinks before speaking, so leave a silence after a question. Wants the whole"
+" picture before the detail. Decides on stated criteria, so name them. Wants "
+"the options kept open, so say what is still reversible."
+msgstr ""
+"Pense avant de parler : laissez un silence après une question. Veut "
+"l'ensemble avant le détail. Décide sur des critères énoncés : nommez-les. "
+"Veut garder les options ouvertes : dites ce qui est encore réversible."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_infj
+msgid ""
+"Thinks before speaking, so leave a silence after a question. Wants the whole"
+" picture before the detail. Decides on the effect upon people, so name who "
+"is affected. Wants the matter settled, so say when it will be."
+msgstr ""
+"Pense avant de parler : laissez un silence après une question. Veut "
+"l'ensemble avant le détail. Décide sur l'effet sur les personnes : nommez "
+"qui est touché. Veut que ce soit tranché : dites quand ça le sera."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_infp
+msgid ""
+"Thinks before speaking, so leave a silence after a question. Wants the whole"
+" picture before the detail. Decides on the effect upon people, so name who "
+"is affected. Wants the options kept open, so say what is still reversible."
+msgstr ""
+"Pense avant de parler : laissez un silence après une question. Veut "
+"l'ensemble avant le détail. Décide sur l'effet sur les personnes : nommez "
+"qui est touché. Veut garder les options ouvertes : dites ce qui est encore "
+"réversible."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_estj
+msgid ""
+"Thinks out loud, so an unfinished idea is not a decision. Wants the concrete"
+" facts first, not the intention behind them. Decides on stated criteria, so "
+"name them. Wants the matter settled, so say when it will be."
+msgstr ""
+"Pense à voix haute : une idée inachevée n'est pas une décision. Veut les "
+"faits concrets d'abord, pas l'intention derrière. Décide sur des critères "
+"énoncés : nommez-les. Veut que ce soit tranché : dites quand ça le sera."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_estp
+msgid ""
+"Thinks out loud, so an unfinished idea is not a decision. Wants the concrete"
+" facts first, not the intention behind them. Decides on stated criteria, so "
+"name them. Wants the options kept open, so say what is still reversible."
+msgstr ""
+"Pense à voix haute : une idée inachevée n'est pas une décision. Veut les "
+"faits concrets d'abord, pas l'intention derrière. Décide sur des critères "
+"énoncés : nommez-les. Veut garder les options ouvertes : dites ce qui est "
+"encore réversible."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_esfj
+msgid ""
+"Thinks out loud, so an unfinished idea is not a decision. Wants the concrete"
+" facts first, not the intention behind them. Decides on the effect upon "
+"people, so name who is affected. Wants the matter settled, so say when it "
+"will be."
+msgstr ""
+"Pense à voix haute : une idée inachevée n'est pas une décision. Veut les "
+"faits concrets d'abord, pas l'intention derrière. Décide sur l'effet sur les"
+" personnes : nommez qui est touché. Veut que ce soit tranché : dites quand "
+"ça le sera."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_esfp
+msgid ""
+"Thinks out loud, so an unfinished idea is not a decision. Wants the concrete"
+" facts first, not the intention behind them. Decides on the effect upon "
+"people, so name who is affected. Wants the options kept open, so say what is"
+" still reversible."
+msgstr ""
+"Pense à voix haute : une idée inachevée n'est pas une décision. Veut les "
+"faits concrets d'abord, pas l'intention derrière. Décide sur l'effet sur les"
+" personnes : nommez qui est touché. Veut garder les options ouvertes : dites"
+" ce qui est encore réversible."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_entj
+msgid ""
+"Thinks out loud, so an unfinished idea is not a decision. Wants the whole "
+"picture before the detail. Decides on stated criteria, so name them. Wants "
+"the matter settled, so say when it will be."
+msgstr ""
+"Pense à voix haute : une idée inachevée n'est pas une décision. Veut "
+"l'ensemble avant le détail. Décide sur des critères énoncés : nommez-les. "
+"Veut que ce soit tranché : dites quand ça le sera."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_entp
+msgid ""
+"Thinks out loud, so an unfinished idea is not a decision. Wants the whole "
+"picture before the detail. Decides on stated criteria, so name them. Wants "
+"the options kept open, so say what is still reversible."
+msgstr ""
+"Pense à voix haute : une idée inachevée n'est pas une décision. Veut "
+"l'ensemble avant le détail. Décide sur des critères énoncés : nommez-les. "
+"Veut garder les options ouvertes : dites ce qui est encore réversible."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_enfj
+msgid ""
+"Thinks out loud, so an unfinished idea is not a decision. Wants the whole "
+"picture before the detail. Decides on the effect upon people, so name who is"
+" affected. Wants the matter settled, so say when it will be."
+msgstr ""
+"Pense à voix haute : une idée inachevée n'est pas une décision. Veut "
+"l'ensemble avant le détail. Décide sur l'effet sur les personnes : nommez "
+"qui est touché. Veut que ce soit tranché : dites quand ça le sera."
+
+#. module: bf_employee_experience_profile
+#: model:bf.ex.profile.type,working_with:bf_employee_experience_profile.type_types16_enfp
+msgid ""
+"Thinks out loud, so an unfinished idea is not a decision. Wants the whole "
+"picture before the detail. Decides on the effect upon people, so name who is"
+" affected. Wants the options kept open, so say what is still reversible."
+msgstr ""
+"Pense à voix haute : une idée inachevée n'est pas une décision. Veut "
+"l'ensemble avant le détail. Décide sur l'effet sur les personnes : nommez "
+"qui est touché. Veut garder les options ouvertes : dites ce qui est encore "
+"réversible."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.constraint,message:bf_employee_experience_profile.constraint_bf_ex_profile_type_framework_code_uniq
+msgid "This code is already used in that framework."
+msgstr "Ce code est déjà utilisé dans ce référentiel."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.constraint,message:bf_employee_experience_profile.constraint_bf_ex_profile_framework_code_uniq
+msgid "This framework code already exists."
+msgstr "Ce code de référentiel existe déjà."
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_framework_form
+msgid ""
+"This module records a result obtained elsewhere. It administers no "
+"questionnaire and endorses no instrument. Name yours under \"Instrument or "
+"provider\"."
+msgstr ""
+"Ce module enregistre un résultat obtenu ailleurs. Il n'administre aucun "
+"questionnaire et ne cautionne aucun instrument. Nommez le vôtre sous « "
+"Instrument ou fournisseur »."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.constraint,message:bf_employee_experience_profile.constraint_bf_ex_profile_employee_framework_uniq
+msgid "This person already has a declaration for that framework."
+msgstr "Cette personne a déjà une déclaration pour ce référentiel."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__type_id
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_framework__item_ids
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_framework_form
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_type_list
+msgid "Types and dimensions"
+msgstr "Types et dimensions"
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_form
+msgid "What is useful to know, in the person's own words."
+msgstr "Ce qu'il est utile de savoir, dans les mots de la personne."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile_type__abbr
+msgid "What people actually say: \"D\", \"ISTJ\", \"O\"."
+msgstr "Ce que les gens disent vraiment : « D », « ISTJ », « O »."
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_my_profile_form
+msgid "What you want your manager to know."
+msgstr "Ce que vous voulez que votre gestionnaire sache."
+
+#. module: bf_employee_experience_profile
+#. odoo-python
+#: code:addons/bf_employee_experience_profile/models/profile.py:0
+msgid ""
+"Who entered a declaration is a trace, not a field: it cannot be rewritten."
+msgstr ""
+"Qui a saisi une déclaration est une trace, pas un champ : elle ne se récrit "
+"pas."
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,help:bf_employee_experience_profile.field_bf_ex_profile_framework__provider
+msgid ""
+"Who published the questionnaire the result comes from. Left to the client: "
+"this module administers no test and endorses none."
+msgstr ""
+"Qui publie le questionnaire d'où vient le résultat. Laissé au client : ce "
+"module n'administre aucun test et n'en cautionne aucun."
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_my_profile_form
+msgid "Withdraw my acceptance"
+msgstr "Retirer mon accord"
+
+#. module: bf_employee_experience_profile
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_my_profile_form
+msgid "Working with me"
+msgstr "Travailler avec moi"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile_type__working_with
+msgid "Working with someone like this"
+msgstr "Travailler avec une personne de ce type"
+
+#. module: bf_employee_experience_profile
+#: model:ir.model.fields,field_description:bf_employee_experience_profile.field_bf_ex_profile__working_with
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_profile.view_profile_form
+msgid "Working with this person"
+msgstr "Travailler avec cette personne"

@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================== CATALOGUE ===================== -->
+
+    <record id="view_framework_list" model="ir.ui.view">
+        <field name="name">bf.ex.profile.framework.list</field>
+        <field name="model">bf.ex.profile.framework</field>
+        <field name="arch" type="xml">
+            <list string="Profile frameworks">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="result_mode"/>
+                <field name="item_count"/>
+                <field name="provider" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_framework_form" model="ir.ui.view">
+        <field name="name">bf.ex.profile.framework.form</field>
+        <field name="model">bf.ex.profile.framework</field>
+        <field name="arch" type="xml">
+            <form string="Profile framework">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        This module records a result obtained elsewhere. It administers no questionnaire and endorses no instrument. Name yours under "Instrument or provider".
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="result_mode"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="provider"/>
+                            <field name="scale_min" invisible="result_mode != 'scored'"/>
+                            <field name="scale_max" invisible="result_mode != 'scored'"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Types and dimensions" name="items">
+                            <field name="item_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="code"/>
+                                    <field name="abbr"/>
+                                    <field name="name"/>
+                                    <field name="description" optional="hide"/>
+                                    <field name="working_with" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_type_list" model="ir.ui.view">
+        <field name="name">bf.ex.profile.type.list</field>
+        <field name="model">bf.ex.profile.type</field>
+        <field name="arch" type="xml">
+            <list string="Types and dimensions">
+                <field name="framework_id"/>
+                <field name="abbr"/>
+                <field name="name"/>
+                <field name="working_with" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_framework" model="ir.actions.act_window">
+        <field name="name">Profile frameworks</field>
+        <field name="res_model">bf.ex.profile.framework</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ===================== DECLARATIONS ===================== -->
+
+    <record id="view_profile_list" model="ir.ui.view">
+        <field name="name">bf.ex.profile.list</field>
+        <field name="model">bf.ex.profile</field>
+        <field name="arch" type="xml">
+            <list string="Profile types">
+                <field name="employee_id"/>
+                <field name="framework_id"/>
+                <field name="headline"/>
+                <field name="assessed_on"/>
+                <field name="source"/>
+                <field name="acknowledged" widget="boolean_toggle" readonly="1"/>
+                <field name="declared_by_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_profile_search" model="ir.ui.view">
+        <field name="name">bf.ex.profile.search</field>
+        <field name="model">bf.ex.profile</field>
+        <field name="arch" type="xml">
+            <search string="Profile types">
+                <field name="employee_id"/>
+                <field name="framework_id"/>
+                <!--
+                  ⚠️ Aucun filtre ni regroupement par TYPE : `headline` n'est pas
+                  stocké, donc pas filtrable, et c'est voulu. Trier le personnel
+                  par lettre de personnalité est l'usage que ce module refuse de
+                  servir. Le référentiel et l'accord, eux, sont des faits de
+                  gestion.
+                -->
+                <filter name="not_acknowledged" string="Not accepted yet"
+                        domain="[('acknowledged', '=', False)]"/>
+                <filter name="entered_by_hr" string="Entered by administration"
+                        domain="[('source', '=', 'hr')]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_framework" string="Framework"
+                            context="{'group_by': 'framework_id'}"/>
+                    <filter name="by_source" string="Source"
+                            context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_profile_form" model="ir.ui.view">
+        <field name="name">bf.ex.profile.form</field>
+        <field name="model">bf.ex.profile</field>
+        <field name="arch" type="xml">
+            <form string="Profile type">
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        A profile type describes the person, not the job. It is read by the person, by their direct manager and by administration. It is not a performance assessment, and the profiling definition of s. 8.1 of the Quebec private sector act covers using it as one.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="framework_id"/>
+                            <field name="result_mode" invisible="1"/>
+                            <field name="type_id" invisible="result_mode != 'single'"
+                                   required="result_mode == 'single'"/>
+                            <field name="dominant_type_id" invisible="result_mode != 'scored'"/>
+                        </group>
+                        <group>
+                            <field name="assessed_on"/>
+                            <field name="source"/>
+                            <field name="declared_by_id"/>
+                            <field name="acknowledged"/>
+                            <field name="acknowledged_on" invisible="not acknowledged"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert" invisible="acknowledged">
+                        The person has not yet said they have seen and accepted this. Only they can: administration cannot accept on their behalf.
+                    </div>
+                    <notebook>
+                        <page string="Scores" name="scores" invisible="result_mode != 'scored'">
+                            <field name="score_ids">
+                                <list editable="bottom">
+                                    <field name="type_id"/>
+                                    <field name="value"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Working with this person" name="working_with">
+                            <field name="working_with" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note" nolabel="1"
+                                   placeholder="What is useful to know, in the person's own words."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_profile" model="ir.actions.act_window">
+        <field name="name">Profile types</field>
+        <field name="res_model">bf.ex.profile</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_profile_search"/>
+    </record>
+
+    <!-- ===================== LIBRE-SERVICE ===================== -->
+
+    <record id="view_my_profile_list" model="ir.ui.view">
+        <field name="name">bf.ex.profile.list.mine</field>
+        <field name="model">bf.ex.profile</field>
+        <field name="arch" type="xml">
+            <list string="My profile">
+                <field name="framework_id"/>
+                <field name="headline"/>
+                <field name="assessed_on"/>
+                <field name="source"/>
+                <field name="acknowledged" widget="boolean_toggle" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_my_profile_form" model="ir.ui.view">
+        <field name="name">bf.ex.profile.form.mine</field>
+        <field name="model">bf.ex.profile</field>
+        <field name="arch" type="xml">
+            <form string="My profile">
+                <header>
+                    <button name="action_acknowledge" type="object" string="I have seen and accepted this"
+                            class="btn-primary" invisible="acknowledged or not id"/>
+                    <button name="action_withdraw_consent" type="object" string="Withdraw my acceptance"
+                            invisible="not acknowledged"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Declaring a profile type is voluntary. What is here is read by you, by your direct manager and by administration, never by the rest of the company. You can withdraw your acceptance, or delete the declaration, at any time.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="framework_id"/>
+                            <field name="result_mode" invisible="1"/>
+                            <field name="type_id" invisible="result_mode != 'single'"
+                                   required="result_mode == 'single'"/>
+                            <field name="dominant_type_id" invisible="result_mode != 'scored'"/>
+                        </group>
+                        <group>
+                            <field name="assessed_on"/>
+                            <field name="source"/>
+                            <field name="acknowledged"/>
+                            <field name="acknowledged_on" invisible="not acknowledged"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Scores" name="scores" invisible="result_mode != 'scored'">
+                            <field name="score_ids">
+                                <list editable="bottom">
+                                    <field name="type_id"/>
+                                    <field name="value"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Working with me" name="working_with">
+                            <field name="working_with" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note" nolabel="1"
+                                   placeholder="What you want your manager to know."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_team_profile_list" model="ir.ui.view">
+        <field name="name">bf.ex.profile.list.team</field>
+        <field name="model">bf.ex.profile</field>
+        <field name="arch" type="xml">
+            <list string="My team's profiles" create="false">
+                <field name="employee_id"/>
+                <field name="framework_id"/>
+                <field name="headline"/>
+                <field name="working_with" optional="show"/>
+                <field name="assessed_on" optional="hide"/>
+                <field name="acknowledged" widget="boolean_toggle" readonly="1" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_my_profile" model="ir.actions.server">
+        <field name="name">My profile</field>
+        <field name="model_id" ref="model_bf_ex_profile"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_my_profile()</field>
+    </record>
+
+    <record id="action_team_profile" model="ir.actions.server">
+        <field name="name">My team's profiles</field>
+        <field name="model_id" ref="model_bf_ex_profile"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_team_profiles()</field>
+    </record>
+
+    <!-- ===================== FICHE EMPLOYE ===================== -->
+
+    <record id="view_hr_employee_form_profile" model="ir.ui.view">
+        <field name="name">hr.employee.form.profile</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <!--
+                  🔴 `groups` sur la page, et non sur le champ : Odoo 18 refuse
+                  le formulaire `hr.employee` entier à qui n'a pas
+                  `hr.group_hr_user` (RedirectWarning dans son `get_views`,
+                  mesuré). Cette page ne sert donc qu'à
+                  l'administration, et le gestionnaire lit son équipe par
+                  l'action « Les profils de mon équipe ». Le champ, lui, reste
+                  sans groupe : ses lignes sont filtrées par la règle d'accès.
+                -->
+                <page string="Profile types" name="ex_profiles" groups="hr.group_hr_user">
+                    <field name="ex_profile_ids">
+                        <list>
+                            <field name="framework_id"/>
+                            <field name="headline"/>
+                            <field name="assessed_on"/>
+                            <field name="acknowledged" widget="boolean_toggle" readonly="1"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ===================== MENUS ===================== -->
+
+    <menuitem id="menu_framework" name="Profile frameworks"
+              parent="bf_employee_experience.menu_catalogue"
+              action="action_framework" sequence="30" groups="hr.group_hr_user"/>
+
+    <menuitem id="menu_profile" name="Profile types"
+              parent="bf_employee_experience.menu_people"
+              action="action_profile" sequence="35" groups="hr.group_hr_user"/>
+
+    <menuitem id="menu_my_profile" name="My profile"
+              parent="bf_employee_experience.menu_people"
+              action="action_my_profile" sequence="50"/>
+
+    <menuitem id="menu_team_profile" name="My team's profiles"
+              parent="bf_employee_experience.menu_people"
+              action="action_team_profile" sequence="55"/>
+
+</odoo>
