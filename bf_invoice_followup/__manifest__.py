@@ -1,6 +1,6 @@
 {
     "name": "Relances de factures",
-    "version": "18.0.1.3.0",
+    "version": "18.0.1.3.1",
     "category": "Accounting/Accounting",
     "summary": "Suivi et relances des factures clients en retard "
                "(statut manuel, activités automatiques, digest hebdomadaire)",

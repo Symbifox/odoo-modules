@@ -16,6 +16,22 @@
             <field name="priority">30</field>
         </record>
 
+        <!-- Quotidien : refermer les relances des factures réglées. Séparé
+             des deux autres exprès — celle des activités ne tourne qu'aux deux
+             semaines, et celle du récapitulatif est éteinte partout où le pont
+             du digest est installé. -->
+        <record id="cron_close_settled_followups" model="ir.cron">
+            <field name="name">Factures : fermer les relances des factures réglées</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="state">code</field>
+            <field name="code">model._bf_close_paid_followups()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(hours=2)).strftime('%Y-%m-%d %H:00:00')"/>
+            <field name="active" eval="True"/>
+            <field name="priority">40</field>
+        </record>
+
         <!-- Daily tick: sends the digest to each subscribed user on their own
              cadence (per-user frequency in Preferences). -->
         <record id="cron_weekly_followup_digest" model="ir.cron">

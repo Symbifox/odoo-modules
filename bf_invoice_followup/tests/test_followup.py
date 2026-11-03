@@ -157,6 +157,25 @@ class TestInvoiceFollowup(AccountTestInvoicingCommon):
         compta.with_user(compta).write({"bf_followup_digest": True})
         self.assertTrue(compta.bf_followup_digest)
 
+    def test_une_tache_quotidienne_ferme_les_relances_reglees(self):
+        """⚠️ Le balayage ne doit pas dépendre d'une tâche qu'un pont éteint.
+
+        Mesuré en production : `cron_weekly_followup_digest` est éteint partout
+        où `bf_invoice_followup_digest` est installé, et la tâche des activités
+        ne tourne qu'aux deux semaines.
+        """
+        cron = self.env.ref("bf_invoice_followup.cron_close_settled_followups")
+        self.assertEqual((cron.interval_number, cron.interval_type), (1, "days"))
+        self.assertIn("_bf_close_paid_followups", cron.code)
+        # ⚠️ Un banc éteint TOUTES les tâches planifiées (`banc.sh neutraliser`) :
+        # y affirmer `active` ne mesurerait que la neutralisation. On ne l'affirme
+        # donc que là où au moins une tâche tourne encore.
+        vivantes = self.env["ir.cron"].with_context(active_test=False).search_count(
+            [("active", "=", True)])
+        if not vivantes:
+            self.skipTest("toutes les tâches planifiées sont éteintes : base neutralisée")
+        self.assertTrue(cron.active, "la tâche de clôture doit être livrée allumée")
+
     # -- la clôture au paiement --------------------------------------------
 
     def test_le_filet_du_cron_ferme_une_relance_oubliee(self):
