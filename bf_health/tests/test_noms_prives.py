@@ -21,6 +21,9 @@ class TestNomsPrives(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Ces essais décrivent Healthy Fox ouvert, comme avant l'avis d'activation
+        # (18.0.2.7.0) : sur une base de foyer, le profil pose le paramètre.
+        cls.env["ir.config_parameter"].sudo().set_param("bf_health.activation_consent_required", "False")
         groupes = "base.group_user,bf_health.group_health_user"
         cls.alice = new_test_user(cls.env, login="np_alice", groups=groupes)
         cls.carol = new_test_user(cls.env, login="np_carol", groups=groupes)

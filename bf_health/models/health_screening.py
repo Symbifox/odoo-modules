@@ -3,6 +3,7 @@ from markupsafe import Markup
 from odoo import api, fields, models
 from dateutil.relativedelta import relativedelta
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
+from .activation_consent import garder_ouverts
 from .parent_guard import au_nom_du_proprietaire
 from .health_dependent import mention_de_la_personne
 
@@ -133,9 +134,9 @@ class HealthScreening(models.Model):
             return
 
         today = fields.Date.context_today(self)
-        screenings = self.search([
+        screenings = garder_ouverts(self.search([
             ("next_due", "!=", False),
-        ])
+        ]))
         for scr in screenings:
             threshold = scr.next_due - relativedelta(days=scr.lead_days or 30)
             if today < threshold:

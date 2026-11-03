@@ -3,6 +3,7 @@ from markupsafe import Markup
 from odoo import api, fields, models
 from datetime import timedelta
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
+from .activation_consent import garder_ouverts
 from .parent_guard import au_nom_du_proprietaire
 from .health_dependent import mention_de_la_personne
 
@@ -61,9 +62,9 @@ class HealthLabTest(models.Model):
             return
 
         today = fields.Date.context_today(self)
-        tests = self.search([
+        tests = garder_ouverts(self.search([
             ("next_due_date", "!=", False),
-        ])
+        ]))
         for test in tests:
             threshold = test.next_due_date - timedelta(
                 days=test.next_due_lead_days or 30

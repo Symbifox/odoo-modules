@@ -33,6 +33,7 @@ from odoo.tools.translate import LazyTranslate
 from .gen_portees import (
     LIBELLE_HUMEUR, LIBELLE_SAISIE, LIBELLE_SANTE, PORTEE_HUMEUR, PORTEE_SAISIE, PORTEE_SANTE,
 )
+from .activation_consent import ouverte
 from .parent_guard import garder_parents
 
 _lt = LazyTranslate(__name__)
@@ -382,6 +383,11 @@ class HealthMoodSettings(models.Model):
         for reglages in self.sudo().search([]):
             personne = reglages.user_id
             if not personne or not personne.active:
+                continue
+            if not ouverte(self.env, personne.id):
+                # Healthy Fox fermé pour elle (avis d'activation) : aucun rappel,
+                # et celui qui restait part.
+                self._bf_effacer_rappels(personne)
                 continue
             local = self._bf_maintenant_local(personne, maintenant)
             jour = local.date()

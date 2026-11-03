@@ -194,6 +194,74 @@ move to an account of the teen's own.
   follows their records); activities on a health record go to its holder, the second parent, the
   teen offered the passage, or Blue Fox once the child is 14.
 
+### Activation notice and consent (18.0.2.7.0)
+For the hosted Symbifox Perso tier, from a privacy impact assessment: Healthy Fox
+stays **closed** to a person until they have read the notice and given express consent, on screen.
+Off by default: nothing changes unless the system parameter
+`bf_health.activation_consent_required` is true (the household profile `bf_household_profile`
+sets it, and refuses that an administrator turns it off from the screen).
+- **Closed means closed, on every channel**: a FALSE domain is added to the rules of every model
+  the module defines (wizards included), administrators included, for the web client, XML-RPC and
+  JSON-RPC alike. The companion models (`mail.activity`, `mail.message`, `ir.attachment`,
+  `mail.followers`, `mail.tracking.value`, `mail.scheduled.message`, `calendar.event`,
+  `calendar.attendee`) lose what points at them. A note scheduled before the withdrawal is
+  still posted by Odoo's cron (superuser): the person sees it again when they consent again.
+  Tracked values of Healthy Fox records (read by system administrators only, without rule) are
+  closed to everyone, by message and by field. An appointment linked to the record of a closed
+  person (its organizer) is hidden from open members too; the household profile also makes
+  health appointments private. Settings > Technical > Models counts no Healthy Fox record, nor
+  any proof of consent. Sub-menus are hidden; the app opens the notice. The dashboard, the
+  dependents' gestures (receive, erase), the phone page, its JSON routes and its CSV export
+  refuse or lead to the notice; the phone page forgets the week it kept on the device. Crons
+  stop working for that person (daily doses, reminders, the parent's reminder at 14). What a
+  teen shares with a parent (the shared records, the share records themselves and the
+  dependent's share flags) stops being readable while Healthy Fox is closed to the teen
+  (checked by search and record by record). Blue Fox keeps only what its own rule gives it: the
+  first name and birth of children who are 14, and its own "Passage à 14 ans" reminders; not
+  their messages, their tracked values, the number of their records nor what the teen shares
+- **A system administrator is never open** where the parameter is set: on a household instance
+  Blue Fox's account is the operator's, not a person's, and an administrator can give itself the
+  health group. Its consent is refused on screen, and a proof it would hold anyway opens nothing.
+  No household member is a system administrator (`bf_household_base` refuses it)
+- **Express consent, on screen only**: the notice (`health_activation_notice_body`, a QWeb
+  template) and a box to tick, then "Ouvrir Healthy Fox". The consent is accepted only from the
+  web client's button route (`/web/dataset/call_button`) under the person's own session: never
+  through the API, never as superuser, never during an impersonation (`bf_impersonate`), never for
+  someone else. The proof is created only inside the request of that person's click on that
+  button (`/web/dataset/call_button/health.activation.notice/action_accept`): not by a server
+  action, an automation or a cron, even as superuser with the screen marker. The form sends
+  back the version and the fingerprint of the text it showed: a notice that changed while the
+  person was reading is refused. The box is ticked only from the notice's form in the web
+  client (never by default, never through the API, not during an impersonation).
+  One valid proof per person and version (partial unique index)
+- **The proof** (`health.activation.consent`) keeps the server date, the notice version, the
+  language, the text rendered at the click and its SHA-256, and at withdrawal the server date and
+  the channel (screen or API). Only the person reads it, administrators included (a rule in
+  code, not only in data). Nobody can edit or delete it outside the superuser; deleting the
+  person is refused while a proof exists (`ondelete="restrict"`): the erasure procedure removes
+  it on purpose
+- **Versioned**: `AVIS_ACTIVATION_VERSION` (2026-10-11). A new version asks everyone again, and the
+  notice says it changed. A test pins the fingerprint of the source text and of its en_CA
+  translation for the current version: changing either without a new version fails it
+- **Withdrawal in one gesture** ("Mon consentement"), on every channel (it can only close):
+  every valid proof of the person is withdrawn and Healthy Fox closes for them again. Nothing is
+  erased: erasure and a complete copy are procedures on request (the screen gives the privacy
+  contact). A closed parent cannot erase a child's records nor a closed teen refuse the
+  passage from the screen: they consent again, or ask for erasure. Conversely, an open teen to
+  whom the passage is proposed reads her dependent record (count of records, messages) and
+  receives the records even while the holder is closed: as for the second parent, the data are
+  about her, she consented, and the passage is her own gesture
+- The notice describes hosting by Blue Fox. Someone who turns the gate on elsewhere overrides the
+  template and raises the version
+- ⚠️ Limits. Like any rule, the gate does not bind the superuser (`sudo` in code, `odoo shell`,
+  `/web/become`). A bridge that reads health records with `sudo` (the household emergency card,
+  `bf_household_family_health`) does not see the gate. A system administrator who resets a
+  person's password and logs in as them can consent in their place (Odoo emails the person);
+  this is the same class as `/web/become`, like a server action or an automation that runs as
+  superuser, or uninstalling the profile to turn the parameter off. A second parent keeps the
+  records of a child they follow while the holder's own Healthy Fox is closed: the child's
+  tracking rests on the parent's consent for the child, not on the holder's activation consent
+
 ### OWL Dashboard
 - **Today's Med Compliance**: Percentage and count (taken/total) with color-coded indicator
 - **Active Medications Count**: Quick stat with click-through to kanban view
@@ -296,6 +364,10 @@ move to an account of the teen's own.
 | Rappels du journal d'humeur | Every 15 min | `health.mood.settings._cron_mood_reminders()` | One reminder per person and local day, at their hour, in their time zone; deletes past reminders |
 | Passage à 14 ans | Daily | `health.dependent._cron_passage_14_ans()` | Once per dependent, from the first day of the month of their 14th birthday: a reminder to the parent and one to Blue Fox |
 
+Since 18.0.2.7.0, on an instance that requires the activation consent, the medication, lab test,
+screening, reduction and mood crons skip every person for whom Healthy Fox is closed (no consent to
+the current notice); the mood cron also removes their pending reminder.
+
 Since 18.0.2.5.0 every cron posts its activities **in the name of the record's owner and assigned
 to them** (`au_nom_du_proprietaire`), and the daily medication logs are created in their name.
 Before, the cron posted them as the system account: activities were assigned to OdooBot and the
@@ -319,7 +391,7 @@ All crons implement duplicate prevention: check for existing open activities of 
 ## Menu Structure
 
 ```
-Santé (application, opens dashboard)
+Santé (application, opens dashboard, or the activation notice while it is not accepted)
 ├── Humeur
 │   ├── Saisies (list, form, calendar, graph, pivot)
 │   ├── Mon journal et corrélations (server action, the person's settings)
@@ -347,11 +419,12 @@ Santé (application, opens dashboard)
 │   ├── Conditions actives (filtered)
 │   └── Toutes les conditions
 ├── Personnes à charge (children under 14, and records to receive at 14)
-└── Rapports
-    ├── Tableau de bord (OWL)
-    ├── Tendance du poids (vital graph, filtered)
-    ├── Pression artérielle (vital graph, filtered)
-    └── Consommation mensuelle (substance pivot)
+├── Rapports
+│   ├── Tableau de bord (OWL)
+│   ├── Tendance du poids (vital graph, filtered)
+│   ├── Pression artérielle (vital graph, filtered)
+│   └── Consommation mensuelle (substance pivot)
+└── Mon consentement (only where the activation consent is required)
 ```
 
 ## Views Per Model
@@ -415,6 +488,11 @@ Since 18.0.2.6.0 (dependents and second parent):
 - the second parent (`coparent_id`) has a group rule on each of the 12 models a child's record can
   belong to, `[('dependent_id.coparent_id', '=', user.id), ('dependent_id.state', 'in', ('suivi', 'offert'))]`,
   and reads the foods of the child's meal logs (read-only)
+
+Since 18.0.2.7.0 (activation notice): `health.activation.consent` has a **global** rule
+`[('user_id', '=', user.id)]` and read access only; `health.activation.notice` a global rule on
+`create_uid`. On an instance that requires the consent, `ir.rule._compute_domain` adds a FALSE domain
+to every Healthy Fox model for a person who has not consented (see "Activation notice and consent").
 
 The dashboard model (`health.dashboard`) has no table and no access line: it reads the caller's
 own records in SQL (`create_uid` = caller), or a child's records under the parent who holds them once
@@ -599,12 +677,6 @@ This module follows established patterns from other Blue Fox custom modules:
 | Cron XML data pattern | `hosting_management` | `noupdate=1`, model_id ref, state=code |
 
 ## Changelog
-
-### Version 18.0.2.6.1 (2026-10-22)
-- **Translation**: the dashboard no longer shows French labels to an English-speaking user. The
-  loading-error notice, the quick-entry window title, the substance names, the "Screening" and
-  "Renewal" badges and the titles of the shortcut lists go through `_t`; their catalogue entries
-  carry the `odoo-javascript` marker so the browser receives them.
 
 ### Version 18.0.2.5.1 (2026-10-09)
 - **Security**: a health record shows a neutral name to anyone the record rule refuses (access

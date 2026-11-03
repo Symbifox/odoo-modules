@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Top-level app menu (opens dashboard) -->
+    <!-- Top-level app menu : le tableau de bord, ou l'avis d'activation tant
+         que la personne n'y a pas consenti (instance qui l'exige). -->
     <menuitem id="health_menu_root"
               name="Healthy Fox"
               web_icon="bf_health,static/description/icon.png"
-              action="health_dashboard_action"
+              action="action_health_entree"
               groups="bf_health.group_health_user"
               sequence="90"/>
 
@@ -146,5 +147,10 @@
     <menuitem id="health_menu_reports_workout" name="Entraînement (pivot)"
               parent="health_menu_reports"
               action="health_workout_action" sequence="60"/>
+    <!-- Le consentement de la personne, à retirer d'un geste. Caché quand
+         l'instance n'exige pas de consentement (activation_consent.py). -->
+    <menuitem id="health_menu_activation_consent" name="Mon consentement"
+              parent="health_menu_root"
+              action="action_health_mon_consentement" sequence="90"/>
 
 </odoo>

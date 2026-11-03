@@ -1,6 +1,7 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 
+from .activation_consent import ouverte
 from .parent_guard import fermee_a_cet_appel
 
 
@@ -31,6 +32,9 @@ class HealthDashboard(models.AbstractModel):
         # Si le verrou de Gen ferme la santé à cet appel (canal API sans
         # permission), on refuse ici : sinon Gen lirait par ce détour ce que la
         # règle lui ferme. Sans Gen installé, la règle n'ajoute rien.
+        if not ouverte(self.env):
+            raise AccessError(_("Healthy Fox est fermé tant que vous n'avez pas lu l'avis "
+                                "et donné votre accord. Ouvrez l'appli Healthy Fox pour le lire."))
         if fermee_a_cet_appel(self.env, MODELES_LUS):
             raise AccessError(_("Healthy Fox est fermé à cet appel."))
         today = fields.Date.context_today(self)

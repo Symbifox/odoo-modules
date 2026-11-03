@@ -52,6 +52,10 @@
     // ── Appels au serveur ─────────────────────────────────────────────
     class Expiree extends Error {}
     class Refus extends Error {}
+    // Healthy Fox fermé (avis d'activation) : rien de la personne ne reste affiché.
+    class Fermee extends Error {
+        constructor(entree) { super(""); this.entree = entree; }
+    }
 
     async function appeler(route, params) {
         const reponse = await fetch(RACINE + route, {
@@ -72,6 +76,7 @@
             if (nom.includes("SessionExpired")) { throw new Expiree(); }
             throw new Refus((corps.error.data && corps.error.data.message) || corps.error.message || "");
         }
+        if (corps.result && corps.result.ferme) { throw new Fermee(corps.result.entree || "/odoo"); }
         if (corps.result && corps.result.error) { throw new Refus(corps.result.error); }
         return corps.result;
     }
@@ -193,6 +198,7 @@
             donnees = etat;
             ecrire(cleEtat(), etat);
         } catch (e) {
+            if (e instanceof Fermee) { fermer(e.entree); return; }
             if (e instanceof Expiree) {
                 toast(MOTS.session_expired, true);
             }
@@ -200,6 +206,12 @@
         }
         dessinerTout();
         vider();
+    }
+
+    function fermer(entree) {
+        try { localStorage.removeItem(cleEtat()); } catch (e) { /* rien */ }
+        donnees = null;
+        window.location.href = entree;
     }
 
     async function vider() {
@@ -218,6 +230,7 @@
                 ecrire(cleFile(), file);
             }
         } catch (e) {
+            if (e instanceof Fermee) { envoiEnCours = false; fermer(e.entree); return; }
             if (e instanceof Refus) { toast(MOTS.error + " " + e.message, true); }
         } finally {
             envoiEnCours = false;
@@ -251,6 +264,7 @@
             remettre();
             toast(MOTS.saved);
         } catch (e) {
+            if (e instanceof Fermee) { fermer(e.entree); return; }
             if (e instanceof Refus) {
                 toast(MOTS.error + " " + e.message, true);
                 return;

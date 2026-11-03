@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- L'avis d'activation. Sa version est
+         AVIS_ACTIVATION_VERSION dans models/activation_consent.py : changer le
+         fond de ce texte, c'est changer la version, ce qui redemande le
+         consentement à tout le monde. Il décrit l'hébergement du palier
+         Symbifox Perso par Blue Fox ; qui active la garde ailleurs le surcharge.
+         Jamais le nom du fournisseur ni le lieu précis des serveurs. -->
+    <template id="health_activation_notice_body">
+        <div class="o_bf_health_avis">
+            <p>Healthy Fox vous permet de suivre votre santé. Ce sont des renseignements
+                sensibles : voici ce que nous en faisons. Healthy Fox reste fermé tant que
+                vous n'avez pas donné votre accord.</p>
+            <h5 class="mt-3">Ce que Healthy Fox recueille, et pourquoi</h5>
+            <p>Ce que vous y inscrivez : vos médicaments et vos prises, vos signes vitaux,
+                vos analyses et vos examens, vos conditions et vos symptômes, votre
+                consommation, vos séances d'entraînement, vos repas, votre humeur et les
+                fichiers que vous joignez. Vous choisissez ce que vous suivez. Healthy Fox en
+                tire ses propres calculs (prises du jour, observance, échéances). Ces
+                renseignements servent à vous aider à suivre votre santé : les consigner,
+                vous rappeler vos échéances, vous en montrer des synthèses et vous en
+                remettre une copie.</p>
+            <p>Jamais de publicité, de vente ni de location, d'étude ni de statistiques,
+                ni d'entraînement d'une intelligence artificielle. Blue Fox ne communique
+                rien à un employeur, à un assureur ni à un professionnel de la santé, sauf
+                si la loi l'y oblige : si vous voulez montrer vos données à votre médecin,
+                vous lui remettez vous-même votre rapport.</p>
+            <h5 class="mt-3">Qui les voit</h5>
+            <ul>
+                <li><strong>Vous.</strong> Les autres personnes du foyer ne voient rien, sauf
+                    ce que vous choisissez de partager.</li>
+                <li><strong>Blue Fox</strong>, qui héberge l'instance du foyer et gère ses
+                    comptes. Les personnes de Blue Fox chargées de l'exploitation n'ouvrent vos
+                    données que si c'est nécessaire pour vous rendre le service.</li>
+                <li>Aucun assistant d'intelligence artificielle offert dans l'instance ne lit
+                    vos données de santé sans un consentement à part, que vous donnez
+                    vous-même.</li>
+                <li>Blue Fox s'aide d'outils d'intelligence artificielle situés hors du Québec
+                    pour exploiter ses serveurs. Une garde qui les empêche de lire les données
+                    de santé est en préparation ; d'ici là, une intervention technique pourrait
+                    leur en montrer.</li>
+                <li>La fiche d'urgence du foyer, si vous y cochez la santé, montre vos
+                    médicaments actifs et vos conditions au foyer et aux personnes à qui vous
+                    en donnez le lien (une gardienne, par exemple). Elle les montre tant que la
+                    case reste cochée, même si vous retirez ce consentement.</li>
+            </ul>
+            <h5 class="mt-3">Où elles sont gardées</h5>
+            <p>Sur des serveurs au Québec, dans une instance réservée à votre foyer. Blue Fox
+                loue ces serveurs à un fournisseur d'infrastructure au Québec, qui garde aussi
+                une copie chiffrée des sauvegardes ; une autre copie chiffrée reste chez Blue
+                Fox, au Québec. Les courriels de compte (invitation, mot de passe) peuvent
+                passer par un fournisseur de courriel situé hors du Québec ; ils ne
+                contiennent aucune donnée de santé.</p>
+            <h5 class="mt-3">Combien de temps</h5>
+            <ul>
+                <li>Une fiche que vous effacez disparaît aussitôt de Healthy Fox, de l'instance
+                    sous 24 heures (fichiers joints compris), et des sauvegardes en 90 jours au
+                    plus.</li>
+                <li>Si vous fermez votre compte, nous vous offrons une copie de vos données,
+                    puis nous les effaçons dans les 7 jours.</li>
+                <li>Si le foyer ne renouvelle pas son abonnement, vous gardez 30 jours pour
+                    consulter et exporter vos données. Nous les effaçons ensuite.</li>
+                <li>Si vous retirez votre consentement, vos données restent dans l'instance,
+                    fermées, jusqu'à ce que vous en demandiez l'effacement ou que votre compte
+                    ferme.</li>
+                <li>Nous gardons la preuve de votre consentement (sa date, sa version et le
+                    texte de cet avis) tant que votre compte existe. Elle est effacée avec vos
+                    données.</li>
+            </ul>
+            <h5 class="mt-3">Vos droits</h5>
+            <p>Vous voyez et corrigez vos données dans Healthy Fox. Vous pouvez demander en
+                tout temps une copie complète de vos données, ou leur effacement : nous
+                répondons dans les 30 jours. Vous pouvez retirer votre consentement d'un
+                geste, dans Healthy Fox, menu « Mon consentement » : Healthy Fox se referme
+                alors pour vous, sans effacer vos données.</p>
+            <p>Les corrélations de l'humeur (avec le sommeil, les médicaments ou les
+                symptômes) sont désactivées : c'est vous qui décidez de les activer, dans
+                votre journal d'humeur.</p>
+            <h5 class="mt-3">Nous joindre</h5>
+            <p>Responsable de la protection des renseignements personnels de Blue Fox :
+                <a href="mailto:vieprivee@bluefoxconsultant.com">vieprivee@bluefoxconsultant.com</a>.</p>
+            <p class="text-muted small mb-0">Avis du 11 octobre 2026.</p>
+        </div>
+    </template>
+
+    <record id="health_activation_notice_view_form" model="ir.ui.view">
+        <field name="name">health.activation.notice.form</field>
+        <field name="model">health.activation.notice</field>
+        <field name="arch" type="xml">
+            <form string="Avant d'ouvrir Healthy Fox">
+                <field name="exige" invisible="1"/>
+                <field name="deja_ouvert" invisible="1"/>
+                <field name="avis_change" invisible="1"/>
+                <!-- Renvoyés au serveur : la version et l'empreinte du texte affiché. -->
+                <field name="version" invisible="1" force_save="1"/>
+                <field name="notice_sha256" invisible="1" force_save="1"/>
+                <div class="alert alert-info" role="status" invisible="not deja_ouvert">
+                    Vous avez déjà donné votre accord à cet avis : Healthy Fox est ouvert.
+                </div>
+                <div class="alert alert-info" role="status" invisible="exige">
+                    Healthy Fox est ouvert à tous sur cette instance : aucun consentement n'y est
+                    demandé.
+                </div>
+                <div class="alert alert-warning" role="status" invisible="not avis_change">
+                    L'avis a changé depuis votre dernier accord. Lisez la nouvelle version :
+                    Healthy Fox reste fermé jusqu'à votre accord.
+                </div>
+                <field name="notice_html" readonly="1" nolabel="1"/>
+                <div class="mt-3" invisible="deja_ouvert or not exige">
+                    <field name="lu" class="me-2"/>
+                    <label for="lu"/>
+                </div>
+                <footer>
+                    <button name="action_accept" type="object" class="btn-primary"
+                            string="Ouvrir Healthy Fox"
+                            invisible="deja_ouvert or not exige"/>
+                    <button string="Pas maintenant" special="cancel" class="btn-secondary"
+                            invisible="deja_ouvert or not exige"/>
+                    <button string="Fermer" special="cancel" class="btn-secondary"
+                            invisible="not deja_ouvert and exige"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_health_activation_notice" model="ir.actions.act_window">
+        <field name="name">Avant d'ouvrir Healthy Fox</field>
+        <field name="res_model">health.activation.notice</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="health_activation_notice_view_form"/>
+        <field name="target">new</field>
+        <field name="context">{'dialog_size': 'large'}</field>
+    </record>
+
+    <record id="health_activation_consent_view_form" model="ir.ui.view">
+        <field name="name">health.activation.consent.form</field>
+        <field name="model">health.activation.consent</field>
+        <field name="arch" type="xml">
+            <form string="Mon consentement" create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_withdraw" type="object" string="Retirer mon consentement"
+                            invisible="state != 'valide'"
+                            confirm="Healthy Fox se referme pour vous dès maintenant. Vos données ne sont pas effacées : vous les retrouverez si vous consentez de nouveau. Retirer votre consentement?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="valide,retire"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="status" invisible="state != 'valide'">
+                        Retirer votre consentement referme Healthy Fox pour vous. Vos données ne
+                        sont pas effacées pour autant. Pour les effacer, ou en recevoir une copie
+                        complète, écrivez à notre responsable de la protection des renseignements
+                        personnels : vieprivee@bluefoxconsultant.com.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id" options="{'no_open': True}"/>
+                            <field name="consent_date"/>
+                            <field name="withdrawn_date" invisible="not withdrawn_date"/>
+                            <field name="withdrawn_via" invisible="not withdrawn_date"/>
+                        </group>
+                        <group>
+                            <field name="version"/>
+                            <field name="lang"/>
+                            <field name="notice_sha256"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Texte de l'avis lu" name="avis">
+                            <field name="notice_html" readonly="1" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="health_activation_consent_view_list" model="ir.ui.view">
+        <field name="name">health.activation.consent.list</field>
+        <field name="model">health.activation.consent</field>
+        <field name="arch" type="xml">
+            <list string="Mes consentements" create="false" edit="false" delete="false">
+                <field name="consent_date"/>
+                <field name="version"/>
+                <field name="withdrawn_date"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_health_activation_consent_mine" model="ir.actions.act_window">
+        <field name="name">Mon consentement</field>
+        <field name="res_model">health.activation.consent</field>
+        <field name="view_mode">form,list</field>
+        <field name="view_id" ref="health_activation_consent_view_form"/>
+        <field name="target">current</field>
+    </record>
+
+    <!-- L'entrée de l'appli : le tableau de bord, ou l'avis tant qu'il n'est
+         pas accepté. Un groupe sur l'action : sans lui, Odoo exigerait le droit
+         d'ÉCRIRE sur le modèle pour l'exécuter. -->
+    <record id="action_health_entree" model="ir.actions.server">
+        <field name="name">Healthy Fox</field>
+        <field name="model_id" ref="model_health_activation_consent"/>
+        <field name="groups_id" eval="[(4, ref('group_health_user'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = model._bf_action_entree()</field>
+    </record>
+
+    <record id="action_health_mon_consentement" model="ir.actions.server">
+        <field name="name">Mon consentement</field>
+        <field name="model_id" ref="model_health_activation_consent"/>
+        <field name="groups_id" eval="[(4, ref('group_health_user'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = model._bf_action_mon_consentement()</field>
+    </record>
+
+</odoo>

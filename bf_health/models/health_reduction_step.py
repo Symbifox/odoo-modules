@@ -2,6 +2,7 @@ from markupsafe import Markup
 
 from odoo import api, fields, models
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
+from .activation_consent import garder_ouverts
 from .parent_guard import au_nom_du_proprietaire
 from .health_dependent import mention_de_la_personne
 
@@ -90,13 +91,13 @@ class HealthReductionStep(models.Model):
         )
         if not activity_type:
             return
-        steps = self.search(
+        steps = garder_ouverts(self.search(
             [
                 ("state", "=", "todo"),
                 ("date_start", "<=", horizon),
                 ("date_start", ">=", today),
             ]
-        )
+        ))
         for step in steps:
             existing = step.activity_ids.filtered(
                 lambda a: a.activity_type_id == activity_type

@@ -6,3 +6,4 @@ from . import test_mesures_efvp
 from . import test_noms_prives
 from . import test_personnes_a_charge
 from . import test_second_parent
+from . import test_avis_activation

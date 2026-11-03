@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 01:24+0000\n"
-"PO-Revision-Date: 2026-10-10 01:24+0000\n"
+"POT-Creation-Date: 2026-10-11 08:03+0000\n"
+"PO-Revision-Date: 2026-10-11 08:03+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -185,6 +185,21 @@ msgid "<strong>Avant de suivre la santé de votre enfant</strong>"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"<strong>Blue Fox</strong>, qui héberge l'instance du foyer et gère ses\n"
+"                    comptes. Les personnes de Blue Fox chargées de l'exploitation n'ouvrent vos\n"
+"                    données que si c'est nécessaire pour vous rendre le service."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"<strong>Vous.</strong> Les autres personnes du foyer ne voient rien, sauf\n"
+"                    ce que vous choisissez de partager."
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_symptom_log__body_area__abdomen
 msgid "Abdomen"
 msgstr ""
@@ -316,8 +331,6 @@ msgid "Ajouter une note"
 msgstr ""
 
 #. module: bf_health
-#. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__alcohol
 #: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__alcohol
 #: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__alcohol
@@ -386,7 +399,6 @@ msgstr ""
 
 #. module: bf_health
 #. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_lab_test_action
 #: model:ir.ui.menu,name:bf_health.health_menu_lab
@@ -465,6 +477,14 @@ msgstr ""
 #: model:ir.model.fields.selection,name:bf_health.selection__health_medication__frequency__as_needed
 #: model:ir.model.fields.selection,name:bf_health.selection__health_medication_log__time_slot__as_needed
 msgid "Au besoin"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Aucun assistant d'intelligence artificielle offert dans l'instance ne lit\n"
+"                    vos données de santé sans un consentement à part, que vous donnez\n"
+"                    vous-même."
 msgstr ""
 
 #. module: bf_health
@@ -570,9 +590,35 @@ msgid "Aux 5 ans"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.action_health_activation_notice
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_view_form
+msgid "Avant d'ouvrir Healthy Fox"
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
 msgid "Avec %s"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__notice_html
+msgid "Avis"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__avis_change
+msgid "Avis changé depuis le dernier accord"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_activation_notice
+msgid "Avis d'activation de Healthy Fox"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid "Avis du 11 octobre 2026."
 msgstr ""
 
 #. module: bf_health
@@ -588,6 +634,11 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_dependent__consent_version
 msgid "Avis lu par le parent"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_activation_consent__state__remplace
+msgid "Avis remplacé"
 msgstr ""
 
 #. module: bf_health
@@ -608,13 +659,20 @@ msgid "Bilan sanguin"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Blue Fox s'aide d'outils d'intelligence artificielle situés hors du Québec\n"
+"                    pour exploiter ses serveurs. Une garde qui les empêche de lire les données\n"
+"                    de santé est en préparation ; d'ici là, une intervention technique pourrait\n"
+"                    leur en montrer."
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_mood_entry_view_search
 msgid "Bons jours"
 msgstr ""
 
 #. module: bf_health
-#. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__caffeine
 #: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__caffeine
 #: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__caffeine
@@ -669,8 +727,6 @@ msgid "Calories nettes"
 msgstr ""
 
 #. module: bf_health
-#. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__cannabis
 #: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__cannabis
 #: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__cannabis
@@ -695,6 +751,12 @@ msgid "Catégorie"
 msgstr ""
 
 #. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid "Ce champ ne se cherche que dans les règles d'accès."
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.constraint,message:bf_health.constraint_health_dependent_bf_health_dependent_ado_unique
 msgid "Ce compte reçoit déjà les fiches d'une autre personne à charge."
 msgstr ""
@@ -706,8 +768,19 @@ msgid "Ce compte suit lui-même des enfants : ce n'est pas celui de l'ado."
 msgstr ""
 
 #. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid "Ce consentement est déjà retiré."
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_workout_view_search
 msgid "Ce mois"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid "Ce que Healthy Fox recueille, et pourquoi"
 msgstr ""
 
 #. module: bf_health
@@ -718,6 +791,19 @@ msgstr ""
 #. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
 msgid "Ce que l'ado partage avec son second parent"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Ce que vous y inscrivez : vos médicaments et vos prises, vos signes vitaux,\n"
+"                vos analyses et vos examens, vos conditions et vos symptômes, votre\n"
+"                consommation, vos séances d'entraînement, vos repas, votre humeur et les\n"
+"                fichiers que vous joignez. Vous choisissez ce que vous suivez. Healthy Fox en\n"
+"                tire ses propres calculs (prises du jour, observance, échéances). Ces\n"
+"                renseignements servent à vous aider à suivre votre santé : les consigner,\n"
+"                vous rappeler vos échéances, vous en montrer des synthèses et vous en\n"
+"                remettre une copie."
 msgstr ""
 
 #. module: bf_health
@@ -818,6 +904,13 @@ msgid ""
 msgstr ""
 
 #. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid ""
+"Cochez la case pour confirmer que vous avez lu l'avis et que vous consentez."
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__code
 msgid "Code"
 msgstr ""
@@ -836,6 +929,11 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_reduction_step__color
 msgid "Color"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid "Combien de temps"
 msgstr ""
 
 #. module: bf_health
@@ -880,7 +978,6 @@ msgstr ""
 
 #. module: bf_health
 #. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_condition_action
 #: model:ir.ui.menu,name:bf_health.health_menu_condition
@@ -915,13 +1012,33 @@ msgid "Consentement de l'ado"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__consent_date
+msgid "Consentement donné le"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_dependent__consent_date
 msgid "Consentement du parent"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__exige
+msgid "Consentement exigé sur l'instance"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_health_activation_consent
+msgid "Consentement à Healthy Fox"
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid "Consentement à l'avis du %s"
+msgstr ""
+
+#. module: bf_health
 #. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_substance_log_action
 #: model:ir.ui.menu,name:bf_health.health_menu_daily_substance
@@ -1007,6 +1124,8 @@ msgid "Course"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__create_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__create_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__create_uid
@@ -1033,6 +1152,8 @@ msgid "Created by"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__create_date
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__create_date
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__create_date
@@ -1179,6 +1300,8 @@ msgid "Description"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__display_name
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__display_name
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__display_name
@@ -1270,6 +1393,11 @@ msgid "Déjeuner"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__deja_ouvert
+msgid "Déjà ouvert"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_workout__elevation_m
 msgid "Dénivelé + (m)"
 msgstr ""
@@ -1339,6 +1467,16 @@ msgid "Email composition wizard"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__notice_sha256
+msgid "Empreinte du texte affiché"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__notice_sha256
+msgid "Empreinte du texte lu"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__state__in_progress
 #: model_terms:ir.ui.view,arch_db:bf_health.health_reduction_step_search
 msgid "En cours"
@@ -1367,6 +1505,11 @@ msgid "En retard"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_activation_consent__state__valide
+msgid "En vigueur"
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/controllers/humeur_pwa.py:0
 #: model_terms:ir.ui.view,arch_db:bf_health.health_daily_log_wizard_view_form
@@ -1381,7 +1524,6 @@ msgstr ""
 
 #. module: bf_health
 #. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_workout_action
 #: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_workout
@@ -1416,14 +1558,6 @@ msgid "Entrée du journal alimentaire"
 msgstr ""
 
 #. module: bf_health
-#. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
-msgid "Erreur lors du chargement du tableau de bord"
-msgstr ""
-
-#. module: bf_health
-#. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_form
 msgid "Examen"
 msgstr ""
@@ -1445,7 +1579,6 @@ msgstr ""
 
 #. module: bf_health
 #. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_screening_action
 #: model:ir.ui.menu,name:bf_health.health_menu_screening
@@ -1514,6 +1647,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
 msgid "Famille"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_view_form
+msgid "Fermer"
 msgstr ""
 
 #. module: bf_health
@@ -1762,6 +1900,7 @@ msgid "Has Message"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.actions.server,name:bf_health.action_health_entree
 #: model:ir.ui.menu,name:bf_health.health_menu_root
 #: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
 msgid "Healthy Fox"
@@ -1835,8 +1974,25 @@ msgstr ""
 
 #. module: bf_health
 #. odoo-python
+#: code:addons/bf_health/controllers/humeur_pwa.py:0
+#: code:addons/bf_health/models/health_dashboard.py:0
+#: code:addons/bf_health/models/health_dependent.py:0
+msgid ""
+"Healthy Fox est fermé tant que vous n'avez pas lu l'avis et donné votre "
+"accord. Ouvrez l'appli Healthy Fox pour le lire."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
 #: code:addons/bf_health/models/health_dashboard.py:0
 msgid "Healthy Fox est fermé à cet appel."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_view_form
+msgid ""
+"Healthy Fox est ouvert à tous sur cette instance : aucun consentement n'y est\n"
+"                    demandé."
 msgstr ""
 
 #. module: bf_health
@@ -1860,6 +2016,27 @@ msgstr ""
 msgid ""
 "Healthy Fox ne suit dans le compte d'un parent que les enfants de moins de "
 "14 ans. À 14 ans, l'ado a son propre compte : demandez-le à Blue Fox."
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_res_users__bf_health_ouvert
+msgid "Healthy Fox ouvert"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_consent_view_form
+msgid ""
+"Healthy Fox se referme pour vous dès maintenant. Vos données ne sont pas "
+"effacées : vous les retrouverez si vous consentez de nouveau. Retirer votre "
+"consentement?"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Healthy Fox vous permet de suivre votre santé. Ce sont des renseignements\n"
+"                sensibles : voici ce que nous en faisons. Healthy Fox reste fermé tant que\n"
+"                vous n'avez pas donné votre accord."
 msgstr ""
 
 #. module: bf_health
@@ -1937,6 +2114,8 @@ msgid "Humeur du jour"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__id
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__id
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__id
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__id
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__id
@@ -2091,6 +2270,23 @@ msgid "Is Follower"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__lu
+msgid ""
+"J'ai lu cet avis. Je consens à ce que Healthy Fox recueille et conserve mes "
+"renseignements de santé aux fins qu'il décrit."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Jamais de publicité, de vente ni de location, d'étude ni de statistiques,\n"
+"                ni d'entraînement d'une intelligence artificielle. Blue Fox ne communique\n"
+"                rien à un employeur, à un assureur ni à un professionnel de la santé, sauf\n"
+"                si la loi l'y oblige : si vous voulez montrer vos données à votre médecin,\n"
+"                vous lui remettez vous-même votre rapport."
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_dependent__consentement_parent
 msgid "Je consens, pour mon enfant, au suivi de sa santé dans mon compte"
 msgstr ""
@@ -2139,8 +2335,6 @@ msgid "Joints"
 msgstr ""
 
 #. module: bf_health
-#. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.actions.act_window,name:bf_health.health_meal_log_action
 #: model:ir.ui.menu,name:bf_health.health_menu_nutrition_journal
 #: model_terms:ir.ui.view,arch_db:bf_health.health_meal_log_view_pivot
@@ -2261,9 +2455,39 @@ msgid ""
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_view_form
+msgid ""
+"L'avis a changé depuis votre dernier accord. Lisez la nouvelle version :\n"
+"                    Healthy Fox reste fermé jusqu'à votre accord."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid ""
+"L'avis a changé pendant votre lecture. Rouvrez Healthy Fox pour lire la "
+"nouvelle version."
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/wizard/health_daily_log_wizard.py:0
 msgid "L'humeur se saisit pour soi seulement."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid "La case de l'avis se coche à l'écran, par la personne elle-même."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"La fiche d'urgence du foyer, si vous y cochez la santé, montre vos\n"
+"                    médicaments actifs et vos conditions au foyer et aux personnes à qui vous\n"
+"                    en donnez le lien (une gardienne, par exemple). Elle les montre tant que la\n"
+"                    case reste cochée, même si vous retirez ce consentement."
 msgstr ""
 
 #. module: bf_health
@@ -2285,6 +2509,13 @@ msgid "Laboratoire"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__lang
+msgid "Langue de l'avis"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__write_uid
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__write_uid
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__write_uid
@@ -2311,6 +2542,8 @@ msgid "Last Updated by"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__write_date
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__write_date
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_meal_line__write_date
@@ -2352,6 +2585,14 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_health/models/health_dependent.py:0
 msgid "Le compte de l'ado ne peut pas être son second parent."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid ""
+"Le consentement à Healthy Fox se donne à l'écran, par la personne elle-même."
+" Il ne peut pas être donné autrement."
 msgstr ""
 
 #. module: bf_health
@@ -2432,6 +2673,14 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_health/models/mail_followers.py:0
 msgid "Les abonnés d'une fiche santé ne se lisent pas."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Les corrélations de l'humeur (avec le sommeil, les médicaments ou les\n"
+"                symptômes) sont désactivées : c'est vous qui décidez de les activer, dans\n"
+"                votre journal d'humeur."
 msgstr ""
 
 #. module: bf_health
@@ -2531,6 +2780,16 @@ msgid "Mental"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model,name:bf_health.model_ir_ui_menu
+msgid "Menu"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_consent_view_list
+msgid "Mes consentements"
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_search
 msgid "Mes enfants"
 msgstr ""
@@ -2571,6 +2830,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__active_minutes
 #: model:ir.model.fields.selection,name:bf_health.selection__health_vital__vital_type__active_minutes
 msgid "Minutes actives"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_ir_model
+msgid "Models"
 msgstr ""
 
 #. module: bf_health
@@ -2622,6 +2886,14 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard_med_line__time_slot
 #: model:ir.model.fields,field_description:bf_health.field_health_medication_log__time_slot
 msgid "Moment"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.actions.act_window,name:bf_health.action_health_activation_consent_mine
+#: model:ir.actions.server,name:bf_health.action_health_mon_consentement
+#: model:ir.ui.menu,name:bf_health.health_menu_activation_consent
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_consent_view_form
+msgid "Mon consentement"
 msgstr ""
 
 #. module: bf_health
@@ -2689,7 +2961,6 @@ msgstr ""
 #. odoo-javascript
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_medication_action
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__med_line_ids
@@ -2706,8 +2977,6 @@ msgid "Médicaments actifs"
 msgstr ""
 
 #. module: bf_health
-#. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.actions.act_window,name:bf_health.health_medication_log_action
 #: model:ir.ui.menu,name:bf_health.health_menu_daily_med_log
 msgid "Médicaments du jour"
@@ -2881,6 +3150,19 @@ msgid "Notes..."
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Nous gardons la preuve de votre consentement (sa date, sa version et le\n"
+"                    texte de cet avis) tant que votre compte existe. Elle est effacée avec vos\n"
+"                    données."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid "Nous joindre"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard_med_line__time_slot__night
 #: model:ir.model.fields.selection,name:bf_health.selection__health_medication_log__time_slot__night
 msgid "Nuit"
@@ -2987,6 +3269,16 @@ msgid "On ne partage qu'avec un parent qui tenait ses fiches avant 14 ans."
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_view_form
+msgid "Ouvrir Healthy Fox"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid "Où elles sont gardées"
+msgstr ""
+
+#. module: bf_health
 #. odoo-javascript
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 msgid "PA"
@@ -3010,6 +3302,11 @@ msgstr ""
 #. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_daily_log_wizard__bp_systolic
 msgid "PA systolique (mmHg)"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_activation_consent__withdrawn_via__api
+msgid "Par l'API"
 msgstr ""
 
 #. module: bf_health
@@ -3088,6 +3385,11 @@ msgid "Pas encore assez de jours"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_view_form
+msgid "Pas maintenant"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_dependent__passage_du
 #: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_search
 msgid "Passage dû"
@@ -3146,6 +3448,7 @@ msgid "Personnalisé"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__user_id
 #: model:ir.model.fields,field_description:bf_health.field_health_mood_settings__user_id
 msgid "Personne"
 msgstr ""
@@ -3391,6 +3694,11 @@ msgid "Quantité"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid "Qui les voit"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields.selection,name:bf_health.selection__health_medication__frequency__daily
 #: model:ir.ui.menu,name:bf_health.health_menu_daily
 msgid "Quotidien"
@@ -3464,8 +3772,14 @@ msgstr ""
 
 #. module: bf_health
 #. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
 #: code:addons/bf_health/models/health_dependent.py:0
 msgid "Recherche non prise en charge."
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model,name:bf_health.model_ir_rule
+msgid "Record Rule"
 msgstr ""
 
 #. module: bf_health
@@ -3493,8 +3807,6 @@ msgid "Regrouper par"
 msgstr ""
 
 #. module: bf_health
-#. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model_terms:ir.ui.view,arch_db:bf_health.health_medication_view_form
 msgid "Renouvellement"
 msgstr ""
@@ -3542,6 +3854,12 @@ msgid "Repos"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Responsable de la protection des renseignements personnels de Blue Fox :"
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model.fields,field_description:bf_health.field_health_dependent__activity_user_id
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__activity_user_id
 #: model:ir.model.fields,field_description:bf_health.field_health_medication__activity_user_id
@@ -3550,6 +3868,35 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_health.field_health_screening__activity_user_id
 #: model:ir.model.fields,field_description:bf_health.field_health_workout__activity_user_id
 msgid "Responsible User"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_consent_view_form
+msgid "Retirer mon consentement"
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_consent_view_form
+msgid ""
+"Retirer votre consentement referme Healthy Fox pour vous. Vos données ne\n"
+"                        sont pas effacées pour autant. Pour les effacer, ou en recevoir une copie\n"
+"                        complète, écrivez à notre responsable de la protection des renseignements\n"
+"                        personnels : vieprivee@bluefoxconsultant.com."
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_activation_consent__state__retire
+msgid "Retiré"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__withdrawn_date
+msgid "Retiré le"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__withdrawn_via
+msgid "Retiré par"
 msgstr ""
 
 #. module: bf_health
@@ -3636,7 +3983,6 @@ msgstr ""
 
 #. module: bf_health
 #. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_daily_log_wizard_action
 #: model:ir.ui.menu,name:bf_health.health_menu_daily_wizard
@@ -3773,6 +4119,18 @@ msgstr ""
 
 #. module: bf_health
 #. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid "Seule la personne peut consentir pour elle-même."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid "Seule la personne peut retirer son consentement."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
 #: code:addons/bf_health/models/health_dependent.py:0
 msgid "Seule la personne à qui le passage est proposé reçoit ces fiches."
 msgstr ""
@@ -3783,13 +4141,34 @@ msgid "Sevrage"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Si le foyer ne renouvelle pas son abonnement, vous gardez 30 jours pour\n"
+"                    consulter et exporter vos données. Nous les effaçons ensuite."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Si vous fermez votre compte, nous vous offrons une copie de vos données,\n"
+"                    puis nous les effaçons dans les 7 jours."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Si vous retirez votre consentement, vos données restent dans l'instance,\n"
+"                    fermées, jusqu'à ce que vous en demandiez l'effacement ou que votre compte\n"
+"                    ferme."
+msgstr ""
+
+#. module: bf_health
 #: model:ir.model,name:bf_health.model_health_vital
 msgid "Signe vital"
 msgstr ""
 
 #. module: bf_health
 #. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: code:addons/bf_health/static/src/xml/health_dashboard.xml:0
 #: model:ir.actions.act_window,name:bf_health.health_vital_action
 #: model:ir.model.fields,field_description:bf_health.field_health_dependent__partage_vital
@@ -3904,6 +4283,17 @@ msgid "Suivre la santé d'un enfant de moins de 14 ans"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Sur des serveurs au Québec, dans une instance réservée à votre foyer. Blue Fox\n"
+"                loue ces serveurs à un fournisseur d'infrastructure au Québec, qui garde aussi\n"
+"                une copie chiffrée des sauvegardes ; une autre copie chiffrée reste chez Blue\n"
+"                Fox, au Québec. Les courriels de compte (invitation, mot de passe) peuvent\n"
+"                passer par un fournisseur de courriel situé hors du Québec ; ils ne\n"
+"                contiennent aucune donnée de santé."
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/models/health_mood.py:0
 msgid ""
@@ -3958,8 +4348,6 @@ msgid "Sévérité"
 msgstr ""
 
 #. module: bf_health
-#. odoo-javascript
-#: code:addons/bf_health/static/src/js/health_dashboard.js:0
 #: model:ir.model.fields.selection,name:bf_health.selection__health_daily_log_wizard__substance_type__tobacco
 #: model:ir.model.fields.selection,name:bf_health.selection__health_reduction_step__substance_type__tobacco
 #: model:ir.model.fields.selection,name:bf_health.selection__health_substance_log__substance_type__tobacco
@@ -3999,6 +4387,12 @@ msgstr ""
 #. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_vital_view_graph
 msgid "Tendances"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__notice_html
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_consent_view_form
+msgid "Texte de l'avis lu"
 msgstr ""
 
 #. module: bf_health
@@ -4136,6 +4530,26 @@ msgstr ""
 
 #. module: bf_health
 #. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid ""
+"Un compte d'administration système ne consent pas à Healthy Fox sur cette "
+"instance : Healthy Fox lui reste fermé."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid "Un consentement ne se modifie pas. Il se retire."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
+#: code:addons/bf_health/models/activation_consent.py:0
+msgid "Un consentement ne se supprime pas. Il se retire."
+msgstr ""
+
+#. module: bf_health
+#. odoo-python
 #: code:addons/bf_health/models/health_dependent.py:0
 msgid "Un partage ne se modifie pas : retirez-le, puis créez-en un autre."
 msgstr ""
@@ -4162,6 +4576,14 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_health/models/health_note_only.py:0
 msgid "Une fiche de Healthy Fox ne s'envoie pas par courriel."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Une fiche que vous effacez disparaît aussitôt de Healthy Fox, de l'instance\n"
+"                    sous 24 heures (fichiers joints compris), et des sauvegardes en 90 jours au\n"
+"                    plus."
 msgstr ""
 
 #. module: bf_health
@@ -4232,6 +4654,16 @@ msgid "Valeurs nutritives (par portion)"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_notice__version
+msgid "Version"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__version
+msgid "Version de l'avis"
+msgstr ""
+
+#. module: bf_health
 #. odoo-python
 #: code:addons/bf_health/models/health_food.py:0
 msgid "Veuillez saisir un code-barres."
@@ -4272,6 +4704,11 @@ msgid "Vitesse moy. (km/h)"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid "Vos droits"
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
 msgid ""
 "Vos fiches de santé passent dans votre compte. Dès maintenant, c'est vous "
@@ -4306,6 +4743,11 @@ msgid "Votre session a expiré. Rechargez la page pour vous reconnecter."
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_view_form
+msgid "Vous avez déjà donné votre accord à cet avis : Healthy Fox est ouvert."
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.health_dependent_view_form
 msgid ""
 "Vous consentez pour votre enfant de moins de 14 ans, comme titulaire de\n"
@@ -4337,6 +4779,16 @@ msgstr ""
 msgid ""
 "Vous pouvez retirer votre consentement en tout temps : ses fiches sont alors\n"
 "                                effacées."
+msgstr ""
+
+#. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid ""
+"Vous voyez et corrigez vos données dans Healthy Fox. Vous pouvez demander en\n"
+"                tout temps une copie complète de vos données, ou leur effacement : nous\n"
+"                répondons dans les 30 jours. Vous pouvez retirer votre consentement d'un\n"
+"                geste, dans Healthy Fox, menu « Mon consentement » : Healthy Fox se referme\n"
+"                alors pour vous, sans effacer vos données."
 msgstr ""
 
 #. module: bf_health
@@ -4592,6 +5044,11 @@ msgid "un lien modéré"
 msgstr ""
 
 #. module: bf_health
+#: model_terms:ir.ui.view,arch_db:bf_health.health_activation_notice_body
+msgid "vieprivee@bluefoxconsultant.com"
+msgstr ""
+
+#. module: bf_health
 #: model_terms:ir.ui.view,arch_db:bf_health.report_mood_doctor
 msgid "· du"
 msgstr ""
@@ -4620,6 +5077,11 @@ msgstr ""
 #: model:ir.model.fields.selection,name:bf_health.selection__health_screening__state__up_to_date
 #: model_terms:ir.ui.view,arch_db:bf_health.health_screening_view_search
 msgid "À jour"
+msgstr ""
+
+#. module: bf_health
+#: model:ir.model.fields.selection,name:bf_health.selection__health_activation_consent__withdrawn_via__ecran
+msgid "À l'écran"
 msgstr ""
 
 #. module: bf_health
@@ -4658,6 +5120,7 @@ msgid "Étapes actives"
 msgstr ""
 
 #. module: bf_health
+#: model:ir.model.fields,field_description:bf_health.field_health_activation_consent__state
 #: model:ir.model.fields,field_description:bf_health.field_health_condition__state
 #: model:ir.model.fields,field_description:bf_health.field_health_dependent__state
 #: model:ir.model.fields,field_description:bf_health.field_health_lab_test__state

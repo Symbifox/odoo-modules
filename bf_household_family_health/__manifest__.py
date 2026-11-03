@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Household Family: Healthy Fox",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Productivity",
     "summary": "A child of the household is one record, in the family and in Healthy Fox",
     "description": """

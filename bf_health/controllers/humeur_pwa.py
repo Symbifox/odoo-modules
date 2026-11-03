@@ -33,11 +33,14 @@ from odoo import _, fields, http
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.http import content_disposition, request
 
+from ..models.activation_consent import ouverte
 from ..models.health_mood import NIVEAUX, VISAGES
 
 _logger = logging.getLogger(__name__)
 
 RACINE = "/healthy-fox/humeur"
+#: L'entrée de l'appli : le tableau de bord, ou l'avis d'activation tant qu'il n'est pas accepté.
+ENTREE = "/odoo/action-bf_health.action_health_entree"
 STATIQUES = "/bf_health/static/src/humeur"
 ACCENT_DEFAUT = "#29ABE2"
 FOND = "#12161a"
@@ -191,7 +194,12 @@ def _mots():
 
 def _garde(fn):
     """Erreur en phrase, écriture annulée (une route JSON qui RENVOIE une
-    erreur est commitée par Odoo)."""
+    erreur est commitée par Odoo). Healthy Fox fermé (avis d'activation) : la
+    page oublie ce qu'elle gardait hors ligne et mène à l'avis."""
+    if not ouverte(request.env):
+        return {"error": _("Healthy Fox est fermé tant que vous n'avez pas lu l'avis et donné "
+                           "votre accord. Ouvrez l'appli Healthy Fox pour le lire."),
+                "ferme": True, "entree": ENTREE}
     try:
         return fn()
     except (AccessError, UserError, ValidationError) as exc:
@@ -277,6 +285,9 @@ class HealthyFoxHumeur(http.Controller):
             return request.redirect("/my")
         if not request.env.user.has_group("bf_health.group_health_user"):
             return request.redirect("/odoo")
+        if not ouverte(request.env):
+            # Healthy Fox fermé jusqu'à l'avis d'activation : l'appli y mène.
+            return request.redirect(ENTREE)
         accent = _accent()
         html = Markup("""<!DOCTYPE html>
 <html lang="%(langue)s">
@@ -377,6 +388,8 @@ class HealthyFoxHumeur(http.Controller):
     def export_csv(self, **kw):
         """Toutes les saisies de la personne, toujours libres. Sous ses droits :
         les règles globales ne rendent que les siennes."""
+        if not ouverte(request.env):
+            return request.redirect(ENTREE)
         Entry = request.env["health.mood.entry"]
         entrees = Entry.search([("create_uid", "=", request.env.uid)], order="date asc, id asc")
         libelles = dict(Entry._fields["level"]._description_selection(request.env))

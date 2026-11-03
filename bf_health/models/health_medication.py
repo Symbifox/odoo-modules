@@ -3,6 +3,7 @@ from markupsafe import Markup
 from odoo import api, fields, models
 from datetime import timedelta
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
+from .activation_consent import garder_ouverts
 from .parent_guard import au_nom_du_proprietaire
 from .health_dependent import mention_de_la_personne
 
@@ -133,6 +134,8 @@ class HealthMedication(models.Model):
             ("state", "=", "active"),
             ("renewal_date", "!=", False),
         ])
+        # Rien pour une personne dont Healthy Fox est fermé (avis d'activation).
+        meds = garder_ouverts(meds)
         for med in meds:
             threshold = med.renewal_date - timedelta(days=med.renewal_lead_days or 14)
             if today < threshold:
@@ -174,7 +177,7 @@ class HealthMedication(models.Model):
             "monthly": ["morning"],
         }
 
-        meds = self.search([("state", "=", "active")])
+        meds = garder_ouverts(self.search([("state", "=", "active")]))
         for med in meds:
             if med.frequency == "as_needed":
                 continue

@@ -20,6 +20,13 @@ class TestFamilyHealth(TransactionCase):
         cls.alex = new_test_user(cls.env, login="fh-alex", name="Alex FH", email="a@fh.test", groups=MEMBRE)
         cls.sam = new_test_user(cls.env, login="fh-sam", name="Sam FH", email="s@fh.test", groups=MEMBRE)
         cls.annee = date.today().year - 8
+        # Healthy Fox 18.0.2.7.0 ferme l'appli à chaque personne tant qu'elle n'a pas lu l'avis
+        # d'activation et donné son accord À L'ÉCRAN ; le profil du foyer pose le
+        # paramètre, et un essai n'a pas de requête web pour consentir. On retire donc la garde
+        # ici, comme le font les essais de bf_health : ce fichier éprouve le pont, pas l'avis.
+        # L'avis lui-même s'éprouve dans bf_health, dans bf_household_profile, et plus bas
+        # (test_the_activation_notice_closes_the_bridge).
+        cls.env["ir.config_parameter"].sudo().set_param("bf_health.activation_consent_required", "False")
 
     def _en(self, user, model):
         self.env.invalidate_all()
@@ -135,3 +142,15 @@ class TestFamilyHealth(TransactionCase):
         resume = self._en(self.sam, "bf.household.emergency.card").browse(carte.id).health_summary
         self.assertIn("Sirop", resume)
         self.assertNotIn("Camille", resume)
+
+    def test_the_activation_notice_closes_the_bridge(self):
+        """Contre-épreuve : la garde de l'avis d'activation ferme aussi ce chemin.
+
+        Sur un foyer (le profil pose le paramètre), le parent qui n'a pas donné son
+        accord à l'écran ne met pas son enfant dans Healthy Fox : le pont ne passe
+        pas devant la règle de l'avis."""
+        enfant = self._en(self.camille, "bf.household.child").create(
+            {"name": "Noé", "birth_year": self.annee, "birth_month": "5"})
+        self.env["ir.config_parameter"].sudo().set_param("bf_health.activation_consent_required", "True")
+        with self.assertRaises(AccessError):
+            self._suivre(self.camille, household_child_id=enfant.id)

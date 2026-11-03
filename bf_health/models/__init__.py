@@ -1,5 +1,6 @@
 from . import gen_portees
 from . import parent_guard
+from . import activation_consent
 from . import health_note_only
 from . import health_dependent
 from . import health_condition

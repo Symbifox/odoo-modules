@@ -2,7 +2,6 @@
 import { Component, useState, onWillStart } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { _t } from "@web/core/l10n/translation";
 
 class HealthDashboard extends Component {
     static template = "bf_health.Dashboard";
@@ -35,7 +34,7 @@ class HealthDashboard extends Component {
             );
             this.state.data = data;
         } catch (e) {
-            this.notification.add(_t("Erreur lors du chargement du tableau de bord"), {
+            this.notification.add("Erreur lors du chargement du tableau de bord", {
                 type: "danger",
             });
         } finally {
@@ -77,28 +76,11 @@ class HealthDashboard extends Component {
         return snap[type].date;
     }
 
-    // Titre de la vue ouverte par un raccourci : traduit ici, car le texte d'une
-    // expression du gabarit (t-on-click) n'est ni extrait ni traduit par Odoo.
-    modelTitle(model) {
-        const titles = {
-            "health.medication.log": _t("Médicaments du jour"),
-            "health.medication": _t("Médicaments"),
-            "health.vital": _t("Signes vitaux"),
-            "health.meal.log": _t("Journal alimentaire"),
-            "health.screening": _t("Examens"),
-            "health.substance.log": _t("Consommation"),
-            "health.workout": _t("Entraînement"),
-            "health.lab.test": _t("Analyses"),
-            "health.condition": _t("Conditions"),
-        };
-        return titles[model] || model;
-    }
-
-    async openModel(model, viewType) {
+    async openModel(model, name, viewType) {
         const action = await this.orm.call(
             "health.dashboard",
             "action_open_model",
-            [model, this.modelTitle(model), viewType || "list"]
+            [model, name, viewType || "list"]
         );
         await this.action.doAction(action);
     }
@@ -106,7 +88,7 @@ class HealthDashboard extends Component {
     async openWizard() {
         await this.action.doAction({
             type: "ir.actions.act_window",
-            name: _t("Saisie rapide"),
+            name: "Saisie rapide",
             res_model: "health.daily.log.wizard",
             views: [[false, "form"]],
             target: "new",
@@ -116,16 +98,16 @@ class HealthDashboard extends Component {
 
     substanceLabel(key) {
         const labels = {
-            alcohol: _t("Alcool"),
-            cannabis: _t("Cannabis"),
-            tobacco: _t("Tabac"),
-            caffeine: _t("Caféine"),
+            alcohol: "Alcool",
+            cannabis: "Cannabis",
+            tobacco: "Tabac",
+            caffeine: "Caféine",
         };
         return labels[key] || key;
     }
 
     overdueLabel(type) {
-        return type === "screening" ? _t("Examen") : _t("Renouvellement");
+        return type === "screening" ? "Examen" : "Renouvellement";
     }
 
     get caloriesConsumed() {

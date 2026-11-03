@@ -42,6 +42,7 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools import SQL
 
 from .gen_portees import LIBELLE_SANTE, PORTEE_SANTE
+from .activation_consent import ouverte
 from .parent_guard import au_nom_du_proprietaire
 
 AGE_DU_PASSAGE = 14
@@ -381,8 +382,14 @@ class HealthDependent(models.Model):
             rec.bf_suis_ado = proprietes.ado_id == self.env.user
             rec.bf_suis_admin = admin
 
+    @api.depends_context("uid")
     def _compute_record_count(self):
         totaux = dict.fromkeys(self.ids, 0)
+        if not self.env.su and not ouverte(self.env):
+            # Healthy Fox fermé (avis d'activation) : Blue Fox, qui lit la personne
+            # à charge par sa règle, n'apprend pas combien de fiches elle a.
+            self.record_count = 0
+            return
         for modele in MODELES_A_CHARGE:
             for ligne in self.env[modele].sudo()._read_group(
                     [("dependent_id", "in", self.ids)], ["dependent_id"], ["__count"]):
@@ -396,13 +403,23 @@ class HealthDependent(models.Model):
         lu = self.sudo()
         return {"partage": lu.create_uid, "partage2": lu.coparent_id}
 
+    @api.depends_context("uid")
     def _compute_partages(self):
         Partage = self.env["health.share"].sudo()
+        ferme = not self.env.su and not ouverte(self.env)
         for rec in self:
+            if ferme:
+                # Même raison : rien de ce que l'ado partage, à qui Healthy Fox est fermé.
+                for prefixe in ("partage", "partage2"):
+                    for cle, _libelle in CATEGORIES:
+                        rec[f"{prefixe}_{cle}"] = False
+                continue
             proprietes = rec.sudo()
             for prefixe, parent in rec._bf_parents_de_partage().items():
                 categories = set()
-                if proprietes.state == "transfere" and proprietes.ado_id and parent:
+                # Ce que partage une ado à qui Healthy Fox est fermé ne se dit plus.
+                if (proprietes.state == "transfere" and proprietes.ado_id and parent
+                        and ouverte(self.env, proprietes.ado_id.id)):
                     categories = set(Partage.search([
                         ("owner_id", "=", proprietes.ado_id.id),
                         ("parent_id", "=", parent.id),
@@ -596,6 +613,7 @@ class HealthDependent(models.Model):
         """L'ado reçoit ses fiches. Le clic, après l'avis affiché au bouton,
         vaut son consentement exprès."""
         self.ensure_one()
+        _exiger_ouverte(self.env)
         dependant = self.sudo()
         if (self.env.su or dependant.ado_id != self.env.user or dependant.state != "offert"
                 or not self.env.user.has_group("bf_health.group_health_user")):
@@ -608,6 +626,8 @@ class HealthDependent(models.Model):
         refus du passage (l'ado, tant qu'il est proposé) : toutes les fiches de
         l'enfant et la personne à charge elle-même disparaissent."""
         self.ensure_one()
+        if not self.env.su:
+            _exiger_ouverte(self.env)
         dependant = self.sudo()
         par_le_parent = self.env.user in parents_de(dependant) and dependant.state in ("suivi", "offert")
         par_l_ado = dependant.ado_id == self.env.user and dependant.state == "offert"
@@ -797,15 +817,19 @@ class HealthDependent(models.Model):
         for dependant in self.search([("state", "=", "suivi"), ("passage_date", "<=", today)]):
             if dependant.activity_ids.filtered(lambda a: a.activity_type_id == type_passage):
                 continue
+            # Rien pour un parent dont Healthy Fox est fermé (avis d'activation) :
+            # le rappel porte le prénom de l'enfant. Celui de Blue Fox part quand même.
             fiche, responsable = au_nom_du_proprietaire(dependant)
-            fiche.activity_schedule(
-                "bf_health.mail_activity_type_passage_14",
-                date_deadline=today,
-                summary=fiche.env._("Passage à 14 ans de %s : demandez son compte à Blue Fox", dependant.name),
-                user_id=responsable,
-            )
+            if ouverte(self.env, responsable):
+                fiche.activity_schedule(
+                    "bf_health.mail_activity_type_passage_14",
+                    date_deadline=today,
+                    summary=fiche.env._("Passage à 14 ans de %s : demandez son compte à Blue Fox", dependant.name),
+                    user_id=responsable,
+                )
             second = dependant.coparent_id
-            if second and second.active and second.has_group("bf_health.group_health_user"):
+            if (second and second.active and second.has_group("bf_health.group_health_user")
+                    and ouverte(self.env, second.id)):
                 dependant.with_user(second).sudo().with_context(lang=second.lang or self.env.lang).activity_schedule(
                     "bf_health.mail_activity_type_passage_14",
                     date_deadline=today,
@@ -824,6 +848,14 @@ class HealthDependent(models.Model):
                 # alors par courriel les messages du parent sur son enfant. Le
                 # rappel lui reste visible (il lui est assigné).
                 dependant.message_unsubscribe(partner_ids=admin.partner_id.ids)
+
+
+def _exiger_ouverte(env):
+    """Les gestes sur une personne à charge passent en superutilisateur après
+    leurs contrôles : la règle de l'avis d'activation ne les voit pas."""
+    if not ouverte(env):
+        raise AccessError(_("Healthy Fox est fermé tant que vous n'avez pas lu l'avis et "
+                            "donné votre accord. Ouvrez l'appli Healthy Fox pour le lire."))
 
 
 class HealthShare(models.Model):
