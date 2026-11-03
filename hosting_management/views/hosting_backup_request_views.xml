@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Demandes de sauvegarde.
+             La fiche ne s'édite pas : une demande est un fait daté, pas un
+             formulaire qu'on retouche, et le seul geste offert est d'annuler ce que
+             l'agent n'a pas encore pris.
+             ⚠️ « Ne s'édite pas » décrit l'ÉCRAN. Côté serveur, seuls le service,
+             l'auteur, la date, la référence et les trois champs `related` sont
+             vraiment figés (`_CHAMPS_FIGES`) : un gestionnaire peut encore
+             réécrire par RPC l'état ou le compte rendu de l'agent. C'est assumé
+             (il peut déjà tout faire sur l'hébergement), mais ne pas lire cette
+             vue comme une garde. -->
+        <record id="view_hosting_backup_request_list" model="ir.ui.view">
+            <field name="name">hosting.backup.request.list</field>
+            <field name="model">hosting.backup.request</field>
+            <field name="arch" type="xml">
+                <list string="Backup requests" create="false">
+                    <field name="name"/>
+                    <field name="requested_date"/>
+                    <field name="service_id"/>
+                    <field name="partner_id" optional="show"/>
+                    <field name="docker_container" optional="hide"/>
+                    <field name="requested_by_id" optional="show"/>
+                    <field name="agent_host" optional="hide"/>
+                    <field name="claimed_date" optional="hide"/>
+                    <field name="finished_date" optional="hide"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state == 'done'"
+                           decoration-danger="state in ('failed',)"
+                           decoration-warning="state in ('expired', 'cancelled')"
+                           decoration-info="state in ('pending', 'claimed', 'running')"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_hosting_backup_request_form" model="ir.ui.view">
+            <field name="name">hosting.backup.request.form</field>
+            <field name="model">hosting.backup.request</field>
+            <field name="arch" type="xml">
+                <form string="Backup request" create="false" edit="false">
+                    <header>
+                        <button name="action_cancel" type="object"
+                                string="Cancel this request"
+                                class="oe_highlight"
+                                groups="hosting_management.group_hosting_manager"
+                                invisible="state != 'pending'"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="pending,claimed,running,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <!-- Ce que l'agent lira : de quel service il s'agit. Jamais
+                             ce qu'il doit faire : la resolution du script et de
+                             l'instance est faite sur l'hote, dans une table en dur. -->
+                        <group>
+                            <group string="What was asked">
+                                <field name="service_id" readonly="1"/>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="software_id" readonly="1"/>
+                                <field name="docker_container" readonly="1"/>
+                            </group>
+                            <group string="What happened">
+                                <field name="requested_by_id" readonly="1"/>
+                                <field name="requested_date" readonly="1"/>
+                                <field name="agent_host" readonly="1"/>
+                                <field name="claimed_date" readonly="1"/>
+                                <field name="finished_date" readonly="1"/>
+                                <field name="run_id" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Agent message" invisible="not message">
+                            <field name="message" nolabel="1" readonly="1"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_hosting_backup_request_search" model="ir.ui.view">
+            <field name="name">hosting.backup.request.search</field>
+            <field name="model">hosting.backup.request</field>
+            <field name="arch" type="xml">
+                <search string="Backup requests">
+                    <field name="name"/>
+                    <field name="service_id"/>
+                    <field name="partner_id"/>
+                    <filter name="filter_request_live" string="Under way"
+                            domain="[('state', 'in', ('pending', 'claimed', 'running'))]"/>
+                    <filter name="filter_request_failed" string="Failed"
+                            domain="[('state', '=', 'failed')]"/>
+                    <filter name="filter_request_done" string="Done"
+                            domain="[('state', '=', 'done')]"/>
+                    <separator/>
+                    <filter name="filter_request_today" string="Today"
+                            domain="[('requested_date', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
+                    <group expand="0" string="Group by">
+                        <filter name="group_request_state" string="Status"
+                                context="{'group_by': 'state'}"/>
+                        <filter name="group_request_service" string="Service"
+                                context="{'group_by': 'service_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_hosting_backup_request" model="ir.actions.act_window">
+            <field name="name">Backup requests</field>
+            <field name="res_model">hosting.backup.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_filter_request_live': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">No backup request yet</p>
+                <p>
+                    A request is asked for from a service form. Odoo runs nothing:
+                    an agent on the host comes for the request and decides itself
+                    which script to run.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

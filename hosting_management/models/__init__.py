@@ -25,6 +25,7 @@ from . import hosting_backup_repository
 from . import hosting_backup_bucket_snapshot
 from . import hosting_backup_log
 from . import hosting_backup_snapshot
+from . import hosting_backup_request
 from . import hosting_saas_backup
 from . import hosting_saas_reading
 from . import hosting_audit_log

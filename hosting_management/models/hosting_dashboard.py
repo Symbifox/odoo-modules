@@ -455,6 +455,47 @@ class HostingDashboard(models.AbstractModel):
         }
 
     @api.model
+    def _action_services(self, name, domain):
+        return {
+            "type": "ir.actions.act_window",
+            "name": name,
+            "res_model": "hosting.service",
+            "view_mode": "list,form",
+            "domain": domain,
+        }
+
+    @api.model
+    def action_view_services_backup_missing(self):
+        return self._action_services(
+            self.env._("Services expected in the pipeline with no backup seen"),
+            [("backup_status", "=", "missing")],
+        )
+
+    @api.model
+    def action_view_services_backup_stale(self):
+        return self._action_services(
+            self.env._("Services whose last backup is older than the limit"),
+            [("backup_status", "=", "stale")],
+        )
+
+    @api.model
+    def action_view_services_backup_undecided(self):
+        return self._action_services(
+            self.env._("Services whose backup expectation is undecided"),
+            [("backup_status", "=", "undecided")],
+        )
+
+    @api.model
+    def action_view_discovered_repositories(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Destinations discovered, not acknowledged"),
+            "res_model": "hosting.backup.repository",
+            "view_mode": "list,form",
+            "domain": [("discovered", "=", True)],
+        }
+
+    @api.model
     def action_view_failed_backups(self):
         return {
             "type": "ir.actions.act_window",
@@ -886,7 +927,39 @@ class HostingDashboard(models.AbstractModel):
                 else False
             ),
         })
+        base.update(self._get_backup_coverage())
         return base
+
+    @api.model
+    def _get_backup_coverage(self):
+        """How many active services are actually covered, and by what.
+
+        The Restic tile counts repositories, which says nothing about the
+        services that have none. This counts services.
+        """
+        Service = self.env["hosting.service"]
+        Repo = self.env["hosting.backup.repository"]
+        services = Service.search([("state", "in", Service._BACKUP_LIVE_STATES)])
+        buckets = {"ok": 0, "stale": 0, "missing": 0, "exempt": 0, "undecided": 0}
+        for svc in services:
+            status = svc.backup_status
+            if status in buckets:
+                buckets[status] += 1
+        # Le dénominateur est ce qu'on ATTEND de notre chaîne, pas le parc entier :
+        # « 0 / 80 » le premier jour se lirait comme un parc non sauvegardé alors
+        # que personne n'a encore tranché pour aucun service.
+        return {
+            "coverage_total": len(services),
+            "coverage_expected": buckets["ok"] + buckets["stale"] + buckets["missing"],
+            "coverage_ok": buckets["ok"],
+            "coverage_stale": buckets["stale"],
+            "coverage_missing": buckets["missing"],
+            "coverage_exempt": buckets["exempt"],
+            "coverage_undecided": buckets["undecided"],
+            "coverage_discovered_repos": Repo.search_count([
+                ("discovered", "=", True),
+            ]),
+        }
 
     @api.model
     def _get_services(self):

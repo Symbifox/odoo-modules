@@ -390,6 +390,48 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Coverage of the fleet -->
+                    <div t-if="state.data.backups.coverage_total" class="col-md-6 mb-3">
+                        <div t-attf-class="card h-100 {{(state.data.backups.coverage_missing + state.data.backups.coverage_stale) > 0 ? 'border-danger' : (state.data.backups.coverage_undecided > 0 ? 'border-warning' : 'border-success')}}">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-shield me-2"/>Coverage</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="fa fa-check me-2"/>Backed up, of those expected</span>
+                                    <strong>
+                                        <span t-esc="state.data.backups.coverage_ok"/>
+                                        <span class="text-muted"> / <t t-esc="state.data.backups.coverage_expected"/></span>
+                                    </strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openBackupMissing">
+                                    <span><i class="fa fa-times-circle me-2"/>No backup seen</span>
+                                    <strong t-attf-class="{{state.data.backups.coverage_missing > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.backups.coverage_missing"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openBackupStale">
+                                    <span><i class="fa fa-clock-o me-2"/>Past the limit</span>
+                                    <strong t-attf-class="{{state.data.backups.coverage_stale > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.backups.coverage_stale"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openBackupUndecided">
+                                    <span><i class="fa fa-question-circle me-2"/>Expectation undecided</span>
+                                    <strong t-attf-class="{{state.data.backups.coverage_undecided > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.backups.coverage_undecided"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="fa fa-ban me-2"/>Out of scope, with a reason</span>
+                                    <strong class="text-muted" t-esc="state.data.backups.coverage_exempt"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 text-muted small">
+                                    <span><i class="fa fa-server me-2"/>Active services</span>
+                                    <span t-esc="state.data.backups.coverage_total"/>
+                                </div>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openDiscoveredRepos">
+                                    <span><i class="fa fa-search me-2"/>Destinations to acknowledge</span>
+                                    <strong t-attf-class="{{state.data.backups.coverage_discovered_repos > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.backups.coverage_discovered_repos"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Domains Row -->

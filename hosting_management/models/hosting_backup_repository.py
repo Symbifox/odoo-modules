@@ -63,11 +63,27 @@ class HostingBackupRepository(models.Model):
     size_human = fields.Char(string="Size", compute="_compute_size_human")
 
     last_watchdog_sync = fields.Datetime(string="Last watchdog sync")
+    discovered = fields.Boolean(
+        string="Discovered, not acknowledged",
+        default=False,
+        copy=False,
+        help="Created from a watchdog payload for a destination nobody had "
+             "registered here. It holds real snapshots, but no service is "
+             "claimed to be covered by it until someone acknowledges it.",
+    )
+    discovered_date = fields.Datetime(
+        string="Discovered on",
+        readonly=True,
+        copy=False,
+    )
     is_stale = fields.Boolean(
         string="Stale",
         compute="_compute_is_stale",
         store=True,
-        help="True if the last snapshot is older than 27 h",
+        help="True when the last snapshot is older than "
+             "`hosting.backup_stale_hours` (27 by default). Stored: it is "
+             "recomputed when the watchdog writes a new date, not on the "
+             "clock, so a change of threshold reaches it at the next push.",
     )
 
     bucket_size_share = fields.Float(
@@ -134,7 +150,13 @@ class HostingBackupRepository(models.Model):
 
     @api.depends("latest_snapshot_date")
     def _compute_is_stale(self):
-        threshold = fields.Datetime.subtract(fields.Datetime.now(), hours=27)
+        # Même seuil que la couverture des services : trois valeurs
+        # indépendantes faisaient dire « périmé » à un écran et « à jour » au
+        # voisin.
+        threshold = fields.Datetime.subtract(
+            fields.Datetime.now(),
+            hours=self.env["hosting.service"]._backup_stale_hours(),
+        )
         for repo in self:
             if not repo.latest_snapshot_date:
                 repo.is_stale = False
@@ -220,12 +242,32 @@ class HostingBackupRepository(models.Model):
             },
         }
 
+
+    def action_acknowledge(self):
+        """Take a watchdog-discovered destination into the registry."""
+        for repo in self:
+            if not repo.discovered:
+                continue
+            repo.write({"discovered": False})
+            linked = repo.auto_link_services()
+            repo.message_post(
+                body=_(
+                    "Destination acknowledged. %s service(s) linked "
+                    "automatically."
+                ) % linked,
+                subtype_xmlid="mail.mt_note",
+            )
+        return True
+
     @api.model_create_multi
     def create(self, vals_list):
         repos = super().create(vals_list)
         # Try to auto-link any matching services. Best-effort: a failure here
         # should never block repo creation (webhook ingestion must succeed).
-        for repo in repos:
+        # Un dépôt découvert par le watchdog est EXCLU : il est présent, il n'est
+        # pas encore une preuve de couverture, et c'est ce que la fiche, le
+        # README et l'écran promettent.
+        for repo in repos.filtered(lambda r: not r.discovered):
             try:
                 repo.auto_link_services()
             except Exception:  # noqa: BLE001
@@ -236,17 +278,29 @@ class HostingBackupRepository(models.Model):
 
     @api.model
     def _cron_auto_link_services(self):
-        """Re-run auto-match across all active repos. Idempotent."""
-        repos = self.search([("active", "=", True)])
+        """Re-run auto-match across all acknowledged repos. Idempotent."""
+        repos = self.search([("active", "=", True), ("discovered", "=", False)])
         total = 0
         for repo in repos:
             try:
                 total += repo.auto_link_services()
             except Exception:  # noqa: BLE001
                 _logger.exception("Auto-link failed for repo %s", repo.name)
+        # C8 : la reprise des snapshots orphelins doit être rejouable. Un
+        # `docker_container` corrigé, ou une fiche en double passée à annulée,
+        # rend un conteneur résoluble : sans ce passage, ses snapshots
+        # historiques resteraient orphelins pour toujours.
+        # Borné : les snapshots dont le conteneur restera à jamais sans
+        # service (leur nombre croît) seraient relus en entier
+        # chaque nuit pour rien.
+        linked = self.env["hosting.backup.snapshot"]._backfill_service_ids(
+            limit=5000
+        )
         _logger.info(
-            "Restic auto-link cron: %d new links across %d repos",
+            "Restic auto-link cron: %d new links across %d repos, "
+            "%d snapshot(s) resolved",
             total,
             len(repos),
+            linked,
         )
         return total

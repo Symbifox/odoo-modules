@@ -192,6 +192,12 @@ export class HostingDashboard extends Component {
     openResticRepos() { this._doAction("action_view_restic_repositories"); }
     openResticSnapshots() { this._doAction("action_view_restic_snapshots"); }
 
+    // Coverage
+    openBackupMissing() { this._doAction("action_view_services_backup_missing"); }
+    openBackupStale() { this._doAction("action_view_services_backup_stale"); }
+    openBackupUndecided() { this._doAction("action_view_services_backup_undecided"); }
+    openDiscoveredRepos() { this._doAction("action_view_discovered_repositories"); }
+
     // Domains
     openDomains() { this._doAction("action_view_domains"); }
     openDomainsExpiring() { this._doAction("action_view_domains_expiring"); }

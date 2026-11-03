@@ -8429,19 +8429,33 @@ msgstr "En ligne"
 #. odoo-python
 #: code:addons/hosting_management/models/res_partner.py:0
 msgid "Only a hosting user can set a client's hosting recipients."
-msgstr "Seul un utilisateur d'hébergement peut nommer les destinataires hébergement d'un client."
+msgstr ""
+"Seul un utilisateur d'hébergement peut nommer les destinataires hébergement "
+"d'un client."
 
 #. module: hosting_management
 #. odoo-python
 #: code:addons/hosting_management/models/res_partner.py:0
-msgid "This contact receives a client's maintenance notices and status page. Only a hosting user can change their email."
-msgstr "Ce contact reçoit les avis de maintenance et la page d'état d'un client. Seul un utilisateur d'hébergement peut changer son courriel."
+msgid ""
+"This contact receives a client's maintenance notices and status page. Only a"
+" hosting user can change their email."
+msgstr ""
+"Ce contact reçoit les avis de maintenance et la page d'état d'un client. "
+"Seul un utilisateur d'hébergement peut changer son courriel."
 
 #. module: hosting_management
 #. odoo-python
 #: code:addons/hosting_management/wizards/base_partner_merge.py:0
-msgid "One of the contacts that would disappear is a hosting recipient of a client: the merge would hand its maintenance notices and status page to the destination. Remove it from the client's hosting recipients first, or ask a hosting manager."
-msgstr "L'une des fiches qui disparaîtraient est destinataire hébergement d'un client : la fusion donnerait ses avis de maintenance et sa page d'état à la destination. Retirez-la d'abord des destinataires hébergement du client, ou demandez à un gestionnaire d'hébergement."
+msgid ""
+"One of the contacts that would disappear is a hosting recipient of a client:"
+" the merge would hand its maintenance notices and status page to the "
+"destination. Remove it from the client's hosting recipients first, or ask a "
+"hosting manager."
+msgstr ""
+"L'une des fiches qui disparaîtraient est destinataire hébergement d'un "
+"client : la fusion donnerait ses avis de maintenance et sa page d'état à la "
+"destination. Retirez-la d'abord des destinataires hébergement du client, ou "
+"demandez à un gestionnaire d'hébergement."
 
 #. module: hosting_management
 #: model:ir.model.constraint,message:hosting_management.constraint_hosting_health_daily_snapshot_service_date_unique
@@ -13290,3 +13304,607 @@ msgstr ""
 "Les personnes qui reçoivent les avis de maintenance de ce client et qui, "
 "avec un compte portail, voient sa page d'état : la société elle-même ou ses "
 "propres contacts."
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__backup_expectation
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_search
+msgid "Backup expectation"
+msgstr "Sauvegarde attendue"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_expectation__undecided
+msgid "Not decided yet"
+msgstr "À trancher"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_expectation__pipeline
+msgid "Backed up by our pipeline"
+msgstr "Sauvegardé par notre chaîne"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_expectation__provider
+msgid "Backed up by its provider"
+msgstr "Sauvegardé par son fournisseur"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_expectation__stateless
+msgid "Nothing to back up"
+msgstr "Rien à sauvegarder"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_expectation__rebuilt
+msgid "Rebuilt from an image"
+msgstr "Remis à neuf depuis une image"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__backup_expectation_reason
+msgid "Expectation reason"
+msgstr "Motif de la décision"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__backup_last_snapshot
+msgid "Last backup seen"
+msgstr "Dernière sauvegarde vue"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__backup_last_source
+msgid "Backup evidence"
+msgstr "Preuve de la sauvegarde"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_last_source__snapshot
+msgid "Snapshot of its container"
+msgstr "Snapshot de son conteneur"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_last_source__repository
+msgid "Linked repository"
+msgstr "Dépôt lié"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_last_source__provider
+msgid "Provider run"
+msgstr "Exécution du fournisseur"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__backup_status
+msgid "Backup status"
+msgstr "État de la sauvegarde"
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_status__ok
+msgid "Backed up"
+msgstr "Sauvegardé"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_status__missing
+msgid "Not backed up"
+msgstr "Pas de sauvegarde"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_status__exempt
+msgid "Out of scope"
+msgstr "Hors périmètre"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__backup_status__undecided
+msgid "To be decided"
+msgstr "À trancher"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__backup_status_message
+msgid "Backup status detail"
+msgstr "Détail de l'état de la sauvegarde"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_backup_repository__discovered
+msgid "Discovered, not acknowledged"
+msgstr "Découvert, non reconnu"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_backup_repository__discovered_date
+msgid "Discovered on"
+msgstr "Découvert le"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_backup_repository_view_form
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_backup_repository_view_search
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_backup_repository_view_tree
+msgid "To acknowledge"
+msgstr "À reconnaître"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_backup_repository_view_form
+msgid "Acknowledge this destination"
+msgstr "Reconnaître cette destination"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_backup_repository_view_form
+msgid "Registry"
+msgstr "Registre"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_backup_snapshot_view_search
+msgid "No service resolved"
+msgstr "Aucun service résolu"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_form
+msgid "What we decided"
+msgstr "Ce qu'on a décidé"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_form
+msgid "What we observed"
+msgstr "Ce qu'on observe"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_form
+msgid "Where its backup lives, or why it needs none…"
+msgstr "Où vit sa sauvegarde, ou pourquoi il n'en a pas besoin…"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_tree
+msgid "Backup"
+msgstr "Sauvegarde"
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_search
+msgid "No backup seen"
+msgstr "Aucune sauvegarde vue"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_search
+msgid "Backup past the limit"
+msgstr "Sauvegarde au-delà du seuil"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_search
+msgid "Backup expectation undecided"
+msgstr "Sauvegarde attendue à trancher"
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+msgid "Coverage"
+msgstr "Couverture"
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+msgid "active services"
+msgstr "services actifs"
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+msgid "Past the limit"
+msgstr "Au-delà du seuil"
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+msgid "Expectation undecided"
+msgstr "Attente à trancher"
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+msgid "Out of scope, with a reason"
+msgstr "Hors périmètre, avec motif"
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+msgid "Destinations to acknowledge"
+msgstr "Destinations à reconnaître"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_dashboard.py:0
+msgid "Services expected in the pipeline with no backup seen"
+msgstr "Services attendus dans la chaîne sans aucune sauvegarde vue"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_dashboard.py:0
+msgid "Services whose last backup is older than the limit"
+msgstr "Services dont la dernière sauvegarde dépasse le seuil"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_dashboard.py:0
+msgid "Services whose backup expectation is undecided"
+msgstr "Services dont la sauvegarde attendue reste à trancher"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_dashboard.py:0
+msgid "Destinations discovered, not acknowledged"
+msgstr "Destinations découvertes, non reconnues"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid ""
+"Nobody has decided whether this service must be backed up. Until then, its "
+"backup state means nothing."
+msgstr ""
+"Personne n'a tranché si ce service doit être sauvegardé. D'ici là, son état "
+"de sauvegarde ne veut rien dire."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid ""
+"Expected in our pipeline, but no snapshot, repository or provider run was "
+"ever seen for it."
+msgstr ""
+"Attendu dans notre chaîne, mais aucun snapshot, aucun dépôt et aucune "
+"exécution de fournisseur n'a jamais été vu pour lui."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid "Last backup seen %(hours)s h ago, over the %(limit)s h limit."
+msgstr ""
+"Dernière sauvegarde vue il y a %(hours)s h, au-delà du seuil de %(limit)s h."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid ""
+"Say why %(service)s needs no backup of ours: an exemption without a reason "
+"is how a real gap gets closed by mistake."
+msgstr ""
+"Dis pourquoi %(service)s n'a pas besoin d'une sauvegarde de notre part : une"
+" exemption sans motif, c'est la façon dont un vrai trou se referme par "
+"erreur."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_repository.py:0
+msgid "Destination acknowledged. %s service(s) linked automatically."
+msgstr "Destination reconnue. %s service(s) lié(s) automatiquement."
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+msgid "Backed up, of those expected"
+msgstr "Sauvegardés, sur les attendus"
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__backup_expectation
+msgid ""
+"What we decided about this service, never what the code guessed. 'Not "
+"decided yet' is a visible gap, not a default that hides one."
+msgstr ""
+"Ce qu'on a décidé pour ce service, jamais ce que le code a deviné. « À "
+"trancher » est un trou visible, pas un défaut qui en cache un."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__backup_expectation_reason
+msgid ""
+"Why this service needs no backup of ours, or where its backup lives. "
+"Required for every expectation other than our pipeline."
+msgstr ""
+"Pourquoi ce service n'a pas besoin d'une sauvegarde de notre part, ou bien "
+"où vit la sienne. Obligatoire pour toute attente autre que notre chaîne."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__backup_last_snapshot
+msgid ""
+"Most recent of: a snapshot tied to this service's container, a linked Restic"
+" repository, a cloud backup run."
+msgstr ""
+"La plus récente de : un snapshot rattaché au conteneur de ce service, un "
+"dépôt Restic lié, une exécution de sauvegarde infonuagique."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__backup_status
+msgid ""
+"Crosses the written expectation with what was observed. Not stored: "
+"staleness depends on the clock, and a stored value would go on saying "
+"'Backed up' long after it stopped being true."
+msgstr ""
+"Croise l'attente écrite avec ce qui a été observé. Non stocké : la "
+"péremption dépend de l'horloge, et une valeur stockée continuerait "
+"d'afficher « Sauvegardé » longtemps après que ce soit faux."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_backup_snapshot__service_id
+msgid ""
+"Hosting service this snapshot belongs to, resolved from the Docker container"
+" name observed in the Restic payload. Left empty when the container name "
+"matches no service, or more than one: a wrong link reads as a backup that "
+"does not exist."
+msgstr ""
+"Service d'hébergement auquel ce snapshot appartient, résolu par le nom du "
+"conteneur Docker observé dans la charge utile Restic. Laissé vide quand le "
+"nom ne correspond à aucun service, ou à plus d'un : un lien faux se lit "
+"comme une sauvegarde qui n'existe pas."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_backup_repository__discovered
+msgid ""
+"Created from a watchdog payload for a destination nobody had registered "
+"here. It holds real snapshots, but no service is claimed to be covered by it"
+" until someone acknowledges it."
+msgstr ""
+"Créé depuis une charge utile du watchdog, pour une destination que personne "
+"n'avait enregistrée ici. Elle porte de vrais snapshots, mais aucun service "
+"n'est réputé couvert par elle tant que personne ne l'a reconnue."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_backup_repository__is_stale
+msgid ""
+"True when the last snapshot is older than `hosting.backup_stale_hours` (27 "
+"by default). Stored: it is recomputed when the watchdog writes a new date, "
+"not on the clock, so a change of threshold reaches it at the next push."
+msgstr ""
+"Vrai quand le dernier snapshot dépasse `hosting.backup_stale_hours` (27 par "
+"défaut). Stocké : il se recalcule quand le watchdog écrit une nouvelle date,"
+" pas sur l'horloge, donc un changement de seuil l'atteint à la pousse "
+"suivante."
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_form
+msgid "Stale repository"
+msgstr "Dépôt périmé"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid ""
+"Its provider is tracked here and its last run did not succeed (%(result)s)."
+msgstr ""
+"Son fournisseur est suivi ici et sa dernière exécution n'a pas réussi "
+"(%(result)s)."
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_backup_repository_view_form
+msgid ""
+"<span>The watchdog found this destination on the host while the registry did"
+" not know it. Its snapshots are real; no service is reported as covered by "
+"it until it is acknowledged.</span>"
+msgstr ""
+"<span>Le watchdog a trouvé cette destination sur l'hôte alors que le "
+"registre ne la connaissait pas. Ses snapshots sont réels ; aucun service "
+"n'est déclaré couvert par elle tant qu'elle n'est pas reconnue.</span>"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid "%(ref)s is no longer waiting (%(state)s): the host has it."
+msgstr "%(ref)s n'est plus en attente (%(state)s) : l'hôte l'a prise."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid ""
+"%(service)s is not backed up by the in-house pipeline (%(expectation)s): "
+"nothing on the host would answer this request."
+msgstr ""
+"%(service)s n'est pas sauvegardé par la chaîne maison (%(expectation)s) : "
+"rien sur l'hôte ne répondrait à cette demande."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid ""
+"%(service)s was already asked for a backup less than %(minutes)s minutes ago"
+" (%(ref)s). A backup is not free."
+msgstr ""
+"Une sauvegarde de %(service)s a déjà été demandée il y a moins de "
+"%(minutes)s minutes (%(ref)s). Une sauvegarde n'est pas gratuite."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid ""
+"%s has no container recorded: the agent would not know which instance to "
+"back up."
+msgstr ""
+"%s n'a aucun conteneur inscrit : l'agent ne saurait pas quelle instance "
+"sauvegarder."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid "%s is not an active service: there is nothing to back up."
+msgstr "%s n'est pas un service actif : il n'y a rien à sauvegarder."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid "A backup request does not get rewritten: create another one."
+msgstr "Une demande de sauvegarde ne se réécrit pas : créez-en une autre."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid ""
+"A backup request is already under way for %(service)s (%(ref)s). Two passes "
+"on the same instance get in each other's way."
+msgstr ""
+"Une demande de sauvegarde est déjà en cours pour %(service)s (%(ref)s). Deux"
+" passages sur la même instance se piétinent."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid ""
+"A backup request is already under way for this service. Two passes on the "
+"same instance get in each other's way."
+msgstr ""
+"Une demande de sauvegarde est déjà en cours pour ce service. Deux passages "
+"sur la même instance se piétinent."
+
+#. module: hosting_management
+#: model:ir.model.constraint,message:hosting_management.constraint_hosting_backup_request_name_uniq
+msgid "A backup request reference must be unique."
+msgstr "La référence d'une demande de sauvegarde doit être unique."
+
+#. module: hosting_management
+#: model_terms:ir.actions.act_window,help:hosting_management.action_hosting_backup_request
+msgid ""
+"A request is asked for from a service form. Odoo runs nothing:\n"
+"                    an agent on the host comes for the request and decides itself\n"
+"                    which script to run."
+msgstr ""
+"Une demande se fait depuis la fiche d'un service. Odoo n'exécute rien :\n"
+"                    un agent sur l'hôte vient la chercher et décide lui-même\n"
+"                    quel script lancer."
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_backup_request__agent_host
+msgid "Agent host"
+msgstr "Machine de l'agent"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_backup_request__message
+#: model_terms:ir.ui.view,arch_db:hosting_management.view_hosting_backup_request_form
+msgid "Agent message"
+msgstr "Compte rendu de l'agent"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_form
+msgid "Back up now"
+msgstr "Sauvegarder maintenant"
+
+#. module: hosting_management
+#: model:ir.model,name:hosting_management.model_hosting_backup_request
+msgid "Backup Request"
+msgstr "Demande de sauvegarde"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+#: model_terms:ir.ui.view,arch_db:hosting_management.view_hosting_backup_request_form
+msgid "Backup request"
+msgstr "Demande de sauvegarde"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+#: model:ir.actions.act_window,name:hosting_management.action_hosting_backup_request
+#: model:ir.ui.menu,name:hosting_management.hosting_menu_reporting_backup_requests
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_form
+#: model_terms:ir.ui.view,arch_db:hosting_management.view_hosting_backup_request_list
+#: model_terms:ir.ui.view,arch_db:hosting_management.view_hosting_backup_request_search
+msgid "Backup requests"
+msgstr "Demandes de sauvegarde"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.view_hosting_backup_request_form
+msgid "Cancel this request"
+msgstr "Annuler cette demande"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_backup_request__finished_date
+msgid "Finished on"
+msgstr "Terminée le"
+
+#. module: hosting_management
+#: model:ir.actions.server,name:hosting_management.ir_cron_hosting_backup_request_expire_ir_actions_server
+msgid "Hosting: expire backup requests"
+msgstr "Hébergement : périmer les demandes de sauvegarde"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid "New"
+msgstr "Nouvelle"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid "No agent came for this request in time."
+msgstr "Aucun agent n'est venu chercher cette demande à temps."
+
+#. module: hosting_management
+#: model_terms:ir.actions.act_window,help:hosting_management.action_hosting_backup_request
+msgid "No backup request yet"
+msgstr "Aucune demande de sauvegarde"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid ""
+"Only the hosting manager can ask for a backup: the request makes a tenant go"
+" into maintenance mode on the host."
+msgstr ""
+"Seul le gestionnaire d'hébergement peut demander une sauvegarde : la demande"
+" fait passer un locataire en mode maintenance sur l'hôte."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid "Only the hosting manager can cancel a backup request."
+msgstr ""
+"Seul le gestionnaire d'hébergement peut annuler une demande de sauvegarde."
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_backup_request__requested_by_id
+msgid "Requested by"
+msgstr "Demandée par"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_backup_request__requested_date
+msgid "Requested on"
+msgstr "Demandée le"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_backup_request__state__running
+msgid "Running"
+msgstr "En cours"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_backup_request__state__claimed
+msgid "Taken by the agent"
+msgstr "Prise par l'agent"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_backup_request__claimed_date
+msgid "Taken on"
+msgstr "Prise le"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_backup_request.py:0
+msgid ""
+"The agent took this request and never reported back. Nothing says whether "
+"the backup ran: check the host's log."
+msgstr ""
+"L'agent a pris cette demande et n'a jamais rendu compte. Rien ne dit si la "
+"sauvegarde a tourné : vérifiez le journal de l'hôte."
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.view_hosting_backup_request_search
+msgid "Under way"
+msgstr "En cours"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_backup_request__state__pending
+msgid "Waiting for the agent"
+msgstr "En attente de l'agent"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.view_hosting_backup_request_form
+msgid "What happened"
+msgstr "Ce qui s'est passé"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.view_hosting_backup_request_form
+msgid "What was asked"
+msgstr "Ce qui a été demandé"

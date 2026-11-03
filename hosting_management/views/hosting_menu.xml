@@ -354,6 +354,15 @@
         action="hosting_backup_snapshot_action"
         sequence="27"/>
 
+    <!-- les demandes de sauvegarde. -->
+    <menuitem
+        id="hosting_menu_reporting_backup_requests"
+        name="Backup requests"
+        parent="hosting_menu_reporting"
+        action="action_hosting_backup_request"
+        groups="hosting_management.group_hosting_manager"
+        sequence="24"/>
+
     <!-- Configuration Menu -->
     <menuitem
         id="hosting_menu_config"

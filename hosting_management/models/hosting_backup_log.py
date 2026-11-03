@@ -139,6 +139,15 @@ class HostingBackupRun(models.Model):
         string="Report sent",
         default=False,
     )
+    # une exécution demandée à la main depuis la fiche d'un
+    # service. Elle n'entre pas dans le rapport quotidien, qui ne retient que la
+    # plus récente par société et par hôte : un clic en matinée aurait volé le
+    # créneau de celle de la nuit, et repoussé d'une heure l'artefact sur lequel
+    # on lit si les sauvegardes ont tourné.
+    on_demand = fields.Boolean(
+        string="Asked for by hand", default=False, readonly=True,
+        help="Run triggered from a service form, not by the nightly chain.",
+    )
     report_sent_date = fields.Datetime(
         string="Report sent date",
     )
@@ -368,8 +377,12 @@ class HostingBackupRun(models.Model):
 
         # Couvre 36h pour absorber tout décalage TZ + un éventuel report tardif.
         cutoff = fields.Datetime.now() - timedelta(hours=36)
+        # ⚠️ `on_demand` écarté : ce cron ne garde que la plus récente exécution
+        # par société et par hôte, donc une sauvegarde demandée à la main en
+        # matinée aurait pris la place de celle de la nuit.
         runs = self.search(
-            [("run_date", ">=", cutoff), ("report_sent", "=", False)],
+            [("run_date", ">=", cutoff), ("report_sent", "=", False),
+             ("on_demand", "=", False)],
             order="run_date desc",
         )
         seen = set()

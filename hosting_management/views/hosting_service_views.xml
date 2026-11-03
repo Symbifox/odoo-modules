@@ -18,6 +18,11 @@
                 <field name="days_until_expiration" string="Days left"/>
                 <field name="state" string="State" widget="badge" decoration-success="state == 'active'" decoration-info="state in ('draft', 'to_disconnect')" decoration-warning="state == 'suspended'" decoration-danger="state == 'expired'" decoration-muted="state == 'cancelled'"/>
                 <field name="update_available" string="Update avail." optional="show"/>
+                <field name="backup_status" string="Backup" widget="badge" optional="show"
+                       decoration-success="backup_status == 'ok'"
+                       decoration-danger="backup_status in ('missing', 'stale')"
+                       decoration-warning="backup_status == 'undecided'"
+                       decoration-muted="backup_status == 'exempt'"/>
                 <field name="storage_alert" column_invisible="1"/>
             </list>
         </field>
@@ -40,9 +45,39 @@
                     <button name="action_mark_updated" string="Mark as updated" type="object" class="btn-secondary" invisible="not target_version_id"/>
                     <button name="action_update_to_latest" string="Update to the latest version" type="object" class="btn-secondary" invisible="not update_available"/>
                     <button name="action_check_docker_version" string="Check Docker version" type="object" class="btn-secondary" invisible="not docker_container"/>
+                    <!-- demander une sauvegarde maintenant. Odoo
+                         n'execute rien ; il ecrit une demande que l'agent de l'hote vient
+                         chercher. Le bouton ne s'offre qu'au gestionnaire d'hebergement, et
+                         que pour un service que la chaine maison sauvegarde : ailleurs la
+                         demande n'aboutirait jamais. Le `create` du modele refait ces deux
+                         controles, parce qu'un bouton cache reste appelable en RPC. -->
+                    <button name="action_request_backup_now" type="object"
+                            string="Back up now"
+                            class="btn-secondary"
+                            groups="hosting_management.group_hosting_manager"
+                            invisible="backup_expectation != 'pipeline' or not docker_container or state not in ('active', 'to_disconnect')"/>
+                    <!-- L'action existait sans bouton, donc
+                         aucun moyen de voir l'historique des demandes d'un service. -->
+                    <button name="action_view_backup_requests" type="object"
+                            string="Backup requests"
+                            class="btn-secondary"
+                            groups="hosting_management.group_hosting_manager"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,to_disconnect,expired"/>
                 </header>
                 <sheet>
+                    <!-- Backup coverage banner: the gap used to be
+                         a blank date in a tab nobody opened. -->
+                    <div class="alert alert-danger mb-2" role="alert"
+                         invisible="backup_status not in ('missing', 'stale')">
+                        <i class="fa fa-exclamation-triangle me-2"/>
+                        <field name="backup_status_message" nolabel="1" readonly="1" class="oe_inline"/>
+                    </div>
+                    <div class="alert alert-warning mb-2" role="alert"
+                         invisible="backup_status != 'undecided'">
+                        <i class="fa fa-question-circle me-2"/>
+                        <field name="backup_status_message" nolabel="1" readonly="1" class="oe_inline"/>
+                    </div>
+
                     <!-- Environment Ribbon -->
                     <widget name="web_ribbon" title="Staging" bg_color="text-bg-warning" invisible="environment != 'staging'"/>
                     <widget name="web_ribbon" title="Development" bg_color="text-bg-info" invisible="environment != 'development'"/>
@@ -54,6 +89,10 @@
                         </button>
                         <button name="action_view_update_history" type="object" class="oe_stat_button" icon="fa-history">
                             <field name="update_log_ids" widget="statinfo" string="Updates"/>
+                        </button>
+                        <button name="action_view_backup_snapshots" type="object" class="oe_stat_button" icon="fa-database"
+                                invisible="not backup_snapshot_ids">
+                            <field name="backup_snapshot_ids" widget="statinfo" string="Snapshots"/>
                         </button>
                         <button name="action_view_health_history" type="object" class="oe_stat_button"
                                 invisible="not server_url" icon="fa-heartbeat">
@@ -228,10 +267,28 @@
                         </page>
                         <page string="Restic backups" name="restic_backups">
                             <group>
+                                <group string="What we decided">
+                                    <field name="backup_expectation"/>
+                                    <field name="backup_expectation_reason"
+                                           placeholder="Where its backup lives, or why it needs none…"
+                                           required="backup_expectation in ('provider', 'stateless', 'rebuilt')"
+                                           invisible="backup_expectation in ('undecided', 'pipeline')"/>
+                                </group>
+                                <group string="What we observed">
+                                    <field name="backup_status" widget="badge"
+                                           decoration-success="backup_status == 'ok'"
+                                           decoration-danger="backup_status in ('missing', 'stale')"
+                                           decoration-warning="backup_status == 'undecided'"
+                                           decoration-muted="backup_status == 'exempt'"/>
+                                    <field name="backup_last_snapshot"/>
+                                    <field name="backup_last_source"/>
+                                </group>
+                            </group>
+                            <group>
                                 <group>
                                     <field name="restic_snapshot_count" string="Snapshots"/>
                                     <field name="restic_last_backup" string="Last backup"/>
-                                    <field name="restic_is_stale" string="Stale (>27h)" widget="boolean_toggle" readonly="1"/>
+                                    <field name="restic_is_stale" string="Stale repository" widget="boolean_toggle" readonly="1"/>
                                 </group>
                             </group>
                             <field name="restic_repository_ids" widget="many2many_tags" placeholder="Link the Restic repositories that cover this service…"/>
@@ -361,6 +418,17 @@
                 <filter name="filter_storage_configured" string="Storage configured" domain="[('storage_check_type', '!=', 'none')]"/>
                 <filter name="filter_service_down" string="Service offline" domain="[('is_service_up', '=', False)]"/>
                 <separator/>
+                <!-- Les trois filtres passent par `backup_status`, dont la méthode de
+                     recherche lit le seuil dans son paramètre système : un domaine qui
+                     recopierait 27 h ici renverrait une liste vide pendant que les
+                     badges disent « périmé ». -->
+                <filter name="filter_backup_missing" string="No backup seen"
+                        domain="[('backup_status', '=', 'missing')]"/>
+                <filter name="filter_backup_stale" string="Backup past the limit"
+                        domain="[('backup_status', '=', 'stale')]"/>
+                <filter name="filter_backup_undecided" string="Backup expectation undecided"
+                        domain="[('backup_status', '=', 'undecided')]"/>
+                <separator/>
                 <filter name="filter_archived" string="Archived" domain="[('active', '=', False)]"/>
                 <group expand="0" string="Group by">
                     <filter name="group_partner" string="Client" context="{'group_by': 'partner_id'}"/>
@@ -368,6 +436,7 @@
                     <filter name="group_environment" string="Environment" context="{'group_by': 'environment'}"/>
                     <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
                     <filter name="group_user" string="Assignee" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_backup_expectation" string="Backup expectation" context="{'group_by': 'backup_expectation'}"/>
                 </group>
             </search>
         </field>

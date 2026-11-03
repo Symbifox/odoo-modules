@@ -16,7 +16,20 @@
     # 18.0.2.65.0: la date de l'avis dans la langue du destinataire ; le paragraphe du lien
     #   d'état marqué pour être retiré à l'envoi ; sans le groupe hébergement, on ne change
     #   plus le courriel d'un destinataire nommé et on ne le fusionne plus.
-    "version": "18.0.2.65.0",
+    # 18.0.2.66.0: couverture des sauvegardes : une attente écrite par service
+    #   (`backup_expectation`, motif obligatoire pour toute exemption), un statut
+    #   croisé non stocké, le snapshot rattaché au service par le conteneur
+    #   observé, les destinations inconnues du watchdog enregistrées « à
+    #   reconnaître », et une tuile qui compte des services au lieu de dépôts.
+    #   Seuil commun : `hosting.backup_stale_hours`.
+    # 18.0.2.67.0: demander une sauvegarde maintenant depuis la fiche d'un service
+    #   (`hosting.backup.request`). Odoo n'exécute rien et ne transmet aucune
+    #   commande : il écrit une demande, et un agent minuté sur l'hôte vient la
+    #   chercher puis résout lui-même quel script lancer, dans une table en dur.
+    #   Jeton propre à ces deux routes, distinct de celui des rapports.
+    # 18.0.2.67.1: le drapeau « demandée à la main » était posé dans la route de
+    #   rapport ZIP et non dans celle de restic, la seule que l'agent appelle.
+    "version": "18.0.2.67.1",
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -69,6 +82,7 @@
         "views/hosting_dashboard_views.xml",
         "views/hosting_digest_views.xml",
         "views/hosting_backup_repository_views.xml",
+        "views/hosting_backup_request_views.xml",
         "views/hosting_backup_snapshot_views.xml",
         "views/hosting_backup_views.xml",
         "views/hosting_saas_backup_views.xml",

@@ -499,6 +499,348 @@ class HostingService(models.Model):
             "context": {"default_service_id": self.id},
         }
 
+    # ── Backup coverage ───────────────────────────────────────
+    # Three screens used to answer the same question with silence: a service
+    # with no linked repository showed an empty date and "Stale: no", which
+    # reads exactly like a service backed up an hour ago. Coverage separates
+    # what we expect (a written decision) from what we observe (snapshots
+    # that actually landed), so "not backed up" can never look like "fine".
+    # Les seuls états où un verdict de sauvegarde veut dire quelque chose. Une
+    # fiche brouillon, suspendue, expirée ou annulée n'attend aucune sauvegarde :
+    # un badge rouge sur elle entraîne à ignorer le badge, qui est tout l'intérêt.
+    _BACKUP_LIVE_STATES = ("active", "to_disconnect")
+
+    backup_expectation = fields.Selection(
+        selection=[
+            ("undecided", "Not decided yet"),
+            ("pipeline", "Backed up by our pipeline"),
+            ("provider", "Backed up by its provider"),
+            ("stateless", "Nothing to back up"),
+            ("rebuilt", "Rebuilt from an image"),
+        ],
+        string="Backup expectation",
+        default="undecided",
+        required=True,
+        tracking=True,
+        help="What we decided about this service, never what the code "
+             "guessed. 'Not decided yet' is a visible gap, not a default "
+             "that hides one.",
+    )
+    backup_expectation_reason = fields.Char(
+        string="Expectation reason",
+        tracking=True,
+        help="Why this service needs no backup of ours, or where its "
+             "backup lives. Required for every expectation other than "
+             "our pipeline.",
+    )
+    backup_snapshot_ids = fields.One2many(
+        comodel_name="hosting.backup.snapshot",
+        inverse_name="service_id",
+        string="Snapshots",
+        readonly=True,
+    )
+    backup_last_snapshot = fields.Datetime(
+        string="Last backup seen",
+        compute="_compute_backup_observed",
+        store=True,
+        help="Most recent of: a snapshot tied to this service's container, "
+             "a linked Restic repository, a cloud backup run.",
+    )
+    backup_last_source = fields.Selection(
+        selection=[
+            ("snapshot", "Snapshot of its container"),
+            ("repository", "Linked repository"),
+            ("provider", "Provider run"),
+        ],
+        string="Backup evidence",
+        compute="_compute_backup_observed",
+        store=True,
+    )
+    backup_status = fields.Selection(
+        selection=[
+            ("ok", "Backed up"),
+            ("stale", "Stale"),
+            ("missing", "Not backed up"),
+            ("exempt", "Out of scope"),
+            ("undecided", "To be decided"),
+        ],
+        string="Backup status",
+        compute="_compute_backup_status",
+        search="_search_backup_status",
+        help="Crosses the written expectation with what was observed. Not "
+             "stored: staleness depends on the clock, and a stored value "
+             "would go on saying 'Backed up' long after it stopped being "
+             "true.",
+    )
+    backup_status_message = fields.Char(
+        string="Backup status detail",
+        compute="_compute_backup_status",
+    )
+
+    @api.model
+    def _backup_stale_hours(self):
+        """Hours after which an observed backup stops counting as current."""
+        raw = self.env["ir.config_parameter"].sudo().get_param(
+            "hosting.backup_stale_hours", "27"
+        )
+        try:
+            hours = int(float(raw))
+        except (TypeError, ValueError):
+            hours = 27
+        return hours if hours > 0 else 27
+
+    @api.depends(
+        "backup_snapshot_ids.snapshot_date",
+        "restic_repository_ids.latest_snapshot_date",
+        "saas_backup_last_date",
+        "saas_backup_last_result",
+    )
+    def _compute_backup_observed(self):
+        # Le one2many reste en dépendance (c'est lui qui invalide), mais la
+        # lecture passe par un regroupement : `mapped` chargerait toute la table
+        # des snapshots dans le cache, et c'est le travailleur qui sert la route
+        # de sauvegarde qui paierait.
+        latest_snapshot = {}
+        if self.ids:
+            grouped = self.env["hosting.backup.snapshot"].sudo()._read_group(
+                [("service_id", "in", self.ids)],
+                ["service_id"],
+                ["snapshot_date:max"],
+            )
+            latest_snapshot = {svc.id: date for svc, date in grouped}
+        for s in self:
+            candidates = []
+            snapshot_date = latest_snapshot.get(s.id)
+            if snapshot_date:
+                candidates.append((snapshot_date, "snapshot"))
+            # 🔴 Le lien de dépôt n'est pas une preuve propre à ce service : il
+            # est posé par heuristique de nom et un même dépôt couvre plusieurs
+            # services. Si le conteneur de l'un cesse d'être sauvegardé, le
+            # dépôt continue de recevoir ceux du voisin et sa date rendrait un
+            # vert éternel. Dès qu'un service a sa propre preuve, par son
+            # conteneur, elle seule tranche. Le dépôt ne sert plus qu'aux
+            # services sans résolution possible (conteneur partagé, pas de
+            # conteneur du tout).
+            if not snapshot_date:
+                repo_dates = [
+                    d
+                    for d in s.restic_repository_ids.mapped("latest_snapshot_date")
+                    if d
+                ]
+                if repo_dates:
+                    candidates.append((max(repo_dates), "repository"))
+            # B3 : une exécution infonuagique ratée porte une date, elle ne prouve
+            # rien. `_sync_service_state` écrit `saas_backup_last_date` quel que
+            # soit le résultat, donc le résultat doit être lu ici.
+            if s.saas_backup_last_date and s.saas_backup_last_result in (
+                "succeeded",
+                "with_errors",
+            ):
+                candidates.append((s.saas_backup_last_date, "provider"))
+            if candidates:
+                date, source = max(candidates, key=lambda c: c[0])
+                s.backup_last_snapshot = date
+                s.backup_last_source = source
+            else:
+                s.backup_last_snapshot = False
+                s.backup_last_source = False
+
+    @api.depends(
+        "backup_expectation",
+        "backup_expectation_reason",
+        "backup_last_snapshot",
+        "state",
+    )
+    def _compute_backup_status(self):
+        stale_hours = self._backup_stale_hours()
+        threshold = fields.Datetime.subtract(
+            fields.Datetime.now(), hours=stale_hours
+        )
+        for s in self:
+            if s.state not in self._BACKUP_LIVE_STATES:
+                s.backup_status = False
+                s.backup_status_message = False
+                continue
+            suivi_fournisseur = (
+                s.backup_expectation == "provider"
+                and (s.saas_backup_ref or s.saas_backup_last_date)
+            )
+            if (
+                s.backup_expectation in ("stateless", "rebuilt", "provider")
+                and not suivi_fournisseur
+            ):
+                s.backup_status = "exempt"
+                labels = {
+                    "provider": self.env._("Backed up by its provider"),
+                    "stateless": self.env._("Nothing to back up"),
+                    "rebuilt": self.env._("Rebuilt from an image"),
+                }
+                label = labels[s.backup_expectation]
+                reason = (s.backup_expectation_reason or "").strip()
+                s.backup_status_message = f"{label}: {reason}" if reason else label
+                continue
+            if s.backup_expectation == "undecided":
+                s.backup_status = "undecided"
+                s.backup_status_message = self.env._(
+                    "Nobody has decided whether this service must be backed "
+                    "up. Until then, its backup state means nothing."
+                )
+                continue
+            if not s.backup_last_snapshot:
+                s.backup_status = "missing"
+                # Un fournisseur qu'on suit et dont la dernière exécution a
+                # échoué tombe ici : sa date existe mais ne prouve rien, et
+                # « hors périmètre » l'aurait peint en gris.
+                s.backup_status_message = (
+                    self.env._(
+                        "Its provider is tracked here and its last run did "
+                        "not succeed (%(result)s).",
+                        result=s.saas_backup_last_result or "unknown",
+                    )
+                    if suivi_fournisseur
+                    else self.env._(
+                        "Expected in our pipeline, but no snapshot, repository "
+                        "or provider run was ever seen for it."
+                    )
+                )
+            elif s.backup_last_snapshot < threshold:
+                s.backup_status = "stale"
+                s.backup_status_message = self.env._(
+                    "Last backup seen %(hours)s h ago, over the %(limit)s h "
+                    "limit.",
+                    hours=int(
+                        (
+                            fields.Datetime.now() - s.backup_last_snapshot
+                        ).total_seconds()
+                        // 3600
+                    ),
+                    limit=stale_hours,
+                )
+            else:
+                s.backup_status = "ok"
+                s.backup_status_message = ""
+
+    def _search_backup_status(self, operator, value):
+        """Chercher sur le statut sans jamais recopier le seuil ailleurs.
+
+        Le seuil vit dans un paramètre système : un domaine de vue qui le
+        recopierait (27 h en dur dans un filtre) renverrait une liste vide
+        pendant que les badges disent « périmé ». Les filtres de la vue de
+        recherche et les tuiles du tableau de bord passent donc tous par ici.
+        """
+        if operator not in ("=", "!=", "in", "not in"):
+            # Un filtre bâti à la main (« contient ») ne doit pas rendre une
+            # trace 500 : il ne trouve rien, et le journal le dit.
+            _logger.warning(
+                "backup_status: unsupported operator %r, no record matched",
+                operator,
+            )
+            return [("id", "=", False)]
+        wanted = value if isinstance(value, (list, tuple)) else [value]
+        negative = operator in ("!=", "not in")
+        # `= False` et `!= False` parlent des fiches SANS verdict (brouillon,
+        # suspendue, annulée), pas d'un statut inconnu.
+        if set(wanted) <= {False, None, ""}:
+            sans_verdict = [("state", "not in", list(self._BACKUP_LIVE_STATES))]
+            ids = self.sudo().search(sans_verdict).ids
+            return [("id", "not in" if negative else "in", sorted(ids))]
+        threshold = fields.Datetime.subtract(
+            fields.Datetime.now(), hours=self._backup_stale_hours()
+        )
+        live = [("state", "in", list(self._BACKUP_LIVE_STATES))]
+        # Ce qui reçoit un verdict : notre chaîne, plus un fournisseur qu'on
+        # suit vraiment (une référence ou une exécution déjà reçue).
+        suivis = [
+            "|",
+            ("backup_expectation", "=", "pipeline"),
+            "&", "|",
+            ("saas_backup_ref", "!=", False),
+            ("saas_backup_last_date", "!=", False),
+            ("backup_expectation", "=", "provider"),
+        ]
+        per_status = {
+            "exempt": live + [
+                "|",
+                ("backup_expectation", "in", ("stateless", "rebuilt")),
+                "&", "&",
+                ("backup_expectation", "=", "provider"),
+                ("saas_backup_ref", "=", False),
+                ("saas_backup_last_date", "=", False),
+            ],
+            "undecided": live + [("backup_expectation", "=", "undecided")],
+            "missing": live + suivis + [("backup_last_snapshot", "=", False)],
+            "stale": live + suivis + [
+                ("backup_last_snapshot", "!=", False),
+                ("backup_last_snapshot", "<", threshold),
+            ],
+            "ok": live + suivis + [("backup_last_snapshot", ">=", threshold)],
+        }
+        ids = set()
+        for status in wanted:
+            domain = per_status.get(status)
+            if domain is None:
+                continue
+            ids.update(self.sudo().search(domain).ids)
+        return [("id", "not in" if negative else "in", sorted(ids))]
+
+    @api.constrains("backup_expectation", "backup_expectation_reason")
+    def _check_backup_expectation_reason(self):
+        """An exemption is a decision, and a decision carries its reason."""
+        for s in self:
+            if s.backup_expectation in (
+                "provider",
+                "stateless",
+                "rebuilt",
+            ) and not (s.backup_expectation_reason or "").strip():
+                raise ValidationError(
+                    self.env._(
+                        "Say why %(service)s needs no backup of ours: an "
+                        "exemption without a reason is how a real gap gets "
+                        "closed by mistake.",
+                        service=s.display_name,
+                    )
+                )
+
+    def action_view_backup_snapshots(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Snapshots"),
+            "res_model": "hosting.backup.snapshot",
+            "view_mode": "list,form",
+            "domain": [("service_id", "=", self.id)],
+        }
+
+    def action_request_backup_now(self):
+        """Demander une sauvegarde de ce service, sans rien exécuter ici.
+
+        Odoo écrit une demande ; un agent minuté sur l'hôte vient la chercher et
+        résout lui-même quel script lancer. Voir `hosting.backup.request`, dont le
+        `create` porte tous les refus (groupe, service hors chaîne, demande déjà
+        vivante, délai de garde) : ce bouton ne fait que les déclencher, et les
+        laisse parler plutôt que de les redire d'une autre façon.
+        """
+        self.ensure_one()
+        demande = self.env["hosting.backup.request"].create({"service_id": self.id})
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Backup request"),
+            "res_model": "hosting.backup.request",
+            "res_id": demande.id,
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    def action_view_backup_requests(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Backup requests"),
+            "res_model": "hosting.backup.request",
+            "view_mode": "list,form",
+            "domain": [("service_id", "=", self.id)],
+        }
+
     _sql_constraints = [
         ("code_uniq", "UNIQUE(code)", "The service reference must be unique!"),
     ]

@@ -10,6 +10,7 @@
                 <field name="snapshot_date"/>
                 <field name="repository_id"/>
                 <field name="container"/>
+                <field name="service_id" optional="show"/>
                 <field name="snapshot_id"/>
                 <field name="files_new"/>
                 <field name="data_added_human" string="Added"/>
@@ -25,6 +26,7 @@
         <field name="model">hosting.backup.snapshot</field>
         <field name="arch" type="xml">
             <search>
+                <filter string="No service resolved" name="filter_no_service" domain="[('service_id', '=', False)]"/>
                 <field name="snapshot_id"/>
                 <field name="container"/>
                 <field name="repository_id"/>

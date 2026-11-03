@@ -249,14 +249,25 @@ class TestBackupResticAPI(HttpCase):
         self.repo.invalidate_recordset()
         self.assertEqual(self.repo.snapshot_count, 42)
         self.assertEqual(self.repo.size_bytes, 1234567.0)
-        # Bucket snapshot created
+        # Bucket snapshot created. Il se cherche par son hôte : sur une base
+        # restaurée de la production, le relevé le plus récent n'est pas celui
+        # que ce test vient de pousser, et l'assertion échouait sans défaut.
         latest = self.env["hosting.backup.bucket.snapshot"].search(
-            [], order="collected_at desc", limit=1
+            [("host", "=", "test-host")], order="collected_at desc", limit=1
         )
         self.assertEqual(latest.total_objects, 100)
         self.assertEqual(latest.total_bytes, 999999.0)
 
-    def test_watchdog_unknown_repo_skipped_with_warning(self):
+    def test_watchdog_unknown_repo_is_recorded_as_discovered(self):
+        """Depuis 18.0.2.66.0, une destination inconnue n'est plus jetée.
+
+        Elle était écartée avec un avertissement au journal que personne ne
+        lit, et un dépôt qui portait de vraies sauvegardes restait invisible.
+        Elle est maintenant enregistrée, marquée « à
+        reconnaître », et elle ne couvre aucun service tant que personne ne
+        l'a reconnue. Elle reste nommée dans `repos_unknown`, qui est le
+        contrat attendu par le watchdog de l'hôte.
+        """
         payload = {
             "collected_iso": "2026-04-30T14:00:00Z",
             "host": "test-host",
@@ -270,8 +281,16 @@ class TestBackupResticAPI(HttpCase):
             payload, endpoint="/api/hosting/backup/watchdog/public"
         )
         body = resp.json()
-        self.assertEqual(body["repos_updated"], 1)
+        self.assertEqual(body["repos_updated"], 2)
+        self.assertEqual(body["repos_discovered"], 1)
         self.assertIn("Ghost Org/Ghost Repo", body["repos_unknown"])
+        ghost = self.env["hosting.backup.repository"].search(
+            [("name", "=", "Ghost Org/Ghost Repo")]
+        )
+        self.assertEqual(len(ghost), 1)
+        self.assertTrue(ghost.discovered)
+        self.assertEqual(ghost.snapshot_count, 9)
+        self.assertFalse(ghost.service_ids)
 
     def test_watchdog_is_stale_threshold(self):
         """Latest snapshot >27h => is_stale=True. Recent => False."""

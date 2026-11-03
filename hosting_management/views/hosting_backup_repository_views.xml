@@ -6,8 +6,9 @@
         <field name="name">hosting.backup.repository.view.tree</field>
         <field name="model">hosting.backup.repository</field>
         <field name="arch" type="xml">
-            <list decoration-warning="is_stale" decoration-muted="not active">
+            <list decoration-warning="is_stale or discovered" decoration-muted="not active">
                 <field name="name"/>
+                <field name="discovered" widget="boolean" string="To acknowledge" optional="show"/>
                 <field name="category" widget="badge"/>
                 <field name="snapshot_count"/>
                 <field name="latest_snapshot_date"/>
@@ -27,6 +28,12 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button name="action_acknowledge"
+                            string="Acknowledge this destination"
+                            type="object"
+                            class="oe_highlight"
+                            groups="hosting_management.group_hosting_manager"
+                            invisible="not discovered"/>
                     <button name="action_auto_link_services"
                             string="Auto-link matching services"
                             type="object"
@@ -34,7 +41,8 @@
                     <field name="is_stale" widget="boolean_toggle" readonly="1"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Stale" bg_color="bg-warning" invisible="not is_stale"/>
+                    <widget name="web_ribbon" title="To acknowledge" bg_color="bg-warning" invisible="not discovered"/>
+                    <widget name="web_ribbon" title="Stale" bg_color="bg-warning" invisible="not is_stale or discovered"/>
                     <widget name="web_ribbon" title="Archived" bg_color="bg-secondary" invisible="active"/>
                     <div class="oe_title">
                         <label for="name" string="Repository"/>
@@ -46,6 +54,11 @@
                             <field name="s3_url"/>
                             <field name="password_file_path"/>
                             <field name="active"/>
+                        </group>
+                        <group string="Registry">
+                            <field name="discovered" readonly="1"/>
+                            <field name="discovered_date" readonly="1" invisible="not discovered_date"/>
+                            <div class="text-muted" colspan="2" invisible="not discovered"><span>The watchdog found this destination on the host while the registry did not know it. Its snapshots are real; no service is reported as covered by it until it is acknowledged.</span></div>
                         </group>
                         <group string="State (watchdog sync)">
                             <field name="snapshot_count"/>
@@ -97,7 +110,8 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <filter string="Stale (>27h)" name="filter_stale" domain="[('is_stale', '=', True)]"/>
+                <filter string="To acknowledge" name="filter_discovered" domain="[('discovered', '=', True)]"/>
+                <filter string="Stale" name="filter_stale" domain="[('is_stale', '=', True)]"/>
                 <filter string="Archived" name="filter_archived" domain="[('active', '=', False)]"/>
                 <separator/>
                 <filter string="Internal" name="filter_internal" domain="[('category', '=', 'internal')]"/>

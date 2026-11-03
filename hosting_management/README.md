@@ -83,6 +83,32 @@ A comprehensive Odoo 18 module for managing hosting services, including version 
 - **Status Overview**: Visual indicators for success, partial success, and failed backups
 - **File Verification Tracking**: Track SHA256 checksums and verification status for each backup file
 
+### Backup Coverage (18.0.2.66.0)
+
+Three screens used to answer the same question with silence: a service with no linked repository showed an empty date and "Stale: no", which reads exactly like a service backed up an hour ago. Coverage now states what was decided and what was observed, and keeps the two apart.
+
+- **A written expectation per service** (`backup_expectation`): backed up by the in-house pipeline, backed up by the software vendor, nothing worth keeping, or rebuilt from an image. Anything other than the pipeline needs a reason, and the reason is tracked.
+- **A status crossed from both** (`backup_status`, not stored): backed up, stale, no backup seen, out of scope, or undecided. It is computed on read because staleness depends on the clock, and a stored status would still say "backed up" long after the backups had stopped.
+- **Evidence by container, not by naming convention**: every `hosting.backup.snapshot` carries the name of the Docker container that produced it, and so does the service. A container shared by several services resolves to nothing rather than to one of them, because a wrong link reads as a backup that does not exist. Once a service has evidence of its own, that evidence alone decides; a repository's date only answers for services that cannot be resolved.
+- **Destinations the registry did not know are recorded**, instead of being dropped with a log line nobody reads. They arrive flagged "to acknowledge", cover no service until someone acknowledges them, and are counted on the dashboard. The payload is authenticated but not trusted: every value is validated, and discovery is capped per payload and in total.
+- **One threshold, in one place**: `hosting.backup_stale_hours`, 27 hours by default. The list filters and the badges both read it, so a number copied into a domain cannot disagree with what the screen shows.
+- **A dashboard tile that counts services**, not repositories: expected, backed up, stale, missing, out of scope, undecided, and the destinations waiting to be acknowledged. Each figure opens the list it stands for.
+
+### Backing Up On Demand (18.0.2.67.0)
+
+A hosting manager can ask for a backup of one service from its form, without Odoo running anything.
+
+🔴 **Odoo runs nothing and hands over no command.** It writes a request that carries a service and the name of its container. An agent scheduled on the host comes for it over a token route and decides *by itself*, from a hard-coded table, which backup script to run. The reason is plain: those scripts read every container's password, dump every database, touch the reverse proxy's private keys and write to object storage, while no Odoo container can see the Docker socket. A webhook on the host would turn any flaw in Odoo into a command on that machine.
+
+- **A request is a dated fact**, not a form: `hosting.backup.request` records who asked, when, which agent took it, what it reported, and the backup run it produced. Its service, its author and its date cannot be rewritten.
+- **What refuses a request**, and each refusal says why: anything outside the hosting manager group (the check is in `create`, not only on the button, because a hidden button is still callable over RPC); a service the in-house pipeline does not back up; a service with no container or no server recorded; a request already under way for the same service; and a cooldown since the last one.
+- **A request nobody comes for expires**, and one an agent took but never reported is closed as failed. Without both, an agent restarted the next day would run yesterday's request, and a service could stay blocked behind a request nobody is playing.
+- **The agent yields to the nightly chain.** A shared lock means the nightly pass has priority, and the agent starts nothing during a configurable night window.
+- **A backup asked for by hand does not steal the daily report's slot**, which keeps only the most recent run per company and host.
+- **Its routes use their own token** (`hosting.backup_request_token`), separate from the one that receives backup reports: the first drives a state machine, the second carries telemetry.
+
+Settings: `hosting.backup_request_cooldown_minutes` (30), `hosting.backup_request_expiry_minutes` (60), `hosting.backup_request_stuck_minutes` (120).
+
 ### Maintenance Templates
 
 Templates allow you to define standard maintenance tasks that are automatically applied when services are activated.
@@ -699,6 +725,23 @@ Labels and messages are written in English in the source; the French ships in `i
 
 ## Changelog
 
+### Version 18.0.2.67.1
+- Fix: the "asked for by hand" flag was set on the legacy ZIP report route instead of the restic one, which is the only one the agent calls, so a backup asked for in the morning could still take the daily report's slot.
+
+### Version 18.0.2.67.0
+- New: backing up on demand from a service form. See the "Backing Up On Demand" section.
+- New model `hosting.backup.request`, its own record rules, a reference sequence, and a cron that expires what nobody came for and closes what an agent took but never reported.
+- New routes `/api/hosting/backup/requests/public` and `/api/hosting/backup/requests/report/public`, guarded by `hosting.backup_request_token`. The answer carries a service and a container, never a script, a path or a command: a test pins that.
+- New: `on_demand` on `hosting.backup.run`, excluded from the daily report.
+- New test `tests/test_backup_request.py`: every refusal, the claim being atomic and scoped to the service's host, a report that must name its agent, the expiry of both the forgotten and the stuck, the partial unique index that holds where the Python guard cannot, and the agent's message escaped in the chatter.
+
+### Version 18.0.2.66.0
+- New: backup coverage, on the service form, in the list and on the dashboard. See the "Backup Coverage" section.
+- Fix: report timestamps were the host's local time stored as if they were UTC, so a backup was declared stale hours too early, every day. The controller now converts on arrival, reading `hosting.backup_report_timezone`, and migration 18.0.2.66.0 rewrites the history date by date, so a daylight-saving change is honoured.
+- New: `hosting.backup.snapshot.service_id`, resolved from the container name, with a bounded nightly catch-up for the snapshots a later service record makes resolvable.
+- New: `discovered` and `discovered_date` on the repository, with an "Acknowledge" button reserved to the hosting manager. The watchdog route records an unknown destination instead of dropping it.
+- New test `tests/test_backup_coverage.py`: the expectation and its mandatory reason, the status crossed from the evidence, a shared container resolving to nothing, searching a field that is not stored, the timezone conversion across a daylight-saving change, an archived repository the host still reports, and the discovery caps.
+
 ### Version 18.0.2.65.0
 - Fix: the maintenance notice's date was formatted in the client's language while the template renders in the recipient's; it now follows the recipient.
 - New: without the Hosting User group, the email of a named hosting recipient cannot be changed, and the contact merge refuses a named recipient among the records that would disappear.
@@ -997,7 +1040,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-22, this version converts automatically to
+- **Change Date**: on 2030-11-02, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Support

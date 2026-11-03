@@ -16,3 +16,5 @@ from . import test_fiche_sans_groupe
 from . import test_fenetres_maintenance
 from . import test_fusion_contacts
 from . import test_destinataires
+from . import test_backup_coverage
+from . import test_backup_request

@@ -13,6 +13,19 @@
             <field name="active">True</field>
         </record>
 
+        <!-- Tâche planifiée : expiration des demandes de sauvegarde.
+             Dix minutes, parce qu'une demande oubliee qui s'execute des heures plus tard
+             surprend son auteur et peut tomber dans la fenetre nocturne. -->
+        <record id="ir_cron_hosting_backup_request_expire" model="ir.cron">
+            <field name="name">Hosting: expire backup requests</field>
+            <field name="model_id" ref="model_hosting_backup_request"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_expire_requests()</field>
+            <field name="interval_number">10</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+        </record>
+
         <!-- Tâche planifiée : Expiration automatique des services -->
         <record id="ir_cron_hosting_auto_expire" model="ir.cron">
             <field name="name">Hosting: auto-expire services</field>
