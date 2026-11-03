@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**304 modules are BUSL-1.1.** The source is published and auditable, and **you
+**305 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -126,6 +126,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget` | Budgets opérationnels | 18.0.1.2.1 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.2.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
 | `bf_budget_dashboard` | Budgets opérationnels — tuile tableau de bord | 18.0.1.0.0 | BUSL-1.1 | Home-screen tile: open-budget consumption, flagged lines and variance against the theoretical |
+| `bf_budget_digest` | Budgets opérationnels — digest quotidien | 18.0.1.0.0 | BUSL-1.1 | Daily digest section: the flagged lines of the open budgets the recipient is responsible for |
 | `bf_budget_expense` | Budgets opérationnels — notes de frais | 18.0.1.0.0 | BUSL-1.1 | Approved expense reports count as committed before they are posted |
 | `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.1.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
 | `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.1.0 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |
@@ -541,7 +542,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **304 modules: BUSL-1.1.** Production use for your own internal business
+- **305 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

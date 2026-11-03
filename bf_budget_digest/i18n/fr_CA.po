@@ -1,0 +1,84 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_budget_digest
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"POT-Creation-Date: 2026-11-03 03:57+0000\n"
+"PO-Revision-Date: 2026-11-03 03:57+0000\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_budget_digest
+#. odoo-python
+#: code:addons/bf_budget_digest/models/daily_digest_config.py:0
+msgid "%(count)s flagged line(s)"
+msgstr "%(count)s ligne(s) en alerte"
+
+#. module: bf_budget_digest
+#. odoo-python
+#: code:addons/bf_budget_digest/models/daily_digest_config.py:0
+msgid "%(count)s more flagged line(s) not shown."
+msgstr "%(count)s autre(s) ligne(s) en alerte non montrée(s)."
+
+#. module: bf_budget_digest
+#. odoo-python
+#: code:addons/bf_budget_digest/models/daily_digest_config.py:0
+msgid "Budget"
+msgstr "Budget"
+
+#. module: bf_budget_digest
+#. odoo-python
+#: code:addons/bf_budget_digest/models/daily_digest_config.py:0
+msgid "Budget item"
+msgstr "Poste budgétaire"
+
+#. module: bf_budget_digest
+#: model_terms:ir.ui.view,arch_db:bf_budget_digest.view_digest_config_form_budget
+msgid "Budgets"
+msgstr "Budgets"
+
+#. module: bf_budget_digest
+#. odoo-python
+#: code:addons/bf_budget_digest/models/daily_digest_config.py:0
+msgid "Committed"
+msgstr "Engagé"
+
+#. module: bf_budget_digest
+#: model:ir.model,name:bf_budget_digest.model_daily_digest_config
+msgid "Daily Digest Configuration"
+msgstr "Configuration du digest quotidien"
+
+#. module: bf_budget_digest
+#: model:ir.model.fields,help:bf_budget_digest.field_daily_digest_config__include_budget
+msgid ""
+"Flagged budget lines of the open budgets this recipient is responsible for."
+msgstr ""
+"Lignes en alerte des budgets ouverts dont ce destinataire est responsable."
+
+#. module: bf_budget_digest
+#: model:ir.model.fields,field_description:bf_budget_digest.field_daily_digest_config__include_budget
+msgid "Include budgets"
+msgstr "Inclure les budgets"
+
+#. module: bf_budget_digest
+#. odoo-python
+#: code:addons/bf_budget_digest/models/daily_digest_config.py:0
+msgid "Planned"
+msgstr "Prévu"
+
+#. module: bf_budget_digest
+#. odoo-python
+#: code:addons/bf_budget_digest/models/daily_digest_config.py:0
+msgid "Theoretical"
+msgstr "Théorique"
+
+#. module: bf_budget_digest
+#. odoo-python
+#: code:addons/bf_budget_digest/models/daily_digest_config.py:0
+msgid "Variance from theoretical"
+msgstr "Écart au théorique"
