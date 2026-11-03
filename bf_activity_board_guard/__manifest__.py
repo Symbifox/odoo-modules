@@ -30,7 +30,8 @@ each model's own module.
     #   ⚠️ Le formulaire du tableau met le champ en <h1> DANS le bouton
     #   `open_origin` : sans la vue de ce module, une ligne gardée perdrait son
     #   libellé et il n'y aurait plus rien à viser pour ouvrir la fiche.
-    "version": "18.0.1.0.0",
+    # 18.0.1.0.1 : l'icône du module.
+    "version": "18.0.1.0.1",
     "category": "Productivity/Discuss",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

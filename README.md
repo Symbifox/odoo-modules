@@ -93,7 +93,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | Directory | Name | Version | License | Description |
 |---|---|---|---|---|
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.3 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
-| `bf_activity_board_guard` | BF Activity Board Guard | 18.0.1.0.0 | LGPL-3 | One activity on a model without mail.activity.mixin no longer takes the activity list and the board form down |
+| `bf_activity_board_guard` | BF Activity Board Guard | 18.0.1.0.1 | LGPL-3 | One activity on a model without mail.activity.mixin no longer takes the activity list and the board form down |
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.2.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_activity_cancel_note` | Symbifox — Activity Cancel Note | 18.0.1.0.1 | LGPL-3 | Cancelling an activity can leave a note in the chatter, like marking it done |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.2.0 | LGPL-3 | The single transport to the AI bridge service |
