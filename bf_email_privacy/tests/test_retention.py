@@ -37,6 +37,42 @@ class BfEmailRetentionCase(TransactionCase):
             "bf_email_privacy.retention_bf_email_unfiled"
         )
         cls.rule_filed = cls.env.ref("bf_email_privacy.retention_bf_email_filed")
+        # ⚠️ Relevé AVANT d'écrire : c'est la seule fenêtre où l'on voit ce que
+        # la base porte vraiment, et `test_les_deux_regimes_sont_operants_en_base`
+        # s'en sert.
+        # ⚠️ Relevé AVANT d'écrire, et restreint au défaut que ce module répare :
+        # une règle réglée sur l'anonymisation ou archivée est une décision
+        # légitime, pas un défaut de base, et un canari qui crierait là-dessus
+        # rougirait chez le locataire qui se sert de l'écran.
+        cls.duree_en_base = {
+            regle.code: regle.total_retention_days
+            for regle in (cls.rule_unfiled, cls.rule_filed)
+        }
+        plancher = cls.env["bf.email"]._privacy_reconcile_floor_days()
+        cls.vides_en_base = [
+            regle.code
+            for regle in (cls.rule_unfiled, cls.rule_filed)
+            if regle.active
+            and regle.final_disposition == "destroy"
+            and regle.total_retention_days < plancher
+        ]
+        # ⚠️ Un essai qui dépend d'une valeur de DONNÉES l'écrit lui-même.
+        # Les deux règles vivent dans un fichier `noupdate` : sur une base
+        # réelle elles portent ce que la première pose y a mis, puis ce que
+        # l'écran de réglages y a écrit, et un essai qui se contente de
+        # `env.ref` éprouve la base, pas le code. Mesuré sur deux locataires :
+        # 0 an, et 19 des 33 essais de ce fichier tombaient sur cette donnée.
+        # ⚠️ Et il écrit TOUT ce dont il dépend, `final_disposition` et `active`
+        # comprises : mesuré, un seul `final_disposition = anonymize` en base
+        # faisait tomber 18 des 46 essais, pour une donnée que le module tient
+        # par ailleurs pour une politique légitime.
+        for regle, annees in ((cls.rule_unfiled, 3), (cls.rule_filed, 5)):
+            regle.sudo().write({
+                "active_retention_years": annees,
+                "semi_active_retention_years": 0,
+                "final_disposition": "destroy",
+                "active": True,
+            })
         cls.folded = cls.env["project.project.stage"].search(
             [("fold", "=", True)], limit=1
         ) or cls.env["project.project.stage"].create({
@@ -677,14 +713,327 @@ class BfEmailRetentionCase(TransactionCase):
         self.assertIsNotNone(self.BfEmail._privacy_read_preview())
 
     def test_settings_write_reaches_the_calendar_rule(self):
-        """L'écran est une façade : il écrit bien sur la règle."""
-        settings = self.env["res.config.settings"].create({
+        """L'écran est une façade : il écrit bien sur la règle.
+
+        ⚠️ Pas d'`execute()` : l'`inverse` tourne au `create`, et le
+        `set_values()` d'un module tiers installé sur ces locataires lance un
+        appel HTTP sortant que le harnais d'essai bloque. L'essai tombait donc
+        sur le réseau d'un voisin, et la série n'était jamais verte sur une base
+        de production.
+        """
+        self.env["res.config.settings"].create({
             "bf_email_unfiled_years": 7,
         })
-        settings.execute()
+        self.rule_unfiled.invalidate_recordset()
         self.assertEqual(self.rule_unfiled.active_retention_years, 7)
 
+    # ── Ce que la base porte, et ce que le formulaire en voit ────────────
+
+    def test_les_deux_regimes_sont_operants_en_base(self):
+        """🔴 L'essai qui manquait, et qui aurait vu le défaut dès le premier jour.
+
+        Les deux règles vivent dans un `<data noupdate="1">`, donc aucune
+        montée ne reprend leur valeur : ce que la base porte peut s'éloigner de
+        ce que le module déclare, et un module de rétention Loi 25 peut rester
+        installé, actif et parfaitement inerte. Ici on n'exige pas l'égalité
+        avec le fichier, une durée choisie à l'écran étant légitime : on exige
+        que chaque régime soit EN ÉTAT de proposer.
+
+        ⚠️ Il lit `cls.diagnostic_en_base`, relevé avant que `setUpClass` ne
+        pose les durées. Interroger la règle ici ne prouverait que l'écriture
+        de `setUpClass`.
+        """
+        self.assertEqual(
+            self.vides_en_base, [],
+            "ces régimes de destruction sont vides en base : %s. Durées lues au "
+            "démarrage : %s. Un fichier `noupdate` ne se reprend pas tout seul, "
+            "il faut une migration de rattrapage."
+            % (self.vides_en_base, self.duree_en_base),
+        )
+
+    def test_le_fichier_de_donnees_declare_une_duree_operante(self):
+        """Ce que le module déclare doit passer le plancher, sinon il naît muet."""
+        from xml.etree import ElementTree
+
+        from odoo.tools.misc import file_path
+
+        plancher = self.BfEmail._privacy_reconcile_floor_days()
+        chemin = file_path("bf_email_privacy/data/privacy_retention_data.xml")
+        vus = 0
+        for rec in ElementTree.parse(chemin).getroot().iter("record"):
+            if rec.get("model") != "privacy.retention.calendar":
+                continue
+            champs = {f.get("name"): (f.text or "").strip()
+                      for f in rec.findall("field")}
+            if champs.get("final_disposition") != "destroy":
+                continue
+            jours = (int(champs["active_retention_years"])
+                     + int(champs.get("semi_active_retention_years", 0))) * 365
+            vus += 1
+            self.assertGreaterEqual(
+                jours, plancher,
+                "le fichier de données déclare %s jour(s) pour « %s », sous le "
+                "plancher de réconciliation de %s : une pose neuve naîtrait "
+                "inerte." % (jours, champs.get("code"), plancher),
+            )
+        self.assertEqual(vus, 2, "les deux régimes doivent être couverts")
+
+    def test_le_formulaire_voit_la_duree_du_calendrier(self):
+        """🔴 Le chemin réel de la page Paramètres, celui que rien n'éprouvait.
+
+        La page est bâtie par `onchange`, et la couche web sème à `False` tout
+        champ que `default_get` ne rend pas : un champ de façade purement
+        calculé s'affichait donc à 0 quoi que porte le calendrier, et
+        l'enregistrement écrivait ce 0 sur la règle. `create({})` ne montre
+        rien de tout cela, parce qu'il déclenche le calcul.
+        """
+        champs = ["bf_email_unfiled_years", "bf_email_filed_years",
+                  "bf_email_propose_active", "bf_email_rule_problem",
+                  "bf_email_reconcile_floor"]
+        vu = self.env["res.config.settings"].onchange(
+            {}, [], {nom: {} for nom in champs}
+        ).get("value", {})
+        self.assertEqual(vu.get("bf_email_unfiled_years"), 3)
+        self.assertEqual(vu.get("bf_email_filed_years"), 5)
+        self.assertEqual(
+            vu.get("bf_email_reconcile_floor"),
+            self.BfEmail._privacy_reconcile_floor_days(),
+        )
+        self.assertFalse(vu.get("bf_email_rule_problem"))
+
+    def test_un_enregistrement_venu_d_un_autre_onglet_ne_touche_a_rien(self):
+        """🔴 La page Paramètres est UN formulaire pour tous les modules.
+
+        Enregistrer depuis l'onglet d'un autre module déclenche nos `inverse`.
+        Ils ne doivent ni réécrire la politique, ni basculer le cron, ni lever,
+        y compris quand la règle est déjà hors d'état : bloquer toute la page
+        Paramètres de tous les modules serait pire que le défaut.
+        """
+        cron = self.env.ref("bf_email_privacy.cron_bf_email_destroy_expired")
+        cron.sudo().write({"active": True})
+        for annees_unfiled in (3, 0):
+            self.rule_unfiled.sudo().write({
+                "active_retention_years": annees_unfiled,
+            })
+            vu = self.env["res.config.settings"].onchange(
+                {}, [], {nom: {} for nom in (
+                    "bf_email_unfiled_years", "bf_email_filed_years",
+                    "bf_email_propose_active",
+                )}
+            ).get("value", {})
+            self.env["res.config.settings"].create(vu)
+            self.rule_unfiled.invalidate_recordset()
+            cron.invalidate_recordset()
+            self.assertEqual(
+                self.rule_unfiled.active_retention_years, annees_unfiled,
+                "un enregistrement neutre a changé la politique",
+            )
+            self.assertTrue(cron.active, "un enregistrement neutre a éteint le cron")
+
+    def test_une_regle_inoperante_se_voit_a_l_ecran(self):
+        """Inerte doit se LIRE, sans attendre qu'un balayage l'écrive.
+
+        L'aperçu mémorisé datait d'avant que la règle se vide : il affichait
+        « 0 échue » et des motifs d'ancrage rassurants pendant que le régime ne
+        pouvait plus rien proposer.
+        """
+        champs = {"bf_email_rule_problem": {}}
+        vu = self.env["res.config.settings"].onchange({}, [], champs)
+        self.assertFalse(vu.get("value", {}).get("bf_email_rule_problem"))
+        self.rule_unfiled.sudo().write({
+            "active_retention_years": 0, "semi_active_retention_years": 0,
+        })
+        vu = self.env["res.config.settings"].onchange({}, [], champs)
+        texte = vu.get("value", {}).get("bf_email_rule_problem") or ""
+        self.assertIn("plancher", texte)
+        self.assertIn(self.rule_unfiled.code, texte)
+
+    def test_une_regle_archivee_est_signalee(self):
+        """`env.ref` rend l'archivé sans broncher, et le balayage s'en servait."""
+        self.rule_unfiled.sudo().write({"active": False})
+        problemes = self.BfEmail._privacy_rule_problems()
+        self.assertTrue(
+            any("archiv" in p for p in problemes),
+            "une règle archivée pilotait le balayage sans être signalée : %s"
+            % problemes,
+        )
+
+    def test_l_ecran_refuse_une_duree_inoperante(self):
+        """Une demande délibérée sous le plancher se refuse, avec le motif.
+
+        ⚠️ Le refus tombe au `create`, c'est là que l'`inverse` tourne. On
+        n'appelle pas `execute()` : le `set_values()` d'un module tiers y lève
+        une `ValidationError`, qui hérite de `UserError`, et l'essai passerait
+        au vert pour la mauvaise raison.
+        """
+        with self.assertRaisesRegex(UserError, "plancher"):
+            self.env["res.config.settings"].create({
+                "bf_email_unfiled_years": 0,
+            })
+        self.rule_unfiled.invalidate_recordset()
+        self.assertEqual(self.rule_unfiled.active_retention_years, 3)
+        with self.assertRaisesRegex(UserError, "plancher"):
+            self.env["res.config.settings"].create({
+                "bf_email_filed_years": 0,
+            })
+        self.rule_filed.invalidate_recordset()
+        self.assertEqual(self.rule_filed.active_retention_years, 5)
+
+    def test_l_ecran_laisse_passer_une_regle_sans_destruction(self):
+        """Une règle qui anonymise n'a pas le même 0 : le plancher ne la régit pas."""
+        self.rule_unfiled.sudo().write({"final_disposition": "anonymize"})
+        self.env["res.config.settings"].create({"bf_email_unfiled_years": 0})
+        self.rule_unfiled.invalidate_recordset()
+        self.assertEqual(self.rule_unfiled.active_retention_years, 0)
+
+    # ── La migration de rattrapage ───────────────────────────────────────
+
+    def _migration(self):
+        import importlib.util
+
+        from odoo.tools.misc import file_path
+
+        chemin = file_path(
+            "bf_email_privacy/migrations/18.0.3.5.0/post-migration.py"
+        )
+        spec = importlib.util.spec_from_file_location("mig_27264", chemin)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_la_migration_rattrape_une_regle_vide(self):
+        self.rule_unfiled.sudo().write({
+            "active_retention_years": 0, "semi_active_retention_years": 0,
+        })
+        self._migration().migrate(self.env.cr, "18.0.3.4.0")
+        self.rule_unfiled.invalidate_recordset()
+        self.assertEqual(self.rule_unfiled.total_retention_days, 1095)
+
+    def test_la_migration_epargne_une_duree_choisie(self):
+        """Un réglage au-dessus du plancher est une décision, pas un défaut."""
+        self.rule_unfiled.sudo().write({"active_retention_years": 2})
+        self._migration().migrate(self.env.cr, "18.0.3.4.0")
+        self.rule_unfiled.invalidate_recordset()
+        self.assertEqual(self.rule_unfiled.total_retention_days, 730)
+
+    def test_la_migration_epargne_une_regle_sans_destruction(self):
+        self.rule_unfiled.sudo().write({
+            "active_retention_years": 0, "final_disposition": "permanent_archive",
+        })
+        self._migration().migrate(self.env.cr, "18.0.3.4.0")
+        self.rule_unfiled.invalidate_recordset()
+        self.assertEqual(self.rule_unfiled.active_retention_years, 0)
+
+    def test_la_migration_ne_fait_rien_a_l_installation(self):
+        """`version` vide veut dire pose neuve : le fichier de données suffit."""
+        self.rule_unfiled.sudo().write({"active_retention_years": 0})
+        self._migration().migrate(self.env.cr, None)
+        self.rule_unfiled.invalidate_recordset()
+        self.assertEqual(self.rule_unfiled.active_retention_years, 0)
+
+    def test_la_migration_ne_crie_pas_victoire_sous_un_plancher_releve(self):
+        """Avec un plancher au-dessus de la durée déclarée, le régime reste muet.
+
+        La migration écrit quand même la durée du fichier, mais elle doit RELIRE
+        son résultat : annoncer « reposée » laisserait croire la règle réparée.
+        """
+        self.env["ir.config_parameter"].sudo().set_param(
+            "bf_email.reconcile_days", "1200"
+        )
+        self.rule_unfiled.sudo().write({"active_retention_years": 0})
+        self._migration().migrate(self.env.cr, "18.0.3.4.0")
+        self.rule_unfiled.invalidate_recordset()
+        self.assertEqual(self.rule_unfiled.total_retention_days, 1095)
+        self.assertTrue(
+            any("plancher" in p for p in self.BfEmail._privacy_rule_problems()),
+            "le régime devrait rester signalé hors d'état",
+        )
+
+    def test_le_plancher_affiche_est_celui_qui_est_applique(self):
+        """🔴 L'alerte renvoie l'administrateur au plancher affiché à l'écran.
+
+        Si l'écran montre le plancher de l'aperçu (une photo) alors que le refus
+        applique le plancher vivant, l'administrateur suit l'instruction, saisit
+        une durée au-dessus du nombre qu'il lit, et se fait refuser avec un
+        autre nombre.
+        """
+        self.BfEmail._privacy_refresh_preview()
+        self.env["ir.config_parameter"].sudo().set_param(
+            "bf_email.reconcile_days", "1200"
+        )
+        vivant = self.BfEmail._privacy_reconcile_floor_days()
+        self.assertEqual(vivant, 1230)
+        vu = self.env["res.config.settings"].onchange(
+            {}, [], {"bf_email_reconcile_floor": {}, "bf_email_rule_problem": {}}
+        ).get("value", {})
+        self.assertEqual(
+            vu.get("bf_email_reconcile_floor"), vivant,
+            "l'écran affiche un plancher que le refus n'applique pas",
+        )
+        self.assertEqual(
+            self.env["res.config.settings"].create({}).bf_email_reconcile_floor,
+            vivant,
+        )
+
+    def test_une_regle_supprimee_ne_casse_pas_les_parametres(self):
+        """🔴 Depuis que tout `create()` porte nos champs, lever ici bloque tout.
+
+        Un gestionnaire vie privée a le droit de supprimer une règle. L'écran
+        doit alors dire « règle absente », pas rendre la page Paramètres de tous
+        les modules inutilisable.
+        """
+        # On retire l'identifiant externe plutôt que l'enregistrement : c'est
+        # ce que voit le code (`env.ref` rend alors rien), et ça évite de
+        # dépendre des cascades des campagnes et du registre.
+        self.env["ir.model.data"].sudo().search([
+            ("module", "=", "bf_email_privacy"),
+            ("name", "=", "retention_bf_email_unfiled"),
+        ]).unlink()
+        self.env.registry.clear_cache()
+        reglages = self.env["res.config.settings"].create({})
+        self.assertIn("absente", reglages.bf_email_rule_problem)
+
+    def test_un_apercu_illisible_ne_casse_pas_les_parametres(self):
+        """Le résumé est calculé dans `default_get`, donc à l'ouverture de la page."""
+        for charge in ('{"held": {"motif": "pas un nombre"}}',
+                       '{"held": ["pas un dictionnaire"]}',
+                       'pas du json'):
+            self.env["ir.config_parameter"].sudo().set_param(
+                "bf_email_privacy.last_scan", charge
+            )
+            reglages = self.env["res.config.settings"].create({})
+            self.assertTrue(reglages.bf_email_held_summary)
+
+    def test_la_migration_epargne_une_duree_choisie_sous_un_plancher_releve(self):
+        """🔴 Le cas où une porte « sous le plancher » écraserait un choix.
+
+        Avec un plancher au-dessus de la durée déclarée, une règle délibérément
+        réglée à 2 ans ne doit pas être réécrite à 3 : la migration aurait
+        détruit le choix de l'administrateur sans rien réparer.
+        """
+        self.env["ir.config_parameter"].sudo().set_param(
+            "bf_email.reconcile_days", "1200"
+        )
+        self.rule_unfiled.sudo().write({"active_retention_years": 2})
+        self._migration().migrate(self.env.cr, "18.0.3.4.0")
+        self.rule_unfiled.invalidate_recordset()
+        self.assertEqual(self.rule_unfiled.total_retention_days, 730)
+
+    def test_la_migration_ne_crie_pas_victoire_sur_une_regle_archivee(self):
+        """Une durée reposée sur une règle archivée ne répare rien."""
+        self.rule_unfiled.sudo().write({
+            "active_retention_years": 0, "active": False,
+        })
+        self._migration().migrate(self.env.cr, "18.0.3.4.0")
+        self.rule_unfiled.invalidate_recordset()
+        self.assertEqual(self.rule_unfiled.total_retention_days, 1095)
+        self.assertTrue(
+            any("archiv" in p for p in self.BfEmail._privacy_rule_problems()),
+            "le régime doit rester signalé hors d'état",
+        )
+
     def test_batch_limit_is_honoured(self):
+
         span = self._years(self.rule_unfiled)
         for offset in range(4):
             self._email(span + 20 + offset)

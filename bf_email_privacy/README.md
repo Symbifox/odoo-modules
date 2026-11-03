@@ -75,6 +75,46 @@ gardes de tous les autres en silence. Une seconde garde, posée sur une méthode
 différente, refuse d'attester la suppression d'un `bf.email` qui existe encore,
 quel que soit le chemin suivi.
 
+## 🔴 La politique se vidait par son propre écran (18.0.3.5.0)
+
+Les deux durées vivent sur les règles du calendrier de conservation, et l'écran
+des réglages n'en est qu'une façade. Cette façade était bâtie sur des champs
+purement calculés, et la page Paramètres d'Odoo 18 se construit par `onchange` :
+la couche web y sème à `False` tout champ que `default_get` ne rend pas, de
+sorte que le calcul ne tournait jamais à l'affichage. Mesuré, avec 1 095 et
+1 825 jours en base, le formulaire recevait 0 pour les deux durées, 0 pour le
+plancher, et aucun diagnostic.
+
+Conséquence : enregistrer les Paramètres, **depuis l'onglet de n'importe quel
+autre module**, écrivait ce 0 sur les deux règles et éteignait le cron de
+proposition. Le module restait installé, actif, et ne proposait plus rien, le
+garde-fou du plancher de réconciliation faisant correctement son travail sur une
+règle devenue vide. Les huit champs de l'écran étaient touchés, ce qui explique
+aussi un aperçu rassurant à zéro.
+
+Ce que cette version change :
+
+* `default_get` alimente les huit champs de façade, donc le formulaire montre ce
+  que le calendrier porte vraiment, et un enregistrement réécrit la même valeur.
+* Les méthodes inverses n'écrivent que si la valeur change, et ne basculent le
+  cron que si l'état demandé diffère. Ce contrôle passe **avant** tout refus,
+  pour qu'une base encore vide reste enregistrable : bloquer la page Paramètres
+  de tous les modules serait pire que le défaut.
+* Une demande délibérée sous le plancher est refusée, avec son motif et le renvoi
+  vers la bascule prévue pour suspendre les propositions. Le contrôle ne vise que
+  les règles dont le sort final est la destruction : un 0 sur une règle qui
+  anonymise ou conserve en permanence ne veut pas dire la même chose.
+* L'écran porte un diagnostic calculé en direct, et une alerte qui nomme le
+  régime touché. Les deux régimes étant indépendants, ni l'alerte ni le journal
+  n'affirment que le module ne détruira rien.
+* Une règle archivée est signalée : `env.ref` la rend sans broncher et le
+  balayage s'en servait.
+* Une migration repose la durée déclarée sur une règle de destruction restée à
+  zéro, et seulement sur celle-là. Le fichier de données est `noupdate`, donc
+  aucune montée ne reprenait la valeur, mais une règle réglée à deux ans reste à
+  deux ans. La migration relit son résultat par le même contrôle que l'écran et
+  signale une erreur si le régime reste hors d'état.
+
 ## Ce que la destruction n'atteint pas
 
 * **Les sauvegardes**, qui gardent l'état antérieur aussi longtemps que leur

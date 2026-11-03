@@ -2,7 +2,7 @@
     "name": "Gestion des courriels — pont Vie privée (Loi 25)",
     "summary": "Rétention et destruction du contenu de bf.email, adossées au "
                "calendrier de conservation, avec inscription au registre",
-    "version": "18.0.3.4.0",
+    "version": "18.0.3.5.0",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

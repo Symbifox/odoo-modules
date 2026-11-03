@@ -384,6 +384,11 @@ class BfEmail(models.Model):
         """Ce qui empêche une règle de piloter une destruction, ou ``False``."""
         if not rule:
             return _("règle de conservation absente")
+        if not rule.active:
+            # ⚠️ `env.ref` rend l'enregistrement archivé sans broncher, et le
+            # balayage s'en servait quand même. Une règle rangée hors de la vue
+            # n'est plus une politique qu'on peut défendre en audit.
+            return _("règle « %s » archivée", rule.code)
         if rule.final_disposition != "destroy":
             return _("règle « %s » : sort final ≠ destruction", rule.code)
         if rule.total_retention_days < floor_days:
@@ -393,6 +398,24 @@ class BfEmail(models.Model):
                 code=rule.code, days=floor_days,
             )
         return False
+
+    @api.model
+    def _privacy_rule_problems(self):
+        """Ce qui empêche AUJOURD'HUI les deux règles de piloter une destruction.
+
+        Mesure directe et bon marché (deux `env.ref` et un paramètre), à
+        l'usage de l'écran de réglages et du journal du cron. Elle ne passe pas
+        par l'aperçu mémorisé : un aperçu daté d'avant que la règle se vide
+        reste rassurant, et c'est précisément ce qui a laissé le module inerte
+        deux mois sur deux locataires.
+        """
+        plancher = self._privacy_reconcile_floor_days()
+        problemes = []
+        for regle in (self._privacy_rule_unfiled(), self._privacy_rule_filed()):
+            probleme = self._privacy_rule_problem(regle, plancher)
+            if probleme:
+                problemes.append(probleme)
+        return problemes
 
     @api.model
     def _privacy_scan_expired(self, limit=None):
@@ -540,6 +563,21 @@ class BfEmail(models.Model):
                 "proposition abandonnée"
             )
             return 0
+
+        # ⚠️ Au niveau AVERTISSEMENT, pas INFO : une règle hors d'état n'est
+        # pas une issue ordinaire du balayage. Le motif partait déjà dans le lot
+        # des lignes conservées, noyé parmi les motifs d'ancrage, à un niveau
+        # que personne ne lit.
+        # ⚠️ Et le message ne dit pas « aucune destruction possible » : les deux
+        # régimes sont indépendants, et l'autre peut très bien proposer dans le
+        # même passage. Affirmer le contraire dans un module Loi 25 serait faux
+        # au moment précis où une campagne se remplit.
+        problemes = self._privacy_rule_problems()
+        if problemes:
+            _logger.warning(
+                "bf_email_privacy: %s régime(s) hors d'état de proposer : %s",
+                len(problemes), " ; ".join(problemes),
+            )
 
         if limit is None:
             ICP = self.env["ir.config_parameter"].sudo()

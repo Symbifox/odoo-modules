@@ -13,6 +13,23 @@
 
                     <block title="Durées de conservation"
                            name="bf_email_privacy_retention_block">
+                        <field name="bf_email_rule_problem" invisible="1"/>
+                        <setting string="⚠️ Un régime de conservation est hors d'état"
+                                 invisible="not bf_email_rule_problem">
+                            <div class="alert alert-danger" role="alert">
+                                <field name="bf_email_rule_problem" readonly="1"
+                                       widget="text" nolabel="1"/>
+                                <p class="mb-0 mt-2">Le régime nommé ci-dessus ne
+                                proposera aucune destruction. Les deux régimes
+                                sont indépendants : l'autre continue de son côté.
+                                Le balayage s'arrête plutôt que de détruire ce que
+                                la réconciliation IMAP re-créerait la nuit
+                                suivante, ce qui inscrirait au registre immuable
+                                une destruction qui n'a rien détruit. Posez une
+                                durée au-dessus du plancher indiqué plus bas, puis
+                                « Simuler un passage ».</p>
+                            </div>
+                        </setting>
                         <setting string="Courriel non versé à un dossier"
                                  help="La ligne est la seule copie côté Odoo : elle porte le corps et, pour une ingestion IMAP directe, le message RFC 2822 entier. La conservation court à compter de la réception. Aligné par défaut sur la règle « Correspondance » (COR-001) déjà semée par le module Vie privée.">
                             <div class="content-group">
