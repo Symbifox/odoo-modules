@@ -70,8 +70,16 @@ class CalendarEvent(models.Model):
         on precisely the one-to-one meetings it is meant for.
         """
         self.ensure_one()
+        # ⚠️ `active_test=False` : `user_ids` masque les usagers archivés, donc
+        # le partenaire d'un collègue PARTI redevenait un « invité externe ».
+        # Mesuré par la relecture adverse : le rappel du client partait à son
+        # adresse, le bouton de confirmation disparaissait (deux invités
+        # externes), et la rencontre ne pouvait plus quitter « provisoire ».
         return self.attendee_ids.filtered(
-            lambda a: not any(not user.share for user in a.partner_id.user_ids)
+            lambda a: not any(
+                not user.share
+                for user in a.partner_id.with_context(active_test=False).user_ids
+            )
         )
 
     def _bf_guest_attendee_url(self, base_url=None):
@@ -176,6 +184,23 @@ class CalendarEvent(models.Model):
         self.ensure_one()
         company = self.env.company
         candidates = [self.event_tz]
+        # 🔴 `event_tz` n'est PAS un champ stocké : le coeur le calcule par
+        # `_compute_recurrence`, qui le lit sur la récurrence. Une rencontre
+        # non récurrente n'en a donc JAMAIS, par construction, et le coeur
+        # refuse même de l'écrire sur elle (`UserError`). Mesuré : sur les
+        # bases réelles regardées, la totalité des rencontres est dans ce cas.
+        # Le premier candidat ne vaut donc que pour une série, et ce sont les
+        # heures de travail de la société qui décident du cas ordinaire.
+        #
+        # ⚠️ Odoo crée ces heures de travail à `UTC` et personne ne les règle :
+        # une visite de 10 h 30 s'est annoncée « à 15 h 30 » pour cette seule
+        # raison. Le réglage est la réparation, parce qu'il remet d'aplomb les
+        # CINQ courriels de ce module pour toutes les rencontres ; un candidat
+        # de plus ici ne les aurait remis d'aplomb que sur les rencontres
+        # étiquetées, et deux rencontres du même client auraient alors annoncé
+        # des heures différentes. Le départ du rappel le dit donc au journal
+        # quand il retombe sur UTC, au lieu de laisser une heure fausse partir
+        # en silence.
         if "resource_calendar_id" in company._fields:
             candidates.append(company.resource_calendar_id.tz)
         candidates.append(company.partner_id.tz)
@@ -354,10 +379,68 @@ class CalendarEvent(models.Model):
         What we want is the distinction: an event written before this field
         existed has **no** status, because nobody ruled on it; an event created
         from now on is confirmed unless someone says otherwise.
+
+        One exception, from 7.0.0: a meeting whose tag arms the day-before
+        confirmation reminder is born TENTATIVE, because its whole point is
+        that the guest has not answered yet.
         """
         for vals in vals_list:
-            vals.setdefault("bf_event_status", "confirmed")
+            # ⚠️ La présence de la CLÉ, jamais la vérité de la valeur : un
+            # statut vide passé exprès est un choix (« personne n'a tranché »),
+            # et le tester en vérité l'écrasait par « confirmée ». C'est ce que
+            # `setdefault` faisait, et un essai le gardait.
+            if "bf_event_status" in vals:
+                continue
+            vals["bf_event_status"] = (
+                "tentative" if self._bf_vals_arment_le_rappel(vals) else "confirmed"
+            )
         return super().create(vals_list)
+
+    @api.model
+    def _bf_vals_arment_le_rappel(self, vals):
+        """Les étiquettes passées à la création arment-elles le rappel?
+
+        🔴 Lu dans les VALEURS, et non dans une passe d'après-création. Deux
+        raisons mesurées, chacune par la relecture adverse du 2026-11-02 :
+
+        * le coeur scinde `vals_list` en non récurrentes puis récurrentes, les
+          crée séparément et rend la concaténation. Un appariement par position
+          entre les valeurs et les enregistrements rendus apparie donc le
+          mauvais drapeau au mauvais enregistrement dès qu'un lot est mêlé, et
+          défait au passage le statut qu'on avait explicitement demandé ;
+        * `_apply_recurrence_values` copie l'événement de base pour fabriquer
+          les occurrences PENDANT `create()`, donc avant qu'une passe d'après
+          n'ait rien pu basculer : seule la première occurrence d'une série
+          naissait provisoire, les autres portaient le « C » d'avance.
+
+        En posant la valeur avant `super()`, l'événement de base naît déjà
+        provisoire et ses occurrences en héritent par la copie.
+        """
+        ids = self._bf_ids_de_m2m(vals.get("categ_ids"))
+        if not ids:
+            return False
+        etiquettes = self.env["calendar.event.type"].browse(ids).exists()
+        return bool(etiquettes.filtered("bf_confirm_reminder"))
+
+    @api.model
+    def _bf_ids_de_m2m(self, valeur):
+        """Les ids d'un many2many écrit en commandes, ou en liste d'ids nue."""
+        if not valeur:
+            return []
+        if all(isinstance(c, int) for c in valeur):
+            return list(valeur)
+        ids = []
+        for commande in valeur:
+            if not isinstance(commande, (list, tuple)) or not commande:
+                continue
+            code = commande[0]
+            if code == 6 and len(commande) > 2:
+                ids = list(commande[2] or [])
+            elif code == 4 and len(commande) > 1:
+                ids.append(commande[1])
+            elif code == 3 and len(commande) > 1 and commande[1] in ids:
+                ids.remove(commande[1])
+        return ids
 
     def _bf_ics_status(self):
         """ICS `STATUS` value, or False when the event should not carry one.
@@ -1504,3 +1587,446 @@ class CalendarEvent(models.Model):
                     "the unstamped file is sent as-is.", event.id,
                 )
         return result
+
+    # ------------------------------------------------------------
+    # Le rappel de confirmation de la veille
+    # ------------------------------------------------------------
+    #
+    # Demandé par une personne qui fait des visites sur place : un rappel la
+    # veille qui redit l'heure, et qui porte la consigne propre à ce genre de
+    # visite (préparer un accès à Internet, par exemple, quand le visiteur doit
+    # remplir un relevé en ligne sur place).
+    #
+    # Ce n'est pas un rappel neuf : `bf_appointment` en envoie déjà un aux
+    # réservations prises par un lien. Ce qui n'en avait pas, c'est la rencontre
+    # créée À LA MAIN dans l'agenda, et c'est tout ce que ce cron sert.
+    #
+    # Trois bornes, chacune pour une raison mesurée ailleurs :
+    #
+    # * l'armement est sur l'étiquette, donc explicite, et rien ne part le jour
+    #   de la pose (même règle que `_bf_auto_change_notice_enabled`) ;
+    # * la fenêtre est bornée en haut par une tolérance, sinon une reprise après
+    #   panne rejoue un « à demain » deux heures avant le but, vécu dans le
+    #   cron des rappels de rendez-vous ;
+    # * un point de reprise par rencontre, sinon une seule qui lève emporte
+    #   toutes les autres du passage, et personne n'est prévenu de rien.
+
+    bf_confirm_reminder_armed = fields.Boolean(
+        string="Confirmation reminder",
+        compute="_compute_bf_confirm_reminder_armed",
+        store=True,
+        help="True when one of the meeting's tags arms the day-before "
+             "reminder. Computed: it is set on the tag, not here.",
+    )
+
+    bf_confirm_reminder_sent = fields.Datetime(
+        string="Confirmation reminder sent",
+        readonly=True,
+        copy=False,
+        help="When the day-before reminder went out. It is what keeps a second "
+             "one from being sent, and the quiet mark saying the guest has been "
+             "asked. The meeting's C badge, in contrast, is only set once the "
+             "guest answers.",
+    )
+
+    @api.depends("categ_ids.bf_confirm_reminder")
+    def _compute_bf_confirm_reminder_armed(self):
+        for event in self:
+            event.bf_confirm_reminder_armed = any(
+                tag.bf_confirm_reminder for tag in event.categ_ids
+            )
+
+    def bf_confirm_note(self):
+        """La ligne propre au type, prise sur la première étiquette armée.
+
+        PUBLIQUE parce que le gabarit du courriel l'appelle : le QWeb d'un
+        `mail.template` refuse les méthodes dont le nom commence par un
+        souligné, et le prix de cette règle a déjà été payé une fois par toute
+        une famille de courriels de rendez-vous.
+        """
+        self.ensure_one()
+        for tag in self.categ_ids:
+            if tag.bf_confirm_reminder and (tag.bf_confirm_reminder_note or "").strip():
+                return tag.bf_confirm_reminder_note.strip()
+        return False
+
+    def bf_confirm_when(self):
+        """L'heure que le rappel annonce, écrite comme l'invitation l'écrit."""
+        self.ensure_one()
+        return self._bf_poke_when()
+
+    def bf_confirm_tomorrow(self):
+        """La rencontre a-t-elle lieu demain, dans le fuseau du message?
+
+        Le sujet dit « demain » seulement quand c'est vrai : avec un préavis de
+        24 h et une tolérance, un rappel peut partir le matin même. Un « à
+        demain » sur une rencontre du jour est pire que pas de rappel.
+        """
+        self.ensure_one()
+        if not self.start:
+            return False
+        tz = pytz.timezone(self._bf_mail_tz() or "UTC")
+        maintenant = pytz.utc.localize(fields.Datetime.now()).astimezone(tz).date()
+        debut = pytz.utc.localize(self.start).astimezone(tz).date()
+        return (debut - maintenant).days == 1
+
+    def bf_confirm_day(self):
+        """Le jour de la rencontre, pour le rappel qui ne peut pas dire demain.
+
+        🔴 Dans le FUSEAU du message, comme toutes les autres dates du module.
+        Mesuré par la relecture adverse : `format_date` sur le datetime UTC nu
+        annonçait le lendemain pour toute rencontre du soir (20 h à Montréal,
+        soit 01 h UTC le jour suivant), et rendait la date numérique de la
+        langue au milieu d'une phrase qui promet un jour de semaine.
+        """
+        self.ensure_one()
+        if not self.start:
+            return False
+        return format_datetime(self.env, self.start, tz=self._bf_mail_tz(),
+                               dt_format="EEEE d MMMM y",
+                               lang_code=self.env.lang)
+
+    bf_confirm_subject = fields.Char(
+        string="Confirmation subject",
+        compute="_compute_bf_confirm_subject",
+        help="Subject of the confirmation reminder, in the language the message is rendered in.",
+    )
+
+    @api.depends("name", "start", "allday", "event_tz")
+    @api.depends_context("lang")
+    def _compute_bf_confirm_subject(self):
+        for event in self:
+            event.bf_confirm_subject = event._bf_confirm_subject()
+
+    def _bf_confirm_subject(self):
+        self.ensure_one()
+        when = self.bf_confirm_when()
+        if self.bf_confirm_tomorrow():
+            question = (_("See you tomorrow at %s?", when) if when
+                        else _("See you tomorrow?"))
+        else:
+            jour = self.bf_confirm_day()
+            if when and jour:
+                question = _("See you on %(day)s at %(hour)s?", day=jour, hour=when)
+            elif jour:
+                question = _("See you on %s?", jour)
+            else:
+                question = _("Can you confirm our meeting?")
+        return f"{question} · {self.name}" if self.name else question
+
+    # -- Les deux réglages, et le piège qu'ils portent -------------------
+
+    def _bf_confirm_icp_hours(self, cle, defaut):
+        """Un nombre d'heures lu dans les ICP, avec la garde qui manquait.
+
+        🔴 `get_param` d'une clé ABSENTE rend `False`, et `float(False)` vaut
+        `0.0` sans rien lever : un `try/except (TypeError, ValueError)` ne voit
+        donc rien passer et le réglage retombe à zéro chez tous les locataires,
+        où la clé n'est posée nulle part. Le même piège a failli éteindre tous
+        les rappels de rendez-vous, et seuls les essais l'ont attrapé. « Non
+        réglé » et « réglé à 0 » ne sont pas la même chose.
+        """
+        brut = self.env["ir.config_parameter"].sudo().get_param(cle)
+        if brut in (None, False, ""):
+            return defaut
+        try:
+            return float(brut)
+        except (TypeError, ValueError):
+            _logger.warning(
+                "bf_calendar_invite: %s = %r n'est pas un nombre d'heures; "
+                "%s h retenu.", cle, brut, defaut,
+            )
+            return defaut
+
+    def _bf_confirm_reminder_hours(self):
+        """Le préavis. 24 h par défaut, soit « la veille », à la même heure."""
+        return self._bf_confirm_icp_hours(
+            "bf_calendar_invite.confirm_reminder_hours", 24.0)
+
+    def _bf_confirm_reminder_grace_hours(self):
+        """Jusqu'à quand un passage manqué se rattrape encore.
+
+        Plafonnée au préavis par l'appelant : une tolérance plus large que le
+        préavis la rendrait incohérente.
+        """
+        return self._bf_confirm_icp_hours(
+            "bf_calendar_invite.confirm_reminder_grace_hours", 6.0)
+
+    @api.model
+    def _cron_bf_confirm_reminders(self):
+        """Les rappels de la veille qui sont dus, une fois chacun.
+
+        La fenêtre est portée par le domaine, pas par un filtre en Python :
+        `envoi = début - préavis`, et on envoie quand
+        `envoi <= maintenant < début` et `maintenant <= envoi + tolérance`,
+        ce qui s'écrit en deux bornes sur `début`.
+
+        Les rencontres « toute la journée » sont hors sujet : elles n'ont pas
+        d'heure à confirmer, et le coeur range leur début à minuit UTC, ce qui
+        ferait partir le rappel la veille de la veille selon le fuseau.
+        """
+        maintenant = fields.Datetime.now()
+        preavis = self._bf_confirm_reminder_hours()
+        if preavis <= 0:
+            _logger.info(
+                "bf_calendar_invite: préavis de confirmation à %s h; "
+                "aucun rappel envoyé.", preavis,
+            )
+            return self.env["mail.mail"]
+        tolerance = min(self._bf_confirm_reminder_grace_hours(), preavis)
+        # 🔴 Une tolérance nulle ou négative rendait le domaine impossible à
+        # satisfaire (`start >= maintenant + preavis` ET `start <= ` la même
+        # borne), donc éteignait TOUTE la fonction sans une ligne de journal.
+        # « Pas de rattrapage » veut dire la largeur d'un passage du cron, pas
+        # zéro : le cron tourne au quart d'heure.
+        if tolerance <= 0:
+            _logger.info(
+                "bf_calendar_invite: tolérance de %s h ramenée à un passage de "
+                "cron (0,25 h) : à zéro, aucune rencontre ne peut tomber dans "
+                "la fenêtre.", tolerance,
+            )
+            tolerance = 0.25
+        dues = self.search([
+            ("bf_confirm_reminder_armed", "=", True),
+            ("bf_confirm_reminder_sent", "=", False),
+            ("allday", "=", False),
+            ("start", ">", maintenant),
+            ("start", "<=", maintenant + timedelta(hours=preavis)),
+            ("start", ">=", maintenant + timedelta(hours=preavis - tolerance)),
+        ])
+        dues = dues.filtered(
+            lambda e: e.bf_event_status != "cancelled" and e._bf_outside_guests()
+        )
+        # 🔴 Jamais sur une rencontre adossée à une réservation : `bf_appointment`
+        # lui envoie déjà son propre rappel de 24 h, et `calendar.event.type` est
+        # UNE SEULE liste partagée avec les types de rendez-vous. Armer une
+        # étiquette posée en défaut d'un type de réservation faisait partir deux
+        # rappels différents au même client dans le même quart d'heure. Le champ
+        # n'existe que si `resource_booking` est installé : ce module n'en dépend
+        # pas, et une rencontre sans ce champ n'a aucune réservation.
+        if "resource_booking_ids" in self._fields:
+            dues = dues.filtered(lambda e: not e.resource_booking_ids)
+        if not dues:
+            return self.env["mail.mail"]
+        return dues._bf_send_confirm_reminder()
+
+    def _bf_confirm_sender(self):
+        """L'adresse qui signe le rappel, ou rien du tout.
+
+        Dérivée du partenaire résolu : l'en-tête et le bas du corps doivent
+        nommer la MÊME personne, sinon le courriel part d'une adresse et se
+        signe d'une autre.
+        """
+        self.ensure_one()
+        partner = self._bf_confirm_sender_partner()
+        return partner.email_formatted if partner else False
+
+    def _bf_confirm_sender_partner(self):
+        """Le partenaire qui signe le rappel, ou un ensemble vide.
+
+        L'expéditeur déclaré sur une étiquette armée d'abord, puis la
+        résolution commune aux courriels du module.
+
+        ⚠️ `active` est vérifié ici comme sur les autres candidats : sans ce
+        contrôle, l'étiquette d'un employé PARTI faisait encore partir le
+        rappel de son adresse, avec un `Reply-To` vers une boîte fermée, et la
+        réponse du client tombait dans le vide. Relevé par la relecture adverse
+        du 2026-11-03 : archiver un usager laisse son partenaire actif, Odoo ne
+        propage pas.
+        """
+        self.ensure_one()
+        candidats = self.env["res.partner"]
+        for tag in self.categ_ids:
+            if (tag.bf_confirm_reminder and tag.bf_confirm_reminder_from_id
+                    and tag.bf_confirm_reminder_from_id.active):
+                candidats |= tag.bf_confirm_reminder_from_id.partner_id
+        return (self._bf_premier_signataire(candidats)
+                or self._bf_mail_signer_partner())
+
+    def _bf_mail_signer_partner(self):
+        """Le partenaire qui signe un courriel du module, ou un ensemble vide.
+
+        🔴 Le gabarit retombe sur `user.email_formatted`, et `user`, dans un
+        cron, est le robot. La plupart des rencontres de cette base sont
+        écrites par une synchronisation, qui laisse `user_id` à OdooBot : un
+        rappel partirait au client signé du robot, et le gabarit ne le dirait
+        pas. On passe donc l'adresse explicitement, et on refuse d'envoyer
+        plutôt que de signer au nom du robot.
+        """
+        self.ensure_one()
+        candidats = self.env["res.partner"]
+        # 1. L'organisateur, s'il en est vraiment un.
+        if self.user_id.active:
+            candidats |= self.user_id.partner_id
+        # 2. Les participants internes, faute de mieux.
+        #    🔴 Mesuré sur la production du client : TOUTES ses rencontres
+        #    portent `user_id = OdooBot`, parce qu'elles viennent de la
+        #    synchronisation d'agenda, et `calendar.event.partner_id` n'est
+        #    qu'un alias de `user_id.partner_id`. Sans ce troisième candidat,
+        #    la garde « jamais signé du robot » sautait tous les envois.
+        candidats |= self.attendee_ids.partner_id.filtered(
+            lambda p: any(not u.share and u.active for u in p.user_ids)
+        )
+        return self._bf_premier_signataire(candidats)
+
+    def _bf_premier_signataire(self, candidats):
+        """Le premier de ces partenaires qui puisse vraiment signer un courriel.
+
+        Jamais le robot, jamais un partenaire archivé, jamais un partenaire
+        dont l'adresse ne s'analyse pas : mieux vaut refuser l'envoi que le
+        signer d'OdooBot. Partagée par les deux résolutions pour qu'elles
+        appliquent exactement les MÊMES filtres — quand elles divergeaient, la
+        personne nommée en bas du courriel pouvait n'être pas celle de
+        l'en-tête.
+        """
+        robot = self.env.ref("base.partner_root", raise_if_not_found=False)
+        for partner in candidats:
+            if not partner or (robot and partner == robot) or not partner.active:
+                continue
+            _nom, adresse = parseaddr(partner.email or "")
+            if adresse:
+                return partner
+        return self.env["res.partner"]
+
+    def bf_mail_signature(self):
+        """La signature de la personne qui signe un courriel du module, ou rien.
+
+        PUBLIQUE parce que les corps l'appellent, comme `bf_confirm_note` : le
+        QWeb d'un `mail.template` refuse les méthodes dont le nom commence par
+        un souligné.
+        """
+        self.ensure_one()
+        return self._bf_signature_de(self._bf_mail_signer_partner())
+
+    def bf_mail_signer_name(self):
+        """Le nom à écrire quand cette personne n'a pas de signature. PUBLIQUE."""
+        self.ensure_one()
+        partner = self._bf_mail_signer_partner()
+        return partner.name or self.env.company.name
+
+    def _bf_signature_de(self, partner):
+        """La signature de l'usager interne actif derrière ce partenaire."""
+        usager = partner.user_ids.filtered(lambda u: u.active and not u.share)[:1]
+        return usager.signature or False
+
+    def bf_confirm_signature(self):
+        """La signature de la personne qui envoie le rappel, ou rien.
+
+        PUBLIQUE parce que le corps du courriel l'appelle, comme
+        `bf_confirm_note` : le QWeb d'un `mail.template` refuse les méthodes
+        dont le nom commence par un souligné.
+
+        🔴 Le corps signait `object.user_id.signature`, et `user_id` est le
+        robot sur toute rencontre synchronisée : le rappel partait de l'adresse
+        de la personne et se terminait par « -- System », la signature par
+        défaut d'OdooBot. Le garde-fou de l'en-tête n'avait jamais atteint le
+        bas du corps.
+        """
+        self.ensure_one()
+        return self._bf_signature_de(self._bf_confirm_sender_partner())
+
+    def bf_confirm_signer_name(self):
+        """Le nom à écrire quand la personne n'a pas de signature.
+
+        Jamais le robot : `_bf_confirm_sender_partner` l'écarte déjà, et faute
+        de tout candidat c'est la société qui signe. PUBLIQUE, même raison.
+        """
+        self.ensure_one()
+        partner = self._bf_confirm_sender_partner()
+        return partner.name or self.env.company.name
+
+    def _bf_avertir_fuseau_utc(self):
+        """Dire au journal qu'un rappel va annoncer son heure en UTC.
+
+        🔴 Le défaut qui a fait annoncer « 15 h 30 » pour une visite de
+        10 h 30 : ce sont les heures de travail de la société, qu'Odoo crée à
+        `UTC` et que personne ne règle, qui décident du fuseau de tous les
+        courriels de ce module (voir `_bf_mail_tz`). Rien ne le signalait, et
+        une heure fausse dans un courriel de client ne se voit qu'au courriel.
+
+        Ne change RIEN à l'envoi : régler les heures de travail est la
+        réparation, et elle vaut pour les cinq courriels à la fois. Ceci rend
+        seulement le cas trouvable avant que le client le trouve.
+        """
+        self.ensure_one()
+        if self._bf_mail_tz() != "UTC":
+            return
+        autre = self.env.company.partner_id.tz
+        _logger.warning(
+            "bf_calendar_invite: le rappel de la rencontre %s va annoncer son "
+            "heure en UTC%s. Les heures de travail de %s n'ont pas de fuseau, "
+            "ou sont restées à UTC : les régler remet d'aplomb tous les "
+            "courriels du calendrier.",
+            self.id,
+            (f", alors que le contact de la société est à {autre}"
+             if autre and autre != "UTC" else ""),
+            self.env.company.display_name,
+        )
+
+    def _bf_send_confirm_reminder(self):
+        """Envoie le rappel et marque la rencontre, sous le même point de reprise.
+
+        Un rappel parti sans marque repartirait au passage suivant ; une marque
+        posée sans rappel cacherait la rencontre pour de bon. Les deux vivent
+        donc dans le même `savepoint`.
+
+        ⚠️ Un seul message pour tous les invités externes, comme l'invitation.
+        Le lien où l'invité confirme ou annule lui-même porte un jeton qui EST
+        son identité : `bf_invitation_url` ne le rend que lorsqu'un seul invité
+        externe est en jeu, sinon l'un pourrait répondre pour l'autre. À
+        plusieurs, le rappel part quand même, avec l'heure et la consigne, mais
+        sans le lien.
+
+        `force_send=False` : le message passe par la file comme les autres, pour
+        qu'un serveur SMTP en panne le retarde au lieu de faire échouer le
+        passage.
+        """
+        template = self.env.ref(
+            "bf_calendar_invite.mail_template_calendar_confirm",
+            raise_if_not_found=False,
+        )
+        if not template:
+            _logger.warning(
+                "bf_calendar_invite: gabarit de confirmation absent; aucun "
+                "rappel envoyé pour %s.", self.ids,
+            )
+            return self.env["mail.mail"]
+        partis = self.env["mail.mail"].sudo().browse()
+        for event in self:
+            event._bf_avertir_fuseau_utc()
+            # `.filtered("email")` : sans lui, un invité sans adresse laissait
+            # un `mail.mail` en exception ET la marque posée, donc une rencontre
+            # réputée relancée que le filtre ne remontrait jamais.
+            destinataires = event._bf_outside_guests().partner_id.filtered("email")
+            if not destinataires:
+                continue
+            expediteur = event._bf_confirm_sender()
+            if not expediteur:
+                _logger.warning(
+                    "bf_calendar_invite: la rencontre %s n'a pas d'adresse "
+                    "d'organisateur utilisable; aucun rappel envoyé plutôt "
+                    "qu'un rappel signé du robot.", event.id,
+                )
+                continue
+            try:
+                with self.env.cr.savepoint():
+                    mail_id = template.sudo().send_mail(
+                        event.id,
+                        force_send=False,
+                        email_values={
+                            "recipient_ids": [(6, 0, destinataires.ids)],
+                            "email_from": expediteur,
+                            "reply_to": expediteur,
+                        },
+                    )
+                    partis |= self.env["mail.mail"].sudo().browse(mail_id)
+                    super(CalendarEvent, event.sudo()).write({
+                        "bf_confirm_reminder_sent": fields.Datetime.now(),
+                    })
+            except Exception:
+                _logger.exception(
+                    "bf_calendar_invite: le rappel de confirmation de la "
+                    "rencontre %s n'est pas parti; elle reste à relancer.",
+                    event.id,
+                )
+        return partis

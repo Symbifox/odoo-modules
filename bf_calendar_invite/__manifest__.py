@@ -79,7 +79,49 @@
     #   computed in the message's language). An all-day meeting is poked about
     #   "today" rather than midnight. The four emails greet at 15 px, the body size
     #   of the shared layout, instead of 16.
-    "version": "18.0.6.3.0",
+    # 18.0.7.0.0: the day-before confirmation reminder, for the meeting someone
+    #   typed into the calendar. Bookings taken through a link already had one;
+    #   a meeting written in the calendar had nothing, and the module's only
+    #   chase-up spoke to a guest who was ALREADY late. Arming lives on the
+    #   meeting tag, with its own instruction line, because the instruction is
+    #   not the same everywhere: an on-site visit may ask the host to have
+    #   internet ready, and serving that sentence to every guest of every
+    #   meeting would read as nonsense. A cron every quarter hour sends inside a
+    #   bounded window, a notice period then a tolerance for a missed pass
+    #   (`confirm_reminder_hours`, `confirm_reminder_grace_hours`), with a
+    #   savepoint per meeting so one failing meeting does not carry the others.
+    #   `bf_confirm_reminder_sent` is the quiet mark that keeps a second
+    #   reminder from going out; the "C" badge is set when the guest answers yes
+    #   themselves, not when the reminder leaves, so an armed meeting is born
+    #   tentative. Nothing goes out until a tag is armed: a module that writes
+    #   to clients on the day it is installed has no safe first day. With more
+    #   than one outside guest the reminder still goes, with the hour and the
+    #   instruction, but without the confirm button, because the token in the
+    #   invitation link IS an identity and one guest must not answer for
+    #   another. A meeting backed by a booking is left alone, the booking module
+    #   already sending its own 24-hour reminder.
+    # 18.0.7.0.1: 🔴 two defects a QA of real SENDS found, and the test suite
+    #   could not. The body signed `user_id.signature`, which is the robot on
+    #   any meeting that came from a calendar sync: the message left under a
+    #   person's address and ended with the robot's own signature. The closing
+    #   now names the same person as the header, through a shared resolution,
+    #   and never the robot; failing any nameable person, the company signs. The
+    #   automatic change notice follows the same rule, being the only one of the
+    #   other four emails that leaves without a person reading it first. And the
+    #   hour was named in UTC wherever a company's working hours were left at
+    #   the `UTC` Odoo creates them with: a 10:30 visit was announced "at
+    #   15:30". Setting those working hours is the repair, since it covers all
+    #   five of this module's emails and every meeting; the reminder now says so
+    #   in the log when it falls back to UTC, instead of letting a wrong hour
+    #   leave in silence. `event_tz` cannot cover for it: core does not store
+    #   that field, it computes it from the recurrence, so a non-recurring
+    #   meeting never has one. Also from the adversarial review: a sender whose
+    #   user is ARCHIVED no longer signs (archiving a user leaves their contact
+    #   active), the declared sender can no longer be a portal user, and the
+    #   screen that carries the arming finally has a menu entry — core keeps
+    #   "Meeting Types" for developer mode, so the person meant to arm a tag
+    #   could not open it.
+    "version": "18.0.7.0.1",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -99,6 +141,8 @@
         "views/calendar_event_cancel_views.xml",
         "views/calendar_event_change_notice_views.xml",
         "views/calendar_event_views.xml",
+        "views/calendar_event_type_views.xml",
+        "data/calendar_cron.xml",
     ],
     "assets": {
         "web.assets_backend": [

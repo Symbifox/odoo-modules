@@ -64,14 +64,15 @@ class TestMiseEnPage(TransactionCase):
     def test_every_template_points_to_the_shared_layout(self):
         templates = self.env["mail.template"].search([]).filtered(
             lambda t: t.get_external_id().get(t.id, "").startswith("bf_calendar_invite."))
-        self.assertEqual(len(templates), 12)
+        self.assertEqual(len(templates), 15)
         for template in templates:
             with self.subTest(template=template.get_external_id()[template.id]):
                 self.assertEqual(template.email_layout_xmlid, LAYOUT)
 
     def test_the_bodies_carry_no_shell_and_no_shorthand(self):
         for xmlid in ("mail_body_calendar_invite", "mail_body_calendar_poke",
-                      "mail_body_calendar_cancellation", "mail_body_calendar_change"):
+                      "mail_body_calendar_cancellation", "mail_body_calendar_change",
+                      "mail_body_calendar_confirm"):
             with self.subTest(view=xmlid):
                 arch = self.env.ref("bf_calendar_invite." + xmlid).arch_db or ""
                 self.assertNotIn("#F8FAFC", arch)
@@ -82,7 +83,8 @@ class TestMiseEnPage(TransactionCase):
         """The four greetings were 16 px over a 15 px body: the first
         line of every message looked set in another font."""
         for xmlid in ("mail_body_calendar_invite", "mail_body_calendar_poke",
-                      "mail_body_calendar_cancellation", "mail_body_calendar_change"):
+                      "mail_body_calendar_cancellation", "mail_body_calendar_change",
+                      "mail_body_calendar_confirm"):
             with self.subTest(view=xmlid):
                 arch = self.env.ref("bf_calendar_invite." + xmlid).arch_db or ""
                 greeting = arch[arch.rindex("<p", 0, arch.index("Hello")):arch.index("Hello")]

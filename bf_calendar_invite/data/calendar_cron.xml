@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+          Le rappel de confirmation de la veille. Actif dès la pose, et muet :
+          il ne regarde que les rencontres dont une étiquette est armée, et
+          aucune ne l'est tant que personne ne l'arme.
+
+          Au quart d'heure, comme le cron des rappels de rendez-vous : la
+          fenêtre d'envoi est bornée (préavis, puis tolérance), donc un passage
+          manqué se rattrape tant qu'on est dans la tolérance et cesse ensuite,
+          au lieu de rejouer un « à demain » deux heures avant le but.
+        -->
+        <record id="ir_cron_bf_confirm_reminder" model="ir.cron">
+            <field name="name">Agenda : rappel de confirmation la veille</field>
+            <field name="model_id" ref="calendar.model_calendar_event"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_bf_confirm_reminders()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

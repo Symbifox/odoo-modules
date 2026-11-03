@@ -228,4 +228,57 @@
             <t t-call="bf_calendar_invite.mail_body_calendar_change"/>
         </field>
     </record>
+
+    <!--
+      Le rappel de confirmation de la veille. Trois enregistrements et un seul
+      corps, comme la relance : le premier écrit dans la langue des invités, les
+      deux autres la forcent, pour l'oeil qui relit avant de poser une étiquette.
+
+      Pas de `report_template_ids` : la rencontre n'a pas changé, et rattacher
+      un `.ics` au rappel le ferait lire comme un déplacement. Le lien de la
+      page d'invitation suffit, et c'est lui qui recueille la réponse.
+
+      ⚠️ `email_from` est écrasé à l'envoi par `_bf_send_confirm_reminder` :
+      l'expression ci-dessous retombe sur `user`, qui dans un cron est le robot.
+      Elle reste pour l'envoi fait à la main depuis le gabarit.
+    -->
+    <record id="mail_template_calendar_confirm" model="mail.template">
+        <field name="name">Calendar: Confirm tomorrow's meeting</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.bf_confirm_subject }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
+        <field name="description">The day-before reminder: the hour, what to get ready, and the link to confirm or cancel</field>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_confirm"/>
+        </field>
+    </record>
+
+    <record id="mail_template_calendar_confirm_fr" model="mail.template">
+        <field name="name">Calendar: Confirm tomorrow's meeting (Français)</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.bf_confirm_subject }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang_fr }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
+        <field name="description">The same reminder, forced to French</field>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_confirm"/>
+        </field>
+    </record>
+
+    <record id="mail_template_calendar_confirm_en" model="mail.template">
+        <field name="name">Calendar: Confirm tomorrow's meeting (English)</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.bf_confirm_subject }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang_en }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
+        <field name="description">The same reminder, forced to English</field>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_confirm"/>
+        </field>
+    </record>
+
 </odoo>

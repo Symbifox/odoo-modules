@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      L'armement et sa ligne, sur l'étiquette de rencontre.
+
+      ⚠️ Le coeur ne donne à `calendar.event.type` qu'une LISTE éditable en
+      place (`view_calendar_event_type_tree`), aucun formulaire : l'action du
+      menu « Types de rencontre » l'ouvre directement. Étendre un formulaire
+      inexistant poserait une vue que personne n'ouvre jamais, et la case
+      resterait invisible pendant qu'on la croit posée.
+
+      La ligne du rappel est `optional="show"` plutôt que masquée : c'est elle
+      qui porte la consigne, et une case armée sans sa phrase est le défaut
+      qu'on ne verrait pas.
+    -->
+    <record id="calendar_event_type_view_tree_bf_confirm" model="ir.ui.view">
+        <field name="name">calendar.event.type.list.bf.confirm</field>
+        <field name="model">calendar.event.type</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_type_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="bf_confirm_reminder" optional="show"/>
+                <field name="bf_confirm_reminder_from_id" optional="show"/>
+                <field name="bf_confirm_reminder_note" optional="show"
+                       placeholder="Please remember to have your internet access ready."/>
+            </xpath>
+        </field>
+    </record>
+    <!--
+      🔴 L'écran qui porte l'armement n'était atteignable qu'en mode
+      développeur. Le coeur réserve « Types de réunion » ET le menu
+      Configuration du calendrier au groupe `base.group_no_one` : la personne
+      qui doit armer une étiquette ne pouvait pas l'ouvrir, et la fonction
+      n'avait donc aucune commande visible. Mesuré en base avant d'écrire :
+      les deux menus du coeur portent le groupe « Fonctionnalités techniques ».
+
+      Posée sous le menu Configuration de l'application Calendrier, qui existe
+      déjà et que les usagers Paramètres voient (il porte les deux groupes), et
+      réservée à `base.group_system` parce que `calendar.event.type` est en
+      lecture seule pour `base.group_user` : offrir l'écran à qui ne peut pas
+      l'écrire ne ferait qu'une porte fermée de plus.
+
+      Sans `name` : l'entrée prend celui de l'action du coeur, déjà traduit
+      (« Types de réunion »). Un nom à nous ajouterait une chaîne à traduire
+      pour dire la même chose, et le guide nomme le libellé du coeur.
+    -->
+    <menuitem id="menu_calendar_event_type_bf"
+              parent="calendar.calendar_menu_config"
+              action="calendar.action_calendar_event_type"
+              groups="base.group_system"
+              sequence="20"/>
+
+</odoo>

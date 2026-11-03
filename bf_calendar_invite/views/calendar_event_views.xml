@@ -42,6 +42,14 @@
                 <field name="bf_change_notice_due" invisible="1"/>
                 <field name="bf_cancellation_reason" readonly="1"
                        invisible="bf_event_status != 'cancelled' or not bf_cancellation_reason"/>
+                <!--
+                  La marque discrète du rappel de la veille : elle dit que
+                  l'invité a été relancé. Le « C » du statut, lui, dit qu'il a
+                  répondu. Deux marques, deux faits.
+                -->
+                <field name="bf_confirm_reminder_armed" invisible="1"/>
+                <field name="bf_confirm_reminder_sent" readonly="1"
+                       invisible="not bf_confirm_reminder_sent"/>
             </xpath>
             <!--
               Le bandeau et le bouton, posés dans un `header` que le cœur n'a
@@ -128,6 +136,13 @@
                         domain="[('bf_event_status', '=', 'cancelled')]"/>
                 <filter name="bf_change_notice_due" string="Guests not told"
                         domain="[('bf_change_notice_due', '=', True)]"/>
+                <!-- Borné à l'avenir, comme le cron : sans ça le filtre se
+                     remplissait de rencontres passées que personne ne peut
+                     plus relancer, et la pile ne faisait que grandir. -->
+                <filter name="bf_confirm_reminder_pending" string="Confirmation reminder not sent"
+                        domain="[('bf_confirm_reminder_armed', '=', True),
+                                 ('bf_confirm_reminder_sent', '=', False),
+                                 ('start', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
                 <group expand="0" string="Group By">
                     <filter name="bf_group_status" string="Status"
                             context="{'group_by': 'bf_event_status'}"/>

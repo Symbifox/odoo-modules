@@ -269,6 +269,8 @@
     -->
     <template id="mail_body_calendar_change" name="Calendar change email body">
         <t t-set="brand" t-value="object._bf_mail_brand()"/>
+        <t t-set="change_signature" t-value="object.bf_mail_signature()"/>
+        <t t-set="change_signer_name" t-value="object.bf_mail_signer_name()"/>
         <t t-set="mail_tz" t-value="object._bf_mail_tz()"/>
         <t t-set="guest_name" t-value="object._bf_guest_name()"/>
         <t t-set="change_lines" t-value="object.bf_change_lines()"/>
@@ -335,9 +337,85 @@
 
                                             <p style="margin:20px 0 0 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
                                                 Thanks,<br/>
-                                                <t t-if="object.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.user_id.signature or ''" data-o-mail-quote="1"/></t>
-                                                <t t-else=""><strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="object.user_id.partner_id.name or user.name"/></strong></t>
+                                                <t t-if="change_signature" data-o-mail-quote-container="1"><t t-out="change_signature" data-o-mail-quote="1"/></t>
+                                                <t t-else=""><strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="change_signer_name"/></strong></t>
                                             </p>
         </div>
     </template>
+
+    <!--
+      Le rappel de confirmation de la veille.
+
+      Ce qu'il porte, et pourquoi chaque ligne y est :
+
+      * le JOUR et l'HEURE, parce que c'est la question posée : « nous avons une
+        rencontre demain à quelle heure » ;
+      * la consigne propre au type de rencontre, quand l'étiquette en porte une.
+        Pour une visite sur place, ce peut être l'accès à Internet, quand le
+        visiteur doit remplir un relevé en ligne ; servir cette phrase aux
+        invités de toutes les rencontres la rendrait absurde, d'où
+        l'étiquette ;
+      * le bouton qui confirme ou annule, seulement quand la rencontre n'a qu'un
+        invité externe : le jeton de ce lien EST son identité, et à deux l'un
+        pourrait répondre pour l'autre ;
+      * le lien de visioconférence, s'il y en a un, parce qu'un invité qui
+        cherche la salle la cherche dans le dernier message reçu.
+
+      Il ne redemande pas de confirmer quand il n'y a pas de lien pour le faire :
+      une question sans moyen d'y répondre renvoie l'invité à son clavier.
+    -->
+    <template id="mail_body_calendar_confirm" name="Calendar confirmation reminder email body">
+        <t t-set="brand" t-value="object._bf_mail_brand()"/>
+        <t t-set="mail_tz" t-value="object._bf_mail_tz()"/>
+        <t t-set="guest_name" t-value="object._bf_guest_name()"/>
+        <t t-set="join_url" t-value="object._bf_poke_join_url()"/>
+        <t t-set="when" t-value="object.bf_confirm_when()"/>
+        <t t-set="tomorrow" t-value="object.bf_confirm_tomorrow()"/>
+        <t t-set="day" t-value="object.bf_confirm_day()"/>
+        <t t-set="note" t-value="object.bf_confirm_note()"/>
+        <t t-set="confirm_url" t-value="object.bf_invitation_url"/>
+        <t t-set="signature" t-value="object.bf_confirm_signature()"/>
+        <t t-set="signer_name" t-value="object.bf_confirm_signer_name()"/>
+        <div>
+            <p style="margin:0 0 12px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
+                <t t-else="">Hello,</t>
+            </p>
+
+            <p style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                <!--
+                  Pas de `strong` au milieu de la phrase : il la découpe en
+                  fragments à traduire et il prête son gras à ce qui suit, le
+                  défaut corrigé dans la relance en 6.3.0.
+                -->
+                <t t-if="tomorrow and when">A quick reminder that we are still meeting tomorrow at <t t-out="when">11:00 AM</t>.</t>
+                <t t-elif="tomorrow">A quick reminder that we are still meeting tomorrow.</t>
+                <t t-elif="day and when">A quick reminder that we are still meeting on <t t-out="day">Thursday</t> at <t t-out="when">11:00 AM</t>.</t>
+                <t t-else="">A quick reminder about our meeting.</t>
+            </p>
+
+            <p t-if="note" style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                <t t-out="note">Please remember to have your internet access ready.</t>
+            </p>
+
+            <div t-if="confirm_url" style="text-align:center;padding:4px 0 8px 0;">
+                <a t-att-href="confirm_url" target="_blank" t-attf-style="display:inline-block;padding:10px 22px;color:#FFFFFF;text-decoration:none;background-color:{{ brand['primary'] }};border-radius:6px;font-weight:600;font-size:14px;border:1px solid {{ brand['primary'] }};">Confirm or cancel</a>
+            </div>
+
+            <p t-if="join_url" style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                Here is the link to join:
+                <a t-att-href="join_url" target="_blank" t-attf-style="color:{{ brand['primary'] }};"><t t-out="join_url"/></a>
+            </p>
+            <p t-if="not join_url and object.location" style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                We are at <strong t-attf-style="color:{{ brand['dark'] }};" t-out="object.location or ''">the office</strong>.
+            </p>
+
+            <p style="margin:20px 0 0 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                Thanks,<br/>
+                <t t-if="signature" data-o-mail-quote-container="1"><t t-out="signature" data-o-mail-quote="1"/></t>
+                <t t-else=""><strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="signer_name"/></strong></t>
+            </p>
+        </div>
+    </template>
+
 </odoo>

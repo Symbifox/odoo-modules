@@ -22,6 +22,18 @@ The SMS button opens the composer with an empty body.
   Only when the event has exactly one attendee besides the organiser — the
   token in that URL *is* the attendee's identity, so one link cannot be handed
   to a group.
+- **A day-before confirmation reminder** (7.0), for the meeting someone typed
+  into the calendar rather than booked through a link. It is armed on the
+  meeting **tag**, under Calendar > Configuration > Meeting Types, which also
+  carries the instruction line to add (an on-site visit may ask the host to have
+  internet ready) and the person the reminder is sent from. Nothing goes out
+  until a tag is armed. A cron every quarter hour sends inside a bounded window
+  — a notice period, then a tolerance for a missed pass — marks the meeting so a
+  second reminder cannot follow, and leaves a meeting backed by a booking alone.
+  The outside guest gets the day, the hour, the tag's instruction, the joining
+  link and, when they are the only outside guest, a **Confirm or cancel**
+  button; the meeting's "C" badge is set when they answer, not when the
+  reminder leaves.
 - **A branded message**: the shared mail layout
   (`bf_onboarding_base.bf_mail_layout`, replaced by `bluefox_branding`'s when
   installed) dresses it with the company's colours, logo and footer, rather than
@@ -300,7 +312,14 @@ the English source, while `format_datetime` resolves its locale among the
   `_get_mail_tz()` ends at `env.user.tz`, so an organiser writing from New
   Zealand announces 7 a.m. to a client in Montreal. The chain is `event_tz`
   (recurrences only), then the company's working hours, then the company
-  contact, then the sender.
+  contact, then the sender. 🔴 `event_tz` is **not stored** — core computes it
+  from the recurrence — so a meeting that does not recur never carries one, and
+  in practice the working hours decide. Odoo creates those working hours at
+  `UTC` and nobody edits them: left that way, a 10:30 visit was announced "at
+  15:30" to the guest. Setting the company's working hours is the repair, and it
+  covers all five of this module's emails at once; the confirmation reminder
+  writes a warning to the log when it falls back to `UTC`, so the next case is
+  found before a client finds it.
 - **The templates are rewritten by every module update.** They are ordinary
   records with no `noupdate`, which is deliberate: the source is `data/`, not
   the database. Rewording them under Settings → Technical → Email Templates is

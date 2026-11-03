@@ -26,6 +26,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_cancellation
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
 msgid "11:00 AM"
 msgstr ""
 
@@ -278,6 +279,7 @@ msgstr "Invités à prévenir"
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
 msgid "Hello"
 msgstr "Bonjour"
 
@@ -286,6 +288,7 @@ msgstr "Bonjour"
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
 msgid "Hello,"
 msgstr "Bonjour,"
 
@@ -553,6 +556,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_cancellation
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
 msgid "Thanks,<br/>"
 msgstr "Merci,<br/>"
 
@@ -669,6 +673,7 @@ msgstr "Voir l'invitation"
 
 #. module: bf_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
 msgid "We are at"
 msgstr "Nous sommes au"
 
@@ -721,6 +726,7 @@ msgstr ""
 
 #. module: bf_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
 msgid "the office"
 msgstr "bureau"
 
@@ -1042,3 +1048,174 @@ msgstr "On se voit toujours à %s?"
 #: code:addons/bf_calendar_invite/models/calendar_event.py:0
 msgid "Still on for today?"
 msgstr "On se voit toujours aujourd'hui?"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event_type__bf_confirm_reminder
+msgid "Day-before confirmation reminder"
+msgstr "Rappel de confirmation la veille"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event_type__bf_confirm_reminder
+msgid "Meetings carrying this tag get a reminder the day before, asking the guest to confirm: the hour, the line below, and the link where they confirm or cancel themselves when the meeting has a single outside guest."
+msgstr "Les rencontres portant cette étiquette reçoivent un rappel la veille, qui demande à l'invité de confirmer : l'heure, la ligne ci-dessous, et le lien où il confirme ou annule lui-même quand la rencontre n'a qu'un seul invité externe."
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event_type__bf_confirm_reminder_note
+msgid "Line to add to the reminder"
+msgstr "Ligne à ajouter au rappel"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event_type__bf_confirm_reminder_note
+msgid "Sentence of this kind of meeting, added to the reminder: what to get ready, for instance. Left empty, the reminder carries only the hour and the link."
+msgstr "Phrase propre à ce type de rencontre, ajoutée au rappel : ce qu'il faut préparer, par exemple. Laissée vide, le rappel ne porte que l'heure et le lien."
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_confirm_reminder_armed
+msgid "Confirmation reminder"
+msgstr "Rappel de confirmation"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_confirm_reminder_armed
+msgid "True when one of the meeting's tags arms the day-before reminder. Computed: it is set on the tag, not here."
+msgstr "Vrai quand une étiquette de la rencontre arme le rappel de la veille. Calculé : il se règle sur l'étiquette, pas ici."
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_confirm_reminder_sent
+msgid "Confirmation reminder sent"
+msgstr "Rappel de confirmation parti"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_confirm_reminder_sent
+msgid "When the day-before reminder went out. It is what keeps a second one from being sent, and the quiet mark saying the guest has been asked. The meeting's C badge, in contrast, is only set once the guest answers."
+msgstr "Quand le rappel de la veille est parti. C'est lui qui empêche un deuxième envoi, et la marque discrète qui dit que l'invité a été relancé. Le badge « C » de la rencontre, lui, ne se pose qu'à la réponse de l'invité."
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_confirm_subject
+msgid "Confirmation subject"
+msgstr "Sujet du rappel de confirmation"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_confirm_subject
+msgid "Subject of the confirmation reminder, in the language the message is rendered in."
+msgstr "Sujet du rappel de confirmation, dans la langue du message."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.calendar_event_view_search_inherit_bf
+msgid "Confirmation reminder not sent"
+msgstr "Rappel de confirmation non parti"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
+msgid "A quick reminder that we are still meeting tomorrow at"
+msgstr "Petit rappel : nous nous voyons toujours demain à"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
+msgid "A quick reminder that we are still meeting tomorrow."
+msgstr "Petit rappel : nous nous voyons toujours demain."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
+msgid "A quick reminder that we are still meeting on"
+msgstr "Petit rappel : nous nous voyons toujours le"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
+msgid "A quick reminder about our meeting."
+msgstr "Petit rappel au sujet de notre rencontre."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
+msgid "at"
+msgstr "à"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
+msgid "Thursday"
+msgstr "jeudi"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
+msgid "Confirm or cancel"
+msgstr "Confirmer ou annuler"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
+msgid "Here is the link to join:"
+msgstr "Voici le lien pour vous joindre :"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.calendar_event_type_view_tree_bf_confirm
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_confirm
+msgid "Please remember to have your internet access ready."
+msgstr "Pensez à préparer votre accès à Internet."
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "See you tomorrow at %s?"
+msgstr "On se voit demain à %s?"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "See you tomorrow?"
+msgstr "On se voit demain?"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "See you on %(day)s at %(hour)s?"
+msgstr "On se voit le %(day)s à %(hour)s?"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "See you on %s?"
+msgstr "On se voit le %s?"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "Can you confirm our meeting?"
+msgstr "Pouvez-vous confirmer notre rencontre?"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_confirm
+msgid "Calendar: Confirm tomorrow's meeting"
+msgstr "Agenda : confirmer la rencontre de demain"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_confirm_en
+msgid "Calendar: Confirm tomorrow's meeting (English)"
+msgstr "Agenda : confirmer la rencontre de demain (anglais)"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_confirm_fr
+msgid "Calendar: Confirm tomorrow's meeting (Français)"
+msgstr "Agenda : confirmer la rencontre de demain (français)"
+
+#. module: bf_calendar_invite
+#: model:mail.template,description:bf_calendar_invite.mail_template_calendar_confirm
+msgid "The day-before reminder: the hour, what to get ready, and the link to confirm or cancel"
+msgstr "Le rappel de la veille : l'heure, ce qu'il faut préparer, et le lien pour confirmer ou annuler"
+
+#. module: bf_calendar_invite
+#: model:mail.template,description:bf_calendar_invite.mail_template_calendar_confirm_en
+msgid "The same reminder, forced to English"
+msgstr "Le même rappel, forcé en anglais"
+
+#. module: bf_calendar_invite
+#: model:mail.template,description:bf_calendar_invite.mail_template_calendar_confirm_fr
+msgid "The same reminder, forced to French"
+msgstr "Le même rappel, forcé en français"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event_type__bf_confirm_reminder_from_id
+msgid "Reminder sent from"
+msgstr "Rappel envoyé par"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event_type__bf_confirm_reminder_from_id
+msgid "Whose address the reminder leaves from. Needed whenever the meetings come from a calendar sync, which leaves OdooBot as the organiser: without it the reminder has nobody to sign for and is not sent at all. Left empty, the organiser is used, then any internal attendee."
+msgstr "De quelle adresse le rappel part. Nécessaire dès que les rencontres viennent d'une synchronisation d'agenda, qui laisse OdooBot comme organisateur : sans lui, le rappel n'a personne pour le signer et ne part pas du tout. Laissé vide, l'organisateur sert, puis n'importe quel participant interne."

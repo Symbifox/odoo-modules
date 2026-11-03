@@ -5,3 +5,4 @@ from . import test_calendar_cancel
 from . import test_calendar_cancel_series
 from . import test_calendar_change_notice
 from . import test_mise_en_page
+from . import test_confirm_reminder
