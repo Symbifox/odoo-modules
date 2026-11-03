@@ -4,16 +4,23 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_budget 18.0.1.2.0\n"
+"Project-Id-Version: bf_budget 18.0.1.2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-27 10:39+0000\n"
-"PO-Revision-Date: 2026-10-27 10:39+0000\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2026-11-03 04:45+0000\n"
+"PO-Revision-Date: 2026-11-03 04:45+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid ""
+"\"%(name)s\" belongs to a budget that is no longer a draft: its planned "
+"amount can no longer be edited. Create a revision of the budget, or reset it"
+" to draft."
+msgstr ""
 
 #. module: bf_budget
 #. odoo-python
@@ -46,7 +53,7 @@ msgstr ""
 #. module: bf_budget
 #. odoo-python
 #: code:addons/bf_budget/models/bf_budget.py:0
-msgid "One line crossed the alert threshold (%(pct)s and at least %(floor)s)."
+msgid "%(count)s lines in alert"
 msgstr ""
 
 #. module: bf_budget
@@ -268,6 +275,11 @@ msgstr ""
 #. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_threshold_amount
 msgid "Alert floor"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__alert_unassigned
+msgid "Alert not delivered"
 msgstr ""
 
 #. module: bf_budget
@@ -964,6 +976,18 @@ msgid "Number of messages with delivery error"
 msgstr ""
 
 #. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "One line crossed the alert threshold (%(pct)s and at least %(floor)s)."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "One line in alert"
+msgstr ""
+
+#. module: bf_budget
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
 msgid "One line per budget item"
 msgstr ""
@@ -1095,6 +1119,11 @@ msgid "Prorated from the breakdown"
 msgstr ""
 
 #. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__note
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_form
 msgid "Rationale"
@@ -1126,6 +1155,11 @@ msgstr ""
 #. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_user_id
 msgid "Responsible User"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_recipient_ok
+msgid "Responsible can be alerted"
 msgstr ""
 
 #. module: bf_budget
@@ -1268,6 +1302,12 @@ msgstr ""
 
 #. module: bf_budget
 #. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid "The breakdown can only be spread on a draft budget."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
 #: code:addons/bf_budget/models/bf_budget.py:0
 msgid "The budget is no longer open."
 msgstr ""
@@ -1300,6 +1340,13 @@ msgid "The budget this one replaces."
 msgstr ""
 
 #. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__alert_unassigned
+msgid ""
+"The crossing was noted, but nobody could be told: the budget had no "
+"responsible able to read it. The responsible gets it as soon as they can."
+msgstr ""
+
+#. module: bf_budget
 #. odoo-python
 #: code:addons/bf_budget/models/bf_budget.py:0
 msgid "The fiscal year end cannot come before its start."
@@ -1318,6 +1365,14 @@ msgid ""
 msgstr ""
 
 #. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line_period.py:0
+msgid ""
+"The monthly breakdown of \"%(name)s\" can no longer be edited: its budget is"
+" no longer a draft."
+msgstr ""
+
+#. module: bf_budget
 #: model:ir.model.fields,help:bf_budget.field_bf_budget_line__overrun_accepted
 msgid "The overrun is known and accepted: the line is no longer flagged."
 msgstr ""
@@ -1325,6 +1380,13 @@ msgstr ""
 #. module: bf_budget
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
 msgid "The plan"
+msgstr ""
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__alert_recipient_ok
+msgid ""
+"The responsible can receive the alerts of this budget: an active internal "
+"user of its company, with access to budgets."
 msgstr ""
 
 #. module: bf_budget
@@ -1508,46 +1570,4 @@ msgstr ""
 #. modules: bf_budget, bf_gantt, bf_letter_writer
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr ""
-
-#. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: bf_budget
-#. odoo-python
-#: code:addons/bf_budget/models/bf_budget.py:0
-msgid "%(count)s lines in alert"
-msgstr ""
-
-#. module: bf_budget
-#. odoo-python
-#: code:addons/bf_budget/models/bf_budget.py:0
-msgid "One line in alert"
-msgstr ""
-
-#. module: bf_budget
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_recipient_ok
-msgid "Responsible can be alerted"
-msgstr ""
-
-#. module: bf_budget
-#: model:ir.model.fields,help:bf_budget.field_bf_budget__alert_recipient_ok
-msgid ""
-"The responsible can receive the alerts of this budget: an active internal "
-"user of its company, with access to budgets."
-msgstr ""
-
-#. module: bf_budget
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__alert_unassigned
-msgid "Alert not delivered"
-msgstr ""
-
-#. module: bf_budget
-#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__alert_unassigned
-msgid ""
-"The crossing was noted, but nobody could be told: the budget had no "
-"responsible able to read it. The responsible gets it as soon as they can."
 msgstr ""

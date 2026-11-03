@@ -3,10 +3,10 @@
 # the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_budget 18.0.1.2.0\n"
+"Project-Id-Version: bf_budget 18.0.1.2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-27 10:39+0000\n"
-"PO-Revision-Date: 2026-10-27 10:45+0000\n"
+"POT-Creation-Date: 2026-11-03 04:45+0000\n"
+"PO-Revision-Date: 2026-11-03 04:45+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
@@ -14,6 +14,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid ""
+"\"%(name)s\" belongs to a budget that is no longer a draft: its planned "
+"amount can no longer be edited. Create a revision of the budget, or reset it"
+" to draft."
+msgstr ""
+"« %(name)s » appartient à un budget qui n'est plus au brouillon : son "
+"montant prévu ne se modifie plus. Tirez une révision du budget, ou remettez-"
+"le au brouillon."
 
 #. module: bf_budget
 #. odoo-python
@@ -50,9 +62,8 @@ msgstr ""
 #. module: bf_budget
 #. odoo-python
 #: code:addons/bf_budget/models/bf_budget.py:0
-msgid "One line crossed the alert threshold (%(pct)s and at least %(floor)s)."
-msgstr ""
-"Une ligne a franchi le seuil d'alerte (%(pct)s et au moins %(floor)s)."
+msgid "%(count)s lines in alert"
+msgstr "%(count)s lignes en alerte"
 
 #. module: bf_budget
 #. odoo-python
@@ -301,6 +312,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_threshold_amount
 msgid "Alert floor"
 msgstr "Plancher d'alerte"
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__alert_unassigned
+msgid "Alert not delivered"
+msgstr "Alerte non remise"
 
 #. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__alert_raised_date
@@ -1018,6 +1034,19 @@ msgid "Number of messages with delivery error"
 msgstr "Nombre de messages avec des erreurs d'envoi"
 
 #. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "One line crossed the alert threshold (%(pct)s and at least %(floor)s)."
+msgstr ""
+"Une ligne a franchi le seuil d'alerte (%(pct)s et au moins %(floor)s)."
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid "One line in alert"
+msgstr "Une ligne en alerte"
+
+#. module: bf_budget
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
 msgid "One line per budget item"
 msgstr "Une ligne par poste"
@@ -1155,6 +1184,11 @@ msgid "Prorated from the breakdown"
 msgstr "Prorata de la répartition"
 
 #. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget_position__note
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_position_view_form
 msgid "Rationale"
@@ -1189,6 +1223,11 @@ msgstr "Responsable"
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_user_id
 msgid "Responsible User"
 msgstr "Utilisateur responsable"
+
+#. module: bf_budget
+#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_recipient_ok
+msgid "Responsible can be alerted"
+msgstr "Responsable en mesure de recevoir les alertes"
 
 #. module: bf_budget
 #: model:ir.model.fields.selection,name:bf_budget.selection__bf_budget__budget_type__revenue
@@ -1344,6 +1383,12 @@ msgstr "La répartition ne se refait que sur un budget au brouillon."
 
 #. module: bf_budget
 #. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid "The breakdown can only be spread on a draft budget."
+msgstr "La répartition ne se refait que sur un budget au brouillon."
+
+#. module: bf_budget
+#. odoo-python
 #: code:addons/bf_budget/models/bf_budget.py:0
 msgid "The budget is no longer open."
 msgstr "Le budget n'est plus ouvert."
@@ -1381,6 +1426,16 @@ msgid "The budget this one replaces."
 msgstr "Le budget que celui-ci remplace."
 
 #. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__alert_unassigned
+msgid ""
+"The crossing was noted, but nobody could be told: the budget had no "
+"responsible able to read it. The responsible gets it as soon as they can."
+msgstr ""
+"Le franchissement a été noté, mais personne n'a pu être prévenu : le budget "
+"n'avait pas de responsable capable de le lire. Le responsable le reçoit dès "
+"que c'est possible."
+
+#. module: bf_budget
 #. odoo-python
 #: code:addons/bf_budget/models/bf_budget.py:0
 msgid "The fiscal year end cannot come before its start."
@@ -1401,6 +1456,16 @@ msgstr ""
 "crierait au dépassement chaque mois de renouvellement."
 
 #. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line_period.py:0
+msgid ""
+"The monthly breakdown of \"%(name)s\" can no longer be edited: its budget is"
+" no longer a draft."
+msgstr ""
+"La répartition mensuelle de « %(name)s » ne se modifie plus : son budget "
+"n'est plus au brouillon."
+
+#. module: bf_budget
 #: model:ir.model.fields,help:bf_budget.field_bf_budget_line__overrun_accepted
 msgid "The overrun is known and accepted: the line is no longer flagged."
 msgstr "Le dépassement est connu et accepté : la ligne cesse d'être signalée."
@@ -1409,6 +1474,15 @@ msgstr "Le dépassement est connu et accepté : la ligne cesse d'être signalée
 #: model_terms:ir.ui.view,arch_db:bf_budget.bf_budget_view_form
 msgid "The plan"
 msgstr "Le plan"
+
+#. module: bf_budget
+#: model:ir.model.fields,help:bf_budget.field_bf_budget__alert_recipient_ok
+msgid ""
+"The responsible can receive the alerts of this budget: an active internal "
+"user of its company, with access to budgets."
+msgstr ""
+"La personne responsable peut recevoir les alertes de ce budget : une "
+"personne active, interne, de sa société, qui a accès aux budgets."
 
 #. module: bf_budget
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__amount_theoretical
@@ -1602,50 +1676,3 @@ msgstr "Recherche de message, à n'utiliser que dans les recherches"
 #: model:ir.model.fields,field_description:bf_budget.field_bf_budget__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
 msgstr "Événement du calendrier de la prochaine activité"
-
-#. module: bf_budget
-#. modules: bf_budget, bf_gantt, bf_letter_writer
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__rating_ids
-msgid "Ratings"
-msgstr "Évaluations"
-
-#. module: bf_budget
-#. odoo-python
-#: code:addons/bf_budget/models/bf_budget.py:0
-msgid "%(count)s lines in alert"
-msgstr "%(count)s lignes en alerte"
-
-#. module: bf_budget
-#. odoo-python
-#: code:addons/bf_budget/models/bf_budget.py:0
-msgid "One line in alert"
-msgstr "Une ligne en alerte"
-
-#. module: bf_budget
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget__alert_recipient_ok
-msgid "Responsible can be alerted"
-msgstr "Responsable en mesure de recevoir les alertes"
-
-#. module: bf_budget
-#: model:ir.model.fields,help:bf_budget.field_bf_budget__alert_recipient_ok
-msgid ""
-"The responsible can receive the alerts of this budget: an active internal "
-"user of its company, with access to budgets."
-msgstr ""
-"La personne responsable peut recevoir les alertes de ce budget : une "
-"personne active, interne, de sa société, qui a accès aux budgets."
-
-#. module: bf_budget
-#: model:ir.model.fields,field_description:bf_budget.field_bf_budget_line__alert_unassigned
-msgid "Alert not delivered"
-msgstr "Alerte non remise"
-
-#. module: bf_budget
-#: model:ir.model.fields,help:bf_budget.field_bf_budget_line__alert_unassigned
-msgid ""
-"The crossing was noted, but nobody could be told: the budget had no "
-"responsible able to read it. The responsible gets it as soon as they can."
-msgstr ""
-"Le franchissement a été noté, mais personne n'a pu être prévenu : le budget "
-"n'avait pas de responsable capable de le lire. Le responsable le reçoit dès "
-"que c'est possible."

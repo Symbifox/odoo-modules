@@ -123,7 +123,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_bi_timesheet` | BF BI - Professional services | 18.0.1.0.3 | BUSL-1.1 | Professional services dashboard: hours, revenue, labour cost and margin |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.4.3.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_bookmarks` | Signets partagés | 18.0.1.5.4 | BUSL-1.1 | Company, team and personal bookmarks kept in Odoo and carried to the browser by the Symbifox extension |
-| `bf_budget` | Budgets opérationnels | 18.0.1.2.0 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
+| `bf_budget` | Budgets opérationnels | 18.0.1.2.1 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.2.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
 | `bf_budget_expense` | Budgets opérationnels — notes de frais | 18.0.1.0.0 | BUSL-1.1 | Approved expense reports count as committed before they are posted |
 | `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.1.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
@@ -540,11 +540,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-<<<<<<< HEAD
 - **303 modules: BUSL-1.1.** Production use for your own internal business
-=======
-- **303 modules: BUSL-1.1.** Production use for your own internal business
->>>>>>> 344cf03a (bf_survey_certificate: three branded layouts, course name, withdrawal screen (v18.0.1.1.0))
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

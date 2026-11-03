@@ -1,5 +1,5 @@
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 
 class BfBudgetLinePeriod(models.Model):
@@ -25,6 +25,26 @@ class BfBudgetLinePeriod(models.Model):
     date_end = fields.Date(required=True)
     amount_planned = fields.Monetary(string="Planned", currency_field="currency_id")
     name = fields.Char(compute="_compute_name", store=True)
+
+    def write(self, vals):
+        """🔴 Le gel du plan descend jusqu'à la période.
+
+        La vue met déjà la ventilation en lecture seule hors brouillon, mais un
+        `write` par RPC passait à côté : la courbe mensuelle d'un budget ouvert
+        se réécrivait sans trace, et c'est elle qui porte le théorique, donc les
+        alertes. Un budget qu'on retouche en douce ne mesure plus rien.
+        """
+        if "amount_planned" in vals:
+            locked = self.filtered(lambda p: p.budget_id.state != "draft")
+            if locked:
+                raise UserError(
+                    _(
+                        "The monthly breakdown of \"%(name)s\" can no longer "
+                        "be edited: its budget is no longer a draft.",
+                        name=locked[0].line_id.display_name,
+                    )
+                )
+        return super().write(vals)
 
     @api.depends("date_start")
     def _compute_name(self):

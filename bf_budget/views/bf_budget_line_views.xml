@@ -44,7 +44,10 @@
                                    options="{'no_create': True}"/>
                         </group>
                         <group>
-                            <field name="amount_planned"/>
+                            <!-- ⚠️ readonly hors brouillon : retaper le MÊME total
+                                 relance l'inverse, qui relisse la ventilation. C'est
+                                 par cet écran qu'on arrive depuis une alerte. -->
+                            <field name="amount_planned" readonly="state != 'draft'"/>
                             <field name="amount_theoretical"/>
                             <field name="theoretical_basis"/>
                             <field name="amount_actual"/>

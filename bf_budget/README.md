@@ -114,8 +114,41 @@ Labels and messages are written in English in the source; the French ships in `i
 ## Alerts that reach someone (v18.0.1.2.0)
 
 A responsible per budget, told once when a line crosses the threshold (a chatter note and an activity), re-armed when the line stops being flagged. Default thresholds are set per instance under Settings. See *Alerts* above.
+
+## A revision keeps its breakdown, and an open plan stays frozen (v18.0.1.2.1)
+
+Found in production on 2026-10-31, on the first real alert of a live budget:
+"Create a revision" copied the monthly breakdown and then overwrote it. A one-off
+expense booked in May ended up spread over twelve months in the revision, and the
+line was flagged although nothing had changed in the books.
+
+`amount_planned` is a **stored, writable computed** field (it has an inverse, so
+that typing a total spreads it). Odoo only forces `copy=False` on a computed
+field that is readonly, so the copy carried the total as well as the periods, and
+the inverse re-spread them on create. The field is now `copy=False`: a copy takes
+the breakdown, and the total follows from it. A line with no period at all keeps
+its total, through `copy_data`.
+
+Closing that door showed two others, both now shut:
+
+* the freeze only held on `bf.budget.write`. The standalone line form, the one
+  you open from an alert, let you retype `amount_planned` on an **open** budget,
+  and retyping the same total was enough to re-spread the breakdown. Writing the
+  plan is now refused server-side as well, in `bf.budget.line.write` and
+  `bf.budget.line.period.write`, and `action_spread_evenly` refuses outside a
+  draft like `action_regenerate_periods` already did. Follow-up stays open on an
+  open budget: accepted overrun, its reason, the alert memory, followers.
+  ⚠️ The guard covers `write` only, not `create`, `unlink` or `copy`: a budget
+  manager can still duplicate or delete a line of an open budget, or move a draft
+  line into one, and change its planned total that way. Closing those paths needs
+  its own design and is scheduled; do not read this section as a complete freeze.
+* a revision inherited `overrun_accepted` and its reason. The module already
+  clears the crossing memory on copy so that a new crossing alerts again, and it
+  was copying what **prevents** alerting: a decision taken against the old plan
+  silenced the lines of the new one. Both fields are now `copy=False`.
+
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-10-27 for this one. In the meantime, use in production for
+its Change Date: 2030-11-03 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

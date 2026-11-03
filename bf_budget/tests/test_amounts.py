@@ -155,8 +155,9 @@ class TestBfBudgetAmounts(BfBudgetCommon):
         """Un pourcentage seul hurle sur les petits postes, un montant seul reste muet."""
         budget = self._make_budget(planned=1200.0, state="open")
         line = budget.line_ids
-        for period in line.period_ids:
-            period.amount_planned = 100.0
+        # La ventilation vaut déjà 100 $ par mois : la création répartit le
+        # total. ⚠️ La réécrire ici serait refusée depuis 18.0.1.2.1, et à
+        # raison : la ventilation d'un budget OUVERT ne se retouche plus.
         # Dérive de 60 $ : bien au-delà de 10 %, mais sous le plancher de 250 $.
         self._post_bill(self.account_software, line.amount_theoretical + 60.0)
         line.invalidate_recordset()
@@ -237,8 +238,9 @@ class TestBfBudgetAmounts(BfBudgetCommon):
         """
         budget = self._make_budget(planned=1200.0, state="open")
         line = budget.line_ids
-        for period in line.period_ids:
-            period.amount_planned = 100.0
+        # La ventilation vaut déjà 100 $ par mois : la création répartit le
+        # total. ⚠️ La réécrire ici serait refusée depuis 18.0.1.2.1, et à
+        # raison : la ventilation d'un budget OUVERT ne se retouche plus.
         self._post_bill(self.account_software, line.amount_theoretical + 900.0)
         line.invalidate_recordset()
         self.assertTrue(line.is_alert)

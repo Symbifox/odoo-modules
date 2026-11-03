@@ -1,5 +1,8 @@
 {
     "name": "Budgets opérationnels",
+    # 18.0.1.2.1: une révision garde la ventilation mensuelle de ses lignes.
+    #   `amount_planned` est un calculé stocké modifiable, donc copié par
+    #   défaut : la copie écrasait les périodes recopiées en les relissant.
     # 18.0.1.2.0: les alertes. Un responsable par budget, prévenu une fois au
     #   franchissement du seuil (note et activité), réarmé quand la ligne cesse
     #   d'être signalée. Seuils par défaut réglables par instance.
@@ -7,7 +10,7 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.2.1",
     "category": "Accounting/Accounting",
     "summary": "Budget d'exploitation par poste du grand livre, comparé au réel et à l'engagé",
     "author": "Les services de consultation Blue Fox, Inc.",

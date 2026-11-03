@@ -2,6 +2,15 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
+# Ce qu'une ligne ne laisse plus toucher dès que son budget est sorti du
+# brouillon. Le reste (dépassement assumé, motif, mémoire d'alerte) est du
+# suivi, et doit rester modifiable sur un budget ouvert.
+PLAN_FIELDS = {
+    "amount_planned", "position_id", "source", "analytic_account_ids",
+    "budget_id", "period_ids",
+}
+
+
 class BfBudgetLine(models.Model):
     """Une ligne de budget : un poste, un montant prévu, et quatre montants calculés.
 
@@ -71,6 +80,10 @@ class BfBudgetLine(models.Model):
         inverse="_inverse_amount_planned",
         store=True,
         readonly=False,
+        # 🔴 Sans ce copy=False, une révision LISSE la ventilation de toutes ses
+        # lignes. Voir `copy_data` plus bas : le total se déduit des périodes,
+        # et les périodes, elles, se copient.
+        copy=False,
         currency_field="currency_id",
     )
     period_ids = fields.One2many(
@@ -124,10 +137,15 @@ class BfBudgetLine(models.Model):
 
     overrun_accepted = fields.Boolean(
         string="Accepted overrun",
+        # 🔴 Pas copié, pour la même raison qu'`alert_raised_date` juste en
+        # dessous : une révision est un NOUVEAU plan. Un dépassement assumé
+        # contre l'ancien éteindrait les lignes du nouveau, et une révision à
+        # 1 200 $ prévus pour 12 000 $ engagés ne dirait rien à personne.
+        copy=False,
         help="The overrun is known and accepted: the line is no longer "
              "flagged.",
     )
-    overrun_reason = fields.Text(string="Overrun reason")
+    overrun_reason = fields.Text(string="Overrun reason", copy=False)
     alert_raised_date = fields.Date(
         string="Alert raised on",
         readonly=True,
@@ -282,8 +300,41 @@ class BfBudgetLine(models.Model):
                     line._spread_evenly(vals["amount_planned"])
         return lines
 
+    def copy_data(self, default=None):
+        """Une copie reprend la VENTILATION ; le total s'en déduit.
+
+        🔴 LE DÉFAUT QUE CECI FERME (trouvé en production le 2026-10-31, sur
+        la première vraie alerte d'un budget vivant). `amount_planned` est
+        un calculé STOCKÉ et modifiable : Odoo ne force `copy=False` que sur un
+        calculé en lecture seule (`fields.py`, « not copied unless stored and
+        explicitly not readonly »). La copie portait donc le total ET les
+        périodes ; à la création, l'inverse du total rappelait `_spread_evenly`
+        et écrasait les périodes pourtant recopiées. « Créer une révision »
+        lissait ainsi la ventilation de TOUTES ses lignes : une dépense
+        ponctuelle de mai se retrouvait étalée sur douze mois, et la ligne
+        passait en alerte dans la révision sans que rien n'ait changé.
+
+        D'où `copy=False` sur le champ. Reste le cas d'une ligne sans période
+        (budget sans dates, donnée ancienne) : elle porte son total et rien
+        d'autre, et le perdrait. On le remet ici, explicitement.
+        """
+        vals_list = super().copy_data(default=default)
+        for line, vals in zip(self, vals_list):
+            if vals is None:
+                continue
+            if not line.period_ids and "amount_planned" not in vals:
+                vals["amount_planned"] = line.amount_planned
+        return vals_list
+
     def action_spread_evenly(self):
+        """⚠️ Même garde que `action_regenerate_periods` : la méthode est
+        PUBLIQUE, donc appelable par RPC, et elle relisse la ventilation. Le
+        bouton se cache hors brouillon, ce qui ne protège que l'écran."""
         for line in self:
+            if line.state != "draft":
+                raise UserError(
+                    _("The breakdown can only be spread on a draft budget.")
+                )
             line._spread_evenly(line.amount_planned)
         return True
 
@@ -297,6 +348,34 @@ class BfBudgetLine(models.Model):
             line._generate_periods()
             line._spread_evenly(total)
         return True
+
+    def write(self, vals):
+        """🔴 Le gel du plan vaut aussi sur la LIGNE, pas seulement sur le budget.
+
+        `bf.budget.write` refuse de toucher `line_ids` sur un budget ouvert,
+        mais rien ne gardait un `write` posé directement sur la ligne : ni par
+        RPC, ni par un import, ni par l'écran autonome de la ligne, qui laissait
+        retaper le total. Et retaper le MÊME total suffit : l'inverse se
+        redéclenche et relisse la ventilation, c'est-à-dire exactement le défaut
+        de production du 2026-10-31.
+
+        Le suivi, lui, reste ouvert sur un budget ouvert : dépassement assumé et
+        son motif, mémoire d'alerte, abonnés. Geler le plan n'est pas geler la
+        conversation autour du plan.
+        """
+        touched = PLAN_FIELDS & set(vals)
+        if touched:
+            locked = self.filtered(lambda line: line.state != "draft")
+            if locked:
+                raise UserError(
+                    _(
+                        "\"%(name)s\" belongs to a budget that is no longer a "
+                        "draft: its planned amount can no longer be edited. "
+                        "Create a revision of the budget, or reset it to draft.",
+                        name=locked[0].display_name,
+                    )
+                )
+        return super().write(vals)
 
     # ------------------------------------------------------------------
     # Les quatre montants
