@@ -1,9 +1,9 @@
 # Calendar Ergonomics
 
 Small comforts for every calendar view of Odoo (meetings, tasks, bookings,
-time off...): a refresh button, reload on return to the tab, keyboard
-shortcuts, a remembered side panel, *Duplicate* in the event popover and
-working hours shaded in the grid.
+time off...): a refresh button that highlights what changed, reload on return
+to the tab, keyboard shortcuts, a remembered side panel, *Duplicate* in the
+event popover and working hours shaded in the grid.
 
 ## Why
 
@@ -15,6 +15,38 @@ a colleague) stay invisible until the whole page is reloaded.
 
 - **⟳ Refresh**, next to *Today*: reloads the events, nothing else (date,
   scale, filters and side panel stay as they are).
+- **What changed is highlighted**, and counted on the ⟳ button. After a
+  refresh, every event that appeared, moved or had one of the fields the view
+  reads changed (title, guests, location, colour, answer...) is outlined, with
+  a dot before its title — in the year scale, where events are coloured blocks
+  without a title, the outline alone. Nothing is stored anywhere: the marks go
+  away when the page is left, and they are never written to the browser or the
+  server.
+
+  Only a refresh compares: the ⟳ (`Alt+R`) and the automatic reload when the
+  tab or window comes back. A reload that follows a save, a date change, a
+  scale change or a filter change marks nothing — your own edits are not
+  highlighted, and a different period is not a change.
+
+  Two preferences, in the menu next to the ⟳ and in *Preferences* (so the
+  choice follows you from one device to the next, and an administrator may set
+  a default for someone else):
+  - **the outline**: an outline and a dot, a brief pulse then the outline, or
+    no highlight at all;
+  - **when the marks go away**: at the next refresh (each refresh then shows
+    only what changed since the previous one), when the page is left (the
+    marks pile up for as long as the displayed window does not change — moving
+    to another week, scale or filter starts over), or on click, event by
+    event.
+    On click still replaces the marks at the next refresh, like the first
+    choice: the click is a way to tidy up as you read, not a list of unread
+    items. It clears one mark in the day, week and month scales; the year scale
+    has no event popover, so marks there wait for the next refresh.
+
+  Events that *disappeared* (deleted, or moved out of the filters) are not
+  reported: their slot is gone from the grid. The count only names marks the
+  grid holds — in the month scale, one of them may be folded under a day's
+  *+N more*, and shows when that day is opened.
 - **Reload on return**: the calendar reloads when its tab or window comes back
   to the foreground (at most once every 3 seconds).
 - **Keyboard shortcuts**, also from the search bar:
@@ -84,6 +116,7 @@ a colleague) stay invisible until the whole page is reloaded.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 18.0.1.1.0 | 2026-11-03 | The refresh highlights what changed since the last one (new, moved, or any field the view reads), counted on the button, nothing stored; two per-user preferences (outline, pulse or none; marks cleared at the next refresh, on leaving the page, or on click) in the ⟳ menu and in *Preferences* |
 | 18.0.1.0.0 | 2026-10-31 | Refresh button, reload on return, keyboard shortcuts, remembered side panel, Duplicate (reviewed fields on meetings, never the video call, even in the location or the description, nor the organiser or fields the user may not read; the user is invited to the copy), shaded working hours |
 
 ## License

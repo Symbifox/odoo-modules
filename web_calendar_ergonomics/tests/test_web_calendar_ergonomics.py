@@ -7,6 +7,7 @@ from odoo.exceptions import AccessError, UserError
 from odoo.models import MAGIC_COLUMNS
 from odoo.tests import TransactionCase, tagged
 
+from odoo.addons.web_calendar_ergonomics.models.ir_http import IrHttp as NotreIrHttp
 from odoo.addons.web_calendar_ergonomics.models.web_calendar_ergonomics import (
     CHAMPS_EVENEMENT_EXCLUS, CHAMPS_EVENEMENT_RECOPIES, CHAMPS_JAMAIS, CHAMPS_JAMAIS_PAR_NOM,
     texte_sans_liens_visio,
@@ -416,3 +417,84 @@ class TestDuplicate(TransactionCase):
     def test_modele_ou_fiche_inconnus(self):
         self.assertEqual(self.defauts("modele.inexistant", 1), {})
         self.assertEqual(self.defauts(res_id=10**9), {})
+
+
+@tagged("post_install", "-at_install")
+class TestPreferencesSurlignage(TransactionCase):
+    """Les deux préférences de surlignage : des valeurs par défaut,
+    écrites par leur propriétaire et par personne d'autre, et servies dans la
+    session pour que la vue les lise sans RPC."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        Users = cls.env["res.users"].with_context(no_reset_password=True)
+        cls.employe = Users.create({
+            "name": "Employé Surlignage", "login": "essai.surlignage",
+            "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
+        })
+        cls.autre = Users.create({
+            "name": "Autre Surlignage", "login": "essai.surlignage.autre",
+            "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
+        })
+
+    def test_valeurs_par_defaut(self):
+        self.assertEqual(self.employe.bf_calendar_highlight, "ring")
+        self.assertEqual(self.employe.bf_calendar_highlight_clear, "refresh")
+
+    def test_champs_propres_declares(self):
+        usager = self.env["res.users"].browse(self.employe.id)
+        for champ in ("bf_calendar_highlight", "bf_calendar_highlight_clear"):
+            self.assertIn(champ, usager.SELF_READABLE_FIELDS)
+            self.assertIn(champ, usager.SELF_WRITEABLE_FIELDS)
+
+    def test_chacun_ecrit_la_sienne(self):
+        """Le menu du calendrier écrit par là, sans droit d'administrateur."""
+        moi = self.employe.with_user(self.employe)
+        moi.write({"bf_calendar_highlight": "pulse"})
+        moi.write({"bf_calendar_highlight_clear": "click"})
+        self.assertEqual(self.employe.bf_calendar_highlight, "pulse")
+        self.assertEqual(self.employe.bf_calendar_highlight_clear, "click")
+
+    def test_jamais_celle_d_un_collegue(self):
+        with self.assertRaises(AccessError):
+            self.autre.with_user(self.employe).write({"bf_calendar_highlight": "none"})
+
+    def test_valeur_hors_liste_refusee(self):
+        with self.assertRaises(ValueError):
+            self.employe.with_user(self.employe).write({"bf_calendar_highlight": "clignote"})
+
+    def _session_info(self, usager, dessous):
+        """Notre `session_info` seul, sur un `super()` bouchonné.
+
+        Appeler `env["ir.http"].session_info()` ne marche pas en essai : une
+        douzaine de modules sont AU-DESSUS du nôtre dans le MRO et le premier
+        qui s'exécute exige une vraie requête HTTP. On appelle donc notre
+        méthode directement (son `super()` suit le MRO à partir de nous) et on
+        remplace la première classe EN DESSOUS qui la définit."""
+        modele = self.env["ir.http"].with_user(usager)
+        mro = type(modele).__mro__
+        suivante = next(c for c in mro[mro.index(NotreIrHttp) + 1:] if "session_info" in c.__dict__)
+        with patch.object(suivante, "session_info", dessous):
+            return NotreIrHttp.session_info(modele)
+
+    def test_session_porte_les_deux(self):
+        self.employe.bf_calendar_highlight = "pulse"
+        self.employe.bf_calendar_highlight_clear = "stay"
+        info = self._session_info(self.employe, lambda soi: {"uid": soi.env.uid})
+        self.assertEqual(info["bf_calendar_highlight"], "pulse")
+        self.assertEqual(info["bf_calendar_highlight_clear"], "stay")
+
+    def test_session_vide_laissee_vide(self):
+        """Une session non ouverte (`session_info` qui rend faux) reste telle
+        quelle : rien à décorer, et surtout rien qui plante."""
+        self.assertIsNone(self._session_info(self.employe, lambda soi: None))
+
+    def test_ecran_des_preferences_s_ouvre(self):
+        """Un champ de vue qu'un employé ne peut pas lire bloque l'ouverture de
+        tout l'écran : les deux préférences doivent y être, lisibles par leur
+        propriétaire."""
+        vue = self.env.ref("base.view_users_form_simple_modif")
+        arch = self.env["res.users"].with_user(self.employe).get_view(vue.id, "form")["arch"]
+        self.assertIn("bf_calendar_highlight", arch)
+        self.assertIn("bf_calendar_highlight_clear", arch)

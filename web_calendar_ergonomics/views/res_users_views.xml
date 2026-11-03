@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<odoo>
+
+    <!-- Écran des préférences : chacun règle son propre surlignage (les deux
+         champs sont auto-écrivables, cf. models/res_users.py). -->
+    <record id="view_users_form_simple_modif_calendar_highlight" model="ir.ui.view">
+        <field name="name">res.users.preferences.calendar.highlight</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <field name="tz" position="after">
+                <field name="bf_calendar_highlight"/>
+                <field name="bf_calendar_highlight_clear"
+                       invisible="bf_calendar_highlight == 'none'"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Fiche complète : un administrateur peut poser le défaut d'un collègue. -->
+    <record id="view_users_form_calendar_highlight" model="ir.ui.view">
+        <field name="name">res.users.form.calendar.highlight</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <field name="tz" position="after">
+                <field name="bf_calendar_highlight"/>
+                <field name="bf_calendar_highlight_clear"
+                       invisible="bf_calendar_highlight == 'none'"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

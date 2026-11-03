@@ -3,7 +3,9 @@
 <templates xml:space="preserve">
 
     <!-- ⟳ Actualiser, juste après « Aujourd'hui » ; Alt+T sur « Aujourd'hui ».
-         Ancré sur la CLASSE du bouton, jamais sur son texte (traduit). -->
+         Ancré sur la CLASSE du bouton, jamais sur son texte (traduit).
+         Le compte des changements est posé SUR le ⟳, et le menu qui
+         suit règle la forme du surlignage et son effacement. -->
     <t t-inherit="web.CalendarController" t-inherit-mode="extension">
         <xpath expr="//button[hasclass('o_calendar_button_today')]" position="attributes">
             <attribute name="data-hotkey">t</attribute>
@@ -18,8 +20,78 @@
                 data-hotkey="r"
                 t-att-disabled="bfRefresh.loading"
                 t-on-click.stop="() => this.bfReload()"
-            ><i class="fa fa-refresh" t-att-class="{ 'fa-spin': bfRefresh.loading }"/></button>
+            ><i class="fa fa-refresh" t-att-class="{ 'fa-spin': bfRefresh.loading }"/><t
+                    t-component="bfCompteur" etat="model.bfEtat" mode="'pastille'"/></button>
+            <t t-component="bfCompteur" etat="model.bfEtat" mode="'annonce'"/>
+            <t t-component="bfDropdown" menuClass="'o_bf_highlight_menu'">
+                <button
+                    type="button"
+                    class="btn o_bf_highlight_toggler d-print-none order-2 order-lg-0 px-1"
+                    t-att-class="env.isSmall ? 'btn-sm btn-light' : 'btn-secondary'"
+                    title="Highlight settings"
+                    aria-label="Highlight settings"
+                ><i class="fa fa-caret-down"/></button>
+                <t t-set-slot="content">
+                    <div class="dropdown-header">Highlight changes</div>
+                    <t t-component="bfDropdownItem"
+                        class="'o_menu_item o_bf_highlight_ring'"
+                        closingMode="'none'"
+                        onSelected="() => this.bfSetPref('style', 'ring')"
+                    ><i class="fa fa-fw me-1" t-att-class="bfPrefs.style === 'ring' ? 'fa-check' : ''"/>Outline and dot</t>
+                    <t t-component="bfDropdownItem"
+                        class="'o_menu_item o_bf_highlight_pulse'"
+                        closingMode="'none'"
+                        onSelected="() => this.bfSetPref('style', 'pulse')"
+                    ><i class="fa fa-fw me-1" t-att-class="bfPrefs.style === 'pulse' ? 'fa-check' : ''"/>Brief pulse, then outline</t>
+                    <t t-component="bfDropdownItem"
+                        class="'o_menu_item o_bf_highlight_none'"
+                        closingMode="'none'"
+                        onSelected="() => this.bfSetPref('style', 'none')"
+                    ><i class="fa fa-fw me-1" t-att-class="bfPrefs.style === 'none' ? 'fa-check' : ''"/>No highlight</t>
+                    <div t-if="bfPrefs.style !== 'none'" role="separator" class="dropdown-divider"/>
+                    <div t-if="bfPrefs.style !== 'none'" class="dropdown-header">Marks go away</div>
+                    <t t-component="bfDropdownItem"
+                        t-if="bfPrefs.style !== 'none'"
+                        class="'o_menu_item o_bf_clear_refresh'"
+                        closingMode="'none'"
+                        onSelected="() => this.bfSetPref('clear', 'refresh')"
+                    ><i class="fa fa-fw me-1" t-att-class="bfPrefs.clear === 'refresh' ? 'fa-check' : ''"/>At the next refresh</t>
+                    <t t-component="bfDropdownItem"
+                        t-if="bfPrefs.style !== 'none'"
+                        class="'o_menu_item o_bf_clear_stay'"
+                        closingMode="'none'"
+                        onSelected="() => this.bfSetPref('clear', 'stay')"
+                    ><i class="fa fa-fw me-1" t-att-class="bfPrefs.clear === 'stay' ? 'fa-check' : ''"/>When the page is left</t>
+                    <t t-component="bfDropdownItem"
+                        t-if="bfPrefs.style !== 'none'"
+                        class="'o_menu_item o_bf_clear_click'"
+                        closingMode="'none'"
+                        onSelected="() => this.bfSetPref('clear', 'click')"
+                    ><i class="fa fa-fw me-1" t-att-class="bfPrefs.clear === 'click' ? 'fa-check' : ''"/>On click, event by event</t>
+                </t>
+            </t>
         </xpath>
+    </t>
+
+    <!-- Le compte des changements, sur le ⟳ : un composant feuille, pour qu'en
+         changer ne redessine pas la grille (la bulle du mode « au clic »
+         resterait ouverte). -->
+    <t t-name="web_calendar_ergonomics.CompteurChangements">
+        <!-- Deux rendus du même compte : la pastille visible, décorative, dans
+             le bouton ; et la région vivante, toujours présente et vide tant
+             qu'il n'y a rien, hors du bouton (un `aria-label` de bouton masque
+             ce qu'il contient, et une région insérée avec son texte n'est pas
+             annoncée). -->
+        <span t-if="props.mode === 'pastille' and prefs.style !== 'none' and etat.count"
+              class="badge rounded-pill o_bf_change_count ms-1"
+              aria-hidden="true"
+              t-att-title="etiquette"
+              t-esc="etat.count"/>
+        <span t-elif="props.mode !== 'pastille'"
+              role="status"
+              aria-live="polite"
+              class="visually-hidden"
+              t-esc="prefs.style !== 'none' and etat.count ? etiquette : ''"/>
     </t>
 
 </templates>

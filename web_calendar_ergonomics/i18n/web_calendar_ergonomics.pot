@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-01 02:30+0000\n"
-"PO-Revision-Date: 2026-11-01 02:30+0000\n"
+"POT-Creation-Date: 2026-11-03 03:53+0000\n"
+"PO-Revision-Date: 2026-11-03 03:53+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,33 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: web_calendar_ergonomics
+#. odoo-javascript
+#: code:addons/web_calendar_ergonomics/static/src/calendar_controller.xml:0
+#: model:ir.model.fields.selection,name:web_calendar_ergonomics.selection__res_users__bf_calendar_highlight_clear__refresh
+msgid "At the next refresh"
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#. odoo-javascript
+#: code:addons/web_calendar_ergonomics/static/src/calendar_controller.xml:0
+#: model:ir.model.fields.selection,name:web_calendar_ergonomics.selection__res_users__bf_calendar_highlight__pulse
+msgid "Brief pulse, then outline"
+msgstr ""
+
+#. module: web_calendar_ergonomics
 #: model:ir.model,name:web_calendar_ergonomics.model_web_calendar_ergonomics
 msgid "Calendar view helpers"
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#. odoo-javascript
+#: code:addons/web_calendar_ergonomics/static/src/calendar_ergonomics.js:0
+msgid "Changes since the last refresh: %s"
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#: model:ir.model.fields,field_description:web_calendar_ergonomics.field_res_users__bf_calendar_highlight_clear
+msgid "Clear calendar marks"
 msgstr ""
 
 #. module: web_calendar_ergonomics
@@ -27,9 +52,65 @@ msgid "Duplicate"
 msgstr ""
 
 #. module: web_calendar_ergonomics
+#: model:ir.model,name:web_calendar_ergonomics.model_ir_http
+msgid "HTTP Routing"
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#: model:ir.model.fields,field_description:web_calendar_ergonomics.field_res_users__bf_calendar_highlight
+msgid "Highlight calendar changes"
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#. odoo-javascript
+#: code:addons/web_calendar_ergonomics/static/src/calendar_controller.xml:0
+msgid "Highlight changes"
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#. odoo-javascript
+#: code:addons/web_calendar_ergonomics/static/src/calendar_controller.xml:0
+msgid "Highlight settings"
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#: model:ir.model.fields,help:web_calendar_ergonomics.field_res_users__bf_calendar_highlight
+msgid ""
+"How the calendar marks what changed since the last refresh. The marks are "
+"never stored: they go away when the page is left."
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#. odoo-javascript
+#: code:addons/web_calendar_ergonomics/static/src/calendar_controller.xml:0
+msgid "Marks go away"
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#. odoo-javascript
+#: code:addons/web_calendar_ergonomics/static/src/calendar_controller.xml:0
+#: model:ir.model.fields.selection,name:web_calendar_ergonomics.selection__res_users__bf_calendar_highlight__none
+msgid "No highlight"
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#. odoo-javascript
+#: code:addons/web_calendar_ergonomics/static/src/calendar_controller.xml:0
+#: model:ir.model.fields.selection,name:web_calendar_ergonomics.selection__res_users__bf_calendar_highlight_clear__click
+msgid "On click, event by event"
+msgstr ""
+
+#. module: web_calendar_ergonomics
 #. odoo-python
 #: code:addons/web_calendar_ergonomics/models/web_calendar_ergonomics.py:0
 msgid "Only internal users can duplicate from the calendar."
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#. odoo-javascript
+#: code:addons/web_calendar_ergonomics/static/src/calendar_controller.xml:0
+#: model:ir.model.fields.selection,name:web_calendar_ergonomics.selection__res_users__bf_calendar_highlight__ring
+msgid "Outline and dot"
 msgstr ""
 
 #. module: web_calendar_ergonomics
@@ -48,4 +129,24 @@ msgstr ""
 #. odoo-python
 #: code:addons/web_calendar_ergonomics/models/web_calendar_ergonomics.py:0
 msgid "These records cannot be duplicated from the calendar."
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#: model:ir.model,name:web_calendar_ergonomics.model_res_users
+msgid "User"
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#: model:ir.model.fields,help:web_calendar_ergonomics.field_res_users__bf_calendar_highlight_clear
+msgid ""
+"When the marks go away. Each refresh replaces them by what changed since "
+"that refresh, they can instead pile up for as long as the page is open, or a"
+" click on an event can clear its own mark."
+msgstr ""
+
+#. module: web_calendar_ergonomics
+#. odoo-javascript
+#: code:addons/web_calendar_ergonomics/static/src/calendar_controller.xml:0
+#: model:ir.model.fields.selection,name:web_calendar_ergonomics.selection__res_users__bf_calendar_highlight_clear__stay
+msgid "When the page is left"
 msgstr ""

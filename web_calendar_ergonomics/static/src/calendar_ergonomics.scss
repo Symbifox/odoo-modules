@@ -6,3 +6,59 @@
 .o_calendar_renderer .fc.o_bf_work_hours {
     --fc-non-business-color: rgba(108, 117, 125, 0.10);
 }
+
+// ---------------------------------------------------------------------------
+// Surlignage des changements depuis le dernier rafraîchissement
+// ---------------------------------------------------------------------------
+// Le contour est tiré en `currentColor` : les événements portent déjà une
+// couleur qui veut dire quelque chose (étiquette, participant, type de plage),
+// et une couleur fixe serait invisible sur l'une d'elles. Le texte de
+// l'événement, lui, contraste avec son fond par construction — en mode sombre
+// comme en mode clair. Tiretée : rien d'autre ne l'est dans la grille, donc
+// aucune confusion avec la sélection ou le survol d'Odoo.
+.o_calendar_renderer .fc .o_bf_event_changed {
+    outline: 2px dashed currentColor;
+    // Au bord, pas à l'intérieur : l'écran qui estompe les événements passés
+    // (`.o_past_event::after`) est tiré par-dessus la boîte et laverait un
+    // contour rentré de 2 px.
+    outline-offset: 0;
+    border-radius: 3px;
+
+    // La pastille, devant le titre. Les deux classes : le mois et la semaine
+    // ne rendent pas l'événement par le même gabarit (`o_event_title`
+    // d'Odoo, `fc-event-title` de FullCalendar). Jamais sur un événement que
+    // le mois dessine DÉJÀ avec un point (`o_event_dot`) : deux points à la
+    // file se liraient comme une coquille.
+    &:not(.o_event_dot) .o_event_title::before,
+    &:not(.o_event_dot) .fc-event-title::before {
+        content: "• ";
+        font-weight: 700;
+    }
+}
+
+// Pulsation brève (préférence « Brief pulse, then outline ») : trois battements
+// puis le contour reste. Rien ne bouge pour qui demande moins d'animation.
+@keyframes o-bf-event-pulse {
+    0%, 100% { outline-offset: -2px; }
+    50% { outline-offset: 2px; }
+}
+
+.o_calendar_renderer .fc .o_bf_event_pulse {
+    animation: o-bf-event-pulse 0.6s ease-in-out 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_calendar_renderer .fc .o_bf_event_pulse {
+        animation: none;
+    }
+}
+
+// Le compte, sur le ⟳.
+.o_calendar_button_refresh .o_bf_change_count {
+    background-color: var(--bs-primary, var(--primary, #714B67));
+    color: var(--bs-white, #fff);
+    font-size: 0.7em;
+    vertical-align: super;
+    padding: 0.2em 0.45em;
+}
+

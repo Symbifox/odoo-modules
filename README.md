@@ -498,7 +498,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `privacy_framework_uk` | Cadre de confidentialité — UK GDPR (Royaume-Uni) | 18.0.1.0.1 | BUSL-1.1 | UK GDPR / DPA 2018 regulatory-framework pack for the Privacy module |
 | `privacy_incident` | Registre des incidents de confidentialité (Loi 25) | 18.0.1.1.1 | LGPL-3 | Confidentiality-incident register (Law 25): declaration, risk assessment, measures, the eight register items, and providers' notices with their fingerprint |
 | `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.13.5.1 | BUSL-1.1 | Project knowledge base, policies, and documentation |
-| `web_calendar_ergonomics` | Calendar Ergonomics | 18.0.1.0.0 | LGPL-3 | Refresh button, reload on return to the tab, keyboard shortcuts, remembered side panel, Duplicate in the event popover and working hours shaded in every calendar view. |
+| `web_calendar_ergonomics` | Calendar Ergonomics | 18.0.1.1.0 | LGPL-3 | Refresh button that highlights what changed since the last refresh, reload on return to the tab, keyboard shortcuts, remembered side panel, Duplicate in the event popover and working hours shaded in every calendar view. |
 <!-- MODULES_TABLE:END -->
 
 ## Installation
