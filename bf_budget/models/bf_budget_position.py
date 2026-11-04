@@ -58,6 +58,37 @@ class BfBudgetPosition(models.Model):
         for position in self:
             position.account_count = len(position.account_ids)
 
+    @api.constrains("company_id")
+    def _check_lines_company(self):
+        """Changer la société d'un poste ne rejoue pas la contrainte des LIGNES.
+
+        `bf.budget.line._check_position_company` ne se déclenche que sur
+        `position_id` et `budget_id` : reparenter le POSTE laissait des lignes
+        étrangères vivantes, qui liraient zéro pour toujours — le chemin
+        inverse du défaut que la contrainte des lignes ferme.
+        """
+        for position in self:
+            # ⚠️ En sudo : les règles d'enregistrement par société cacheraient
+            # à la contrainte une ligne d'une société hors du périmètre de
+            # l'auteur du write — et c'est justement elle qu'on cherche.
+            foreign = self.env["bf.budget.line"].sudo().search(
+                [
+                    ("position_id", "=", position.id),
+                    ("company_id", "!=", position.company_id.id),
+                ],
+                limit=1,
+            )
+            if foreign:
+                raise ValidationError(
+                    _(
+                        "\"%(position)s\" is used by the budget "
+                        "\"%(budget)s\", which belongs to another company: "
+                        "move the budget line first.",
+                        position=position.display_name,
+                        budget=foreign.budget_id.display_name,
+                    )
+                )
+
     @api.constrains("account_ids", "company_id")
     def _check_accounts_company(self):
         """Un poste ne peut pas pointer un compte d'une autre société.

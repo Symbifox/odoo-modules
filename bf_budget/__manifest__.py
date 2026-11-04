@@ -1,5 +1,18 @@
 {
     "name": "Budgets opérationnels",
+    # 18.0.1.3.0: le gel du plan côté serveur, fermé de bout en bout. Une
+    #   ligne ne se crée, ne se duplique, ne se supprime ni ne se déplace plus
+    #   vers un budget sorti du brouillon ; une période ne se crée, ne se
+    #   supprime, ne se redate ni ne se reparente plus ; glisser `state` dans
+    #   le même write n'exempte la garde que vers le brouillon, et seulement
+    #   depuis les états qu'action_reset_draft accepte. Les gardes de create
+    #   s'évaluent sur les enregistrements créés (les défauts du contexte ne
+    #   les sautent pas). Redater un brouillon transporte sa ventilation sur
+    #   le nouvel exercice (note au fil si elle est relissée ; redater et
+    #   ouvrir dans le même write est refusé). Un poste d'une autre société
+    #   que le budget est refusé, quel que soit le sens du geste. Limites
+    #   assumées au README : les comptes d'un poste restent modifiables, et
+    #   `state` nu n'est pas gardé (tracé au fil).
     # 18.0.1.2.1: une révision garde la ventilation mensuelle de ses lignes.
     #   `amount_planned` est un calculé stocké modifiable, donc copié par
     #   défaut : la copie écrasait les périodes recopiées en les relissant.
@@ -10,7 +23,7 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.2.1",
+    "version": "18.0.1.3.0",
     "category": "Accounting/Accounting",
     "summary": "Budget d'exploitation par poste du grand livre, comparé au réel et à l'engagé",
     "author": "Les services de consultation Blue Fox, Inc.",

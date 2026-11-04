@@ -4,14 +4,22 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_budget 18.0.1.2.1\n"
+"Project-Id-Version: bf_budget 18.0.1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 04:45+0000\n"
-"PO-Revision-Date: 2026-11-03 04:45+0000\n"
+"POT-Creation-Date: 2026-11-03 10:03+0000\n"
+"PO-Revision-Date: 2026-11-03 10:03+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid ""
+"\"%(name)s\" belongs to a budget that is no longer a draft: it can no longer"
+" be deleted. Create a revision of the budget, or reset it to draft."
+msgstr ""
 
 #. module: bf_budget
 #. odoo-python
@@ -34,6 +42,30 @@ msgstr ""
 msgid ""
 "\"%(name)s\" is no longer a draft: its plan can no longer be edited. Create "
 "a revision from it, or reset it to draft."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid ""
+"\"%(name)s\" is no longer a draft: no line can be added to it. Create a "
+"revision of the budget, or reset it to draft."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid ""
+"\"%(name)s\": redate the draft first, then open it. Changing the dates and "
+"the state in one write would skip the breakdown transport."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget_position.py:0
+msgid ""
+"\"%(position)s\" is used by the budget \"%(budget)s\", which belongs to "
+"another company: move the budget line first."
 msgstr ""
 
 #. module: bf_budget
@@ -1322,6 +1354,15 @@ msgstr ""
 
 #. module: bf_budget
 #. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+#: code:addons/bf_budget/models/bf_budget_line.py:0
+msgid ""
+"The budget item \"%(position)s\" belongs to another company than the budget "
+"\"%(budget)s\": it would never match any entry."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
 #: code:addons/bf_budget/models/bf_budget_line.py:0
 msgid "The budget item \"%(position)s\" does not fit a budget of type %(kind)s."
 msgstr ""
@@ -1350,6 +1391,15 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_budget/models/bf_budget.py:0
 msgid "The fiscal year end cannot come before its start."
+msgstr ""
+
+#. module: bf_budget
+#. odoo-python
+#: code:addons/bf_budget/models/bf_budget.py:0
+msgid ""
+"The fiscal year was redated to %(new)s month(s): the monthly breakdown of "
+"%(count)s line(s) could not be carried over and was spread evenly again. Re-"
+"enter it if it was hand-tuned."
 msgstr ""
 
 #. module: bf_budget

@@ -123,7 +123,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_bi_timesheet` | BF BI - Professional services | 18.0.1.0.3 | BUSL-1.1 | Professional services dashboard: hours, revenue, labour cost and margin |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.4.3.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_bookmarks` | Signets partagés | 18.0.1.5.4 | BUSL-1.1 | Company, team and personal bookmarks kept in Odoo and carried to the browser by the Symbifox extension |
-| `bf_budget` | Budgets opérationnels | 18.0.1.2.1 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
+| `bf_budget` | Budgets opérationnels | 18.0.1.3.0 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.2.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
 | `bf_budget_dashboard` | Budgets opérationnels — tuile tableau de bord | 18.0.1.0.0 | BUSL-1.1 | Home-screen tile: open-budget consumption, flagged lines and variance against the theoretical |
 | `bf_budget_digest` | Budgets opérationnels — digest quotidien | 18.0.1.0.0 | BUSL-1.1 | Daily digest section: the flagged lines of the open budgets the recipient is responsible for |

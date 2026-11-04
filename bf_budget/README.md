@@ -138,17 +138,62 @@ Closing that door showed two others, both now shut:
   `bf.budget.line.period.write`, and `action_spread_evenly` refuses outside a
   draft like `action_regenerate_periods` already did. Follow-up stays open on an
   open budget: accepted overrun, its reason, the alert memory, followers.
-  ⚠️ The guard covers `write` only, not `create`, `unlink` or `copy`: a budget
-  manager can still duplicate or delete a line of an open budget, or move a draft
-  line into one, and change its planned total that way. Closing those paths needs
-  its own design and is scheduled; do not read this section as a complete freeze.
+  ⚠️ In 18.0.1.2.1 the guard covered `write` only; v18.0.1.3.0 below closes
+  `create`, `unlink`, `copy` and the remaining paths.
 * a revision inherited `overrun_accepted` and its reason. The module already
   clears the crossing memory on copy so that a new crossing alerts again, and it
   was copying what **prevents** alerting: a decision taken against the old plan
   silenced the lines of the new one. Both fields are now `copy=False`.
 
+## The freeze is now complete server-side (v18.0.1.3.0)
+
+Every remaining path that rewrote the plan of a budget past the draft stage is
+refused server-side, whatever the entry point (form, RPC, import, context
+defaults):
+
+* a line can no longer be **created**, **duplicated** (one click on the line
+  form) or **deleted** on such a budget, nor **moved** from a draft into one;
+* a monthly period can no longer be created, deleted, **re-dated** (the dates
+  carry the theoretical, hence the alert) or re-parented onto such a budget;
+* sliding `state` into the same `write` no longer skips the budget guard. The
+  only combined write that passes is the one that **resets to draft while
+  editing** — and only from the states `action_reset_draft` itself accepts
+  (open, cancelled): a closed or revised budget does not come back that way;
+* the `create` guards are evaluated on the **created records**, after the ORM
+  has injected context defaults — a guard that reads the raw values never sees
+  `default_line_id` / `default_budget_id` come in;
+* a budget item (`bf.budget.position`) of **another company** than the budget
+  is refused on the line, and re-companying a position used by living lines is
+  refused on the position.
+
+**Re-dating a draft regenerates its breakdown.** A revision re-dated to the
+next fiscal year used to keep the OLD year's periods: the total stayed right
+while the curve was a year off. Now, when a draft budget's dates change, each
+line's periods are regenerated; the breakdown is carried over **by month
+position** when the number of months is unchanged (a May expense stays in the
+fifth month), and spread evenly otherwise — in which case the budget **says so
+in its chatter**, because a silent re-spread is a plan that lies with a correct
+total. ⚠️ Change both dates in a **single** `write` (what the form does): two
+successive writes go through an intermediate grid and lose the hand-tuned
+seasonality — the chatter note is the trace when that happens. Changing the
+dates and leaving the draft state in the **same** write is refused: redate
+first, then open.
+
+**Known limits, by design:**
+
+* the freeze covers the budget's own plan. The referential it points at is
+  shared and stays alive — editing the **accounts of a budget item** changes
+  what every budget reading it measures, including open ones. Freezing
+  positions would block legitimate chart-of-accounts evolution; review
+  position changes through ordinary access control instead;
+* `state` itself is not a frozen field: a bare `write({"state": "draft"})`
+  (RPC, import) resets a closed or revised budget without going through
+  `action_reset_draft`, and the plan becomes editable again in a second call.
+  The transition is tracked in the chatter, which is the trace; guarding the
+  state machine itself is a different undertaking than freezing the plan.
+
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-11-03 for this one. In the meantime, use in production for
+its Change Date: 2030-11-04 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

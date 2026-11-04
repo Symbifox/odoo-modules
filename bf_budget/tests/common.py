@@ -18,7 +18,14 @@ class BfBudgetCommon(TransactionCase):
         cls.company = cls.env["res.company"].create({"name": "Société budget"})
         cls.env.user.write({"company_ids": [Command.link(cls.company.id)]})
         cls.env = cls.env(
-            context=dict(cls.env.context, allowed_company_ids=[cls.company.id])
+            # lang : les essais affirment les MESSAGES des gardes, dans leur
+            # langue source. Sans elle, une base dont l'admin parle une autre
+            # langue (un clone de production) les sert traduits.
+            context=dict(
+                cls.env.context,
+                allowed_company_ids=[cls.company.id],
+                lang="en_US",
+            )
         )
         cls.currency = cls.company.currency_id
 

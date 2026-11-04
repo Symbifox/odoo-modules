@@ -259,6 +259,31 @@ class BfBudget(models.Model):
                     _("The fiscal year end cannot come before its start.")
                 )
 
+    @api.constrains("company_id")
+    def _check_lines_position_company(self):
+        """Re-societer le BUDGET est le troisième sens du même défaut.
+
+        La contrainte des lignes ne s'éprouve que sur `position_id` et
+        `budget_id`, et le recalcul du `company_id` lié des lignes ne la
+        rejoue pas : un brouillon re-societé gardait ses lignes au poste de
+        l'ancienne société, à zéro pour toujours.
+        """
+        for budget in self:
+            foreign = budget.line_ids.filtered(
+                lambda line: line.position_id.company_id
+                and line.position_id.company_id != budget.company_id
+            )
+            if foreign:
+                raise ValidationError(
+                    _(
+                        "The budget item \"%(position)s\" belongs to another "
+                        "company than the budget \"%(budget)s\": it would "
+                        "never match any entry.",
+                        position=foreign[0].position_id.display_name,
+                        budget=budget.display_name,
+                    )
+                )
+
     # ------------------------------------------------------------------
     # Le gel du plan
     # ------------------------------------------------------------------
@@ -267,10 +292,25 @@ class BfBudget(models.Model):
 
         Le refus porte sur les champs du PLAN, pas sur le suivi : on doit pouvoir
         commenter, suivre et clore un budget ouvert sans le rouvrir.
+
+        🔴 L'exemption porte sur l'état RÉSULTANT, pas sur la présence de la
+        clé. « `state` est dans vals » exemptait tout : glisser
+        `{"state": "open"}` dans le même `write` effaçait les lignes d'un
+        budget ouvert sans trace. Le seul écrit combiné légitime est celui qui
+        REMET le budget au brouillon en corrigeant — l'équivalent des deux
+        gestes permis l'un après l'autre — et SEULEMENT depuis les états
+        qu'`action_reset_draft` accepte : un budget révisé ou clos ne revient
+        pas au brouillon par l'action, il ne doit pas y revenir par un `write`
+        qui glisse `state="draft"` (sinon un budget clos
+        se redatait, et l'original d'une révision ressuscitait pendant que sa
+        révision vit).
         """
         touched = FROZEN_FIELDS & set(vals)
-        if touched and "state" not in vals:
-            locked = self.filtered(lambda b: b.state in ("open", "revised", "closed"))
+        if touched:
+            if vals.get("state") == "draft":
+                locked = self.filtered(lambda b: b.state in ("revised", "closed"))
+            else:
+                locked = self.filtered(lambda b: b.state in ("open", "revised", "closed"))
             if locked:
                 raise UserError(
                     _(
@@ -280,6 +320,24 @@ class BfBudget(models.Model):
                         name=locked[0].display_name,
                     )
                 )
+        # 🔴 Redater ET sortir du brouillon dans le MÊME write : le redatage se
+        # jouerait sur un budget déjà sorti du brouillon, où la régénération
+        # des périodes est justement refusée. Les deux gestes, dans l'ordre —
+        # redater d'abord, ouvrir ensuite (sinon ce
+        # write-là laissait un budget OUVERT daté d'un exercice dont la grille
+        # mensuelle portait encore l'ancien).
+        if ({"date_start", "date_end"} & set(vals)
+                and vals.get("state") not in (None, "draft")):
+            drafts = self.filtered(lambda b: b.state == "draft")
+            if drafts:
+                raise UserError(
+                    _(
+                        "\"%(name)s\": redate the draft first, then open it. "
+                        "Changing the dates and the state in one write would "
+                        "skip the breakdown transport.",
+                        name=drafts[0].display_name,
+                    )
+                )
         # Réécrire le même responsable (édition de masse, import, script) ne
         # change rien : sans cette comparaison, les dates s'effaceraient et la
         # passe suivante redirait note et activité.
@@ -287,7 +345,64 @@ class BfBudget(models.Model):
         res = super().write(vals)
         if before:
             self.filtered(lambda b: b.user_id != before[b.id])._on_responsible_changed()
+        if {"date_start", "date_end"} & set(vals):
+            self.filtered(lambda b: b.state == "draft")._rebase_periods()
         return res
+
+    def _rebase_periods(self):
+        """Redater un brouillon transporte sa ventilation sur le nouvel exercice.
+
+        🔴 Le geste réel : tirer une révision, puis la REDATER vers l'exercice
+        suivant. Les périodes copiées gardaient les dates de l'ANCIEN exercice :
+        le total restait juste, la courbe était décalée d'un an, et rien ne le
+        signalait — le théorique comparait mai 2027 au plan de mai 2026.
+
+        Même nombre de mois (le cas réel : même exercice, un an plus tard) : la
+        ventilation se transporte par POSITION — la saisonnalité est toute
+        l'information qu'elle porte, la dépense de mai reste au cinquième mois.
+        Nombre différent : aucune correspondance honnête n'existe, le total de
+        chaque ligne se répartit également, comme le ferait sa saisie neuve —
+        et le budget le DIT à son fil, parce qu'un relissage silencieux est un
+        plan qui ment avec un total juste.
+
+        ⚠️ Les DEUX dates se redatent dans le MÊME `write` (ce que fait le
+        formulaire). En deux writes, le passage intermédiaire change le nombre
+        de mois, relisse, et le second write transporte le LISSÉ : la
+        saisonnalité est perdue — le fil du budget porte alors la note de
+        relissage, c'est elle la trace.
+        """
+        Line = self.env["bf.budget.line"]
+        for budget in self:
+            if not budget.date_start or not budget.date_end:
+                continue
+            spans = Line._month_spans(budget.date_start, budget.date_end)
+            relissees = Line
+            for line in budget.line_ids:
+                olds = line.period_ids.sorted("date_start")
+                if not olds:
+                    continue
+                if [(p.date_start, p.date_end) for p in olds] == spans:
+                    continue  # la grille colle déjà aux dates : rien à refaire
+                amounts = [p.amount_planned for p in olds]
+                total = sum(amounts)
+                line._generate_periods()
+                news = line.period_ids.sorted("date_start")
+                if len(news) == len(amounts):
+                    for period, amount in zip(news, amounts):
+                        period.amount_planned = amount
+                else:
+                    line._spread_evenly(total)
+                    relissees |= line
+            if relissees:
+                budget.message_post(
+                    body=_(
+                        "The fiscal year was redated to %(new)s month(s): the "
+                        "monthly breakdown of %(count)s line(s) could not be "
+                        "carried over and was spread evenly again. Re-enter "
+                        "it if it was hand-tuned.",
+                        new=len(spans), count=len(relissees),
+                    )
+                )
 
     def unlink(self):
         opened = self.filtered(lambda b: b.state != "draft")

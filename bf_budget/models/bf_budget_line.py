@@ -256,10 +256,26 @@ class BfBudgetLine(models.Model):
             running += share
         periods[-1].amount_planned = currency.round(total - running)
 
-    def _generate_periods(self):
-        """Une période par mois de l'exercice, à zéro."""
+    @staticmethod
+    def _month_spans(start, end):
+        """Les (début, fin) d'une période par mois entre deux dates.
+
+        Partagée entre la génération des périodes et le redatage du budget, qui
+        doit comparer la grille EXISTANTE à celle que les nouvelles dates
+        donneraient : deux copies de cette boucle finiraient par diverger.
+        """
         from dateutil.relativedelta import relativedelta
 
+        spans = []
+        cursor = start.replace(day=1)
+        while cursor <= end:
+            period_end = cursor + relativedelta(months=1, days=-1)
+            spans.append((max(cursor, start), min(period_end, end)))
+            cursor += relativedelta(months=1)
+        return spans
+
+    def _generate_periods(self):
+        """Une période par mois de l'exercice, à zéro."""
         Period = self.env["bf.budget.line.period"]
         for line in self:
             line.period_ids.unlink()
@@ -267,22 +283,17 @@ class BfBudgetLine(models.Model):
             end = line.budget_id.date_end
             if not start or not end:
                 continue
-            cursor = start.replace(day=1)
-            vals_list = []
-            sequence = 0
-            while cursor <= end:
-                period_end = cursor + relativedelta(months=1, days=-1)
-                vals_list.append(
-                    {
-                        "line_id": line.id,
-                        "sequence": sequence,
-                        "date_start": max(cursor, start),
-                        "date_end": min(period_end, end),
-                        "amount_planned": 0.0,
-                    }
-                )
-                sequence += 1
-                cursor += relativedelta(months=1)
+            vals_list = [
+                {
+                    "line_id": line.id,
+                    "sequence": sequence,
+                    "date_start": span_start,
+                    "date_end": span_end,
+                    "amount_planned": 0.0,
+                }
+                for sequence, (span_start, span_end)
+                in enumerate(self._month_spans(start, end))
+            ]
             Period.create(vals_list)
 
     @api.model_create_multi
@@ -291,8 +302,53 @@ class BfBudgetLine(models.Model):
 
         Un champ calculé stocké doublé d'un `default` ne joue jamais son calcul à
         la création : le défaut gagne, en silence.
+
+        🔴 Et une ligne ne NAÎT pas sur un budget sorti du brouillon : c'est le
+        chemin de « Dupliquer » sur la fiche d'une ligne (la copie vise le même
+        budget) comme celui d'un `create` par RPC ou par import. Le prévu
+        doublait d'un clic, sans un mot au fil. La révision, elle, copie ses
+        lignes sous un budget NEUF au brouillon : elle passe.
+
+        🔴 La garde a DEUX étages, et il les faut tous les deux :
+        - AVANT `super()`, sur les `budget_id` explicites de `vals_list` —
+          sinon `amount_planned`, qui a un inverse, déclenche `_spread_evenly`
+          PENDANT `super().create()` et c'est la garde des PÉRIODES qui parle,
+          avec son message à elle ;
+        - APRÈS `super()`, sur les enregistrements — l'ORM n'injecte les
+          défauts du contexte (`default_budget_id`) que dans `super()`, et un
+          étage amont seul ne voit RIEN passer par
+          `with_context(default_budget_id=…).create({...})`. Lever ici annule
+          l'insertion avec la transaction.
         """
+        def _refuser(budget):
+            # 🔴 `env._()`, jamais le `_` de module ici : celui-ci devine la
+            # langue en INSPECTANT LA FRAME appelante, et dans une fonction
+            # locale sans `self` ni `env` visibles il ne trouve rien — le
+            # refus sortait dans la langue source (« no translation language
+            # detected » au journal). Le repli sur la langue de la personne
+            # couvre les appels sans langue au contexte (cron, shell).
+            env = self.env
+            if not env.context.get("lang"):
+                env = env(context=dict(env.context, lang=env.user.lang))
+            raise UserError(
+                env._(
+                    "\"%(name)s\" is no longer a draft: no line can be added "
+                    "to it. Create a revision of the budget, or reset it to "
+                    "draft.",
+                    name=budget.display_name,
+                )
+            )
+
+        budget_ids = {v["budget_id"] for v in vals_list if v.get("budget_id")}
+        locked = self.env["bf.budget"].browse(budget_ids).filtered(
+            lambda b: b.state != "draft"
+        )
+        if locked:
+            _refuser(locked[0])
         lines = super().create(vals_list)
+        locked = lines.budget_id.filtered(lambda b: b.state != "draft")
+        if locked:
+            _refuser(locked[0])
         for line, vals in zip(lines, vals_list):
             if not line.period_ids:
                 line._generate_periods()
@@ -375,7 +431,63 @@ class BfBudgetLine(models.Model):
                         name=locked[0].display_name,
                     )
                 )
+        # 🔴 L'état de la ligne SOURCE ne suffit pas : déplacer une ligne d'un
+        # brouillon vers un budget OUVERT réécrivait le plan du budget de
+        # DESTINATION sans toucher aucune ligne verrouillée.
+        if vals.get("budget_id"):
+            dest = self.env["bf.budget"].browse(vals["budget_id"])
+            if dest.state != "draft":
+                raise UserError(
+                    _(
+                        "\"%(name)s\" is no longer a draft: no line can be "
+                        "added to it. Create a revision of the budget, or "
+                        "reset it to draft.",
+                        name=dest.display_name,
+                    )
+                )
         return super().write(vals)
+
+    def unlink(self):
+        """Une ligne d'un budget sorti du brouillon ne se supprime pas.
+
+        Effacer une ligne, c'est effacer un morceau du plan : le budget ne
+        mesure plus ce contre quoi le réel a été comparé. ⚠️ La suppression
+        d'un budget BROUILLON cascade sur ses lignes sans rappeler `unlink`
+        (`ondelete=cascade`) : cette garde ne vise que le geste direct.
+        """
+        locked = self.filtered(lambda line: line.state != "draft")
+        if locked:
+            raise UserError(
+                _(
+                    "\"%(name)s\" belongs to a budget that is no longer a "
+                    "draft: it can no longer be deleted. Create a revision "
+                    "of the budget, or reset it to draft.",
+                    name=locked[0].display_name,
+                )
+            )
+        return super().unlink()
+
+    @api.constrains("position_id", "budget_id")
+    def _check_position_company(self):
+        """Un poste d'une AUTRE société lit zéro pour toujours.
+
+        Le domaine du champ ne protège que l'écran : un import ou un RPC posait
+        un poste étranger, et la ligne mesurait 0,00 $ sans que rien ne
+        paraisse anormal — ses comptes appartiennent à une société que le
+        budget ne lit pas.
+        """
+        for line in self:
+            position_company = line.position_id.company_id
+            if position_company and position_company != line.budget_id.company_id:
+                raise ValidationError(
+                    _(
+                        "The budget item \"%(position)s\" belongs to another "
+                        "company than the budget \"%(budget)s\": it would "
+                        "never match any entry.",
+                        position=line.position_id.display_name,
+                        budget=line.budget_id.display_name,
+                    )
+                )
 
     # ------------------------------------------------------------------
     # Les quatre montants

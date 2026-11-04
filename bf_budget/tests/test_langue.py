@@ -73,6 +73,41 @@ class TestLangueDesGardes(BfBudgetCommon):
             ),
         )
 
+    def test_les_refus_du_gel_complet_parlent_francais(self):
+        """Les gardes du lot « gel » (18.0.1.3.0), même règle : un refus
+        qu'un usager voit sort dans sa langue."""
+        ligne = self.budget.line_ids.with_context(lang="fr_CA")
+        self.assertIn("aucune ligne ne peut s'y", self._refus(ligne.copy))
+        self.assertIn(
+            "ne se modifie plus",
+            self._refus(lambda: ligne.period_ids.sorted("date_start")[0]
+                        .with_context(lang="fr_CA").unlink()),
+        )
+        self.assertIn("ne se supprime plus", self._refus(ligne.unlink))
+
+    def test_le_refus_du_poste_etranger_parle_francais(self):
+        """La contrainte de société est une ValidationError, pas une
+        UserError : elle a son propre chemin de langue, à éprouver aussi."""
+        from odoo.exceptions import ValidationError
+
+        autre = self.env["res.company"].create({"name": "Société langue"})
+        compte = self.env["account.account"].with_company(autre).create({
+            "code": "609997",
+            "name": "Charges langue",
+            "account_type": "expense",
+        })
+        poste = self.env["bf.budget.position"].create({
+            "name": "Poste langue", "code": "LNG", "budget_type": "expense",
+            "company_id": autre.id, "account_ids": [(6, 0, compte.ids)],
+        })
+        # ⚠️ Sur un budget OUVERT, c'est la garde du PLAN qui parlerait avant
+        # la contrainte : le chemin de la contrainte passe par un brouillon.
+        brouillon = self._make_budget(planned=300.0, state="draft")
+        ligne = brouillon.line_ids.with_context(lang="fr_CA")
+        with self.assertRaises(ValidationError) as capture:
+            ligne.write({"position_id": poste.id})
+        self.assertIn("autre société", str(capture.exception))
+
     def test_les_memes_refus_lus_en_anglais_restent_la_source(self):
         ligne = self.budget.line_ids.with_context(lang="en_US")
         self.assertIn(

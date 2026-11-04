@@ -8,3 +8,4 @@ from . import test_menu_hook
 from . import test_langue
 from . import test_alerts
 from . import test_revision
+from . import test_gel
