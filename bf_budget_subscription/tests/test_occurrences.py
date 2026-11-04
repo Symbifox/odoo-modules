@@ -19,7 +19,8 @@ class TestOccurrences(BfBudgetSubscriptionCommon):
 
     def test_each_cycle_gives_its_own_count(self):
         for cycle, expected in (
-            ("monthly", 12), ("quarterly", 4), ("semi_annual", 2),
+            # Aux 4 semaines : 1er janvier + 13 × 28 jours = 31 décembre, donc 14.
+            ("four_weekly", 14), ("monthly", 12), ("quarterly", 4), ("semi_annual", 2),
             ("annual", 1), ("biennial", 1), ("triennial", 1),
         ):
             sub = self._make_subscription(cycle, 100.0)
@@ -27,6 +28,14 @@ class TestOccurrences(BfBudgetSubscriptionCommon):
                 len(sub._budget_occurrences(self.date_start, self.date_end)), expected,
                 "cycle %s" % cycle,
             )
+
+    def test_four_weekly_steps_by_28_days(self):
+        """Un forfait aux 4 semaines : une échéance tous les 28 jours, pas tous les mois."""
+        sub = self._make_subscription("four_weekly", 40.0)
+        self.assertTrue(sub.budget_has_calendar)
+        dates = [d for d, _amount in sub._budget_occurrences(self.date_start, self.date_end)]
+        self.assertEqual(dates[0], self.date_start)
+        self.assertEqual({(b - a).days for a, b in zip(dates, dates[1:])}, {28})
 
     def test_on_demand_has_no_calendar_at_all(self):
         """🔴 Un abonnement à la demande dépense sans échéancier.

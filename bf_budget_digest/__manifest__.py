@@ -1,7 +1,11 @@
 {
     "name": "Budgets opérationnels — digest quotidien",
     "summary": "Section « Budget » : les lignes signalées des budgets dont on répond",
-    "version": "18.0.1.0.0",
+    # 18.0.1.0.1: essais seulement. Le décor de test_digest_section pose la
+    #   langue de ses destinataires (en_US, les libellés source) : sur un clone
+    #   de production fr_CA, la section sortait traduite et quatre essais
+    #   tombaient — la leçon du lot « gel », côté digest. Rien au code servi.
+    "version": "18.0.1.0.1",
     "category": "Accounting/Accounting",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

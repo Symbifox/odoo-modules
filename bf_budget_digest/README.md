@@ -77,4 +77,4 @@ odoo -d <database> -u bf_budget_digest --test-enable \
 Business Source License 1.1 — see [LICENSE](LICENSE). You may run it for your
 own internal business operations; providing it to third parties as a hosted,
 managed or resold service requires a written agreement. This version converts
-to LGPL-3.0-or-later on 2030-11-02.
+to LGPL-3.0-or-later on 2030-11-04.

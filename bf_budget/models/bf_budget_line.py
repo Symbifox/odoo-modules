@@ -591,15 +591,50 @@ class BfBudgetLine(models.Model):
         self.ensure_one()
         return 0.0
 
-    def _get_calendar_theoretical(self):
-        """Le théorique tiré d'un calendrier d'engagements datés, ou None.
+    def _calendar_commitment_components(self):
+        """Les calendriers d'engagements datés de la ligne : [(dû à ce jour, total de la période)].
 
-        Le socle n'en connaît aucun et rend None : le théorique retombe alors sur
-        la répartition mensuelle saisie, ce qui est déjà bien plus fidèle qu'un
-        prorata du temps écoulé sur l'exercice entier.
+        Point d'extension du socle : il rend une liste vide. Chaque satellite y
+        AJOUTE son couple (renouvellements d'abonnement, bons de commande datés)
+        au lieu de calculer son propre théorique : c'est le socle qui combine,
+        parce que le reliquat au prorata se mesure contre le plan NON COUVERT
+        par l'ensemble des calendriers. Deux satellites qui chacun prorateraient
+        « le plan moins MON total » compteraient deux fois la part de l'autre.
         """
         self.ensure_one()
-        return None
+        return []
+
+    def _get_calendar_theoretical(self):
+        """« Ce qui était dû à ce jour », quand la ligne a des engagements datés.
+
+        Sans aucun calendrier, rend None : le théorique retombe alors sur la
+        répartition mensuelle saisie, ce qui est déjà bien plus fidèle qu'un
+        prorata du temps écoulé sur l'exercice entier. La part du plan qu'aucun
+        calendrier ne couvre reste au prorata : un poste à moitié adossé à des
+        engagements datés ne doit pas voir l'autre moitié disparaître du
+        théorique.
+        """
+        self.ensure_one()
+        components = self._calendar_commitment_components()
+        if not components:
+            return None
+        today = fields.Date.context_today(self)
+        due = sum(component[0] for component in components)
+        covered = sum(component[1] for component in components)
+        uncovered_plan = max(0.0, self.amount_planned - covered)
+        remainder = 0.0
+        if uncovered_plan and self.amount_planned:
+            # 🔴 Le reliquat suit la VENTILATION saisie, jamais un prorata
+            # linéaire de l'exercice : un poste ventilé sur décembre, plus un
+            # petit engagement daté de mars, lirait sinon la moitié du plan
+            # comme « due » en juin — et masquerait une vraie dérive (ou
+            # crierait sur un poste ventilé en début d'année). C'est le piège
+            # que `theoretical_basis` dénonce, il ne doit pas rentrer par la
+            # porte du calendrier.
+            remainder = (
+                self._prorata_theoretical(today) * uncovered_plan / self.amount_planned
+            )
+        return due + remainder
 
     def _prorata_theoretical(self, today):
         """Le théorique tiré de la répartition mensuelle."""
@@ -622,12 +657,18 @@ class BfBudgetLine(models.Model):
     @api.depends(
         "amount_planned",
         "period_ids.amount_planned",
+        "period_ids.date_start",
+        "period_ids.date_end",
         "position_id.account_ids",
         "analytic_account_ids",
         "source",
+        "budget_type",
+        "state",
         "budget_id.date_start",
         "budget_id.date_end",
         "budget_id.company_id",
+        "budget_id.alert_threshold_pct",
+        "budget_id.alert_threshold_amount",
         "overrun_accepted",
     )
     def _compute_amounts(self):

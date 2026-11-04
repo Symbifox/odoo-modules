@@ -78,14 +78,52 @@ class TestSubscriptionAmounts(BfBudgetSubscriptionCommon):
 
     def test_the_part_of_the_plan_no_engagement_covers_stays_prorata(self):
         """Un poste où les abonnements ne pèsent que la moitié du budget ne doit
-        pas voir l'autre moitié disparaître du théorique."""
-        sub = self._make_subscription("annual", 600.0)
-        budget, line = self._line_with(sub, planned=1200.0)
+        pas voir l'autre moitié disparaître du théorique.
+
+        ⚠️ Fenêtre posée AUTOUR d'aujourd'hui (pas l'exercice civil) : le
+        31 décembre, le prorata d'un exercice civil vaut le plan ENTIER et la
+        borne stricte « < 1200 » tombait ce jour-là. Avec un premier mois
+        entièrement passé et un dernier entièrement à venir, le prorata est
+        strictement entre 0 et le plan quel que soit le jour d'exécution.
+        """
+        today = fields.Date.context_today(self.env.user)
+        sub = self._make_subscription(
+            "one_time", 600.0, start=today - relativedelta(days=20)
+        )
+        sub.budget_position_id = self.position_software
+        budget = self.env["bf.budget"].create(
+            {
+                "name": "Fenêtre autour d'aujourd'hui",
+                "company_id": self.company.id,
+                "date_start": today - relativedelta(days=99),
+                "date_end": today + relativedelta(days=100),
+            }
+        )
+        line = self.env["bf.budget.line"].create(
+            {
+                "budget_id": budget.id,
+                "position_id": self.position_software.id,
+                "amount_planned": 1200.0,
+            }
+        )
         budget.action_open()
         line.invalidate_recordset()
         self.assertEqual(line.theoretical_basis, "calendar")
         self.assertGreater(line.amount_theoretical, 600.0)
         self.assertLess(line.amount_theoretical, 1200.0)
+
+    def test_a_calendar_that_contributes_nothing_does_not_flip_the_basis(self):
+        """Un ponctuel d'un exercice PASSÉ, encore lié au poste, déclarait un
+        calendrier vide (0, 0) : la base passait en « calendar » et le reliquat
+        remplaçait la ventilation, sans qu'aucune échéance ne date le poste."""
+        sub = self._make_subscription(
+            "one_time", 80.0, start=self.date_start - relativedelta(days=30)
+        )
+        budget, line = self._line_with(sub)
+        budget.action_open()
+        line.invalidate_recordset()
+        self.assertEqual(line.subscription_period_total, 0.0)
+        self.assertEqual(line.theoretical_basis, "prorata")
 
     def test_without_a_subscription_the_basis_stays_prorata(self):
         budget = self._make_budget(planned=1200.0)

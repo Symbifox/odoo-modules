@@ -1,0 +1,72 @@
+# Translation template of Budgets opérationnels — bons de commande.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_budget_purchase 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-04 10:30+0000\n"
+"PO-Revision-Date: 2026-11-04 10:30+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: bf_budget_purchase
+#: model:ir.model,name:bf_budget_purchase.model_bf_budget_line
+msgid "Budget line"
+msgstr ""
+
+#. module: bf_budget_purchase
+#: code:addons/bf_budget_purchase/models/bf_budget_line.py:0
+msgid "Budget item purchase orders"
+msgstr ""
+
+#. module: bf_budget_purchase
+#: model:ir.model.fields,help:bf_budget_purchase.field_bf_budget_line__purchase_committed
+msgid ""
+"Confirmed purchase order lines of the period, minus what posted bills "
+"already carry. The order is placed: it is already committed."
+msgstr ""
+
+#. module: bf_budget_purchase
+#: model:ir.model.fields,field_description:bf_budget_purchase.field_bf_budget_line__purchase_committed
+#: model_terms:ir.ui.view,arch_db:bf_budget_purchase.bf_budget_line_list_purchase
+msgid "Open purchase orders"
+msgstr ""
+
+#. module: bf_budget_purchase
+#: model:ir.model.fields,field_description:bf_budget_purchase.field_bf_budget_line__purchase_committed_count
+msgid "Open purchase orders (count)"
+msgstr ""
+
+#. module: bf_budget_purchase
+#: model:ir.model.fields,field_description:bf_budget_purchase.field_bf_budget_line__purchase_due_to_date
+msgid "Ordered and due to date"
+msgstr ""
+
+#. module: bf_budget_purchase
+#: model:ir.model.fields,field_description:bf_budget_purchase.field_bf_budget_line__purchase_period_total
+msgid "Ordered for the period"
+msgstr ""
+
+#. module: bf_budget_purchase
+#: model:ir.model,name:bf_budget_purchase.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr ""
+
+#. module: bf_budget_purchase
+#: model_terms:ir.ui.view,arch_db:bf_budget_purchase.bf_budget_line_form_purchase
+msgid "Purchase orders"
+msgstr ""
+
+#. module: bf_budget_purchase
+#: model:ir.model.fields,help:bf_budget_purchase.field_bf_budget_line__purchase_due_to_date
+msgid ""
+"Purchase order lines whose planned date has passed, billed or not: what the "
+"plan expected by now."
+msgstr ""
+
+#. module: bf_budget_purchase
+#: model_terms:ir.ui.view,arch_db:bf_budget_purchase.bf_budget_line_form_purchase
+msgid "View purchase orders"
+msgstr ""

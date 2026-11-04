@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**305 modules are BUSL-1.1.** The source is published and auditable, and **you
+**306 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -123,14 +123,15 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_bi_timesheet` | BF BI - Professional services | 18.0.1.0.3 | BUSL-1.1 | Professional services dashboard: hours, revenue, labour cost and margin |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.4.3.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_bookmarks` | Signets partagés | 18.0.1.5.4 | BUSL-1.1 | Company, team and personal bookmarks kept in Odoo and carried to the browser by the Symbifox extension |
-| `bf_budget` | Budgets opérationnels | 18.0.1.3.0 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
+| `bf_budget` | Budgets opérationnels | 18.0.1.4.0 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.2.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
 | `bf_budget_dashboard` | Budgets opérationnels — tuile tableau de bord | 18.0.1.0.0 | BUSL-1.1 | Home-screen tile: open-budget consumption, flagged lines and variance against the theoretical |
-| `bf_budget_digest` | Budgets opérationnels — digest quotidien | 18.0.1.0.0 | BUSL-1.1 | Daily digest section: the flagged lines of the open budgets the recipient is responsible for |
+| `bf_budget_digest` | Budgets opérationnels — digest quotidien | 18.0.1.0.1 | BUSL-1.1 | Daily digest section: the flagged lines of the open budgets the recipient is responsible for |
 | `bf_budget_expense` | Budgets opérationnels — notes de frais | 18.0.1.0.0 | BUSL-1.1 | Approved expense reports count as committed before they are posted |
 | `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.1.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
 | `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.1.0 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |
-| `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.1.0 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
+| `bf_budget_purchase` | Budgets opérationnels — bons de commande | 18.0.1.0.0 | BUSL-1.1 | Confirmed purchase orders count as committed until a posted bill carries them, and their planned dates feed the calendar |
+| `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.3.0 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.2 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calculator` | BF Calculatrice | 18.0.1.2.0 | LGPL-3 | Top-bar calculator: history, labels in the math, reverse tax, hours, dates, Bank of Canada rates, post to chatter |
 | `bf_calendar_block` | BF Calendar Work Blocks | 18.0.1.1.0 | LGPL-3 | Book typed blocks of time (focus, production, meeting slot, catch-up), each with its own pictogram and colour in the calendar, and carried to other calendars as a category. |
@@ -543,7 +544,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **305 modules: BUSL-1.1.** Production use for your own internal business
+- **306 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

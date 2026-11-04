@@ -97,14 +97,19 @@ present and adds one thing.
 | `bf_budget_forecast_subscription` | Seeds forecast months from the dated calendar instead of a flat average |
 | `bf_budget_campaign` | Ties a marketing campaign to an analytic account, so a campaign knows what it spent |
 | `bf_budget_expense` | Approved expense reports enter committed before they are posted; submitted ones are shown apart, in no amount |
+| `bf_budget_purchase` | Confirmed purchase orders enter committed until a posted bill carries them, and their planned dates feed the calendar |
+| `bf_budget_dashboard` | A home tile: committed share, flagged lines, distance to theoretical |
+| `bf_budget_digest` | A budget section in the daily briefing, only when something is flagged |
 
 ## Extension points
 
-`_get_extra_commitments()` and `_get_calendar_theoretical()` on `bf.budget.line`
-return nothing in the base module. `_seed_value_for()` on
-`bf.budget.forecast.line` returns a flat average. Satellites fill them in with
-confirmed purchase orders, approved expenses and dated subscription renewals —
-and drivers, one day, without breaking anything.
+`_get_extra_commitments()` on `bf.budget.line` returns zero in the base module;
+satellites add what they know (open purchase orders, approved expenses, upcoming
+renewals). `_calendar_commitment_components()` returns an empty list; each
+satellite appends its dated calendar as a `(due to date, period total)` pair and
+the base module combines them, prorating the uncovered share of the plan once —
+never per satellite, which would count it twice. `_seed_value_for()` on
+`bf.budget.forecast.line` returns a flat average until a satellite knows better.
 
 
 ## Languages (v18.0.1.1.0)

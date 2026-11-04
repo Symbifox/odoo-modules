@@ -83,7 +83,7 @@ class BfBudgetLine(models.Model):
     def _compute_subscription_amounts(self):
         today = fields.Date.context_today(self)
         for line in self:
-            due = upcoming = total = 0.0
+            due = total = 0.0
             budget = line.budget_id
             if line.subscription_ids and budget.date_start and budget.date_end:
                 company = budget.company_id
@@ -93,16 +93,14 @@ class BfBudgetLine(models.Model):
                         due += sub._budget_amount_between(
                             budget.date_start, min(today, budget.date_end), currency, company
                         )
-                    if today < budget.date_end:
-                        upcoming += sub._budget_amount_between(
-                            max(today, budget.date_start) , budget.date_end, currency, company
-                        )
                     total += sub._budget_amount_between(
                         budget.date_start, budget.date_end, currency, company
                     )
-                # Une échéance tombant exactement aujourd'hui est comptée dans
-                # l'échu ; on la retire du « à venir » pour ne pas la compter deux fois.
-                upcoming = max(0.0, total - due)
+            # L'à-venir se DÉDUIT : le total moins l'échu. Une échéance tombant
+            # exactement aujourd'hui est dans l'échu, donc jamais deux fois ; et
+            # le recalculer par une troisième passe d'occurrences coûtait une
+            # génération de calendrier par abonnement pour un résultat jeté.
+            upcoming = max(0.0, total - due)
             line.subscription_due_to_date = due
             line.subscription_upcoming = upcoming
             line.subscription_period_total = total
@@ -117,26 +115,25 @@ class BfBudgetLine(models.Model):
         base = super()._get_extra_commitments()
         return base + self.subscription_upcoming
 
-    def _get_calendar_theoretical(self):
-        """« Ce qui était dû à ce jour », plutôt qu'une fraction du temps écoulé.
+    def _calendar_commitment_components(self):
+        """Le calendrier des renouvellements, déclaré au socle qui combine.
 
-        La part du plan qui n'est adossée à aucun engagement daté reste au
-        prorata : un poste où les abonnements ne pèsent que la moitié du budget
-        ne doit pas voir l'autre moitié disparaître du théorique.
+        Depuis bf_budget 18.0.1.4.0, le théorique de calendrier est combiné
+        par le socle : chaque satellite DÉCLARE son couple (dû à ce jour,
+        total de la période) au lieu de le calculer lui-même, pour que le
+        reliquat au prorata se mesure contre le plan non couvert par
+        l'ensemble des calendriers — jamais deux fois.
         """
-        self.ensure_one()
-        calendared = self.subscription_ids.filtered("budget_has_calendar")
-        if not calendared:
-            return super()._get_calendar_theoretical()
-        today = fields.Date.context_today(self)
-        uncovered_plan = max(0.0, self.amount_planned - self.subscription_period_total)
-        remainder = 0.0
-        if uncovered_plan:
-            span = (self.budget_id.date_end - self.budget_id.date_start).days + 1
-            elapsed = (min(today, self.budget_id.date_end) - self.budget_id.date_start).days + 1
-            elapsed = max(0, min(elapsed, span))
-            remainder = uncovered_plan * elapsed / span if span else 0.0
-        return self.subscription_due_to_date + remainder
+        components = super()._calendar_commitment_components()
+        # ⚠️ Un calendrier qui ne CONTRIBUE rien dans la fenêtre (un ponctuel
+        # d'un exercice passé, résilié mais encore lié au poste) ne doit pas
+        # basculer la base en « calendar » : il déclarait (0, 0) et le poste
+        # entier passait au reliquat, alors qu'aucune échéance ne le date.
+        if self.subscription_period_total:
+            components.append(
+                (self.subscription_due_to_date, self.subscription_period_total)
+            )
+        return components
 
     def action_view_subscriptions(self):
         self.ensure_one()

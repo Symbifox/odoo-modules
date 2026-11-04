@@ -25,9 +25,16 @@ class TestDigestBudgetSection(BfBudgetCommon):
         # budget (`_alert_recipient` : active, interne, de la société, membre du
         # groupe Budgets). C'est aussi ce que fait la production.
         groupe = cls.env.ref("bf_budget.group_bf_budget_user")
+        # lang : la section se rend dans la langue du DESTINATAIRE, et ces
+        # essais affirment les libellés source (anglais). Sans elle, les
+        # personnes du décor héritent la langue de la base — sur un clone de
+        # production fr_CA, le courriel sort en français et l'essai tombe.
+        # (`test_langue` mesure la traduction, lui, en posant fr_CA exprès.)
+        cls.env["res.lang"]._activate_lang("en_US")
         commun = {
             "company_id": cls.company.id, "company_ids": [(6, 0, [cls.company.id])],
             "groups_id": [(6, 0, [cls.env.ref("base.group_user").id, groupe.id])],
+            "lang": "en_US",
         }
         cls.responsable = cls.env["res.users"].create(dict(
             commun, name="Responsable du budget", login="resp_budget_digest",

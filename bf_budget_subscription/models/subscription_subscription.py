@@ -1,4 +1,3 @@
-from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 
@@ -6,7 +5,7 @@ from odoo import _, api, fields, models
 # Deux tables pour un même fait finissent toujours par diverger, et celle-ci
 # décide de la date de chaque échéance : une divergence produirait un calendrier
 # qui contredit la « prochaine facturation » affichée sur la fiche elle-même.
-from odoo.addons.bf_subscription.models.subscription_subscription import CYCLE_MONTHS
+from odoo.addons.bf_subscription.models.subscription_subscription import CYCLE_MONTHS, cycle_step
 
 
 class Subscription(models.Model):
@@ -69,8 +68,8 @@ class Subscription(models.Model):
             if date_from <= self.start_date <= stop:
                 return [(self.start_date, self.cycle_amount)]
             return []
-        months = CYCLE_MONTHS.get(self.cycle)
-        if not months:
+        step = cycle_step(self.cycle)
+        if not step:
             return []
         occurrences = []
         moment = self.start_date
@@ -81,7 +80,7 @@ class Subscription(models.Model):
                 break
             if moment >= date_from:
                 occurrences.append((moment, self.cycle_amount))
-            moment += relativedelta(months=months)
+            moment += step
         return occurrences
 
     def _budget_amount_between(self, date_from, date_to, currency, company):

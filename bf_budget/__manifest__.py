@@ -1,5 +1,17 @@
 {
     "name": "Budgets opérationnels",
+    # 18.0.1.4.0: le théorique de calendrier devient compositionnel. Les
+    #   satellites n'implantent plus chacun leur théorique : ils déclarent
+    #   leur couple (dû à ce jour, total de la période) par
+    #   `_calendar_commitment_components`, et le socle combine, parce que le
+    #   reliquat au prorata se mesure contre le plan non couvert par
+    #   l'ENSEMBLE des calendriers. Deux satellites qui chacun prorateraient
+    #   « le plan moins mon total » compteraient deux fois la part de l'autre.
+    #   Et le reliquat non couvert suit désormais la VENTILATION saisie
+    #   (l'ancien prorata linéaire de l'exercice masquait la dérive d'un
+    #   poste saisonnier dès qu'un engagement daté existait). Les dépendances
+    #   de `_compute_amounts` déclarent aussi `budget_type`, `state` et les
+    #   seuils, que `_sign` et `_evaluate_alert` lisent.
     # 18.0.1.3.0: le gel du plan côté serveur, fermé de bout en bout. Une
     #   ligne ne se crée, ne se duplique, ne se supprime ni ne se déplace plus
     #   vers un budget sorti du brouillon ; une période ne se crée, ne se
@@ -23,7 +35,7 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.3.0",
+    "version": "18.0.1.4.0",
     "category": "Accounting/Accounting",
     "summary": "Budget d'exploitation par poste du grand livre, comparé au réel et à l'engagé",
     "author": "Les services de consultation Blue Fox, Inc.",

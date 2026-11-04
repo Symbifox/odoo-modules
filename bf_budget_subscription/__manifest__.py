@@ -1,10 +1,21 @@
 {
     "name": "Budgets opérationnels — engagements récurrents",
+    # 18.0.1.3.0: le théorique de calendrier n'est plus calculé ici : le
+    #   satellite déclare son couple (dû à ce jour, total de la période) par
+    #   `_calendar_commitment_components` et le socle (bf_budget 18.0.1.4.0,
+    #   requis) combine ; avec un second calendrier (bons de commande), le
+    #   reliquat cesse d'être compté deux fois. Deux valeurs se raffinent au
+    #   passage : le reliquat suit la ventilation saisie (plus un prorata
+    #   linéaire de l'exercice), et un calendrier qui ne contribue rien dans
+    #   la fenêtre (ponctuel passé résilié) ne bascule plus la base en
+    #   « calendar ».
     # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.1.0",
+    # 18.0.1.2.0: le cycle aux 4 semaines de bf_subscription 18.0.1.9.0 donne
+    #   13 échéances par année au calendrier d'engagements.
+    "version": "18.0.1.3.0",
     "category": "Accounting/Accounting",
     "summary": "Les abonnements deviennent un calendrier d'engagements datés, et le théorique s'y appuie",
     "author": "Les services de consultation Blue Fox, Inc.",

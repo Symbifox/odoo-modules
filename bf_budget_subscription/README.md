@@ -41,10 +41,23 @@ It still spends. The module does not let it pass for a zero commitment in
 silence: the budget line flags it, because a partial calendar mistaken for a
 complete one understates the theoretical and manufactures false alerts.
 
+## One calendar among others (v18.0.1.3.0)
+
+The renewal schedule is now declared to the base module (`bf_budget` 18.0.1.4.0
+or later, required), which combines every dated calendar a position carries —
+renewals here, confirmed purchase orders in `bf_budget_purchase` — before
+prorating the uncovered share of the plan once. Two refinements show in the
+numbers: the uncovered share follows the monthly spread entered on the line
+instead of a linear fraction of the fiscal year, and a subscription whose
+renewals all fall outside the period no longer switches the line's theoretical
+basis to "calendar" on its own.
+
 ## Languages (v18.0.1.1.0)
 
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. In English, the budget position a subscription is attached to is labelled **Budget item**, so that it no longer reads like a budget line.
 
 ## Licence
 
-LGPL-3.
+Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
+its Change Date: 2030-11-04 for this one. In the meantime, use in production for
+your own internal business operations is permitted.
