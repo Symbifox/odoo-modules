@@ -1,6 +1,11 @@
 {
     "name": "Banque d'heures — section du digest quotidien",
-    "version": "18.0.1.0.4",
+    # 18.0.1.0.5 : le module s'importe de nouveau sur Python 3.10 et 3.11.
+    #   Une apostrophe échappée dans l'expression d'une f-string n'est
+    #   permise que depuis 3.12 (PEP 701) : ailleurs, le fichier ne se
+    #   compilait pas, et le module tombait à l'import chez un hôte en
+    #   Ubuntu 22.04. Rien ne change pour un hôte en 3.12.
+    "version": "18.0.1.0.5",
     "category": "Services/Project",
     "summary": "Ajoute une section « Paliers franchis » au digest quotidien",
     "description": """

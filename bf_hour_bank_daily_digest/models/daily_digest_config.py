@@ -146,10 +146,16 @@ class DailyDigestConfig(models.Model):
 
         accent = company.report_brand_primary or "#29ABE2"
         dark = company.report_brand_dark or "#2E3132"
+        # ⚠️ Le titre est calculé AVANT la f-string, et ce n'est pas du style :
+        # une apostrophe échappée dans l'expression d'une f-string est une
+        # SyntaxError sur Python 3.10 et 3.11 (PEP 701 ne l'autorise qu'à
+        # partir de 3.12). Le module tourne en 3.12 ici, mais il est publié
+        # pour des hôtes en 3.10 (Ubuntu 22.04), où il ne s'importait pas.
+        titre_banques = _esc(_("Banques d'heures"))
         parts = [
             f'<h3 style="font-family:\'Lexend\',\'Segoe UI\',Arial,sans-serif;font-size:16px;'
             f'font-weight:600;color:{dark};margin:0 0 8px 0;">'
-            f'🔔 {_esc(_("Banques d\'heures"))}</h3>'
+            f'🔔 {titre_banques}</h3>'
         ]
 
         if events:
