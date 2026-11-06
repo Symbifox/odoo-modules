@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**99 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**100 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -500,6 +500,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `privacy_framework_uk` | Cadre de confidentialité — UK GDPR (Royaume-Uni) | 18.0.1.0.1 | BUSL-1.1 | UK GDPR / DPA 2018 regulatory-framework pack for the Privacy module |
 | `privacy_incident` | Registre des incidents de confidentialité (Loi 25) | 18.0.1.1.1 | LGPL-3 | Confidentiality-incident register (Law 25): declaration, risk assessment, measures, the eight register items, and providers' notices with their fingerprint |
 | `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.13.5.1 | BUSL-1.1 | Project knowledge base, policies, and documentation |
+| `project_subtask_visible` | Sub-tasks Always Visible | 18.0.1.0.0 | LGPL-3 | Sub-tasks appear in the kanban and list views of their project like any other task, and the eye that hid them is gone. |
 | `web_calendar_ergonomics` | Calendar Ergonomics | 18.0.1.1.0 | LGPL-3 | Refresh button that highlights what changed since the last refresh, reload on return to the tab, keyboard shortcuts, remembered side panel, Duplicate in the event popover and working hours shaded in every calendar view. |
 <!-- MODULES_TABLE:END -->
 
@@ -548,7 +549,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **99 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **100 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Le filtre qui replie les sous-tâches, offert mais éteint : il s'ajoute
+        à la vue de recherche de SOCLE des tâches, d'où il descend dans les
+        QUATRE vues primaires qui en dérivent, sans les nommer une à une :
+        `view_task_search_form_project_fsm_base`, `view_task_search_form_project_base`,
+        `view_task_search_form` et `project_sharing_project_task_view_search`
+        — cette dernière est celle du PARTAGE DE PROJET, donc le client gagne
+        lui aussi le filtre (mesuré par `get_combined_arch`, essai à l'appui).
+        Les feuilles de temps (`hr_timesheet.project_task_view_search`) sont une
+        extension, pas une primaire, et `project_todo` n'hérite pas du socle.
+        Aucune action ne l'active : il faut le choisir dans le menu Filtres.
+    -->
+    <record id="view_task_search_form_base_subtasks" model="ir.ui.view">
+        <field name="name">project.task.search.form.subtasks</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form_base"/>
+        <field name="arch" type="xml">
+            <filter name="unassigned" position="after">
+                <filter string="Without sub-tasks" name="without_subtasks"
+                        domain="[('parent_id', '=', False)]"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>
