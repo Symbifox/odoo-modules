@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**100 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**101 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -134,6 +134,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.3.0 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.2 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calculator` | BF Calculatrice | 18.0.1.2.0 | LGPL-3 | Top-bar calculator: history, labels in the math, reverse tax, hours, dates, Bank of Canada rates, post to chatter |
+| `bf_calendar_address` | BF Calendar — the address comes from the address book | 18.0.1.0.0 | LGPL-3 | A meeting with a customer gets the customer's address as its place, taken from the address book, on one line a phone can turn into directions. Suggested, never imposed: the picker lists the addresses already on file, and a place typed or picked by hand is never overwritten. |
 | `bf_calendar_block` | BF Calendar Work Blocks | 18.0.1.1.0 | LGPL-3 | Book typed blocks of time (focus, production, meeting slot, catch-up), each with its own pictogram and colour in the calendar, and carried to other calendars as a category. |
 | `bf_calendar_block_appointment` | BF Calendar Work Blocks - Online Booking | 18.0.1.0.1 | LGPL-3 | Meeting slots booked in your calendar open online booking times, on top of your working hours. |
 | `bf_calendar_block_meeting` | BF Calendar Work Blocks - Meetings | 18.0.1.0.0 | LGPL-3 | Work blocks (focus, production, meeting slot, catch-up) need neither an agenda nor minutes, and stay off the meetings dashboard. |
@@ -549,7 +550,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **100 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **101 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

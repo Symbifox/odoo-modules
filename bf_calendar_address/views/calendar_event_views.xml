@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        The picker sits right under the place it fills, because that is where
+        the question comes up: the invitation says the head office and the
+        visit is at plant 3. It is hidden when none of the guests has an
+        address on file, so a meeting between colleagues looks exactly as it
+        did before the module was installed.
+    -->
+    <record id="view_calendar_event_form_bf_address" model="ir.ui.view">
+        <field name="name">calendar.event.form.bf.address</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <field name="location" position="before">
+                <field name="bf_address_candidate_ids" invisible="1"/>
+            </field>
+            <field name="location" position="after">
+                <field name="bf_address_partner_id"
+                       string="Address on file"
+                       invisible="not bf_address_candidate_ids"
+                       readonly="not user_can_edit"
+                       domain="[('id', 'in', bf_address_candidate_ids)]"
+                       context="{'show_address': 1, 'address_inline': 1}"
+                       options="{'no_create': True, 'no_open': True}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
