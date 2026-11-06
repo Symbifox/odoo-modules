@@ -1,11 +1,13 @@
 {
     "name": "Audit TI - Loi 25",
     "summary": "Gestion des audits de sécurité informatique pour la conformité Loi 25",
+    # 18.0.1.17.4 : l'icône du module, dans la famille de la suite (celle de juin tenait
+    #   trois objets et une palette à part).
     # 18.0.1.17.3 : `audit.client` porte `mail.activity.mixin`. Les suivis
     #   planifiés sur un client audité s'affichent sur sa fiche, et une
     #   activité sur un modèle sans le mixin fait tomber le tableau des
     #   activités : voir `bf_activity_board_guard`.
-    "version": "18.0.1.17.3",
+    "version": "18.0.1.17.4",
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

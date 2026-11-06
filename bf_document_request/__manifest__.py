@@ -7,6 +7,8 @@
 #
 {
     "name": "Secure Transfer: Document Requests",
+    # 18.0.1.2.3: the module icon, its own at last (it carried the one of
+    #   bf_securetransfer, its base).
     # 18.0.1.2.2: consistent French vocabulary ("pièces", "échéance"), no
     #   dashes in the delivered policies' names; the client receives no
     #   receipt (it carried the download link of their own documents); a
@@ -23,7 +25,7 @@
     #   and text messages the client's.
     # 18.0.1.1.1: the two delivered policies take durations the base offers
     #   (24 h and 30 days; 30 days requires a brand whose ceiling reaches 30).
-    "version": "18.0.1.2.2",
+    "version": "18.0.1.2.3",
     "summary": "Request documents from a client by email or text message, "
                "which they photograph or attach from their phone or "
                "computer: catalogue, deadline, per-document retention, "

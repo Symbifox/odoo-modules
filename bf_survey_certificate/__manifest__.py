@@ -1,6 +1,8 @@
 {
     "name": "Branded Course Certificates",
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1: the module icon, in the suite's family (the former one was a flat
+    #   certificate on an opaque black square).
+    "version": "18.0.1.1.1",
     "category": "Marketing/Surveys",
     "summary": "Certification documents in the company's own brand: a branded PDF, "
                "a verifiable certificate number with its public page, and a branded "
