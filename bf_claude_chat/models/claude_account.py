@@ -32,6 +32,9 @@ from zoneinfo import ZoneInfo
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
+from .garde_pont import exiger_le_pont
+
+
 _logger = logging.getLogger(__name__)
 
 # Les fenêtres que le relevé sait nommer. L'ordre est celui de l'affichage :
@@ -249,7 +252,13 @@ class ClaudeAccount(models.Model):
         l'installation, parce que la liste des comptes dépend de l'hôte et pas
         du locataire. Semer les comptes d'un poste sur l'Odoo d'un autre
         n'aurait aucun sens.
+
+        Porte du pont, comme les deux suivantes. L'ACL de `claude.account` la
+        fermait déjà (administration seulement), mais par effet de bord : la
+        garde dit le QUI explicitement, et rend la même erreur que ses voisines
+        au lieu d'un refus de l'ORM sur le `search`.
         """
+        exiger_le_pont(self.env)
         if not config_dir:
             return self.browse()
         compte = self.with_context(active_test=False).search(
@@ -273,7 +282,13 @@ class ClaudeAccount(models.Model):
 
         Rend un dictionnaire vide pour un compte inconnu : à elle de retomber
         sur ses valeurs par défaut plutôt que de se taire.
+
+        ⚠️ La garde est AVANT le `try` : à l'intérieur, le `except Exception`
+        l'avalerait et la porte rendrait `{}` à un portail au lieu de le
+        refuser. Lire en `sudo()` est ce qui la rend forgeable : sans la garde,
+        n'importe quelle session connectée lisait les seuils d'un compte.
         """
+        exiger_le_pont(self.env)
         try:
             compte = self.sudo().with_context(active_test=False).search(
                 [("config_dir", "=", config_dir)], limit=1)
@@ -303,6 +318,7 @@ class ClaudeAccount(models.Model):
         son état dit pourquoi elles sont vieilles : les effacer ferait
         disparaître la seule chose qui reste à regarder.
         """
+        exiger_le_pont(self.env)
         try:
             compte = self.sudo().compte_par_repertoire(config_dir, nom=nom)
             if not compte:

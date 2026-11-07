@@ -48,18 +48,25 @@ class TestRegistrePasses(TransactionCase):
         semblerait plus propre, mais il perdrait `res_id` — donc tout espoir de
         dire plus tard quel mandat a payé quelle passe.
         """
+        # ⚠️ Le DELTA, pas le compte de la table : une base qui tourne déjà
+        # porte des fils de cette provenance, et le compte global rougirait
+        # sans qu'il y ait de défaut.
+        avant = self.Session.search_count([("origin", "=", "refine_meeting")])
         for enr in (341, 342):
             self.Message.journaliser_passe(
                 "refine_meeting", {"output_tokens": 10},
                 res_model="meeting.record", res_id=enr)
         self.assertEqual(
-            self.Session.search_count([("origin", "=", "refine_meeting")]), 2)
+            self.Session.search_count([("origin", "=", "refine_meeting")]),
+            avant + 2)
 
     def test_une_passe_sans_enregistrement_retombe_sur_un_fil_unique(self):
+        # Même parade que ci-dessus : trois passes n'ouvrent qu'un fil de plus.
+        avant = self.Session.search_count([("origin", "=", "title")])
         for _i in range(3):
             self.Message.journaliser_passe("title", {"output_tokens": 5})
         self.assertEqual(
-            self.Session.search_count([("origin", "=", "title")]), 1)
+            self.Session.search_count([("origin", "=", "title")]), avant + 1)
 
     # ── Ce que le pont rend en trop ───────────────────────────────────
     def test_les_cles_sans_colonne_sont_filtrees(self):

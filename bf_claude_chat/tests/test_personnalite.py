@@ -78,7 +78,12 @@ class TestPlafondConsignes(TransactionCase):
 
     def setUp(self):
         super().setUp()
-        self.Instr = self.env["claude.chat.instruction"]
+        # ⚠️ `lang` posé par l'essai, parce qu'il affirme des libellés ANGLAIS
+        # (« 1 instruction », « characters ») que la jauge rend par `_()`. Sur
+        # une base dont l'usager n'est pas en anglais, ces deux essais
+        # rougissaient sur la traduction et non sur un défaut.
+        self.Instr = self.env["claude.chat.instruction"].with_context(
+            lang="en_US")
         # Les consignes déjà en base fausseraient les comptes.
         self.Instr.search([]).write({"active": False})
 

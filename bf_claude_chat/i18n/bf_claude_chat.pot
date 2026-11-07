@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 09:56+0000\n"
-"PO-Revision-Date: 2026-10-24 09:56+0000\n"
+"POT-Creation-Date: 2026-11-06 23:52+0000\n"
+"PO-Revision-Date: 2026-11-06 23:52+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -367,6 +367,12 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/garde_pont.py:0
+msgid "Cette porte n'ouvre qu'au pont GenFox."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.actions.server,name:bf_claude_chat.action_claude_instruction_check
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
 msgid "Check Coherence"
@@ -520,6 +526,14 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model,name:bf_claude_chat.model_claude_account
 msgid "Compte Claude"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:res.groups,comment:bf_claude_chat.group_pont
+msgid ""
+"Compte technique qui verse le registre de consommation et les relevés de la "
+"sonde. Sans ce test du QUI, tout compte authentifié pouvait forger le "
+"registre ou détruire les fenêtres de quota."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1705,6 +1719,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_plan_account_id
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Plan paying for Gen"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:res.groups,name:bf_claude_chat.group_pont
+msgid "Pont GenFox (RPC)"
 msgstr ""
 
 #. module: bf_claude_chat

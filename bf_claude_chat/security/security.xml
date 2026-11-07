@@ -71,4 +71,14 @@
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('base.group_system'))]"/>
     </record>
+
+    <!-- Le compte technique sous lequel le pont s'authentifie. Les portes RPC
+         journaliser_passe, enregistrer_releve, seuils_du_compte et
+         compte_par_repertoire n'ouvrent qu'à lui, au superutilisateur ou à un
+         administrateur. -->
+    <record id="group_pont" model="res.groups">
+        <field name="name">Pont GenFox (RPC)</field>
+        <field name="comment">Compte technique qui verse le registre de consommation et les relevés de la sonde. Sans ce test du QUI, tout compte authentifié pouvait forger le registre ou détruire les fenêtres de quota.</field>
+    </record>
+
 </odoo>

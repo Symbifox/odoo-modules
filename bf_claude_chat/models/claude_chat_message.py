@@ -3,6 +3,9 @@ import logging
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 
+from .garde_pont import exiger_le_pont
+
+
 _logger = logging.getLogger(__name__)
 
 
@@ -325,6 +328,7 @@ class ClaudeChatMessage(models.Model):
         signalée en échec parce que la comptabilité a raté : l'appelant, côté
         pont, a déjà rendu sa réponse quand on arrive ici.
         """
+        exiger_le_pont(self.env)
         try:
             session = self.env["claude.chat.session"].sudo()._fil_de_passe(
                 origin, res_model=res_model, res_id=res_id, user_id=user_id)

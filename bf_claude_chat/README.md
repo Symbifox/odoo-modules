@@ -16,7 +16,7 @@ bf_claude_chat/
 │   ├── claude_chat_instruction.py   # claude.chat.instruction (steering)
 │   └── res_config_settings.py       # Settings (Settings > Gen)
 ├── security/
-│   ├── security.xml             # Access rules (own sessions, admin all)
+│   ├── security.xml             # Access rules, and the bridge RPC group
 │   └── ir.model.access.csv      # Model ACLs
 ├── static/src/
 │   ├── js/
@@ -276,6 +276,26 @@ reason or its details anywhere: a host that wants to be notified reads the id,
 the reason and the date of new reports, never the answer, the details or the
 person's name. A daily cron erases the details of reports older than 12 months;
 the reason, status, date and person stay.
+
+### The bridge RPC group (1.41.0)
+
+Four model methods are public because the bridge calls them over XML-RPC:
+`claude.chat.message.journaliser_passe` (what a keyboard-less pass consumed),
+and `claude.account.enregistrer_releve`, `seuils_du_compte` and
+`compte_par_repertoire` (the subscription windows of the account that paid).
+A public method is reachable through `call_kw` by any authenticated session,
+portal included, and no ACL applies to the call itself: a forged pass would
+have been written in someone else's name, and a forged reading would have
+replaced the quota windows of an account.
+
+They stay public, and each one now starts with a test of WHO (`exiger_le_pont`
+in `models/garde_pont.py`): the superuser, an administrator, or a member of the
+group "Pont GenFox (RPC)". Everything else gets an `AccessError`.
+
+⚠️ Give that group to the technical account the bridge authenticates as
+**before** upgrading the module. The bridge and the probe swallow their own
+failures by design, so a bridge locked out does not raise anything: the
+consumption registry simply stays empty, which reads as "nobody used Gen".
 
 ### Mobile API
 

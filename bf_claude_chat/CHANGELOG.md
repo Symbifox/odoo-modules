@@ -1,5 +1,45 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.41.0 - 2026-11-06
+
+### Les portes RPC du pont ne s'ouvrent qu'au pont
+
+Quatre méthodes de ce module sont publiques parce que le pont GenFox les
+appelle par XML-RPC. Une méthode publique est appelable par `call_kw`, par
+n'importe quelle session connectée, portail compris, et aucune ACL ne
+s'applique à l'appel : ces quatre portes étaient donc ouvertes à tout compte
+authentifié.
+
+- **Groupe « Pont GenFox (RPC) »** : le compte technique du pont le porte, et
+  personne d'autre.
+- **`_exiger_le_pont`** en tête des quatre portes : superutilisateur,
+  administrateur, ou membre du groupe. Tout le reste reçoit un `AccessError`.
+  `claude.chat.message.journaliser_passe` créait une conversation et une ligne
+  de registre en attribuant l'usage au `user_id` reçu en argument, donc une
+  fausse consommation au nom de n'importe qui ;
+  `claude.account.enregistrer_releve` remplaçait les fenêtres de quota d'un
+  compte, donc les détruisait ; `seuils_du_compte` lisait en `sudo()` des
+  seuils que l'ACL réserve à l'administration ; `compte_par_repertoire` ouvre
+  un compte.
+- Pour `seuils_du_compte`, la garde est posée AVANT son `try` : à l'intérieur,
+  le `except Exception` l'aurait avalée et la porte aurait rendu `{}`, soit un
+  refus qui se lit « compte inconnu ».
+- **`models/garde_pont.py`** : un seul exemplaire de la garde, importé par les
+  deux modèles.
+- **`tests/test_portes_du_pont.py`** : treize essais qui tiennent les deux
+  bouts. Un compte portail et un compte interne ordinaire sont refusés sur les
+  quatre portes, le pont et un administrateur passent, et un essai `HttpCase`
+  refait le vrai parcours, `call_kw` sur une session de portail connectée.
+  L'essai qui mesure « rien ne s'est inscrit » attrape l'exception à la main :
+  un `assertRaises` défait ce que le bloc a écrit, donc il serait resté vert
+  sur une porte grande ouverte. `compte_par_repertoire` étant aussi fermée par
+  son ACL, son essai affirme le libellé du refus, et un second donne l'ACL à un
+  compte interne pour mesurer la garde seule.
+
+⚠️ À la montée, le groupe se donne au compte du pont AVANT que la garde soit
+en place, sinon le registre et la sonde se taisent sans rien dire : tous deux
+avalent leurs propres échecs, par construction.
+
 ## 18.0.1.39.0 - 2026-10-29
 
 ### Gen sait comment écrire au sujet des personnes
