@@ -1,5 +1,6 @@
 import base64
 import logging
+import re
 import unicodedata
 from datetime import timedelta
 from email import message_from_bytes
@@ -24,6 +25,28 @@ REPORT_CATEGORIES = [
     ("spam", "Spam / junk"),
     ("other", "Other / I'm not sure"),
 ]
+
+
+# `/phish/<jeton>` sous toutes les formes qu'un employé peut écrire dans
+# l'assistant de signalement : la
+# casse, deux `/phish/` dans le même texte, un segment vide (`/phish//`), un
+# segment « . » (`/phish/./`), et le séparateur encodé (`/phish%2F`).
+#
+# Chaque séparateur est UN atome exclusif par son premier caractère (`/`, `.`,
+# ou `%2F`/`%2E` encodés) : le découpage d'un texte donné est unique, donc
+# l'expression ne revient pas sur ses pas — un `details` hostile ne peut pas la
+# faire exploser. Le nombre d'atomes est borné, et le jeton exclut le point pour
+# la même raison (`secrets.token_urlsafe` n'en produit jamais).
+_ATOME_PHISH = r"(?:[/.]|%2[fFeE])"
+_RE_PHISH_JETON = re.compile(
+    r"(/phish" + _ATOME_PHISH + r"{1,12})([A-Za-z0-9_~%-]+)",
+    re.IGNORECASE)
+
+# Un jeton de résultat, où qu'il soit écrit : `secrets.token_urlsafe(32)` rend
+# 43 caractères urlsafe. La fourchette est large par le bas (un jeton posé à la
+# main dans un essai peut être plus court) et bornée par le haut pour ne pas
+# ramasser une pièce jointe encodée en base64 recopiée dans « Précisions ».
+_RE_JETON_NU = re.compile(r"[A-Za-z0-9_-]{20,128}")
 
 
 def _ascii_header(text):
@@ -255,13 +278,39 @@ class BfReportedPhish(models.Model):
         }
 
     def _detect_simulation(self):
+        """The simulation THIS reporter received, or nothing.
+
+        🔴 both branches must stay bound to the reporter. The token
+        branch was not, and the consequences were not small, because `process()`
+        reads this result to write somewhere else: it credits the matched
+        result's owner (`register_report`) and it closes the report as a
+        simulation, which skips the whole triage sequence — no ticket, no
+        activity, no alert to the security team.
+
+        So an employee who submitted the `/phish/<token>` of a COLLEAGUE — which
+        they get simply by being forwarded the suspicious email — credited that
+        colleague's result and silently buried their own report. Measured at the
+        bench: report `simulation`, colleague's result `reported = True`, zero
+        triage activity, where an ordinary report opens `triage` with one.
+
+        Reporting someone else's lure is a legitimate thing to do. It now goes
+        to triage like any other report, which is the honest outcome: the team
+        sees it, and nobody else's score moves.
+
+        No guard on `reporter_id` being set: it is `required=True`, and even if
+        it were empty the filter would read `partner_id = False`, which matches
+        no result (`bf.phishing.result.partner_id` is required too).
+        """
         Result = self.env["bf.phishing.result"].sudo()
         # 1) Precise: the reported link points at one of our /phish/<token> URLs.
         if self.suspicious_link and "/phish/" in self.suspicious_link:
             token = self.suspicious_link.split("/phish/", 1)[1]
             token = token.split("/")[0].split("?")[0].strip()
             if token:
-                res = Result.search([("token", "=", token)], limit=1)
+                res = Result.search([
+                    ("token", "=", token),
+                    ("partner_id", "=", self.reporter_id.id),
+                ], limit=1)
                 if res:
                     return res
         # 2) Heuristic: a recent simulation to this reporter whose lure subject
@@ -272,11 +321,110 @@ class BfReportedPhish(models.Model):
             res = Result.search([
                 ("partner_id", "=", self.reporter_id.id),
                 ("create_date", ">=", since),
-                ("campaign_id.template_id.subject", "ilike", self.subject),
+                ("campaign_id.template_id.subject", "ilike",
+                 self._echapper_ilike(self.subject)),
             ], limit=1)
             if res:
                 return res
         return Result.browse()
+
+    @staticmethod
+    def _echapper_ilike(valeur):
+        """`%` et `_` du sujet rapporte, pris pour ce qu'ils sont.
+
+        `ilike` les lit comme des jokers : un sujet réduit à « % » correspondait
+        à n'importe quel leurre. La branche heuristique étant déjà bornée au
+        signaleur, le joker ne servait qu'à faire correspondre son PROPRE
+        résultat trop facilement — c'est une correction de justesse, pas une
+        fuite entre usagers. L'antislash d'abord, sinon on échappe ses propres
+        échappements.
+        """
+        return (valeur or "").replace("\\", "\\\\").replace(
+            "%", "\\%").replace("_", "\\_")
+
+    @staticmethod
+    def _masquer_jeton(texte, marque="[token masked]"):
+        """Tout `/phish/<jeton>` d'un texte, sans les jetons.
+
+        🔴 Le billet d'assistance et l'alerte ntfy sont lus par les agents
+        d'assistance — une autre population que l'équipe de sensibilisation.
+        Quand le lien rapporté est le jeton VIVANT d'un collègue, qui ouvre ce
+        lien enregistre un CLIC sur le résultat du collègue et déclenche sa
+        remédiation : `_ROBOT_UA` ne filtre pas un vrai navigateur (mesuré faux
+        sur Firefox 128 et Chrome 131).
+
+        Et cette exposition vient de NOUS, pas du signaleur : avant ce lot, le
+        signalement du leurre d'autrui était clos en « simulation » et ne créait
+        aucun billet. C'est le correctif du jeton qui l'envoie au triage, donc
+        au billet.
+
+        🔴 Cette passe se joue sur le texte COMPOSÉ, jamais sur un champ isolé.
+        Avant ce lot, le masquage ne portait que sur
+        `suspicious_link`, et 6 signalements sur 7 mettaient quand même le jeton
+        vivant d'un collègue dans la description du billet : par `details` —
+        dont un `<a href="…/phish/<jeton>">Facture Hydro-Québec</a>` d'un seul
+        clic, au texte trompeur, qui traversait l'assainisseur HTML intact —, par
+        `subject`, qui fuyait aussi dans le TITRE du billet et dans le CORPS de
+        l'alerte ntfy, et par `email_from`. L'employé choisit librement les
+        quatre dans l'assistant, son seul accès.
+
+        Le billet reste utile au triage : l'équipe voit qu'un lien `/phish/` a
+        été rapporté, et tout le reste du texte — hôte, chemin, paramètres.
+
+        ⚠️ La marque ne porte ni `<` ni `>` : la description du billet est un
+        champ HTML assaini, et `<jeton masqué>` serait avalé comme une balise
+        inconnue — le jeton disparaîtrait, mais la trace aussi.
+
+        Le signalement lui-même (`bf.reported.phish`) garde le lien complet :
+        c'est voulu, et il est illisible à `base.group_user`, dont `create` et
+        `search` sont refusés sur ce modèle.
+        """
+        if not texte:
+            return texte
+        return _RE_PHISH_JETON.sub(lambda m: m.group(1) + marque, texte)
+
+    def _masquer_jetons_vivants(self, texte, marque="[token masked]"):
+        """Tout jeton d'un `bf.phishing.result` VIVANT, où qu'il soit écrit.
+
+        Le critère est le bon, et c'est pour ça qu'il est étroit :
+        `register_click` ne compte un clic que pour un jeton qui correspond à un
+        résultat. Ce qui ne correspond à rien n'est pas un piège, et le masquer
+        par précaution abîmerait le billet sans rien protéger.
+
+        Ce filet attrape ce que la FORME laisse passer : un jeton en paramètre
+        de requête (`/phish/?t=<jeton>`, qui ne route vers rien mais se recopie
+        à la main), et un texte doublement encodé (`&amp;#47;`), que
+        l'assainisseur laisse tel quel.
+
+        Pas de borne sur la recherche : un « Précisions » absurde coûte une
+        requête plus large, et l'employé pouvait déjà inonder le triage de
+        signalements ordinaires. Un seul
+        `search_read`, sur le seul champ `token`.
+        """
+        if not texte:
+            return texte
+        candidats = set(_RE_JETON_NU.findall(texte))
+        if not candidats:
+            return texte
+        for ligne in self.env["bf.phishing.result"].sudo().search_read(
+                [("token", "in", list(candidats))], ["token"]):
+            texte = texte.replace(ligne["token"], marque)
+        return texte
+
+    def _masquer_pour_le_triage(self, texte, marque="[token masked]"):
+        """Le texte qu'une sortie du triage emporte, sans jeton vivant.
+
+        Les deux filets sont nécessaires, et ils ne se recouvrent pas :
+
+        1. `_masquer_jeton` masque la FORME `/phish/<segment>`. Il garde la
+           trace dont le triage a besoin — hôte, chemin, paramètres — et il
+           attrape aussi ce qu'aucune recherche en base ne retrouverait : un
+           jeton percent-encodé (`/phish/%4AETON…`), que werkzeug décode avant
+           de router, et le jeton d'un résultat effacé depuis.
+        2. `_masquer_jetons_vivants` masque le JETON lui-même, où qu'il soit.
+        """
+        return self._masquer_jetons_vivants(
+            self._masquer_jeton(texte, marque), marque)
 
     def _create_helpdesk_ticket(self):
         if "helpdesk.ticket" not in self.env:
@@ -300,9 +448,29 @@ class BfReportedPhish(models.Model):
             "link": self.suspicious_link or "—",
             "details": (self.details or "—").replace("\n", "<br/>"),
         }
+        # 🔴 Une passe APRÈS le formatage, sur la description COMPOSÉE : masquer
+        # le seul champ `suspicious_link` laissait fuir le jeton de `details`,
+        # de `subject` et de `email_from` (6 signalements sur 7, mesuré).
+        # Ouvrir ce lien depuis le billet
+        # enregistrerait un clic sur le résultat d'un collègue.
+        marque = env._("[token masked]")
+        # 🔴 Assainir AVANT de masquer, et c'est l'ORDRE qui porte la garde :
+        # `html_sanitize` DÉCODE les entités. Mesuré sur une base d'essai,
+        # `<a href="https://h.test&#47;phish&#47;<jeton>">Facture</a>` en
+        # ressortait en `href="https://h.test/phish/<jeton>"`, un lien vivant
+        # d'un seul clic ; `&#x2F;`, `&sol;`, `&#112;hish` et un jeton coupé par
+        # `&#65;` faisaient de même. Masquer d'abord les laissait TOUTES passer,
+        # et énumérer les formes est sans fin puisque tout caractère s'encode.
+        # Le champ du billet assainit à son tour : la passe est idempotente, et
+        # elle ne change rien d'autre que `<br/>` en `<br>` (vérifié).
+        description = tools.html_sanitize(description)
+        description = self._masquer_pour_le_triage(description, marque)
         vals = {
-            "name": env._("Suspicious email: %s") % (
-                self.subject or self.email_from or env._("(no subject)")),
+            # Le titre fuyait aussi, par le sujet rapporté.
+            "name": self._masquer_pour_le_triage(
+                env._("Suspicious email: %s") % (
+                    self.subject or self.email_from or env._("(no subject)")),
+                marque),
             "description": description,
             "partner_id": self.reporter_id.id or False,
         }
@@ -370,6 +538,11 @@ class BfReportedPhish(models.Model):
             "from": self.email_from or "—",
             "subj": self.subject or "—",
         }
+        # Le corps de l'alerte porte le sujet et l'adresse rapportés, tous deux
+        # choisis par l'employé : le jeton vivant d'un collègue y fuyait aussi
+        # (mesuré). ntfy se lit souvent sur un téléphone, où le lien
+        # est cliquable.
+        body = self._masquer_pour_le_triage(body, env._("[token masked]"))
         headers = {
             "Title": _ascii_header(env._("Malicious email reported")),
             "Priority": str(priority),
@@ -477,6 +650,11 @@ class BfReportedPhish(models.Model):
             "subj": self.subject or "—",
             "user": self.env.user.display_name,
         }
+        # 🔴 Le SECOND corps ntfy du fichier, sur le même canal opsec : il porte
+        # lui aussi le sujet rapporté, donc le jeton vivant qu'un employé y a
+        # écrit. Fermer un seul des deux aurait laissé la fuite
+        # ouverte, derrière un rôle de plus (`group_bf_secaware_purge`).
+        body = self._masquer_pour_le_triage(body, env._("[token masked]"))
         headers = {
             "Title": _ascii_header(env._("Clawback executed")),
             "Priority": str(priority),

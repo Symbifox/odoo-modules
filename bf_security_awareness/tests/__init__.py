@@ -10,3 +10,5 @@ from . import test_signalement_pieces
 from . import test_apercu_liens_odoo
 from . import test_langue_lecteur
 from . import test_rapport_agrege
+from . import test_signalement_jeton
+from . import test_attribution_partenaire

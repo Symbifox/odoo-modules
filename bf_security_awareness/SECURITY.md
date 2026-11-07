@@ -52,6 +52,30 @@ to remove mail from everyone's inbox.
   `res_field`, `create_uid` = the user) and refuses the whole report otherwise,
   before creating anything. Before 18.0.2.1.0, any internal user could pull any
   attachment of the database out of its record by naming its id.
+- **A report is only recognized in its own lure.** `_detect_simulation` matched
+  a reported `/phish/<token>` against any campaign result. An employee who
+  submitted a colleague's lure link — easy to obtain, a forwarded suspicious
+  email carries it — credited that colleague's result as *reported*, closed
+  their own report as a simulation, and opened **no triage and no ticket** at
+  all. The token branch now requires the matched result to belong to the
+  reporter, so submitting someone else's lure goes to triage like any other
+  report and credits nobody. A reported subject's `%` and `_` are escaped
+  before the heuristic `ilike`, which otherwise matched any lure of the
+  reporter on a subject reduced to a wildcard. Before 18.0.2.3.3,
+  `base.group_user` was the only role required.
+- **A live token never reaches what triage hands on.** The reporting wizard is
+  an employee's only surface and they choose `subject`, `email_from`,
+  `suspicious_link` and `details` freely. Each of those reached the helpdesk
+  ticket, its title and the ntfy alert bodies verbatim, so an agent reading the
+  ticket could open a colleague's live lure link — which records a click on
+  that colleague's result and triggers their remediation. Masking now runs on
+  the **composed** description, on the ticket title and on **both** ntfy
+  bodies, and it runs **after** `html_sanitize`, which decodes entities: an
+  `<a href="…&#47;phish&#47;<token>">` would otherwise come back out as a live
+  one-click link. Two nets cover it — the `/phish/<token>` form (path case, a
+  repeated `/phish/`, an empty or `.` segment, `%2F`) and any token matching a
+  live result. The trace stays readable (`/phish/[token masked]`), and the
+  report record itself keeps the full link, unreadable to `base.group_user`.
 - **IMAP-injection safe.** Every value reaching an IMAP `SEARCH`/`CREATE`
   (Subject / From / Message-ID, from a `.eml` or a typed report) is screened for
   control characters in `_imap_quote`, so a CR/LF cannot break out of the quoted

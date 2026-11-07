@@ -11,7 +11,21 @@
     #   bf_security_awareness.aggregate_min_recipients (10, never below 5),
     #   unfavourable rates as a range, neutral reference per company;
     #   nominative report renamed « Named report (confidential) ».
-    "version": "18.0.2.3.2",
+    # 18.0.2.3.3: a report is only recognized in ITS OWN lure — the
+    #   token branch was unbound, so an employee submitting a colleague's
+    #   /phish/<token> credited that colleague and buried their own report
+    #   without any triage. Audience resolution now matches on
+    #   `email_normalized` and prefers an internal user's partner, so the
+    #   result lands on the right person; `%` and `_` of a reported subject
+    #   are escaped before the `ilike`; and a live token no longer reaches
+    #   the COMPOSED helpdesk description, the ticket title or either ntfy
+    #   alert body, so reading a ticket cannot register a click on a
+    #   colleague's result. Two nets: the `/phish/<token>` form (path case, a
+    #   repeated `/phish/`, an empty or `.` segment, `%2F`) and any token
+    #   matching a live result. Masking runs AFTER `html_sanitize`, which
+    #   decodes entities — masking first let `&#47;phish&#47;<token>` back
+    #   out as a live one-click link.
+    "version": "18.0.2.3.3",
     "category": "Marketing/Security Awareness",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

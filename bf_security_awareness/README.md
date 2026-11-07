@@ -170,6 +170,15 @@ the files the reporting employee uploaded in its own form. Any other attachment
 is refused before anything is created, so a report cannot pull a file out of
 another record.
 
+**A report is only recognized in its own lure** (since 18.0.2.3.3): submitting
+a colleague's `/phish/<token>` no longer credits that colleague with a failure
+nor buries the report — it goes to triage like any other report. And a live
+token no longer reaches what triage hands on: the helpdesk ticket's composed
+description and title, and both ntfy alert bodies, show the reported link with
+its token masked (`/phish/[token masked]`), so reading a ticket cannot register
+a click on the lure of the person who received it. The report record itself
+keeps the full link, for the awareness groups only.
+
 The clawback and the reporting alias are high-impact. Read **`SECURITY.md`** for
 the threat model and controls (least-privilege groups, reversible quarantine,
 IMAP-injection screening, the authorization flag, blast-radius cap, encrypted
@@ -184,5 +193,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-22, this version converts automatically to
+- **Change Date**: on 2030-11-07, this version converts automatically to
   **LGPL-3.0-or-later**.

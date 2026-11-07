@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import email_normalize
 
 from .reader_lang import company_env, operator_env
 
@@ -137,19 +138,71 @@ class BfPhishingCampaign(models.Model):
         partners = self.recipient_partner_ids
         # mailing.contact has NO partner_id in stock Odoo, so resolve each list
         # contact to a res.partner by email (find-or-create) — a result row
-        # requires a partner. Matching by email reuses an existing contact and
-        # avoids duplicates across campaigns.
-        Partner = self.env["res.partner"]
+        # requires a partner. Matching on the NORMALIZED address reuses the
+        # existing partner — the internal user's one when several carry the
+        # address — instead of piling up duplicates.
         for mlist in self.mailing_list_ids:
             for contact in mlist.contact_ids.filtered(lambda c: c.email):
-                partner = Partner.search(
-                    [("email", "=", contact.email)], limit=1
-                ) or Partner.create({
-                    "name": contact.name or contact.email,
-                    "email": contact.email,
-                })
-                partners |= partner
+                partners |= self._partenaire_pour_adresse(
+                    contact.email, contact.name)
         return partners.filtered(lambda p: p.email)
+
+    def _partenaire_pour_adresse(self, adresse, nom=None):
+        """Le partenaire qui porte cette adresse — l'usager interne d'abord.
+
+        🔴 deux défauts d'attribution, antérieurs au lot, et c'est
+        d'ICI que la mauvaise attribution partait.
+
+        1. La comparaison se faisait sur `email` BRUT et sensible à la casse :
+           une `mailing.list` portant `Alice.X@Exemple.Test` ne retrouvait pas
+           le partenaire dont l'adresse est `alice.x@exemple.test`, et CRÉAIT un
+           doublon. On compare donc sur `email_normalized` — et on normalise la
+           valeur cherchée de la même façon, sans quoi la comparaison reste
+           sensible à la casse et ne correspond à rien (mesuré :
+           `email_normalized = "Alice.X@Exemple.Test"` rend un ensemble vide).
+        2. Quand plusieurs partenaires portent l'adresse, `limit=1` avec l'ordre
+           par défaut (`complete_name ASC`) rendait le contact d'une SOCIÉTÉ
+           (« ACME Inc, Zoé Exemple ») plutôt que le partenaire de l'usager
+           interne (« Zoé Exemple »). On préfère donc explicitement le
+           partenaire d'un usager interne actif.
+
+        Conséquence de l'attribution ratée, mesurée : le résultat de la
+        campagne naît sur un AUTRE partenaire que celui de l'employé. L'employé
+        qui signale SON leurre avec SON jeton n'est alors plus reconnu par
+        `_detect_simulation` — bornée au partenaire du signaleur depuis ce lot :
+        il perd son crédit et fait ouvrir un faux incident.
+
+        ⚠️ Et c'est bien ICI qu'il faut corriger. Élargir le filtre du jeton de
+        `_detect_simulation` à `email_normalized` rouvrirait le défaut que ce lot
+        ferme : `email` est dans `SELF_WRITEABLE_FIELDS`, donc un employé réécrit
+        sa propre adresse et la met à celle d'un collègue. Le filtre par id de
+        partenaire reste le bon.
+
+        La lecture de `user_ids` n'est volontairement PAS sudoée. Mesuré sous
+        l'identité d'un Opérateur (`group_bf_secaware_user`, le rôle le plus
+        faible qui prépare une campagne) : la règle « user rule » de `res.users`
+        est `['|', ('share','=',False), ('company_ids','in',company_ids)]`, donc
+        tout usager interne est visible de tous, et le `filtered` rend le bon
+        partenaire. Un sudo de plus dans un lot qui réduit justement la surface
+        des chemins sudo serait gratuit.
+        """
+        Partner = self.env["res.partner"]
+        normalisee = email_normalize(adresse)
+        candidats = Partner.search(
+            [("email_normalized", "=", normalisee)] if normalisee
+            # Pas une adresse analysable : on garde la comparaison brute d'avant
+            # plutôt que de chercher `email_normalized = False`, qui ramasserait
+            # tous les partenaires sans adresse valide.
+            else [("email", "=", adresse)]
+        )
+        if len(candidats) > 1:
+            interne = candidats.filtered(
+                lambda p: any(u.active and not u.share for u in p.user_ids))
+            candidats = interne or candidats
+        return candidats[:1] or Partner.create({
+            "name": nom or adresse,
+            "email": adresse,
+        })
 
     # ------------------------------------------------------------------ #
     # State transitions
