@@ -162,19 +162,68 @@ module's code writes, as superuser. The person seen reads their own entries, so 
 the person who impersonated; administrators read them all. The IP address is shown
 to administrators only.
 
+It reads at two heights, and both come from the same data.
+
+**What was done**, grouped by record and by action: « Email: opened, 14 records
+(Re: invoice, and 13 more) ». The action is read from what was really written,
+never from the name of the method called: a form saved for the first time goes
+through `web_save` and has *created* the record, so the summary says created.
+Records are named by the display name they carried **at the time of the action**,
+up to three per sentence and counted beyond: a name changes afterwards, a record
+gets deleted, and the person reads their journal later. When a single write
+touched more than fifty records, the summary says « at least N ».
+
+**The journal, line by line**, for the proof: one line per request that wrote or
+asked to, with the technical columns available but hidden by default. Plumbing is
+left out at the source, not at display time: `bus.bus` (the notice pushed to the
+browser), `ir.cron.trigger` (a queue waking up), and the attachments that hold the
+content of a binary field (`res_field` set, written whenever an email is opened).
+A real attachment, uploaded as the person, is journaled.
+
+In **read-only** mode nothing is written, so the journal used to stay empty and the
+person learned nothing of what had been *looked at*. It now keeps one line per
+application consulted, with how many requests read it. That line is written once
+the request has really served, outside the rolled-back savepoint and on a cursor
+of its own, committed at once: the request never waits on it, is never replayed
+because of it, and a read that was refused or failed leaves no line at all. It
+fails open.
+
+« Download the report » renders the session as a branded PDF: the summary, then
+the journal line by line. A report is the only form of download available here,
+because no access right gives write access on this model and creating a linked
+attachment would require it.
+
 ## Settings
 
 « Paramètres › Paramètres généraux », block « Incarnation »:
 
-- « Aviser la personne vue »: never (journal only), at the start of each session
-  (default), or at the start and then a summary at the end. The notice arrives
+- « Aviser la personne vue »: never (journal only), at the start of each session,
+  or at the start and then a summary at the end (default). The notice arrives
   through the person's own notification preference (inbox or email) and links to the
   journal entry. It leaves at once, never through the email queue or a delay: the
-  start notice before the session begins.
+  start notice before the session begins, which is why it does not claim to say
+  what was done (nothing has been, yet) and announces the summary instead. The end
+  notice carries that summary. The button sits after the text, labelled « See this
+  session » or « See what was done », in the house email layout: the module wraps
+  it and turns off its generic button rather than moving it for every other
+  module's emails.
 - Default and maximum duration (30 and 120 minutes).
 - « Permettre de voir Symbifox en tant qu'une personne de l'administration » (off).
 
 ## Privacy (Quebec, Law 25)
+
+The journal is itself personal information, about two people at once: the one
+seen and the one looking. The names of the records touched are part of it, and a
+record's name is sometimes its content: an email's name is its subject. Those
+names are written for the person seen, and administrators of the instance read
+them too, which is wider than the model they come from would allow on its own.
+That is a deliberate choice, taken on 2026-11-08: a journal that names nothing
+does not answer the question the person is asking. Where it is the wrong trade
+for an instance, the right lever is the notice setting and who holds the
+impersonation right, not the journal. Blue Fox keeps its retention schedule and its purge in
+a separate bridge, `bf_impersonate_privacy`, which is not installed for you: a
+retention period is a decision of the company that runs the instance, recorded
+in its own register.
 
 Article 20 of the private-sector Act limits access to personal information to
 people who need it for their duties. Impersonating someone reaches their
@@ -231,6 +280,13 @@ rules) are refused at the RPC entry point.
 
 ## Changelog
 
+- **18.0.1.1.0**: the journal reads. A summary grouped by record and by action, built
+  on the writes that really happened rather than on the method called; the names the
+  records carried at the time; plumbing left out; a session report to download as a
+  PDF; and, in read-only mode, one line per application consulted, where the journal
+  used to stay empty. The notices: the button moved after the text and says where it
+  leads, the start notice no longer promises a journal that is still empty, the end
+  notice carries the summary, and the shipped default notifies at the end too.
 - **18.0.1.0.5**: an administrator who ends a session whose time limit has already passed closes it at its deadline, with the reason "expired", as the scheduled job would have; the journal used to record the session as lasting until the click.
 - **18.0.1.0.4**: the notice to the person is always sent at once, in a context of its own: the browser can no longer delay it or leave it to a queue. The start notice goes out before the session switches; sent after the commit, it went out under the person and the sending checks refused it on databases without `mail_post_defer`. The message of an email still in the queue cannot be changed either.
 - **18.0.1.0.3**: the address and phones of the person's contact are protected

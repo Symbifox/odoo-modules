@@ -273,14 +273,66 @@ SENSITIVE_OWN_PARTNER_FIELDS = frozenset({"email", "mobile", "phone"})
 SENSITIVE_USER_FIELD_PREFIXES = ("in_group_", "sel_groups_")
 
 # Écritures que la simple navigation provoque : jamais consignées au journal.
+# ``bus.bus`` est l'avis poussé au navigateur et ``ir.cron.trigger`` le réveil
+# d'une file : ni l'un ni l'autre n'est un geste de quiconque, et à eux deux ils
+# pesaient 48 des 163 écritures de la seule séance de production.
 NOISE_MODELS = frozenset({
     "bf.impersonate.session",
     "bf.impersonate.session.line",
+    "bus.bus",
     "bus.presence",
+    "ir.cron.trigger",
     "res.users.log",
     "res.users.settings",
     "res.users.settings.volumes",
 })
+
+# Modèles dont la LECTURE ne dit rien de la personne : vues, menus, actions,
+# traductions, langues. Consigner leur consultation noierait le journal sans
+# rien apprendre. Tout le reste se consigne, ``mail.message`` compris : lire le
+# fil d'une fiche sous la personne, c'est lire sa correspondance.
+READ_NOISE_PREFIXES = (
+    "base.language",
+    "bus.",
+    "ir.actions",
+    "ir.config_parameter",
+    "ir.cron",
+    "ir.default",
+    "ir.filters",
+    "ir.model",
+    "ir.module",
+    "ir.ui.",
+    "res.config",
+    "res.currency",
+    "res.lang",
+    "web_tour.",
+)
+
+
+# Les routes qui VISENT la fiche nommée par ``thread_model`` : elles la
+# résolvent et refusent si elles ne peuvent pas la lire. Partout ailleurs, ce
+# paramètre n'est qu'une chaîne que l'appelant a mise dans son adresse et que le
+# gestionnaire ignore : s'en servir pour le journal laisserait l'incarnateur y
+# écrire la ligne de son choix (`/odoo/contacts?thread_model=hr.payslip`), dans
+# le journal même qui sert à le surveiller. Second tour de la relecture adverse,
+# 2026-11-08.
+THREAD_ROUTE_PREFIXES = (
+    "/mail/thread/",
+    "/mail/message/",
+    "/mail/attachment/",
+    "/mail/read_subscription_data",
+    "/discuss/channel/",
+)
+
+
+def thread_model_is_the_target(path):
+    """La route lit-elle vraiment la fiche que ``thread_model`` nomme ?"""
+    return bool(path) and path.startswith(THREAD_ROUTE_PREFIXES)
+
+
+def read_is_noise(model):
+    """La consultation de ce modèle ne se consigne pas."""
+    return not model or model in NOISE_MODELS or model.startswith(READ_NOISE_PREFIXES)
 
 
 def current():

@@ -1,7 +1,15 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_impersonate
+# Source strings are written in English.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: bf_impersonate 18.0.1.1.0\n"
+"POT-Creation-Date: 2026-11-09 00:45+0000\n"
+"PO-Revision-Date: 2026-11-09 00:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,6 +24,18 @@ msgstr "%(date)s à %(time)s"
 
 #. module: bf_impersonate
 #. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "%(label)s (%(records)s)"
+msgstr "%(label)s (%(records)s)"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "%(label)s [%(fields)s]"
+msgstr "%(label)s [%(fields)s]"
+
+#. module: bf_impersonate
+#. odoo-python
 #: code:addons/bf_impersonate/wizard/bf_impersonate_wizard.py:0
 msgid ""
 "%(name)s has access rights you do not have (%(groups)s). Only an "
@@ -23,6 +43,12 @@ msgid ""
 msgstr ""
 "%(name)s a des droits d'accès que vous n'avez pas (%(groups)s). Seule "
 "l'administration peut voir Symbifox en tant que cette personne."
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "%(named)s and %(others)s more"
+msgstr "%(named)s, et %(others)s autres"
 
 #. module: bf_impersonate
 #. odoo-python
@@ -39,6 +65,36 @@ msgid ""
 msgstr ""
 "%(origin)s a ouvert une session en tant que vous le %(start)s, en %(mode)s, "
 "pour au plus %(duration)s."
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "%(phrase)s (%(named)s)"
+msgstr "%(phrase)s (%(named)s)"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "%(verb)s %(count)s of %(model)s"
+msgstr "%(verb)s %(count)s « %(model)s »"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "%(verb)s %(model)s"
+msgstr "%(verb)s « %(model)s »"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "%(verb)s %(model)s, %(count)s"
+msgstr "%(verb)s « %(model)s », %(count)s"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "%s (at least)"
+msgstr "%s (au moins)"
 
 #. module: bf_impersonate
 #. odoo-python
@@ -70,6 +126,18 @@ msgstr "%s minutes"
 
 #. module: bf_impersonate
 #. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "%s records"
+msgstr "%s fiches"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "%s times"
+msgstr "%s fois"
+
+#. module: bf_impersonate
+#. odoo-python
 #: code:addons/bf_impersonate/wizard/bf_impersonate_wizard.py:0
 msgid "%s will be notified now, then receive a summary at the end."
 msgstr "%s recevra un avis maintenant, puis un résumé à la fin."
@@ -81,10 +149,44 @@ msgid "%s will be notified now."
 msgstr "%s recevra un avis maintenant."
 
 #. module: bf_impersonate
+#: model:ir.actions.report,print_report_name:bf_impersonate.action_report_bf_impersonate_session
+msgid "'Impersonation-%s' % (object.id)"
+msgstr "'Incarnation-%s' % (object.id)"
+
+#. module: bf_impersonate
 #. odoo-python
 #: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
 msgid "1 minute"
 msgstr "1 minute"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "1 record"
+msgstr "1 fiche"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "1 time"
+msgstr "1 fois"
+
+#. module: bf_impersonate
+#: model:ir.model.fields,help:bf_impersonate.field_bf_impersonate_session_line__kind
+msgid ""
+"A change is one request that wrote, or asked to. A consultation is one line "
+"per application looked at, with how many requests read it, kept only while "
+"the session changes nothing."
+msgstr ""
+"Une modification est une requête qui a écrit, ou qui l'a demandé. Une "
+"consultation est une ligne par application regardée, avec le nombre de "
+"requêtes qui l'ont lue, tenue seulement quand la séance ne change rien."
+
+#. module: bf_impersonate
+#: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session_line__label
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
+msgid "Action"
+msgstr "Geste"
 
 #. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__message_needaction
@@ -98,7 +200,6 @@ msgstr "Actions"
 
 #. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__line_count
-#: model_terms:ir.ui.view,arch_db:bf_impersonate.view_bf_impersonate_session_form
 msgid "Actions taken"
 msgstr "Actions faites"
 
@@ -118,6 +219,12 @@ msgstr ""
 #: code:addons/bf_impersonate/wizard/bf_impersonate_wizard.py:0
 msgid "An impersonation can only be opened from the web client."
 msgstr "Une incarnation ne s'ouvre que depuis le client web."
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "And %s more, in the journal."
+msgstr "Et %s autres, au journal."
 
 #. module: bf_impersonate
 #: model:ir.model.fields.selection,name:bf_impersonate.selection__res_config_settings__bf_impersonate_notify__start
@@ -167,6 +274,11 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #. module: bf_impersonate
+#: model:ir.model.fields.selection,name:bf_impersonate.selection__bf_impersonate_session_line__kind__write
+msgid "Change"
+msgstr "Modification"
+
+#. module: bf_impersonate
 #. odoo-javascript
 #: code:addons/bf_impersonate/static/src/js/user_menu.js:0
 msgid "Changing account, reloading…"
@@ -193,6 +305,11 @@ msgstr "Choisissez quelqu'un d'autre que vous."
 #: model:ir.model,name:bf_impersonate.model_res_config_settings
 msgid "Config Settings"
 msgstr "Paramètres de config"
+
+#. module: bf_impersonate
+#: model:ir.model.fields.selection,name:bf_impersonate.selection__bf_impersonate_session_line__kind__read
+msgid "Consultation"
+msgstr "Consultation"
 
 #. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__create_uid
@@ -231,6 +348,12 @@ msgid "Display Name"
 msgstr "Nom affiché"
 
 #. module: bf_impersonate
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.view_bf_impersonate_session_form
+msgid "Download the report"
+msgstr "Télécharger le rapport"
+
+#. module: bf_impersonate
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
 #: model_terms:ir.ui.view,arch_db:bf_impersonate.res_config_settings_view_form_bf_impersonate
 msgid "Duration"
 msgstr "Durée"
@@ -252,6 +375,7 @@ msgstr "Mettre fin à cette session"
 
 #. module: bf_impersonate
 #: model:ir.model.fields.selection,name:bf_impersonate.selection__bf_impersonate_session__state__closed
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
 msgid "Ended"
 msgstr "Terminée"
 
@@ -263,11 +387,8 @@ msgstr "Terminée par l'administration"
 #. module: bf_impersonate
 #. odoo-python
 #: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
-msgid ""
-"Ended on %(end)s (%(reason)s) after %(duration)s. Actions taken: %(count)s."
-msgstr ""
-"Terminée le %(end)s (%(reason)s) après %(duration)s. Actions faites : "
-"%(count)s."
+msgid "Ended on %(end)s (%(reason)s) after %(duration)s."
+msgstr "A pris fin le %(end)s (%(reason)s), après %(duration)s."
 
 #. module: bf_impersonate
 #: model_terms:ir.actions.act_window,help:bf_impersonate.action_bf_impersonate_session
@@ -345,6 +466,11 @@ msgstr ""
 "minutes."
 
 #. module: bf_impersonate
+#: model:ir.model.fields,help:bf_impersonate.field_bf_impersonate_session_line__read_count
+msgid "How many requests read this application during the session."
+msgstr "Combien de requêtes ont lu cette application pendant la séance."
+
+#. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__id
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session_line__id
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_wizard__id
@@ -380,6 +506,11 @@ msgid "Impersonation"
 msgstr "Incarnation"
 
 #. module: bf_impersonate
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
+msgid "Impersonation journal"
+msgstr "Journal des incarnations"
+
+#. module: bf_impersonate
 #: model:ir.model,name:bf_impersonate.model_bf_impersonate_session_line
 msgid "Impersonation journal line"
 msgstr "Ligne du journal d'incarnation"
@@ -408,6 +539,11 @@ msgid "In progress"
 msgstr "En cours"
 
 #. module: bf_impersonate
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
+msgid "In progress, planned end"
+msgstr "En cours, fin prévue le"
+
+#. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__message_is_follower
 msgid "Is Follower"
 msgstr "Est un abonné"
@@ -416,6 +552,11 @@ msgstr "Est un abonné"
 #: model_terms:ir.ui.view,arch_db:bf_impersonate.res_config_settings_view_form_bf_impersonate
 msgid "Journal"
 msgstr "Journal"
+
+#. module: bf_impersonate
+#: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session_line__kind
+msgid "Kind"
+msgstr "Nature"
 
 #. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__write_uid
@@ -506,6 +647,7 @@ msgstr "Minutes"
 #. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__mode
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_wizard__mode
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
 msgid "Mode"
 msgstr "Mode"
 
@@ -518,6 +660,15 @@ msgstr "Modèle"
 #: model:ir.model.fields.selection,name:bf_impersonate.selection__res_config_settings__bf_impersonate_notify__never
 msgid "Never (journal only)"
 msgstr "Jamais (journal seulement)"
+
+#. module: bf_impersonate
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
+msgid ""
+"No access right lets anyone write to this journal, administrators included: "
+"only the code that records a session writes to it."
+msgstr ""
+"Aucun droit d'accès ne permet d'écrire à ce journal, administrateurs compris"
+" : seul le code qui consigne une séance y écrit."
 
 #. module: bf_impersonate
 #: model_terms:ir.actions.act_window,help:bf_impersonate.action_bf_impersonate_session
@@ -554,6 +705,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_impersonate/models/ir_http.py:0
 #: code:addons/bf_impersonate/models/mail_mail.py:0
+#: code:addons/bf_impersonate/models/mail_message.py:0
 #: code:addons/bf_impersonate/models/mail_schedule.py:0
 #: code:addons/bf_impersonate/orm_journal.py:0
 msgid ""
@@ -562,6 +714,12 @@ msgid ""
 msgstr ""
 "Rien n'est envoyé pendant que vous voyez Symbifox en tant que quelqu'un "
 "d'autre : ni courriel, ni texto. Revenez à votre compte pour l'envoyer."
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "Nothing was changed."
+msgstr "Rien n'a été modifié."
 
 #. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_wizard__notice
@@ -628,6 +786,7 @@ msgstr "Personne"
 
 #. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__target_user_id
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
 #: model_terms:ir.ui.view,arch_db:bf_impersonate.view_bf_impersonate_session_search
 msgid "Person seen"
 msgstr "Personne vue"
@@ -670,6 +829,12 @@ msgstr "Lecture seule"
 
 #. module: bf_impersonate
 #. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "Read only: nothing could be changed."
+msgstr "Lecture seule : rien ne pouvait être modifié."
+
+#. module: bf_impersonate
+#. odoo-python
 #: code:addons/bf_impersonate/models/ir_http.py:0
 msgid "Read only: nothing is saved while you see Symbifox as someone else."
 msgstr ""
@@ -689,6 +854,7 @@ msgstr ""
 #. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__reason
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_wizard__reason
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
 #: model_terms:ir.ui.view,arch_db:bf_impersonate.view_bf_impersonate_session_form
 msgid "Reason"
 msgstr "Motif"
@@ -708,6 +874,16 @@ msgstr "Règle sur les enregistrements"
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session_line__record_ids
 msgid "Records"
 msgstr "Fiches"
+
+#. module: bf_impersonate
+#: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session_line__record_labels
+msgid "Records seen"
+msgstr "Fiches touchées"
+
+#. module: bf_impersonate
+#: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session_line__read_count
+msgid "Requests"
+msgstr "Requêtes"
 
 #. module: bf_impersonate
 #: model:ir.model.fields.selection,name:bf_impersonate.selection__bf_impersonate_session__end_reason__manual
@@ -755,9 +931,32 @@ msgid "See Symbifox as this user"
 msgstr "Voir Symbifox en tant que cette personne"
 
 #. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "See this session"
+msgstr "Voir la séance"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "See what was done"
+msgstr "Voir ce qui a été fait"
+
+#. module: bf_impersonate
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
+msgid "Seen by"
+msgstr "Vue par"
+
+#. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session_line__session_id
 msgid "Session"
 msgstr "Session"
+
+#. module: bf_impersonate
+#: model:ir.actions.report,name:bf_impersonate.action_report_bf_impersonate_session
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
+msgid "Session report"
+msgstr "Rapport de séance"
 
 #. module: bf_impersonate
 #: model_terms:ir.ui.view,arch_db:bf_impersonate.view_bf_impersonate_wizard_form
@@ -766,6 +965,7 @@ msgstr "Commencer"
 
 #. module: bf_impersonate
 #: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__date_start
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
 #: model_terms:ir.ui.view,arch_db:bf_impersonate.view_bf_impersonate_session_search
 msgid "Started at"
 msgstr "Début"
@@ -807,14 +1007,40 @@ msgstr ""
 #. module: bf_impersonate
 #. odoo-python
 #: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
-msgid "The journal entry linked to this message lists what was done."
-msgstr "L'entrée du journal liée à ce message dit ce qui a été fait."
+msgid "The journal of this session records everything that is done."
+msgstr "Le journal de cette séance consigne tout ce qui s'y fait."
+
+#. module: bf_impersonate
+#: model:ir.model.fields,help:bf_impersonate.field_bf_impersonate_session__summary_html
+msgid ""
+"The journal, grouped by record and by action: what was changed, and what was"
+" looked at."
+msgstr ""
+"Le journal, groupé par fiche et par geste : ce qui a été modifié, et ce qui "
+"a été consulté."
+
+#. module: bf_impersonate
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.view_bf_impersonate_session_form
+msgid "The journal, line by line"
+msgstr "Le journal, ligne par ligne"
 
 #. module: bf_impersonate
 #. odoo-python
 #: code:addons/bf_impersonate/models/res_config_settings.py:0
 msgid "The maximum duration must be at least one minute."
 msgstr "La durée maximale doit être d'au moins une minute."
+
+#. module: bf_impersonate
+#: model:ir.model.fields,help:bf_impersonate.field_bf_impersonate_session_line__record_labels
+msgid ""
+"The names those records carried when the action happened. A name can change "
+"afterwards, and a deleted record has none: the journal keeps what was true "
+"at the time."
+msgstr ""
+"Le nom que ces fiches portaient au moment du geste. Un nom change après "
+"coup, et une fiche supprimée n'en a plus : le journal garde ce qui était "
+"vrai alors."
 
 #. module: bf_impersonate
 #. odoo-python
@@ -883,6 +1109,11 @@ msgstr ""
 " quelqu'un d'autre."
 
 #. module: bf_impersonate
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
+msgid "This session left no line in the journal."
+msgstr "Cette séance n'a laissé aucune ligne au journal."
+
+#. module: bf_impersonate
 #. odoo-javascript
 #: code:addons/bf_impersonate/static/src/xml/impersonate_banner.xml:0
 msgid "Time left"
@@ -897,6 +1128,45 @@ msgstr "Durée écoulée"
 #: model:ir.model,name:bf_impersonate.model_res_users
 msgid "User"
 msgstr "Utilisateur"
+
+#. module: bf_impersonate
+#: model:ir.model.fields,help:bf_impersonate.field_bf_impersonate_session_line__writes_json
+msgid ""
+"What this request really wrote, as data: model, operation, records and the "
+"names they carried. The summary is built from it."
+msgstr ""
+"Ce que cette requête a réellement écrit, en données : modèle, geste, fiches "
+"et noms qu'elles portaient. Le résumé en sort."
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "What was changed"
+msgstr "Ce qui a été modifié"
+
+#. module: bf_impersonate
+#: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session__summary_html
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.view_bf_impersonate_session_form
+msgid "What was done"
+msgstr "Ce qui a été fait"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "What was looked at"
+msgstr "Ce qui a été consulté"
+
+#. module: bf_impersonate
+#: model_terms:ir.ui.view,arch_db:bf_impersonate.report_bf_impersonate_session
+msgid "When"
+msgstr "Quand"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "When the session ends, you will receive a summary of what was done."
+msgstr "À la fin de la séance, vous recevrez un résumé de ce qui a été fait."
 
 #. module: bf_impersonate
 #. odoo-python
@@ -925,6 +1195,11 @@ msgstr ""
 "lire."
 
 #. module: bf_impersonate
+#: model:ir.model.fields,field_description:bf_impersonate.field_bf_impersonate_session_line__writes_json
+msgid "Writes"
+msgstr "Écritures"
+
+#. module: bf_impersonate
 #. odoo-python
 #: code:addons/bf_impersonate/wizard/bf_impersonate_wizard.py:0
 msgid ""
@@ -949,25 +1224,55 @@ msgstr "Vous voyez Symbifox en tant que %s"
 #. module: bf_impersonate
 #. odoo-python
 #: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "archived"
+msgstr "a archivé"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "archived or restored"
+msgstr "a archivé ou rétabli"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
 msgid "changed"
-msgstr "modifiée"
+msgstr "a modifié"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "closed an activity on"
+msgstr "a clos une activité sur"
 
 #. module: bf_impersonate
 #. odoo-python
 #: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
 msgid "created"
-msgstr "créée"
+msgstr "a créé"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "decided on a held email of"
+msgstr "a tranché un courriel retenu de"
 
 #. module: bf_impersonate
 #. odoo-python
 #: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
 msgid "deleted"
-msgstr "supprimée"
+msgstr "a supprimé"
 
 #. module: bf_impersonate
 #: model_terms:ir.ui.view,arch_db:bf_impersonate.view_bf_impersonate_wizard_form
 msgid "e.g. Cannot see the CRM pipeline since Monday (ticket #1234)"
 msgstr "p. ex. Ne voit plus le pipeline CRM depuis lundi (billet #1234)"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "filed"
+msgstr "a classé"
 
 #. module: bf_impersonate
 #. odoo-python
@@ -978,8 +1283,20 @@ msgstr "moins d'une minute"
 #. module: bf_impersonate
 #. odoo-python
 #: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
-msgid "note posted"
-msgstr "note publiée"
+msgid "opened"
+msgstr "a ouvert"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "planned an activity on"
+msgstr "a planifié une activité sur"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "posted a note on"
+msgstr "a publié une note sur"
 
 #. module: bf_impersonate
 #. odoo-javascript
@@ -992,3 +1309,33 @@ msgstr "lecture et écriture"
 #: code:addons/bf_impersonate/static/src/js/impersonate_banner.js:0
 msgid "read only"
 msgstr "lecture seule"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "refreshed the folders of"
+msgstr "a rafraîchi les dossiers de"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "synchronised"
+msgstr "a synchronisé"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "tested the connection of"
+msgstr "a testé la connexion de"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "unarchived"
+msgstr "a désarchivé"
+
+#. module: bf_impersonate
+#. odoo-python
+#: code:addons/bf_impersonate/models/bf_impersonate_session.py:0
+msgid "viewed"
+msgstr "a consulté"

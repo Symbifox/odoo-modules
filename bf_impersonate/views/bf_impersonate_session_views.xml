@@ -28,6 +28,8 @@
                             class="btn-secondary" groups="base.group_system"
                             invisible="state != 'open'"
                             confirm="The person doing the impersonation goes back to their own account at their next click. Continue?"/>
+                    <button name="action_download_report" type="object" string="Download the report"
+                            class="btn-secondary" icon="fa-download"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -53,15 +55,23 @@
                         <field name="reason" nolabel="1" colspan="2"/>
                     </group>
                     <notebook>
-                        <page string="Actions taken" name="lines">
+                        <page string="What was done" name="summary">
+                            <field name="summary_html" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="The journal, line by line" name="lines">
                             <field name="line_ids">
                                 <list create="0" edit="0" delete="0">
                                     <field name="date"/>
-                                    <field name="model"/>
-                                    <field name="method"/>
-                                    <field name="record_ids"/>
-                                    <field name="field_names"/>
+                                    <field name="label"/>
+                                    <field name="kind" optional="show"/>
+                                    <field name="model" optional="hide"/>
+                                    <field name="method" optional="hide"/>
+                                    <field name="record_ids" optional="hide"/>
+                                    <field name="record_labels" optional="hide"/>
+                                    <field name="field_names" optional="hide"/>
+                                    <field name="read_count" optional="hide"/>
                                     <field name="details" optional="hide"/>
+                                    <field name="writes_json" optional="hide" groups="base.group_no_one"/>
                                     <field name="route" optional="hide"/>
                                 </list>
                             </field>

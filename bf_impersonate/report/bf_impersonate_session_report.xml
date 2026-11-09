@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le rapport de séance : ce que le journal devient quand la personne veut
+         l'emporter.
+
+         Un rapport QWeb est la SEULE forme de téléchargement qui passe ici : un
+         export en pièce jointe exigerait le droit d'écriture sur la fiche liée,
+         qu'aucune ACL ne donne sur ce modèle, administrateurs compris. Le
+         rapport, lui, n'écrit rien.
+
+         L'adresse IP n'y figure pas : elle est réservée à l'administration
+         (groups sur le champ), et ce rapport est fait pour la personne vue. -->
+
+    <record id="paperformat_bf_impersonate_session" model="report.paperformat">
+        <field name="name">Impersonation session report (US Letter)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">2</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <template id="report_bf_impersonate_session">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <!-- La société de la fiche, pas env.company : celle-ci est la
+                     première des sociétés cochées, et un rendu hors requête n'en
+                     a aucune. Patron repris de bf_sign. Lue en sudo() par la
+                     méthode : le rapport se rend sous la personne vue, qui n'a
+                     pas forcément accès à la société de qui l'a incarnée. -->
+                <t t-set="brand" t-value="doc._bf_brand_company()"/>
+                <t t-set="dark" t-value="(brand and brand.report_brand_dark) or '#2D3031'"/>
+                <t t-set="accent" t-value="(brand and brand.report_brand_primary) or '#29ABE2'"/>
+                <div class="page" t-attf-style="font-family: Lexend, 'Segoe UI', Arial, sans-serif; font-size: 10pt; line-height: 1.5; color: {{ dark }};">
+
+                    <table t-attf-style="width: 100%; border-collapse: collapse; background-color: {{ dark }};">
+                        <tr>
+                            <td style="width: 90px; padding: 16pt 0 16pt 18pt; vertical-align: middle;">
+                                <!-- La bande est sombre : `report_brand_logo` est le
+                                     logo prévu pour un fond sombre, et le logo
+                                     standard (encre foncée) y disparaîtrait. -->
+                                <t t-set="bf_logo" t-value="(brand and 'report_brand_logo' in brand and brand.report_brand_logo) or (brand and brand.logo)"/>
+                                <img t-if="bf_logo" t-att-src="image_data_uri(bf_logo)"
+                                     alt="" style="max-height: 46px; max-width: 80px;"/>
+                            </td>
+                            <td style="padding: 16pt 18pt; vertical-align: middle;">
+                                <p t-attf-style="margin: 0 0 3pt 0; font-size: 8.5pt; font-weight: 600; letter-spacing: 1.5pt; text-transform: uppercase; color: {{ accent }};">Impersonation journal</p>
+                                <h1 style="margin: 0; font-size: 16pt; font-weight: 600; color: #FFFFFF;">Session report</h1>
+                            </td>
+                            <td style="padding: 16pt 18pt; vertical-align: middle; text-align: right; width: 110px;">
+                                <span t-attf-style="display: inline-block; border: 1.5px solid {{ accent }}; color: {{ accent }}; font-size: 9.5pt; font-weight: 600; padding: 3pt 10pt; border-radius: 18pt;">
+                                    #<span t-out="doc.id"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <div t-attf-style="height: 4px; background-color: {{ accent }};">&#160;</div>
+
+                    <div style="padding: 16pt 18pt 0 18pt;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 9.5pt;">
+                            <tr>
+                                <td style="width: 32%; padding: 3pt 0; color: #6B7280;">Person seen</td>
+                                <td style="padding: 3pt 0; font-weight: 600;"><span t-field="doc.target_user_id"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3pt 0; color: #6B7280;">Seen by</td>
+                                <td style="padding: 3pt 0; font-weight: 600;"><span t-field="doc.user_id"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3pt 0; color: #6B7280;">Mode</td>
+                                <td style="padding: 3pt 0;"><span t-field="doc.mode"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3pt 0; color: #6B7280;">Reason</td>
+                                <td style="padding: 3pt 0;"><span t-field="doc.reason"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3pt 0; color: #6B7280;">Started at</td>
+                                <td style="padding: 3pt 0;"><span t-field="doc.date_start"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3pt 0; color: #6B7280;">Ended</td>
+                                <td style="padding: 3pt 0;">
+                                    <t t-if="doc.date_end">
+                                        <span t-field="doc.date_end"/> (<span t-field="doc.end_reason"/>)
+                                    </t>
+                                    <t t-else="">In progress, planned end <span t-field="doc.expires_at"/></t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3pt 0; color: #6B7280;">Duration</td>
+                                <td style="padding: 3pt 0;"><span t-out="doc._bf_minutes(doc.duration_minutes)"/></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="padding: 6pt 18pt 0 18pt;">
+                        <h2 t-attf-style="font-size: 11pt; font-weight: 600; letter-spacing: 0.3pt; color: {{ accent }}; margin: 16pt 0 6pt; padding-bottom: 3pt; border-bottom: 2px solid {{ accent }}; display: inline-block;">What was done</h2>
+                        <div t-out="doc.summary_html"/>
+                    </div>
+
+                    <div style="padding: 6pt 18pt 18pt 18pt;">
+                        <h2 t-attf-style="font-size: 11pt; font-weight: 600; letter-spacing: 0.3pt; color: {{ accent }}; margin: 16pt 0 6pt; padding-bottom: 3pt; border-bottom: 2px solid {{ accent }}; display: inline-block;">The journal, line by line</h2>
+                        <p t-if="not doc.line_ids" style="margin: 6pt 0; font-size: 9.5pt; color: #6B7280;">This session left no line in the journal.</p>
+                        <table t-if="doc.line_ids" style="width: 100%; border-collapse: collapse; font-size: 8.5pt;">
+                            <thead>
+                                <tr t-attf-style="color: {{ dark }}; border-bottom: 1px solid #D1D5DB;">
+                                    <th style="text-align: left; padding: 4pt 6pt 4pt 0; width: 100px;">When</th>
+                                    <th style="text-align: left; padding: 4pt 6pt;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.line_ids" t-as="line" style="border-bottom: 1px solid #F3F4F6;">
+                                    <td style="padding: 3pt 6pt 3pt 0; vertical-align: top; color: #6B7280;">
+                                        <span t-field="line.date"/>
+                                    </td>
+                                    <td style="padding: 3pt 6pt; vertical-align: top;">
+                                        <span t-out="line.label"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="padding: 0 18pt 18pt 18pt; font-size: 8pt; color: #6B7280;">
+                        <p style="margin: 0;">No access right lets anyone write to this journal, administrators included: only the code that records a session writes to it.</p>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_bf_impersonate_session" model="ir.actions.report">
+        <field name="name">Session report</field>
+        <field name="model">bf.impersonate.session</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_impersonate.report_bf_impersonate_session</field>
+        <field name="report_file">bf_impersonate.report_bf_impersonate_session</field>
+        <field name="print_report_name">'Impersonation-%s' % (object.id)</field>
+        <field name="binding_model_id" ref="model_bf_impersonate_session"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_bf_impersonate_session"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les deux avis à la personne dans la mise en page maison, mais avec le
+         bouton APRÈS le texte.
+
+         La mise en page commune (bf_onboarding_base.bf_mail_layout) place son
+         bouton d'accès AVANT le corps, et le libelle « Voir » plus le nom du
+         modèle : la personne lisait donc « Voir Session d'incarnation » en
+         haut de la carte, avant de savoir de quoi il s'agit. Déplacer le bloc
+         dans la mise en page commune changerait TOUS les courriels maison.
+         Le patron retenu est celui de bf_helpdesk : couper le bouton de la
+         mise en page commune (has_button_access), et poser le nôtre à la fin
+         du corps, avec un libellé qui dit où il mène.
+
+         Le bouton prend l'anthracite de la marque et non le bleu : du blanc
+         sur le bleu de marque ne tient pas le contraste de 4,5:1. -->
+
+    <template id="mail_body_impersonate" name="Impersonation notice blocks">
+        <t t-set="bf_imp_dark" t-value="(company and company.report_brand_dark) or '#2D3031'"/>
+        <t t-out="message.body"/>
+        <p t-if="has_button_access and record" style="margin: 24px 0 0 0;">
+            <a t-att-href="button_access['url']"
+               t-attf-style="display: inline-block; padding: 10px 20px; background-color: {{ bf_imp_dark }}; color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 10px;">
+                <t t-out="record._bf_button_label()"/>
+            </a>
+        </p>
+    </template>
+
+    <template id="mail_layout_impersonate" name="Impersonation notices in the Blue Fox layout">
+        <t t-set="bf_imp_body"><t t-call="bf_impersonate.mail_body_impersonate"/></t>
+        <t t-call="bf_onboarding_base.bf_mail_layout">
+            <!-- L'aperçu (le texte caché que la messagerie montre sous le sujet)
+                 reste celui du message, pas le libellé du bouton. -->
+            <t t-set="message" t-value="message.new({'body': bf_imp_body, 'preview': message.preview})"/>
+            <t t-set="has_button_access" t-value="False"/>
+            <t t-set="tracking_values" t-value="[]"/>
+        </t>
+    </template>
+
+</odoo>

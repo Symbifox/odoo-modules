@@ -124,7 +124,9 @@ class TestImpersonateJourney(HttpCase):
         journal = self._journal(self.reader, self.colleague)
         self.assertEqual(journal.state, "closed")
         self.assertEqual(journal.end_reason, "manual")
-        self.assertFalse(journal.line_ids, "rien d'écrit, rien à consigner")
+        self.assertFalse(journal.line_ids.filtered(lambda line: line.kind == "write"),
+                         "rien d'écrit, rien à consigner comme changement")
+        self.assertIn("Read only", journal.with_context(lang="en_US").summary_html)
         # Les avis sont des user_notification : message_ids ne les liste pas.
         notified = self.env["mail.message"].search([
             ("model", "=", "bf.impersonate.session"), ("res_id", "=", journal.id),
@@ -207,7 +209,13 @@ class TestImpersonateJourney(HttpCase):
         self._assert_refused(ACCESS_ERROR, self._kw, "res.partner", "bf_test_touch",
                              [[self.partner.id]], button=True)
         self.make_jsonrpc_request("/bf_impersonate/stop")
-        self.assertFalse(self._journal(self.reader, self.colleague).line_ids)
+        lignes = self._journal(self.reader, self.colleague).line_ids
+        self.assertFalse(lignes.filtered(lambda line: line.kind == "write"),
+                         "rien n'est resté, donc rien n'est consigné comme changement")
+        # La consultation, elle, se consigne : c'est la seule réponse à « il a
+        # vu quoi ? » quand une séance ne change rien (18.0.1.1.0).
+        self.assertEqual(lignes.mapped("kind"), ["read"])
+        self.assertEqual(lignes.model, "res.partner")
 
     def test_review_holes_are_closed(self):
         """Les trous de la relecture adverse du 2026-10-08, un par un."""
@@ -762,6 +770,202 @@ class TestImpersonateJourney(HttpCase):
         self.assertEqual(journal.date_end, journal.expires_at)
 
 
+    # ------------------------------------------------------------------
+    # Le journal se lit
+
+    def test_consultations_are_one_line_per_application_with_a_counter(self):
+        """En lecture seule, le journal est la seule réponse à « il a vu quoi ? ».
+
+        Avant la 18.0.1.1.0 il restait vide : la personne lisait « Actions : 0 »
+        et n'apprenait rien. Une ligne par application, un compteur de requêtes,
+        et rien pour les vues, menus et actions, qui ne disent rien d'elle.
+        """
+        # Des méthodes qu'Odoo ne marque PAS en lecture seule : c'est le cas
+        # des 34 méthodes maison mesurées le 2026-10-08 (pastilles, tableaux de
+        # bord). Sous essai, la trace s'écrit sur le curseur de la requête, qui
+        # est simulé en lecture seule pour une méthode de lecture d'Odoo : seules
+        # les méthodes non marquées se prouvent ici. Le curseur à part, lui, est
+        # le chemin de PRODUCTION et ne tourne jamais sous essai.
+        def ecran_bfimp(records):
+            return True
+
+        for model in ("res.partner", "res.users", "ir.ui.view"):
+            self.startPatcher(patch.object(
+                type(self.env[model]), "ecran_bfimp", ecran_bfimp, create=True))
+        self._login(self.reader)
+        self._start(self.colleague)
+        for _ in range(2):
+            self._kw("res.partner", "ecran_bfimp", [[self.partner.id]])
+        self._kw("res.users", "ecran_bfimp", [[self.colleague.id]])
+        self._kw("ir.ui.view", "ecran_bfimp", [[1]])
+        self.make_jsonrpc_request("/bf_impersonate/stop")
+
+        journal = self._journal(self.reader, self.colleague)
+        vues = {line.model: line.read_count
+                for line in journal.line_ids if line.kind == "read"}
+        self.assertEqual(vues.get("res.partner"), 2, "deux requêtes, une seule ligne")
+        self.assertEqual(vues.get("res.users"), 1)
+        self.assertNotIn("ir.ui.view", vues, "une vue consultée ne dit rien de la personne")
+        self.assertIn("What was looked at",
+                      journal.with_context(lang="en_US").summary_html)
+
+    def test_summary_says_created_when_a_form_is_saved_for_the_first_time(self):
+        """Le geste se lit sur l'écriture, jamais sur le nom de l'appel : un
+        formulaire enregistré pour la première fois passe par ``web_save`` et a
+        bel et bien CRÉÉ la fiche."""
+        self._login(self.helper)
+        self._start(self.person, mode="write")
+        self._kw("res.partner", "web_save", [[], {"name": "Chèvre de madame Exemple"}],
+                 {"specification": {"name": {}}})
+        self.make_jsonrpc_request("/bf_impersonate/stop")
+
+        journal = self._journal(self.helper, self.person)
+        ligne = journal.line_ids.filtered(lambda line: line.model == "res.partner")
+        self.assertEqual(ligne.method, "web_save", "l'appel reste tel quel au détail")
+        journal = journal.with_context(lang="en_US")
+        items, _vus = journal._bf_summary_items()
+        phrases = [journal._bf_phrase(item) for item in items]
+        self.assertTrue(
+            any("created" in phrase and "Chèvre de madame Exemple" in phrase for phrase in phrases),
+            phrases)
+
+    def test_a_record_written_twice_in_one_request_counts_once(self):
+        """Une requête peut écrire DEUX FOIS la même fiche, et le journal doit
+        en annoncer UNE.
+
+        `res.partner.write` le fait de lui-même dès que `is_company` est dans
+        les valeurs : un write en sudo pour ce champ, puis le reste. Le relevé
+        voyait deux écritures et le résumé annonçait « 2 fiches » plus « et
+        1 autre » qui n'existe pas. Trouvé au second tour de la relecture
+        adverse, dans un journal auquel la conservation donne une valeur de
+        preuve.
+        """
+        self._login(self.helper)
+        self._start(self.person, mode="write")
+        self._kw("res.partner", "web_save",
+                 [[self.partner.id], {"is_company": True, "comment": "Société"}],
+                 {"specification": {"is_company": {}}})
+        self.make_jsonrpc_request("/bf_impersonate/stop")
+
+        journal = self._journal(self.helper, self.person).with_context(lang="en_US")
+        ligne = journal.line_ids.filtered(lambda line: line.model == "res.partner")[:1]
+        self.assertIn('"w": 2', ligne.writes_json or "",
+                      "les DEUX écritures sont bien relevées")
+        self.assertIn("is_company", ligne.field_names or "")
+        items, _vus = journal._bf_summary_items()
+        phrases = [journal._bf_phrase(item) for item in items]
+        self.assertTrue(any("1 record" in phrase for phrase in phrases), phrases)
+        for phrase in phrases:
+            self.assertNotIn("2 records", phrase)
+            self.assertNotIn("more", phrase)
+            self.assertNotIn("at least", phrase)
+
+    def test_names_in_the_journal_are_a_snapshot_of_the_moment(self):
+        """Un nom change après coup, et la personne lit son journal plus tard :
+        le libellé est celui du moment, pas celui d'aujourd'hui."""
+        self._login(self.helper)
+        self._start(self.person, mode="write")
+        self._kw("res.partner", "write", [[self.partner.id], {"name": "Nom du moment"}])
+        self.make_jsonrpc_request("/bf_impersonate/stop")
+        self.partner.name = "Renommée bien après"
+
+        journal = self._journal(self.helper, self.person)
+        ligne = journal.line_ids.filtered(lambda line: line.model == "res.partner")
+        self.assertEqual(ligne.record_labels, "Nom du moment")
+        self.assertIn("Nom du moment", journal.summary_html)
+        self.assertNotIn("Renommée bien après", journal.summary_html)
+        self.assertIn("Nom du moment", journal.with_context(lang="en_US").summary_html)
+
+    def test_the_notices_say_what_the_person_can_check(self):
+        """L'avis de début ne promet plus un journal encore vide (il part avant
+        le premier geste) ; celui de fin porte le résumé."""
+        self._login(self.helper)
+        self._start(self.person, mode="write")
+        self._kw("res.partner", "write", [[self.partner.id], {"name": "Vue par le résumé"}])
+        journal = self._journal(self.helper, self.person)
+
+        avis = self.env["mail.message"].search([
+            ("model", "=", "bf.impersonate.session"), ("res_id", "=", journal.id),
+            ("message_type", "=", "user_notification")], order="id")
+        # L'avis se rend dans la langue de la personne, que la base du banc met
+        # en fr_CA : l'essai vise donc le FAIT, pas la langue. La fausse promesse
+        # d'avant est partie, dans les deux langues, et le résumé est annoncé.
+        debut = avis[0].body
+        self.assertNotIn("lists what was done", debut)
+        self.assertNotIn("dit ce qui a été fait", debut)
+        self.assertTrue("summary" in debut or "résumé" in debut, debut)
+        self.assertEqual(
+            journal.with_context(lang="en_US")._bf_button_label(), "See this session")
+
+        self.make_jsonrpc_request("/bf_impersonate/stop")
+        fin = self.env["mail.message"].search([
+            ("model", "=", "bf.impersonate.session"), ("res_id", "=", journal.id),
+            ("message_type", "=", "user_notification")], order="id desc", limit=1)
+        self.assertIn("Vue par le résumé", fin.body, "la fiche est nommée")
+        self.assertTrue("changed" in fin.body or "a modifié" in fin.body, fin.body)
+        self.assertEqual(
+            journal.with_context(lang="en_US")._bf_button_label(), "See what was done")
+
+    def test_a_record_the_person_cannot_read_gets_no_name(self):
+        """Les libellés se lisent SOUS LA PERSONNE, jamais en superutilisateur.
+
+        Le journal est lisible par elle : y recopier le nom d'une fiche qu'elle
+        n'a pas le droit de voir serait une fuite, et une écriture faite en
+        `sudo()` par le code d'un bouton touche justement des modèles qu'elle ne
+        lit pas.
+        """
+        cache = self.env["res.partner"].create({"name": "Fiche hors de sa vue"})
+        self.env["ir.rule"].create({
+            "name": "essai 27397 : cache une fiche",
+            "model_id": self.env["ir.model"]._get("res.partner").id,
+            "domain_force": "[('id', '!=', %d)]" % cache.id,
+            "groups": [(6, 0, [self.env.ref("base.group_user").id])],
+            "perm_read": True, "perm_write": False,
+            "perm_create": False, "perm_unlink": False,
+        })
+
+        def bf_touch_hidden(records):
+            records.env["res.partner"].sudo().browse(cache.id).write(
+                {"comment": "Touchée par le bouton"})
+            return True
+
+        self.startPatcher(patch.object(
+            type(self.env["res.partner"]), "bf_touch_hidden", bf_touch_hidden, create=True))
+        self._login(self.helper)
+        self._start(self.person, mode="write")
+        self._kw("res.partner", "bf_touch_hidden", [[self.partner.id]], button=True)
+        self.make_jsonrpc_request("/bf_impersonate/stop")
+
+        journal = self._journal(self.helper, self.person)
+        ligne = journal.line_ids.filtered(lambda line: line.kind == "write")[:1]
+        self.assertIn("res.partner", ligne.writes_json, "l'écriture sudo reste consignée")
+        self.assertNotIn("Fiche hors de sa vue", ligne.writes_json or "")
+        self.assertNotIn("Fiche hors de sa vue", journal.summary_html)
+        self.assertIn(str(cache.id), ligne.writes_json,
+                      "sans nom, il reste l'identifiant")
+
+    def test_the_report_renders_for_the_person_seen(self):
+        """Le téléchargement est un rapport QWeb, et il se rend sous la PERSONNE.
+
+        Aucune ACL ne donne l'écriture sur ce modèle, administrateurs compris :
+        une pièce jointe liée serait refusée (ir.attachment exige l'écriture sur
+        la fiche liée). Un rapport, lui, n'écrit rien.
+        """
+        self._login(self.helper)
+        self._start(self.person, mode="write")
+        self._kw("res.partner", "write", [[self.partner.id], {"name": "Dans le rapport"}])
+        self.make_jsonrpc_request("/bf_impersonate/stop")
+
+        journal = self._journal(self.helper, self.person)
+        action = journal.with_user(self.person).action_download_report()
+        self.assertEqual(action["type"], "ir.actions.report")
+        html, kind = self.env["ir.actions.report"].with_user(self.person)._render_qweb_html(
+            "bf_impersonate.report_bf_impersonate_session", journal.ids)
+        self.assertEqual(kind, "html")
+        rendu = html.decode() if isinstance(html, bytes) else html
+        self.assertIn("Session report", rendu)
+        self.assertIn("Dans le rapport", rendu)
+
 @tagged("post_install", "-at_install")
 class TestOutsideRequest(TransactionCase):
 
@@ -947,3 +1151,197 @@ class TestOutsideRequest(TransactionCase):
         mail = self.env["mail.mail"].create({
             "subject": "Hors requête", "email_to": "x@example.com", "body_html": "<p>x</p>"})
         self.assertTrue(mail)
+
+
+@tagged("post_install", "-at_install")
+class TestJournalReadability(TransactionCase):
+    """Ce que le journal GARDE et comment il se groupe, sans passer par HTTP."""
+
+    def _journal(self, mode="write"):
+        origin = new_test_user(self.env, login="bfimp_lu_origine", groups="base.group_user")
+        target = new_test_user(self.env, login="bfimp_lu_cible", groups="base.group_user")
+        start = fields.Datetime.now()
+        return self.env["bf.impersonate.session"].sudo().create({
+            "user_id": origin.id,
+            "target_user_id": target.id,
+            "reason": "Essai du résumé",
+            "mode": mode,
+            "date_start": start,
+            "expires_at": start + timedelta(minutes=30),
+        })
+
+    def _line(self, journal, model, method, writes):
+        return self.env["bf.impersonate.session.line"].sudo().create({
+            "session_id": journal.id,
+            "kind": "write",
+            "model": model,
+            "method": method,
+            "writes_json": json.dumps(writes),
+        })
+
+    def test_summary_counts_distinct_records_not_requests(self):
+        journal = self._journal()
+        self._line(journal, "res.partner", "web_save", [
+            {"model": "res.partner", "op": "write", "ids": [1, 2], "n": 2, "trunc": False,
+             "labels": ["Première fiche"]}])
+        self._line(journal, "res.partner", "web_save", [
+            {"model": "res.partner", "op": "write", "ids": [2, 3], "n": 2, "trunc": False,
+             "labels": ["Troisième fiche"]}])
+        journal = journal.with_context(lang="en_US")
+        items, vus = journal._bf_summary_items()
+        self.assertFalse(vus)
+        self.assertEqual(len(items), 1, "un seul geste, une seule phrase")
+        self.assertEqual(items[0]["count"], 3, "trois fiches distinctes, quatre écritures")
+        phrase = journal._bf_phrase(items[0])
+        self.assertIn("3 records", phrase)
+        self.assertIn("Première fiche", phrase)
+        self.assertIn("more", phrase, "les fiches nommées s'arrêtent, le compte continue")
+
+    def test_summary_says_at_least_when_the_list_was_cut(self):
+        """Le relevé garde 50 identifiants par écriture : au-delà, le résumé
+        annonce un plancher plutôt qu'un chiffre faux."""
+        journal = self._journal()
+        self._line(journal, "bf.email", "held_decide", [
+            {"model": "res.partner", "op": "write", "ids": list(range(1, 51)),
+             "n": 106, "trunc": True, "labels": []}])
+        items, _vus = journal._bf_summary_items()
+        phrase = journal._bf_phrase(items[0])
+        # Le compte VRAI de l'écriture (106) et non la liste gardée (50) : le
+        # relevé coupe la liste, pas le compte. Et UNE seule écriture a produit
+        # ce groupe, donc le chiffre est EXACT : pas de « au moins ».
+        self.assertIn("106 records", phrase)
+        self.assertNotIn("at least", phrase)
+
+    def test_a_cut_list_spread_over_several_writes_is_a_floor(self):
+        """Deux listes coupées peuvent se recouper : là, rien n'est exact, et
+        le résumé annonce un minimum plutôt qu'un chiffre faux."""
+        journal = self._journal()
+        for depart in (1, 40):
+            self._line(journal, "bf.email", "held_decide", [
+                {"model": "res.partner", "op": "write",
+                 "ids": list(range(depart, depart + 50)),
+                 "n": 60, "w": 1, "trunc": True, "labels": []}])
+        journal = journal.with_context(lang="en_US")
+        items, _vus = journal._bf_summary_items()
+        phrase = journal._bf_phrase(items[0])
+        self.assertIn("89 records", phrase, "les deux listes se recoupent")
+        self.assertIn("at least", phrase)
+
+    def test_a_deleted_record_is_counted_without_a_name(self):
+        journal = self._journal()
+        self._line(journal, "res.partner", "unlink", [
+            {"model": "res.partner", "op": "unlink", "ids": [4242], "n": 1, "trunc": False,
+             "labels": []}])
+        journal = journal.with_context(lang="en_US")
+        items, _vus = journal._bf_summary_items()
+        phrase = journal._bf_phrase(items[0])
+        self.assertIn("deleted", phrase)
+        self.assertIn("1 record", phrase)
+
+    def test_old_lines_still_read(self):
+        """Une ligne d'avant la 18.0.1.1.0 n'a pas de writes_json : le résumé
+        retombe sur l'appel, au lieu de perdre la séance."""
+        journal = self._journal()
+        self.env["bf.impersonate.session.line"].sudo().create({
+            "session_id": journal.id, "kind": "write", "model": "res.partner",
+            "method": "write", "record_ids": "7,8",
+        })
+        journal = journal.with_context(lang="en_US")
+        items, _vus = journal._bf_summary_items()
+        self.assertEqual(items[0]["count"], 2)
+        self.assertIn("changed", journal._bf_phrase(items[0]))
+
+    def test_field_storage_attachments_are_not_journaled(self):
+        """Ouvrir un courriel écrit le contenu indexé de ses pièces jointes :
+        22 des 163 écritures de la seule séance de production, et rien que la
+        personne ait fait. Une vraie pièce jointe, elle, reste consignée."""
+        from odoo.addons.bf_impersonate import orm_journal
+        attachments = self.env["ir.attachment"]
+        self.assertTrue(orm_journal._is_field_storage(
+            attachments, [{"res_field": "datas", "name": "cache"}]))
+        self.assertFalse(orm_journal._is_field_storage(
+            attachments, [{"name": "contrat.pdf", "res_model": "res.partner"}]))
+        self.assertFalse(orm_journal._is_field_storage(
+            attachments, []), "une suppression garde sa trace")
+        self.assertFalse(orm_journal._is_field_storage(
+            self.env["res.partner"], [{"res_field": "x"}]))
+
+    def test_plumbing_is_noise_and_correspondence_is_not(self):
+        for model in ("bus.bus", "ir.cron.trigger"):
+            self.assertIn(model, imp.NOISE_MODELS)
+        self.assertTrue(imp.read_is_noise("ir.ui.view"))
+        self.assertTrue(imp.read_is_noise("ir.actions.act_window"))
+        self.assertTrue(imp.read_is_noise(False))
+        # Lire le fil d'une fiche sous la personne, c'est lire sa
+        # correspondance : ça se consigne.
+        self.assertFalse(imp.read_is_noise("mail.message"))
+        self.assertFalse(imp.read_is_noise("ir.attachment"))
+
+    def test_a_forged_model_never_enters_the_journal(self):
+        """Le modèle vient des paramètres de la requête, donc de l'incarnateur.
+
+        Sans contrôle au registre, une adresse tapée à la main
+        (`/odoo/contacts?thread_model=Rien d'anormal`) inscrit la ligne de son
+        choix au journal qui sert justement à le surveiller, et une valeur non
+        textuelle fait lever la requête. Relecture adverse du 2026-11-08.
+        """
+        journal = self._journal(mode="read")
+        Session = self.env["bf.impersonate.session"]
+        for forge in ("Rien d'anormal", "res.partner.inexistant", 42, None, "", False):
+            Session._bf_note_read(journal.id, forge)
+        Session._bf_note_read(journal.id, "res.partner")
+        journal.invalidate_recordset()
+        self.assertEqual(journal.line_ids.mapped("model"), ["res.partner"],
+                         "seul un modèle du registre entre au journal")
+
+    def test_a_route_that_ignores_thread_model_writes_nothing(self):
+        """Le paramètre n'est cru que là où la route le VISE.
+
+        `/odoo/contacts?thread_model=hr.payslip` se sert normalement en
+        ignorant le paramètre : l'incarnateur y écrivait « a consulté Bulletin
+        de paie » au journal qui sert à le surveiller. Second tour de la
+        relecture adverse.
+        """
+        from odoo.addons.bf_impersonate import impersonation as imp_local
+        self.assertFalse(imp_local.thread_model_is_the_target("/odoo/contacts"))
+        self.assertFalse(imp_local.thread_model_is_the_target("/web/webclient/x"))
+        self.assertFalse(imp_local.thread_model_is_the_target(""))
+        # Les routes du fil, elles, résolvent la fiche et refusent si elles ne
+        # peuvent pas la lire.
+        self.assertTrue(imp_local.thread_model_is_the_target("/mail/thread/messages"))
+        self.assertTrue(imp_local.thread_model_is_the_target("/mail/message/post"))
+
+    def test_a_failed_trace_does_not_break_the_request(self):
+        """« Échouer ouvert » doit être vrai : une instruction SQL en échec
+        laisse la transaction AVORTÉE, et tout ce qui suit dans la requête tombe
+        avec elle. La trace s'écrit donc sous un point de sauvegarde."""
+        journal = self._journal(mode="read")
+        Session = self.env["bf.impersonate.session"]
+
+        def mauvais_sql(self, cr, journal_id, model):
+            cr.execute("SELECT colonne_absente FROM bf_impersonate_session")
+
+        with patch.object(type(Session), "_bf_note_read_sql", mauvais_sql):
+            Session._bf_note_read(journal.id, "res.partner")
+        # La transaction vit encore : on relit, puis on écrit pour de vrai.
+        self.assertTrue(self.env["res.partner"].search([], limit=1))
+        Session._bf_note_read(journal.id, "res.partner")
+        journal.invalidate_recordset()
+        self.assertEqual(journal.line_ids.mapped("model"), ["res.partner"])
+
+    def test_one_read_line_per_session_and_model(self):
+        """L'index unique partiel est ce que l'ON CONFLICT du compteur vise."""
+        journal = self._journal(mode="read")
+        Session = self.env["bf.impersonate.session"]
+        Session._bf_note_read(journal.id, "res.partner")
+        Session._bf_note_read(journal.id, "res.partner")
+        Session._bf_note_read(journal.id, "mail.message")
+        Session._bf_note_read(journal.id, "ir.ui.view")
+        journal.invalidate_recordset()
+        lines = journal.with_context(lang="en_US").line_ids.filtered(
+            lambda line: line.kind == "read")
+        self.assertEqual(sorted(lines.mapped("model")), ["mail.message", "res.partner"])
+        partner_line = lines.filtered(lambda line: line.model == "res.partner")
+        self.assertEqual(partner_line.read_count, 2)
+        self.assertIn("2 times", partner_line.label)
+        self.assertIn("viewed", partner_line.label)

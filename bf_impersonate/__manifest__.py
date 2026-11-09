@@ -48,7 +48,17 @@
     #   part toujours sur-le-champ, dans un contexte neuf : le client ne peut
     #   plus le repousser. Le message d'un courriel en file ne se modifie pas.
     # 18.0.1.0.5 : une séance déjà échue, fermée au bouton, s'arrête à son échéance.
-    "version": "18.0.1.0.5",
+    # 18.0.1.1.0 : le journal se lit. Un résumé groupé par fiche et par geste
+    #   (« Courriel : ouvert, 14 fiches »), bâti sur les écritures réelles et non
+    #   sur le nom de la méthode appelée ; le nom que portaient les fiches, pris
+    #   en instantané au moment du geste ; la plomberie écartée (bus.bus,
+    #   ir.cron.trigger, pièces jointes de champ) ; un rapport de séance en PDF à
+    #   télécharger ; une ligne de consultation par application en lecture seule,
+    #   écrite sur un curseur à part, où le journal restait vide. Les avis : le
+    #   bouton passe APRÈS le texte et dit où il mène, l'avis de début ne promet
+    #   plus un journal encore vide, l'avis de fin porte le résumé, et le défaut
+    #   livré avise à la fin aussi..
+    "version": "18.0.1.1.0",
     "category": "Administration",
     "summary": "See Symbifox as one of your users, read-only by default, with a reason, "
                "a time limit, a notice to the person and a journal no access right can rewrite",
@@ -64,8 +74,11 @@ exactly what that person sees: menus, access rights, preferences, data.
   rolled-back savepoint.
 * Write mode is a separate right; every request that writes, every button
   and every server action is journaled with what really changed.
-* A reason is mandatory, the session ends by itself, and the person can be
-  notified at the start, and again with a summary at the end (setting).
+* A reason is mandatory, the session ends by itself, and the person is
+  notified at the start, then with a summary of what was done at the end
+  (setting). The journal reads as a summary grouped by record and by action,
+  keeps the names those records carried at the time, and downloads as a PDF
+  session report.
 * The person's private data (health, mood journal, credentials vault, and
   private Gen conversations from bf_claude_chat 18.0.1.36.0 on) stays
   hidden in both modes, administrators included.
@@ -83,6 +96,8 @@ exactly what that person sees: menus, access rights, preferences, data.
         "security/bf_impersonate_security.xml",
         "security/ir.model.access.csv",
         "data/ir_cron.xml",
+        "data/mail_layout.xml",
+        "report/bf_impersonate_session_report.xml",
         "views/bf_impersonate_session_views.xml",
         "wizard/bf_impersonate_wizard_views.xml",
         "views/res_users_views.xml",

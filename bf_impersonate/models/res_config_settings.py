@@ -13,7 +13,10 @@ class ResConfigSettings(models.TransientModel):
         ],
         string="Notify the person seen",
         config_parameter="bf_impersonate.notify",
-        default="start",
+        # Aviser à la fin AUSSI, par défaut (18.0.1.1.0) : l'avis de début part
+        # avant le premier geste, donc seul celui de fin peut dire ce qui a été
+        # fait. Un locataire qui avait choisi « start » garde son choix.
+        default="start_end",
     )
     bf_impersonate_duration_default = fields.Integer(
         string="Default duration (minutes)",

@@ -268,7 +268,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_household_family` | Household Family | 18.0.1.1.0 | LGPL-3 | The family of a household instance: members and their roles, children, family papers and emergency cards |
 | `bf_household_family_celebrations` | Household Family: Celebrations | 18.0.1.0.1 | LGPL-3 | The birthdays of the household's children, in Celebrations and the calendar |
 | `bf_household_family_health` | Household Family: Healthy Fox | 18.0.1.0.2 | LGPL-3 | A child of the household is one record, in the family and in Healthy Fox |
-| `bf_impersonate` | Impersonate a User | 18.0.1.0.5 | LGPL-3 | See Symbifox as one of your users, read-only by default, with a reason, a time limit, a notice to the person and a journal no access right can rewrite |
+| `bf_impersonate` | Impersonate a User | 18.0.1.1.0 | LGPL-3 | See Symbifox as one of your users, read-only by default, with a reason, a time limit, a notice to the person and a journal no access right can rewrite |
 | `bf_invoice_followup` | Relances de factures | 18.0.1.3.1 | BUSL-1.1 | Suivi et relances des factures clients en retard (statut manuel, activités automatiques, digest hebdomadaire) |
 | `bf_invoice_followup_digest` | Recevables en retard — section du digest quotidien | 18.0.1.0.4 | BUSL-1.1 | Ajoute une section « Factures en retard » au digest quotidien et retire le courriel séparé de bf_invoice_followup |
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |

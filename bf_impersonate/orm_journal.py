@@ -39,16 +39,45 @@ def _note(records, operation, ids, vals_list):
         writes = getattr(request, "_bf_impersonate_writes", None)
         if writes is None:
             return
+        if _is_field_storage(records, vals_list):
+            return
         fields = sorted({key for vals in vals_list if isinstance(vals, dict) for key in vals})
+        toutes = list(ids)
         writes.append({
             "model": records._name,
             "op": operation,
-            "ids": list(ids)[:50],
+            "ids": toutes[:50],
+            # Le compte vrai et le fait qu'on ait coupé : le résumé dit « au
+            # moins N fiches » quand il ne tient pas la liste entière.
+            "n": len(toutes),
+            "trunc": len(toutes) > 50,
             "fields": fields[:50],
             "sudo": bool(records.env.su),
         })
     except Exception:  # noqa: BLE001 - échouer ouvert, voir l'en-tête
         _logger.exception("bf_impersonate : relevé d'écriture impossible")
+
+
+def _is_field_storage(records, vals_list):
+    """Une pièce jointe qui porte ``res_field`` n'est pas un document déposé.
+
+    C'est le contenu d'un champ binaire et son index de recherche, écrits par le
+    code dès qu'on ouvre un courriel : 22 des 163 écritures de la seule séance
+    de production, et rien que la personne ait fait. Une vraie pièce
+    jointe, elle, n'a pas de ``res_field`` et reste consignée.
+    """
+    if records._name != "ir.attachment":
+        return False
+    vals = [v for v in vals_list if isinstance(v, dict)]
+    if vals and all(v.get("res_field") for v in vals):
+        return True
+    # À l'ÉCRITURE, les valeurs ne reportent pas ``res_field`` : un cache déjà
+    # posé reçoit juste son contenu. La fiche, elle, le porte toujours.
+    # (Relecture adverse du 2026-11-08, constat C1.)
+    try:
+        return bool(records) and all(r.res_field for r in records.sudo())
+    except Exception:  # noqa: BLE001 - échouer ouvert, voir l'en-tête
+        return False
 
 
 def _guard_identity(records, vals_list, creating=False):
