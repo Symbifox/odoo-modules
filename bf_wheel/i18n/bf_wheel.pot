@@ -1,0 +1,670 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_wheel
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-04 10:47+0000\n"
+"PO-Revision-Date: 2026-11-04 10:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+msgid "#29abe2"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_search
+msgid "Archivées"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/js/wheel_projector.js:0
+msgid "Aucune roue à projeter."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__candidate_count
+msgid "Candidats"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__candidates
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_form
+msgid "Candidats du tirage"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel_spin.py:0
+msgid "Ce tirage a été élagué : ses coordonnées sont parties."
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "Cette roue n'a aucun candidat en jeu."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__claim_retention_days
+msgid "Conserver les coordonnées (jours)"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "Continuer"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__claim_contact
+msgid "Coordonnée"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "Coordonnée (facultative)"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__claim_date
+msgid "Coordonnées reçues le"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__color_hex
+msgid "Couleur"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__color_display
+msgid "Couleur affichée"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,help:bf_wheel.field_bf_wheel_segment__color_hex
+msgid ""
+"Couleur du segment (hex). Laissée vide, elle est prise dans la palette de la"
+" maison au moment de la création, selon le rang du segment."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__text_color
+msgid "Couleur du texte"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "Courriel ou téléphone"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__create_uid
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__create_uid
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__create_date
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__create_date
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_wheel
+#: model:res.groups,comment:bf_wheel.group_bf_wheel_manager
+msgid ""
+"Crée et modifie les roues, et note les coordonnées d'une personne tirée."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.actions.act_window,help:bf_wheel.action_bf_wheel
+msgid "Créer une roue"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,help:bf_wheel.field_bf_wheel__source
+msgid "D'où la roue tire ses candidats."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_search
+msgid "Date"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__claim_enabled
+msgid "Demander ses coordonnées à la personne tirée"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid ""
+"Demandé à la personne tirée seulement, pour pouvoir la rejoindre.\n"
+"                        Effacé au terme du délai de conservation de la roue."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_list
+msgid "Dernier gagnant"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__last_spin_id
+msgid "Dernier tirage"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__display_name
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__display_name
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__drawn
+msgid "Déjà tiré"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "Elle tourne…"
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_list
+msgid "En jeu"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid ""
+"Faire tourner cette roue demande le groupe « Roue de fortune / Utilisateur "
+"»."
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel.py:0
+msgid ""
+"Faire tourner une roue demande le groupe « Roue de fortune / Utilisateur » "
+"et le droit de lire cette roue."
+msgstr ""
+
+#. module: bf_wheel
+#: model:res.groups,comment:bf_wheel.group_bf_wheel_user
+msgid "Fait tourner les roues qu'il voit et lit leur registre."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__winner_label
+msgid "Gagnant"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__source
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__source
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_search
+msgid "Garniture"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__id
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__id
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel_spin.py:0
+#: code:addons/bf_wheel/static/src/js/wheel_projector.js:0
+msgid "Il faut au moins un nom."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,help:bf_wheel.field_bf_wheel_spin__candidates
+msgid "La liste exacte sur laquelle la roue a tiré, telle qu'elle était."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,help:bf_wheel.field_bf_wheel_segment__weight
+msgid ""
+"La part de la roue, et la chance de sortir : un poids de 3 occupe trois fois"
+" plus de place qu'un poids de 1 et sort trois fois plus souvent."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_form
+msgid "La personne tirée"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel_spin.py:0
+msgid ""
+"La personne tirée de « %(tirage)s » est déjà notée. La corriger demande un "
+"responsable."
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel_spin.py:0
+msgid "La personne tirée est déjà notée : « %(nom)s »."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+msgid "La roue"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel.py:0
+msgid "La roue n'a aucun candidat à tirer."
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "La roue s'est arrêtée sur"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel.py:0
+msgid "La roue « %(name)s » n'a aucun candidat en jeu."
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel_spin.py:0
+msgid ""
+"La roue « %(name)s » ne demande pas les coordonnées de la personne tirée."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__write_uid
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__write_uid
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__write_date
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__write_date
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.constraint,message:bf_wheel.constraint_bf_wheel_segment_weight_positive
+msgid "Le poids d'un segment vaut au moins 1."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,help:bf_wheel.field_bf_wheel__remove_drawn
+msgid "Le segment tiré ne repart plus : la roue se vide tirage après tirage."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_form
+msgid "Le tirage"
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_form
+msgid ""
+"Les coordonnées et la liste des candidats de ce tirage ont été\n"
+"                        effacées au terme du délai de conservation de la roue."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,help:bf_wheel.field_bf_wheel_spin__purged
+msgid ""
+"Les coordonnées et la liste des candidats ont été effacées au terme du délai"
+" de conservation. Le gagnant et les comptes sont restés."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields.selection,name:bf_wheel.selection__bf_wheel__source__manual
+msgid "Les segments de la roue"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid ""
+"Les segments tirés ont été retirés : « Remettre tout en jeu » les ramène."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__name
+msgid "Nom"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__claim_name
+msgid "Nom de la personne tirée"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__segment_count
+msgid "Nombre de segments"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__spin_count
+msgid "Nombre de tirages"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__note
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+msgid "Note"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "Noter au registre"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/js/wheel_projector.js:0
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "Noté au registre."
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "Ouvrir la roue"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,help:bf_wheel.field_bf_wheel__claim_retention_days
+msgid ""
+"Passé ce délai, une tâche planifiée efface le nom, la coordonnée et la liste"
+" des candidats des tirages. Le gagnant et les comptes restent. À zéro, rien "
+"n'est effacé automatiquement."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_search
+msgid "Personne notée"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__weight
+msgid "Poids"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__weight_total
+msgid "Poids total"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,help:bf_wheel.field_bf_wheel_segment__drawn
+msgid "Posé par un tirage quand la roue retire son gagnant."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+msgid "Projeter la roue"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "Prénom et nom"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__winner_index
+msgid "Rang gagnant"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.actions.act_window,name:bf_wheel.action_bf_wheel_spin
+#: model:ir.ui.menu,name:bf_wheel.menu_bf_wheel_spins
+msgid "Registre des tirages"
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_search
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+msgid "Remettre tout en jeu"
+msgstr ""
+
+#. module: bf_wheel
+#: model:res.groups,name:bf_wheel.group_bf_wheel_manager
+msgid "Responsable"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__remove_drawn
+msgid "Retirer le gagnant de la roue"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__wheel_id
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__wheel_id
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_search
+msgid "Roue"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model,name:bf_wheel.model_bf_wheel
+#: model:ir.module.category,name:bf_wheel.module_category_bf_wheel
+#: model:ir.ui.menu,name:bf_wheel.menu_bf_wheel_root
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+msgid "Roue de fortune"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.actions.server,name:bf_wheel.ir_cron_bf_wheel_gc_claims_ir_actions_server
+msgid "Roue de fortune : élaguer les coordonnées échues"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.actions.act_window,name:bf_wheel.action_bf_wheel
+#: model:ir.ui.menu,name:bf_wheel.menu_bf_wheel_wheels
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_list
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_search
+msgid "Roues"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__segment_id
+msgid "Segment"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model,name:bf_wheel.model_bf_wheel_segment
+msgid "Segment d'une roue de fortune"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__segment_ids
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_list
+msgid "Segments"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__available_count
+msgid "Segments en jeu"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__company_id
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__company_id
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__sequence
+msgid "Séquence"
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_form
+msgid "Tirage"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model,name:bf_wheel.model_bf_wheel_spin
+msgid "Tirage d'une roue de fortune"
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+msgid "Tirage de présence de l'atelier"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel__spin_ids
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_list
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_list
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_search
+msgid "Tirages"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel.py:0
+msgid "Tirages de « %(name)s »"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__date
+msgid "Tiré le"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__spun_by_id
+msgid "Tiré par"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "Tourner"
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+msgid ""
+"Tous les segments retirés reviennent sur la roue. Le registre des tirages ne"
+" bouge pas."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.constraint,message:bf_wheel.constraint_bf_wheel_claim_retention_positive
+msgid "Un délai de conservation ne peut pas être négatif."
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel_spin.py:0
+msgid ""
+"Un tirage ne s'efface pas : c'est la preuve du tirage. Effacer la roue "
+"entière emporte son registre."
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel_spin.py:0
+msgid "Un tirage ne se récrit pas. Champs refusés : %(champs)s."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,help:bf_wheel.field_bf_wheel__claim_enabled
+msgid "Un tirage qui donne un prix doit pouvoir rejoindre qui l'a gagné."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.actions.act_window,help:bf_wheel.action_bf_wheel
+msgid ""
+"Une roue qu'on projette, qu'on fait tourner, et qui s'arrête sur un nom.\n"
+"               Le gagnant est tiré par le serveur et écrit à son registre : l'animation\n"
+"               ne choisit rien."
+msgstr ""
+
+#. module: bf_wheel
+#: model:res.groups,name:bf_wheel.group_bf_wheel_user
+msgid "Utilisateur"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-javascript
+#: code:addons/bf_wheel/static/src/xml/wheel_projector.xml:0
+msgid "en jeu"
+msgstr ""
+
+#. module: bf_wheel
+#. odoo-python
+#: code:addons/bf_wheel/models/bf_wheel_segment.py:0
+msgid "« %(value)s » n'est pas une couleur. Attendu : #a1b2c3."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+msgid "À quoi sert cette roue, ce qu'on y gagne."
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_form
+msgid ""
+"À zéro, le nom et la coordonnée de la personne tirée restent\n"
+"                                indéfiniment. Un renseignement personnel se garde le temps qu'il sert."
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_spin__purged
+msgid "Élagué"
+msgstr ""
+
+#. module: bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel.view_bf_wheel_spin_search
+msgid "Élagués"
+msgstr ""
+
+#. module: bf_wheel
+#: model:ir.model.fields,field_description:bf_wheel.field_bf_wheel_segment__name
+msgid "Étiquette"
+msgstr ""

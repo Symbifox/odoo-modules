@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="survey_survey_view_form_live" model="ir.ui.view">
+        <field name="name">survey.survey.form.bf.live</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//group[@name='live_session']" position="inside">
+                <field name="bf_live_scoreboard"/>
+                <field name="bf_live_podium"/>
+                <field name="bf_live_frame_counter"/>
+                <field name="bf_live_join_badge"/>
+            </xpath>
+
+            <xpath expr="//page[@name='options']" position="inside">
+                <group name="bf_live_teams" string="Équipes de la séance"
+                       invisible="not session_available or bf_live_scoreboard != 'team'">
+                    <field name="bf_live_team_count" invisible="1"/>
+                    <field name="bf_live_team_target"/>
+                    <button name="action_bf_draw_teams" type="object" icon="fa-random"
+                            string="Tirer les équipes au hasard" class="btn-secondary"
+                            invisible="session_state not in ['ready', 'in_progress']"/>
+                    <field name="bf_live_team_ids" colspan="2" nolabel="1"
+                           context="{'default_survey_id': id}"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="survey_question_form_live" model="ir.ui.view">
+        <field name="name">survey.question.form.bf.live</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='options']" position="inside">
+                <group name="bf_live" string="Séance en direct"
+                       invisible="question_type not in ['char_box', 'text_box', 'simple_choice']">
+                    <field name="bf_live_screen"
+                           invisible="question_type not in ['char_box', 'text_box']"/>
+                    <field name="bf_word_cloud_ignore"
+                           invisible="bf_live_screen != 'word_cloud' or question_type not in ['char_box', 'text_box']"/>
+                    <field name="bf_save_as_team"
+                           invisible="question_type != 'simple_choice'"/>
+                </group>
+            </xpath>
+
+            <!-- Une section devient une diapositive. L'onglet ne paraît que sur
+                 une section : une question se projette d'elle-même. -->
+            <xpath expr="//page[@name='survey_description']" position="after">
+                <page string="Diapositive" name="bf_slide" invisible="not is_page">
+                    <group>
+                        <group>
+                            <field name="bf_slide_layout"/>
+                            <field name="bf_slide_subtitle"
+                                   placeholder="e.g. « Atelier du mardi »"
+                                   invisible="bf_slide_layout == 'standard'"/>
+                            <field name="bf_slide_image_position"
+                                   invisible="bf_slide_layout != 'split'"/>
+                        </group>
+                        <group>
+                            <field name="bf_slide_image" widget="image"
+                                   options="{'size': [0, 180]}" nolabel="1"
+                                   invisible="bf_slide_layout not in ['image', 'split']"
+                                   required="bf_slide_layout in ['image', 'split']"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" invisible="bf_slide_layout == 'standard'">
+                        Cette section se projette comme une diapositive, entre les
+                        questions. Les trois mêmes champs s'affichent toujours :
+                        le titre, le sous-titre, puis le texte de l'onglet
+                        <b>Description</b>. La mise en page ne change que leur
+                        taille et leur place. Pour une image qui remplit le fond
+                        derrière le texte, c'est l'<b>image de fond</b>, en haut
+                        à droite.
+                    </div>
+                    <div class="text-muted" invisible="bf_slide_layout != 'standard'">
+                        Cette section garde l'écran du cœur : son titre et son
+                        texte, en petit. Choisissez une mise en page pour en
+                        faire une diapositive de la trame.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

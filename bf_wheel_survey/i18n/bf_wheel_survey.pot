@@ -1,0 +1,109 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_wheel_survey
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-04 10:47+0000\n"
+"PO-Revision-Date: 2026-11-04 10:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_wheel_survey
+#. odoo-python
+#: code:addons/bf_wheel_survey/models/survey_survey.py:0
+msgid ""
+"Aucune roue n'est encore rattachée à « %(sondage)s », et en créer une "
+"demande le groupe « Roue de fortune / Responsable »."
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model.fields,help:bf_wheel_survey.field_bf_wheel__source
+msgid "D'où la roue tire ses candidats."
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model.fields,field_description:bf_wheel_survey.field_bf_wheel__source
+msgid "Garniture"
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model.fields,help:bf_wheel_survey.field_bf_wheel__weight_by_count
+msgid ""
+"La roue devient la carte de ce que la salle a répondu : une réponse donnée "
+"dix fois occupe dix parts."
+msgstr ""
+
+#. module: bf_wheel_survey
+#. odoo-python
+#: code:addons/bf_wheel_survey/models/bf_wheel.py:0
+msgid ""
+"La roue « %(name)s » ne dit pas de quel sondage elle tire ses participants."
+msgstr ""
+
+#. module: bf_wheel_survey
+#. odoo-python
+#: code:addons/bf_wheel_survey/models/bf_wheel.py:0
+msgid ""
+"La roue « %(name)s » ne dit pas de quelle question elle tire ses réponses."
+msgstr ""
+
+#. module: bf_wheel_survey
+#. odoo-python
+#: code:addons/bf_wheel_survey/models/bf_wheel.py:0
+msgid ""
+"La séance de « %(sondage)s » n'a pas commencé : personne n'a encore rejoint."
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model.fields.selection,name:bf_wheel_survey.selection__bf_wheel__source__session
+msgid "Les participants de la séance en direct"
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model.fields.selection,name:bf_wheel_survey.selection__bf_wheel__source__answers
+msgid "Les réponses d'une question"
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model.fields,field_description:bf_wheel_survey.field_bf_wheel__question_id
+msgid "Question"
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model,name:bf_wheel_survey.model_bf_wheel
+#: model_terms:ir.ui.view,arch_db:bf_wheel_survey.view_survey_form_wheel
+msgid "Roue de fortune"
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model.fields,field_description:bf_wheel_survey.field_bf_wheel__survey_id
+msgid "Sondage"
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model,name:bf_wheel_survey.model_survey_survey
+msgid "Survey"
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model.fields,field_description:bf_wheel_survey.field_bf_wheel__session_state
+msgid "Séance"
+msgstr ""
+
+#. module: bf_wheel_survey
+#. odoo-python
+#: code:addons/bf_wheel_survey/models/survey_survey.py:0
+msgid "Tirage : %(sondage)s"
+msgstr ""
+
+#. module: bf_wheel_survey
+#: model:ir.model.fields,field_description:bf_wheel_survey.field_bf_wheel__weight_by_count
+msgid "Une part d'autant plus large que la réponse revient"
+msgstr ""

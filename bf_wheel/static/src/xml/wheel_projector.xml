@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="bf_wheel.Projector">
+    <div class="o_bf_wheel_projector d-flex flex-column">
+        <div class="o_bf_wheel_header d-flex align-items-center justify-content-between p-3">
+            <h1 class="o_bf_wheel_title m-0" t-esc="state.name"/>
+            <div class="d-flex align-items-center gap-3">
+                <span class="o_bf_wheel_count" t-if="state.candidates.length">
+                    <t t-esc="state.candidates.length"/> en jeu
+                </span>
+                <button class="btn btn-secondary" t-on-click="() => this.ouvrirRoue()">
+                    Ouvrir la roue
+                </button>
+            </div>
+        </div>
+
+        <div class="o_bf_wheel_stage flex-grow-1 d-flex flex-column align-items-center justify-content-center p-3">
+            <div t-if="state.error" class="alert alert-danger" role="alert" t-esc="state.error"/>
+
+            <div t-elif="!state.candidates.length" class="o_bf_wheel_empty text-center">
+                <p class="fs-3 mb-2">Cette roue n'a aucun candidat en jeu.</p>
+                <p class="text-muted mb-0" t-if="state.removeDrawn">
+                    Les segments tirés ont été retirés : « Remettre tout en jeu » les ramène.
+                </p>
+            </div>
+
+            <t t-else="">
+                <div class="o_bf_wheel_frame position-relative">
+                    <div class="o_bf_wheel_pointer" aria-hidden="true"/>
+                    <div class="o_bf_wheel_disc" t-att-style="'transform: rotate(' + state.angle + 'deg); ' + dureeStyle">
+                        <svg viewBox="-110 -110 220 220" role="img" t-attf-aria-label="Roue {{state.name}}">
+                            <circle cx="0" cy="0" r="104" class="o_bf_wheel_rim"/>
+                            <t t-foreach="parts" t-as="part" t-key="part.index">
+                                <path t-att-d="part.chemin" t-att-fill="part.color"
+                                      class="o_bf_wheel_slice"/>
+                            </t>
+                            <t t-foreach="parts" t-as="part" t-key="'t' + part.index">
+                                <text t-if="part.part &gt;= 9"
+                                      class="o_bf_wheel_label"
+                                      t-att-fill="part.textColor"
+                                      t-attf-transform="rotate({{part.milieu}}) translate(0 {{rayonTexte}}) rotate({{part.sensTexte}})"
+                                      t-attf-font-size="{{part.part &gt;= 24 ? 7 : 5}}"
+                                      text-anchor="middle" dominant-baseline="middle">
+                                    <t t-esc="part.label"/>
+                                </text>
+                            </t>
+                            <circle cx="0" cy="0" r="12" class="o_bf_wheel_hub"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-lg o_bf_wheel_spin mt-4"
+                        t-att-disabled="state.spinning or !state.canSpin or state.winner"
+                        t-on-click="() => this.spin()">
+                    <t t-if="state.spinning">Elle tourne…</t>
+                    <t t-else="">Tourner</t>
+                </button>
+                <p class="text-muted mt-2 mb-0" t-if="!state.canSpin">
+                    Faire tourner cette roue demande le groupe « Roue de fortune / Utilisateur ».
+                </p>
+            </t>
+        </div>
+
+        <div class="o_bf_wheel_announce" aria-live="polite">
+            <t t-if="state.winner" t-esc="state.winner.label"/>
+        </div>
+
+        <div t-if="state.winner" class="o_bf_wheel_result">
+            <div class="o_bf_wheel_result_card text-center p-4">
+                <p class="o_bf_wheel_result_hint mb-1">La roue s'est arrêtée sur</p>
+                <p class="o_bf_wheel_result_label mb-3" t-esc="state.winner.label"/>
+
+                <div t-if="state.winner.claimEnabled and !state.claimDone" class="o_bf_wheel_claim text-start mx-auto">
+                    <label class="form-label mb-1" for="bf_wheel_claim_name">Nom de la personne tirée</label>
+                    <input id="bf_wheel_claim_name" type="text" class="form-control mb-2"
+                           t-model="state.claimName" placeholder="Prénom et nom"/>
+                    <label class="form-label mb-1" for="bf_wheel_claim_contact">Coordonnée (facultative)</label>
+                    <input id="bf_wheel_claim_contact" type="text" class="form-control mb-1"
+                           t-model="state.claimContact" placeholder="Courriel ou téléphone"/>
+                    <p class="o_bf_wheel_claim_note text-muted">
+                        Demandé à la personne tirée seulement, pour pouvoir la rejoindre.
+                        Effacé au terme du délai de conservation de la roue.
+                    </p>
+                    <button class="btn btn-primary w-100" t-on-click="() => this.noterPersonne()">
+                        Noter au registre
+                    </button>
+                </div>
+
+                <p t-if="state.claimDone" class="o_bf_wheel_claim_done mb-3">
+                    Noté au registre.
+                </p>
+
+                <button class="btn btn-secondary mt-3" t-on-click="() => this.fermer()">
+                    Continuer
+                </button>
+            </div>
+        </div>
+    </div>
+</t>
+
+</templates>

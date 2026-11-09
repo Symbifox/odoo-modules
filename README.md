@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**306 modules are BUSL-1.1.** The source is published and auditable, and **you
+**310 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -114,7 +114,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_babillard_gamification` | Babillard : reconnaissance | 18.0.1.1.0 | BUSL-1.1 | A badge given by a colleague appears on the noticeboard |
 | `bf_babillard_home` | Babillard : accueil | 18.0.1.0.2 | BUSL-1.1 | What you still have to read, on the dashboard |
 | `bf_babillard_pulse` | Babillard : pulse | 18.0.1.0.3 | BUSL-1.1 | The displayable results of a closed pulse wave appear on the noticeboard |
-| `bf_babillard_survey` | Babillard : sondages Odoo | 18.0.1.0.0 | BUSL-1.1 | An editor announces an open Odoo survey on the feed, with its link |
+| `bf_babillard_survey` | Babillard : sondages Odoo | 18.0.1.1.0 | BUSL-1.1 | An editor announces an open Odoo survey on the feed, with its link — and an open live session, with its join code |
 | `bf_bi` | BF BI | 18.0.1.9.0 | BUSL-1.1 | Design and edit dashboards on screen, straight from Odoo's views, with external sources: Excel, Nextcloud, OneDrive, Google Sheets, web APIs, PostgreSQL |
 | `bf_bi_cx` | BF BI - Customer experience | 18.0.1.0.3 | BUSL-1.1 | Customer experience dashboard: NPS, responses, complaints and resolution time |
 | `bf_bi_hosting` | BF BI - Hosting | 18.0.1.0.3 | BUSL-1.1 | Hosting dashboard: services, uptime, backups, storage, expiring domains |
@@ -155,7 +155,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.1.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
 | `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.3.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
-| `bf_claude_chat` | Gen | 18.0.1.39.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
+| `bf_claude_chat` | Gen | 18.0.1.41.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_claude_chat_digest` | Gen — consommation Claude dans le digest quotidien | 18.0.1.3.0 | BUSL-1.1 | Daily digest sections: Claude usage per account (windows, reset, probe state) and the recipient's Gen conversations to follow |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.4.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
@@ -290,6 +290,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_letter_writer` | Letter Writer | 18.0.2.1.1 | BUSL-1.1 | Branded official-letter editor: 5 letterhead modes, field merge (`{{ }}`), reusable templates and quick-text blocks, email + PDF send |
 | `bf_lexend` | Lexend Typeface | 18.0.3.1.1 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
 | `bf_linkpage` | Pages de liens | 18.0.10.1.0 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
+| `bf_live_base` | Séance en direct : le socle | 18.0.1.1.0 | BUSL-1.1 | The projected palette, the contrast calculation and the brand ramp, shared by every live-session screen |
 | `bf_llm` | Symbifox — LLM Provider | 18.0.1.0.1 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
 | `bf_mail_company_voice` | Company Voice for Automatic Notices | 18.0.1.0.2 | LGPL-3 | Automatic notices speak for the company, never as « Public user » or a bot. |
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.5.0 | LGPL-3 | Import .eml files into the Odoo chatter |
@@ -424,7 +425,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_school_timetable_calendar` | Symbifox École : horaire et calendrier scolaire | 18.0.1.0.0 | BUSL-1.1 | The timetable follows the school calendar: the office enters each day once |
 | `bf_school_work` | Symbifox École : remise de travaux | 18.0.1.0.2 | BUSL-1.1 | Students hand in their work on the portal, the teacher returns a corrected copy with a mark; scored quizzes through Surveys |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.22.0 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe; open-audience data rooms where a link names nobody and each visitor self-declares an email or mobile, confirms a one-time code on that channel, and gets a per-person download budget and watermark |
-| `bf_securetransfer_privacy` | Secure Transfer: Privacy Bridge (Quebec Law 25) | 18.0.1.2.1 | BUSL-1.1 | Record in the destruction register what the secure transfer purge already deletes, and declare the purpose in the register of processing activities |
+| `bf_securetransfer_privacy` | Secure Transfer: Privacy Bridge (Quebec Law 25) | 18.0.1.2.2 | BUSL-1.1 | Record in the destruction register what the secure transfer purge already deletes, and declare the purpose in the register of processing activities |
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.3.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
 | `bf_security_awareness` | Security Awareness | 18.0.2.3.3 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, an aggregate campaign report that names nobody (to hand to a supplier or insurer), a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
 | `bf_security_awareness_privacy` | Sensibilisation à la sécurité — Pont vie privée (Loi 25) | 18.0.1.3.0 | BUSL-1.1 | Déclarer la finalité du profil de risque, le conserver jusqu'au départ de la personne, et inscrire sa destruction au registre |
@@ -448,6 +449,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_subscription_expense` | Abonnements — notes de frais | 18.0.1.0.1 | BUSL-1.1 | A subscription paid through an expense report counts in the subscription's costs |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
 | `bf_survey_certificate` | Branded Course Certificates | 18.0.1.1.1 | BUSL-1.1 | Certification documents in the company's own brand: a branded PDF, a verifiable certificate number with its public page, and a branded success email |
+| `bf_survey_live` | Séance en direct : la trame et les écrans | 18.0.1.5.0 | BUSL-1.1 | A presentation deck between the questions, word cloud, teams, podium and the join code on every screen, for a live survey session |
 | `bf_survey_upload` | BF Survey Upload | 18.0.1.3.0 | LGPL-3 | File-upload question type for Odoo surveys |
 | `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.1.0 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
 | `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.2.0.3 | LGPL-3 | Notifies assignees when their task becomes unblocked |
@@ -467,6 +469,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.1 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.4.0 | LGPL-3 | Cross-module search through the command palette |
 | `bf_warm_start` | Warm Start | 18.0.1.0.0 | LGPL-3 | Load web client translations once, before the workers fork, so the first page after a restart is fast |
+| `bf_wheel` | Roue de fortune | 18.0.1.2.1 | BUSL-1.1 | A projected wheel that draws at random, and the register of what it drew |
+| `bf_wheel_survey` | Roue de fortune : les participants d'une séance | 18.0.1.1.0 | BUSL-1.1 | The wheel draws among the people who joined the live session, or among the answers to one question |
 | `bf_work_category` | BF Work Category | 18.0.1.0.3 | LGPL-3 | Work categories on project labels, resolved and stored on projects, tasks and every bridged record, so work can be filtered, grouped and exported by category |
 | `bf_work_category_claude_chat` | BF Work Category - Gen | 18.0.1.0.1 | BUSL-1.1 | Work category on Gen conversations, from the record they are attached to |
 | `bf_work_category_claude_chat_cockpit` | BF Work Category - Gen cockpit | 18.0.1.0.1 | BUSL-1.1 | Work category column, filter and grouping in the Gen conversation cockpit |
@@ -546,7 +550,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **306 modules: BUSL-1.1.** Production use for your own internal business
+- **310 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

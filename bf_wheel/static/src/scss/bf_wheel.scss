@@ -1,0 +1,170 @@
+// L'écran de projection. Fond anthracite de la maison : une salle regarde un mur
+// éclairé, et un fond blanc plein cadre éblouit.
+//
+// ⚠️ Le bleu de la maison (#29abe2) ne sert jamais d'encre sur ce fond : il s'y lit
+// à 2,6:1. Les titres et le nom du gagnant sont blancs ; le bleu reste une surface
+// (segment, bouton), jamais un texte.
+.o_bf_wheel_projector {
+    position: relative;
+    height: 100%;
+    min-height: 100vh;
+    background: #2d3031;
+    color: #ffffff;
+
+    .o_bf_wheel_header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .o_bf_wheel_title {
+        font-size: clamp(1.25rem, 2.5vw, 2rem);
+        font-weight: 600;
+        // Bootstrap donne aux titres une couleur à lui, grise, qui tombe à 2,4:1
+        // sur ce fond. Un titre de projection se lit depuis le fond de la salle.
+        color: #ffffff;
+    }
+
+    .o_bf_wheel_count {
+        color: rgba(255, 255, 255, 0.72);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .o_bf_wheel_frame {
+        // 🔴 `min()` et `max()` sont des fonctions de Sass avant d'être du CSS :
+        // libsass tente de les calculer et refuse « Incompatible units: vw et vh ».
+        // L'erreur ne tombe pas sur ce fichier : elle fait échouer le PAQUET ENTIER
+        // (web.assets_web), et toute l'application sert alors « an old style ».
+        // L'interpolation passe la fonction au navigateur sans y toucher.
+        width: #{"min(72vh, 92vw)"};
+        max-width: 760px;
+        aspect-ratio: 1;
+    }
+
+    .o_bf_wheel_disc {
+        width: 100%;
+        height: 100%;
+        transition-property: transform;
+        // Part vite, finit lentement : une roue qui ralentit à la fin se lit, et
+        // on voit sur quoi elle s'arrête.
+        transition-timing-function: cubic-bezier(0.15, 0.9, 0.08, 1);
+
+        svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
+        }
+    }
+
+    .o_bf_wheel_rim {
+        fill: #1b1d1e;
+        stroke: rgba(255, 255, 255, 0.25);
+        stroke-width: 1.5;
+    }
+
+    .o_bf_wheel_slice {
+        stroke: #2d3031;
+        stroke-width: 0.6;
+    }
+
+    .o_bf_wheel_label {
+        font-weight: 600;
+        paint-order: stroke;
+    }
+
+    .o_bf_wheel_hub {
+        fill: #ffffff;
+        stroke: #2d3031;
+        stroke-width: 2;
+    }
+
+    // L'aiguille : un coin blanc qui mord sur le haut de la roue. Elle ne tourne
+    // pas, c'est la roue qui vient sous elle.
+    .o_bf_wheel_pointer {
+        position: absolute;
+        top: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 14px solid transparent;
+        border-right: 14px solid transparent;
+        border-top: 26px solid #ffffff;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        z-index: 2;
+    }
+
+    .o_bf_wheel_spin {
+        min-width: 12rem;
+        font-size: 1.15rem;
+    }
+
+    // Lue par les lecteurs d'écran, invisible au mur.
+    .o_bf_wheel_announce {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .o_bf_wheel_result {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(27, 29, 30, 0.86);
+        z-index: 3;
+    }
+
+    .o_bf_wheel_result_card {
+        background: #343839;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 0.75rem;
+        min-width: #{"min(30rem, 92vw)"};
+        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+    }
+
+    .o_bf_wheel_result_hint {
+        color: rgba(255, 255, 255, 0.66);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.85rem;
+    }
+
+    .o_bf_wheel_result_label {
+        font-size: clamp(2rem, 6vw, 4rem);
+        font-weight: 700;
+        line-height: 1.1;
+        word-break: break-word;
+    }
+
+    .o_bf_wheel_claim {
+        max-width: 24rem;
+
+        .form-control {
+            background: #2d3031;
+            border-color: rgba(255, 255, 255, 0.22);
+            color: #ffffff;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.45);
+            }
+        }
+    }
+
+    .o_bf_wheel_claim_note {
+        font-size: 0.8rem;
+    }
+
+    .o_bf_wheel_claim_done {
+        font-size: 1.1rem;
+        color: #7bc043;
+    }
+
+    // Le texte discret de Bootstrap passe sous le minimum de contraste sur ce fond.
+    .text-muted {
+        color: rgba(255, 255, 255, 0.72) !important;
+    }
+}

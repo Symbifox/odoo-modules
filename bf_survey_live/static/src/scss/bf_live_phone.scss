@@ -1,0 +1,88 @@
+// Le téléphone du participant : son équipe, et les diapositives de la trame.
+//
+// ⚠️ Ce fichier part dans `survey.survey_assets`, le paquet du formulaire du
+// répondant. Comme celui de la séance, il s'écrit sans aide de Sass : ni
+// variables ni fonctions de Bootstrap, et jamais `min()` ni `max()` sans
+// interpolation (Sass les prend pour les siennes, refuse « Incompatible units »,
+// et c'est le paquet ENTIER qui tombe).
+//
+// Le même paquet est servi à l'écran de l'animateur, qui charge les deux : les
+// classes `o_bf_phone_…` n'y paraissent jamais, puisqu'elles ne sortent que du
+// gabarit du répondant.
+
+// ------------------------------------------------------------------
+// Le badge d'équipe
+// ------------------------------------------------------------------
+.o_bf_phone_team {
+    // Les couleurs sont posées en ligne par le gabarit : ce sont celles de
+    // l'équipe, calculées (fond de la palette mesurée, encre par contraste).
+    font-size: 0.95rem;
+    line-height: 1.3;
+    margin-bottom: 0.25rem;
+    // Une pastille ne se coupe pas en deux sur un écran de 320 px.
+    max-width: 100%;
+
+    .o_bf_phone_team_label {
+        // Le mot « équipe » s'efface derrière le nom de l'équipe.
+        opacity: 0.75;
+        font-size: 0.85rem;
+    }
+
+    .o_bf_phone_team_name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+// ------------------------------------------------------------------
+// La diapositive, au téléphone
+// ------------------------------------------------------------------
+.o_bf_phone_slide {
+    // Une colonne, et rien d'autre : la mise en page projetée ne traverse pas.
+    .o_bf_phone_slide_title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.25;
+        margin-bottom: 0.35rem;
+        // Un titre de diapositive peut être une phrase entière (une citation) :
+        // il se coupe, il ne déborde pas de l'écran.
+        overflow-wrap: break-word;
+    }
+
+    .o_bf_phone_slide_subtitle {
+        font-size: 1.05rem;
+        opacity: 0.75;
+        margin-bottom: 0.75rem;
+        overflow-wrap: break-word;
+    }
+
+    .o_bf_phone_slide_image {
+        display: block;
+        width: 100%;
+        height: auto;
+        // Montrée en entier, comme au mur : jamais recadrée.
+        object-fit: contain;
+        // Bornée en hauteur pour qu'une image haute ne pousse pas le texte hors
+        // de l'écran : sur un téléphone, ce qui est sous le pli n'existe pas.
+        max-height: 40vh;
+        border-radius: 0.5rem;
+        margin: 0.5rem 0 0.9rem;
+    }
+
+    .o_bf_phone_slide_text {
+        font-size: 1.05rem;
+        line-height: 1.5;
+        overflow-wrap: break-word;
+
+        ul,
+        ol {
+            padding-left: 1.25rem;
+            margin-bottom: 0;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

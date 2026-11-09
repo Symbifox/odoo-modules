@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_wheel_list" model="ir.ui.view">
+        <field name="name">bf.wheel.list</field>
+        <field name="model">bf.wheel</field>
+        <field name="arch" type="xml">
+            <list string="Roues">
+                <field name="name"/>
+                <field name="source"/>
+                <field name="segment_count" string="Segments"/>
+                <field name="available_count" string="En jeu"/>
+                <field name="spin_count" string="Tirages"/>
+                <field name="last_spin_id" string="Dernier gagnant"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_wheel_form" model="ir.ui.view">
+        <field name="name">bf.wheel.form</field>
+        <field name="model">bf.wheel</field>
+        <field name="arch" type="xml">
+            <form string="Roue de fortune">
+                <header>
+                    <button name="action_open_projector" type="object" string="Projeter la roue"
+                            class="btn-primary" icon="fa-tv"/>
+                    <button name="action_reset_drawn" type="object" string="Remettre tout en jeu"
+                            invisible="available_count == segment_count"
+                            confirm="Tous les segments retirés reviennent sur la roue. Le registre des tirages ne bouge pas."/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_spins" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="spin_count" widget="statinfo" string="Tirages"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Tirage de présence de l'atelier"/></h1>
+                    </div>
+                    <group>
+                        <group string="La roue">
+                            <field name="source"/>
+                            <field name="remove_drawn"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="La personne tirée">
+                            <field name="claim_enabled"/>
+                            <field name="claim_retention_days" invisible="not claim_enabled"/>
+                            <div class="text-muted" colspan="2"
+                                 invisible="not claim_enabled or claim_retention_days > 0">
+                                À zéro, le nom et la coordonnée de la personne tirée restent
+                                indéfiniment. Un renseignement personnel se garde le temps qu'il sert.
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Segments" name="segments" invisible="source != 'manual'">
+                            <field name="segment_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="weight"/>
+                                    <field name="color_hex" placeholder="#29abe2"/>
+                                    <field name="color_display" column_invisible="1"/>
+                                    <field name="drawn" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note" placeholder="À quoi sert cette roue, ce qu'on y gagne."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_wheel_search" model="ir.ui.view">
+        <field name="name">bf.wheel.search</field>
+        <field name="model">bf.wheel</field>
+        <field name="arch" type="xml">
+            <search string="Roues">
+                <field name="name"/>
+                <filter name="inactive" string="Archivées" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_source" string="Garniture" context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_wheel" model="ir.actions.act_window">
+        <field name="name">Roues</field>
+        <field name="res_model">bf.wheel</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer une roue</p>
+            <p>Une roue qu'on projette, qu'on fait tourner, et qui s'arrête sur un nom.
+               Le gagnant est tiré par le serveur et écrit à son registre : l'animation
+               ne choisit rien.</p>
+        </field>
+    </record>
+</odoo>

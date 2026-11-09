@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- LE TÉLÉPHONE DU PARTICIPANT, PENDANT UNE DIAPOSITIVE.
+
+         Le cœur a une branche pour ça : une section DÉCRITE au mur donne au
+         téléphone « Pay attention to the host screen », et aucun bouton. Il n'y
+         met jamais une section sans description, parce que sa marche les saute.
+         La trame, elle, en projette : le téléphone tombait alors dans la branche
+         « question », qui pose un bouton « Soumettre » et arme la touche Entrée.
+
+         🔴 Les deux menaient à `_save_lines` sur une section, c'est-à-dire à une
+         TypeError en 500 sur le téléphone du participant. Trois greffes le
+         ferment : la condition de la branche, et les deux drapeaux
+         `data-is-page-description` du cœur, qui sont ce qui désarme Entrée.
+
+         ⚠️ Les trois expressions recopient donc la condition du cœur en y
+         ajoutant la nôtre. Elles doivent rester en phase avec elle à chaque
+         montée de version : c'est le prix d'une condition écrite en clair dans
+         un attribut, et non derrière un nom. -->
+    <template id="fill_form" inherit_id="survey.survey_fill_form">
+        <xpath expr="//form" position="attributes">
+            <attribute name="t-att-data-is-page-description">bool(question and question.is_page and (question._bf_is_slide() or not is_html_empty(question.description)))</attribute>
+        </xpath>
+    </template>
+
+    <template id="fill_form_in_progress" inherit_id="survey.survey_fill_form_in_progress">
+
+        <xpath expr="//div[hasclass('o_survey_form_content_data')]" position="attributes">
+            <attribute name="t-att-data-is-page-description">bool(question and question.is_page and (question._bf_is_slide() or not is_html_empty(question.description)))</attribute>
+        </xpath>
+
+        <!-- Son équipe, sur son propre téléphone. Posé DANS ce gabarit, et non
+             dans l'entête de la page : c'est ce gabarit-ci que la route rend à
+             chaque changement d'écran, donc le seul endroit où le badge paraît
+             dès la réponse qui donne l'équipe, sans rechargement. -->
+        <xpath expr="//div[hasclass('o_survey_form_content_data')]" position="after">
+            <div t-if="answer.is_session_answer and answer.bf_team_id"
+                 class="o_bf_phone_team d-inline-flex align-items-center px-3 py-1 rounded-pill"
+                 t-attf-style="background-color: #{answer.bf_team_id.color}; color: #{answer.bf_team_id.text_color};">
+                <span class="o_bf_phone_team_label me-2">Ton équipe</span>
+                <span class="o_bf_phone_team_name fw-bold" t-out="answer.bf_team_id.name"/>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@t-attf-class='o_survey_page_per_question']/t[@t-elif]"
+               position="attributes">
+            <attribute name="t-elif">answer.is_session_answer and question.is_page and (question._bf_is_slide() or not is_html_empty(question.description))</attribute>
+        </xpath>
+
+        <!-- La phrase du cœur reste la première, et elle reste la SIENNE : la
+             recopier ici l'aurait sortie de sa traduction. Les mots de la
+             diapositive viennent dessous. -->
+        <xpath expr="//div[@t-attf-class='o_survey_page_per_question']/t[@t-elif]"
+               position="inside">
+            <t t-if="question._bf_is_slide()" t-call="bf_survey_live.diapositive_telephone"/>
+        </xpath>
+    </template>
+
+    <!-- La diapositive, au téléphone.
+
+         Les trois mêmes champs, dans le même ordre qu'au mur : le titre, le
+         sous-titre, puis le texte. Et l'image, pour qui est assis au fond.
+
+         ⚠️ Ce qui ne passe PAS, c'est la mise en page : un téléphone n'a qu'une
+         colonne, et « l'image à gauche, le texte à droite » n'y veut rien dire.
+         Une citation y perd ses grands guillemets, un écran de titre sa hauteur.
+         C'est voulu : la mise en page est une décision de projection, le contenu
+         est une décision de l'auteur, et c'est le contenu qui voyage. -->
+    <template id="diapositive_telephone" name="Diapositive, au téléphone">
+        <div class="o_bf_phone_slide mt-4">
+            <h2 class="o_bf_phone_slide_title" t-out="question.title"/>
+            <p t-if="question.bf_slide_subtitle" class="o_bf_phone_slide_subtitle"
+               t-out="question.bf_slide_subtitle"/>
+            <!-- La même route que l'écran projeté, sous le jeton du sondage :
+                 rien de plus ne s'ouvre, c'est la porte qui servait déjà le mur. -->
+            <img t-if="question.bf_slide_image" class="o_bf_phone_slide_image"
+                 t-att-src="'/bf_survey_live/slide_image/%s/%s' % (survey.access_token, question.id)"
+                 t-att-alt="question.title"/>
+            <div t-if="question.bf_slide_has_text" class="o_bf_phone_slide_text"
+                 t-field="question.description"/>
+        </div>
+    </template>
+
+</odoo>

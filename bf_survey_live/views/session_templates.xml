@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- L'écran de la séance, greffé et jamais récrit. La liste de réponses du
+         cœur garde ses classes et sa place : le nuage s'ajoute DEDANS, avec sa
+         propre hauteur, pour n'avoir rien à changer à la mise en page de
+         l'écran standard. La trame ajoute une branche à la chaîne du cœur (la
+         diapositive), range son titre quand elle prend l'écran, et pose un
+         compteur. Hors trame, chacune de ces greffes s'éteint. -->
+    <template id="session_manage_content" inherit_id="survey.user_input_session_manage_content">
+
+        <xpath expr="//div[hasclass('o_survey_session_manage')]" position="attributes">
+            <attribute name="t-att-data-bf-live-screen">bf_live_screen</attribute>
+            <attribute name="t-att-data-bf-shows-word-cloud">bf_shows_word_cloud</attribute>
+            <attribute name="t-att-data-bf-scoreboard-mode">bf_live_scoreboard_mode</attribute>
+            <attribute name="t-att-data-bf-podium">bf_live_podium</attribute>
+        </xpath>
+
+        <!-- Le cœur n'allume la zone des réponses écrites que pour char_box,
+             date et datetime. On l'allume aussi pour le texte long et le
+             nombre, qui n'affichaient RIEN : ni histogramme, ni liste. Le nuage
+             passe par la même zone, avec sa propre hauteur. Les deux gardes du
+             cœur (courriel, pseudonyme) restent les siennes et sont relues par
+             `_bf_shows_word_cloud` et `_bf_shows_written_answers`. -->
+        <xpath expr="//t[@t-set='show_text_answers']" position="replace">
+            <t t-set="show_text_answers"
+               t-value="(question.question_type in ['char_box', 'date', 'datetime'] and not question.save_as_email and not question.save_as_nickname) or bf_shows_word_cloud or bf_shows_written_answers"/>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o_survey_session_text_answers_container')]" position="inside">
+            <div t-if="bf_shows_word_cloud" class="o_bf_live_cloud"
+                 t-att-data-bf-words="bf_word_cloud_json"/>
+        </xpath>
+
+        <!-- A + C : LA CARTE POUR REJOINDRE, À LA MARQUE DE LA MAISON.
+
+             Posée DANS l'en-tête du cœur, et dessinée en `position: fixed`.
+             Deux raisons, et la première est un contrat : le cœur masque son
+             en-tête quand la séance se ferme (`invisible` posé par son JS, et
+             `visibility` s'hérite, même sur un enfant en `fixed`), donc la
+             carte disparaît avec lui sans une ligne de JS à nous. La seconde
+             est la place : l'en-tête est une rangée serrée en haut de l'écran,
+             et un code QR lisible d'une salle n'y tient pas. -->
+        <xpath expr="//div[hasclass('o_survey_question_header')]" position="inside">
+            <t t-set="bf_brand" t-value="survey._bf_live_brand()"/>
+            <t t-set="bf_badge" t-value="survey._bf_join_badge()"/>
+            <div t-if="bf_badge or bf_brand['logo']" class="o_bf_live_join d-flex flex-column align-items-start">
+                <img t-if="bf_brand['logo']" class="o_bf_live_join_logo"
+                     t-att-src="bf_brand['logo']" t-att-alt="bf_brand['name']"/>
+                <div t-if="bf_badge" class="o_bf_live_join_card d-flex flex-column align-items-center">
+                    <img class="o_bf_live_join_qr" t-att-src="bf_badge['qr']"
+                         t-att-alt="bf_badge['link']"/>
+                    <div class="o_bf_live_join_code"
+                         t-attf-style="background-color: #{bf_brand['color']}; color: #{bf_brand['text_color']};"
+                         t-out="bf_badge['code']"/>
+                </div>
+            </div>
+        </xpath>
+
+        <!-- Le titre du cœur se range quand l'écran est une diapositive : sur un
+             écran de titre, le titre EST l'écran, et c'est le gabarit de la
+             diapositive qui le pose, à sa taille et à sa place. -->
+        <xpath expr="//div[hasclass('o_survey_session_results')]/div[hasclass('row')]"
+               position="attributes">
+            <attribute name="t-if">not bf_slide</attribute>
+        </xpath>
+
+        <!-- ⚠️ Une BRANCHE de plus dans la chaîne du cœur, posée en remplaçant
+             la sienne et en la réécrivant à l'identique derrière : un `t-elif`
+             ne se glisse pas entre deux autres sans rompre la chaîne, mais il
+             se remplace par deux. La section décrite garde donc exactement
+             l'écran qu'elle avait. -->
+        <xpath expr="//div[hasclass('o_survey_manage_fontsize_14')]" position="replace">
+            <div t-elif="bf_slide" class="o_bf_slide_host">
+                <t t-call="bf_survey_live.diapositive"/>
+            </div>
+            <div t-elif="question.is_page and not is_html_empty(question.description)"
+                 class="mb-6 o_survey_manage_fontsize_14" t-field="question.description"/>
+        </xpath>
+
+        <!-- Le compteur d'écrans : où on en est dans la trame. Il ne paraît que
+             si la séance porte au moins une diapositive, donc une séance qui
+             n'en a pas garde l'écran du cœur, au pixel près. -->
+        <xpath expr="//div[hasclass('o_survey_session_manage')]" position="inside">
+            <div t-if="bf_frame_counter" class="o_bf_frame_counter">
+                <span class="o_bf_frame_position" t-out="bf_frame_position"/>
+                <span class="o_bf_frame_sep"> / </span>
+                <span t-out="bf_frame_total"/>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- L'ÉCRAN D'ATTENTE : les équipes, sous le code et le code QR.
+
+         C'est l'écran que la salle regarde en arrivant, et le seul moment où
+         chacun a le temps de lire son équipe. Le cadre est posé même vide : la
+         bande se rafraîchit à la cadence du compte de participants du cœur,
+         parce que le tirage se fait au bureau pendant que l'écran est déjà
+         projeté. -->
+    <template id="session_open" inherit_id="survey.user_input_session_open">
+        <!-- La marque, au-dessus du titre de l'écran d'attente. C'est le seul
+             écran que la salle regarde longtemps, et celui qu'on photographie
+             avec le podium. Le code QR du cœur y est déjà grand : la carte du
+             code, elle, ne paraît qu'aux écrans suivants. -->
+        <xpath expr="//div[hasclass('o_survey_session_open_title')]/h1" position="before">
+            <t t-set="bf_brand" t-value="survey._bf_live_brand()"/>
+            <img t-if="bf_brand['logo']" class="o_bf_live_open_logo"
+                 t-att-src="bf_brand['logo']" t-att-alt="bf_brand['name']"/>
+        </xpath>
+        <xpath expr="//div[hasclass('o_survey_session_open_link')]" position="before">
+            <div class="o_bf_live_teams_strip">
+                <t t-call="bf_survey_live.team_strip"/>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- La bande des équipes. Rendue au serveur, au chargement comme au
+         rafraîchissement : un seul gabarit, donc un seul endroit où la forme
+         d'une équipe est décidée. -->
+    <template id="team_strip" name="Les équipes, sur l'écran d'attente">
+        <t t-set="strip" t-value="survey._bf_team_strip()"/>
+        <div t-if="strip['teams']"
+             class="o_bf_live_strip d-flex flex-wrap justify-content-center">
+            <div t-foreach="strip['teams']" t-as="team"
+                 class="o_bf_live_strip_chip d-flex align-items-center px-3 py-2 m-1 rounded-3"
+                 t-attf-style="background-color: #{team['color']}; color: #{team['text_color']};">
+                <span class="o_bf_live_strip_name fw-bold" t-out="team['label']"/>
+                <span class="o_bf_live_strip_count ms-3"><t t-out="team['members']"/><t t-if="team['members'] == 1"> membre</t><t t-else=""> membres</t></span>
+            </div>
+            <div t-if="strip['teamless']"
+                 class="o_bf_live_strip_chip o_bf_live_strip_teamless d-flex align-items-center px-3 py-2 m-1 rounded-3"><t t-out="strip['teamless']"/><t t-if="strip['teamless'] == 1"> personne sans équipe</t><t t-else=""> personnes sans équipe</t></div>
+        </div>
+    </template>
+
+    <!-- La diapositive projetée.
+
+         Les trois mêmes champs, dans le même ordre, quelle que soit la mise en
+         page : le titre, le sous-titre, puis le texte de l'onglet Description.
+         Une mise en page ne change que leur taille et leur place. Rien ne tombe
+         en silence parce qu'on a changé de mise en page. -->
+    <template id="diapositive" name="Diapositive de la trame">
+        <t t-set="image_url"
+           t-value="'/bf_survey_live/slide_image/%s/%s' % (survey.access_token, bf_slide.id)"/>
+        <!-- ⚠️ `o_bf_slide_layout_…` et non `o_bf_slide_…` : les mises en page
+             s'appellent « image » et « text », et la classe de l'image et celle
+             du texte aussi. Deux règles portant le même nom se seraient
+             appliquées au cadre entier. -->
+        <div t-attf-class="o_bf_slide o_bf_slide_layout_#{bf_slide.bf_slide_layout}">
+            <t t-if="bf_slide.bf_slide_layout == 'split'">
+                <div t-attf-class="o_bf_slide_split d-flex align-items-center #{'o_bf_slide_split_right' if bf_slide.bf_slide_image_position == 'right' else ''}">
+                    <div class="o_bf_slide_media">
+                        <img class="o_bf_slide_image" t-att-src="image_url"
+                             t-att-alt="bf_slide.title"/>
+                    </div>
+                    <div class="o_bf_slide_body">
+                        <h1 class="o_bf_slide_heading" t-out="bf_slide.title"/>
+                        <p t-if="bf_slide.bf_slide_subtitle" class="o_bf_slide_subtitle"
+                           t-out="bf_slide.bf_slide_subtitle"/>
+                        <div t-if="bf_slide.bf_slide_has_text" class="o_bf_slide_text"
+                             t-field="bf_slide.description"/>
+                    </div>
+                </div>
+            </t>
+            <t t-elif="bf_slide.bf_slide_layout == 'quote'">
+                <blockquote class="o_bf_slide_quote">
+                    <p class="o_bf_slide_quote_text" t-out="bf_slide.title"/>
+                    <footer t-if="bf_slide.bf_slide_subtitle" class="o_bf_slide_quote_author"
+                            t-out="bf_slide.bf_slide_subtitle"/>
+                    <div t-if="bf_slide.bf_slide_has_text" class="o_bf_slide_text"
+                         t-field="bf_slide.description"/>
+                </blockquote>
+            </t>
+            <t t-else="">
+                <h1 class="o_bf_slide_heading" t-out="bf_slide.title"/>
+                <p t-if="bf_slide.bf_slide_subtitle" class="o_bf_slide_subtitle"
+                   t-out="bf_slide.bf_slide_subtitle"/>
+                <div t-if="bf_slide.bf_slide_layout == 'image'" class="o_bf_slide_media">
+                    <img class="o_bf_slide_image" t-att-src="image_url"
+                         t-att-alt="bf_slide.title"/>
+                </div>
+                <div t-if="bf_slide.bf_slide_has_text" class="o_bf_slide_text"
+                     t-field="bf_slide.description"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- Le tableau : un rang par personne, ou par équipe qui a quelqu'un dedans. -->
+    <template id="scoreboard_board" name="Tableau de la séance">
+        <div class="o_bf_live_board">
+            <p t-if="not board['rows']" class="fs-3 text-white-50">
+                Personne n'a encore de points.
+            </p>
+            <div t-foreach="board['rows']" t-as="row"
+                 class="o_bf_live_row d-flex align-items-center mb-2">
+                <div class="o_bf_live_rank fw-bold me-3 text-end" t-out="row['rank']"/>
+                <div class="o_bf_live_chip d-flex align-items-center justify-content-between px-3 py-2 rounded-3 flex-grow-1"
+                     t-attf-style="background-color: #{row['color']}; color: #{row['text_color']};">
+                    <span class="o_bf_live_name fw-bold text-truncate" t-out="row['label']"/>
+                    <span class="o_bf_live_score fw-bold ms-3 text-nowrap">
+                        <t t-if="board['mode'] == 'team'">
+                            <t t-out="'%.0f' % row['average']"/> p / membre
+                            <span class="o_bf_live_detail">
+                                (<t t-out="row['members']"/> <t t-if="row['members'] == 1">membre</t><t t-else="">membres</t>,
+                                <t t-out="'%.0f' % row['score']"/> p)
+                            </span>
+                        </t>
+                        <t t-else="">
+                            <t t-out="'%.0f' % row['score']"/> p
+                        </t>
+                    </span>
+                </div>
+            </div>
+            <p t-if="board['teamless']" class="o_bf_live_teamless mt-3">
+                <t t-out="board['teamless']"/>
+                <t t-if="board['teamless'] == 1"> personne sans équipe</t><t t-else=""> personnes sans équipe</t>
+            </p>
+        </div>
+    </template>
+
+    <!-- Le podium : l'écran qu'on photographie. Les noms restent au-dessus des
+         blocs, en blanc sur le fond de la séance : un pseudonyme long déformerait
+         un bloc, et le rang porté par le bloc suffit à dire qui gagne. -->
+    <template id="scoreboard_podium" name="Podium de la séance">
+        <div class="o_bf_live_podium">
+            <p t-if="not board['podium']" class="fs-3 text-white-50">
+                Personne n'a de points : pas de podium.
+            </p>
+            <div t-if="board['podium']" class="o_bf_live_podium_blocks d-flex align-items-end justify-content-center">
+                <div t-foreach="board['podium']" t-as="row"
+                     t-attf-class="o_bf_live_podium_place o_bf_live_podium_place_#{row['rank']} d-flex flex-column align-items-center"
+                     t-attf-style="order: #{2 if row['rank'] == 1 else (1 if row['rank'] == 2 else 3)};">
+                    <div class="o_bf_live_podium_name fw-bold text-center" t-out="row['label']"/>
+                    <div t-if="board['mode'] == 'team'" class="o_bf_live_podium_members">
+                        <t t-out="row['members']"/> <t t-if="row['members'] == 1">membre</t><t t-else="">membres</t>
+                    </div>
+                    <div class="o_bf_live_podium_block d-flex flex-column align-items-center justify-content-center"
+                         t-attf-style="background-color: #{row['block_color']}; color: #{row['block_text_color']};">
+                        <div class="o_bf_live_podium_rank fw-bold" t-out="row['rank']"/>
+                        <div class="o_bf_live_podium_score fw-bold">
+                            <t t-if="board['mode'] == 'team'"><t t-out="'%.0f' % row['average']"/> p / membre</t>
+                            <t t-else=""><t t-out="'%.0f' % row['score']"/> p</t>
+                        </div>
+                        <div t-if="board['mode'] == 'team'" class="o_bf_live_podium_total">
+                            <t t-out="'%.0f' % row['score']"/> p au total
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div t-if="board['others']" class="o_bf_live_podium_rest d-flex flex-wrap justify-content-center mt-4">
+                <div t-foreach="board['others']" t-as="row" class="o_bf_live_podium_other px-3 py-1 m-1 rounded-3">
+                    <span class="fw-bold me-2"><t t-out="row['rank']"/>.</span>
+                    <span t-out="row['label']"/>
+                    <span class="ms-2 o_bf_live_detail">
+                        <t t-if="board['mode'] == 'team'"><t t-out="'%.0f' % row['average']"/> p / membre</t>
+                        <t t-else=""><t t-out="'%.0f' % row['score']"/> p</t>
+                    </span>
+                </div>
+            </div>
+            <p t-if="board['teamless']" class="o_bf_live_teamless mt-3 text-center">
+                <t t-out="board['teamless']"/>
+                <t t-if="board['teamless'] == 1"> personne sans équipe</t><t t-else=""> personnes sans équipe</t>
+            </p>
+        </div>
+    </template>
+
+</odoo>

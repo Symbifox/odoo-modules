@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_wheel_form_survey" model="ir.ui.view">
+        <field name="name">bf.wheel.form.survey</field>
+        <field name="model">bf.wheel</field>
+        <field name="inherit_id" ref="bf_wheel.view_bf_wheel_form"/>
+        <field name="arch" type="xml">
+            <field name="source" position="after">
+                <field name="survey_id" invisible="source == 'manual'"
+                       required="source in ['session', 'answers']"/>
+                <field name="question_id" invisible="source != 'answers'"
+                       required="source == 'answers'"/>
+                <field name="weight_by_count" invisible="source != 'answers'"/>
+                <field name="session_state" invisible="source != 'session'"/>
+            </field>
+        </field>
+    </record>
+</odoo>

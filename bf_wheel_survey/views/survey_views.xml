@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_survey_form_wheel" model="ir.ui.view">
+        <field name="name">survey.survey.form.wheel</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_bf_wheel_session" type="object"
+                        string="Roue de fortune" icon="fa-dot-circle-o"
+                        groups="bf_wheel.group_bf_wheel_user"
+                        invisible="session_state != 'in_progress'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

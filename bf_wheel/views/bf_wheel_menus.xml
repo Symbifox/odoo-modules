@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_wheel_root" name="Roue de fortune"
+              web_icon="bf_wheel,static/description/icon.png" sequence="95"
+              groups="group_bf_wheel_user"/>
+    <menuitem id="menu_bf_wheel_wheels" name="Roues" parent="menu_bf_wheel_root"
+              action="action_bf_wheel" sequence="10"/>
+    <menuitem id="menu_bf_wheel_spins" name="Registre des tirages" parent="menu_bf_wheel_root"
+              action="action_bf_wheel_spin" sequence="20"/>
+</odoo>

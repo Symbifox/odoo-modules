@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Les équipes suivent leur sondage : qui ne peut pas lire le sondage ne
+             lit pas ses équipes. Les deux règles recopient celles du cœur pour
+             `survey.question`, parce qu'une équipe est une pièce de sondage comme
+             une question, et que deux gardes différentes sur la même donnée
+             finissent toujours par diverger. -->
+        <record id="bf_live_team_rule_manager" model="ir.rule">
+            <field name="name">Équipe de séance : responsable : toutes</field>
+            <field name="model_id" ref="model_bf_live_team"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('survey.group_survey_manager'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <record id="bf_live_team_rule_user" model="ir.rule">
+            <field name="name">Équipe de séance : sondage libre ou dont on fait partie</field>
+            <field name="model_id" ref="model_bf_live_team"/>
+            <field name="domain_force">[
+                '|', ('survey_id.restrict_user_ids', 'in', user.id),
+                     ('survey_id.restrict_user_ids', '=', False)]</field>
+            <field name="groups" eval="[(4, ref('survey.group_survey_user'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+    </data>
+</odoo>

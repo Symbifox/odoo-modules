@@ -9,6 +9,14 @@
                 <button name="action_annoncer_au_babillard" type="object"
                         string="Annoncer au babillard"
                         groups="bf_babillard.group_babillard_redacteur"/>
+                <!-- La séance, et non le sondage : elle a lieu maintenant, et on
+                     la rejoint par un code. Le bouton ne paraît donc que quand
+                     une séance est ouverte. `session_state` est déjà dans la vue
+                     du cœur, en invisible. -->
+                <button name="action_annoncer_seance_au_babillard" type="object"
+                        string="Annoncer la séance au babillard"
+                        groups="bf_babillard.group_babillard_redacteur"
+                        invisible="session_state not in ['ready', 'in_progress']"/>
             </xpath>
         </field>
     </record>

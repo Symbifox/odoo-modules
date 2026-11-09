@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_wheel_user,bf.wheel utilisateur,model_bf_wheel,group_bf_wheel_user,1,0,0,0
+access_bf_wheel_manager,bf.wheel responsable,model_bf_wheel,group_bf_wheel_manager,1,1,1,1
+access_bf_wheel_segment_user,bf.wheel.segment utilisateur,model_bf_wheel_segment,group_bf_wheel_user,1,0,0,0
+access_bf_wheel_segment_manager,bf.wheel.segment responsable,model_bf_wheel_segment,group_bf_wheel_manager,1,1,1,1
+access_bf_wheel_spin_user,bf.wheel.spin utilisateur,model_bf_wheel_spin,group_bf_wheel_user,1,1,0,0
+access_bf_wheel_spin_manager,bf.wheel.spin responsable,model_bf_wheel_spin,group_bf_wheel_manager,1,1,0,0

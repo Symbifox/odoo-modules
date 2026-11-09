@@ -1,0 +1,624 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_survey_live
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-08 23:48+0000\n"
+"PO-Revision-Date: 2026-11-08 23:48+0000\n"
+"Last-Translator: Les services de consultation Blue Fox, Inc.\n"
+"Language-Team: Les services de consultation Blue Fox, Inc.\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: en_CA\n"
+"Plural-Forms: \n"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_survey.py:0
+msgid "%(gens)s participants répartis en %(equipes)s équipes."
+msgstr "%(gens)s attendees split into %(equipes)s teams."
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.session_manage_content
+msgid "<span class=\"o_bf_frame_sep\"> / </span>"
+msgstr "<span class=\"o_bf_frame_sep\"> / </span>"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.fill_form_in_progress
+msgid "<span class=\"o_bf_phone_team_label me-2\">Ton équipe</span>"
+msgstr "<span class=\"o_bf_phone_team_label me-2\">Your team</span>"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_survey.py:0
+msgid "Anonyme"
+msgstr "Anonymous"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_question__bf_save_as_team
+msgid "Cette réponse choisit l'équipe"
+msgstr "This answer picks the team"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.survey_question_form_live
+msgid ""
+"Cette section garde l'écran du cœur : son titre et son\n"
+"                        texte, en petit. Choisissez une mise en page pour en\n"
+"                        faire une diapositive de la trame."
+msgstr ""
+"This section keeps the standard screen: its title and its text, in small type. Choose a layout to turn it into a slide of the frame."
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.survey_question_form_live
+msgid ""
+"Cette section se projette comme une diapositive, entre les\n"
+"                        questions. Les trois mêmes champs s'affichent toujours :\n"
+"                        le titre, le sous-titre, puis le texte de l'onglet\n"
+"                        <b>Description</b>. La mise en page ne change que leur\n"
+"                        taille et leur place. Pour une image qui remplit le fond\n"
+"                        derrière le texte, c'est l'<b>image de fond</b>, en haut\n"
+"                        à droite."
+msgstr ""
+"This section is projected as a slide, between the questions. The same three fields always show: the title, the subtitle, then the text of the <b>Description</b> tab. The layout only changes their size and their place. For an image that fills the background behind the text, use the <b>background image</b>, at the top right."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_survey_question__bf_save_as_team
+msgid ""
+"Chaque réponse proposée devient une équipe, et qui répond entre dedans. Les "
+"équipes se figent à l'ouverture de la séance."
+msgstr ""
+"Each suggested answer becomes a team, and whoever gives it joins that team. The teams are frozen when the session opens."
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_question__bf_slide_layout__quote
+msgid "Citation"
+msgstr "Quote"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_survey__bf_live_scoreboard
+msgid "Classement de la séance"
+msgstr "Session leaderboard"
+
+#. module: bf_survey_live
+#. odoo-javascript
+#: code:addons/bf_survey_live/static/src/js/session_manage.js:0
+msgid "Classement par équipe"
+msgstr "Team leaderboard"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_survey__bf_live_join_badge
+msgid "Code de participation à l'écran"
+msgstr "Join code on every screen"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_survey__bf_live_frame_counter
+msgid "Compteur d'écrans"
+msgstr "Screen counter"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__color_key
+msgid "Couleur"
+msgstr "Colour"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_question__bf_slide_image_position
+msgid "Côté de l'image"
+msgstr "Image side"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.survey_question_form_live
+msgid "Diapositive"
+msgstr "Slide"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__text_color
+msgid "Encre"
+msgstr "Ink"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__color
+msgid "Fond"
+msgstr "Background"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_question__bf_slide_layout__image
+msgid "Image"
+msgstr "Image"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_question__bf_slide_image
+msgid "Image de la diapositive"
+msgstr "Slide image"
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_question__bf_slide_layout__split
+msgid "Image et texte"
+msgstr "Image and text"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_question.py:0
+msgid ""
+"La diapositive « %(titre)s » est une image et n'en porte pas : à l'écran, ça"
+" fait un trou au mur."
+msgstr ""
+"Slide \"%(titre)s\" is an image slide and carries no image: on screen, that makes a hole on the wall."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: bf_survey_live
+#. odoo-javascript
+#: code:addons/bf_survey_live/static/src/js/session_manage.js:0
+msgid "Le classement"
+msgstr "The leaderboard"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_survey_survey__bf_live_join_badge
+msgid ""
+"Le code de la séance et son code QR, en bas à gauche de chaque écran "
+"projeté. Sans eux, un retardataire n'a plus rien à scanner dès la première "
+"question : le code QR de l'écran d'accueil disparaît avec lui."
+msgstr ""
+"The session code and its QR code, bottom left of every projected screen. Without them, a latecomer has nothing left to scan from the first question on: the welcome screen's QR code goes away with it."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_survey_survey__bf_live_podium
+msgid ""
+"Le dernier écran met les trois premiers sur des blocs, au lieu des barres du"
+" classement."
+msgstr ""
+"The last screen puts the top three on blocks, instead of the leaderboard bars."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_survey_question__bf_live_screen
+msgid ""
+"Le nuage compte les mots des réponses et les écrit d'autant plus gros qu'ils"
+" reviennent souvent. Sur une question de type texte long, c'est le premier "
+"écran : la séance du cœur n'en affiche aucun."
+msgstr ""
+"The cloud counts the words of the answers and writes them the bigger the more often they come back. On a long text question, it is the first screen there is: the standard session shows none."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_survey_survey__bf_live_frame_counter
+msgid ""
+"Le numéro de l'écran en cours, en bas de l'écran projeté. Ne paraît que si "
+"la séance porte une trame, donc au moins une diapositive."
+msgstr ""
+"The number of the current screen, at the bottom of the projected screen. It only shows if the session carries a frame, so at least one slide."
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_survey.py:0
+msgid ""
+"Le tirage fait de 2 à %(max)s équipes : un tableau projeté au fond d'une "
+"salle ne se lit plus au-delà."
+msgstr ""
+"The draw makes 2 to %(max)s teams: a board projected at the back of a room cannot be read beyond that."
+
+#. module: bf_survey_live
+#. odoo-javascript
+#: code:addons/bf_survey_live/static/src/js/session_manage.js:0
+msgid "Les équipes"
+msgstr "The teams"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_survey.py:0
+msgid ""
+"Les équipes de « %(sondage)s » viennent de la question « %(question)s ». "
+"Pour les tirer au hasard, retirez d'abord le drapeau « choisit l'équipe » de"
+" cette question."
+msgstr ""
+"The teams of \"%(sondage)s\" come from question \"%(question)s\". To draw them at random, first clear the \"picks the team\" flag on that question."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_question__bf_slide_layout
+msgid "Mise en page projetée"
+msgstr "Projected layout"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_survey_question__bf_slide_image
+msgid ""
+"Montrée en entier, jamais recadrée. Pour une image qui remplit le fond "
+"derrière le texte, c'est « Image de fond » qu'il faut."
+msgstr ""
+"Shown whole, never cropped. For an image that fills the background behind the text, use \"Background image\"."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_question__bf_word_cloud_ignore
+msgid "Mots à écarter du nuage"
+msgstr "Words to leave out of the cloud"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__name
+msgid "Nom"
+msgstr "Name"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_survey__bf_live_team_count
+msgid "Nombre d'équipes"
+msgstr "Number of teams"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_survey__bf_live_team_target
+msgid "Nombre d'équipes à tirer"
+msgstr "Number of teams to draw"
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_question__bf_live_screen__word_cloud
+msgid "Nuage de mots"
+msgstr "Word cloud"
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_survey__bf_live_scoreboard__individual
+msgid "Par personne"
+msgstr "By person"
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_survey__bf_live_scoreboard__team
+msgid "Par équipe"
+msgstr "By team"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_survey_survey__bf_live_scoreboard
+msgid ""
+"Par équipe, l'écran de classement montre les équipes au lieu des personnes. "
+"Le moment où il s'affiche ne change pas."
+msgstr ""
+"By team, the leaderboard screen shows the teams instead of the people. When it shows does not change."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__member_ids
+msgid "Participants"
+msgstr "Attendees"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__member_count
+msgid "Participants (toutes les séances)"
+msgstr "Attendees (all sessions)"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_podium
+msgid "Personne n'a de points : pas de podium."
+msgstr "Nobody has points: no podium."
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_board
+msgid "Personne n'a encore de points."
+msgstr "Nobody has points yet."
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_survey.py:0
+msgid ""
+"Personne n'a encore rejoint la séance de « %(sondage)s » : il n'y a personne"
+" à répartir."
+msgstr ""
+"Nobody has joined the session for \"%(sondage)s\" yet: there is nobody to split up."
+
+#. module: bf_survey_live
+#. odoo-javascript
+#: code:addons/bf_survey_live/static/src/js/session_manage.js:0
+msgid "Podium"
+msgstr "Podium"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_survey__bf_live_podium
+msgid "Podium à la fin"
+msgstr "Podium at the end"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__score_total
+msgid "Points (toutes les séances)"
+msgstr "Points (all sessions)"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_question__bf_slide_has_text
+msgid "Porte un texte"
+msgstr "Carries a text"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_bf_live_team__answer_id
+msgid ""
+"Quand les équipes viennent d'une question, chaque réponse en ouvre une."
+msgstr "When the teams come from a question, each answer opens one."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__answer_id
+msgid "Réponse qui mène ici"
+msgstr "Answer that leads here"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_question.py:0
+msgid ""
+"Seule une question à choix unique peut choisir l'équipe, et « %(question)s »"
+" n'en est pas une."
+msgstr ""
+"Only a single choice question can pick the team, and \"%(question)s\" is not one."
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_question.py:0
+msgid ""
+"Seule une section devient une diapositive, et « %(titre)s » est une "
+"question. Une question se projette déjà d'elle-même."
+msgstr ""
+"Only a section becomes a slide, and \"%(titre)s\" is a question. A question is already projected on its own."
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_survey.py:0
+msgid "Seules les personnes du groupe Sondages tiennent une séance."
+msgstr "Only people in the Surveys group run a session."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__survey_id
+msgid "Sondage"
+msgstr "Survey"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_question__bf_slide_subtitle
+msgid "Sous-titre"
+msgstr "Subtitle"
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_question__bf_live_screen__standard
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_question__bf_slide_layout__standard
+msgid "Standard"
+msgstr "Standard"
+
+#. module: bf_survey_live
+#: model:ir.model,name:bf_survey_live.model_survey_survey
+msgid "Survey"
+msgstr "Survey"
+
+#. module: bf_survey_live
+#: model:ir.model,name:bf_survey_live.model_survey_question
+msgid "Survey Question"
+msgstr "Survey Question"
+
+#. module: bf_survey_live
+#: model:ir.model,name:bf_survey_live.model_survey_user_input
+msgid "Survey User Input"
+msgstr "Survey User Input"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.survey_question_form_live
+msgid "Séance en direct"
+msgstr "Live session"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_survey_question__bf_word_cloud_ignore
+msgid ""
+"Séparés par des virgules. Les mots outils du français et de l'anglais sont "
+"déjà écartés ; ceux-ci s'ajoutent. Le mot de la question elle-même est "
+"souvent le premier à écarter : il écrase tout le reste."
+msgstr ""
+"Comma separated. The stop words of French and English are already left out; these are added to them. The word of the question itself is often the first one to leave out: it crushes everything else."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_bf_live_team__sequence
+msgid "Séquence"
+msgstr "Sequence"
+
+#. module: bf_survey_live
+#. odoo-javascript
+#: code:addons/bf_survey_live/static/src/js/session_manage.js:0
+msgid "T pour fermer"
+msgstr "T to close"
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_question__bf_slide_layout__text
+msgid "Texte"
+msgstr "Text"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.survey_survey_view_form_live
+msgid "Tirer les équipes au hasard"
+msgstr "Draw the teams at random"
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_question__bf_slide_layout__title
+msgid "Titre"
+msgstr "Title"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_survey_question__bf_slide_subtitle
+msgid ""
+"Toujours sous le titre, quelle que soit la mise en page : le sous-titre d'un"
+" écran de titre, la signature d'une citation, l'intention d'une image."
+msgstr ""
+"Always under the title, whatever the layout: the subtitle of a title screen, the attribution of a quote, the intent of an image."
+
+#. module: bf_survey_live
+#: model:ir.model.constraint,message:bf_survey_live.constraint_bf_live_team_answer_unique
+msgid "Une réponse ne peut mener qu'à une seule équipe."
+msgstr "An answer can only lead to one team."
+
+#. module: bf_survey_live
+#: model:ir.model.fields,help:bf_survey_live.field_survey_question__bf_slide_layout
+msgid ""
+"Une section qui porte une mise en page devient une diapositive de la trame, "
+"projetée entre les questions. Les trois mêmes champs s'affichent toujours "
+"(le titre, le sous-titre, puis le texte de l'onglet Description) : la mise "
+"en page ne change que leur taille et leur place."
+msgstr ""
+"A section that carries a layout becomes a slide of the frame, projected between the questions. The same three fields always show (the title, the subtitle, then the text of the Description tab): the layout only changes their size and their place."
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.survey_question_form_live
+msgid "e.g. « Atelier du mardi »"
+msgstr "e.g. \"Tuesday workshop\""
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_board
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_podium
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.team_strip
+msgid "membre"
+msgstr "member"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_board
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_podium
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.team_strip
+msgid "membres"
+msgstr "members"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_board
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_podium
+msgid "p"
+msgstr "pts"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_board
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_podium
+msgid "p / membre"
+msgstr "pts / member"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_podium
+msgid "p au total"
+msgstr "pts in total"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_board
+msgid "p)"
+msgstr "pts)"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_board
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_podium
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.team_strip
+msgid "personne sans équipe"
+msgstr "person without a team"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_board
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.scoreboard_podium
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.team_strip
+msgid "personnes sans équipe"
+msgstr "people without a team"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_question.py:0
+msgid ""
+"« %(sondage)s » a déjà une question qui choisit l'équipe : « %(question)s »."
+" Une séance n'a qu'une façon de faire ses équipes, sinon la dernière réponse"
+" écrase la première."
+msgstr ""
+"\"%(sondage)s\" already has a question that picks the team: \"%(question)s\". A session has only one way of making its teams, otherwise the last answer crushes the first."
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_question__bf_slide_image_position__right
+msgid "À droite"
+msgstr "On the right"
+
+#. module: bf_survey_live
+#: model:ir.model.fields.selection,name:bf_survey_live.selection__survey_question__bf_slide_image_position__left
+msgid "À gauche"
+msgstr "On the left"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_question__bf_live_screen
+msgid "À l'écran, en direct"
+msgstr "On screen, live"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_user_input__bf_team_id
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.bf_live_team_view_form
+msgid "Équipe"
+msgstr "Team"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/survey_survey.py:0
+msgid "Équipe %(rang)s"
+msgstr "Team %(rang)s"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/bf_live_team.py:0
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.bf_live_team_view_form
+msgid "Équipe bleue"
+msgstr "Blue team"
+
+#. module: bf_survey_live
+#: model:ir.model,name:bf_survey_live.model_bf_live_team
+msgid "Équipe d'une séance en direct"
+msgstr "Team of a live session"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/bf_live_team.py:0
+msgid "Équipe orange"
+msgstr "Orange team"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/bf_live_team.py:0
+msgid "Équipe rouge"
+msgstr "Red team"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/bf_live_team.py:0
+msgid "Équipe turquoise"
+msgstr "Turquoise team"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/bf_live_team.py:0
+msgid "Équipe verte"
+msgstr "Green team"
+
+#. module: bf_survey_live
+#. odoo-python
+#: code:addons/bf_survey_live/models/bf_live_team.py:0
+msgid "Équipe violette"
+msgstr "Purple team"
+
+#. module: bf_survey_live
+#: model:ir.model.fields,field_description:bf_survey_live.field_survey_survey__bf_live_team_ids
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.bf_live_team_view_list
+msgid "Équipes"
+msgstr "Teams"
+
+#. module: bf_survey_live
+#: model_terms:ir.ui.view,arch_db:bf_survey_live.survey_survey_view_form_live
+msgid "Équipes de la séance"
+msgstr "Teams of the session"

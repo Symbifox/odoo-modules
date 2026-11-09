@@ -1,0 +1,594 @@
+// Les écrans de la séance : nuage, tableau, podium.
+//
+// ⚠️ Ce fichier part dans `survey.survey_user_input_session_assets`, un paquet
+// qui n'inclut AUCUN aide de Sass : ni variables ni fonctions de Bootstrap. Tout
+// y est écrit en clair. Et jamais `min()` ni `max()` sans interpolation : Sass
+// les prend pour les siennes et refuse « Incompatible units », ce qui fait
+// tomber le paquet ENTIER et sert une vieille feuille à toute l'application.
+
+$bf-blue: #29abe2;
+
+// ------------------------------------------------------------------
+// Le nuage de mots
+// ------------------------------------------------------------------
+.o_bf_live_cloud {
+    position: relative;
+    // ⚠️ Une largeur EXPLICITE, et pas `w-100` : l'écran de séance est un
+    // `d-flex flex-column align-items-center`, donc ses enfants sont larges
+    // comme leur contenu. Mesuré : le cadre tombait à 497 px sur une fenêtre de
+    // 1500, et les mots longs n'y rentraient plus.
+    width: 76vw;
+    height: 64vh;
+    min-height: 18rem;
+    overflow: hidden;
+}
+
+.o_bf_live_word {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #ffffff;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+    // Le fond de la séance est une photo : l'ombre garde le mot lisible même
+    // posé sur une zone claire de l'image.
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75), 0 0 1px rgba(0, 0, 0, 0.9);
+    // Un mot qui change de place ou de taille y GLISSE : sans transition, tout
+    // le nuage saute à chaque nouvelle réponse.
+    transition: left 0.45s ease, top 0.45s ease, font-size 0.45s ease, opacity 0.45s ease;
+}
+
+.o_bf_live_word_skipped {
+    display: none;
+}
+
+// ------------------------------------------------------------------
+// Le tableau : personnes ou équipes
+// ------------------------------------------------------------------
+.o_bf_live_board {
+    width: 100%;
+    max-width: 62rem;
+    margin: 0 auto;
+}
+
+.o_bf_live_row {
+    .o_bf_live_rank {
+        width: 2.6rem;
+        flex: 0 0 2.6rem;
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.55);
+    }
+
+    .o_bf_live_chip {
+        font-size: 1.6rem;
+        min-height: 3.2rem;
+    }
+
+    .o_bf_live_name {
+        max-width: 60%;
+    }
+}
+
+.o_bf_live_detail {
+    font-size: 0.62em;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
+.o_bf_live_teamless {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 1.1rem;
+}
+
+// ------------------------------------------------------------------
+// Le podium
+// ------------------------------------------------------------------
+.o_bf_live_podium {
+    width: 100%;
+}
+
+.o_bf_live_podium_blocks {
+    gap: 1.4rem;
+}
+
+.o_bf_live_podium_place {
+    width: 15vw;
+    min-width: 9rem;
+    max-width: 16rem;
+}
+
+.o_bf_live_podium_name {
+    color: #ffffff;
+    font-size: 1.6rem;
+    line-height: 1.15;
+    margin-bottom: 0.15rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.o_bf_live_podium_members {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+
+.o_bf_live_podium_block {
+    width: 100%;
+    border-radius: 0.6rem 0.6rem 0 0;
+    box-shadow: 0 -0.2rem 1.2rem rgba(0, 0, 0, 0.35);
+}
+
+.o_bf_live_podium_rank {
+    font-size: 4.2rem;
+    line-height: 1;
+}
+
+.o_bf_live_podium_score {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.o_bf_live_podium_total {
+    // Le classement se fait a la moyenne, mais le total reste a l'ecran : une
+    // equipe qui perd avec 65 points doit voir ses 65 points.
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
+
+.o_bf_live_podium_place_1 .o_bf_live_podium_block {
+    height: 14rem;
+}
+
+.o_bf_live_podium_place_2 .o_bf_live_podium_block {
+    height: 10.5rem;
+}
+
+.o_bf_live_podium_place_3 .o_bf_live_podium_block {
+    height: 8rem;
+}
+
+.o_bf_live_podium_other {
+    background-color: rgba(0, 0, 0, 0.45);
+    color: #ffffff;
+    font-size: 1.15rem;
+}
+
+// ------------------------------------------------------------------
+// Le voile appelé par la touche T
+// ------------------------------------------------------------------
+.o_bf_live_overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1060;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+.o_bf_live_overlay_panel {
+    width: 92%;
+    max-width: 68rem;
+    padding: 2rem 1rem;
+    text-align: left;
+}
+
+.o_bf_live_overlay_title {
+    color: $bf-blue;
+    font-size: 2.2rem;
+    margin-bottom: 1.4rem;
+    text-align: center;
+}
+
+.o_bf_live_overlay_hint {
+    margin-top: 1.6rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.95rem;
+}
+
+// ------------------------------------------------------------------
+// La trame : les diapositives projetées
+// ------------------------------------------------------------------
+.o_bf_slide_host {
+    // ⚠️ Comme le nuage, et pour la même raison : l'écran de séance centre ses
+    // enfants, donc un enfant est large comme son CONTENU, pas comme l'écran.
+    // Sans largeur explicite, un écran de titre se serre autour de ses mots au
+    // milieu du mur.
+    width: 84vw;
+    max-width: 92rem;
+    margin: 0 auto;
+    color: #ffffff;
+}
+
+.o_bf_slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 56vh;
+    text-align: center;
+    // Le fond de la séance est une photo : l'ombre garde le texte lisible même
+    // posé sur une zone claire de l'image.
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.o_bf_slide_heading {
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.1;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.o_bf_slide_subtitle {
+    margin: 0.9rem 0 0;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.3;
+}
+
+.o_bf_slide_text {
+    margin-top: 1.5rem;
+    line-height: 1.45;
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+
+    // Une liste centrée ne se lit pas : le bloc reste au milieu, le texte
+    // s'aligne à gauche dedans.
+    ul,
+    ol {
+        display: inline-block;
+        text-align: left;
+        margin-bottom: 0;
+    }
+}
+
+.o_bf_slide_media {
+    margin-top: 1.6rem;
+    width: 100%;
+}
+
+.o_bf_slide_image {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 44vh;
+    // Jamais recadrée : un schéma amputé ne veut plus rien dire.
+    object-fit: contain;
+    border-radius: 0.4rem;
+}
+
+// L'écran de titre : le titre EST l'écran.
+.o_bf_slide_layout_title {
+    .o_bf_slide_heading {
+        font-size: 4.2rem;
+
+        &::after {
+            content: "";
+            display: block;
+            width: 7rem;
+            height: 0.3rem;
+            margin: 1.5rem auto 0;
+            border-radius: 0.2rem;
+            background-color: $bf-blue;
+        }
+    }
+
+    .o_bf_slide_subtitle {
+        margin-top: 1.2rem;
+        font-size: 1.9rem;
+    }
+
+    .o_bf_slide_text {
+        font-size: 1.15rem;
+        color: rgba(255, 255, 255, 0.72);
+    }
+}
+
+// L'écran de texte : le titre en haut, le texte lisible du fond de la salle.
+.o_bf_slide_layout_text {
+    .o_bf_slide_heading {
+        font-size: 2.9rem;
+    }
+
+    .o_bf_slide_subtitle {
+        font-size: 1.5rem;
+    }
+
+    .o_bf_slide_text {
+        font-size: 1.65rem;
+        max-width: 64rem;
+    }
+}
+
+// L'écran d'image : le titre se fait petit, l'image prend la place.
+.o_bf_slide_layout_image {
+    .o_bf_slide_heading {
+        font-size: 2.3rem;
+    }
+
+    .o_bf_slide_subtitle {
+        margin-top: 0.5rem;
+        font-size: 1.15rem;
+    }
+
+    .o_bf_slide_text {
+        margin-top: 1rem;
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.78);
+    }
+}
+
+// L'image d'un côté, le texte de l'autre.
+.o_bf_slide_layout_split {
+    .o_bf_slide_split {
+        width: 100%;
+        gap: 3rem;
+        text-align: left;
+    }
+
+    .o_bf_slide_split_right {
+        flex-direction: row-reverse;
+    }
+
+    .o_bf_slide_media {
+        margin-top: 0;
+        flex: 0 0 44%;
+    }
+
+    .o_bf_slide_image {
+        max-height: 56vh;
+    }
+
+    .o_bf_slide_body {
+        flex: 1 1 auto;
+    }
+
+    .o_bf_slide_heading {
+        font-size: 2.6rem;
+    }
+
+    .o_bf_slide_subtitle {
+        font-size: 1.4rem;
+    }
+
+    .o_bf_slide_text {
+        font-size: 1.35rem;
+
+        ul,
+        ol {
+            display: block;
+        }
+    }
+}
+
+// La citation : le titre porte la phrase, le sous-titre la signature.
+.o_bf_slide_layout_quote {
+    .o_bf_slide_quote {
+        max-width: 60rem;
+        margin: 0;
+        padding: 0 1rem;
+        position: relative;
+        // ⚠️ Le filet gauche vient du `blockquote` du cadre du cœur. Vu à la
+        // capture : une barre blanche à gauche d'un texte centré, qui ne
+        // désigne rien. Le guillemet bleu suffit à dire que c'est une citation.
+        border: 0;
+    }
+
+    .o_bf_slide_quote_text {
+        margin: 0;
+        font-size: 2.7rem;
+        font-weight: 300;
+        font-style: italic;
+        line-height: 1.25;
+
+        &::before {
+            content: "\201C";
+            display: block;
+            margin-bottom: -1.2rem;
+            color: $bf-blue;
+            font-size: 5rem;
+            font-style: normal;
+            line-height: 1;
+            opacity: 0.85;
+        }
+    }
+
+    .o_bf_slide_quote_author {
+        margin-top: 1.4rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.35rem;
+        font-weight: 600;
+    }
+
+    .o_bf_slide_text {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+}
+
+// ------------------------------------------------------------------
+// Le compteur d'écrans
+// ------------------------------------------------------------------
+.o_bf_frame_counter {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1rem;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.05rem;
+    // Les chiffres de même largeur : le compteur ne frémit pas en passant de
+    // 9 à 10.
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+
+    .o_bf_frame_position {
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 700;
+    }
+}
+
+// ------------------------------------------------------------------
+// L'écran d'attente : la bande des équipes
+// ------------------------------------------------------------------
+.o_bf_live_teams_strip {
+    // Le cadre existe même vide : c'est le JS qui le remplit à la cadence du
+    // compte de participants du cœur. Sans contenu, il ne prend pas de place.
+    &:empty {
+        display: none;
+    }
+}
+
+.o_bf_live_strip {
+    // La bande s'écrit sur le fond noir translucide des autres blocs de
+    // l'écran d'attente, pas sur la photo de fond : les étiquettes d'équipe
+    // portent déjà leur propre couleur, et deux fonds de couleur côte à côte se
+    // battent.
+    padding: 0.5rem;
+
+    .o_bf_live_strip_chip {
+        // Les couleurs viennent du gabarit : fond de la palette mesurée, encre
+        // calculée par contraste.
+        font-size: 1.6rem;
+        line-height: 1.2;
+        // Projetée au fond d'une salle, une étiquette d'équipe se lit de loin ou
+        // ne sert à rien.
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    .o_bf_live_strip_count {
+        opacity: 0.85;
+        font-size: 1.15rem;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+
+    .o_bf_live_strip_teamless {
+        background-color: rgba(0, 0, 0, 0.45);
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.15rem;
+    }
+}
+
+// ------------------------------------------------------------------
+// La carte pour rejoindre : le logo, le code QR, le code
+// ------------------------------------------------------------------
+// ⚠️ Elle vit dans l'en-tête du cœur (pour disparaître avec lui à la fermeture
+// de la séance) mais se dessine en bas à gauche de l'écran : l'en-tête est une
+// rangée serrée en haut, et un code QR lisible d'une salle n'y tient pas. Le
+// compteur d'écrans tient le coin opposé.
+.o_bf_live_join {
+    position: fixed;
+    left: 1.25rem;
+    bottom: 1rem;
+    z-index: 2;
+    gap: 0.5rem;
+    // 🔴 ÉTROITE, et c'est une mesure, pas un goût : l'histogramme du cœur
+    // occupe 75vw centrés, donc sa zone commence à 12,5vw du bord gauche. Une
+    // carte large s'y posait sur les étiquettes de l'axe — vu à la capture, pas
+    // aux contrôles, qui ne regardaient que le compteur d'écrans. Logo, code QR
+    // et code s'empilent donc en colonne, sous cette marge.
+    //
+    // 🔴 Et la marge est en unités de FENÊTRE, parce que la zone de
+    // l'histogramme en est une. Mesuré au navigateur : à 1500 px, l'histogramme
+    // commence à 188 et la carte s'arrêtait à 140 ; à 1024 px — le XGA de
+    // beaucoup de projecteurs — il commence à 128 et la carte s'arrêtait encore
+    // à 140. Elle remordait l'axe, exactement le défaut que la capture avait
+    // trouvé, et un plafond en `rem` ne pouvait pas le voir.
+    //
+    // ⚠️ `min()` est INTERPOLÉ : Sass le prend pour sa propre fonction et
+    // refuse « Incompatible units », ce qui fait tomber le paquet ENTIER sans
+    // un mot au journal.
+    max-width: #{"min(7.5rem, 10vw)"};
+}
+
+// La carte s'efface quand le classement ou le podium prend l'écran : c'est
+// l'image qu'on photographie en fin d'atelier, et un code pour rejoindre n'y
+// sert plus à rien. Posée et retirée par le JS, sur le contrat
+// `showLeaderboard`/`hideLeaderboard` du cœur.
+//
+// 🔴 `!important`, et c'est une mesure : la carte porte `d-flex` (c'est une
+// colonne), et Bootstrap écrit ses classes d'affichage en `!important`. Sans
+// lui, la classe se posait bien — mesuré au navigateur, `rangee: true` — et
+// l'écran du podium gardait la carte quand même.
+.o_bf_live_join_rangee {
+    display: none !important;
+}
+
+.o_bf_live_join_logo {
+    // Jamais plus large que la carte : un plafond à lui, en `rem`, débordait de
+    // 18 px à 1024 px, et c'est le logo qui mordait l'axe.
+    max-width: 100%;
+    // Un logo est sombre sur fond transparent au moins une fois sur deux, et le
+    // fond de la séance est une photo : la plaque claire le rend lisible quel
+    // que soit le logo de la maison.
+    max-height: 2.8rem;
+    padding: 0.3rem 0.4rem;
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.o_bf_live_join_card {
+    gap: 0.35rem;
+    padding: 0.4rem;
+    // Large comme la carte, et pas comme son contenu : c'est ce qui permet au
+    // code QR de se mesurer en pourcentage.
+    width: 100%;
+    border-radius: 0.5rem;
+    // Un code QR ne se lit que sur du blanc : le fond est la plaque, pas la
+    // photo de la séance.
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.o_bf_live_join_qr {
+    display: block;
+    // Le code QR SUIT la carte au lieu de la percer : avec une taille à lui, la
+    // plaque blanche gardait 109 px à 1024 px, débordait d'un parent plafonné à
+    // 102 et s'arrêtait à 129 px — un pixel dans l'histogramme, qu'aucun
+    // contrôle de boîtes n'aurait vu, puisqu'ils lisent la boîte du PARENT.
+    // L'image servie fait 360 px de côté : elle a de la marge pour grandir.
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+}
+
+.o_bf_live_join_code {
+    // Les couleurs viennent du gabarit : celle de la société, et l'encre
+    // calculée par contraste.
+    width: 100%;
+    text-align: center;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.4rem;
+    // Mesuré à 1024 px : la plaque n'offre plus que 95 px, et un code à cinq
+    // chiffres à 1,6 rem, espacés, en demande 100. Le cœur tire des codes à
+    // QUATRE chiffres (`_generate_session_codes`) et n'en ajoute un que sur
+    // collision : le code suit donc la fenêtre, pour le jour où il en porte cinq.
+    font-size: #{"min(1.6rem, 2.2vw)"};
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+    // Des chiffres de même largeur : un code se lit chiffre par chiffre, à voix
+    // haute, depuis le fond de la salle.
+    font-variant-numeric: tabular-nums;
+}
+
+// La marque sur l'écran d'attente, au-dessus du titre du sondage.
+.o_bf_live_open_logo {
+    display: block;
+    max-height: 3.2rem;
+    max-width: 14rem;
+    margin-bottom: 0.9rem;
+    padding: 0.3rem 0.45rem;
+    border-radius: 0.45rem;
+    background-color: rgba(255, 255, 255, 0.92);
+}

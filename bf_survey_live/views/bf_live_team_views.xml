@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_live_team_view_list" model="ir.ui.view">
+        <field name="name">bf.live.team.list</field>
+        <field name="model">bf.live.team</field>
+        <field name="arch" type="xml">
+            <list string="Équipes" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="color_key"/>
+                <field name="answer_id" readonly="1" optional="show"/>
+                <field name="member_count" readonly="1"/>
+                <field name="score_total" readonly="1" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_live_team_view_form" model="ir.ui.view">
+        <field name="name">bf.live.team.form</field>
+        <field name="model">bf.live.team</field>
+        <field name="arch" type="xml">
+            <form string="Équipe">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Équipe bleue"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="survey_id" options="{'no_create': True}"/>
+                            <field name="color_key"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="answer_id" readonly="1"/>
+                            <field name="member_count"/>
+                            <field name="score_total"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>
