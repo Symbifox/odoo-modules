@@ -8,7 +8,7 @@ fiche du document devenait illisible, le champ se recalculant à chaque lecture.
 
 La 18.0.13.6.0 pose le repli au tri et une contrainte qui refuse désormais
 l'état publié sans date. Cette passe ferme le passé : elle donne une date de
-publication aux versions déjà en base qui ont été publiées — ou remplacées —
+publication aux versions déjà en base qui ont été publiées (ou remplacées)
 sans en porter une, pour que le mélange d'une version datée et d'une version
 qui ne l'est pas ne se produise plus. La date prise est la date d'entrée en
 vigueur de la version à 05:00 UTC, sinon son approbation, sinon le gel de son
@@ -20,7 +20,7 @@ plus rien.
 
 Second geste : le rang de publication (``sequence_index``) est remis dans
 l'ordre des dates, pour les versions publiées et remplacées. La migration
-18.0.10.0.0 numérotait déjà sur ``COALESCE(release_date, create_date), id`` —
+18.0.10.0.0 numérotait déjà sur ``COALESCE(release_date, create_date), id`` :
 sa règle était juste, mais elle a tourné AVANT que les versions publiées par
 script aient une date, et celles créées publiées après elle n'ont jamais reçu
 de rang. Trois lecteurs s'y fiaient : la version précédente d'une publication,
@@ -29,7 +29,7 @@ désormais la clé de publication ; le rang, lui, redit la même chose qu'elle.
 
 Troisième geste, qui ne vient pas des données mais du code : le calcul de la
 version courante dépend maintenant aussi de la date d'entrée en vigueur. Odoo
-ne recalcule PAS les champs stockés dont les dépendances changent — seuls les
+ne recalcule PAS les champs stockés dont les dépendances changent : seuls les
 documents dont cette passe a daté une version se recalculent tout seuls. Les
 autres garderaient leur valeur d'avant indéfiniment, donc la passe force le
 recalcul sur tous les documents, archivés compris.

@@ -9,7 +9,7 @@ le champ se recalculant à chaque lecture.
 Trois gestes à éprouver : le repli au tri, qui répare le passé ; la contrainte,
 qui refuse l'avenir ; le rattrapage, qui date ce qui est déjà en base. Le jeu
 d'essai sème le défaut par SQL, puisque la contrainte interdit désormais de le
-semer par l'ORM — et c'est justement le cas que le repli doit tenir : une
+semer par l'ORM, et c'est justement le cas que le repli doit tenir : une
 version entrée par un chemin qui ne passe pas les contraintes Python.
 """
 
@@ -109,7 +109,7 @@ class TestVersionSansDate(TransactionCase):
 
         Trois versions sans aucune date : le tri ne compare que des valeurs
         vides, ce qui passait déjà, et doit continuer de passer. À défaut de
-        toute date, c'est l'identifiant qui tranche — arbitraire mais stable.
+        toute date, c'est l'identifiant qui tranche, arbitraire mais stable.
         Le rang de publication, lui, n'entre PAS dans la clé : il vaut 0 pour
         toute version qui n'est pas passée par le bouton, donc justement pour
         toute cette population, et un rang élevé posé sur la plus vieille ne
@@ -250,7 +250,7 @@ class TestVersionSansDate(TransactionCase):
 
         `NewId` définit `__eq__` et `__hash__`, jamais `__lt__`. Une clé qui
         rendrait `self.id` lèverait donc un `TypeError` dès que deux versions
-        publiées égalisent sur la date — un chemin que l'ancien tri brut ne
+        publiées égalisent sur la date, un chemin que l'ancien tri brut ne
         touchait pas, puisqu'il ne comparait que des dates.
         """
         Version = self.env['project.document.version']

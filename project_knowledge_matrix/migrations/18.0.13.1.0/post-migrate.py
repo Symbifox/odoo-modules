@@ -3,7 +3,7 @@
 Les gabarits lisaient `report_brand_*` directement sur `res.company`. Ce champ
 vient de `bf_onboarding_base` 18.0.2.0.0 ; sa 1.0.0 ne l'a pas, et les deux
 tournent en production. Une lecture directe lève donc une AttributeError chez
-un locataire resté sur l'ancienne version — la garde
+un locataire resté sur l'ancienne version : la garde
 « company and company.champ » teste la société, pas le champ.
 
 La 18.0.13.1.0 fait tout passer par `res.company._pkm_brand()`, qui saute les
@@ -15,7 +15,7 @@ Les six gabarits sont `noupdate` EN BASE, quoi qu'en dise le fichier de
 données : `document_mail_templates.xml` déclare pourtant `noupdate="0"`. Le
 drapeau de la base l'emporte, et une mise à niveau ordinaire ne réécrit donc
 PAS `body_html`. Sans cette passe, le fichier dirait une chose et la production
-en rendrait une autre — indéfiniment, et sans que rien ne le signale.
+en rendrait une autre, indéfiniment, et sans que rien ne le signale.
 
 C'est la même mécanique que la passe 18.0.9.13.0, écrite pour la même raison
 lors du passage aux champs de marque. Elle est reprise ici telle quelle.
@@ -87,6 +87,6 @@ def migrate(cr, version):
 
     _logger.info(
         "project_knowledge_matrix 18.0.13.1.0 : %s gabarit(s) rafraîchi(s) sur "
-        "%s langue(s) — la marque passe par _pkm_brand().",
+        "%s langue(s), la marque passe par _pkm_brand().",
         rafraichis, len(langues),
     )

@@ -1,4 +1,4 @@
-"""Matrices et éléments — le vrai produit, celui qui reste après le découpage.
+"""Matrices et éléments : le vrai produit, celui qui reste après le découpage.
 
 C'est le sous-système que toute base en service emploie, donc celui dont une
 régression touche le plus sûrement un client.
@@ -169,7 +169,7 @@ class TestItemStateMachine(MatrixCase):
     def test_a_state_change_closes_the_open_follow_up_activities(self):
         """Compléter un élément ferme le rappel qui le poursuivait.
 
-        Sans ça, le cron de suivi continue de relancer sur un élément réglé —
+        Sans ça, le cron de suivi continue de relancer sur un élément réglé,
         et le drapeau ``followup_activity_created`` l'empêche d'en recréer un
         quand il redeviendra pertinent.
         """

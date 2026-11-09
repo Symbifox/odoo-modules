@@ -13,7 +13,7 @@
             <field name="sequence">32</field>
         </record>
 
-        <!-- Groupes de sécurité — Matrices de connaissances -->
+        <!-- Groupes de sécurité : matrices de connaissances -->
         <record id="group_knowledge_user" model="res.groups">
             <field name="name">Utilisateur</field>
             <field name="comment">Peut consulter et modifier les matrices de connaissances des projets auxquels il a accès.</field>
@@ -29,7 +29,7 @@
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 
-        <!-- Groupes de sécurité — Documents -->
+        <!-- Groupes de sécurité : documents -->
         <record id="group_document_user" model="res.groups">
             <field name="name">Utilisateur</field>
             <field name="comment">Peut consulter et gérer les documents des projets et partenaires auxquels il a accès.</field>
@@ -125,7 +125,7 @@
             <field name="groups" eval="[(4, ref('group_knowledge_manager'))]"/>
         </record>
 
-        <!-- Règles d'accès — Documents -->
+        <!-- Règles d'accès : documents -->
 
         <!-- Types de documents : Tous les utilisateurs peuvent lire -->
         <record id="rule_document_type_read" model="ir.rule">

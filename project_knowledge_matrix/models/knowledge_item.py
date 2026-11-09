@@ -614,7 +614,7 @@ class KnowledgeItem(models.Model):
         """Poste le message source en note interne sur les éléments capturés.
 
         Copie les pièces jointes du message (pour ne pas dépointer celles de
-        l'original) et publie le tout en ``mail.mt_note`` — aucune notification.
+        l'original) et publie le tout en ``mail.mt_note``, donc aucune notification.
 
         Le message source est lu SANS ``sudo`` : l'ACL de l'utilisateur courant
         s'applique, sinon n'importe quel utilisateur pourrait exfiltrer un
@@ -689,7 +689,7 @@ class KnowledgeItem(models.Model):
 
         Les trois passes ignorent les éléments dont le responsable est un compte
         de portail (`assigned_user_id.share`). Un élément de matrice est souvent
-        assigné au client lui-même — c'est le « R » du RACI et c'est exact —
+        assigné au client lui-même (c'est le « R » du RACI et c'est exact),
         mais planifier une activité dessus lui envoie un rappel interne qu'il ne
         peut pas ouvrir. Le suivi de ces éléments-là se fait par le rapport de
         matrice, pas par une activité.
@@ -728,7 +728,7 @@ class KnowledgeItem(models.Model):
                 'project_knowledge_matrix.mail_activity_type_knowledge_deadline',
                 date_deadline=item.deadline,
                 user_id=item.assigned_user_id.id,
-                note=f"{item.decision_id} : {item.name} — échéance le {item.deadline}",
+                note=f"{item.decision_id} : {item.name}, échéance le {item.deadline}",
             )
         if approaching:
             approaching.write({'followup_activity_created': True})
@@ -755,7 +755,7 @@ class KnowledgeItem(models.Model):
                         'project_knowledge_matrix.mail_activity_type_knowledge_overdue',
                         date_deadline=today,
                         user_id=item.assigned_user_id.id,
-                        note=f"{item.decision_id} : {item.name} — en retard depuis le {item.deadline}",
+                        note=f"{item.decision_id} : {item.name}, en retard depuis le {item.deadline}",
                     )
                     count += 1
             if count:
@@ -784,7 +784,7 @@ class KnowledgeItem(models.Model):
                         'project_knowledge_matrix.mail_activity_type_knowledge_stale',
                         date_deadline=today + timedelta(days=3),
                         user_id=item.assigned_user_id.id,
-                        note=f"{item.decision_id} : {item.name} — aucune mise à jour depuis >30 jours",
+                        note=f"{item.decision_id} : {item.name}, aucune mise à jour depuis >30 jours",
                     )
                     count += 1
             if count:

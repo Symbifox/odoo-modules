@@ -197,14 +197,13 @@ class ProjectDocumentVersion(models.Model):
         🔴 L'identifiant est celui de l'ORIGINE, pas ``self.id`` : dans un
         onchange, toute ligne du tableau des versions est un ``NewId``, et
         ``NewId`` n'a pas de ``__lt__``. Deux versions qui égalisent sur la date
-        faisaient alors lever un ``TypeError`` dans le formulaire — un chemin
-        que l'ancien tri brut ne touchait pas, puisqu'il ne comparait que des
-        dates. Une ligne encore neuve vaut 0.
+        faisaient alors lever un ``TypeError`` dans le formulaire, un chemin que
+        l'ancien tri brut ne touchait pas puisqu'il ne comparait que des dates. Une ligne encore neuve vaut 0.
 
         ⚠️ Le rang de publication (``sequence_index``) n'entre PAS dans la clé,
         malgré son nom : il n'est posé que par le bouton, donc une version
-        publiée par un script garde 0 — le rang le plus bas en étant la plus
-        récente — et la migration qui l'a semé ne garantit ni son unicité ni
+        publiée par un script garde 0 (le rang le plus bas, en étant la plus
+        récente), et la migration qui l'a semé ne garantit ni son unicité ni
         son sens. Un document peut donc porter deux versions de même rang, ou
         une ligne de rang 0 plus récente que sa voisine mieux classée.
         """
@@ -249,7 +248,7 @@ class ProjectDocumentVersion(models.Model):
         passe. 🔴 Ce dernier repli n'est pas décoratif : une ligne entrée en SQL
         brut peut n'avoir aucune date, même pas ``create_date``, et écrire
         ``False`` sur une version publiée ferait lever la contrainte que ce même
-        correctif installe — la migration avorterait et le ``-u`` roulerait en
+        correctif installe : la migration avorterait et le ``-u`` roulerait en
         arrière. L'état, le corps figé et les distributions ne bougent pas, et
         rien ne part par courriel. Rejouée, la passe ne trouve plus rien.
         """

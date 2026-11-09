@@ -11,7 +11,7 @@
 
         Les domaines sont évalués côté client (`action_service.js`
         `_preprocessAction` -> `evaluateExpr`), qui expose `context_today()` et
-        `relativedelta` — d'où les bornes de dates calculées à l'ouverture
+        `relativedelta` : d'où les bornes de dates calculées à l'ouverture
         plutôt que figées à la génération du courriel.
 
         Ne jamais poser ici un champ calculé non stocké : Odoo 18 IGNORE le

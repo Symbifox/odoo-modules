@@ -22,12 +22,12 @@ valeurs de sélection, héritages, contraintes et relations many2many.
 
 Trois cas, un seul dénouement par base
 --------------------------------------
-1. ``bf_corporate_governance`` est là — on réattribue. C'est le cas de Blue Fox.
-2. Il n'est pas là et aucune donnée corporative n'existe — on retire proprement
+1. ``bf_corporate_governance`` est là : on réattribue. C'est le cas de Blue Fox.
+2. Il n'est pas là et aucune donnée corporative n'existe : on retire proprement
    les tables vides plutôt que de laisser Odoo effacer les ``ir.model`` sans
    toucher aux tables, ce qui laisserait des tables orphelines. C'est le cas
    attendu chez les locataires qui n'ont jamais tenu de livre de minutes.
-3. Il n'est pas là et des données existent — on refuse. Perdre 37 résolutions
+3. Il n'est pas là et des données existent : on refuse. Perdre 37 résolutions
    parce qu'un module manque sur le disque n'est pas un dénouement.
 """
 
@@ -63,7 +63,7 @@ XMLIDS = [
     'compliance_director_election',
     'compliance_auditor',
     'compliance_financial_approval',
-    # data/corporate_cron.xml — le cron ET l'action serveur qu'Odoo lui crée
+    # data/corporate_cron.xml : le cron ET l'action serveur qu'Odoo lui crée
     'cron_corporate_compliance_check',
     'cron_corporate_compliance_check_ir_actions_server',
     # report/corporate_resolution_templates.xml
@@ -111,7 +111,7 @@ XMLIDS = [
 # Ce qu'Odoo engendre en reflétant le code, et qui ne se liste pas à la main :
 # 5 modèles, 173 champs, 53 valeurs de sélection, 6 héritages sur la production
 # Blue Fox. Le champ `minute_book_section` de project.document suit la seule
-# chose qui le lit — l'action « Livre des minutes ».
+# chose qui le lit : l'action « Livre des minutes ».
 MOTIFS = [
     'model_corporate_%',
     'field_corporate_%',
@@ -163,7 +163,7 @@ RESTES = """
 #
 # `reminder_sent` en est écarté à dessein, et c'est le contrôle qui l'a montré :
 # sur une autre base les cinq échéances le portent, alors qu'AUCUNE activité n'a
-# jamais été créée — le groupe gestionnaire n'y a aucun usager. La tâche
+# jamais été créée : le groupe gestionnaire n'y a aucun usager. La tâche
 # quotidienne pose le drapeau de toute façon. C'est une trace de machine, pas
 # d'usage, et la retenir aurait bloqué la mise à niveau d'un locataire qui n'a
 # jamais ouvert la fonction.
@@ -264,7 +264,7 @@ def _reattribuer(cr, module_id):
 
 def _autres_modules_etendent(cr):
     """Modules, autres que le socle, qui possèdent un identifiant sur un modèle
-    corporatif — signe qu'ils l'étendent et qu'un retrait les casserait."""
+    corporatif, signe qu'ils l'étendent et qu'un retrait les casserait."""
     cr.execute("""
         SELECT DISTINCT d.module FROM ir_model_data d
           JOIN ir_model m ON m.id = d.res_id
@@ -287,7 +287,7 @@ def _cascades_depuis_ir_model(cr, motif):
     ligne SANS un mot. Sur certaines bases, c'est une config de recherche
     universelle qui nomme ``corporate.resolution``.
 
-    La ligne, elle, doit bien partir — le modèle qu'elle désigne n'existe plus.
+    La ligne, elle, doit bien partir : le modèle qu'elle désigne n'existe plus.
     Ce qui ne doit PAS rester, c'est son identifiant externe, qui pointerait
     alors dans le vide : le module qui l'a créé le retrouve, en conclut que sa
     config existe déjà, et ne la recrée jamais.
@@ -314,7 +314,7 @@ def _cascades_depuis_ir_model(cr, motif):
         cr.execute("SELECT to_regclass(%s)", ('public.%s' % table,))
         if not cr.fetchone()[0]:
             continue
-        # Les tables de relation many2many n'ont pas de colonne `id` — et pas
+        # Les tables de relation many2many n'ont pas de colonne `id`, et pas
         # d'identifiant externe non plus : rien à retirer, la CASCADE fait le
         # travail. Le banc l'a montré sur bf_claude_instruction_model_rel, où
         # le SELECT id échouait et annulait toute la mise à niveau.
@@ -402,7 +402,7 @@ def _retirer(cr, comptes):
     # Les tâches planifiées du sous-système, AVANT les modèles.
     #
     # Supprimer un `ir.model` emporte par CASCADE l'action serveur qui le
-    # nomme — mais `ir_cron.ir_actions_server_id` référence cette action en
+    # nomme, mais `ir_cron.ir_actions_server_id` référence cette action en
     # RESTRICT, et bloque la suppression. La CASCADE ne traverse pas la chaîne :
     # elle s'arrête sur la première clé qui refuse. Retirer le cron d'abord
     # libère l'action, qui part ensuite avec son modèle.

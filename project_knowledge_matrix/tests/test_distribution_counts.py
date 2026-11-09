@@ -1,4 +1,4 @@
-"""Compteurs de distribution — le filet.
+"""Compteurs de distribution : le filet.
 
 Les cinq compteurs ont été réécrits en ``_read_group``. Trois choses
 peuvent casser sans que rien ne se voie à l'écran : une valeur fausse, un
@@ -14,7 +14,7 @@ from .common import KnowledgeCase
 class TestDistributionCounts(KnowledgeCase):
 
     # ------------------------------------------------------------------
-    # Valeurs — comptées à la main dans common.KnowledgeCase
+    # Valeurs : comptées à la main dans common.KnowledgeCase
     # ------------------------------------------------------------------
 
     def test_version_counts(self):
@@ -43,8 +43,8 @@ class TestDistributionCounts(KnowledgeCase):
     def test_recalled_is_not_outdated_material(self):
         """Une distribution rappelée est périmée sans entrer dans le compteur.
 
-        ``dist_3`` porte ``is_outdated`` à vrai — sa version n'est plus la
-        dernière — mais son état est ``recalled``. Le compteur ne retient que
+        ``dist_3`` porte ``is_outdated`` à vrai (sa version n'est plus la
+        dernière), mais son état est ``recalled``. Le compteur ne retient que
         ``pending`` et ``acknowledged`` : sans cette distinction, A afficherait
         3 obsolètes au lieu de 2.
         """
@@ -63,7 +63,7 @@ class TestDistributionCounts(KnowledgeCase):
         self.assertEqual(self.doc_c.outdated_distribution_count, 0)
 
     # ------------------------------------------------------------------
-    # Lot — le vrai risque de la réécriture
+    # Lot : le vrai risque de la réécriture
     # ------------------------------------------------------------------
 
     def test_counts_hold_when_read_as_a_batch(self):
@@ -71,7 +71,7 @@ class TestDistributionCounts(KnowledgeCase):
 
         C'est le mode d'emploi réel : la liste et le kanban lisent le lot
         entier. Une agrégation qui se trompe de clé rend des compteurs
-        plausibles mais attribués au mauvais document — invisible tant qu'on
+        plausibles mais attribués au mauvais document, invisible tant qu'on
         lit un enregistrement à la fois.
         """
         docs = self.doc_a | self.doc_b | self.doc_c
@@ -188,7 +188,7 @@ class TestDistributionCounts(KnowledgeCase):
         self.assertEqual(appels['search'], 0, appels)
 
     # ------------------------------------------------------------------
-    # Recalcul — les @api.depends ajoutés avec la réécriture
+    # Recalcul : les @api.depends ajoutés avec la réécriture
     # ------------------------------------------------------------------
 
     def test_counters_follow_a_state_change(self):

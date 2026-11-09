@@ -3,8 +3,8 @@
 Une version publiée avant que son corps ne soit rédigé dans Odoo reçoit, comme
 copie figée, le texte du document tel qu'il est aujourd'hui.
 
-Le jeu d'essai sème le cas tel qu'il existe en production — un document publié
-alors qu'il pointait vers Nextcloud, puis basculé en corps interne — et, autour,
+Le jeu d'essai sème le cas tel qu'il existe en production (un document publié
+alors qu'il pointait vers Nextcloud, puis basculé en corps interne) et, autour,
 tout ce que la migration ne doit pas toucher : une version déjà figée, une
 version remplacée sans copie, une version en préparation, un document resté
 externe.
@@ -171,7 +171,7 @@ class TestMigrationGel(TransactionCase):
     def test_une_ligne_de_journal_par_document_fige(self):
         # ⚠️ `logging.INFO`, jamais la chaîne 'INFO' : Odoo rebaptise le
         # niveau 25 « INFO », et `assertLogs(..., 'INFO')` écoute alors au
-        # niveau 25 — il ne verrait rien, et `assertNoLogs` passerait à vide.
+        # niveau 25 : il ne verrait rien, et `assertNoLogs` passerait à vide.
         with self.assertLogs(JOURNAL, logging.INFO) as journal:
             self._jouer()
         lignes = [l for l in journal.output if 'corps figé' in l]

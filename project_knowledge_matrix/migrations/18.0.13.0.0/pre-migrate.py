@@ -11,7 +11,7 @@ Ce que ce déménagement-ci a de particulier
 ------------------------------------------
 1. **Les valeurs sont chiffrées.** La clé vit dans ``ir.config_parameter`` sous
    ``project_credential.encryption_key`` et ne bouge pas : les jetons Fernet
-   restent lisibles. C'est éprouvé, pas supposé —
+   restent lisibles. C'est éprouvé, pas supposé :
    ``bf_credentials/tests/test_extraction.py`` relit chaque secret en base et
    refuse de passer si l'un d'eux redevient son propre jeton, ce que
    ``_decrypt_value`` rend SILENCIEUSEMENT quand la clé ne correspond pas.
@@ -20,12 +20,12 @@ Ce que ce déménagement-ci a de particulier
    ``project.project.credential_ids`` est un ``One2many`` vers
    ``project.credential`` : tant qu'il restait dans le socle, la dépendance
    était circulaire. Son identifiant externe déménage donc aussi. Un
-   ``One2many`` n'a pas de colonne — rien à déplacer en base, seulement son
+   ``One2many`` n'a pas de colonne : rien à déplacer en base, seulement son
    appartenance.
 
 3. **Aucun module dépendant à reprendre.** Quatre modules du locataire citent
-   ``project.credential`` — ``bf_home``, ``hosting_management``,
-   ``privacy_consent`` et ``bf_universal_search`` — mais tous par une garde de
+   ``project.credential`` (``bf_home``, ``hosting_management``,
+   ``privacy_consent`` et ``bf_universal_search``), mais tous par une garde de
    registre ou une simple chaîne, jamais par un champ typé ni un identifiant
    externe. Contrairement, il n'y a pas de ``depends`` à
    changer.
@@ -68,7 +68,7 @@ XMLIDS = [
     'credential_type_other',
     'credential_type_server',
     'credential_type_vpn',
-    # data/credential_cron.xml — le cron ET l'action serveur qu'Odoo lui crée
+    # data/credential_cron.xml : le cron ET l'action serveur qu'Odoo lui crée
     'ir_cron_check_expiring_credentials',
     'ir_cron_check_expiring_credentials_ir_actions_server',
     # views/credential_views.xml
@@ -82,7 +82,7 @@ XMLIDS = [
     'credential_type_view_form',
     'credential_type_view_list',
     'credential_type_action',
-    # views/report_drilldown_actions.xml — attention, « cred » et non
+    # views/report_drilldown_actions.xml : attention, « cred » et non
     # « credential » : un motif en %credential% les manque tous les trois.
     'report_action_cred_active',
     'report_action_cred_expiring',
@@ -144,7 +144,7 @@ SEMENCES = """
 def _compter_donnees(cr):
     """Enregistrements du coffre, par table, GRAINES DÉDUITES.
 
-    Ce qu'on protège ici, c'est le travail de quelqu'un — pas les valeurs par
+    Ce qu'on protège ici, c'est le travail de quelqu'un, pas les valeurs par
     défaut livrées avec le module. Un locataire qui n'a jamais rangé de secret
     porte quand même les neuf types, et refuser sa mise à niveau pour ça
     reviendrait à le geler sur une version pour des données qui ne sont pas les
@@ -226,7 +226,7 @@ def _cascades_depuis_ir_model(cr, motif):
     ligne SANS un mot. Sur certaines bases, c'est une config de recherche
     universelle qui nomme ``corporate.resolution``.
 
-    La ligne, elle, doit bien partir — le modèle qu'elle désigne n'existe plus.
+    La ligne, elle, doit bien partir : le modèle qu'elle désigne n'existe plus.
     Ce qui ne doit PAS rester, c'est son identifiant externe, qui pointerait
     alors dans le vide : le module qui l'a créé le retrouve, en conclut que sa
     config existe déjà, et ne la recrée jamais.
@@ -253,7 +253,7 @@ def _cascades_depuis_ir_model(cr, motif):
         cr.execute("SELECT to_regclass(%s)", ('public.%s' % table,))
         if not cr.fetchone()[0]:
             continue
-        # Les tables de relation many2many n'ont pas de colonne `id` — et pas
+        # Les tables de relation many2many n'ont pas de colonne `id`, et pas
         # d'identifiant externe non plus : rien à retirer, la CASCADE fait le
         # travail. Le banc l'a montré sur bf_claude_instruction_model_rel, où
         # le SELECT id échouait et annulait toute la mise à niveau.
@@ -347,7 +347,7 @@ def _retirer(cr, comptes):
     # Les tâches planifiées du sous-système, AVANT les modèles.
     #
     # Supprimer un `ir.model` emporte par CASCADE l'action serveur qui le
-    # nomme — mais `ir_cron.ir_actions_server_id` référence cette action en
+    # nomme, mais `ir_cron.ir_actions_server_id` référence cette action en
     # RESTRICT, et bloque la suppression. La CASCADE ne traverse pas la chaîne :
     # elle s'arrête sur la première clé qui refuse. Retirer le cron d'abord
     # libère l'action, qui part ensuite avec son modèle.

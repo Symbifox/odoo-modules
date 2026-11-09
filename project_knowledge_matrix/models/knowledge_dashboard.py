@@ -9,7 +9,7 @@ class KnowledgeDashboard(models.AbstractModel):
     Modèle sans table : il n'existe que pour porter les méthodes que le client
     OWL appelle. Déclaré ``models.Model`` avec ``_auto = False``, il faisait
     écrire à Odoo « Model knowledge.dashboard has no table » en ERREUR à chaque
-    chargement du registre, puis tenter de recréer la table — trois lignes de
+    chargement du registre, puis tenter de recréer la table : trois lignes de
     bruit permanent au journal, dans lesquelles une vraie erreur se noie.
     ``AbstractModel`` dit la même chose sans mentir au registre.
     """
@@ -42,7 +42,7 @@ class KnowledgeDashboard(models.AbstractModel):
         pour plusieurs. Les valeurs de sélection et les booléens ressortent tels
         quels ; un ``Many2one`` ressort en enregistrement.
 
-        Les blocs du tableau de bord posaient une question par case — jusqu'à six
+        Les blocs du tableau de bord posaient une question par case, jusqu'à six
         ``search_count`` pour six cases lisant la même table. Une seule requête
         groupée répond à toutes, et le total devient la somme des cases plutôt
         qu'une septième question.
@@ -449,7 +449,7 @@ class KnowledgeDashboard(models.AbstractModel):
         surchargeant cette méthode : c'est ce que font
         ``bf_corporate_governance`` pour ``corporate_metrics`` et
         ``bf_credentials`` pour ``credential_metrics``. Le second surcharge
-        aussi ``_get_project_domain`` — sans quoi son bloc compterait tout le
+        aussi ``_get_project_domain``, sans quoi son bloc compterait tout le
         parc sous un filtre de projet.
         """
         result = {

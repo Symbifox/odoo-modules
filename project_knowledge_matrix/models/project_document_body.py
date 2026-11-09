@@ -36,7 +36,7 @@ def version_label(version):
     """Le numéro à imprimer pour cette version, état compris.
 
     Une version publiée s'imprime sous son seul numéro. Toute autre le dit :
-    « 2.1 — Brouillon, non approuvé ». Sans version, « Brouillon (non publié) ».
+    « 2.1 (Brouillon, non approuvé) ». Sans version, « Brouillon (non publié) ».
     """
     if not version:
         return 'Brouillon (non publié)'
@@ -45,9 +45,9 @@ def version_label(version):
         'released': '',
         'superseded': ' (remplacée)',
         'withdrawn': ' (retirée)',
-        'approved': ' — Approuvée, non publiée',
-        'review': ' — Brouillon, non approuvé (en approbation)',
-    }.get(version.state, ' — Brouillon, non approuvé')
+        'approved': ' (Approuvée, non publiée)',
+        'review': ' (Brouillon, non approuvé, en approbation)',
+    }.get(version.state, ' (Brouillon, non approuvé)')
     return number + suffix
 
 
@@ -254,8 +254,8 @@ class ProjectDocumentBody(models.Model):
         Par défaut, la version publiée en vigueur. Le contexte
         ``pkm_render_version_id`` la désigne explicitement : au gel (la version
         qu'on fige, pas « la dernière publiée » au sens du calcul stocké) et à
-        l'impression d'un brouillon (la version en préparation, ou aucune —
-        valeur 0 — si le brouillon n'a pas encore de numéro). Sans cela, le
+        l'impression d'un brouillon (la version en préparation, ou aucune,
+        valeur 0, si le brouillon n'a pas encore de numéro). Sans cela, le
         bloc de gouvernance d'un brouillon 2.1 se réclamait de la 2.0.
         """
         self.ensure_one()

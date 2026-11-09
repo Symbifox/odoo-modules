@@ -1,4 +1,4 @@
-"""Entretien quotidien des documents — les trois passes fondues en une tâche.
+"""Entretien quotidien des documents : les trois passes fondues en une tâche.
 
 Deux choses doivent tenir : la fusion ne doit pas rendre le module plus fragile
 que les trois tâches séparées qu'elle remplace, et les rappels de révision ne

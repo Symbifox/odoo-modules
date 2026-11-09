@@ -70,14 +70,14 @@ class ProjectProject(models.Model):
     def _demo_exclusion_domain(self, path='project_id'):
         """Domaine qui écarte les enregistrements des projets de démonstration.
 
-        ``path`` est le chemin qui mène du modèle compté au projet —
+        ``path`` est le chemin qui mène du modèle compté au projet :
         ``project_id`` depuis un identifiant ou un document,
         ``document_id.project_id`` depuis une distribution.
 
         Le domaine TRAVERSE vers le drapeau plutôt que de matérialiser une liste
         d'identifiants de projets. C'est ce qui permet à un compteur Python et à
-        l'action de forage qui l'accompagne — un domaine écrit en XML statique,
-        hors de portée de toute méthode — de porter la MÊME condition. Deux
+        l'action de forage qui l'accompagne (un domaine écrit en XML statique,
+        hors de portée de toute méthode) de porter la MÊME condition. Deux
         écritures différentes de la même règle finiraient par diverger, et le
         chiffre annoncerait alors autre chose que la liste derrière lui.
 

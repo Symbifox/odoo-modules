@@ -1,11 +1,11 @@
-"""Frontières du module — ce que le découpage ne doit pas casser.
+"""Frontières du module : ce que le découpage ne doit pas casser.
 
 Trois familles d'invariants :
 
 * la dépendance ``hr``, retirée, ne doit pas revenir par la bande ;
 * les deux modèles du catalogue de logiciels, supprimés, doivent rester morts ;
 * tout modèle porté par le module doit avoir des droits d'accès et un manifeste
-  dont les fichiers existent — c'est le contrôle qui dira, lors d'une extraction
+  dont les fichiers existent : c'est le contrôle qui dira, lors d'une extraction
   vers un autre module, qu'elle a oublié une ligne d'ACL ou un fichier de données.
 """
 
@@ -59,7 +59,7 @@ class TestModuleBoundaries(TransactionCase):
         self.assertNotIn('hr_timesheet', depends)
 
     # ------------------------------------------------------------------
-    # Catalogue de logiciels — retiré, doit le rester
+    # Catalogue de logiciels : retiré, doit le rester
     # ------------------------------------------------------------------
 
     def test_software_catalogue_models_are_gone(self):
@@ -72,7 +72,7 @@ class TestModuleBoundaries(TransactionCase):
             )
 
     # ------------------------------------------------------------------
-    # Gouvernance corporative — extraite, doit le rester
+    # Gouvernance corporative : extraite, doit le rester
     # ------------------------------------------------------------------
 
     def test_no_relational_field_points_at_the_corporate_models(self):
@@ -117,15 +117,15 @@ class TestModuleBoundaries(TransactionCase):
         self.assertIn('t-call="%s"' % point, gabarit, 'Point d\'extension jamais appelé')
 
     # ------------------------------------------------------------------
-    # Intégrité — les contrôles utiles au découpage
+    # Intégrité : les contrôles utiles au découpage
     # ------------------------------------------------------------------
 
     def test_every_model_of_the_module_has_access_rights(self):
-        """Un modèle sans ACL est lisible de personne — et personne ne le voit.
+        """Un modèle sans ACL est lisible de personne, et personne ne le voit.
 
         Odoo se contente d'un avertissement au journal. C'est le contrôle qui a
         signalé,, une ligne d'``ir.model.access.csv`` restée
-        derrière — et celui qui le dira encore.
+        derrière, et celui qui le dira encore.
         """
         modeles = self._modeles_du_module()
         self.assertTrue(modeles, 'Aucun modèle recensé pour %s' % MODULE)
@@ -145,7 +145,7 @@ class TestModuleBoundaries(TransactionCase):
         """Le manifeste ne nomme pas de fichier absent.
 
         Un fichier renommé ou déplacé fait échouer l'installation d'un locataire
-        neuf, jamais celle d'un locataire déjà installé — donc le défaut voyage
+        neuf, jamais celle d'un locataire déjà installé, donc le défaut voyage
         jusqu'au prochain client.
         """
         chemin = get_module_path(MODULE)
@@ -180,7 +180,7 @@ class TestModuleBoundaries(TransactionCase):
 
         `report_brand_*` vient de `bf_onboarding_base` 18.0.2.0.0. Sa 1.0.0 ne
         l'a pas, et les deux tournent en production. Une lecture directe lève
-        une AttributeError là où le champ manque — la garde
+        une AttributeError là où le champ manque : la garde
         « company and company.champ » teste la société, pas le champ.
 
         Le contrôle porte sur la SOURCE et non sur le registre : il vaut donc
@@ -211,7 +211,7 @@ class TestModuleBoundaries(TransactionCase):
         """Le contrôle qui manquait : ce que la BASE porte, pas le fichier.
 
         Les six gabarits sont `noupdate` EN BASE, quoi qu'en dise le fichier de
-        données — `document_mail_templates.xml` déclare pourtant `noupdate="0"`.
+        données : `document_mail_templates.xml` déclare pourtant `noupdate="0"`.
         Une mise à niveau ordinaire ne réécrit donc PAS `body_html`, et un
         correctif apporté au fichier reste invisible en production
         indéfiniment.
@@ -233,7 +233,7 @@ class TestModuleBoundaries(TransactionCase):
                 fautifs.append(data.name)
         self.assertFalse(
             fautifs,
-            'Gabarits encore sur une lecture directe en base — la passe de '
+            'Gabarits encore sur une lecture directe en base, la passe de '
             'migration 18.0.13.1.0 ne les a pas rafraîchis : %s' % fautifs)
 
     def test_cryptography_is_no_longer_a_declared_dependency(self):

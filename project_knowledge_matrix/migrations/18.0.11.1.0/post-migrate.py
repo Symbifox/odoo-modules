@@ -2,7 +2,7 @@
 
 ``recipient_name`` est un calcul stocké dont les dépendances ignoraient le nom
 de la fiche liée : une distribution gardait le nom du jour de l'envoi, pour
-toujours. La production Blue Fox en portait un cas — une fiche renommée depuis
+toujours. La production Blue Fox en portait un cas : une fiche renommée depuis
 février, dont la distribution affichait encore l'ancien nom.
 
 Corriger les dépendances ne rattrape rien de l'existant : l'ORM ne rejoue un

@@ -37,7 +37,7 @@
                             <h1 class="mb-0">
                                 <i class="fa fa-dashboard me-2"/>Tableau de bord
                                 <small t-if="state.projectId" class="text-muted ms-2">
-                                    — <t t-esc="state.projectName"/>
+                                    : <t t-esc="state.projectName"/>
                                 </small>
                             </h1>
                             <p class="text-muted mb-0">Base de connaissances - Vue d'ensemble des indicateurs clés</p>
@@ -431,7 +431,7 @@
                      entre les décisions et l'activité : c'est ce que fait
                      bf_corporate_governance pour la gouvernance corporative.
 
-                     Le t-call partage le contexte de rendu du composant — `state`
+                     Le t-call partage le contexte de rendu du composant : `state`
                      et les gestionnaires de clic y répondent comme dans le
                      gabarit principal. -->
                 <t t-call="project_knowledge_matrix.DashboardExtraRows"/>

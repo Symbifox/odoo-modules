@@ -6,7 +6,7 @@ A comprehensive Odoo 18 module for knowledge management, document control, and p
 
 > **Corporate governance moved out in 18.0.12.0.0.** Resolutions, the director and officer registers, the compliance calendar and the minute book now live in `bf_corporate_governance`, which depends on this module. Existing databases keep their records: the upgrade reassigns the tables, it does not recreate them.
 
-> **The credential vault moved out in 18.0.13.0.0.** Encrypted passwords, API keys, key files, credential types and the rotation wizard now live in `bf_credentials`, on the same terms — the tables are reassigned, not recreated, and the encryption key stays in `ir.config_parameter` so stored secrets remain readable. This module no longer depends on `cryptography`.
+> **The credential vault moved out in 18.0.13.0.0.** Encrypted passwords, API keys, key files, credential types and the rotation wizard now live in `bf_credentials`, on the same terms: the tables are reassigned, not recreated, and the encryption key stays in `ir.config_parameter` so stored secrets remain readable. This module no longer depends on `cryptography`.
 
 ## Overview
 
@@ -98,7 +98,7 @@ Capture knowledge directly from task conversations:
 
 Centralized view of who has which role on how many items:
 
-- **SQL Pivot View**: Aggregated from 4 sources — Responsible (assigned_user_id), Accountable (decision_maker_id), Consulted (M2M), Informed (M2M)
+- **SQL Pivot View**: Aggregated from 4 sources: Responsible (assigned_user_id), Accountable (decision_maker_id), Consulted (M2M), Informed (M2M)
 - **Default Pivot**: Partner as rows, RACI role as columns, item count as measure
 - **Project Smart Button**: Open RACI filtered for a specific project
 - **Menu Access**: "Résumé RACI" in main module menu
@@ -164,12 +164,12 @@ Generate professional branded PDF reports directly from any knowledge matrix:
 
 ### Matrix Report Emailing
 
-Send branded PDF reports by email — manually or on a configurable schedule:
+Send branded PDF reports by email, manually or on a configurable schedule:
 
 - **Send Wizard**: "Envoyer rapport" button on matrix form opens a dialog with pre-filled recipients, subject, body (with progress stats), PDF preview, and send action
 - **Branded Email**: the shared mail layout (`bf_onboarding_base.bf_mail_layout`, replaced by `bluefox_branding`'s when installed) with the company's own logo, colours, address and footer, under a "Matrice de connaissances" eyebrow; the scheduled report is signed with the company name
 - **Configurable Recipients**: Set default recipients per matrix via the "Envoi de rapport" tab
-- **Flexible Scheduling**: Four frequency options — Weekly (pick day of week), Biweekly (same day, even ISO weeks), Monthly (pick day 1-28), Custom interval (N days)
+- **Flexible Scheduling**: Four frequency options: Weekly (pick day of week), Biweekly (same day, even ISO weeks), Monthly (pick day 1-28), Custom interval (N days)
 - **Daily Cron**: Runs at 08:00 EST, checks all active non-template matrices with `auto_send=True` and sends reports to matrices that are due
 - **Audit Trail**: Each send updates `last_report_date`, posts a chatter note with recipient names, and attaches the PDF
 - **PDF Preview**: Preview the PDF directly from the wizard before sending
@@ -557,9 +557,9 @@ This module follows Odoo 18 best practices:
 
 - **Fix**: a document whose released versions did not all carry a release date became unreadable. The current-version compute sorted released versions on `release_date` with no fallback, so a version released without one made Python compare a boolean to a date. The error surfaced at flush time, not on write, so the whole write was refused and the field recomputed on every read. Sorting now falls back to the effective date, then to the record id.
 - 🔴 **Contract change**: a version in state *Released* now requires a release date. The "Publish" button always sets one; a `create` or `write` over RPC does not, and is refused from this version on. Pass `release_date` alongside `state: 'released'`, or call `action_release()`.
-- **Fix**: the previous published version, the printed revision history and the release wizard all read the publication rank (`sequence_index`), which only the "Publish" button ever sets — so a version released by a script kept rank 0 while being the most recent, and the wrong version was designated as the previous one. They now read the same sort key as the current-version compute. This is not only display order: the body-identity check at release compares the new body against that version, and the frozen snapshot records its changed sections from it.
+- **Fix**: the previous published version, the printed revision history and the release wizard all read the publication rank (`sequence_index`), which only the "Publish" button ever sets, so a version released by a script kept rank 0 while being the most recent, and the wrong version was designated as the previous one. They now read the same sort key as the current-version compute. This is not only display order: the body-identity check at release compares the new body against that version, and the frozen snapshot records its changed sections from it.
 - **Migration**: the publication rank is renumbered in date order for released and superseded versions, so the displayed rank says the same thing as the order.
-- **Migration**: versions already in the database that were released (or superseded) without a release date receive one — their effective date at 05:00 UTC, which is the right calendar day both in America/Montreal and in Pacific/Auckland, else their approval, the freezing of their body, their creation, or the instant of the pass. State, frozen body and distributions are untouched, no mail is sent, and the step is idempotent. It then forces the current-version recompute on every document, since Odoo does not recompute stored fields whose dependencies change.
+- **Migration**: versions already in the database that were released (or superseded) without a release date receive one: their effective date at 05:00 UTC, which is the right calendar day both in America/Montreal and in Pacific/Auckland, else their approval, the freezing of their body, their creation, or the instant of the pass. State, frozen body and distributions are untouched, no mail is sent, and the step is idempotent. It then forces the current-version recompute on every document, since Odoo does not recompute stored fields whose dependencies change.
 
 ### 18.0.13.4.1
 
@@ -617,8 +617,8 @@ This module follows Odoo 18 best practices:
 
 ### 18.0.11.2.0
 
-- **Eight scheduled jobs become six**: the three passes that create activities on documents (pending acknowledgments, review and expiration reminders, outdated client documentation) had one cron each, two of which fired on the same minute. They now run under a single daily job, "Documents : entretien quotidien". Each pass keeps its own savepoint: three crons meant three transactions, so one failing pass left the other two to do their work, and a naive merge would have lost that quietly. The biweekly email report keeps its own job — its cadence and its failure mode have nothing to do with an activity pass. A post-migration removes the three merged jobs, which `noupdate="1"` would otherwise leave running alongside the new one, duplicating every activity.
-- **Fixed expiration alerts that never fired**: review reminders and expiration alerts shared one flag per threshold. The pass handled reviews first and flagged the document; the expiration search then excluded it on that same flag. A document carrying both a review date and an expiration date therefore never got its expiration alert — and carrying both is the common case, not the exception. Expiration alerts now have their own four flags, and marking a document reviewed no longer re-arms them: its expiration date has not moved.
+- **Eight scheduled jobs become six**: the three passes that create activities on documents (pending acknowledgments, review and expiration reminders, outdated client documentation) had one cron each, two of which fired on the same minute. They now run under a single daily job, "Documents : entretien quotidien". Each pass keeps its own savepoint: three crons meant three transactions, so one failing pass left the other two to do their work, and a naive merge would have lost that quietly. The biweekly email report keeps its own job: its cadence and its failure mode have nothing to do with an activity pass. A post-migration removes the three merged jobs, which `noupdate="1"` would otherwise leave running alongside the new one, duplicating every activity.
+- **Fixed expiration alerts that never fired**: review reminders and expiration alerts shared one flag per threshold. The pass handled reviews first and flagged the document; the expiration search then excluded it on that same flag. A document carrying both a review date and an expiration date therefore never got its expiration alert, and carrying both is the common case, not the exception. Expiration alerts now have their own four flags, and marking a document reviewed no longer re-arms them: its expiration date has not moved.
 - **One flag write per threshold** instead of one per document.
 - **Scheduled-job inventory test**: every cron the module declares must point at a method that exists. A cron whose method was renamed fails silently, once a day, and nothing surfaces it.
 
@@ -645,7 +645,7 @@ Catch-up release covering everything since 18.0.9.12.3. The intermediate states 
 - **Clickable dashboard report**: every figure in the documentation report email now links to the Odoo list that produced it. Each of the 35 drill-down actions carries a domain that mirrors its counter exactly, so the list can never contradict the number you clicked.
 - **Fixed a silently wrong metric**: "documents without a version" filtered on `version_count`, a non-stored computed field. Odoo 18 drops such a leaf from the domain **without raising**, so the counter returned the active-document count instead. It now filters on `version_ids`.
 - **Fixed the 60-90 day review tile**: it carried `t-att-t-attf-style`, which is not a QWeb directive, so the figure rendered with no styling at all; `{{ }}` also does not interpolate inside a `t-att-` expression.
-- **Document bodies** (18.0.10.0.0): author document content directly in Odoo — typed sections per document type, publish/unpublish tracking, content hashing that survives a no-op editor round-trip, per-version frozen section snapshots, and a branded PDF.
+- **Document bodies** (18.0.10.0.0): author document content directly in Odoo: typed sections per document type, publish/unpublish tracking, content hashing that survives a no-op editor round-trip, per-version frozen section snapshots, and a branded PDF.
 - **Dependency change**: `bluefox_branding` → `bf_onboarding_base`. The brand fields (`report_brand_*`) live on `res.company` in the latter; the white-label panel is optional, and without it documents simply use the instance's default colours.
 
 ### 18.0.9.12.3
@@ -656,7 +656,7 @@ Catch-up release covering everything since 18.0.9.12.3. The intermediate states 
 
 - **Matrix Report Emailing**: Send branded PDF matrix reports by email via wizard or configurable automatic schedule
 - **Send Wizard**: "Envoyer rapport" button on matrix form with pre-filled recipients, subject, body (progress stats), PDF preview, and send action
-- **Flexible Scheduling**: Four frequency options — weekly (pick day), biweekly (even ISO weeks), monthly (pick day 1-28), custom interval (N days)
+- **Flexible Scheduling**: Four frequency options: weekly (pick day), biweekly (even ISO weeks), monthly (pick day 1-28), custom interval (N days)
 - **Daily Cron**: Checks all auto_send matrices and sends reports to those that are due
 - **Branded Email**: Symbifox email wrapper with a "Matrice de connaissances" header and a footer carrying the company name
 - **New Fields on Matrix**: `recipient_ids`, `auto_send`, `send_frequency`, `send_day_of_week`, `send_day_of_month`, `send_interval_days`, `last_report_date`

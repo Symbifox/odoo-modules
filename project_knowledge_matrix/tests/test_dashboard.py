@@ -1,4 +1,4 @@
-"""Tableau de bord — les chiffres doivent dire la vérité, et la liste aussi.
+"""Tableau de bord : les chiffres doivent dire la vérité, et la liste aussi.
 
 Deux exigences distinctes. Un compteur doit compter ce qu'il annonce, et le
 forage derrière ce compteur doit ramener exactement la population comptée. Un
@@ -48,7 +48,7 @@ class TestDrilldownsMirrorTheirCounter(DashboardCase):
     """Chaque chiffre doit ramener sa propre population.
 
     Le domaine d'une action de forage est écrit à la main, loin du compteur
-    qu'il accompagne. Rien n'empêche les deux de diverger — sauf ce test, qui
+    qu'il accompagne. Rien n'empêche les deux de diverger, sauf ce test, qui
     exécute le domaine et compare au chiffre.
     """
 

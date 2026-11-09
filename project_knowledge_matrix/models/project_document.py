@@ -476,7 +476,7 @@ class ProjectDocument(models.Model):
         }
 
     # Paliers de rappel : (jours avant, drapeau de révision, drapeau
-    # d'expiration, libellé). Chaque échéance a son propre drapeau — les deux
+    # d'expiration, libellé). Chaque échéance a son propre drapeau : les deux
     # colonnes ne peuvent pas se marcher dessus.
     _REMINDER_INTERVALS = (
         (90, 'review_reminder_sent_90', 'expiration_reminder_sent_90', '90 jours'),
@@ -546,7 +546,7 @@ class ProjectDocument(models.Model):
         unique, et ça se voyait à l'usage : la passe traitait les révisions
         d'abord et marquait le document, puis la recherche d'expiration
         l'excluait sur ce même drapeau. Un document portant les deux dates ne
-        recevait donc jamais son alerte d'expiration — soit la majorité du parc.
+        recevait donc jamais son alerte d'expiration, soit la majorité du parc.
         """
         today = fields.Date.today()
 
@@ -847,7 +847,7 @@ class ProjectDocument(models.Model):
         par-dessus puisse y ajouter les siennes par `super()`. Un attribut
         redéclaré dans une classe héritée MASQUE celui du socle au lieu de le
         compléter : les trente liens du socle disparaîtraient sans un mot.
-        L'ID externe est complet pour la même raison — l'action ajoutée vit
+        L'ID externe est complet pour la même raison : l'action ajoutée vit
         dans le module qui l'ajoute, pas ici.
         """
         return {
@@ -895,7 +895,7 @@ class ProjectDocument(models.Model):
         On résout l'action en ID NUMÉRIQUE plutôt que de poser son xmlid dans
         l'URL : `/odoo/action-<id>` est la forme vérifiée du routeur Odoo 18.
 
-        Le routeur étant côté client, une URL fautive ne rend pas de 404 — la
+        Le routeur étant côté client, une URL fautive ne rend pas de 404 :
         page charge puis échoue en silence. D'où le repli sur le tableau de
         bord quand une action manque (module partiellement mis à jour) plutôt
         qu'un '#' qui ne mène nulle part.

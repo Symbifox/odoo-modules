@@ -103,7 +103,7 @@ class ProjectDocumentVersionBody(models.Model):
         Le tri passe par ``_cle_de_publication``, pas par le rang : le rang
         n'est posé que par le bouton, donc une version publiée par un script
         garde 0 en étant la plus récente, et il désignait la mauvaise
-        précédente. Ça n'est pas qu'un ordre d'affichage —
+        précédente. Ça n'est pas qu'un ordre d'affichage :
         ``_check_body_before_release`` compare l'empreinte du corps à CETTE
         version (une publication légitime pouvait se faire refuser pour
         « corps identique ») et ``_freeze_body`` en tire les sections
@@ -228,7 +228,7 @@ class ProjectDocumentVersionBody(models.Model):
         ``COALESCE(release_date, create_date), id`` : sa règle était juste, mais
         elle a tourné AVANT que les versions publiées par script aient une date
         de publication, et celles créées publiées après elle n'ont jamais reçu
-        de rang — 0, soit le rang le plus bas en étant les plus récentes.
+        de rang : 0, soit le rang le plus bas, en étant les plus récentes.
 
         En SQL, et en un seul geste : rien ne dépend de ce champ en calcul, et
         une écriture ORM ferait passer des états intermédiaires où deux versions

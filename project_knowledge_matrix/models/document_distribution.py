@@ -276,7 +276,7 @@ class ProjectDocumentDistribution(models.Model):
         """Create mail from template, attach files, then send.
 
         Passing attachment_ids via email_values to send_mail() is unreliable
-        in Odoo 18 — the attachments can be dropped during mail generation.
+        in Odoo 18: the attachments can be dropped during mail generation.
         Instead, create the mail first, link attachments via write(), then send.
         """
         mail_id = template.send_mail(self.id, force_send=False)

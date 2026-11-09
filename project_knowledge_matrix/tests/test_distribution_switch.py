@@ -256,7 +256,7 @@ class TestTheBiweeklyReport(DistributionSwitchCase):
 
 
 # Rendre ce gabarit lit report_brand_* sur res.company, un champ que
-# `bluefox_branding` apporte — et qui n'est PAS une dépendance déclarée de ce
+# `bluefox_branding` apporte, et qui n'est PAS une dépendance déclarée de ce
 # module. Les tests d'installation tournent quand ce module-ci vient de se
 # charger : rien n'oblige bluefox_branding à l'avoir précédé, et le rendu lève
 # alors une AttributeError. Vert sur une base, rouge sur une autre, pour

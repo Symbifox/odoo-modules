@@ -29,7 +29,7 @@ class KnowledgeCase(TransactionCase):
                ├─ dist 5  accusée
                └─ dist 6  remplacée
 
-        Document C (code TEST-C) — aucune version, aucune distribution
+        Document C (code TEST-C) : aucune version, aucune distribution
 
     Compteurs attendus, comptés à la main sur ce schéma :
 

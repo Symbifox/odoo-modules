@@ -97,7 +97,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.2.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_activity_cancel_note` | Symbifox — Activity Cancel Note | 18.0.1.0.1 | LGPL-3 | Cancelling an activity can leave a note in the chatter, like marking it done |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.2.0 | LGPL-3 | The single transport to the AI bridge service |
-| `bf_appointment` | Symbifox Appointment | 18.0.2.66.2 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
+| `bf_appointment` | Symbifox Appointment | 18.0.2.67.0 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_google_meet` | Symbifox Appointment — Google Meet | 18.0.1.1.0 | LGPL-3 | Adds Google Meet as a videoconference provider on appointment types. The Meet is attached to the host's own Google Calendar event; Nextcloud Talk is the fallback. |
 | `bf_appointment_meeting` | Symbifox Appointment Agenda | 18.0.1.2.0 | BUSL-1.1 | Creates the meeting agenda when an appointment is booked, and hands the booker its link |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.18.1 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
@@ -155,7 +155,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.1.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
 | `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.3.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
-| `bf_claude_chat` | Gen | 18.0.1.41.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
+| `bf_claude_chat` | Gen | 18.0.1.42.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_claude_chat_digest` | Gen — consommation Claude dans le digest quotidien | 18.0.1.3.0 | BUSL-1.1 | Daily digest sections: Claude usage per account (windows, reset, probe state) and the recipient's Gen conversations to follow |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.4.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
@@ -489,7 +489,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_work_hours_timesheet` | BF Working Hours - Timesheets | 18.0.1.0.0 | LGPL-3 | Entered timesheet hours beside the reconstructed hours: two numbers, never one replacing the other |
 | `bf_zerotouch_install` | Symbifox — Blue Fox OS Zero-Touch Install | 18.0.4.1.0 | BUSL-1.1 | The kickstart a Blue Fox OS installer fetches from its boot menu, rendered from the company's policy, with an OIDC device flow approved on a second device |
 | `bluefox_branding` | Symbifox Branding | 18.0.3.26.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
-| `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.28.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
+| `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.28.1 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.3.0.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
 | `hosting_management` | Gestion d'hébergement | 18.0.2.67.1 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
@@ -505,7 +505,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `privacy_framework_pipeda` | Cadre de confidentialité — LPRPDE / PIPEDA (Canada) | 18.0.1.0.1 | BUSL-1.1 | PIPEDA (Canada federal) regulatory-framework pack for the Privacy module |
 | `privacy_framework_uk` | Cadre de confidentialité — UK GDPR (Royaume-Uni) | 18.0.1.0.1 | BUSL-1.1 | UK GDPR / DPA 2018 regulatory-framework pack for the Privacy module |
 | `privacy_incident` | Registre des incidents de confidentialité (Loi 25) | 18.0.1.1.1 | LGPL-3 | Confidentiality-incident register (Law 25): declaration, risk assessment, measures, the eight register items, and providers' notices with their fingerprint |
-| `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.13.6.0 | BUSL-1.1 | Project knowledge base, policies, and documentation |
+| `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.13.6.1 | BUSL-1.1 | Project knowledge base, policies, and documentation |
 | `project_subtask_visible` | Sub-tasks Always Visible | 18.0.1.0.0 | LGPL-3 | Sub-tasks appear in the kanban and list views of their project like any other task, and the eye that hid them is gone. |
 | `web_calendar_ergonomics` | Calendar Ergonomics | 18.0.1.1.0 | LGPL-3 | Refresh button that highlights what changed since the last refresh, reload on return to the tab, keyboard shortcuts, remembered side panel, Duplicate in the event popover and working hours shaded in every calendar view. |
 <!-- MODULES_TABLE:END -->

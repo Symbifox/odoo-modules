@@ -181,13 +181,13 @@
                     <td class="k">Version</td>
                     <td class="pkm-version"><t t-esc="pc['version_label']"/></td>
                     <td class="k">Classification</td>
-                    <td>Interne — <t t-esc="brand['company_name']"/></td>
+                    <td>Interne, <t t-esc="brand['company_name']"/></td>
                 </tr>
                 <tr>
                     <td class="k">Responsable</td>
                     <td><t t-esc="(doc.owner_id and doc.owner_id.name) or (doc.author_id and doc.author_id.name) or ''"/></td>
                     <td class="k">Dernière révision</td>
-                    <td><t t-esc="doc.last_review_date or '—'"/></td>
+                    <td><t t-esc="doc.last_review_date or 's. o.'"/></td>
                 </tr>
             </table>
 

@@ -1,4 +1,4 @@
-# project_knowledge_matrix — Security model
+# project_knowledge_matrix: security model
 
 This module captures **chatter messages** into knowledge items and holds project
 documentation. This note is the trust model and the controls.
@@ -20,7 +20,7 @@ ships four group families (under distinct user-menu categories):
 | `group_document_user` / `group_document_manager` | Documents, versions, distribution |
 
 Each `*_user` group **implies** `project.group_project_user` (so granting it also
-grants base project access) — but the reverse is **not** true: a plain project user
+grants base project access), but the reverse is **not** true: a plain project user
 has no access to documents or matrices until explicitly added to the group.
 
 **Record rules** scope row visibility by project membership: a `*_user` only sees
