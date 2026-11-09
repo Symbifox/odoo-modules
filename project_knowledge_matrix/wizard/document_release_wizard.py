@@ -65,9 +65,11 @@ class ProjectDocumentReleaseWizard(models.TransientModel):
         pending = document.version_ids.filtered(
             lambda v: v.state in ('draft', 'review', 'approved')
         ).sorted('id', reverse=True)[:1]
+        # La dernière publiée se lit par la clé de publication : le rang
+        # proposait « 2026.10 » là où les dates disent « 2026.12 ».
         published = document.version_ids.filtered(
             lambda v: v.state in ('released', 'superseded')
-        ).sorted(lambda v: (v.sequence_index or 0, v.id), reverse=True)[:1]
+        ).sorted(lambda v: v._cle_de_publication(), reverse=True)[:1]
         if pending:
             vals['pending_version_id'] = pending.id
             vals['version_number'] = pending.version_number

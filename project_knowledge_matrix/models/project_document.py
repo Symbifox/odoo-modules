@@ -260,12 +260,15 @@ class ProjectDocument(models.Model):
          'Le code de référence doit être unique par société!'),
     ]
 
-    @api.depends('version_ids', 'version_ids.state', 'version_ids.release_date')
+    @api.depends('version_ids', 'version_ids.state', 'version_ids.release_date',
+                 'version_ids.effective_date')
     def _compute_current_version(self):
         for doc in self:
+            # Le tri passe par `_cle_de_publication` : une version publiée sans
+            # date de publication ne doit pas casser la fiche.
             released_versions = doc.version_ids.filtered(
                 lambda v: v.state == 'released'
-            ).sorted('release_date', reverse=True)
+            ).sorted(lambda v: v._cle_de_publication(), reverse=True)
             if released_versions:
                 doc.latest_version_id = released_versions[0]
                 doc.current_version = released_versions[0].version_number

@@ -1,4 +1,28 @@
+import logging
+from datetime import datetime, time
+
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
+
+# Une date d'entrée en vigueur n'a pas d'heure. À minuit UTC, elle s'affiche la
+# VEILLE pour un lecteur québécois (UTC-5) ; à 05:00 UTC, elle tombe le bon jour
+# à Montréal (minuit, ou 01:00 l'été) comme à Auckland (17:00 ou 18:00).
+HEURE_DE_PUBLICATION = 5
+
+
+def instant_de_publication(date):
+    """L'instant que vaut une date de publication qui n'a pas d'heure.
+
+    Une date-heure déjà complète est rendue telle quelle : la fonction comble
+    une heure manquante, elle n'en impose pas une.
+    """
+    if not date:
+        return None
+    if isinstance(date, datetime):
+        return date
+    return datetime.combine(fields.Date.to_date(date), time(HEURE_DE_PUBLICATION))
 
 
 class ProjectDocumentVersion(models.Model):
@@ -159,6 +183,101 @@ class ProjectDocumentVersion(models.Model):
         ('version_document_uniq', 'unique(version_number, document_id)',
          'Le numéro de version doit être unique par document!'),
     ]
+
+    def _cle_de_publication(self):
+        """Clé de tri d'une version publiée, qui n'exige pas de date.
+
+        ``release_date`` est posée par le bouton de publication, jamais par la
+        création : une version créée directement à l'état publié par l'ORM, en
+        RPC ou par un script de reprise n'en a pas. Trier le champ brut
+        comparait alors un booléen à une date, le calcul cassait au vidage de
+        la transaction et la fiche du document devenait illisible. Le repli
+        descend sur la date d'entrée en vigueur, puis sur l'identifiant.
+
+        🔴 L'identifiant est celui de l'ORIGINE, pas ``self.id`` : dans un
+        onchange, toute ligne du tableau des versions est un ``NewId``, et
+        ``NewId`` n'a pas de ``__lt__``. Deux versions qui égalisent sur la date
+        faisaient alors lever un ``TypeError`` dans le formulaire — un chemin
+        que l'ancien tri brut ne touchait pas, puisqu'il ne comparait que des
+        dates. Une ligne encore neuve vaut 0.
+
+        ⚠️ Le rang de publication (``sequence_index``) n'entre PAS dans la clé,
+        malgré son nom : il n'est posé que par le bouton, donc une version
+        publiée par un script garde 0 — le rang le plus bas en étant la plus
+        récente — et la migration qui l'a semé ne garantit ni son unicité ni
+        son sens. Un document peut donc porter deux versions de même rang, ou
+        une ligne de rang 0 plus récente que sa voisine mieux classée.
+        """
+        self.ensure_one()
+        date = self.release_date or instant_de_publication(self.effective_date)
+        return (date or datetime.min, self._origin.id or 0)
+
+    @api.constrains('state', 'release_date')
+    def _check_date_de_publication(self):
+        """L'état publié exige une date de publication.
+
+        Le bouton « Publier » la pose toujours ; l'ORM, le RPC et les scripts
+        de reprise, non. Une version publiée sans date mélangée à des versions
+        datées cassait le tri du document : le défaut se dit ici, à
+        l'écriture, plutôt qu'au vidage de la transaction, où il refusait
+        l'écriture entière sans nommer la version fautive.
+        """
+        for version in self:
+            if version.state == 'released' and not version.release_date:
+                raise ValidationError(
+                    "La version %s de « %s » est à l'état publié sans date de "
+                    "publication. Publiez-la par le bouton « Publier », qui "
+                    "pose la date, ou donnez-lui une date de publication."
+                    % (version.version_number or '?',
+                       version.document_id.display_name or '?')
+                )
+
+    @api.model
+    def _dater_les_publiees_sans_date(self):
+        """Donne une date de publication aux versions qui ont été publiées sans.
+
+        Rattrapage joué par la migration 18.0.13.6.0. Le bouton
+        « Publier » pose la date ; une version créée directement à l'état
+        publié par un script de reprise, non. Ces versions ne cassaient rien
+        tant qu'aucune version datée du même document n'existait, et cassaient
+        la fiche entière au premier mélange.
+
+        La date prise est celle qui dit le mieux quand la version est devenue
+        publique : sa date d'entrée en vigueur (à 05:00 UTC, voir
+        ``instant_de_publication``), sinon son approbation, sinon le gel de son
+        corps, sinon sa création, et à défaut de tout cela l'instant de la
+        passe. 🔴 Ce dernier repli n'est pas décoratif : une ligne entrée en SQL
+        brut peut n'avoir aucune date, même pas ``create_date``, et écrire
+        ``False`` sur une version publiée ferait lever la contrainte que ce même
+        correctif installe — la migration avorterait et le ``-u`` roulerait en
+        arrière. L'état, le corps figé et les distributions ne bougent pas, et
+        rien ne part par courriel. Rejouée, la passe ne trouve plus rien.
+        """
+        versions = self.with_context(
+            tracking_disable=True,
+            mail_notrack=True,
+            mail_create_nolog=True,
+        ).search([
+            ('state', 'in', ('released', 'superseded')),
+            ('release_date', '=', False),
+        ])
+        for version in versions:
+            date = (
+                instant_de_publication(version.effective_date)
+                or version.approval_date
+                or version.frozen_date
+                or version.create_date
+                or fields.Datetime.now()
+            )
+            version.release_date = date
+            _logger.info(
+                "project_knowledge_matrix : date de publication posée sur "
+                "%s v%s (document %s, version %s, état %s) : %s",
+                version.document_id.code or version.document_id.name,
+                version.version_number, version.document_id.id, version.id,
+                version.state, date,
+            )
+        return versions
 
     @api.depends('document_id.name', 'version_number')
     def _compute_name(self):

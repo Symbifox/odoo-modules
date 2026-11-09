@@ -292,9 +292,11 @@ class ProjectDocumentBody(models.Model):
     def _render_section_revision_history(self, section):
         """Bloc « Historique des versions »."""
         self.ensure_one()
+        # Par la clé de publication, pas par le rang : sinon l'historique
+        # imprimé sort dans un autre ordre que ses propres dates.
         versions = self.version_ids.filtered(
             lambda v: v.state in ('released', 'superseded')
-        ).sorted(lambda v: (v.sequence_index or 0), reverse=True)
+        ).sorted(lambda v: v._cle_de_publication(), reverse=True)
         if not versions:
             return Markup('')
         rows = Markup('').join(

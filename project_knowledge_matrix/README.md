@@ -553,6 +553,14 @@ This module follows Odoo 18 best practices:
 
 ## Changelog
 
+### 18.0.13.6.0
+
+- **Fix**: a document whose released versions did not all carry a release date became unreadable. The current-version compute sorted released versions on `release_date` with no fallback, so a version released without one made Python compare a boolean to a date. The error surfaced at flush time, not on write, so the whole write was refused and the field recomputed on every read. Sorting now falls back to the effective date, then to the record id.
+- 🔴 **Contract change**: a version in state *Released* now requires a release date. The "Publish" button always sets one; a `create` or `write` over RPC does not, and is refused from this version on. Pass `release_date` alongside `state: 'released'`, or call `action_release()`.
+- **Fix**: the previous published version, the printed revision history and the release wizard all read the publication rank (`sequence_index`), which only the "Publish" button ever sets — so a version released by a script kept rank 0 while being the most recent, and the wrong version was designated as the previous one. They now read the same sort key as the current-version compute. This is not only display order: the body-identity check at release compares the new body against that version, and the frozen snapshot records its changed sections from it.
+- **Migration**: the publication rank is renumbered in date order for released and superseded versions, so the displayed rank says the same thing as the order.
+- **Migration**: versions already in the database that were released (or superseded) without a release date receive one — their effective date at 05:00 UTC, which is the right calendar day both in America/Montreal and in Pacific/Auckland, else their approval, the freezing of their body, their creation, or the instant of the pass. State, frozen body and distributions are untouched, no mail is sent, and the step is idempotent. It then forces the current-version recompute on every document, since Odoo does not recompute stored fields whose dependencies change.
+
 ### 18.0.13.4.1
 
 - **"My color" for document types and sections**: their list and form show the *Displayed color*, which opens "My color" (a shade only you see) and also shows Odoo's index color, where the free-color field alone read "No color" for the shipped sections.

@@ -12,3 +12,4 @@ from . import test_impression_version
 from . import test_migration_gel
 from . import test_couleur_libre
 from . import test_marque_societe
+from . import test_version_sans_date

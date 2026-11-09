@@ -98,11 +98,21 @@ class ProjectDocumentVersionBody(models.Model):
         return previous
 
     def _previous_published(self, document):
-        """La dernière version publiée ou remplacée du document, hors celle-ci."""
+        """La dernière version publiée ou remplacée du document, hors celle-ci.
+
+        Le tri passe par ``_cle_de_publication``, pas par le rang : le rang
+        n'est posé que par le bouton, donc une version publiée par un script
+        garde 0 en étant la plus récente, et il désignait la mauvaise
+        précédente. Ça n'est pas qu'un ordre d'affichage —
+        ``_check_body_before_release`` compare l'empreinte du corps à CETTE
+        version (une publication légitime pouvait se faire refuser pour
+        « corps identique ») et ``_freeze_body`` en tire les sections
+        modifiées gravées dans la version figée.
+        """
         self.ensure_one()
         return document.version_ids.filtered(
             lambda v: v.state in ('released', 'superseded') and v.id != self.id
-        ).sorted(lambda v: (v.sequence_index or 0), reverse=True)[:1]
+        ).sorted(lambda v: v._cle_de_publication(), reverse=True)[:1]
 
     def _freeze_body(self, previous):
         """Fige le corps vivant du document dans cette version.
@@ -209,6 +219,46 @@ class ProjectDocumentVersionBody(models.Model):
             ('document_id', '=', self.document_id.id),
         ])
         return max(siblings.mapped('sequence_index') or [0]) + 1
+
+    @api.model
+    def _renumeroter_les_rangs_de_publication(self):
+        """Remet le rang de publication dans l'ordre des dates, par document.
+
+        La migration 18.0.10.0.0 numérotait déjà sur
+        ``COALESCE(release_date, create_date), id`` : sa règle était juste, mais
+        elle a tourné AVANT que les versions publiées par script aient une date
+        de publication, et celles créées publiées après elle n'ont jamais reçu
+        de rang — 0, soit le rang le plus bas en étant les plus récentes.
+
+        En SQL, et en un seul geste : rien ne dépend de ce champ en calcul, et
+        une écriture ORM ferait passer des états intermédiaires où deux versions
+        d'un même document portent le même rang. Le vidage d'abord, sinon une
+        écriture ORM en attente serait posée PAR-DESSUS celle-ci ; le cache
+        ensuite, puisque rien n'a prévenu l'ORM. Rend le nombre de rangs bougés.
+        """
+        self.env.flush_all()
+        self.env.cr.execute("""
+            WITH rangs AS (
+                SELECT id,
+                       ROW_NUMBER() OVER (
+                           PARTITION BY document_id
+                           ORDER BY release_date, effective_date, id
+                       ) AS rang
+                  FROM project_document_version
+                 WHERE state IN ('released', 'superseded')
+            )
+            UPDATE project_document_version v
+               SET sequence_index = rangs.rang
+              FROM rangs
+             WHERE v.id = rangs.id
+               AND COALESCE(v.sequence_index, 0) <> rangs.rang
+        """)
+        bouges = self.env.cr.rowcount
+        self.env.invalidate_all()
+        _logger.info(
+            "project_knowledge_matrix : rang de publication remis sur %s version(s)",
+            bouges)
+        return bouges
 
     def _recompute_body_hash_from_snapshot(self):
         """Recalcule l'empreinte à partir de l'instantané (rattrapage)."""
