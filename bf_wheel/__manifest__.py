@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Roue de fortune",
-    "version": "18.0.1.2.1",
+    "version": "18.0.1.2.2",
     "category": "Productivity",
     "summary": "Une roue projetée qui tire au hasard, et le registre de ses tirages",
     "author": "Les services de consultation Blue Fox, Inc.",

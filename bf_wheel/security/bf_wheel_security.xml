@@ -11,10 +11,15 @@
         <field name="comment">Fait tourner les roues qu'il voit et lit leur registre.</field>
     </record>
 
+    <!-- 🔴 Sans membre, ce groupe est un cul-de-sac : il détient SEUL le droit de
+         créer une roue et ses segments, et rien ne l'impliquait — l'administrateur
+         compris. Mesuré en production le 2026-11-09 : personne ne pouvait créer de
+         roue. Convention de la maison (bf_editorial et 29 autres modules). -->
     <record id="group_bf_wheel_manager" model="res.groups">
         <field name="name">Responsable</field>
         <field name="category_id" ref="module_category_bf_wheel"/>
         <field name="implied_ids" eval="[(4, ref('group_bf_wheel_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         <field name="comment">Crée et modifie les roues, et note les coordonnées d'une personne tirée.</field>
     </record>
 
