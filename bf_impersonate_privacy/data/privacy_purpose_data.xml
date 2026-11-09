@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            La finalité manquante au registre : l'accès administratif au compte
+            d'une personne. Aucune finalité du registre ne la visait.
+
+            Elle vise deux personnes à la fois, et c'est pour ça qu'elle existe
+            à part : celle qui est vue (son écran, ses fiches, ses noms de
+            documents) et celle qui regarde (son nom, son motif, son adresse
+            IP). Le journal est la contrepartie du pouvoir d'incarner.
+        -->
+        <record id="purpose_impersonation" model="privacy.purpose">
+            <field name="code">impersonation_journal</field>
+            <field name="name">Journal des accès administratifs à un compte</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Pour vous aider, une personne du soutien peut ouvrir une
+                session qui montre Symbifox tel que vous le voyez : vos menus,
+                vos droits, vos écrans, vos données. Elle ne peut pas changer
+                vos identifiants, votre mot de passe, vos coordonnées ni vos
+                droits, et rien ne part en votre nom.</p>
+                <p>Chaque session est inscrite au journal : qui l'a ouverte, en
+                tant que qui, pourquoi, quand, pendant combien de temps, ce qui
+                a été changé, ce qui a été consulté, et depuis quelle adresse
+                IP. Vous recevez un avis au début de la séance, puis un résumé
+                de ce qui a été fait à la fin, et vous pouvez télécharger le
+                rapport de la séance.</p>
+                <p>Personne ne peut réécrire ce journal, les administrateurs
+                compris. Le détail est conservé un an, et la trace de la séance
+                elle-même trois ans, puis les deux sont détruits.</p>
+            ]]></field>
+            <!--
+                Aucun consentement à demander. Un accès de soutien encadré,
+                borné dans le temps, journalisé et notifié relève de la sécurité
+                du système et de l'obligation de rendre compte (art. 3.2
+                LPRPSP) : c'est l'exécution du service, pas une faveur. Le
+                présenter comme un consentement laisserait croire qu'il peut
+                être refusé sans conséquence, ce qui est faux, et un
+                consentement qu'on ne peut pas refuser vicie tous les autres.
+            -->
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <field name="channel_scope">all</field>
+            <field name="context_scope">general</field>
+            <field name="sequence">36</field>
+        </record>
+
+    </data>
+</odoo>

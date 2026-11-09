@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            La purge EFFACE pour vrai, et elle est livrée active.
+
+            Même choix que le ménage de `bf_editorial_audience_privacy`, et pour
+            la même raison : un journal d'accès que personne ne purge est le
+            manquement, pas la purge. Les ponts qui déposent une campagne « en
+            révision » (bf_sms_privacy) visent de la correspondance, dont la
+            destruction est irréversible pour l'entreprise ; ici, ce sont nos
+            propres traces d'exploitation, dont la durée est justement la
+            décision déjà prise au registre.
+
+            `noupdate="1"` : le jour où quelqu'un l'éteint, un `-u` ne doit pas
+            le rallumer. ⚠️ Conséquence, renommer la méthode appelée exigerait
+            une migration.
+        -->
+        <record id="cron_privacy_purge_impersonation" model="ir.cron">
+            <field name="name">Incarnation — purge du journal (INC-001/002)</field>
+            <field name="model_id" ref="bf_impersonate.model_bf_impersonate_session"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_privacy_purge_journal()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            Deux règles, parce que les deux moitiés du journal n'ont pas la même
+            valeur de preuve et ne méritent donc pas la même durée.
+
+            INC-001 — le DÉTAIL : les lignes. Ce qui a été changé, ce qui a été
+            consulté, les identifiants des fiches, le nom qu'elles portaient
+            alors, et l'adresse IP de qui regardait. C'est le plus révélateur du
+            journal (les sujets de courriels d'une personne y passent) et le
+            plus périssable : sa raison d'être est de pouvoir répondre « il a
+            fait quoi, chez moi ? » dans les semaines qui suivent, pas dans dix
+            ans.
+
+            Un an, aligné sur AGD-001 (journal des accès aux liens de partage
+            d'agenda), la seule autre règle maison qui vise un journal d'accès.
+        -->
+        <record id="retention_impersonation_detail" model="privacy.retention.calendar">
+            <field name="name">Journal des incarnations — le détail</field>
+            <field name="code">INC-001</field>
+            <field name="document_type">other</field>
+            <field name="description">Lignes du journal d'une séance d'incarnation (`bf.impersonate.session.line`) : modèle et méthode appelés, identifiants des fiches touchées ou consultées, nom que ces fiches portaient au moment du geste, champs écrits, relevé des écritures, et compteur des consultations. L'adresse IP de qui regardait est portée par l'en-tête et tombe avec lui (INC-002).</field>
+            <field name="legal_basis">Art. 3.2 LPRPSP : mesures de sécurité, dont la journalisation des accès administratifs. Art. 23 : destruction quand la fin est accomplie, ici pouvoir rendre compte à la personne de ce qui a été fait sous son compte. Durée alignée sur AGD-001 (journal des accès aux liens de partage d'agenda, 1 an).</field>
+            <field name="active_retention_years">1</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="False"/>
+            <field name="applies_to_model">bf.impersonate.session.line</field>
+            <field name="notes">⚠️ Le nom d'une fiche est parfois son contenu : le nom d'un courriel est son objet. Ces noms sont écrits pour la personne vue, et les administrateurs de l'instance les lisent aussi, ce qui est plus large que ce que le modèle d'origine permettrait seul. Choix assumé du 2026-11-08 : un journal qui ne nomme rien ne répond pas à la question que la personne pose. Ancré sur la FIN de la séance, pas sur la date de la ligne : une séance se lit d'un bloc, et un détail qui part avant son en-tête laisserait un résumé qui ne résume plus rien. Le cron du pont `bf_impersonate_privacy` l'exécute tous les jours, et inscrit chaque lot au registre de destruction. ⚠️ Une séance encore ouverte n'est jamais purgée.</field>
+        </record>
+
+        <!--
+            INC-002 — l'EN-TÊTE : la séance elle-même. Qui a vu Symbifox en tant
+            que qui, pourquoi, quand, combien de temps, comment ça a fini, et
+            depuis quelle adresse IP.
+
+            Trois ans, aligné sur COR-001 (correspondance) et CST-001
+            (consentements) : c'est la trace qu'un pouvoir a été exercé, et elle
+            doit survivre au détail. La purger en même temps que les lignes
+            effacerait le fait même qu'une séance a eu lieu, ce qu'aucune
+            obligation de rendre compte ne supporte.
+        -->
+        <record id="retention_impersonation_session" model="privacy.retention.calendar">
+            <field name="name">Journal des incarnations — la séance</field>
+            <field name="code">INC-002</field>
+            <field name="document_type">other</field>
+            <field name="description">En-tête d'une séance d'incarnation (`bf.impersonate.session`) : qui a ouvert la séance, en tant que qui, le motif écrit, le mode (lecture seule ou écriture), le début, l'échéance prévue, la fin réelle et sa cause, la durée, et l'adresse IP de qui regardait.</field>
+            <field name="legal_basis">Art. 3.2 LPRPSP : mesures de sécurité et obligation de rendre compte d'un accès administratif. Durée alignée sur COR-001 (3 ans), la trace de l'exercice d'un pouvoir devant survivre au détail de ce qui a été fait.</field>
+            <field name="active_retention_years">3</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="False"/>
+            <field name="applies_to_model">bf.impersonate.session</field>
+            <field name="notes">La suppression emporte les lignes restantes par cascade (`ondelete="cascade"`) et les avis du fil. ⚠️ Une séance encore ouverte n'est jamais purgée, même si son échéance est passée : le cron de `bf_impersonate` la ferme d'abord.</field>
+        </record>
+
+    </data>
+</odoo>

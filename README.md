@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**310 modules are BUSL-1.1.** The source is published and auditable, and **you
+**311 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -269,6 +269,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_household_family_celebrations` | Household Family: Celebrations | 18.0.1.0.1 | LGPL-3 | The birthdays of the household's children, in Celebrations and the calendar |
 | `bf_household_family_health` | Household Family: Healthy Fox | 18.0.1.0.2 | LGPL-3 | A child of the household is one record, in the family and in Healthy Fox |
 | `bf_impersonate` | Impersonate a User | 18.0.1.1.0 | LGPL-3 | See Symbifox as one of your users, read-only by default, with a reason, a time limit, a notice to the person and a journal no access right can rewrite |
+| `bf_impersonate_privacy` | Incarnation — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Finalité, calendrier de conservation et purge du journal des incarnations, avec inscription au registre de destruction |
 | `bf_invoice_followup` | Relances de factures | 18.0.1.3.1 | BUSL-1.1 | Suivi et relances des factures clients en retard (statut manuel, activités automatiques, digest hebdomadaire) |
 | `bf_invoice_followup_digest` | Recevables en retard — section du digest quotidien | 18.0.1.0.4 | BUSL-1.1 | Ajoute une section « Factures en retard » au digest quotidien et retire le courriel séparé de bf_invoice_followup |
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
@@ -550,7 +551,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **310 modules: BUSL-1.1.** Production use for your own internal business
+- **311 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
