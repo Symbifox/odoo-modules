@@ -1,5 +1,45 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.42.0 - 2026-11-08
+
+### La clé API ne s'efface plus en enregistrant un autre réglage
+
+La page Paramètres d'Odoo 18 se bâtit par `onchange`, et la couche web sème à
+`False` tout champ de la vue que `default_get` ne rend pas. Le `compute` d'un
+champ de façade ne tournait donc jamais à l'affichage : le formulaire portait
+une clé vide quoi que porte la base, et l'enregistrement, par l'`inverse`,
+écrivait ce vide. **Un seul enregistrement des Paramètres, depuis l'onglet de
+n'importe quel autre module, retirait la clé API de l'instance sans un mot.**
+
+- **`default_get` alimente le champ** : un masque quand une clé est en base,
+  rien sinon. La même source sert au calcul, pour que les deux ne puissent pas
+  dire deux choses.
+- **La clé ne repart plus vers le navigateur.** L'écran n'en montre qu'un
+  masque, là où il renvoyait le secret en clair à chaque ouverture.
+- **Le masque dit « une clé utilisable »**, pas « le paramètre n'est pas vide » :
+  il déchiffre. Après une rotation de clé, l'écran disait qu'une clé était posée
+  pendant que Gen repartait sur le forfait partagé. Il voit aussi le paramètre
+  en clair hérité, pour que le bouton qui le retire soit à portée.
+- **L'`inverse` ignore le masque et le vide.** Le vide vaut « inchangé », et
+  non « efface » : un `res.config.settings.create()` venu de n'importe quel
+  module porte désormais ce champ, et il doit être inoffensif.
+- **Bouton « Remove the key »** pour revenir au forfait partagé du serveur,
+  puisque vider le champ ne le fait plus. Réservé à l'administration, avec
+  confirmation, et visible en tout temps — lié au champ, il disparaissait au
+  moment même où l'on efface les points.
+- **La bascule de forfait ne se fait plus retirer par un formulaire qui ne l'a
+  jamais lue.** Son instantané porte le même `inverse` que les deux champs
+  qu'il garde : Odoo n'alimente le cache que du groupe d'`inverse` courant,
+  donc il valait `False` sur le chemin `create`, le seul que la page Paramètres
+  emprunte, et le garde-fou ne servait à rien. Un pont muet à l'ouverture
+  rendait de même un instantané vide, et l'enregistrement d'un autre onglet
+  retirait la bascule. La règle est désormais « rien lu et rien demandé : on ne
+  touche à rien » — un changement délibéré, lui, va au pont et se fait refuser
+  bruyamment si le pont n'en veut pas.
+- **Vingt-cinq essais neufs** sur le chemin réel du formulaire (`onchange`), et
+  non sur `create({})`, qui déclenche le calcul et ne montre donc rien du
+  défaut. Le vrai Fernet y tourne.
+
 ## 18.0.1.41.0 - 2026-11-06
 
 ### Les portes RPC du pont ne s'ouvrent qu'au pont

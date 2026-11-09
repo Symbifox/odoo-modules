@@ -1,7 +1,7 @@
 import logging
 import os
 
-from odoo import fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -117,16 +117,47 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.appointment_brand_tagline", readonly=False,
     )
 
-    def _compute_nc_talk_password(self):
-        """Ne rend JAMAIS le secret au navigateur : un masque, ou rien."""
-        chiffre = (
+    @api.model
+    def default_get(self, fields_list):
+        """Alimente la façade du mot de passe, que le formulaire ne calcule jamais.
+
+        🔴 La page Paramètres est bâtie par `onchange`, et la couche web sème à
+        `False` tout champ de la vue que `default_get` ne rend pas
+        (`addons/web/models/models.py`). Le `compute` ci-dessous ne tournait
+        donc JAMAIS à l'affichage : le masque ne s'affichait pas, et rien ne
+        disait plus à l'administrateur qu'un jeton applicatif était en place.
+        Le secret, lui, n'a jamais été en danger — l'`inverse` ignore le vide
+        depuis la morsure du 2026-07-24. Même cause que le défaut voisin de la rétention des courriels.
+
+        Les champs voisins portent `config_parameter` ou sont `related` :
+        `default_get` et la relation les rendent tout seuls.
+        """
+        res = super().default_get(fields_list)
+        if "bf_appointment_nc_talk_password" in fields_list:
+            res["bf_appointment_nc_talk_password"] = (
+                MASKED_PASSWORD if self._nc_talk_password_pose() else False
+            )
+        return res
+
+    @api.model
+    def _nc_talk_password_pose(self):
+        """Vrai si un jeton chiffré est en base. Source du `compute` aussi."""
+        return bool(
             self.env["ir.config_parameter"]
             .sudo()
             .get_param("bf_appointment.nc_talk_password_encrypted", "")
         )
+
+    def _compute_nc_talk_password(self):
+        """Ne rend JAMAIS le secret au navigateur : un masque, ou rien.
+
+        ⚠️ Même source que `default_get`, à dessein : l'un alimente le
+        formulaire, l'autre les lectures par l'ORM.
+        """
+        pose = self._nc_talk_password_pose()
         for reglage in self:
             reglage.bf_appointment_nc_talk_password = (
-                MASKED_PASSWORD if chiffre else False
+                MASKED_PASSWORD if pose else False
             )
 
     def _inverse_nc_talk_password(self):
@@ -140,7 +171,12 @@ class ResConfigSettings(models.TransientModel):
         2026-07-24).
         """
         for reglage in self:
-            saisi = reglage.bf_appointment_nc_talk_password
+            # ⚠️ `.strip()` : trouvé par les essais. Une saisie
+            # faite de blancs seuls est vraie et n'est pas un masque — elle
+            # passait le contrôle et chiffrait des espaces par-dessus le vrai
+            # jeton applicatif, avec la même conséquence que la morsure du
+            # 2026-07-24 (toutes les créations de salle Talk en 401).
+            saisi = (reglage.bf_appointment_nc_talk_password or "").strip()
             if not saisi or set(saisi) == {"*"}:
                 continue
             self.env["ir.config_parameter"].sudo().set_param(

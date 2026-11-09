@@ -465,12 +465,27 @@ class ClaudeAccountPlanSwitch(models.Model):
         return json.dumps(self._plan_switch_key(etat["account"], etat["users"]))
 
     @api.model
-    def _plan_switch_unchanged(self, snapshot, account, users):
-        """Vrai si le formulaire renvoie ce qu'il avait lu à son ouverture."""
+    def _plan_switch_lu(self, snapshot):
+        """Ce que le formulaire avait LU, ou None s'il n'a rien lu de lisible.
+
+        🔴 Trois états, et le troisième se confondait avec le second :
+        un instantané BIEN FORMÉ (le formulaire a lu la bascule), un instantané
+        VIDE (le pont n'a pas répondu à l'ouverture, ou le champ n'était pas
+        dans les valeurs reçues), et un instantané ILLISIBLE. Les deux derniers
+        veulent dire « je n'ai rien lu » et doivent arrêter toute écriture :
+        sans ça, `_plan_switch_write` relit une bascule en place, voit qu'on
+        lui demande le vide, et la RETIRE.
+        """
         try:
             lu = json.loads(snapshot) if snapshot else None
         except ValueError:
             lu = None
+        return lu if isinstance(lu, list) else None
+
+    @api.model
+    def _plan_switch_unchanged(self, snapshot, account, users):
+        """Vrai si le formulaire renvoie ce qu'il avait lu à son ouverture."""
+        lu = self._plan_switch_lu(snapshot)
         return lu is not None and lu == self._plan_switch_key(account, users)
 
     @api.model

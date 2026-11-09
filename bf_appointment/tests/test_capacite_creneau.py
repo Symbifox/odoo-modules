@@ -84,14 +84,21 @@ class TestCapaciteCreneau(TransactionCase):
         ]
 
     def _samedi_a(self, heure, minute):
-        """L'instant UTC naïf du samedi visé, à cette heure-là.
+        """L'instant UTC naïf qui vaut cette heure LOCALE du samedi visé.
 
-        17:00 UTC = 13:00 à Toronto en heure avancée, ce que ces essais
-        attendent. Calculé plutôt qu'écrit en dur pour que la suite ne se
-        périme plus : voir le commentaire de `setUpClass`.
+        🔴 Cette méthode rendait l'heure telle quelle, en UTC, et les appels
+        portaient `17, 0` avec pour commentaire « 17:00 UTC = 13:00 à Toronto
+        en heure avancée ». L'heure avancée a pris fin le 2026-11-01 : depuis,
+        17:00 UTC vaut 12:00 à Toronto, et les trois essais qui attendent
+        « 13:00 » sont tombés sans que rien n'ait bougé dans le produit. C'est
+        la MÊME classe de défaut que celle dont `setUpClass` porte déjà le
+        récit — une donnée d'essai qui se périme toute seule — et la parade est
+        la même : convertir depuis l'heure LOCALE, pour que le décalage soit
+        celui du samedi visé, quelle que soit la saison.
         """
-        return datetime(self.samedi.year, self.samedi.month, self.samedi.day,
-                        heure, minute)
+        local = self.tz.localize(datetime(
+            self.samedi.year, self.samedi.month, self.samedi.day, heure, minute))
+        return local.astimezone(pytz.utc).replace(tzinfo=None)
 
     def _reserver(self, type_rdv, heure_utc):
         partenaire = self.env["res.partner"].create({
@@ -104,7 +111,7 @@ class TestCapaciteCreneau(TransactionCase):
         """Sans capacité déclarée, une réservation ferme le créneau. Inchangé."""
         type_rdv = self._type(capacite=1)
         self.assertIn("13:00", self._creneaux(type_rdv))
-        self._reserver(type_rdv, self._samedi_a(17, 0))
+        self._reserver(type_rdv, self._samedi_a(13, 0))
         self.assertNotIn(
             "13:00", self._creneaux(type_rdv),
             "Le comportement historique doit tenir : une réservation ferme "
@@ -113,14 +120,14 @@ class TestCapaciteCreneau(TransactionCase):
 
     def test_plafond_trois_garde_le_creneau_ouvert(self):
         type_rdv = self._type(capacite=3)
-        self._reserver(type_rdv, self._samedi_a(17, 0))
+        self._reserver(type_rdv, self._samedi_a(13, 0))
         self.assertIn(
             "13:00", self._creneaux(type_rdv),
             "Une place prise sur trois laisse le créneau offert.",
         )
-        self._reserver(type_rdv, self._samedi_a(17, 0))
+        self._reserver(type_rdv, self._samedi_a(13, 0))
         self.assertIn("13:00", self._creneaux(type_rdv))
-        self._reserver(type_rdv, self._samedi_a(17, 0))
+        self._reserver(type_rdv, self._samedi_a(13, 0))
         self.assertNotIn(
             "13:00", self._creneaux(type_rdv),
             "Le plafond atteint ferme le créneau.",
@@ -137,15 +144,15 @@ class TestCapaciteCreneau(TransactionCase):
         from odoo.exceptions import UserError
 
         type_rdv = self._type(capacite=2)
-        self._reserver(type_rdv, self._samedi_a(17, 0))
-        self._reserver(type_rdv, self._samedi_a(17, 0))
+        self._reserver(type_rdv, self._samedi_a(13, 0))
+        self._reserver(type_rdv, self._samedi_a(13, 0))
         with self.assertRaises(UserError):
-            self._reserver(type_rdv, self._samedi_a(17, 0))
+            self._reserver(type_rdv, self._samedi_a(13, 0))
 
     def test_annulation_rend_la_place(self):
         type_rdv = self._type(capacite=2)
-        premiere = self._reserver(type_rdv, self._samedi_a(17, 0))
-        self._reserver(type_rdv, self._samedi_a(17, 0))
+        premiere = self._reserver(type_rdv, self._samedi_a(13, 0))
+        self._reserver(type_rdv, self._samedi_a(13, 0))
         self.assertNotIn("13:00", self._creneaux(type_rdv))
         premiere.action_cancel()
         self.assertIn(

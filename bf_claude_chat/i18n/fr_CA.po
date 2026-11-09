@@ -2505,3 +2505,45 @@ msgstr "🔔 Relance : cette conversation t'attend depuis %(days)s jours."
 #: code:addons/bf_claude_chat/models/claude_chat_session.py:0
 msgid "🔔 Follow-up: work is left here, with no news for %(days)s days."
 msgstr "🔔 Relance : du travail reste ici, sans nouvelle depuis %(days)s jours."
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Remove the key"
+msgstr "Retirer la clé"
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid ""
+"Remove this tenant's Anthropic API key? Gen's turns go back to the server's "
+"shared Max plan."
+msgstr ""
+"Retirer la clé API Anthropic de cette instance ? Les tours de Gen repartent "
+"sur le forfait Max partagé du serveur."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid "No key to remove"
+msgstr "Aucune clé à retirer"
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid "This instance already runs on the shared Max plan."
+msgstr "Cette instance tourne déjà sur le forfait Max partagé."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid "Key removed"
+msgstr "Clé retirée"
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid ""
+"Gen's turns go back to the shared Max plan. Reopen Settings to see the field "
+"empty."
+msgstr ""
+"Les tours de Gen repartent sur le forfait Max partagé. Réouvrez les "
+"Paramètres pour voir le champ vide."

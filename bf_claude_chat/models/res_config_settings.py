@@ -11,6 +11,12 @@ _logger = logging.getLogger(__name__)
 # the same length; refusing here is what keeps that cut from being silent.
 PERSONALITY_MAX_CHARS = 2000
 
+# Valeur d'affichage d'une clé déjà enregistrée. `default_get` et le `compute`
+# la poussent dans le champ pour ne JAMAIS renvoyer le secret au navigateur ;
+# l'`inverse` doit donc l'ignorer, sinon un simple « Enregistrer » dans
+# Paramètres la ré-encrypterait par-dessus la vraie clé.
+MASQUE_CLE = "••••••••"
+
 try:
     from cryptography.fernet import Fernet, InvalidToken
 except ImportError:
@@ -78,8 +84,12 @@ class ResConfigSettings(models.TransientModel):
         string="Anthropic API Key",
         compute="_compute_api_key",
         inverse="_inverse_api_key",
+        readonly=False,
         help="Optional. If set, this tenant uses its own API key (pay-per-use) "
-             "instead of the shared Max plan. Leave empty to use the server's Max plan.",
+             "instead of the shared Max plan. A key already stored shows as "
+             "dots: the key itself never travels back to the browser, and "
+             "saving the dots changes nothing. Use « Remove the key » below to "
+             "go back to the shared Max plan.",
     )
     claude_tenant = fields.Char(
         string="Tenant Slug",
@@ -161,10 +171,83 @@ class ResConfigSettings(models.TransientModel):
     # cet instantané, un formulaire resté ouvert pendant une bascule faite
     # ailleurs (skill, autre admin) la retirait en enregistrant autre chose.
     # Calculé avec les autres (une seule lecture du pont, et seulement quand le
-    # formulaire le demande) ; l'inverse vide garde la valeur RENVOYÉE par le
-    # formulaire pendant l'enregistrement.
+    # formulaire le demande).
+    #
+    # 🔴 Il porte le MÊME `inverse` que les deux autres, et ce n'est pas un
+    # détail : Odoo groupe les champs par méthode d'`inverse` et n'alimente le
+    # cache que des champs du groupe COURANT avant d'appeler la méthode
+    # (`models.create`). Avec un `inverse` à lui, cet instantané valait donc
+    # `False` dans `_inverse_plan_switch` — sur le chemin `create`, qui est le
+    # SEUL que la page Paramètres emprunte. Le garde-fou ne servait à rien, et
+    # un formulaire périmé pouvait revenir sur une bascule faite ailleurs.
+    # Mesuré.
     claude_plan_switch_snapshot = fields.Char(
-        compute="_compute_plan_switch", inverse="_inverse_plan_switch_snapshot")
+        compute="_compute_plan_switch", inverse="_inverse_plan_switch")
+
+    @api.model
+    def default_get(self, fields_list):
+        """Alimente la façade de la clé API, que le formulaire ne calcule jamais.
+
+        🔴 La page Paramètres est bâtie par `onchange`, et la couche web sème à
+        `False` tout champ de la vue que `default_get` ne rend pas
+        (`addons/web/models/models.py`). Le `compute` d'un champ de façade ne
+        tourne donc JAMAIS à l'affichage : le formulaire portait une clé vide
+        quoi que porte la base, et l'enregistrement, par l'`inverse`, écrivait
+        ce vide sur `bf_claude_chat.api_key_encrypted` ET sur
+        `bf_claude_chat.api_key`. Un seul enregistrement des Paramètres, depuis
+        l'onglet de n'importe quel autre module, suffisait à retirer la clé
+        sans un mot (même cause que le défaut voisin de la rétention des courriels).
+
+        Les champs voisins portent `config_parameter` : `default_get` les rend
+        tout seul, ils n'ont jamais eu le défaut.
+
+        ⚠️ La bascule de forfait n'est PAS alimentée ici, à dessein, et elle n'a
+        pas le défaut. Sa lecture passe par le pont (appel réseau) et
+        `_add_missing_default_values` appelle `default_get` à CHAQUE
+        `res.config.settings.create()` de n'importe quel module : l'y mettre
+        ferait sortir sur le réseau à chaque enregistrement de n'importe quel
+        onglet. Elle n'en a pas besoin, parce que son `@api.depends("company_id")`
+        est une dépendance RÉELLE : `company_id` porte un défaut, il entre donc
+        dans les valeurs « changées » du premier `onchange`, et le
+        `record.modified(todo)` de la couche web invalide ce qui en dépend.
+        Mesuré : sur le chemin du formulaire, ces
+        champs sont calculés (un pont absent rend son erreur, ce qu'un champ
+        semé à `False` ne pourrait pas faire). Et un `create({})` ne les porte
+        pas, donc leur `inverse` ne tourne pas.
+
+        ⚠️ Ça ne suffit PAS à les mettre hors de danger : un pont muet à
+        l'ouverture rend un instantané vide, et c'est `_inverse_plan_switch`
+        qui refuse alors d'écrire. Voir sa docstring.
+        """
+        res = super().default_get(fields_list)
+        if "claude_api_key" in fields_list:
+            res["claude_api_key"] = MASQUE_CLE if self._claude_cle_posee() else False
+        return res
+
+    @api.model
+    def _claude_cle_posee(self):
+        """Vrai si une clé UTILISABLE est en base. Source unique du masque.
+
+        🔴 Deux choses qu'une simple présence ne dit pas, trouvées par la
+        mesure :
+
+        1. **Déchiffrable, pas seulement non vide.** Après une rotation de clé
+           Fernet, ou si la clé hors base a disparu, le paramètre chiffré ne
+           vaut plus rien : afficher un masque affirmerait qu'une clé est posée
+           pendant que Gen repart sur le forfait partagé. On déchiffre donc,
+           pour que l'écran dise vrai — c'est le coût que cet écran payait déjà
+           avant, le `compute` déchiffrant à chaque ouverture.
+        2. **Le paramètre en clair hérité compte aussi.** `bf_claude_chat.api_key`
+           n'est plus balayé à chaque enregistrement (c'est le prix de la garde
+           qui empêche l'effacement), donc un secret en clair peut rester en
+           base. L'écran doit le MONTRER, sinon le bouton qui le retire reste
+           hors de portée de la seule personne qui pourrait l'utiliser.
+        """
+        ICP = self.env["ir.config_parameter"].sudo()
+        chiffre = ICP.get_param("bf_claude_chat.api_key_encrypted", "")
+        if chiffre and self._decrypt_api_key(self.env, chiffre):
+            return True
+        return bool(ICP.get_param("bf_claude_chat.api_key", ""))
 
     # ⚠️ Une dépendance réelle : sans elle, le chargement du formulaire
     # (`onchange` d'un enregistrement neuf) ne calcule pas ces champs et le
@@ -180,15 +263,47 @@ class ResConfigSettings(models.TransientModel):
             rec.claude_plan_switch_snapshot = "" if etat["error"] else json.dumps(
                 self.env["claude.account"]._plan_switch_key(etat["account"], etat["users"]))
 
-    def _inverse_plan_switch_snapshot(self):
-        """Rien : la valeur renvoyée sert seulement à `_inverse_plan_switch`."""
-
     def _inverse_plan_switch(self):
+        """Ne touche à la bascule que si le formulaire l'avait LUE.
+
+        🔴 Un instantané vide ne veut pas dire « bascule vide » : il veut dire
+        que le formulaire n'a rien lu. Deux chemins y mènent, et le second a
+        été mesuré :
+
+        1. le champ n'est pas dans les valeurs reçues, donc il vaut `False`
+           dans l'`inverse` (Odoo n'alimente le cache que du groupe d'`inverse`
+           courant) ;
+        2. le pont était MUET à l'ouverture des Paramètres — le calcul a bien
+           tourné, mais il a rendu son erreur, donc un instantané vide et un
+           compte vide — et il répond de nouveau à l'ENREGISTREMENT. Sans cette
+           garde, `_plan_switch_write` relit alors une bascule en place, voit
+           qu'on lui demande le vide, et la RETIRE : un formulaire qui ne l'a
+           jamais vue l'efface en enregistrant un réglage d'un autre onglet.
+
+        ⚠️ La porte est `_plan_switch_lu` et non « l'instantané est vide » :
+        un instantané non vide mais ILLISIBLE la franchissait et retirait la
+        bascule tout pareil. Les deux cas disent la même chose — le formulaire
+        n'a rien lu — et une seule lecture les range.
+
+        ⚠️ Et elle ne se referme QUE si rien n'est demandé non plus. Un
+        changement DÉLIBÉRÉ doit passer, et se faire refuser bruyamment quand
+        le pont n'en veut pas : deux essais de ce module l'exigent, et une
+        garde qui s'arrêtait au seul instantané les faisait tomber en étouffant
+        le refus. « Rien lu ET rien demandé » ne touche à rien ; « rien lu mais
+        quelque chose de demandé » va au pont, qui tranche.
+
+        On ne fait RIEN plutôt que de lever quand rien n'est demandé : la page
+        Paramètres de tous les modules doit rester enregistrable.
+        """
         Compte = self.env["claude.account"]
         for rec in self:
-            if Compte._plan_switch_unchanged(rec.claude_plan_switch_snapshot,
-                                             rec.claude_plan_account_id,
-                                             rec.claude_plan_user_ids):
+            lu = Compte._plan_switch_lu(rec.claude_plan_switch_snapshot)
+            demande = bool(rec.claude_plan_account_id or rec.claude_plan_user_ids)
+            if lu is None and not demande:
+                continue
+            if lu is not None and Compte._plan_switch_unchanged(
+                    rec.claude_plan_switch_snapshot,
+                    rec.claude_plan_account_id, rec.claude_plan_user_ids):
                 continue
             Compte._plan_switch_write(rec.claude_plan_account_id, rec.claude_plan_user_ids)
 
@@ -274,23 +389,81 @@ class ResConfigSettings(models.TransientModel):
     # --- Computed field ---
 
     def _compute_api_key(self):
-        encrypted = (
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("bf_claude_chat.api_key_encrypted", "")
-        )
-        plaintext = self._decrypt_api_key(self.env, encrypted)
+        """Ne rend JAMAIS la clé au navigateur : un masque, ou rien.
+
+        ⚠️ Même source que `default_get`, à dessein : l'un alimente le
+        formulaire, l'autre les lectures par l'ORM, et deux lectures séparées
+        finiraient par dire deux choses.
+        """
+        posee = self._claude_cle_posee()
         for rec in self:
-            rec.claude_api_key = plaintext
+            rec.claude_api_key = MASQUE_CLE if posee else False
 
     def _inverse_api_key(self):
+        """Chiffre et range la clé saisie. Ignore le masque et le vide.
+
+        ⚠️ Le vide vaut « inchangé » et non « retire la clé » : il faut qu'un
+        enregistrement venu d'un autre onglet, ou un
+        `res.config.settings.create()` qui ne porte pas ce champ, ne puisse
+        rien effacer. Pour retirer la clé, il y a le bouton « Remove the key »,
+        qui le dit.
+        """
+        ICP = self.env["ir.config_parameter"].sudo()
         for rec in self:
-            encrypted = self._encrypt_api_key(rec.claude_api_key or "")
-            self.env["ir.config_parameter"].sudo().set_param(
-                "bf_claude_chat.api_key_encrypted", encrypted
+            saisi = (rec.claude_api_key or "").strip()
+            if not saisi or saisi == MASQUE_CLE:
+                continue
+            ICP.set_param(
+                "bf_claude_chat.api_key_encrypted", self._encrypt_api_key(saisi)
             )
             # Clear any legacy plaintext key
-            self.env["ir.config_parameter"].sudo().set_param(
-                "bf_claude_chat.api_key", ""
+            ICP.set_param("bf_claude_chat.api_key", "")
+            _logger.warning(
+                "bf_claude_chat : clé API posée par l'écran des Paramètres "
+                "(par uid %s)", self.env.uid,
             )
+
+    def action_claude_remove_api_key(self):
+        """Retire la clé de ce locataire : Gen repart sur le forfait partagé.
+
+        Un geste explicite, parce que l'`inverse` ne peut plus le faire : vider
+        le champ y vaut « inchangé », faute de quoi tout enregistrement des
+        Paramètres pourrait retirer la clé en silence.
+        """
+        self.ensure_one()
+        self.check_access("write")
+        ICP = self.env["ir.config_parameter"].sudo()
+        # ⚠️ On regarde la PRÉSENCE, pas la lisibilité : `_claude_cle_posee()`
+        # déchiffre, et il rend donc faux devant un chiffré illisible. Le
+        # bouton répondait alors « aucune clé à retirer » en laissant ce
+        # chiffré en base, hors de portée de l'écran — et si la clé Fernet
+        # revenait, l'ancienne clé API reprenait vie.
+        if not ICP.get_param("bf_claude_chat.api_key_encrypted", "") \
+                and not ICP.get_param("bf_claude_chat.api_key", ""):
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "type": "info", "sticky": False,
+                    "title": _("No key to remove"),
+                    "message": _("This instance already runs on the shared "
+                                 "Max plan."),
+                },
+            }
+        ICP.set_param("bf_claude_chat.api_key_encrypted", "")
+        ICP.set_param("bf_claude_chat.api_key", "")
+        _logger.warning(
+            "bf_claude_chat : clé API RETIRÉE par l'écran des Paramètres "
+            "(par uid %s) — retour au forfait partagé", self.env.uid,
+        )
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "type": "success", "sticky": False,
+                "title": _("Key removed"),
+                "message": _("Gen's turns go back to the shared Max plan. "
+                             "Reopen Settings to see the field empty."),
+            },
+        }
 

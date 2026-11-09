@@ -15,3 +15,5 @@ from . import test_compteurs_et_forfait
 from . import test_signalement
 from . import test_consigne_ecriture
 from . import test_portes_du_pont
+from . import test_note_230
+from . import test_facade_reglages

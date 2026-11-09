@@ -439,7 +439,16 @@
     #   salles existantes) ; jamais de reprise à la première confirmation ni
     #   d'une salle d'un type ou d'une autre réservation (comparées par jeton) ;
     #   un lien court Shlink reste le lien et est repointé sur la salle neuve.
-    "version": "18.0.2.66.2",
+        # 18.0.2.67.0: le masque du mot de passe Nextcloud Talk s'affiche enfin, et
+    #   un blanc ne l'écrase plus. La page Paramètres se bâtit par `onchange`,
+    #   et la couche web sème à `False` tout champ de la vue que `default_get`
+    #   ne rend pas : le `compute` ne tournait donc jamais à l'affichage, et
+    #   rien ne disait plus qu'un jeton applicatif était en place. Le secret,
+    #   lui, n'a jamais été en danger — l'`inverse` ignore le vide depuis la
+    #   morsure du 2026-07-24. Trouvé par les essais : une saisie faite de
+    #   blancs seuls était vraie et n'était pas un masque, donc elle chiffrait
+    #   des espaces par-dessus le vrai jeton ; `.strip()` la refuse désormais.
+    "version": "18.0.2.67.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

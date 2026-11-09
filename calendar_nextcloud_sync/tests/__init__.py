@@ -13,3 +13,11 @@ from . import test_profil
 from . import test_retouche
 from . import test_classe_categories
 from . import test_routage_defaut
+from . import test_securite_t26124
+from . import test_profil_t26632
+from . import test_retouche_t26631
+from . import test_classe_categories_t26631
+from . import test_google_source_t27185
+from . import test_lieu_description_t27185
+from . import test_url_odj_t27329
+from . import test_facade_reglages

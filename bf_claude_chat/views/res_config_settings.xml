@@ -82,8 +82,21 @@
                     </block>
                     <block title="Authentication">
                         <setting string="API Key (optional)"
-                                 help="Leave empty to use the server's Max plan. Set an Anthropic API key to bill this tenant independently.">
+                                 help="Set an Anthropic API key to bill this tenant independently. A key already stored shows as dots and saving them changes nothing; use Remove the key to go back to the server's shared Max plan.">
                             <field name="claude_api_key" password="True"/>
+                            <!-- Aucune condition de visibilité sur ce bloc,
+                                 à dessein : liée au champ, elle faisait
+                                 disparaître le bouton AU MOMENT où
+                                 l'administrateur efface les points, c'est-à-dire
+                                 exactement quand il veut retirer la clé. Le
+                                 bouton dit lui-même « aucune clé à retirer »
+                                 quand il n'y a rien. -->
+                            <div class="mt-2">
+                                <button name="action_claude_remove_api_key"
+                                        type="object" class="btn-link"
+                                        string="Remove the key"
+                                        confirm="Remove this tenant's Anthropic API key? Gen's turns go back to the server's shared Max plan."/>
+                            </div>
                         </setting>
                     </block>
                     <block title="Advanced">
