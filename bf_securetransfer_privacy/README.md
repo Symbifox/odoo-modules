@@ -8,16 +8,18 @@ This bridge records each of those destructions in the destruction register of
 Quebec's private sector privacy act (Law 25, section 3.2) asks an organisation
 to keep.
 
-- **Version**: `18.0.1.2.1`, for Odoo 18 Community.
+- **Version**: `18.0.1.2.2`, for Odoo 18 Community.
 - **Licence**: **BUSL-1.1**: production use allowed for your own internal
   business operations; providing the module as a product or service to third
   parties (hosted, managed or resold) requires a written agreement. Converts to
   **LGPL-3.0-or-later** on the Change Date stated in [`LICENSE`](LICENSE).
 - **Languages**: English source, French (Canada) catalogue included. The
-  register texts this bridge delivers (purpose summary, retention rule and
-  policy) are stored in one language by `privacy_consent`: on a
+  retention rule and the retention policy this bridge delivers are stored
+  in one language by `privacy_consent`, whatever the reader's: on a
   French-speaking company they are written in French at install and on
-  upgrade, unless someone has already adapted them.
+  upgrade, unless someone has already adapted them. The purpose summary
+  is a translated field like any other text, and its French comes from
+  the catalogue.
 - **Installation**: automatic when both `bf_securetransfer` and
   `privacy_consent` are installed. The secure transfer works perfectly well
   without it.
@@ -52,6 +54,13 @@ to keep.
   blocks: claiming a secure wipe would overstate it.
 - **One language per register.** The entry is written in the company's
   language, whoever or whatever triggered the purge.
+- **The retention code is an identifier, not a label.** The rule this
+  bridge delivers is `ST-CONTENU`, in every database and in every
+  language: the register cites it and a verifier looks it up here, so it
+  is not translated. Releases 18.0.1.2.0 and 18.0.1.2.1 declared
+  `ST-CONTENT`; a database installed in one of them is brought back by
+  the 18.0.1.2.2 migration, and its register entries follow the rule,
+  being attached to it by id.
 - **Recording never blocks the purge.** If writing the entry fails, the purge
   stays successful and the error is logged.
 

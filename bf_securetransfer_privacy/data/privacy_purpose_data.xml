@@ -37,9 +37,22 @@
             replace it. Routing the same files to a second destruction
             mechanism would risk certifying what nobody did.
         -->
+        <!--
+            ⚠️ The code is an IDENTIFIER, not a label. The register cites the
+            rule, and whoever answers for the register looks that code up in
+            this module's documentation: the whole fleet carries one code, and
+            an identifier is not translated. 18.0.1.2.0 translated it to
+            `ST-CONTENT` along with the rest of the source, `noupdate="1"` kept
+            every database already posed on `ST-CONTENU`, and one rule ended up
+            with two identifiers. The French code is the one that stays: the
+            codes of this register are French-derived throughout
+            (COR-001, RENC-001, DEM-001, SEC-001, SA-PROFIL…), and the
+            18.0.1.2.2 migration brings back a database installed in
+            18.0.1.2.0 or 18.0.1.2.1.
+        -->
         <record id="retention_securetransfer" model="privacy.retention.calendar">
             <field name="name">Secure transfers: uploaded content</field>
-            <field name="code">ST-CONTENT</field>
+            <field name="code">ST-CONTENU</field>
             <field name="document_type">correspondence</field>
             <field name="legal_basis">Section 23 of the Quebec private sector privacy act: personal information is destroyed once the purpose for which it was collected or used has been achieved. Here, the purpose is delivering the file to its recipient.</field>
             <field name="active_retention_years">0</field>
