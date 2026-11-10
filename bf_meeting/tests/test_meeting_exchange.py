@@ -103,8 +103,8 @@ class TestMeetingExchange(TransactionCase):
         """Tout le dessin tient sur ce point.
 
         `topic_ids` et `structured_notes_json` portent tous deux les sujets, et
-        SEUL le premier est modifiable depuis la fiche. Sur la production de
-        un parc réel, 20 des 183 comptes rendus qui portent les deux les ont
+        SEUL le premier est modifiable depuis la fiche. Sur la production d'un
+        parc réel, 20 des 183 comptes rendus qui portent les deux les ont
         divergents, et deux de ces écarts sont des retraits volontaires de
         détails personnels que la version JSON avait gardés. Exporter depuis le
         JSON renverrait donc au client ce qu'on venait d'en retirer.
@@ -176,7 +176,7 @@ class TestMeetingExchange(TransactionCase):
         ]), 1)
 
     def test_export_par_un_role_restreint_avec_element_de_matrice(self):
-        """🔴 Le défaut trouvé sur un parc réel, pas au banc.
+        """🔴 Le défaut trouvé sur un parc réel, pas à l'essai.
 
         Une décision peut pointer un élément de matrice de connaissances, et la
         charge en cite le NOM, comme le PDF. Un gestionnaire de rencontres qui
@@ -323,8 +323,8 @@ class TestMeetingExchange(TransactionCase):
         """La tierce personne n'a pas de fiche ici : elle est nommée, pas créée.
 
         Le locataire receveur ne connaît pas la même adresse. C'est la
-        situation mesurée : sur les 59 adresses présentes aux rencontres de
-        un parc réel, 15 seulement existent aussi chez un autre locataire.
+        situation mesurée : sur les 59 adresses présentes aux rencontres d'un
+        parc réel, 15 seulement existent aussi chez un autre locataire.
         """
         payload = self._payload()
         for entry in payload['meeting']['roster']:
@@ -425,12 +425,26 @@ class TestMeetingExchange(TransactionCase):
         self.assertLess(len(self.record.notes_html or ''), 200)
 
     def test_donnees_du_rapport_pdf_resistent(self):
-        """`_get_report_data` alimente des `t-foreach` du gabarit PDF."""
+        """`_get_report_data` alimente des `t-foreach` du gabarit PDF.
+
+        Une chaîne là où une liste est attendue s'itérerait caractère par caractère.
+        Depuis que le courriel ne recopie plus les sujets, un JSON tordu fait retomber
+        le PDF sur les sujets de la fiche plutôt que sur rien : des dictionnaires, donc,
+        jamais une chaîne. Sans sujet en fiche, la liste est bien vide.
+        """
         self.record.structured_notes_json = json.dumps({'topics': 'abc',
                                                         'deliverables': 'def'})
         data = self.record._get_report_data()
-        self.assertEqual(data['topics'], [])
         self.assertEqual(data['deliverables'], [])
+        self.assertTrue(all(isinstance(s, dict) for s in data['topics']))
+        self.assertEqual([s['title'] for s in data['topics']],
+                         self.record.topic_ids.sorted(
+                             lambda s: (s.sequence or 0, s.id)).mapped('name'))
+        nue = self.env['meeting.record'].create({
+            'name': 'Sans sujet en fiche', 'room_name': 'Nue',
+            'date': '2026-11-04 18:30:00',
+            'structured_notes_json': json.dumps({'topics': 'abc'})})
+        self.assertEqual(nue._get_report_data()['topics'], [])
 
     # ── assistant ─────────────────────────────────────────────────────────────
 

@@ -43,7 +43,7 @@
     Hello,
 </p>
 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
-    Please find the meeting minutes below. The full PDF is attached to this email.
+    The full minutes are attached to this email as a PDF.
 </p>
 
 <t t-if="object.attendance_ids or object.participant_ids">
@@ -68,19 +68,6 @@
 <div style="margin:0 0 20px 0; white-space:pre-wrap; color:#374151; font-size:15px; line-height:24px;"><t t-out="object.summary"/></div>
 </t>
 
-<t t-if="object.topic_ids">
-<h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Topics discussed</h3>
-<ol style="margin:0 0 20px 0; padding-left:24px; color:#374151;">
-    <t t-foreach="object.topic_ids" t-as="topic">
-        <li style="margin-bottom:10px;">
-            <strong t-attf-style="color:{{ brand_dark }};"><t t-out="topic.name"/></strong>
-            <t t-if="topic.points_html">
-                <div style="margin-top:4px; color:#5C6368; font-size:14px;"><t t-out="topic.points_html"/></div>
-            </t>
-        </li>
-    </t>
-</ol>
-</t>
 
 <t t-if="object.decision_ids">
 <h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }};">Decisions</h3>

@@ -6,6 +6,8 @@ import unicodedata
 from collections import Counter
 from datetime import timedelta
 
+from html import unescape as _unescape
+
 from markupsafe import Markup, escape
 
 from odoo import SUPERUSER_ID, api, fields, models
@@ -1258,7 +1260,7 @@ class MeetingRecord(models.Model):
             # `send_mail_batch` écrase `attachment_ids` avec `email_values`,
             # mais le PDF du compte rendu ne passe PAS par là : il arrive en
             # `attachments` (nom, données), sorti du dictionnaire après la mise
-            # à jour. Le rapport survit donc à cette ligne — vérifié au banc.
+            # à jour. Le rapport survit donc à cette ligne — vérifié à l'essai.
             email_values['attachment_ids'] = [(4, attachment.id)]
         # Pas de `with_company()` ici : il serait écrasé par le `with_context`
         # qui suit. La société visée est déjà en tête d'`allowed_ids`.
@@ -1770,6 +1772,44 @@ class MeetingRecord(models.Model):
             return existing
         return self.env['ir.attachment'].create(values)
 
+    # Les sujets du PDF viennent de `structured_notes_json`; ceux du corps du courriel
+    # venaient des enregistrements `meeting.topic`. Deux sources pour la même chose.
+    # Mesuré le 2026-11-04 sur trois bases vivantes : 714 comptes rendus portent des
+    # sujets au courriel, et 3 n'en avaient aucun au PDF — leur PDF partait déjà
+    # incomplet. Depuis que le courriel ne recopie plus les sujets et
+    # renvoie au PDF joint, ce repli est ce qui garantit qu'aucun sujet ne se perd.
+    _BF_PUCE = re.compile(r"<li[^>]*>(.*?)</li>", re.S | re.I)
+
+    @api.model
+    def _bf_texte_simple(self, fragment):
+        """Texte simple d'un fragment HTML : le gabarit PDF échappe ce qu'il sort."""
+        sans_balise = re.sub(r"<[^>]+>", " ", fragment or "")
+        return re.sub(r"\s+", " ", _unescape(sans_balise)).strip()
+
+    @api.model
+    def _bf_points_de_html(self, fragment):
+        """Les puces d'un sujet, une par entrée. Sans puce, le bloc entier fait un point."""
+        if not fragment:
+            return []
+        points = [p for p in (self._bf_texte_simple(x) for x in self._BF_PUCE.findall(fragment)) if p]
+        if points:
+            return points
+        reste = self._bf_texte_simple(fragment)
+        return [reste] if reste else []
+
+    def _bf_sujets_du_rapport(self, depuis_json):
+        """Les sujets du PDF : le JSON structuré d'abord, les sujets de la fiche ensuite."""
+        self.ensure_one()
+        sujets = [s for s in self._iter_entries(depuis_json) if isinstance(s, dict)]
+        if sujets:
+            return sujets
+        # ⚠️ Trier explicitement : `topic_ids` fraîchement créés sortent du cache dans
+        # l'ordre de création, pas dans celui de `_order` (essai test_ordre_des_sujets).
+        return [
+            {"title": sujet.name or "", "points": self._bf_points_de_html(sujet.points_html)}
+            for sujet in self.topic_ids.sorted(lambda s: (s.sequence or 0, s.id))
+        ]
+
     def _get_report_data(self):
         """Prepare data for the PDF report template."""
         self.ensure_one()
@@ -1787,7 +1827,7 @@ class MeetingRecord(models.Model):
             'date_display': _format_meeting_date_display(self),
             # Le gabarit PDF fait `t-foreach` là-dessus : une chaîne s'y
             # itérerait caractère par caractère.
-            'topics': self._iter_entries(data.get('topics')),
+            'topics': self._bf_sujets_du_rapport(data.get('topics')),
             'deliverables': self._iter_entries(data.get('deliverables')),
             'open_questions': self._iter_entries(data.get('open_questions')),
             'decision_count': len(self.decision_ids),

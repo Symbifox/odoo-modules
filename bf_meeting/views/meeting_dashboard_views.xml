@@ -119,6 +119,14 @@
 
     <!-- Project list with skip toggle -->
     <record id="meeting_dashboard_excluded_projects_list" model="ir.ui.view">
+        <!-- 🔴 Priorité 99 : `ir.ui.view._order` vaut `priority, name, id`, donc à
+             priorité égale c'est le NOM qui tranche. À 16, « project.project.dashboard.
+             exclusion.… » passait devant « project.project.list » et cette vue d'exclusion
+             servait d'écran par défaut à toute la base pour ce modèle. Mesuré
+             sur des bases vivantes le 2026-11-02. Les actions de ce
+             fichier épinglent leurs vues par `view_id`/`search_view_id` : elles ne
+             dépendent pas de la priorité. -->
+        <field name="priority">99</field>
         <field name="name">project.project.dashboard.exclusion.list</field>
         <field name="model">project.project</field>
         <field name="arch" type="xml">
@@ -131,6 +139,14 @@
         </field>
     </record>
     <record id="meeting_dashboard_excluded_projects_search" model="ir.ui.view">
+        <!-- 🔴 Priorité 99 : `ir.ui.view._order` vaut `priority, name, id`, donc à
+             priorité égale c'est le NOM qui tranche. À 16, « project.project.dashboard.
+             exclusion.… » passait devant « project.project.select » et cette vue d'exclusion
+             servait d'écran par défaut à toute la base pour ce modèle. Mesuré
+             sur des bases vivantes le 2026-11-02. Les actions de ce
+             fichier épinglent leurs vues par `view_id`/`search_view_id` : elles ne
+             dépendent pas de la priorité. -->
+        <field name="priority">99</field>
         <field name="name">project.project.dashboard.exclusion.search</field>
         <field name="model">project.project</field>
         <field name="arch" type="xml">
@@ -160,6 +176,14 @@
 
     <!-- Partner list with skip toggle -->
     <record id="meeting_dashboard_excluded_partners_list" model="ir.ui.view">
+        <!-- 🔴 Priorité 99 : `ir.ui.view._order` vaut `priority, name, id`, donc à
+             priorité égale c'est le NOM qui tranche. À 16, « res.partner.dashboard.
+             exclusion.… » passait devant « res.partner.list (prio 8, sauve par chance) » et cette vue d'exclusion
+             servait d'écran par défaut à toute la base pour ce modèle. Mesuré
+             sur des bases vivantes le 2026-11-02. Les actions de ce
+             fichier épinglent leurs vues par `view_id`/`search_view_id` : elles ne
+             dépendent pas de la priorité. -->
+        <field name="priority">99</field>
         <field name="name">res.partner.dashboard.exclusion.list</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
@@ -172,6 +196,14 @@
         </field>
     </record>
     <record id="meeting_dashboard_excluded_partners_search" model="ir.ui.view">
+        <!-- 🔴 Priorité 99 : `ir.ui.view._order` vaut `priority, name, id`, donc à
+             priorité égale c'est le NOM qui tranche. À 16, « res.partner.dashboard.
+             exclusion.… » passait devant « res.partner.select » et cette vue d'exclusion
+             servait d'écran par défaut à toute la base pour ce modèle. Mesuré
+             sur des bases vivantes le 2026-11-02. Les actions de ce
+             fichier épinglent leurs vues par `view_id`/`search_view_id` : elles ne
+             dépendent pas de la priorité. -->
+        <field name="priority">99</field>
         <field name="name">res.partner.dashboard.exclusion.search</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
@@ -199,6 +231,14 @@
 
     <!-- Excluded calendar events list -->
     <record id="meeting_dashboard_excluded_events_list" model="ir.ui.view">
+        <!-- 🔴 Priorité 99 : `ir.ui.view._order` vaut `priority, name, id`, donc à
+             priorité égale c'est le NOM qui tranche. À 16, « calendar.event.dashboard.
+             exclusion.… » passait devant « calendar.event.list » et cette vue d'exclusion
+             servait d'écran par défaut à toute la base pour ce modèle. Mesuré
+             sur des bases vivantes le 2026-11-02. Les actions de ce
+             fichier épinglent leurs vues par `view_id`/`search_view_id` : elles ne
+             dépendent pas de la priorité. -->
+        <field name="priority">99</field>
         <field name="name">calendar.event.dashboard.exclusion.list</field>
         <field name="model">calendar.event</field>
         <field name="arch" type="xml">

@@ -299,7 +299,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.4.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.3.1 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset; optional welcome email sequence with one-click unsubscribe |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.1.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
-| `bf_meeting` | Rencontres | 18.0.3.72.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
+| `bf_meeting` | Rencontres | 18.0.3.72.3 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.1.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.3.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_meeting_privacy` | Rencontres — Pont vie privée (Loi 25) | 18.0.1.2.0 | BUSL-1.1 | Déclarer au registre des traitements ce que les comptes rendus collectent, rendre les rencontres classifiables, et poser une règle de conservation sur les transcriptions et les enregistrements |
@@ -470,7 +470,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.1 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.4.0 | LGPL-3 | Cross-module search through the command palette |
 | `bf_warm_start` | Warm Start | 18.0.1.0.0 | LGPL-3 | Load web client translations once, before the workers fork, so the first page after a restart is fast |
-| `bf_wheel` | Roue de fortune | 18.0.1.2.1 | BUSL-1.1 | A projected wheel that draws at random, and the register of what it drew |
+| `bf_wheel` | Roue de fortune | 18.0.1.2.2 | BUSL-1.1 | A projected wheel that draws at random, and the register of what it drew |
 | `bf_wheel_survey` | Roue de fortune : les participants d'une séance | 18.0.1.1.0 | BUSL-1.1 | The wheel draws among the people who joined the live session, or among the answers to one question |
 | `bf_work_category` | BF Work Category | 18.0.1.0.3 | LGPL-3 | Work categories on project labels, resolved and stored on projects, tasks and every bridged record, so work can be filtered, grouped and exported by category |
 | `bf_work_category_claude_chat` | BF Work Category - Gen | 18.0.1.0.1 | BUSL-1.1 | Work category on Gen conversations, from the record they are attached to |
