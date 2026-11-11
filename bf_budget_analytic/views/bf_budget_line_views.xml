@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_budget_line_form_analytic" model="ir.ui.view">
+        <field name="name">bf.budget.line.form.analytic</field>
+        <field name="model">bf.budget.line</field>
+        <field name="inherit_id" ref="bf_budget.bf_budget_line_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Analytic detail"
+                       invisible="source != 'internal_cost' and not analytic_account_ids">
+                    <group>
+                        <field name="analytic_line_count"/>
+                        <field name="timesheet_hours"
+                               invisible="source != 'internal_cost'"/>
+                    </group>
+                    <group>
+                        <!-- Deux boutons : le dépliage d'une ligne COMPTABLE
+                             restreinte exige la lecture du grand livre, que le
+                             groupe feuilles de temps n'a pas — lui montrer un
+                             bouton toujours refusé serait une impasse. -->
+                        <button name="action_view_analytic_lines" type="object"
+                                string="View analytic lines" class="btn-link"
+                                invisible="source != 'internal_cost'"
+                                groups="hr_timesheet.group_hr_timesheet_user,analytic.group_analytic_accounting"/>
+                        <button name="action_view_analytic_lines" type="object"
+                                string="View analytic lines" class="btn-link"
+                                invisible="source == 'internal_cost'"
+                                groups="account.group_account_readonly"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_budget_line_list_analytic" model="ir.ui.view">
+        <field name="name">bf.budget.line.list.analytic</field>
+        <field name="model">bf.budget.line</field>
+        <field name="inherit_id" ref="bf_budget.bf_budget_line_view_list"/>
+        <field name="arch" type="xml">
+            <field name="amount_committed" position="after">
+                <field name="timesheet_hours" optional="hide" sum="Timesheet hours"/>
+            </field>
+        </field>
+    </record>
+</odoo>

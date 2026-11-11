@@ -1,0 +1,78 @@
+# Translation of Budgets opérationnels — second axe analytique - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_budget_analytic 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-04 23:30+0000\n"
+"PO-Revision-Date: 2026-11-04 23:30+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_budget_analytic
+#: model_terms:ir.ui.view,arch_db:bf_budget_analytic.bf_budget_line_form_analytic
+msgid "Analytic detail"
+msgstr "Détail analytique"
+
+#. module: bf_budget_analytic
+#: model:ir.model.fields,field_description:bf_budget_analytic.field_bf_budget_line__analytic_line_count
+msgid "Analytic lines"
+msgstr "Lignes analytiques"
+
+#. module: bf_budget_analytic
+#: code:addons/bf_budget_analytic/models/bf_budget_line.py:0
+msgid "Analytic lines — %s"
+msgstr "Lignes analytiques — %s"
+
+#. module: bf_budget_analytic
+#: model:ir.model,name:bf_budget_analytic.model_bf_budget_line
+msgid "Budget line"
+msgstr "Ligne de budget"
+
+#. module: bf_budget_analytic
+#: model:ir.model.fields,help:bf_budget_analytic.field_bf_budget_line__analytic_line_count
+msgid ""
+"How many analytic lines the line reads: timesheets and manual entries for an "
+"internal cost line, distributed shares of posted journal items for a "
+"narrowed accounting line. A count, computed with elevated rights like the "
+"amounts: opening the detail shows each viewer only what their own rights "
+"carry."
+msgstr ""
+"Combien de lignes analytiques la ligne lit : feuilles de temps et écritures "
+"saisies à la main pour une ligne de coût interne, parts distribuées des "
+"écritures comptabilisées pour une ligne comptable restreinte. Un nombre, "
+"calculé avec des droits élevés comme les montants : ouvrir le détail ne "
+"montre à chacun que ce que ses propres droits portent."
+
+#. module: bf_budget_analytic
+#: model:ir.model.fields,help:bf_budget_analytic.field_bf_budget_line__timesheet_hours
+msgid ""
+"Hours logged on timesheets inside the budget window, beside the dollars. "
+"Hours stay visible even when the employee's hourly cost is missing and the "
+"dollars read zero."
+msgstr ""
+"Les heures saisies en feuilles de temps dans la fenêtre du budget, à côté "
+"des dollars. Les heures restent visibles même quand le coût horaire de "
+"l'employé manque et que les dollars lisent zéro."
+
+#. module: bf_budget_analytic
+#: code:addons/bf_budget_analytic/models/bf_budget_line.py:0
+msgid "There are no analytic lines behind this line."
+msgstr "Aucune ligne analytique derrière cette ligne."
+
+#. module: bf_budget_analytic
+#: model:ir.model.fields,field_description:bf_budget_analytic.field_bf_budget_line__timesheet_hours
+#: model_terms:ir.ui.view,arch_db:bf_budget_analytic.bf_budget_line_list_analytic
+msgid "Timesheet hours"
+msgstr "Heures de feuilles de temps"
+
+#. module: bf_budget_analytic
+#: model_terms:ir.ui.view,arch_db:bf_budget_analytic.bf_budget_line_form_analytic
+msgid "View analytic lines"
+msgstr "Voir les lignes analytiques"
