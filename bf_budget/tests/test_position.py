@@ -1,6 +1,9 @@
+from psycopg2.errors import UniqueViolation
+
 from odoo import Command
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import tagged
+from odoo.tools import mute_logger
 
 from .common import BfBudgetCommon
 
@@ -35,8 +38,17 @@ class TestBfBudgetPosition(BfBudgetCommon):
                 }
             )
 
+    @mute_logger("odoo.sql_db")
     def test_code_is_unique_per_company(self):
-        with self.assertRaises(Exception):
+        """⚠️ L'exception NOMMÉE, pas `Exception` : un `assertRaises(Exception)`
+        passe sur n'importe quelle casse — un `KeyError` de décor, une
+        ValidationError d'un autre garde — et l'unicité ne serait plus
+        éprouvée du tout. C'est l'index `bf_budget_position_code_company_uniq`
+        qui doit refuser, à la chasse d'eau du point de sauvegarde (le
+        `mute_logger` tient l'erreur SQL tracée hors du journal des essais,
+        où elle se lisait comme une casse du lot).
+        """
+        with self.assertRaises(UniqueViolation):
             with self.env.cr.savepoint():
                 self.env["bf.budget.position"].create(
                     {

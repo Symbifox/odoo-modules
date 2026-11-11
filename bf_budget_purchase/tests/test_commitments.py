@@ -3,7 +3,7 @@ from datetime import timedelta
 from odoo import Command
 from odoo.tests import tagged
 
-from ..models.bf_budget_line import names_analytic
+from ..models.bf_budget_line import analytic_share
 from .common import BfBudgetPurchaseCommon
 
 
@@ -156,14 +156,79 @@ class TestPurchaseCommitments(BfBudgetPurchaseCommon):
         line = self._fresh(line)
         self.assertEqual(line.purchase_committed, 100.0)
 
-    def test_names_analytic_reads_composite_keys(self):
-        """⚠️ Une clé peut réunir plusieurs comptes (« 3,7 ») : la clé entière
-        comparée à un identifiant manquerait ces lignes-là."""
-        self.assertTrue(names_analytic({"3,7": 100.0}, [7]))
-        self.assertTrue(names_analytic({"7": 100.0}, [7]))
-        self.assertFalse(names_analytic({"37": 100.0}, [7]))
-        self.assertFalse(names_analytic({}, [7]))
-        self.assertFalse(names_analytic(None, [7]))
+    def test_analytic_share_reads_composite_keys_once(self):
+        """⚠️ Une clé peut réunir plusieurs comptes (« 3,7 ») : elle porte UN
+        pourcentage, compté UNE fois même quand la ligne en surveille deux ; et
+        la clé entière comparée à un identifiant manquerait ces lignes-là."""
+        self.assertEqual(analytic_share({"3,7": 100.0}, [7]), 1.0)
+        self.assertEqual(analytic_share({"3,7": 100.0}, [3, 7]), 1.0)
+        self.assertEqual(analytic_share({"7": 40.0, "3": 60.0}, [7]), 0.4)
+        self.assertEqual(analytic_share({"37": 100.0}, [7]), 0.0)
+        self.assertEqual(analytic_share({}, [7]), 0.0)
+        self.assertEqual(analytic_share(None, [7]), 0.0)
+
+    def test_the_key_is_split_like_the_core_splits_it(self):
+        """🔴 Le cœur casse la clé sur TOUT ce qui n'est pas un chiffre.
+
+        À la recherche : `regexp_split_to_array(…, '\\D+')`
+        (`analytic.mixin._query_analytic_accounts`). À la création des lignes
+        analytiques : `map(int, account_ids.split(","))`, et `int()` tolère
+        l'espace (`account.move.line._prepare_analytic_distribution_line`).
+        Une clé « 3, 7 » écrite à la main (import, RPC, correctif de données)
+        est donc comptée par le cœur, et le réalisé de la ligne qui surveille
+        7 la porte. Un `split(",")` ici laissait « 7 » introuvable : l'engagé
+        tombait à zéro, puis le montant RÉAPPARAISSAIT au geste de
+        comptabilisation — l'invariant publié devenait faux sur cette
+        distribution-là.
+        """
+        self.assertEqual(analytic_share({"3, 7": 100.0}, [7]), 1.0)
+        self.assertEqual(analytic_share({"3, 7": 100.0}, [3]), 1.0)
+        self.assertEqual(analytic_share({"3 , 7": 40.0}, [7]), 0.4)
+        # Et ce qui ne doit PAS matcher continue de ne pas matcher : un
+        # découpage trop large compterait une part étrangère.
+        self.assertEqual(analytic_share({"37": 100.0}, [7]), 0.0)
+        self.assertEqual(analytic_share({"3, 17": 100.0}, [7]), 0.0)
+
+    def test_a_shared_order_commits_its_share_once(self):
+        """🔴 L'engagé d'une ligne restreinte est la PART, pas le plein reste.
+
+        Une commande 1 000 $ ventilée A:50/B:50 : la ligne qui surveille A
+        engage 500, celle qui surveille B engage 500 — jamais 1 000 chacune. À
+        la comptabilisation, le réalisé pondéré reprend exactement ces parts :
+        l'engagé + réalisé de chaque ligne NE BOUGE PAS, il change de case. Le
+        calendrier (dû/total) porte la même part.
+        """
+        budget = self.env["bf.budget"].create(
+            {
+                "name": "Parts",
+                "company_id": self.company.id,
+                "date_start": self.date_start,
+                "date_end": self.date_end,
+            }
+        )
+        line_a = self._line(
+            budget=budget, analytic_account_ids=[Command.set(self.analytic_a.ids)]
+        )
+        line_b = self._line(
+            budget=budget, analytic_account_ids=[Command.set(self.analytic_b.ids)]
+        )
+        order = self._po(
+            1000.0,
+            distribution={self.analytic_a: 50.0, self.analytic_b: 50.0},
+        )
+        line_a, line_b = self._fresh(line_a), self._fresh(line_b)
+        self.assertEqual(line_a.purchase_committed, 500.0)
+        self.assertEqual(line_b.purchase_committed, 500.0)
+        self.assertEqual(line_a.purchase_period_total, 500.0)
+        self.assertEqual(line_a.amount_committed, 500.0)
+
+        self._bill(order)
+        line_a, line_b = self._fresh(line_a), self._fresh(line_b)
+        self.assertEqual(line_a.purchase_committed, 0.0)
+        self.assertEqual(line_a.amount_actual, 500.0)
+        # L'invariant : le total engagé de la ligne n'a pas bougé.
+        self.assertEqual(line_a.amount_committed, 500.0)
+        self.assertEqual(line_b.amount_committed, 500.0)
 
     def test_a_downpayment_line_is_not_a_commitment(self):
         """Un acompte annonce les mêmes dollars que les lignes réelles de sa

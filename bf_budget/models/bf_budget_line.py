@@ -497,46 +497,92 @@ class BfBudgetLine(models.Model):
 
         Une charge est un débit : son solde comptable est positif, et son montant
         analytique est négatif. Un produit fait l'inverse. On ramène tout à
-        « dépensé » ou « encaissé », positif.
+        « dépensé » ou « encaissé », positif. Le sens suit le MODÈLE lu, pas le
+        champ `source` : une ligne comptable filtrée sur l'analytique lit des
+        lignes analytiques, donc leur signe.
         """
         self.ensure_one()
-        if self.source == "internal_cost":
+        # API publiée, gardée pour les greffons ; le chemin chaud
+        # (`_read_actual`) tient déjà le tuple et calcule le signe sur place.
+        if self._actual_source()[0] == "account.analytic.line":
             return -1.0 if self.budget_type == "expense" else 1.0
         return 1.0 if self.budget_type == "expense" else -1.0
 
-    def _actual_domain(self):
-        """Le domaine de lecture du réel, sur la seule source de cette ligne."""
+    def _actual_source(self):
+        """(modèle, champ, domaine) : la mesure du réel, sur la seule source de la ligne.
+
+        Trois formes, toujours UNE source :
+
+        * comptable sans filtre : les écritures COMPTABILISÉES du poste ;
+        * comptable avec filtre analytique : les LIGNES ANALYTIQUES adossées à
+          ces mêmes écritures — c'est-à-dire la PART distribuée, jamais le plein
+          solde. 🔴 L'ancienne forme restreignait les écritures (« id in … »)
+          puis sommait leur plein `balance` : une facture ventilée A:50/B:50
+          comptait 100 % sur la ligne qui surveille A ET 100 % sur celle qui
+          surveille B — deux lignes se partageant une écriture la comptaient
+          deux fois. La fenêtre reste la date de l'ÉCRITURE : le grand livre est
+          la vérité, la ligne analytique n'est que la pondération.
+        * coût interne : les lignes analytiques SANS pièce comptable.
+
+        Une ligne incomplète rend un domaine qui ne matche RIEN — jamais une
+        liste vide, qui matche TOUT : un appelant qui fait
+        `search(line._actual_source()[2])` sur une ligne desserrée par un
+        greffon (coût interne sans compte analytique) balaierait la table
+        entière.
+
+        🔴 C'EST LA SEULE API DE LA MESURE. `_actual_domain()`, qui rendait le
+        domaine SANS son modèle, est retirée en 18.0.1.5.0 : le modèle lu a
+        changé (une ligne comptable restreinte lit `account.analytic.line`, pas
+        `account.move.line`), et un greffon qui passait ce domaine à
+        `account.move.line.search()` prenait un
+        `ValueError: Invalid field 'move_line_id'`. Un domaine sans son modèle
+        ne pouvait plus rien promettre : il se demande avec, par ici.
+        """
         self.ensure_one()
         budget = self.budget_id
         if self.source == "internal_cost":
-            column = self._analytic_column_domain()
-            return [
-                ("move_line_id", "=", False),
+            if not self.analytic_account_ids:
+                return ("account.analytic.line", "amount", [("id", "=", False)])
+            return (
+                "account.analytic.line",
+                "amount",
+                [
+                    ("move_line_id", "=", False),
+                    ("date", ">=", budget.date_start),
+                    ("date", "<=", budget.date_end),
+                    ("company_id", "=", budget.company_id.id),
+                ]
+                + self._analytic_column_domain(),
+            )
+        if not self.position_id:
+            return ("account.move.line", "balance", [("id", "=", False)])
+        if self.analytic_account_ids:
+            # ⚠️ `analytic_distribution` est un champ JSON : on ne le filtre pas
+            # en domaine. On lit les lignes analytiques, qui portent la part ET
+            # le lien `move_line_id` vers l'écriture.
+            return (
+                "account.analytic.line",
+                "amount",
+                [
+                    ("move_line_id.parent_state", "=", "posted"),
+                    ("move_line_id.account_id", "in", self.position_id.account_ids.ids),
+                    ("move_line_id.date", ">=", budget.date_start),
+                    ("move_line_id.date", "<=", budget.date_end),
+                    ("move_line_id.company_id", "=", budget.company_id.id),
+                ]
+                + self._analytic_column_domain(),
+            )
+        return (
+            "account.move.line",
+            "balance",
+            [
+                ("parent_state", "=", "posted"),
+                ("account_id", "in", self.position_id.account_ids.ids),
                 ("date", ">=", budget.date_start),
                 ("date", "<=", budget.date_end),
                 ("company_id", "=", budget.company_id.id),
-            ] + column
-        domain = [
-            ("parent_state", "=", "posted"),
-            ("account_id", "in", self.position_id.account_ids.ids),
-            ("date", ">=", budget.date_start),
-            ("date", "<=", budget.date_end),
-            ("company_id", "=", budget.company_id.id),
-        ]
-        if self.analytic_account_ids:
-            # ⚠️ `analytic_distribution` est un champ JSON : on ne le filtre pas
-            # en domaine. On passe par les lignes analytiques, qui portent le lien
-            # `move_line_id` vers l'écriture.
-            analytic_lines = self.env["account.analytic.line"].search(
-                [
-                    ("move_line_id", "!=", False),
-                    ("date", ">=", budget.date_start),
-                    ("date", "<=", budget.date_end),
-                ]
-                + self._analytic_column_domain()
-            )
-            domain.append(("id", "in", analytic_lines.mapped("move_line_id").ids))
-        return domain
+            ],
+        )
 
     def _analytic_column_domain(self):
         """Le domaine sur la bonne colonne de plan analytique.
@@ -576,7 +622,8 @@ class BfBudgetLine(models.Model):
             if line.source != "internal_cost" or not line.analytic_account_ids:
                 continue
             unvalued = line.env["account.analytic.line"].sudo().search(
-                line._actual_domain() + [("amount", "=", 0.0), ("unit_amount", ">", 0.0)]
+                line._actual_source()[2]
+                + [("amount", "=", 0.0), ("unit_amount", ">", 0.0)]
             )
             line.unvalued_hours = sum(unvalued.mapped("unit_amount"))
             line.has_unvalued_time = bool(line.unvalued_hours)
@@ -587,6 +634,28 @@ class BfBudgetLine(models.Model):
         Point d'extension du socle : il rend zéro. Les satellites l'enrichissent
         (bons de commande confirmés, notes de frais approuvées, renouvellements
         d'abonnement à venir). Le socle ne prétend pas les connaître.
+
+        🔴 LE CONTRAT SUR UNE LIGNE RESTREINTE à des comptes analytiques : la
+        PART distribuée de l'engagement, jamais son plein montant — ou RIEN si
+        la source ne connaît pas l'axe. Le réalisé d'une telle ligne est
+        pondéré (`_actual_source`) : un engagement au plein montant sauterait
+        au geste de comptabilisation, et deux lignes se partageant une dépense
+        la compteraient deux fois.
+
+        🔴 ET LE CONTRAT DE L'AXE : UN AXE PAR LIGNE. Le cœur 18 FUSIONNE les
+        plans en clés composées (`analytic.mixin._merge_distribution`) : une
+        distribution posée sur le plan A puis sur le plan C donne
+        `{"A,C": 100}`, UNE seule ligne analytique portant les deux colonnes,
+        comptée UNE fois par une ligne qui nomme l'un, l'autre ou les deux.
+        C'est le chemin normal. Une distribution écrite HORS de ce chemin
+        (import, RPC, correctif de données) peut porter une clé pleine par
+        plan (`{"A": 100, "C": 100}`) : le cœur crée alors DEUX lignes
+        analytiques au plein solde, et une ligne qui nomme les deux axes lit
+        200 % de l'écriture. ⛔ La part ne se borne PAS : le réalisé lit déjà
+        200 % (c'est ce que porte la projection analytique du grand livre), et
+        borner le seul engagé désaccorderait l'invariant publié — l'engagé
+        sauterait à la comptabilisation. La part se lit comme le cœur l'écrit;
+        le contrat se tient en amont, une ligne un axe.
         """
         self.ensure_one()
         return 0.0
@@ -690,20 +759,26 @@ class BfBudgetLine(models.Model):
             line.is_alert = line._evaluate_alert()
 
     def _read_actual(self):
+        """UN `_read_group` en sudo : la ligne n'expose que des sommes.
+
+        ⚠️ Le sudo est aussi ce qui rend le chiffre STABLE par rôle : sans lui,
+        les règles d'enregistrement (chacun ses feuilles de temps, pour qui
+        porte CE groupe-là — voir `bf_budget_analytic`) feraient lire
+        un réalisé différent à chaque personne, et un lecteur de budget sans
+        droits comptables prendrait une AccessError. Le détail, lui, s'ouvre par
+        l'action de dépliage du satellite analytique, QUI n'est pas en sudo.
+        """
         self.ensure_one()
-        if self.source == "accounting" and not self.position_id:
-            return 0.0
-        if self.source == "internal_cost" and not self.analytic_account_ids:
-            return 0.0
-        model = (
-            "account.analytic.line" if self.source == "internal_cost" else "account.move.line"
-        )
-        field = "amount" if self.source == "internal_cost" else "balance"
+        model, field, domain = self._actual_source()
         groups = self.env[model].sudo()._read_group(
-            self._actual_domain(), aggregates=["%s:sum" % field]
+            domain, aggregates=["%s:sum" % field]
         )
         total = groups[0][0] if groups else 0.0
-        return (total or 0.0) * self._sign()
+        if model == "account.analytic.line":
+            sign = -1.0 if self.budget_type == "expense" else 1.0
+        else:
+            sign = 1.0 if self.budget_type == "expense" else -1.0
+        return (total or 0.0) * sign
 
     def _evaluate_alert(self):
         """Signalé quand la dérive dépasse À LA FOIS le pourcentage et le plancher.

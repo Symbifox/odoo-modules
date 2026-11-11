@@ -1,6 +1,12 @@
 {
     "name": "Budgets opérationnels — notes de frais",
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: une ligne budgétaire RESTREINTE à des comptes analytiques
+    #   engage la PART distribuée de la note (brouillons d'écritures compris),
+    #   plus jamais son plein montant : une note ventilée A:50/B:50 engageait
+    #   100 % sur la ligne qui surveille A ET 100 % sur celle qui surveille B,
+    #   et son réalisé arrive désormais pondéré (socle 18.0.1.5.0) — l'engagé
+    #   sautait au geste de comptabilisation.
+    "version": "18.0.1.1.0",
     "category": "Accounting/Accounting",
     "summary": "Les notes de frais approuvées entrent dans l'engagé avant d'être comptabilisées",
     "author": "Les services de consultation Blue Fox, Inc.",

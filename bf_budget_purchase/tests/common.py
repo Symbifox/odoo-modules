@@ -74,7 +74,7 @@ class BfBudgetPurchaseCommon(BfBudgetCommon):
 
     @classmethod
     def _po(cls, amount=100.0, qty=1.0, product=None, date=None, confirm=True,
-            currency=None, analytic=None, company=None):
+            currency=None, analytic=None, company=None, distribution=None):
         """Une commande d'une ligne, confirmée par défaut."""
         company = company or cls.company
         line_vals = {
@@ -84,7 +84,11 @@ class BfBudgetPurchaseCommon(BfBudgetCommon):
             "date_planned": cls._noon(date or cls.today),
             "taxes_id": [Command.clear()],
         }
-        if analytic:
+        if distribution:
+            line_vals["analytic_distribution"] = {
+                str(acc.id): pct for acc, pct in distribution.items()
+            }
+        elif analytic:
             line_vals["analytic_distribution"] = {str(analytic.id): 100.0}
         order = cls.env["purchase.order"].with_company(company).create(
             {

@@ -1,21 +1,40 @@
+import re
 from datetime import datetime, time, timedelta
 
 from odoo import _, api, fields, models
 
 
-def names_analytic(distribution, analytic_ids):
-    """Une distribution analytique nomme-t-elle l'un de ces comptes ?
+def analytic_share(distribution, analytic_ids):
+    """La part (0..1) d'une distribution qui revient à ces comptes.
+
+    🔴 La PART, jamais l'appartenance : une commande ventilée A:50/B:50
+    engageait 100 % sur la ligne qui surveille A ET 100 % sur celle qui
+    surveille B — et son réalisé, lui, arrive pondéré (la part distribuée,
+    socle 18.0.1.5.0) : l'engagé sautait au geste de comptabilisation.
 
     ⚠️ Une clé peut réunir plusieurs comptes (« 3,7 ») quand la société a
-    plusieurs plans. Comparer la clé entière à un identifiant manquerait ces
-    lignes-là. (La même aide vit chez bf_budget_expense : les satellites ne
-    dépendent pas l'un de l'autre, chacun porte sa copie.)
+    plusieurs plans : elle porte UN pourcentage, compté UNE fois même quand la
+    ligne surveille plusieurs de ses comptes. (La même aide vit chez
+    bf_budget_expense : les satellites ne dépendent pas l'un de l'autre,
+    chacun porte sa copie.)
     """
     wanted = {str(analytic_id) for analytic_id in analytic_ids}
-    for key in (distribution or {}):
-        if wanted.intersection(str(key).split(",")):
-            return True
-    return False
+    share = 0.0
+    for key, pct in (distribution or {}).items():
+        # 🔴 Le découpage est celui du CŒUR, pas la seule virgule : il casse la
+        # clé sur tout ce qui n'est pas un chiffre
+        # (`analytic.mixin._query_analytic_accounts` :
+        # `regexp_split_to_array(…, '\D+')`) et convertit par `int()`, qui
+        # tolère l'espace (`account.move.line._prepare_analytic_distribution_line`
+        # : `map(int, account_ids.split(","))`). Pour « 3, 7 » écrit à la main
+        # (import, RPC, correctif de données), le cœur crée donc UNE ligne
+        # analytique portant les deux colonnes et le réalisé la compte — alors
+        # qu'un `split(",")` laissait « 7 » introuvable et rendait 0 ici :
+        # l'engagé d'une ligne surveillant 7 disparaissait, puis réapparaissait
+        # au geste de comptabilisation.
+        if wanted.intersection(part for part in re.split(r"\D+", str(key)) if part):
+            share += pct
+    return share / 100.0
 
 
 class BfBudgetLine(models.Model):
@@ -25,7 +44,9 @@ class BfBudgetLine(models.Model):
     ajoute, pour chaque ligne de commande confirmée, la part qu'aucune facture
     comptabilisée ne porte encore. Dès qu'une facture est comptabilisée, sa part
     passe dans le réalisé et sort du reste à facturer : le total engagé ne bouge
-    pas, il change seulement de case.
+    pas, il change seulement de case. Une ligne budgétaire RESTREINTE à des
+    comptes analytiques engage la PART distribuée de la commande (la même que
+    son réalisé reprendra, socle 18.0.1.5.0), jamais son plein reste.
 
     🔴 LE GARDE EST L'ÉCRITURE COMPTABILISÉE, JAMAIS `qty_invoiced`. Le
     « facturé » d'Odoo compte les factures au brouillon autant que les
@@ -40,6 +61,16 @@ class BfBudgetLine(models.Model):
     bon de commande est dans le réalisé, et un engagement négatif maquillerait
     le dépassement. Et une facture recodée vers un autre compte que le poste
     sort l'engagement du poste : la facture est la vérité, pas la commande.
+
+    ⚠️ CE QUI VAUT POUR LE COMPTE VAUT POUR L'AXE, et l'invariant « l'engagé +
+    le réalisé ne bouge pas à la comptabilisation » s'énonce DONC à distribution
+    constante. Une facture recodée A:100 sur une commande A:50/B:50 fait passer
+    la ligne qui surveille A de 50 à 100, et celle qui surveille B à 0 : les
+    deux montants changent, et c'est juste — la facture est la vérité, pas la
+    commande, pour l'axe comme pour le compte. Le total du budget, lui, reste
+    celui de la facture. Ce qui est garanti sans condition : à distribution
+    inchangée, la part sort du reste à facturer exactement comme elle entre
+    dans le réalisé.
 
     Le rattachement au poste passe par le compte de charge du produit, position
     fiscale comprise — le même chemin que la facturation. La date est la date
@@ -175,7 +206,13 @@ class BfBudgetLine(models.Model):
         return pool
 
     def _bf_purchase_on_line(self, pool):
-        """Ne garder, du bassin, que les lignes de commande qui tombent ici."""
+        """Ne garder, du bassin, que les lignes de commande qui tombent ici.
+
+        Rend (pol, date, facturé, part) : la PART de la ligne de commande qui
+        revient à cette ligne budgétaire — 1 sans filtre analytique, la part
+        distribuée avec. Les dollars se multiplient par elle en aval, pour que
+        l'engagé d'une ligne restreinte soit celui que son réalisé reprendra.
+        """
         self.ensure_one()
         budget = self.budget_id
         accounts = self.position_id.account_ids
@@ -186,9 +223,12 @@ class BfBudgetLine(models.Model):
                 continue
             if not date or date < budget.date_start or date > budget.date_end:
                 continue
-            if analytic_ids and not names_analytic(pol.analytic_distribution, analytic_ids):
-                continue
-            kept.append((pol, date, billed))
+            share = 1.0
+            if analytic_ids:
+                share = analytic_share(pol.analytic_distribution, analytic_ids)
+                if not share:
+                    continue
+            kept.append((pol, date, billed, share))
         return kept
 
     @api.depends(
@@ -223,14 +263,17 @@ class BfBudgetLine(models.Model):
                 # La devise du budget EST celle de la société (champ related du
                 # socle) : le solde société des écritures s'y lit sans détour.
                 currency = line.currency_id
-                for pol, date, billed in line._bf_purchase_on_line(pool(budget)):
+                for pol, date, billed, share in line._bf_purchase_on_line(pool(budget)):
                     # Le reste se calcule en devise de la COMMANDE, à l'arrondi
-                    # de cette devise, puis se convertit UNE fois.
+                    # de cette devise, puis se convertit UNE fois. La PART de la
+                    # ligne budgétaire s'applique aux dollars convertis : le
+                    # facturé soustrait est celui de la commande ENTIÈRE, sa
+                    # part suit le même ratio que celle de la commande.
                     remaining = pol.price_subtotal - billed
                     if remaining < 0 or pol.currency_id.is_zero(remaining):
                         remaining = 0.0
                     else:
-                        remaining = pol._bf_budget_convert(remaining, currency, company)
+                        remaining = share * pol._bf_budget_convert(remaining, currency, company)
                     if remaining:
                         committed += remaining
                         orders.add(pol.order_id.id)
@@ -238,7 +281,7 @@ class BfBudgetLine(models.Model):
                     # négatif) retrancherait du total/dû du CALENDRIER et
                     # gonflerait le reliquat au-delà du plan — le théorique se
                     # déformerait pendant que l'engagé, lui, resterait juste.
-                    amount = max(0.0, pol._bf_budget_amount(currency, company))
+                    amount = share * max(0.0, pol._bf_budget_amount(currency, company))
                     total += amount
                     if date <= today:
                         due += amount
@@ -280,7 +323,7 @@ class BfBudgetLine(models.Model):
         budget = self.budget_id
         order_ids = {
             pol.order_id.id
-            for pol, _date, _billed in self._bf_purchase_on_line(
+            for pol, _date, _billed, _share in self._bf_purchase_on_line(
                 self._bf_purchase_pool(
                     budget.company_id, budget.date_start, budget.date_end
                 )

@@ -1,5 +1,27 @@
 {
     "name": "Budgets opérationnels — engagements récurrents",
+    # 18.0.1.4.0: le registre ne s'ouvre qu'à qui peut le lire — les deux
+    #   champs qui portent des abonnements et `action_view_subscriptions`
+    #   demandent `bf_subscription.group_subscription_user`, le `groups` étant
+    #   AU CHAMP (un champ caché de l'écran répond quand même à un `read` par
+    #   RPC, et le bassin est relevé en sudo). Les sommes et les compteurs
+    #   restent libres : le chiffre est stable par rôle. ⚠️ Personne n'est
+    #   refusé aujourd'hui, et c'est mesuré : `base.group_user` IMPLIQUE
+    #   `bf_subscription.group_subscription_user`, donc aucun usager interne
+    #   ne perd rien et aucun écran n'explosait. Le garde est là pour le jour
+    #   où l'accès au registre se resserre, et pour que la forme du module
+    #   soit celle de son jumeau achats.
+    # 18.0.1.4.0: une ligne RESTREINTE à des comptes analytiques ne porte
+    #   plus rien du registre. L'abonnement s'accroche au poste et ne sait rien
+    #   de l'axe analytique : l'attribuer en entier à chaque ligne restreinte
+    #   comptait le même renouvellement plusieurs fois, et son réalisé arrive
+    #   désormais pondéré (la part distribuée, socle 18.0.1.5.0) — l'engagé
+    #   aurait sauté au geste de comptabilisation. La ligne nue du poste porte
+    #   tout, l'ambiguïté ne se devine pas. ET ELLE SE DÉCLARE : à zéro le bloc
+    #   des engagements récurrents passe `invisible`, donc la ligne restreinte
+    #   dit combien d'abonnements son poste porte et qu'elle n'en porte aucun —
+    #   un signal, jamais une part devinée (⛔ pas
+    #   `has_subscription_without_calendar`, qui dit autre chose).
     # 18.0.1.3.0: le théorique de calendrier n'est plus calculé ici : le
     #   satellite déclare son couple (dû à ce jour, total de la période) par
     #   `_calendar_commitment_components` et le socle (bf_budget 18.0.1.4.0,
@@ -15,7 +37,7 @@
     #   en français.
     # 18.0.1.2.0: le cycle aux 4 semaines de bf_subscription 18.0.1.9.0 donne
     #   13 échéances par année au calendrier d'engagements.
-    "version": "18.0.1.3.0",
+    "version": "18.0.1.4.0",
     "category": "Accounting/Accounting",
     "summary": "Les abonnements deviennent un calendrier d'engagements datés, et le théorique s'y appuie",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -8,14 +8,21 @@
         <field name="arch" type="xml">
 
             <xpath expr="//div[@name='button_box']" position="inside">
+                <!-- Les `groups` doublent ceux des CHAMPS : le `groups` du
+                     champ ferme la lecture, celui du nœud retire le nœud —
+                     sans lui, Odoo sert une vue qui dépend d'un champ que le
+                     rôle ne peut pas lire, et le journal le dit
+                     (« Access Rights Inconsistency »). -->
                 <button type="object" name="action_bf_open_analytic_lines"
                         class="oe_stat_button" icon="fa-money"
-                        invisible="not analytic_account_id">
+                        invisible="not analytic_account_id"
+                        groups="bf_budget.group_bf_budget_user,account.group_account_readonly,account.group_account_invoice,analytic.group_analytic_accounting">
                     <field name="bf_cost_total" widget="statinfo" string="Spend"/>
                 </button>
                 <button type="object" name="action_bf_open_budget_lines"
                         class="oe_stat_button" icon="fa-pie-chart"
-                        invisible="not bf_budget_count">
+                        invisible="not bf_budget_count"
+                        groups="bf_budget.group_bf_budget_user">
                     <field name="bf_budget_count" widget="statinfo" string="Budget lines"/>
                 </button>
             </xpath>
@@ -31,7 +38,8 @@
                     </div>
 
                     <div class="alert alert-warning" role="alert"
-                         invisible="not bf_has_unvalued_time">
+                         invisible="not bf_has_unvalued_time"
+                         groups="bf_budget.group_bf_budget_user,account.group_account_readonly,account.group_account_invoice,analytic.group_analytic_accounting">
                         <field name="bf_unvalued_hours" widget="float_time" nolabel="1"
                                class="oe_inline fw-bold"/>
                         hours are charged to this campaign with no hourly cost on the employee record, so they are not counted in actual spend. Estimated at the default rate of
@@ -44,13 +52,17 @@
                     <group>
                         <group string="Assignment">
                             <field name="bf_currency_id" invisible="1"/>
-                            <field name="bf_has_unvalued_time" invisible="1"/>
+                            <field name="bf_has_unvalued_time" invisible="1"
+                                   groups="bf_budget.group_bf_budget_user,account.group_account_readonly,account.group_account_invoice,analytic.group_analytic_accounting"/>
+                            <!-- Le rattachement reste OUVERT : c'est la saisie
+                                 du marketing, pas un chiffre de coût. -->
                             <field name="analytic_account_id"
                                    options="{'no_quick_create': True}"/>
                             <field name="bf_amount_planned"
-                                   invisible="not bf_budget_count"/>
+                                   invisible="not bf_budget_count"
+                                   groups="bf_budget.group_bf_budget_user"/>
                         </group>
-                        <group string="Spend">
+                        <group string="Spend" groups="bf_budget.group_bf_budget_user,account.group_account_readonly,account.group_account_invoice,analytic.group_analytic_accounting">
                             <field name="bf_cost_accounting"/>
                             <field name="bf_cost_internal"/>
                             <field name="bf_cost_total"/>
@@ -59,7 +71,8 @@
                     </group>
 
                     <group string="Estimate of uncosted hours"
-                           invisible="not bf_has_unvalued_time">
+                           invisible="not bf_has_unvalued_time"
+                           groups="bf_budget.group_bf_budget_user,account.group_account_readonly,account.group_account_invoice,analytic.group_analytic_accounting">
                         <group>
                             <field name="bf_unvalued_hours" widget="float_time"/>
                             <field name="bf_estimate_rate"/>
@@ -71,7 +84,8 @@
                     </group>
 
                     <field name="bf_budget_line_ids" readonly="1"
-                           invisible="not bf_budget_count">
+                           invisible="not bf_budget_count"
+                           groups="bf_budget.group_bf_budget_user">
                         <list string="Budget lines">
                             <field name="budget_id"/>
                             <field name="position_id"/>
@@ -96,9 +110,12 @@
         <field name="arch" type="xml">
             <field name="stage_id" position="after">
                 <field name="bf_currency_id" column_invisible="True"/>
-                <field name="bf_cost_total" sum="Total spend" optional="show"/>
-                <field name="bf_cost_accounting" sum="Posted" optional="hide"/>
-                <field name="bf_cost_internal" sum="Internal cost" optional="hide"/>
+                <field name="bf_cost_total" sum="Total spend" optional="show"
+                       groups="bf_budget.group_bf_budget_user,account.group_account_readonly,account.group_account_invoice,analytic.group_analytic_accounting"/>
+                <field name="bf_cost_accounting" sum="Posted" optional="hide"
+                       groups="bf_budget.group_bf_budget_user,account.group_account_readonly,account.group_account_invoice,analytic.group_analytic_accounting"/>
+                <field name="bf_cost_internal" sum="Internal cost" optional="hide"
+                       groups="bf_budget.group_bf_budget_user,account.group_account_readonly,account.group_account_invoice,analytic.group_analytic_accounting"/>
             </field>
         </field>
     </record>

@@ -20,7 +20,7 @@ class BfBudgetCommon(TransactionCase):
         cls.env = cls.env(
             # lang : les essais affirment les MESSAGES des gardes, dans leur
             # langue source. Sans elle, une base dont l'admin parle une autre
-            # langue (un clone de production) les sert traduits.
+            # langue — ce qui arrive sur une base clonée — les sert traduits.
             context=dict(
                 cls.env.context,
                 allowed_company_ids=[cls.company.id],
@@ -120,8 +120,14 @@ class BfBudgetCommon(TransactionCase):
         return budget
 
     @classmethod
-    def _post_bill(cls, account, amount, date=None, analytic=None, post=True):
-        """Une écriture simple : une charge au débit, le fournisseur au crédit."""
+    def _post_bill(cls, account, amount, date=None, analytic=None, post=True,
+                   distribution=None):
+        """Une écriture simple : une charge au débit, le fournisseur au crédit.
+
+        `analytic` pose une distribution à 100 % ; `distribution` ({compte: pct})
+        pose une distribution PARTIELLE ou partagée — le cas que la mesure
+        pondérée doit compter une seule fois.
+        """
         date = date or fields.Date.context_today(cls.env.user)
         line_vals = {
             "account_id": account.id,
@@ -129,7 +135,11 @@ class BfBudgetCommon(TransactionCase):
             "credit": -amount if amount < 0 else 0.0,
             "name": "Charge",
         }
-        if analytic:
+        if distribution:
+            line_vals["analytic_distribution"] = {
+                str(acc.id): pct for acc, pct in distribution.items()
+            }
+        elif analytic:
             line_vals["analytic_distribution"] = {str(analytic.id): 100.0}
         move = cls.env["account.move"].create(
             {
@@ -155,9 +165,17 @@ class BfBudgetCommon(TransactionCase):
         return move
 
     @classmethod
-    def _post_revenue(cls, amount, date=None):
+    def _post_revenue(cls, amount, date=None, analytic=None):
         """Un produit : le compte de produit au crédit."""
         date = date or fields.Date.context_today(cls.env.user)
+        revenue_vals = {
+            "account_id": cls.account_revenue.id,
+            "credit": amount,
+            "debit": 0.0,
+            "name": "Produit",
+        }
+        if analytic:
+            revenue_vals["analytic_distribution"] = {str(analytic.id): 100.0}
         move = cls.env["account.move"].create(
             {
                 "move_type": "entry",
@@ -165,14 +183,7 @@ class BfBudgetCommon(TransactionCase):
                 "date": date,
                 "company_id": cls.company.id,
                 "line_ids": [
-                    Command.create(
-                        {
-                            "account_id": cls.account_revenue.id,
-                            "credit": amount,
-                            "debit": 0.0,
-                            "name": "Produit",
-                        }
-                    ),
+                    Command.create(revenue_vals),
                     Command.create(
                         {
                             "account_id": cls.account_payable.id,

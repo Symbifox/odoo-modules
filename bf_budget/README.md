@@ -36,6 +36,32 @@ two are disjoint by construction:
 - `internal cost` reads **only** analytic lines with no journal item behind them,
   which is where timesheets and manual analytic entries live.
 
+An accounting line narrowed to analytic accounts reads the **distributed share**
+(the analytic lines carried by the posted items of its accounts), never the full
+balance of the items: a bill split A:50/B:50 counts 50 on the line watching A
+and 50 on the line watching B. The window stays the journal item's date — the
+ledger is the truth, the analytic line is only the weighting.
+
+## The contract is one axis per line
+
+A distribution spanning several root plans is **merged by Odoo into one
+composite key**: distributing a bill on plan A and then on plan C gives
+`{"A,C": 100}`, which posts a **single** analytic line carrying both plans'
+columns. A budget line naming A, or C, or both, counts that line once. This is
+the normal path — the distribution widget, the distribution models, and
+anything going through Odoo's own merge.
+
+A distribution written **outside** that path — an import, an RPC call, a data
+fix — can hold one full key per plan (`{"A": 100, "C": 100}`). Odoo then posts
+**two** analytic lines, each at the item's full balance, and a budget line
+naming accounts from both plans reads **200 %** of that item. The module does
+not cap the share, deliberately: the actual already reads 200 % because that is
+what the ledger's analytic projection holds, and capping the commitment alone
+would make the committed amount jump at posting — the one invariant the
+satellites publish. So: **keep one line on one axis**, and write distributions
+through Odoo. A line naming accounts from several plans reads each axis's
+share, which is only the same dollar once when the keys are composite.
+
 ## The theoretical follows the calendar, not the clock
 
 An annual renewal does not spread over twelve months. The monthly split is
@@ -98,6 +124,7 @@ present and adds one thing.
 | `bf_budget_campaign` | Ties a marketing campaign to an analytic account, so a campaign knows what it spent |
 | `bf_budget_expense` | Approved expense reports enter committed before they are posted; submitted ones are shown apart, in no amount |
 | `bf_budget_purchase` | Confirmed purchase orders enter committed until a posted bill carries them, and their planned dates feed the calendar |
+| `bf_budget_analytic` | Unfolds a line into the analytic lines it reads, under each viewer's own rights, and shows the hours beside the dollars |
 | `bf_budget_dashboard` | A home tile: committed share, flagged lines, distance to theoretical |
 | `bf_budget_digest` | A budget section in the daily briefing, only when something is flagged |
 
@@ -105,11 +132,26 @@ present and adds one thing.
 
 `_get_extra_commitments()` on `bf.budget.line` returns zero in the base module;
 satellites add what they know (open purchase orders, approved expenses, upcoming
-renewals). `_calendar_commitment_components()` returns an empty list; each
+renewals). On a line narrowed to analytic accounts, a satellite contributes the
+**distributed share** of its commitment, or nothing when its source does not
+know the axis — never the full amount, which the weighted actual would not pick
+up. The share follows the *one axis per line* contract above: it is read from
+the distribution as Odoo writes it, and a distribution holding one full key per
+plan is counted as the ledger counts it, not capped.
+`_calendar_commitment_components()` returns an empty list; each
 satellite appends its dated calendar as a `(due to date, period total)` pair and
 the base module combines them, prorating the uncovered share of the plan once —
 never per satellite, which would count it twice. `_seed_value_for()` on
 `bf.budget.forecast.line` returns a flat average until a satellite knows better.
+
+`_actual_source()` is the measure's API: it returns `(model, field, domain)`
+together, because the model a line reads depends on the line. A narrowed
+accounting line reads `account.analytic.line`, a plain one reads
+`account.move.line`. ⚠️ `_actual_domain()`, which returned the domain alone,
+is **removed in v18.0.1.5.0**: passing it to `account.move.line.search()`
+raised `ValueError: Invalid field 'move_line_id'` as soon as the line was
+narrowed. Read the domain from `_actual_source()`, with the model it belongs
+to; `_read_actual()` and `_sign()` stay where they were.
 
 
 ## Languages (v18.0.1.1.0)
@@ -200,5 +242,5 @@ first, then open.
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-11-04 for this one. In the meantime, use in production for
+its Change Date: 2030-11-10 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

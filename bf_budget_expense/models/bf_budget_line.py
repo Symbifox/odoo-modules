@@ -1,18 +1,39 @@
+import re
+
 from odoo import _, api, fields, models
 
 
-def names_analytic(distribution, analytic_ids):
-    """Une distribution analytique nomme-t-elle l'un de ces comptes ?
+def analytic_share(distribution, analytic_ids):
+    """La part (0..1) d'une distribution qui revient à ces comptes.
+
+    🔴 La PART, jamais l'appartenance : une note ventilée A:50/B:50 engageait
+    100 % sur la ligne qui surveille A ET 100 % sur celle qui surveille B — et
+    son réalisé, lui, arrive pondéré (la part distribuée, socle 18.0.1.5.0) :
+    l'engagé sautait au geste de comptabilisation.
 
     ⚠️ Une clé peut réunir plusieurs comptes (« 3,7 ») quand la société a
-    plusieurs plans. Comparer la clé entière à un identifiant manquerait ces
-    lignes-là.
+    plusieurs plans : elle porte UN pourcentage, compté UNE fois même quand la
+    ligne surveille plusieurs de ses comptes. (La même aide vit chez
+    bf_budget_purchase : les satellites ne dépendent pas l'un de l'autre,
+    chacun porte sa copie.)
     """
     wanted = {str(analytic_id) for analytic_id in analytic_ids}
-    for key in (distribution or {}):
-        if wanted.intersection(str(key).split(",")):
-            return True
-    return False
+    share = 0.0
+    for key, pct in (distribution or {}).items():
+        # 🔴 Le découpage est celui du CŒUR, pas la seule virgule : il casse la
+        # clé sur tout ce qui n'est pas un chiffre
+        # (`analytic.mixin._query_analytic_accounts` :
+        # `regexp_split_to_array(…, '\D+')`) et convertit par `int()`, qui
+        # tolère l'espace (`account.move.line._prepare_analytic_distribution_line`
+        # : `map(int, account_ids.split(","))`). Pour « 3, 7 » écrit à la main
+        # (import, RPC, correctif de données), le cœur crée donc UNE ligne
+        # analytique portant les deux colonnes et le réalisé la compte — alors
+        # qu'un `split(",")` laissait « 7 » introuvable et rendait 0 ici :
+        # l'engagé d'une ligne surveillant 7 disparaissait, puis réapparaissait
+        # au geste de comptabilisation.
+        if wanted.intersection(part for part in re.split(r"\D+", str(key)) if part):
+            share += pct
+    return share / 100.0
 
 
 class BfBudgetLine(models.Model):
@@ -22,6 +43,15 @@ class BfBudgetLine(models.Model):
     ajoute les notes approuvées dont l'écriture n'est pas encore comptabilisée.
     Dès qu'elle l'est, la note passe dans le réalisé et sort de l'engagé
     supplémentaire : le total engagé ne bouge pas, il change seulement de case.
+
+    ⚠️ Sur une ligne RESTREINTE à des comptes analytiques, cet invariant
+    s'énonce à DISTRIBUTION CONSTANTE. Ce qui vaut pour le compte vaut pour
+    l'axe : une écriture recodée A:100 alors que la note était ventilée
+    A:50/B:50 fait passer la ligne qui surveille A de 50 à 100, et celle qui
+    surveille B à 0. Les deux montants changent, et c'est juste — l'écriture
+    comptabilisée est la vérité, pas la note. Ce qui est garanti sans
+    condition : à distribution inchangée, la part sort de l'engagé exactement
+    comme elle entre dans le réalisé.
 
     🔴 LE GARDE EST LE LIEN, JAMAIS L'ÉTAT. `hr.expense.state` est calculé et
     vaut « approved » aussi bien pour une note dont l'écriture est au brouillon
@@ -127,9 +157,25 @@ class BfBudgetLine(models.Model):
         if self.analytic_account_ids:
             analytic_ids = self.analytic_account_ids.ids
             lines = lines.filtered(
-                lambda aml: names_analytic(aml.analytic_distribution, analytic_ids)
+                lambda aml: analytic_share(aml.analytic_distribution, analytic_ids) > 0.0
             )
         return lines
+
+    def _bf_expense_weighted_balance(self, lines):
+        """Le solde des brouillons, pondéré par la PART de la ligne budgétaire.
+
+        Sans filtre analytique, le plein solde. Avec, la part distribuée de
+        chaque ligne d'écriture — celle que le réalisé pondéré reprendra à la
+        comptabilisation (socle 18.0.1.5.0) : l'engagé ne saute pas.
+        """
+        self.ensure_one()
+        if not self.analytic_account_ids:
+            return sum(lines.mapped("balance"))
+        analytic_ids = self.analytic_account_ids.ids
+        return sum(
+            aml.balance * analytic_share(aml.analytic_distribution, analytic_ids)
+            for aml in lines
+        )
 
     @api.model
     def _bf_expense_live_drafts(self, moves):
@@ -237,8 +283,11 @@ class BfBudgetLine(models.Model):
                 continue
             if not date or date < budget.date_start or date > budget.date_end:
                 continue
-            if analytic_ids and not names_analytic(expense.analytic_distribution, analytic_ids):
-                continue
+            if analytic_ids:
+                share = analytic_share(expense.analytic_distribution, analytic_ids)
+                if not share:
+                    continue
+                amount = amount * share
             kept.append((expense, amount))
         return kept
 
@@ -271,7 +320,7 @@ class BfBudgetLine(models.Model):
                 draft_lines = line._bf_expense_draft_lines()
                 approved = line._bf_expense_on_line(pool(company, "approve"))
                 submitted = line._bf_expense_on_line(pool(company, "submit"))
-                committed = sum(draft_lines.mapped("balance")) + sum(
+                committed = line._bf_expense_weighted_balance(draft_lines) + sum(
                     amount for _expense, amount in approved
                 )
                 counted = draft_lines.expense_id | Expense.browse(

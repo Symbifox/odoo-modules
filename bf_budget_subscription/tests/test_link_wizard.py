@@ -89,7 +89,7 @@ class TestLinkWizardAsARealRole(BfBudgetSubscriptionCommon):
     """🔴 Le garde qui manquait, et que la production a trouvé à ma place.
 
     Les tests tournent en superutilisateur, qui contourne toutes les listes de
-    contrôle : l'assistant passait au banc et mourait en `AccessError` dès qu'un
+    contrôle : l'assistant passait sur une base d'essai et mourait en `AccessError` dès qu'un
     vrai gestionnaire de budget l'ouvrait. Un gestionnaire de budget n'a aucun
     droit sur le registre des abonnements ni sur la comptabilité, et il n'a pas
     à en avoir.

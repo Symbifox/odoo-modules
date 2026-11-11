@@ -1,19 +1,18 @@
-# Translation of Budgets opérationnels : engagements récurrents - French (Canada).
-# The module's source strings are written in English: this catalogue carries
-# the French that users of fr_CA read.
+# Translation template for Budgets opérationnels : engagements récurrents.
+# The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_budget_subscription 18.0.1.1.0\n"
+"Project-Id-Version: bf_budget_subscription 18.0.1.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 08:44+0000\n"
-"PO-Revision-Date: 2026-10-10 08:44+0000\n"
+"POT-Creation-Date: 2026-11-10 00:45+0000\n"
+"PO-Revision-Date: 2026-11-10 00:45+0000\n"
 "Last-Translator: \n"
-"Language-Team: French (Canada)\n"
+"Language-Team: \n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: \n"
 
 #. module: bf_budget_subscription
 #. odoo-python
@@ -33,7 +32,6 @@ msgstr ""
 "                    faire passer une dérive réelle pour un budget tenu."
 
 #. module: bf_budget_subscription
-#. modules: bf_budget_forecast, bf_budget_subscription
 #: model:ir.model.fields,field_description:bf_budget_subscription.field_subscription_subscription__budget_position_id
 #: model_terms:ir.ui.view,arch_db:bf_budget_subscription.subscription_search_budget
 msgid "Budget item"
@@ -46,6 +44,11 @@ msgid "Budget item subscriptions"
 msgstr "Abonnements du poste"
 
 #. module: bf_budget_subscription
+#: model:ir.model,name:bf_budget_subscription.model_bf_budget_line
+msgid "Budget line"
+msgstr "Ligne budgétaire"
+
+#. module: bf_budget_subscription
 #: model_terms:ir.ui.view,arch_db:bf_budget_subscription.bf_budget_subscription_link_wizard_form
 msgid "Cancel"
 msgstr "Annuler"
@@ -56,29 +59,21 @@ msgid "Commitments for the period"
 msgstr "Engagements de la période"
 
 #. module: bf_budget_subscription
-#. modules: bf_budget_forecast, bf_budget_subscription, bf_editorial_audience,
-#. bf_editorial_social
 #: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__company_id
 msgid "Company"
 msgstr "Société"
 
 #. module: bf_budget_subscription
-#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
-#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
 #: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
 #. module: bf_budget_subscription
-#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
-#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
 #: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__create_date
 msgid "Created on"
 msgstr "Créé le"
 
 #. module: bf_budget_subscription
-#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
-#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
 #: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
@@ -94,8 +89,6 @@ msgid "False for an on-demand subscription: it spends without a schedule."
 msgstr "Faux pour un abonnement à la demande : il dépense sans échéancier."
 
 #. module: bf_budget_subscription
-#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
-#. bf_editorial_audience
 #: model_terms:ir.ui.view,arch_db:bf_budget_subscription.subscription_search_budget
 msgid "Group by"
 msgstr "Regrouper par"
@@ -106,8 +99,19 @@ msgid "Has Subscription Without Calendar"
 msgstr "A un abonnement sans échéancier"
 
 #. module: bf_budget_subscription
-#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
-#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
+#: model:ir.model.fields,help:bf_budget_subscription.field_bf_budget_line__position_subscription_count
+msgid ""
+"How many subscriptions are linked to this line's budget item. On a line "
+"narrowed to analytic accounts it is the only thing the register can say: how"
+" much of each renewal belongs to the analytic account the line watches is "
+"not written anywhere."
+msgstr ""
+"Combien d'abonnements sont rattachés au poste budgétaire de cette ligne. Sur"
+" une ligne restreinte à des comptes analytiques, c'est tout ce que le "
+"registre peut dire : quelle part d'un renouvellement revient au compte "
+"analytique que la ligne surveille n'est écrit nulle part."
+
+#. module: bf_budget_subscription
 #: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__id
 msgid "ID"
 msgstr "ID"
@@ -118,15 +122,11 @@ msgid "Known schedule"
 msgstr "Échéancier connu"
 
 #. module: bf_budget_subscription
-#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
-#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
 #: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__write_uid
 msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
 #. module: bf_budget_subscription
-#. modules: bf_attachment_version, bf_budget_forecast, bf_budget_subscription,
-#. bf_editorial_audience, bf_editorial_genfox, bf_editorial_social
 #: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_subscription_link_wizard__write_date
 msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
@@ -186,6 +186,16 @@ msgid "Recurring commitments"
 msgstr "Engagements récurrents"
 
 #. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__has_unattributed_subscriptions
+msgid "Register not carried by this line"
+msgstr "Registre non porté par cette ligne"
+
+#. module: bf_budget_subscription
+#: model:ir.model,name:bf_budget_subscription.model_subscription_subscription
+msgid "Subscription"
+msgstr "Abonnement"
+
+#. module: bf_budget_subscription
 #: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__subscription_count
 msgid "Subscription Count"
 msgstr "Nombre d'abonnements"
@@ -194,6 +204,11 @@ msgstr "Nombre d'abonnements"
 #: model:ir.model,name:bf_budget_subscription.model_bf_budget_subscription_link_wizard
 msgid "Subscription linking to budget items"
 msgstr "Rattacher les abonnements aux postes budgétaires"
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__position_subscription_count
+msgid "Subscriptions on the budget item"
+msgstr "Abonnements du poste budgétaire"
 
 #. module: bf_budget_subscription
 #: model:ir.model.fields,field_description:bf_budget_subscription.field_bf_budget_line__subscription_no_calendar_ids
@@ -232,6 +247,15 @@ msgstr ""
 "les budgets."
 
 #. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.bf_budget_line_form_subscription
+msgid ""
+"This line is narrowed to analytic accounts, so it carries nothing from the "
+"subscription register: its budget item has"
+msgstr ""
+"Cette ligne est restreinte à des comptes analytiques : elle ne porte donc "
+"rien du registre des abonnements. Son poste budgétaire en porte"
+
+#. module: bf_budget_subscription
 #: model_terms:ir.ui.view,arch_db:bf_budget_subscription.subscription_form_budget
 msgid ""
 "This subscription spends without a schedule: budgets cannot forecast its "
@@ -239,6 +263,17 @@ msgid ""
 msgstr ""
 "Cet abonnement dépense sans échéancier : les budgets ne peuvent pas\n"
 "                    prévoir sa prochaine échéance."
+
+#. module: bf_budget_subscription
+#: model:ir.model.fields,help:bf_budget_subscription.field_bf_budget_line__has_unattributed_subscriptions
+msgid ""
+"True on a line narrowed to analytic accounts whose budget item carries "
+"subscriptions: the line carries none of them, and the plain line of the same"
+" budget item carries them all."
+msgstr ""
+"Vrai sur une ligne restreinte à des comptes analytiques dont le poste "
+"budgétaire porte des abonnements : la ligne n'en porte aucun, et la ligne "
+"nue du même poste les porte tous."
 
 #. module: bf_budget_subscription
 #: model:ir.model.fields,help:bf_budget_subscription.field_bf_budget_subscription_link_wizard__only_unassigned
@@ -274,6 +309,19 @@ msgstr "Sans poste budgétaire"
 #: model_terms:ir.ui.view,arch_db:bf_budget_subscription.subscription_search_budget
 msgid "Without a schedule"
 msgstr "Sans échéancier"
+
+#. module: bf_budget_subscription
+#: model_terms:ir.ui.view,arch_db:bf_budget_subscription.bf_budget_line_form_subscription
+msgid ""
+"subscription(s), and nothing says which share of a renewal belongs to the "
+"analytic account this line watches. Their commitments and their renewal "
+"calendar are carried by the plain line of the same budget item, which is "
+"where this budget reads them."
+msgstr ""
+"abonnement(s), et rien ne dit quelle part d'un renouvellement revient au "
+"compte analytique que cette ligne surveille. Leurs engagements et leur "
+"calendrier de renouvellement sont portés par la ligne nue du même poste "
+"budgétaire, et c'est là que ce budget les lit."
 
 #. module: bf_budget_subscription
 #. odoo-python

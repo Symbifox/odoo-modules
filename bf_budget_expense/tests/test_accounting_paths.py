@@ -173,6 +173,50 @@ class TestExpenseAccountingPaths(BfBudgetExpenseCommon):
         self.assertEqual(line.expense_committed, 40.0)
         self.assertEqual(line.expense_pending, 50.0)
 
+    def test_a_hand_written_key_with_a_space_is_recognised_too(self):
+        """🔴 Le découpage est celui du CŒUR, pas la seule virgule.
+
+        Le cœur casse la clé sur tout ce qui n'est pas un chiffre
+        (`analytic.mixin._query_analytic_accounts` :
+        `regexp_split_to_array(…, '\\D+')`) et convertit par `int()`, qui
+        tolère l'espace (`account.move.line._prepare_analytic_distribution_line`).
+        Une clé « a, c » écrite à la main — import, RPC, correctif de données —
+        est donc comptée par le cœur : son écriture comptabilisée entre dans le
+        réalisé de la ligne qui surveille c. Un `split(",")` ici rendait 0, donc
+        l'engagé de la note approuvée disparaissait et RÉAPPARAISSAIT à la
+        comptabilisation : l'invariant publié devenait faux.
+        """
+        plan_2 = self.env["account.analytic.plan"].create({"name": "Troisième axe"})
+        analytic_c = self.env["account.analytic.account"].create(
+            {"name": "Axe C espacé", "plan_id": plan_2.id}
+        )
+        key = "%s, %s" % (self.analytic_a.id, analytic_c.id)
+        line = self._line(analytic_account_ids=[(6, 0, analytic_c.ids)])
+        self._sheet(40.0, distribution={key: 100.0})
+        self._sheet(50.0, distribution={key: 100.0}, stage="submit")
+        line = self._fresh(line)
+        self.assertEqual(line.expense_committed, 40.0)
+        self.assertEqual(line.expense_pending, 50.0)
+
+    def test_the_committed_share_does_not_jump_on_a_hand_written_key(self):
+        """L'invariant, sur la distribution que le découpage laissait tomber :
+        la part sort de l'engagé exactement comme elle entre dans le réalisé."""
+        plan_2 = self.env["account.analytic.plan"].create({"name": "Quatrième axe"})
+        analytic_c = self.env["account.analytic.account"].create(
+            {"name": "Axe C invariant", "plan_id": plan_2.id}
+        )
+        key = "%s, %s" % (self.analytic_a.id, analytic_c.id)
+        line = self._line(analytic_account_ids=[(6, 0, analytic_c.ids)])
+        sheet = self._sheet(60.0, distribution={key: 100.0})
+        line = self._fresh(line)
+        committed_before = line.amount_committed
+        self.assertEqual(line.expense_committed, 60.0)
+        sheet.action_sheet_move_post()
+        line = self._fresh(line)
+        self.assertEqual(line.expense_committed, 0.0)
+        self.assertEqual(line.amount_actual, 60.0)
+        self.assertEqual(line.amount_committed, committed_before)
+
     def test_another_company_expense_stays_out_even_on_a_shared_account(self):
         """Un compte peut être partagé entre sociétés : la société, elle, ne l'est pas."""
         other = self.env["res.company"].create({"name": "Autre société budget"})

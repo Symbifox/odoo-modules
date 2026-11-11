@@ -54,6 +54,324 @@ class TestBfBudgetAmounts(BfBudgetCommon):
         line.invalidate_recordset()
         self.assertEqual(line.amount_actual, 100.0)
 
+    def test_a_partial_distribution_counts_its_share_once(self):
+        """🔴 Deux lignes qui se partagent une écriture ne la comptent qu'une fois.
+
+        Une facture ventilée A:50/B:50 comptait 100 % sur la ligne qui surveille
+        A ET 100 % sur celle qui surveille B : la mesure restreignait les
+        écritures puis sommait leur plein solde. La mesure pondérée lit la PART
+        (les lignes analytiques adossées), et le total du budget redevient le
+        total de la facture.
+        """
+        budget = self.env["bf.budget"].create(
+            {
+                "name": "Parts",
+                "company_id": self.company.id,
+                "date_start": self.date_start,
+                "date_end": self.date_end,
+            }
+        )
+        line_a = self.env["bf.budget.line"].create(
+            {
+                "budget_id": budget.id,
+                "position_id": self.position_software.id,
+                "analytic_account_ids": [Command.set(self.analytic_a.ids)],
+                "amount_planned": 600.0,
+            }
+        )
+        line_b = self.env["bf.budget.line"].create(
+            {
+                "budget_id": budget.id,
+                "position_id": self.position_software.id,
+                "analytic_account_ids": [Command.set(self.analytic_b.ids)],
+                "amount_planned": 600.0,
+            }
+        )
+        both = self.env["bf.budget.line"].create(
+            {
+                "budget_id": budget.id,
+                "position_id": self.position_software.id,
+                "analytic_account_ids": [
+                    Command.set((self.analytic_a | self.analytic_b).ids)
+                ],
+                "amount_planned": 1200.0,
+            }
+        )
+        self._post_bill(
+            self.account_software,
+            1000.0,
+            distribution={self.analytic_a: 50.0, self.analytic_b: 50.0},
+        )
+        budget.invalidate_recordset()
+        self.assertEqual(line_a.amount_actual, 500.0)
+        self.assertEqual(line_b.amount_actual, 500.0)
+        # Une ligne qui surveille les deux comptes lit les deux parts : 1 000,
+        # jamais 2 000 (chaque part est UNE ligne analytique, comptée une fois).
+        self.assertEqual(both.amount_actual, 1000.0)
+
+    def _second_plan_account(self, name="Axe C"):
+        """Un compte d'un SECOND plan racine : sa colonne n'est pas celle du
+        plan du décor, et c'est tout l'enjeu du OR."""
+        plan = self.env["account.analytic.plan"].create({"name": "Second axe budget"})
+        account = self.env["account.analytic.account"].create(
+            {"name": name, "plan_id": plan.id}
+        )
+        self.assertNotEqual(
+            account.root_plan_id._column_name(),
+            self.analytic_a.root_plan_id._column_name(),
+        )
+        return account
+
+    def test_a_line_naming_two_root_plans_reads_both_axes(self):
+        """🔴 La branche OR de `_analytic_column_domain`, sans laquelle la ligne
+        lit ZÉRO pour toujours.
+
+        `account.analytic.line` porte une colonne par plan racine, et une part
+        ne remplit que la colonne de SON plan. Deux conditions de colonnes
+        collées sans le « | » forment un ET : aucune ligne analytique ne peut
+        satisfaire les deux, la ligne budgétaire lit 0,00 $ et le poste a l'air
+        d'un poste où rien n'a été dépensé — en silence, pour toujours.
+        """
+        analytic_c = self._second_plan_account()
+        budget = self._make_budget()
+        line = budget.line_ids
+        line.write(
+            {"analytic_account_ids": [Command.set((self.analytic_a | analytic_c).ids)]}
+        )
+        self._post_bill(self.account_software, 100.0, analytic=self.analytic_a)
+        self._post_bill(self.account_software, 250.0, analytic=analytic_c)
+        # Un compte du MÊME plan que A, non surveillé : le OR ne doit pas
+        # devenir un « tout ce qui est analytique ».
+        self._post_bill(self.account_software, 40.0, analytic=self.analytic_b)
+        line.invalidate_recordset()
+        self.assertEqual(line.amount_actual, 350.0)
+
+    def test_the_actual_of_a_composite_key_counts_its_analytic_line_once(self):
+        """Clé composée « A,C » : UNE ligne analytique aux DEUX colonnes.
+
+        C'est ce que le cœur 18 écrit quand une distribution couvre plusieurs
+        plans (`analytic.mixin._merge_distribution` fusionne, puis
+        `account.move.line._prepare_analytic_distribution_line` pose une ligne
+        par clé, en remplissant la colonne de chaque compte de la clé). Une
+        ligne budgétaire qui nomme les deux axes la compte donc UNE fois, pas
+        deux : le OR porte sur les colonnes, et la somme porte sur les lignes.
+        Seul l'ENGAGÉ d'une clé composée était éprouvé (chez les satellites) ;
+        le réalisé ne l'était nulle part.
+        """
+        analytic_c = self._second_plan_account()
+        budget = self._make_budget()
+        line = budget.line_ids
+        line.write(
+            {"analytic_account_ids": [Command.set((self.analytic_a | analytic_c).ids)]}
+        )
+        move = self._post_bill(self.account_software, 1000.0, post=False)
+        charge = move.line_ids.filtered(
+            lambda aml: aml.account_id == self.account_software
+        )
+        charge.analytic_distribution = {
+            "%s,%s" % (self.analytic_a.id, analytic_c.id): 100.0
+        }
+        move.action_post()
+        parts = self.env["account.analytic.line"].search(
+            [("move_line_id", "=", charge.id)]
+        )
+        self.assertEqual(len(parts), 1)
+        column_a = self.analytic_a.root_plan_id._column_name()
+        column_c = analytic_c.root_plan_id._column_name()
+        self.assertEqual(parts[column_a], self.analytic_a)
+        self.assertEqual(parts[column_c], analytic_c)
+        line.invalidate_recordset()
+        self.assertEqual(line.amount_actual, 1000.0)
+        # Et une ligne qui n'en nomme qu'un seul lit la même part entière :
+        # la clé porte UN pourcentage, pas un par compte.
+        only_c = self.env["bf.budget.line"].create(
+            {
+                "budget_id": budget.id,
+                "position_id": self.position_software.id,
+                "analytic_account_ids": [Command.set(analytic_c.ids)],
+                "amount_planned": 1000.0,
+            }
+        )
+        only_c.invalidate_recordset()
+        self.assertEqual(only_c.amount_actual, 1000.0)
+
+    def test_a_filtered_line_is_windowed_on_the_journal_items_date(self):
+        """La fenêtre d'une ligne filtrée est la date de l'ÉCRITURE.
+
+        Le grand livre est la vérité ; la ligne analytique n'est que la
+        pondération. Redater la ligne analytique à la main ne fait pas entrer
+        une écriture d'un autre exercice dans le budget.
+        """
+        budget = self._make_budget()
+        line = budget.line_ids
+        line.write({"analytic_account_ids": [Command.set(self.analytic_a.ids)]})
+        move = self._post_bill(
+            self.account_software,
+            700.0,
+            date=self.date_start.replace(year=self.date_start.year - 1),
+            analytic=self.analytic_a,
+        )
+        column = self.analytic_a.root_plan_id._column_name()
+        carried = self.env["account.analytic.line"].search(
+            [(column, "=", self.analytic_a.id), ("move_line_id", "!=", False)]
+        )
+        self.assertTrue(carried)
+        carried.sudo().write({"date": fields.Date.context_today(self.env.user)})
+        line.invalidate_recordset()
+        self.assertEqual(line.amount_actual, 0.0)
+        self.assertTrue(move.line_ids)
+
+        # Et l'autre sens : une écriture DANS la fenêtre (à sa borne même, le
+        # premier jour) compte, même si sa ligne analytique est redatée dehors.
+        self._post_bill(
+            self.account_software, 120.0, date=self.date_start, analytic=self.analytic_a
+        )
+        inside = self.env["account.analytic.line"].search(
+            [
+                (column, "=", self.analytic_a.id),
+                ("move_line_id", "!=", False),
+                ("date", "=", self.date_start),
+            ]
+        )
+        self.assertTrue(inside)
+        inside.sudo().write(
+            {"date": self.date_start.replace(year=self.date_start.year - 1)}
+        )
+        line.invalidate_recordset()
+        self.assertEqual(line.amount_actual, 120.0)
+
+    def test_an_incomplete_line_reads_nothing_not_everything(self):
+        """La sentinelle d'une ligne incomplète ne matche RIEN, jamais tout.
+
+        Un domaine vide (`[]`) matche TOUTE la table : un greffon qui desserre
+        la contrainte (coût interne sans compte analytique existe en clientèle)
+        et fait `search(line._actual_source()[2])` balaierait la comptabilité
+        entière. Les lignes fantômes se construisent par `new()` : la
+        contrainte ne s'évalue qu'au create/write, c'est le seul chemin vers
+        une ligne incomplète — le même que celui d'un formulaire en saisie.
+        """
+        budget = self._make_budget()
+        ghost = self.env["bf.budget.line"].new(
+            {"budget_id": budget.id, "source": "accounting"}
+        )
+        self.assertEqual(ghost._actual_source()[2], [("id", "=", False)])
+        self.assertEqual(ghost._read_actual(), 0.0)
+        ghost_internal = self.env["bf.budget.line"].new(
+            {"budget_id": budget.id, "source": "internal_cost"}
+        )
+        self.assertEqual(ghost_internal._actual_source()[2], [("id", "=", False)])
+        self.assertEqual(ghost_internal._read_actual(), 0.0)
+
+    def test_a_posted_refund_can_pull_a_filtered_line_negative(self):
+        """Un avoir plus gros que les factures rend un réalisé NÉGATIF.
+
+        Le signe n'est pas une valeur absolue : la part analytique d'un avoir
+        est positive sur une charge, et la ligne doit le montrer tel quel.
+        """
+        budget = self._make_budget()
+        line = budget.line_ids
+        line.write({"analytic_account_ids": [Command.set(self.analytic_a.ids)]})
+        self._post_bill(self.account_software, 100.0, analytic=self.analytic_a)
+        self._post_bill(self.account_software, -300.0, analytic=self.analytic_a)
+        line.invalidate_recordset()
+        self.assertEqual(line.amount_actual, -200.0)
+
+    def test_another_companys_entries_stay_out_of_a_filtered_line(self):
+        """⚠️ Depuis Odoo 18 un compte PEUT être partagé entre sociétés.
+
+        Une écriture d'une autre société sur le MÊME compte partagé, ventilée
+        sur le même compte analytique, ne doit pas entrer : le filtre de
+        société de la mesure est porteur, pas décoratif.
+        """
+        other = self.env["res.company"].create({"name": "Société voisine"})
+        self.env.user.write({"company_ids": [Command.link(other.id)]})
+        # Odoo 18 : un compte partagé porte un code PAR société, et la
+        # contrainte se vérifie à la fin de l'écriture — les deux ensemble,
+        # sous la société qui reçoit le compte.
+        self.account_software.with_company(other).write(
+            {"company_ids": [Command.link(other.id)], "code": self.account_software.code}
+        )
+        journal = self.env["account.journal"].create(
+            {
+                "name": "OD voisine",
+                "code": "ODV",
+                "type": "general",
+                "company_id": other.id,
+            }
+        )
+        payable = self.env["account.account"].with_company(other).create(
+            {
+                "name": "Fournisseurs voisins",
+                "code": "200100",
+                "account_type": "liability_payable",
+                "reconcile": True,
+            }
+        )
+        column = self.analytic_a.root_plan_id._column_name()
+        move = self.env["account.move"].with_company(other).create(
+            {
+                "move_type": "entry",
+                "journal_id": journal.id,
+                "date": fields.Date.context_today(self.env.user),
+                "company_id": other.id,
+                "line_ids": [
+                    Command.create(
+                        {
+                            "account_id": self.account_software.id,
+                            "debit": 999.0,
+                            "credit": 0.0,
+                            "name": "Charge voisine",
+                            "analytic_distribution": {str(self.analytic_a.id): 100.0},
+                        }
+                    ),
+                    Command.create(
+                        {
+                            "account_id": payable.id,
+                            "debit": 0.0,
+                            "credit": 999.0,
+                            "name": "Contrepartie voisine",
+                        }
+                    ),
+                ],
+            }
+        )
+        move.action_post()
+        carried = self.env["account.analytic.line"].sudo().search(
+            [(column, "=", self.analytic_a.id), ("company_id", "=", other.id)]
+        )
+        self.assertTrue(carried)
+
+        budget = self._make_budget()
+        line = budget.line_ids
+        line.write({"analytic_account_ids": [Command.set(self.analytic_a.ids)]})
+        self._post_bill(self.account_software, 100.0, analytic=self.analytic_a)
+        line.invalidate_recordset()
+        self.assertEqual(line.amount_actual, 100.0)
+
+    def test_a_distributed_bill_on_another_account_stays_out(self):
+        """Le filtre analytique RESTREINT le poste, il ne l'étend pas.
+
+        Une facture ventilée sur le bon compte analytique mais passée sur un
+        AUTRE compte du grand livre n'entre pas : la part est bien là, mais
+        l'écriture n'est pas du poste.
+        """
+        budget = self._make_budget()
+        line = budget.line_ids
+        line.write({"analytic_account_ids": [Command.set(self.analytic_a.ids)]})
+        self._post_bill(self.account_telecom, 400.0, analytic=self.analytic_a)
+        self._post_bill(self.account_software, 100.0, analytic=self.analytic_a)
+        line.invalidate_recordset()
+        self.assertEqual(line.amount_actual, 100.0)
+
+    def test_a_filtered_revenue_line_reads_positive(self):
+        """Le signe suit le MODÈLE lu : l'analytique d'un produit est positive."""
+        budget = self._make_budget(budget_type="revenue", positions=[self.position_revenue])
+        line = budget.line_ids
+        line.write({"analytic_account_ids": [Command.set(self.analytic_a.ids)]})
+        self._post_revenue(900.0, analytic=self.analytic_a)
+        line.invalidate_recordset()
+        self.assertEqual(line.amount_actual, 900.0)
+
     def test_internal_cost_sees_only_analytic_lines_without_a_journal_item(self):
         """🔴 Le test qui empêche le double comptage.
 

@@ -116,6 +116,53 @@ with `sale`. A `Monetary` field inheriting the default `currency_field` makes
 `registry.setup_models` fail outright — the module will not install at all on a
 database without `sale`. This module carries its own currency instead.
 
+## The figure is a sum, stable by role; the detail is what closes (v18.0.1.2.1)
+
+A campaign's spend is now read with elevated rights, like every other figure in
+the budget family. Before, it was read with the viewer's own rights, and that
+broke it two ways, both measured: a user with no analytic rights — a plain
+internal user, or a marketing user — **crashed** when opening a campaign with an
+analytic account, because reading campaigns is granted to every internal user
+while reading analytic lines is not; and a user with accounting read rights was
+filtered by Odoo's own rule to lines with no project, so their internal cost and
+hours read **too low, in silence, with no error at all**. The same applied to the
+budget lines behind *Planned*.
+
+**The counterpart: a correct figure is not a public one.** A campaign's internal
+cost is made of timesheets valued at each employee's hourly rate — aggregated
+salaries. So the cost and hours fields are restricted to the roles that could
+already read analytic lines company-wide (accounting read, accounting invoice,
+analytic accounting) plus the budget reader, since this is a budget figure; and
+the *Planned* / budget-line fields are restricted to the group that reads budget
+lines. The restriction sits on the **fields**, not only on the screen: a field
+hidden from a view still answers an RPC `read`. Roles whose analytic view was
+filtered to their own timesheets — timesheets, project manager, purchase, sales,
+expense approver — are deliberately left out: the number they used to see was
+never right, and handing them the company's true labour cost would be a new
+exposure, not a fix. The campaign's analytic account itself stays open: it is the
+marketing team's own entry, not a cost.
+
+**One more consequence of elevated rights:** the company now sits in the
+measure's domain, because elevated rights bypass the global multi-company rule
+as well. On an account that belongs to a company, Odoo itself already refuses to
+file another company's analytic line against it, so that filter is a belt on top
+of braces rather than a guard. On a **shared** account — one with no company —
+there is deliberately no filter: the total is the account's total across
+companies, the same figure for every reader, instead of depending on which
+companies the reader is allowed to see.
+
+## Opening the detail needs the right to read analytic lines (v18.0.1.2.1)
+
+A campaign's internal cost is made of timesheets, valued from the employee's
+hourly rate: unfolding a campaign is being able to read salaries. Reading
+`utm.campaign` is granted to every internal user; reading
+`account.analytic.line` is not — it comes from the timesheet, analytic
+accounting, purchase or invoicing groups. The *Spend* button's action therefore
+refuses first to anyone without that right, instead of handing back a window
+that raises a bare access error at render time. It passes a **domain**, never
+records fetched with elevated rights, so record rules still apply to each
+viewer. Same guard, same shape, as `bf_budget_analytic`.
+
 ## What it does not do
 
 - Campaign totals cover its whole life. It is the budget line that carries a
@@ -139,4 +186,6 @@ Labels and messages are written in English in the source; the French ships in `i
 
 ## Licence
 
-LGPL-3.
+Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
+its Change Date: 2030-11-10 for this one. In the meantime, use in production for
+your own internal business operations is permitted.

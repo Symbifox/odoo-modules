@@ -14,15 +14,28 @@
                         <field name="subscription_period_total"/>
                     </group>
                     <group>
-                        <field name="subscription_ids" widget="many2many_tags" readonly="1"/>
+                        <!-- Les tags portent des enregistrements du registre :
+                             réservés à qui peut le lire, au champ comme ici
+                             (le `groups` de la vue ne cache que l'écran). -->
+                        <field name="subscription_ids" widget="many2many_tags" readonly="1"
+                               groups="bf_subscription.group_subscription_user"/>
                         <field name="has_subscription_without_calendar" invisible="1"/>
                         <field name="subscription_no_calendar_ids" widget="many2many_tags"
-                               readonly="1" invisible="not has_subscription_without_calendar"/>
+                               readonly="1" invisible="not has_subscription_without_calendar"
+                               groups="bf_subscription.group_subscription_user"/>
                     </group>
                 </group>
                 <div class="alert alert-warning" role="alert"
                      invisible="not has_subscription_without_calendar">
                     A subscription linked to this budget item spends without a schedule. The calendar-based theoretical amount does not cover it, so it underestimates this budget item and can make a real overrun look like a budget on track.
+                </div>
+                <!-- Une ligne restreinte à des comptes analytiques ne porte rien
+                     du registre : le bloc ci-dessus est invisible, et sans cette
+                     bannière le lecteur ne saurait pas que le poste en porte un. -->
+                <field name="has_unattributed_subscriptions" invisible="1"/>
+                <div class="alert alert-info" role="alert"
+                     invisible="not has_unattributed_subscriptions">
+                    This line is narrowed to analytic accounts, so it carries nothing from the subscription register: its budget item has <field name="position_subscription_count" readonly="1" nolabel="1" class="oe_inline"/> subscription(s), and nothing says which share of a renewal belongs to the analytic account this line watches. Their commitments and their renewal calendar are carried by the plain line of the same budget item, which is where this budget reads them.
                 </div>
             </xpath>
         </field>

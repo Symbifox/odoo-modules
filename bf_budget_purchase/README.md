@@ -15,6 +15,21 @@ order line that no posted bill carries yet. As soon as a bill is posted, that
 share moves from "open purchase orders" into the actual amount: the committed
 total does not move, it changes column.
 
+A budget line narrowed to analytic accounts commits the **distributed share**
+of the order (an order split A:50/B:50 commits 50 on the line watching A, 50 on
+the line watching B) — the same share its actual will pick up when the bill is
+posted, so the invariant above holds on narrowed lines too. The planned-date
+calendar carries the same share.
+
+**On a narrowed line that invariant holds at constant distribution**, and that
+condition is not a detail: the bill is the truth for the axis just as it is for
+the account. A bill recoded A:100 against an order split A:50/B:50 moves the
+line watching A from 50 to 100 and the line watching B to 0. Both figures
+change, and both are right — what the company actually bought is what the bill
+says. The budget's total still matches the bill. What is guaranteed
+unconditionally is narrower and more useful: at an unchanged distribution, a
+share leaves the open-order column exactly as it enters the actual.
+
 ## The guard is the posted entry, never Odoo's "billed quantity"
 
 Odoo's `qty_invoiced` counts draft bills as well as posted ones. Relying on it
@@ -71,5 +86,5 @@ goes through normal access rights.
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-11-04 for this one. In the meantime, use in production for
+its Change Date: 2030-11-10 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

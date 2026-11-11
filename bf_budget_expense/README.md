@@ -60,6 +60,21 @@ committed on their position: amounts are read with elevated rights. The budget
 line only exposes totals and counts, never an expense, an employee or an amount
 per person. Opening the expenses themselves goes through normal access rights.
 
+## The share, never the full amount, on a narrowed line
+
+A budget line narrowed to analytic accounts commits the **distributed share** of
+an approved expense (an expense split A:50/B:50 commits 50 on the line watching
+A, 50 on the line watching B) — the same share its actual picks up when the
+entry is posted, so the committed total does not jump at posting.
+
+**At constant distribution**, and that condition is not a detail: what the
+module already says about the account holds for the axis. An entry recoded
+A:100 while the expense was split A:50/B:50 moves the line watching A from 50
+to 100 and the line watching B to 0. Both figures change, and both are right —
+the posted entry is the truth, not the expense report. What is guaranteed
+unconditionally is narrower and more useful: at an unchanged distribution, a
+share leaves the committed amount exactly as it enters the actual.
+
 ## Requirements
 
 `bf_budget` and Odoo's `hr_expense`. The module installs itself as soon as both
@@ -68,5 +83,5 @@ are present.
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-10-27 for this one. In the meantime, use in production for
+its Change Date: 2030-11-10 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

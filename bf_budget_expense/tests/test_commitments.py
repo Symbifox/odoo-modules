@@ -142,6 +142,54 @@ class TestExpenseCommitments(BfBudgetExpenseCommon):
         self._sheet(60.0, analytic=self.analytic_b)
         self.assertEqual(self._fresh(line).expense_committed, 40.0)
 
+    def test_a_shared_expense_commits_its_share_once(self):
+        """🔴 L'engagé d'une ligne restreinte est la PART, pas le plein montant.
+
+        Une note 100 $ ventilée A:50/B:50, approuvée (donc portée par une
+        écriture au BROUILLON) : la ligne qui surveille A engage 50, celle qui
+        surveille B engage 50 — jamais 100 chacune. À la comptabilisation, le
+        réalisé pondéré reprend exactement ces parts : l'engagé + réalisé de
+        chaque ligne NE BOUGE PAS, il change de case.
+        """
+        line_a = self._line(analytic_account_ids=[Command.set(self.analytic_a.ids)])
+        line_b = self._line(
+            budget=line_a.budget_id,
+            analytic_account_ids=[Command.set(self.analytic_b.ids)],
+        )
+        sheet = self._sheet(
+            100.0,
+            distribution={
+                str(self.analytic_a.id): 50.0,
+                str(self.analytic_b.id): 50.0,
+            },
+        )
+        line_a, line_b = self._fresh(line_a), self._fresh(line_b)
+        self.assertEqual(line_a.expense_committed, 50.0)
+        self.assertEqual(line_b.expense_committed, 50.0)
+        self.assertEqual(line_a.amount_committed, 50.0)
+
+        sheet.action_sheet_move_post()
+        line_a, line_b = self._fresh(line_a), self._fresh(line_b)
+        self.assertEqual(line_a.expense_committed, 0.0)
+        self.assertEqual(line_a.amount_actual, 50.0)
+        # L'invariant : le total engagé de la ligne n'a pas bougé.
+        self.assertEqual(line_a.amount_committed, 50.0)
+        self.assertEqual(line_b.amount_committed, 50.0)
+
+    def test_a_shared_expense_share_survives_the_fallback(self):
+        """La part tient aussi sur le chemin SANS écriture (note non portée)."""
+        line_a = self._line(analytic_account_ids=[Command.set(self.analytic_a.ids)])
+        sheet = self._sheet(
+            100.0,
+            distribution={
+                str(self.analytic_a.id): 50.0,
+                str(self.analytic_b.id): 50.0,
+            },
+        )
+        sheet.account_move_ids.unlink()
+        line_a = self._fresh(line_a)
+        self.assertEqual(line_a.expense_committed, 50.0)
+
     def test_revenue_and_internal_cost_lines_ignore_expenses(self):
         self._sheet(50.0)
         revenue_budget = self._make_budget(budget_type="revenue", positions=[self.position_revenue])

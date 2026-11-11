@@ -1,6 +1,14 @@
 {
     "name": "Budgets opérationnels — bons de commande",
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: une ligne budgétaire RESTREINTE à des comptes analytiques
+    #   engage la PART distribuée de la commande, plus jamais son plein reste :
+    #   une commande ventilée A:50/B:50 engageait 100 % sur la ligne qui
+    #   surveille A ET 100 % sur celle qui surveille B, et son réalisé arrive
+    #   désormais pondéré (socle 18.0.1.5.0) — l'engagé sautait au geste de
+    #   comptabilisation. L'invariant « le total engagé ne bouge pas, il change
+    #   de case » redevient vrai sur les lignes restreintes. Le calendrier
+    #   (dû/total) porte la même part.
+    "version": "18.0.1.1.0",
     "category": "Accounting/Accounting",
     "summary": "Les bons de commande confirmés non facturés entrent dans l'engagé",
     "author": "Les services de consultation Blue Fox, Inc.",

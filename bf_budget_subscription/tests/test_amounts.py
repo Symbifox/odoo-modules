@@ -36,6 +36,99 @@ class TestSubscriptionAmounts(BfBudgetSubscriptionCommon):
         line.invalidate_recordset()
         self.assertEqual(line.subscription_count, 0)
 
+    def test_a_narrowed_line_carries_nothing_from_the_register(self):
+        """🔴 Le registre ne sait rien de l'axe analytique.
+
+        Deux lignes du même poste, l'une restreinte à un compte analytique :
+        l'abonnement entier va à la ligne nue, RIEN à la restreinte — sinon le
+        même renouvellement compterait sur chaque ligne restreinte du poste,
+        et son réalisé n'arriverait que pondéré : l'engagé sauterait à la
+        comptabilisation. Ni engagement, ni calendrier, ni angle mort.
+        """
+        sub = self._make_subscription("monthly", 100.0)
+        budget, plain = self._line_with(sub)
+        narrowed = self.env["bf.budget.line"].create(
+            {
+                "budget_id": budget.id,
+                "position_id": self.position_software.id,
+                "analytic_account_ids": [Command.set(self.analytic_a.ids)],
+                "amount_planned": 600.0,
+            }
+        )
+        budget.invalidate_recordset()
+        self.assertTrue(plain.subscription_count)
+        self.assertTrue(plain.subscription_period_total)
+        self.assertEqual(narrowed.subscription_count, 0)
+        self.assertEqual(narrowed.subscription_upcoming, 0.0)
+        self.assertEqual(narrowed.subscription_period_total, 0.0)
+        self.assertEqual(narrowed.theoretical_basis, "prorata")
+        self.assertFalse(narrowed.has_subscription_without_calendar)
+
+    def test_a_narrowed_line_declares_the_register_it_does_not_carry(self):
+        """🔴 Le zéro d'une ligne restreinte se DÉCLARE, sinon il est muet.
+
+        À `subscription_count` = 0, le bloc « Recurring commitments » ET la
+        bannière de l'angle mort passent `invisible` : le lecteur d'une ligne
+        restreinte ne voit plus que son poste porte un registre, et il ne peut
+        pas savoir que l'engagé qu'il lit en est amputé. Le signal dit
+        l'existence du registre et le fait que cette ligne ne le porte pas —
+        jamais une part devinée.
+
+        ⛔ Et ce n'est PAS `has_subscription_without_calendar` : celui-là dit
+        qu'un abonnement dépense sans échéancier. Les confondre ferait crier
+        l'angle mort du calendrier sur une ligne dont le calendrier n'est
+        simplement pas le sien.
+        """
+        sub = self._make_subscription("monthly", 100.0)
+        budget, plain = self._line_with(sub)
+        narrowed = self.env["bf.budget.line"].create(
+            {
+                "budget_id": budget.id,
+                "position_id": self.position_software.id,
+                "analytic_account_ids": [Command.set(self.analytic_a.ids)],
+                "amount_planned": 600.0,
+            }
+        )
+        budget.invalidate_recordset()
+        self.assertEqual(narrowed.subscription_count, 0)
+        self.assertTrue(narrowed.has_unattributed_subscriptions)
+        self.assertEqual(narrowed.position_subscription_count, 1)
+        self.assertFalse(narrowed.has_subscription_without_calendar)
+        # La ligne nue PORTE le registre : elle n'a rien à déclarer.
+        self.assertTrue(plain.subscription_count)
+        self.assertFalse(plain.has_unattributed_subscriptions)
+
+    def test_a_narrowed_line_on_a_bare_budget_item_declares_nothing(self):
+        """Pas de signal sans registre : une bannière qui s'allume toujours ne
+        dit plus rien. Le poste des télécoms ne porte aucun abonnement."""
+        self._make_subscription("monthly", 100.0).budget_position_id = (
+            self.position_software
+        )
+        budget = self._make_budget(positions=[self.position_telecom])
+        narrowed = self.env["bf.budget.line"].create(
+            {
+                "budget_id": budget.id,
+                "position_id": self.position_telecom.id,
+                "analytic_account_ids": [Command.set(self.analytic_a.ids)],
+                "amount_planned": 600.0,
+            }
+        )
+        internal = self.env["bf.budget.line"].create(
+            {
+                "budget_id": budget.id,
+                "source": "internal_cost",
+                "analytic_account_ids": [Command.set(self.analytic_a.ids)],
+                "amount_planned": 300.0,
+            }
+        )
+        budget.invalidate_recordset()
+        self.assertFalse(narrowed.has_unattributed_subscriptions)
+        self.assertEqual(narrowed.position_subscription_count, 0)
+        # Une ligne de coût interne n'a pas de poste : le registre ne la
+        # concerne pas, et elle ne doit rien déclarer non plus.
+        self.assertFalse(internal.has_unattributed_subscriptions)
+        self.assertEqual(internal.position_subscription_count, 0)
+
     def test_committed_takes_only_what_is_still_to_come(self):
         """🔴 Le garde contre le double comptage le plus coûteux.
 

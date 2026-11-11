@@ -1,11 +1,35 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Budgets opérationnels — campagnes",
+    # 18.0.1.2.1: le chiffre d'une campagne est une SOMME lue en sudo, stable
+    #   par rôle. Avant : `utm.campaign` se lit par `base.group_user` mais
+    #   l'ACL d'`account.analytic.line` non — un interne nu PLANTAIT en ouvrant
+    #   une campagne rattachée; et un porteur de `group_account_readonly` ou
+    #   `group_account_invoice` subissait la règle `project_id = False`, donc
+    #   lisait un coût interne SOUS-COMPTÉ en silence (un administrateur aussi,
+    #   `base.group_system` portant `group_account_invoice`). Même défaut sur
+    #   `bf.budget.line`. Contrepartie du sudo : les 12 champs tirés de ces deux
+    #   modèles portent un `groups` — le coût pour les rôles qui le lisaient
+    #   déjà sans être filtrés à leurs propres feuilles de temps, plus le
+    #   lecteur de budget; le prévu budgétaire pour le seul groupe qui lit
+    #   `bf.budget.line`. La société entre au domaine (un sudo écarte aussi la
+    #   règle globale multi-société), en ceinture-bretelles : le cœur refuse
+    #   déjà une ligne d'une autre société sur un compte qui porte la sienne;
+    #   le cas atteignable est le compte PARTAGÉ, dont le total est désormais
+    #   celui du compte et non celui des sociétés permises du lecteur.
+    # 18.0.1.2.1: le dépliage du détail analytique d'une campagne refuse
+    #   d'abord à qui ne peut pas lire `account.analytic.line`. Le coût
+    #   interne d'une campagne est fait de feuilles de temps valorisées :
+    #   l'action rendait une fenêtre à tout usager interne (c'est
+    #   `base.group_user` qui lit `utm.campaign`) et le RENDU levait une
+    #   AccessError brute. Même garde et même forme que
+    #   `bf_budget_analytic` — un seul `check_access`, le domaine de la
+    #   campagne ne traversant aucun chemin pointé vers l'écriture.
     # 18.0.1.2.0: les libellés sont écrits en anglais dans la source, et
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.2.1",
     "category": "Accounting/Accounting",
     "summary": "Rattache une campagne à un compte analytique : elle connaissait"
                " sa recette, elle connaît enfin sa dépense",

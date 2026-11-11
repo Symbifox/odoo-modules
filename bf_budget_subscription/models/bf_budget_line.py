@@ -10,10 +10,16 @@ class BfBudgetLine(models.Model):
 
     _inherit = "bf.budget.line"
 
+    # 🔴 `groups` AU CHAMP, pas seulement à la vue : le bassin se relève en
+    # sudo (il faut les mêmes abonnements que les montants affichés), et un
+    # champ caché du seul écran rendrait quand même la liste de ses ids à un
+    # `read` par RPC. Les SOMMES, elles, restent libres : le chiffre est stable
+    # par rôle, c'est le détail qui est fermé.
     subscription_ids = fields.Many2many(
         "subscription.subscription",
         string="Linked subscriptions",
         compute="_compute_subscription_ids",
+        groups="bf_subscription.group_subscription_user",
         help="The subscriptions whose budget item is the one on this "
              "line. The list is computed: linking a subscription to a "
              "budget item is enough, nothing needs to be copied into the "
@@ -24,11 +30,29 @@ class BfBudgetLine(models.Model):
         "subscription.subscription",
         string="Subscriptions without a schedule",
         compute="_compute_subscription_ids",
+        groups="bf_subscription.group_subscription_user",
         help="On-demand subscriptions linked to this budget item: they "
              "spend without a schedule, so the calendar-based theoretical "
              "amount does not cover them.",
     )
     has_subscription_without_calendar = fields.Boolean(compute="_compute_subscription_ids")
+
+    # ── m1 : le SIGNAL d'une ligne restreinte (jamais un chiffre deviné) ──
+    position_subscription_count = fields.Integer(
+        string="Subscriptions on the budget item",
+        compute="_compute_subscription_ids",
+        help="How many subscriptions are linked to this line's budget item. "
+             "On a line narrowed to analytic accounts it is the only thing "
+             "the register can say: how much of each renewal belongs to the "
+             "analytic account the line watches is not written anywhere.",
+    )
+    has_unattributed_subscriptions = fields.Boolean(
+        string="Register not carried by this line",
+        compute="_compute_subscription_ids",
+        help="True on a line narrowed to analytic accounts whose budget item "
+             "carries subscriptions: the line carries none of them, and the "
+             "plain line of the same budget item carries them all.",
+    )
 
     subscription_due_to_date = fields.Monetary(
         string="Due to date",
@@ -48,15 +72,54 @@ class BfBudgetLine(models.Model):
         currency_field="currency_id",
     )
 
-    @api.depends("position_id", "source", "company_id")
+    @api.depends("position_id", "source", "company_id", "analytic_account_ids")
     def _compute_subscription_ids(self):
+        """Un abonnement s'accroche au POSTE ; une ligne RESTREINTE n'en porte aucun.
+
+        🔴 Le registre des abonnements ne sait rien de l'axe analytique : rien ne
+        dit quelle part d'un abonnement revient au compte qu'une ligne surveille.
+        L'attribuer en entier à chaque ligne restreinte du poste compterait le
+        même renouvellement plusieurs fois — et son réalisé, lui, n'arriverait
+        que pondéré (la part distribuée, socle 18.0.1.5.0) : l'engagé sauterait
+        au geste de comptabilisation. L'ambiguïté se déclare, elle ne se devine
+        pas : la ligne restreinte ne porte RIEN du registre, la ligne nue du
+        même poste porte tout.
+
+        🔴 ET ELLE LE DÉCLARE. Un zéro muet est pire que le trop-plein qu'il
+        remplace : à zéro, le bloc des engagements récurrents ET la bannière de
+        l'angle mort passent `invisible`, et le lecteur d'une ligne restreinte
+        ne voit plus que son poste porte un registre. `position_subscription_count`
+        et `has_unattributed_subscriptions` disent donc l'existence du registre
+        et le fait que CETTE ligne ne le porte pas — un signal, jamais un
+        chiffre deviné. ⛔ Pas `has_subscription_without_calendar` pour ça : il
+        dit autre chose (un abonnement qui dépense sans échéancier), et le
+        confondre ferait crier l'angle mort du calendrier sur une ligne dont le
+        calendrier n'est simplement pas le sien.
+        """
         Subscription = self.env["subscription.subscription"]
         for line in self:
-            if line.source != "accounting" or not line.position_id:
+            on_position = line.source == "accounting" and bool(line.position_id)
+            narrowed = on_position and bool(line.analytic_account_ids)
+            if not on_position or narrowed:
                 line.subscription_ids = Subscription
                 line.subscription_no_calendar_ids = Subscription
                 line.subscription_count = 0
                 line.has_subscription_without_calendar = False
+                # Le compte du POSTE, relevé même quand la ligne n'en porte
+                # rien : c'est lui qui rend le zéro lisible.
+                line.position_subscription_count = (
+                    Subscription.sudo().search_count(
+                        [
+                            ("budget_position_id", "=", line.position_id.id),
+                            ("company_id", "in", (line.company_id.id, False)),
+                        ]
+                    )
+                    if narrowed
+                    else 0
+                )
+                line.has_unattributed_subscriptions = bool(
+                    narrowed and line.position_subscription_count
+                )
                 continue
             subscriptions = Subscription.sudo().search(
                 [
@@ -66,6 +129,8 @@ class BfBudgetLine(models.Model):
             )
             line.subscription_ids = subscriptions
             line.subscription_count = len(subscriptions)
+            line.position_subscription_count = len(subscriptions)
+            line.has_unattributed_subscriptions = False
             # ⚠️ Seuls les abonnements ENCORE actifs sans échéancier sont un
             # angle mort : un « à la demande » résilié ne coûtera plus rien.
             blind = subscriptions.filtered(
@@ -136,7 +201,17 @@ class BfBudgetLine(models.Model):
         return components
 
     def action_view_subscriptions(self):
+        """Ouvre les abonnements par les droits de la personne.
+
+        ⚠️ Le bassin se calcule en sudo (il faut les mêmes abonnements que les
+        montants affichés), mais la méthode refuse d'abord à qui ne peut pas
+        lire le registre : sinon elle rendrait par RPC la liste de leurs ids à
+        un compte sans droit d'abonnement, et l'écran qui s'ouvrirait
+        exploserait en AccessError brute au rendu. Le même garde que son jumeau
+        `bf_budget_purchase.action_view_purchase_orders`.
+        """
         self.ensure_one()
+        self.env["subscription.subscription"].check_access("read")
         return {
             "type": "ir.actions.act_window",
             "name": _("Budget item subscriptions"),

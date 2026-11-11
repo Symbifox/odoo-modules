@@ -1,5 +1,16 @@
 {
     "name": "Budgets opérationnels",
+    # 18.0.1.5.0: une ligne comptable filtrée sur l'analytique lit la PART
+    #   distribuée (les lignes analytiques adossées aux écritures comptabilisées
+    #   du poste), plus jamais le plein solde des écritures : une facture
+    #   ventilée A:50/B:50 comptait 100 % sur la ligne qui surveille A ET 100 %
+    #   sur celle qui surveille B. La fenêtre reste la date de l'écriture, le
+    #   signe celui de l'analytique. Au passage, plus aucune recherche
+    #   analytique hors sudo dans le calcul : un lecteur de budget sans droits
+    #   comptables lisait une AccessError sur une ligne filtrée, et le chiffre
+    #   dépendait du rôle. La mesure s'énonce en un point (`_actual_source`),
+    #   que le satellite analytique réutilise pour déplier exactement ce que la
+    #   ligne lit.
     # 18.0.1.4.0: le théorique de calendrier devient compositionnel. Les
     #   satellites n'implantent plus chacun leur théorique : ils déclarent
     #   leur couple (dû à ce jour, total de la période) par
@@ -35,7 +46,7 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.4.0",
+    "version": "18.0.1.5.0",
     "category": "Accounting/Accounting",
     "summary": "Budget d'exploitation par poste du grand livre, comparé au réel et à l'engagé",
     "author": "Les services de consultation Blue Fox, Inc.",
