@@ -21,7 +21,11 @@ class ResCompany(models.Model):
     bf_route_notice = fields.Html(
         string="Position notice", help="Empty = the standard notice, in each reader's language.")
     bf_route_notice_version = fields.Integer(default=1, readonly=True)
-    bf_route_position_days = fields.Integer(string="Keep positions (days)", default=90)
+    bf_route_position_days = fields.Integer(
+        string="Keep positions (days)", default=90,
+        help="How long a position read at a stop is kept, from the marking. ⚠️ A privacy "
+             "bridge may cap it: where one is installed and declares a term for this "
+             "processing, a longer value is refused and the message names both numbers.")
     bf_route_late_minutes = fields.Integer(
         string="Alert after (min)", default=30,
         help="Minutes after the planned start before the person responsible is told a route "
@@ -77,13 +81,55 @@ class BfRouteNoticeAck(models.Model):
             "your phone's position <b>once</b>, at that moment, and keeps it with the stop as "
             "proof of the visit. It never follows you between stops, before the day starts or "
             "after it ends.</p>"
-            "<p><b>Why:</b> to prove the visit to the customer and settle a disagreement about a "
-            "delivery. <b>Who sees it:</b> the people who manage the routes. <b>How long:</b> "
-            "%(how_long)s, then it is erased.</p>"
+            "<p><b>Why:</b> to prove the visit to the customer, to settle a disagreement about "
+            "a delivery, and to measure the kilometres of the day from one stop to the next. "
+            "<b>Who sees it:</b> the people who manage the routes, and you, in this "
+            "application, for the stops you marked yourself. "
+            "<b>How long:</b> %(how_long)s, then it is erased.</p>"
+            "<p><b>Two things outlive it.</b> The kilometres measured for the day, which is a "
+            "distance and not a place. And, when a customer had no place on the map, the "
+            "reading an office person accepted as that customer's place: from that moment it "
+            "is the customer's address, and it stays with the customer.</p>"
             "<p>Your phone asks for your permission the first time. If you refuse, the stops "
             "are marked without a position.</p>",
-            how_long=self._retention_text(company.bf_route_position_days or 90)))
+            how_long=self._retention_text(company.bf_route_position_days or 90),
+        )) + self._map_notice()
 
+    @api.model
+    def _map_notice(self):
+        """The paragraph about the map background, because it leaves the country.
+
+        ⚠️ When no `bf_route.tile_url` is set, which is the default, the
+        background comes from the OpenStreetMap Foundation, in the United Kingdom. The
+        viewer's browser fetches it, which means that service receives the phone's address
+        on the internet and a tile centred on where the person is. The positions never go
+        there, but the area does, and s. 8.1 asks that the person be told what technology is
+        used. s. 17 covers the transfer itself, in the privacy impact assessment.
+
+        Two variants rather than one hedged sentence: a company that set up its own tile
+        server is told the truth about ITS service, and a company that did not is told the
+        name of the one this module falls back to. A sentence saying "unless your company
+        hosts it" would ask the reader something they have no way of knowing.
+
+        ⚠️ A block of its own, not a fragment spliced into the sentence above: each one is a
+        whole paragraph and translates as one.
+        """
+        if self.env["ir.config_parameter"].sudo().get_param("bf_route.tile_url"):
+            return Markup(_(
+                "<p><b>The map of your day.</b> Its background comes from the map service "
+                "your company set up. That service receives your phone's address on the "
+                "internet and the area the map is showing, which is the area you are in. "
+                "Your positions themselves are never sent to it.</p>"))
+        return Markup(_(
+            "<p><b>The map of your day.</b> Its background comes from OpenStreetMap, "
+            "outside Canada. That service receives your phone's address on the internet and "
+            "the area the map is showing, which is the area you are in. Your positions "
+            "themselves are never sent to it.</p>"))
+
+    # ⚠️ Changing the text above is not enough to make anyone read it again: the version
+    # only moves when a COMPANY field is written, and this default is Python. A migration
+    # bumps the version of every company that has the positions on. See
+    # migrations/18.0.1.4.0/post-10-notice-version.py.
     @api.model
     def _retention_text(self, days):
         return _("1 day") if days == 1 else _("%s days", days)

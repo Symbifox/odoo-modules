@@ -19,6 +19,7 @@ Arrival and departure: "I'm here" stamps the arrival (once, from the phone, sent
 without network like any mark); the mark that follows (done, absent, postponed) is the
 departure. Their difference is the time on site. Marking without the arrival still works.
 """
+import logging
 import re
 from datetime import timedelta
 
@@ -28,8 +29,25 @@ from markupsafe import Markup, escape
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
-from .tools import local_to_utc, local_today, parse_client_time, utc_to_local
+from .tools import haversine_m, local_to_utc, local_today, parse_client_time, utc_to_local
 from .bf_route_engine import OSRM_PARAM
+
+_logger = logging.getLogger(__name__)
+
+# A mark made at the place. 150 m is a city block with its parking: under that, a gap
+# says nothing at all. The accuracy the phone reported widens it when the phone itself
+# says it was unsure. ⚠️ A reading aid, never a verdict: a large site, a service door at
+# the back or a basement reading all land beyond it for honest reasons.
+POSITION_NEAR_M = 150
+# Proposing a position as a customer's place asks more than reading a gap: at 50 m a
+# point is in the right building, at 200 m it can be the wrong side of the street.
+POSITION_PLACE_MAX_ACCURACY_M = 50
+# One request to the routing engine per day measured, in the person's own request.
+MAX_TO_MEASURE = 200
+# Positions erased in one pass, per company. The watcher comes back every fifteen minutes,
+# so a backlog drains over a few passes instead of holding one long transaction: shortening
+# a retention period from ten years to ninety days makes every old stop due at once.
+PURGE_BATCH = 2000
 
 DAY_STATES = [
     ("planned", "Planned"),
@@ -121,12 +139,26 @@ class BfRouteDay(models.Model):
                                       store=True, digits=(10, 1))
     distance_planned_km = fields.Float(string="Planned distance (km)", readonly=True,
                                        digits=(10, 1), copy=False)
+    # ⚠️ NOT summed into the mileage log's total, and that is deliberate: the log answers to
+    # Revenu Québec, which asks for the odometer. This is a measurement of the road actually
+    # driven between the positions read, printed beside the odometer so a day where the two
+    # disagree says so, and so a day whose odometer nobody wrote down is not simply blank.
+    distance_road_km = fields.Float(
+        string="Road from the positions (km)", readonly=True, digits=(10, 1), copy=False,
+        help="Road distance from the route's start point, through the positions read at the "
+             "stops in the order they were marked, back to its end point, from the "
+             "self-hosted OSRM. Needs at least two positions read. ⚠️ The two depot legs "
+             "come from the route's own points, not from a reading: no position is read at "
+             "the depot. Without them the figure covered only the marked stops and fell "
+             "short of the odometer by the whole way out and back, which is most of a day. "
+             "It is not the odometer and never replaces it.")
     duration_planned_minutes = fields.Integer(string="Planned driving time (min)", readonly=True,
                                               copy=False)
     visited = fields.Char(
         string="Customers visited", compute="_compute_visited", store=True,
-        help="The customers driven to (stops done, or customer absent), in order: the purpose of "
-             "the trip in the mileage log.")
+        help="The customers driven to (stops done, or customer absent), in the order the "
+             "office planned them: the purpose of the trip in the mileage log. ⚠️ Not the "
+             "order they were marked in, which is what the measured road uses.")
     safety_check_at = fields.Datetime(string="Pre-trip inspection at", readonly=True, copy=False)
     safety_check_by = fields.Many2one("res.users", string="Pre-trip inspection by", readonly=True,
                                       copy=False)
@@ -233,6 +265,93 @@ class BfRouteDay(models.Model):
             if day.user_id != self.env.user:
                 raise AccessError(_("This route day is not yours."))
 
+    def _road_distance_from_positions(self):
+        """Store the road distance through the positions read, when there are two of them.
+
+        ⚠️ In the order the stops were MARKED (``done_at``), never the order the office
+        planned (``sequence``). The two part ways as soon as the stops are taken in another
+        order, which is the ordinary day on a road with a closed street, and this figure is
+        printed in the kilometre register: measured on a three-stop day done out of order,
+        the planned order gave 31 % more than the road actually driven. The field's help and
+        the module's README both promise the marked order; this is where that promise is
+        kept. A stop with no mark carries no position and takes no part in it.
+
+        Best effort, and silent on failure: a day must be able to finish when the routing
+        engine is down, and a missing measurement is not worth an error in the worker's
+        face at six in the evening. Returns the days actually measured.
+        """
+        Engine = self.env["bf.route.engine"]
+        measured = []
+        for day in self.sudo():
+            marked = day.stop_ids.filtered(
+                lambda stop: stop.done_at and (stop.latitude or stop.longitude)
+            ).sorted("done_at")
+            points = [[stop.longitude, stop.latitude] for stop in marked]
+            if len(points) < 2 or not Engine._url(OSRM_PARAM):
+                continue
+            # 🔴 The depot legs, or the figure is not comparable to the odometer and the
+            # register prints a discrepancy on every honest day. No position is read at the
+            # depot, so these two points come from the route itself. Measured on a test base:
+            # a three-stop day was 31.0 km between its marked stops and 84.6 km with the way
+            # out and back, so the column showed the odometer 173 % too high, every time,
+            # under a note inviting the office to compare them.
+            route = day.route_id
+            start = self._depot_point(route.start_partner_id or route.company_id.partner_id)
+            end = self._depot_point(route.end_partner_id or route.start_partner_id
+                                    or route.company_id.partner_id)
+            if start:
+                points.insert(0, start)
+            if end:
+                points.append(end)
+            try:
+                road = Engine._route(points)
+            except UserError:
+                continue
+            day.with_context(bf_route_auto=True).distance_road_km = round(
+                road["distance"] / 1000.0, 1)
+            measured.append(day.id)
+        return self.browse(measured)
+
+    @api.model
+    def _depot_point(self, partner):
+        """[lon, lat] of a depot, its own coordinates or its street point, else None.
+
+        Same order of preference as ``app_map``'s ``place()``, and the same convention: an
+        unset Odoo Float reads 0.0, so a depot nobody located is simply absent rather than
+        a point in the Gulf of Guinea.
+        """
+        partner = partner.sudo()
+        if partner.partner_latitude or partner.partner_longitude:
+            return [partner.partner_longitude, partner.partner_latitude]
+        if partner.bf_route_street_latitude or partner.bf_route_street_longitude:
+            return [partner.bf_route_street_longitude, partner.bf_route_street_latitude]
+        return None
+
+    def action_road_distance(self):
+        """Recompute the road distance from the positions. Route manager only: it reads them.
+
+        ⚠️ Public method, so reachable over RPC with any id: the access rules are read
+        first, before the measurement goes on in sudo. Without it, a manager of one company
+        could measure a day of another.
+        """
+        self.check_access("read")
+        if not self._is_manager():
+            raise AccessError(_("Only a route manager measures the road from the positions."))
+        if len(self) > MAX_TO_MEASURE:
+            raise UserError(_("Measure at most %s days at a time: each one is a request to "
+                              "the routing engine.", MAX_TO_MEASURE))
+        measured = self._road_distance_from_positions()
+        # ⚠️ A button that measured nothing says so. The automatic path at the end of the
+        # day stays silent on purpose, but a person who clicked and saw the figure stay the
+        # same would read it as the measurement confirming itself.
+        if len(self) == 1 and not measured:
+            raise UserError(_(
+                "Nothing to measure on this day: it takes two stops marked with a position. "
+                "They may have been erased at the end of the retention period, or the "
+                "routing engine may be unreachable. The figure already shown, if any, was "
+                "left exactly as it was."))
+        return True
+
     def _check_on_the_road(self, not_started):
         """The day is on the road, or the phone is told why not: ``not_started`` for a planned
         day; a day the office finished or cancelled says so (starting it is not the answer)."""
@@ -310,6 +429,7 @@ class BfRouteDay(models.Model):
                     lambda e: e._("%(who)s finished the day without: %(stops)s.",
                                   who=day.user_id.name or "-",
                                   stops=", ".join(missed.mapped("partner_id.display_name"))))
+            day._road_distance_from_positions()
             if day.vehicle_id and day.odometer_end:
                 self.env["fleet.vehicle.odometer"].sudo().create({
                     "vehicle_id": day.vehicle_id.id,
@@ -562,10 +682,15 @@ class BfRouteDay(models.Model):
         """What the map of the day draws: the start, the stops in order, the return point and
         the road between them (OSRM), with the tile server to draw them on.
 
-        ⚠️ Customers' places only (their coordinates, or else the point of their street): never
-        a position read from the worker's phone. A place without coordinates is listed with
-        none and left off the map; nothing is geocoded here. Without OSRM, or when it fails,
-        the stops are joined by straight lines on the phone.
+        The planned points are customers' places only: their coordinates, or else the point
+        of their street. A place without coordinates is listed with none and left off the
+        map; nothing is geocoded here. Without OSRM, or when it fails, the stops are joined
+        by straight lines on the phone.
+
+        ⚠️ The positions READ at the stops travel in their own list, under "read", and
+        never as planned points: on a screen the two must not be confused, one being where
+        the customer is and the other where a person was at a moment. ``_read_positions``
+        decides who sees which of them.
         """
         self = clean_env(self)
         self.ensure_one()
@@ -604,7 +729,56 @@ class BfRouteDay(models.Model):
                 line = Engine._route_line(located)
             except UserError:
                 line = False
-        return {"points": points, "line": line, "tiles": Engine._tiles()}
+        return {"points": points, "line": line, "tiles": Engine._tiles(),
+                "read": day._read_positions()}
+
+    def _read_positions(self):
+        """The positions read at the stops of this day, for the map.
+
+        ⚠️ Here, and only here, the coordinates do leave for a browser: a map of where the
+        marks were made is the whole point of the feature, and it is shown to the route
+        manager and to the person on their own readings (s. 27 of Law 25). ``app_map`` has
+        already run ``_check_driver``, so nobody else reaches this.
+
+        ⚠️ A manager sees every reading of the day; anyone else sees only the ones they
+        took themselves, which ``done_by`` holds. The day's ``user_id`` is NOT the test: the
+        office reassigns a finished day (a worker who leaves, a correction), and the new
+        holder would then be handed the raw coordinates of the person who really drove it.
+        Not ``env.su`` either, because ``sudo()`` keeps the uid and ``app_map`` calls this on
+        a sudo recordset precisely so the customers' names can be read.
+
+        Erased positions are left out rather than drawn at (0, 0), which is a point in the
+        Gulf of Guinea and would read as a mark made at sea.
+        """
+        self.ensure_one()
+        everything = self._is_manager()
+        me = self.env.user
+        kept = self.company_id.bf_route_position_days or 90
+        out = []
+        for rank, stop in enumerate(self.sudo().stop_ids.sorted("sequence"), 1):
+            if not (stop.latitude or stop.longitude):
+                continue
+            if not everything and stop.done_by != me:
+                continue
+            accuracy = round(stop.accuracy) if stop.accuracy else 0
+            out.append({
+                "stop_id": stop.id,
+                "rank": rank,
+                "label": stop.partner_id.display_name or "",
+                # ⚠️ The whole phrase is built here, not assembled in the template: a
+                # tooltip stitched together from numbers printed "read at 0 m (± 0 m)" for a
+                # customer who has no place to compare with, and nothing can be translated
+                # from fragments. ``mine`` chooses the voice: the manager is reading someone
+                # else's day, and "your position" would be false on their screen.
+                "note": stop._position_sentence(
+                    stop.position_check or "none", stop.position_gap_m, accuracy, kept,
+                    mine=stop.done_by == me),
+                "lat": stop.latitude,
+                "lon": stop.longitude,
+                "accuracy": accuracy,
+                "check": stop.position_check or "none",
+            })
+        return out
 
 
 class BfRouteDayStop(models.Model):
@@ -660,6 +834,40 @@ class BfRouteDayStop(models.Model):
     position_erased = fields.Boolean(readonly=True, copy=False,
                                      groups="bf_route.group_route_manager",
                                      help="The position was erased at the end of the retention period.")
+    # The gap, not the coordinates: it answers the only question anyone asks of a position,
+    # and it is what the screens show. Stored, so the stops list can sort and group on it.
+    # 🔴 The same ``groups`` as the coordinates, and for a reason measured on a test base:
+    # a stored computed field without it is readable, SEARCHABLE and GROUPABLE by anyone the
+    # record rules let near the record, and those rules key on the day's holder
+    # (``day_id.user_id``), not on who made the mark. The office reassigns a finished day,
+    # and the new holder read "Away from the place, 2,043 m" on a stop they never marked,
+    # plus the margin, straight off the standard Route days screen. The right of access of
+    # s. 27 is served where it belongs, to the person who MADE the mark, by
+    # ``_app_position`` on their phone, which filters on ``done_by``.
+    position_gap_m = fields.Integer(
+        string="Gap to the place (m)", compute="_compute_position_gap", store=True,
+        groups="bf_route.group_route_manager",
+        help="Distance as the crow flies between the position read when the stop was marked "
+             "and the customer's place. It reads 0 whenever there is nothing to compare; the "
+             "state beside it says which case that is. It is erased with the position. The "
+             "person who marked the stop reads it on their phone, in words.")
+    position_check = fields.Selection(
+        [("none", "No position"),
+         ("unplaced", "Customer without a place"),
+         ("near", "At the place"),
+         ("vague", "Within the phone's margin"),
+         ("far", "Away from the place"),
+         ("from_reading", "Place itself from a reading"),
+         ("erased", "Position erased")],
+        string="Position", compute="_compute_position_gap", store=True,
+        groups="bf_route.group_route_manager",
+        help="What the gap means. \"Away from the place\" is a reading, not a verdict: a "
+             "large site, a service door at the back, or a phone that reported a poor "
+             "accuracy all show up this way. \"Within the phone's margin\" is the honest "
+             "answer when the reading's own margin straddles the block: such a reading "
+             "proves nothing either way. \"Place itself from a reading\" means the place "
+             "being compared with was taken from a position read on a route, so the gap "
+             "compares a reading with a reading and confirms nothing at all.")
 
     def _compute_display_name(self):
         for stop in self:
@@ -709,7 +917,199 @@ class BfRouteDayStop(models.Model):
             "note": self.note or False,
             "done_at": local(self.done_at),
             "arrived_at": local(self.arrived_at),
+            "position": self._app_position(),
         }
+
+    def action_propose_place(self):
+        """Write the position read at this stop as the customer's place on the street.
+
+        The second purpose declared in the privacy register (`route_place_from_position`):
+        a position collected to prove a visit, used to locate the customer visited. Québec's
+        Law 25 allows a use for a compatible purpose (s. 12), and this one is only compatible
+        while it stays honest, so three refusals rather than a silent write:
+
+        * a customer who already has a place is never moved by it, and that means EITHER
+          place: their own coordinates, or the street point the geocoder or an earlier
+          reading left. ``position_check == "unplaced"`` is the single test, the same one
+          the button's own condition uses, so what the screen offers and what the method
+          accepts cannot drift apart;
+        * a reading whose accuracy the phone did not report, or reported above the ceiling
+          of ``POSITION_PLACE_MAX_ACCURACY_M``, is refused: at 200 m a point lands across
+          the street;
+        * it is a button, never a cron. A person accepts the proposal, the contact's chatter
+          says where its coordinates came from, and ``bf_route_street_from_position`` stamps
+          the date on the contact, because a gap measured against a place that came from a
+          reading is no longer an independent check of anything.
+
+        ⚠️ Public method, so reachable over RPC with any id. The access rules are read
+        FIRST, before the loop goes on in sudo: a group check alone lets a route manager of
+        one company pass ids of another, and the stops of several companies share their
+        contacts. Measured on a test base: without this line, a route manager read back
+        a worker's phone position from another company through a shared contact.
+        """
+        if not (self.env.su or self.env.user.has_group("bf_route.group_route_manager")):
+            raise AccessError(_("Only a route manager can do this."))
+        self.check_access("read")
+        for stop in self.sudo():
+            partner = stop.partner_id
+            check = stop.position_check
+            if check in (False, "none"):
+                raise UserError(_("No position was read at the stop of %s.",
+                                  partner.display_name))
+            if check == "erased":
+                raise UserError(_(
+                    "The position read at the stop of %s was erased at the end of the "
+                    "retention period: there is nothing left to propose.",
+                    partner.display_name))
+            if check != "unplaced":
+                raise UserError(_(
+                    "%s already has a place on the map, their own coordinates or a street "
+                    "point. Clear it first if it is the wrong one: a position read at the "
+                    "door is not a reason to move a contact someone placed on purpose.",
+                    partner.display_name))
+            if not stop.accuracy:
+                raise UserError(_(
+                    "The phone did not say how accurate this reading was, so it cannot be "
+                    "turned into the place of %s.", partner.display_name))
+            if stop.accuracy > POSITION_PLACE_MAX_ACCURACY_M:
+                raise UserError(_(
+                    "This reading is accurate to %(accuracy)s m, beyond the %(max)s m a "
+                    "place is proposed from: it could be the wrong side of the street.",
+                    accuracy=round(stop.accuracy), max=POSITION_PLACE_MAX_ACCURACY_M))
+            partner.write({"bf_route_street_latitude": stop.latitude,
+                           "bf_route_street_longitude": stop.longitude,
+                           "bf_route_street_from_position": fields.Datetime.now()})
+            # ⚠️ The margin the phone reported is NOT repeated here. A contact is readable
+            # by every internal user and, when it carries no company, by all of them across
+            # companies: what belongs on it is where its coordinates came from, not how well
+            # someone's phone was performing that morning. The stop keeps that, behind the
+            # route manager's group.
+            partner.message_post(body=Markup("<p>%s</p>") % _(
+                "Place on the map taken from a position read at the stop of %(date)s on the "
+                "route %(route)s, accepted by %(who)s. It plans the kilometres; it does not "
+                "guide the phone, and a gap measured against it is not a check of the "
+                "reading it came from.",
+                date=stop.day_id.date, route=stop.day_id.route_id.display_name or "-",
+                who=self.env.user.display_name))
+        return True
+
+    def _app_position(self):
+        """What the person is told about the position read on THEIR stop (s. 27 of Law 25).
+
+        ⚠️ The gap and the accuracy, never the coordinates. The phone has no use for them,
+        and a payload that carries them puts the position back in the browser's cache, in
+        the proxy's log and in every trace on the way, for nothing.
+
+        ⚠️ Only to the person who MADE the mark (``done_by``), or to a route manager. The
+        day's holder is not the test: the office reassigns a finished day, and the screen
+        would then tell the new holder "your position was read 80 m from the place" about a
+        reading taken by someone who no longer works here. The right of access of s. 27 is a
+        right over one's OWN personal information, so a stop marked by someone else simply
+        says nothing here.
+        """
+        self.ensure_one()
+        private = self.sudo()
+        if private.position_check in (False, "none"):
+            return False
+        mine = private.done_by == self.env.user
+        if not (mine or self.day_id._is_manager()):
+            return False
+        gap = private.position_gap_m
+        accuracy = round(private.accuracy) if private.accuracy else 0
+        kept = private.day_id.company_id.bf_route_position_days or 90
+        return {
+            "state": private.position_check,
+            "gap_m": gap,
+            "accuracy": accuracy,
+            "kept_days": kept,
+            "label": self._position_sentence(private.position_check, gap, accuracy, kept,
+                                             mine=mine),
+        }
+
+    @api.model
+    def _position_sentence(self, check, gap, accuracy, kept, mine=True):
+        """One whole sentence per case, built here and not in the template.
+
+        ⚠️ A template that assembles the sentence around ``<t t-esc>`` elements exports as
+        fragments: "days", "m)", "· kept". Nobody can translate those, and no French word
+        order can follow them. Each piece below is a sentence of its own, so joining the
+        translated pieces stays correct in any language.
+
+        ``mine`` is the voice. The person reads about their own reading ("your position");
+        a route manager reads about someone else's day, where "your position" would simply
+        be false, and the retention period is the person's business, not a line on a map.
+
+        ⚠️ A reading whose margin the phone never reported says so out loud. Silence
+        there reads as a precise measurement, which is exactly what it is not.
+        """
+        if check == "erased":
+            return _("The position read here has been erased.")
+        if check in (False, "none"):
+            # 🔴 No sentence used to exist for this state: it fell into the "far" default
+            # below and printed "Position read 0 m from the customer's place." about a stop
+            # that carries no reading at all. Unreachable from the two callers today, which
+            # is why nobody saw it, and one line away from being read by someone.
+            return ""
+        if check == "from_reading":
+            return _("Your position was read %s m from this customer's place, which was "
+                     "itself taken from a position read on a route: the two compare a "
+                     "reading with a reading and confirm nothing.", self._metres(gap)) \
+                if mine else \
+                _("Position read %s m from this customer's place, which was itself taken "
+                  "from a position read on a route: the two compare a reading with a "
+                  "reading and confirm nothing.", self._metres(gap))
+        if check == "unplaced":
+            parts = [_("Your position was read here; this customer has no place on the map yet.")
+                     if mine else
+                     _("Position read at this stop; this customer has no place on the map yet.")]
+        elif check == "near" and not gap:
+            # "Read 0 m from the place" is true and unreadable, which is what the near case
+            # exists to say plainly. The metres are left out rather than printed as zero.
+            parts = [_("Your position was read at the customer's place.") if mine else
+                     _("Position read at the customer's place.")]
+        elif check == "near":
+            parts = [_("Your position was read at the customer's place, %s m away.",
+                       self._metres(gap))
+                     if mine else
+                     _("Position read at the customer's place, %s m away.", self._metres(gap))]
+        elif check == "vague":
+            parts = [_("Your position was read %(gap)s m from the customer's place, and your "
+                       "phone reported a margin of %(accuracy)s m: it says neither that you "
+                       "were there nor that you were not.",
+                       gap=self._metres(gap), accuracy=self._metres(accuracy))
+                     if mine else
+                     _("Position read %(gap)s m from the customer's place, with a margin of "
+                       "%(accuracy)s m reported by the phone: it says neither that the "
+                       "person was there nor that they were not.",
+                       gap=self._metres(gap), accuracy=self._metres(accuracy))]
+        else:
+            parts = [_("Your position was read %s m from the customer's place.",
+                       self._metres(gap))
+                     if mine else
+                     _("Position read %s m from the customer's place.", self._metres(gap))]
+        if accuracy and check != "vague":
+            parts.append(_("To within %s m.", self._metres(accuracy)))
+        elif not accuracy:
+            parts.append(_("Your phone did not report how accurate it was.") if mine else
+                         _("The phone did not report how accurate it was."))
+        if mine:
+            parts.append(_("Kept %s.",
+                           self.env["bf.route.notice.ack"]._retention_text(kept)))
+        return " ".join(parts)
+
+    @api.model
+    def _metres(self, value):
+        """A number of metres, grouped the way the reader's language groups them.
+
+        ⚠️ "4000 m" beside "de 1 à 3 650 jours" is two typographic conventions in one
+        module, and the four-digit case arrives as soon as a phone reads badly indoors.
+        Falls back to the bare number rather than failing a sentence.
+        """
+        try:
+            lang = self.env["res.lang"]._lang_get(self.env.lang or "en_US")
+            return lang.format("%d", int(value or 0), grouping=True).strip()
+        except Exception:  # noqa: BLE001 - a label is never worth an exception
+            return str(int(value or 0))
 
     def _window_label(self):
         def hm(value):
@@ -755,6 +1155,82 @@ class BfRouteDayStop(models.Model):
                 if stop.done_at else False
             stop.arrived_clock = utc_to_local(tz, stop.arrived_at).strftime("%H:%M") \
                 if stop.arrived_at else False
+
+    @api.depends("latitude", "longitude", "accuracy", "position_erased",
+                 "partner_id.partner_latitude", "partner_id.partner_longitude",
+                 "partner_id.bf_route_street_latitude", "partner_id.bf_route_street_longitude",
+                 "partner_id.bf_route_street_from_position")
+    def _compute_position_gap(self):
+        """The gap between the position read and the customer's place, and what it means.
+
+        ⚠️ The position is read in sudo. The three fields are restricted to the route
+        manager, and this compute is triggered by writes anyone may make, a customer's
+        address being the obvious one: reading them with the writer's own rights would
+        raise for a worker who corrects a phone number.
+
+        ⚠️ The gap dies with the position. The purge sets the coordinates back to zero,
+        this recomputes, and what is left is the state "erased": keeping a gap after the
+        retention period would keep a coarser copy of what was just destroyed.
+        """
+        # One sudo recordset for the lot, not one per stop: an upgrade recomputes every
+        # stop of the base, and a client with ten thousand of them would pay an environment
+        # switch each time. Same ids, same order, so the pairing holds.
+        for stop, private in zip(self, self.sudo()):
+            partner = private.partner_id
+            door = bool(partner.partner_latitude or partner.partner_longitude)
+            if door:
+                place = (partner.partner_latitude, partner.partner_longitude)
+            else:
+                place = (partner.bf_route_street_latitude, partner.bf_route_street_longitude)
+            # 🔴 The place being compared with may itself have come from a reading, and
+            # then the gap is not a check of anything: both points were read by the same kind
+            # of phone at the same door. Measured on a test base: one click of the office on the
+            # stop of 12 October turned that stop green at 0 m AND turned the stop of
+            # 19 October, which nobody touched and someone else may have marked, orange at
+            # 178 m. The verdict spread to every stop of that customer, past and future, and
+            # outlived the erasure of the reading it was measured against. The door wins when
+            # there is one: a contact the geocoder later placed properly is an independent
+            # reference again, whatever the stale street point says.
+            from_reading = not door and bool(partner.bf_route_street_from_position)
+            # ⚠️ Presence is tested HERE, on both points, and never left to a sentinel
+            # inside ``haversine_m``: an unset Odoo Float reads 0.0, and 0.0 is also a real
+            # coordinate. Same convention as ``app_map``'s ``place()``.
+            read = bool(private.latitude or private.longitude)
+            placed = bool(place[0] or place[1])
+            gap = haversine_m(private.latitude, private.longitude, place[0], place[1]) \
+                if read and placed else None
+            if gap is None:
+                stop.position_gap_m = 0
+                if read:
+                    stop.position_check = "unplaced"
+                else:
+                    stop.position_check = "erased" if private.position_erased else "none"
+                continue
+            stop.position_gap_m = round(gap)
+            if from_reading:
+                stop.position_check = "from_reading"
+                continue
+            # 🔴 The reading is a DISC, not a point: its centre is ``gap`` from the place
+            # and its radius is the margin the phone reported. So the three answers are about
+            # that disc against the 150 m block, and they are symmetric:
+            #   the whole disc inside the block  -> "near", presence is the only reading;
+            #   the whole disc outside           -> "far",  absence is the only reading;
+            #   the disc straddles the edge      -> "vague", it proves nothing either way.
+            # The earlier form compared the gap alone to the threshold and only then to the
+            # margin, which was lax in one direction and strict in the other: measured on the
+            # bench, a reading AT the door with a 400 m margin came out green "At the place",
+            # while a reading 151 m away with a 150 m margin, far more precise, came out
+            # orange "Away from the place". The most precise reading got the worst verdict,
+            # and the green one was a claim the data could not carry. A green badge is a
+            # claim in the person's favour and an orange one a claim against them: both have
+            # to be earned.
+            margin = private.accuracy or 0.0
+            if gap + margin <= POSITION_NEAR_M:
+                stop.position_check = "near"
+            elif gap - margin > POSITION_NEAR_M:
+                stop.position_check = "far"
+            else:
+                stop.position_check = "vague"
 
     @api.depends("arrived_at", "done_at", "state")
     def _compute_on_site(self):
@@ -902,14 +1378,58 @@ class BfRouteDayStop(models.Model):
 
     @api.model
     def _purge_positions(self):
-        """Erase the positions older than each company's retention period."""
+        """Erase the positions older than each company's retention period.
+
+        ⚠️ One savepoint PER COMPANY. ``_cron_watch`` already isolates each job, but that
+        is one savepoint for the whole sweep: a single company that raises undid the
+        erasure of all the others, including the ones already written and verified. And the
+        companion register does raise on purpose, when it cannot verify that a position
+        really left the table. Without this, one unverifiable stop in one company would
+        keep the positions of the four others for another fifteen minutes, every fifteen
+        minutes, silently.
+
+        ⚠️ A rollback does not empty the ORM cache, so the cache is dropped with it.
+        Otherwise the next company would be read through records that no longer exist in
+        the transaction.
+        """
         # ⚠️ Archived companies too: their positions are just as personal.
         for company in self.env["res.company"].sudo().with_context(active_test=False).search([]):
-            days = company.bf_route_position_days or 90
-            limit = fields.Datetime.now() - timedelta(days=days)
-            stale = self.sudo().with_context(active_test=False).search([
-                ("company_id", "=", company.id), ("done_at", "<", limit), "|",
-                ("latitude", "!=", 0), ("longitude", "!=", 0)])
-            if stale:
-                stale.with_context(bf_route_auto=True).write(
-                    {"latitude": 0.0, "longitude": 0.0, "accuracy": 0.0, "position_erased": True})
+            try:
+                with self.env.cr.savepoint():
+                    self._purge_positions_of(company)
+            except Exception:
+                self.env.invalidate_all()
+                _logger.exception(
+                    "bf_route: the positions of %s were not erased on this pass; the other "
+                    "companies were", company.display_name)
+
+    def _purge_positions_of(self, company):
+        """Erase one company's expired positions, inside its own savepoint.
+
+        At most ``PURGE_BATCH`` stops per pass: shortening a retention period makes years
+        of stops due at once, and the watcher comes back every fifteen minutes.
+        """
+        days = company.bf_route_position_days or 90
+        limit = fields.Datetime.now() - timedelta(days=days)
+        stale = self.sudo().with_context(active_test=False).search([
+            ("company_id", "=", company.id), ("done_at", "<", limit), "|",
+            ("latitude", "!=", 0), ("longitude", "!=", 0)], limit=PURGE_BATCH)
+        if not stale:
+            return
+        stale.with_context(bf_route_auto=True).write(
+            {"latitude": 0.0, "longitude": 0.0, "accuracy": 0.0, "position_erased": True})
+        stale._bf_route_positions_erased(company, days)
+
+    def _bf_route_positions_erased(self, company, days):
+        """Extension point: the positions of ``self`` have just been erased.
+
+        Called once per company, with the stops whose coordinates were set back to zero and
+        the retention period that expired. It does nothing here on purpose: this module
+        erases, it does not keep a register. The companion `bf_route_privacy` writes one
+        entry per stop to the privacy register of Law 25, in partial scope.
+
+        ⚠️ Called AFTER the write, so the fields are already zero. That is what lets the
+        companion verify the erasure really happened before attesting it, which is the
+        whole point of calling it here rather than before.
+        """
+        return True

@@ -18,6 +18,15 @@ class RouteCase(TransactionCase):
                                        no_reset_password=True, lang="en_US"))
         cls.company = cls.env.company
         cls.company.write({"bf_route_position_mode": "off"})
+        # ⚠️ The fixture states its own retention term instead of inheriting whatever the
+        # restored base happened to hold (a company may keep positions as little as a day).
+        # Several tests read the term back out of a sentence or a register entry, and a test
+        # never assumes the state of the base. Soft lookup: bf_route works without the
+        # bridge, and the bridge only caps the term, it does not impose it.
+        policy = cls.env.ref("bf_route_privacy.retention_policy_route_position",
+                             raise_if_not_found=False)
+        if policy:
+            cls.company.bf_route_position_days = policy.sudo().retention_days
         cls.manager = new_test_user(cls.env, login="route_manager", tz="America/Toronto", lang="en_US",
                                     groups="base.group_user,bf_route.group_route_manager")
         cls.worker = new_test_user(cls.env, login="route_worker", tz="America/Toronto", lang="en_US",

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-30 08:00+0000\n"
-"PO-Revision-Date: 2026-10-30 08:00+0000\n"
+"POT-Creation-Date: 2026-11-09 19:57+0000\n"
+"PO-Revision-Date: 2026-11-09 19:57+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_route/models/res_partner.py:0
 msgid "%(located)s of %(total)s contacts located."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/route_map/route_map.js:0
+msgid "%(rank)s. %(label)s"
 msgstr ""
 
 #. module: bf_route
@@ -51,6 +57,15 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_day.py:0
 msgid "%s (name sent by the phone, stop removed)"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"%s already has a place on the map, their own coordinates or a street point. "
+"Clear it first if it is the wrong one: a position read at the door is not a "
+"reason to move a contact someone placed on purpose."
 msgstr ""
 
 #. module: bf_route
@@ -106,15 +121,41 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_notice.py:0
 msgid ""
+"<p><b>The map of your day.</b> Its background comes from OpenStreetMap, "
+"outside Canada. That service receives your phone's address on the internet "
+"and the area the map is showing, which is the area you are in. Your "
+"positions themselves are never sent to it.</p>"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_notice.py:0
+msgid ""
+"<p><b>The map of your day.</b> Its background comes from the map service "
+"your company set up. That service receives your phone's address on the "
+"internet and the area the map is showing, which is the area you are in. Your"
+" positions themselves are never sent to it.</p>"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_notice.py:0
+msgid ""
 "<p><b>Your position at the stops</b></p><p>When you mark a stop (done, "
 "customer absent, postponed), the application reads your phone's position "
 "<b>once</b>, at that moment, and keeps it with the stop as proof of the "
 "visit. It never follows you between stops, before the day starts or after it"
-" ends.</p><p><b>Why:</b> to prove the visit to the customer and settle a "
-"disagreement about a delivery. <b>Who sees it:</b> the people who manage the"
-" routes. <b>How long:</b> %(how_long)s, then it is erased.</p><p>Your phone "
-"asks for your permission the first time. If you refuse, the stops are marked"
-" without a position.</p>"
+" ends.</p><p><b>Why:</b> to prove the visit to the customer, to settle a "
+"disagreement about a delivery, and to measure the kilometres of the day from"
+" one stop to the next. <b>Who sees it:</b> the people who manage the routes,"
+" and you, in this application, for the stops you marked yourself. <b>How "
+"long:</b> %(how_long)s, then it is erased.</p><p><b>Two things outlive "
+"it.</b> The kilometres measured for the day, which is a distance and not a "
+"place. And, when a customer had no place on the map, the reading an office "
+"person accepted as that customer's place: from that moment it is the "
+"customer's address, and it stays with the customer.</p><p>Your phone asks "
+"for your permission the first time. If you refuse, the stops are marked "
+"without a position.</p>"
 msgstr ""
 
 #. module: bf_route
@@ -315,9 +356,19 @@ msgid "Arrived at"
 msgstr ""
 
 #. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__position_check__near
+msgid "At the place"
+msgstr ""
+
+#. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route__message_attachment_count
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_attachment_count
 msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__position_check__far
+msgid "Away from the place"
 msgstr ""
 
 #. module: bf_route
@@ -447,6 +498,11 @@ msgid "Customer taken off the route: %s"
 msgstr ""
 
 #. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__position_check__unplaced
+msgid "Customer without a place"
+msgstr ""
+
+#. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day__visited
 #: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
 msgid "Customers visited"
@@ -517,6 +573,15 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__display_name
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__display_name
 msgid "Display Name"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__position_gap_m
+msgid ""
+"Distance as the crow flies between the position read when the stop was "
+"marked and the customer's place. It reads 0 whenever there is nothing to "
+"compare; the state beside it says which case that is. It is erased with the "
+"position. The person who marked the stop reads it on their phone, in words."
 msgstr ""
 
 #. module: bf_route
@@ -630,6 +695,11 @@ msgid "From the route"
 msgstr ""
 
 #. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__position_gap_m
+msgid "Gap to the place (m)"
+msgstr ""
+
+#. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__latitude
 msgid "Geo Latitude"
 msgstr ""
@@ -676,6 +746,15 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
 msgid "Hide the map"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_res_company__bf_route_position_days
+#: model:ir.model.fields,help:bf_route.field_res_config_settings__bf_route_position_days
+msgid ""
+"How long a position read at a stop is kept, from the marking. ⚠️ A privacy "
+"bridge may cap it: where one is installed and declares a term for this "
+"processing, a longer value is refused and the message names both numbers."
 msgstr ""
 
 #. module: bf_route
@@ -758,6 +837,12 @@ msgid "Keep positions (days)"
 msgstr ""
 
 #. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Kept %s."
+msgstr ""
+
+#. module: bf_route
 #: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__app_key
 msgid "Key of the last mark sent by the phone; a resend is ignored."
 msgstr ""
@@ -777,7 +862,14 @@ msgstr ""
 msgid ""
 "Kilometres from the odometer read at the start and the\n"
 "                        end of each day. A day without both readings counts 0 km. Customers visited: stops done,\n"
-"                        or customer absent."
+"                        or customer absent. \"Road measured\" is the road from the route's start point, through the\n"
+"                        positions read when the stops were marked and in the order they were marked, back to its\n"
+"                        end point. The two depot legs come from the route's own points, since no position is read\n"
+"                        at the depot. It sits beside the odometer for comparison and is never added into the\n"
+"                        total, which is the odometer's. It reads \"-\" when fewer than two stops carried a position,\n"
+"                        when the company never turned the positions on, or when the routing engine could not be\n"
+"                        reached. Once measured it stays, including after the positions themselves have been\n"
+"                        erased: it is a distance, not a place."
 msgstr ""
 
 #. module: bf_route
@@ -928,6 +1020,19 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_day.py:0
 msgid "Marks refused: %s"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"Measure at most %s days at a time: each one is a request to the routing "
+"engine."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_form
+msgid "Measure the road from the positions"
 msgstr ""
 
 #. module: bf_route
@@ -1134,6 +1239,17 @@ msgid "No optimizer: enter the VROOM address in the Routes settings."
 msgstr ""
 
 #. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__position_check__none
+msgid "No position"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "No position was read at the stop of %s."
+msgstr ""
+
+#. module: bf_route
 #: model_terms:ir.actions.act_window,help:bf_route.action_bf_route_mileage
 msgid "No route day finished in this period"
 msgstr ""
@@ -1234,6 +1350,16 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_route/models/res_partner.py:0
 msgid "Nothing to locate: these contacts already have coordinates."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"Nothing to measure on this day: it takes two stops marked with a position. "
+"They may have been erased at the end of the retention period, or the routing"
+" engine may be unreachable. The figure already shown, if any, was left "
+"exactly as it was."
 msgstr ""
 
 #. module: bf_route
@@ -1352,6 +1478,12 @@ msgstr ""
 
 #. module: bf_route
 #. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Only a route manager measures the road from the positions."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
 #: code:addons/bf_route/models/bf_route_notice.py:0
 msgid "Only a worker on the road reads this notice."
 msgstr ""
@@ -1371,6 +1503,26 @@ msgstr ""
 #. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__origin
 msgid "Origin"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__position_check__from_reading
+msgid "Place itself from a reading"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_partner_form_bf_route
+msgid "Place on the map (routes)"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"Place on the map taken from a position read at the stop of %(date)s on the "
+"route %(route)s, accepted by %(who)s. It plans the kilometres; it does not "
+"guide the phone, and a gap measured against it is not a check of the reading"
+" it came from."
 msgstr ""
 
 #. module: bf_route
@@ -1430,6 +1582,11 @@ msgid ""
 msgstr ""
 
 #. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__position_check
+msgid "Position"
+msgstr ""
+
+#. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__position_erased
 msgid "Position Erased"
 msgstr ""
@@ -1437,6 +1594,11 @@ msgstr ""
 #. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
 msgid "Position at the stops"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__position_check__erased
+msgid "Position erased"
 msgstr ""
 
 #. module: bf_route
@@ -1454,6 +1616,48 @@ msgstr ""
 #: model:ir.actions.act_window,name:bf_route.action_bf_route_notice_ack
 #: model:ir.ui.menu,name:bf_route.menu_bf_route_notices
 msgid "Position notices read"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"Position read %(gap)s m from the customer's place, with a margin of "
+"%(accuracy)s m reported by the phone: it says neither that the person was "
+"there nor that they were not."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Position read %s m from the customer's place."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"Position read %s m from this customer's place, which was itself taken from a"
+" position read on a route: the two compare a reading with a reading and "
+"confirm nothing."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Position read at the customer's place, %s m away."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Position read at the customer's place."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Position read at this stop; this customer has no place on the map yet."
 msgstr ""
 
 #. module: bf_route
@@ -1558,6 +1762,28 @@ msgstr ""
 #. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route__end_partner_id
 msgid "Returns to"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__distance_road_km
+msgid ""
+"Road distance from the route's start point, through the positions read at "
+"the stops in the order they were marked, back to its end point, from the "
+"self-hosted OSRM. Needs at least two positions read. ⚠️ The two depot legs "
+"come from the route's own points, not from a reading: no position is read at"
+" the depot. Without them the figure covered only the marked stops and fell "
+"short of the odometer by the whole way out and back, which is most of a day."
+" It is not the odometer and never replaces it."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__distance_road_km
+msgid "Road from the positions (km)"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.report_mileage_log
+msgid "Road measured (km)"
 msgstr ""
 
 #. module: bf_route
@@ -1684,6 +1910,17 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__sequence
 #: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__sequence
 msgid "Sequence"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_res_partner__bf_route_street_from_position
+#: model:ir.model.fields,help:bf_route.field_res_users__bf_route_street_from_position
+msgid ""
+"Set when the street point was accepted from a position read on a route, and "
+"empty when the geocoder found it. ⚠️ A gap measured against a place that "
+"came from a reading is not an independent check of that reading: both were "
+"read by the same phone at the same door. It is here so the office can tell "
+"the two apart on the screen rather than having to remember."
 msgstr ""
 
 #. module: bf_route
@@ -1841,6 +2078,17 @@ msgid "Street longitude (routes)"
 msgstr ""
 
 #. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_partner__bf_route_street_from_position
+#: model:ir.model.fields,field_description:bf_route.field_res_users__bf_route_street_from_position
+msgid "Street point from a reading"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_partner_form_bf_route
+msgid "Street point, for the plans"
+msgstr ""
+
+#. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
 msgid "Sun"
 msgstr ""
@@ -1876,8 +2124,9 @@ msgstr ""
 #. module: bf_route
 #: model:ir.model.fields,help:bf_route.field_bf_route_day__visited
 msgid ""
-"The customers driven to (stops done, or customer absent), in order: the "
-"purpose of the trip in the mileage log."
+"The customers driven to (stops done, or customer absent), in the order the "
+"office planned them: the purpose of the trip in the mileage log. ⚠️ Not the "
+"order they were marked in, which is what the measured road uses."
 msgstr ""
 
 #. module: bf_route
@@ -1955,6 +2204,34 @@ msgid "The optimizer could not order the stops (%s)."
 msgstr ""
 
 #. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "The phone did not report how accurate it was."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"The phone did not say how accurate this reading was, so it cannot be turned "
+"into the place of %s."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"The position read at the stop of %s was erased at the end of the retention "
+"period: there is nothing left to propose."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "The position read here has been erased."
+msgstr ""
+
+#. module: bf_route
 #: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__position_erased
 msgid "The position was erased at the end of the retention period."
 msgstr ""
@@ -1998,6 +2275,16 @@ msgid "The routing engine sent an unreadable answer (HTTP %s)."
 msgstr ""
 
 #. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_partner_form_bf_route
+msgid ""
+"The street point is used to plan the kilometres when the contact has no\n"
+"                        coordinates of its own. It never guides the phone. When the date above is\n"
+"                        filled, the point was accepted from a position read on a route: the gap\n"
+"                        shown at a stop of this customer then compares a reading with a reading,\n"
+"                        and confirms nothing on its own."
+msgstr ""
+
+#. module: bf_route
 #: model:ir.model.constraint,message:bf_route.constraint_bf_route_stop_service_positive
 msgid "The time on site cannot be negative."
 msgstr ""
@@ -2034,13 +2321,23 @@ msgstr ""
 #. module: bf_route
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_day.py:0
-msgid "This day is finished: nothing more can be recorded on it. Call the office."
+msgid ""
+"This day is finished: nothing more can be recorded on it. Call the office."
 msgstr ""
 
 #. module: bf_route
 #. odoo-python
 #: code:addons/bf_route/models/bf_route_day.py:0
-msgid "This day was cancelled: nothing can be recorded on it. Call the office."
+msgid ""
+"This day was cancelled: nothing can be recorded on it. Call the office."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"This reading is accurate to %(accuracy)s m, beyond the %(max)s m a place is "
+"proposed from: it could be the wrong side of the street."
 msgstr ""
 
 #. module: bf_route
@@ -2084,6 +2381,12 @@ msgid "To do"
 msgstr ""
 
 #. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "To within %s m."
+msgstr ""
+
+#. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
 msgid "Today"
 msgstr ""
@@ -2114,6 +2417,11 @@ msgstr ""
 #. module: bf_route
 #: model:ir.model.fields,field_description:bf_route.field_bf_route__date_end
 msgid "Until"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_form
+msgid "Use this position as the customer's place"
 msgstr ""
 
 #. module: bf_route
@@ -2185,6 +2493,18 @@ msgid "What happened at this stop"
 msgstr ""
 
 #. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__position_check
+msgid ""
+"What the gap means. \"Away from the place\" is a reading, not a verdict: a "
+"large site, a service door at the back, or a phone that reported a poor "
+"accuracy all show up this way. \"Within the phone's margin\" is the honest "
+"answer when the reading's own margin straddles the block: such a reading "
+"proves nothing either way. \"Place itself from a reading\" means the place "
+"being compared with was taken from a position read on a route, so the gap "
+"compares a reading with a reading and confirms nothing at all."
+msgstr ""
+
+#. module: bf_route
 #: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
 msgid "When"
 msgstr ""
@@ -2205,6 +2525,11 @@ msgstr ""
 #: model:ir.model.fields,help:bf_route.field_bf_route__user_id
 msgid ""
 "Who drives the route by default. Each day can be given to someone else."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__position_check__vague
+msgid "Within the phone's margin"
 msgstr ""
 
 #. module: bf_route
@@ -2238,6 +2563,55 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_route.field_res_config_settings__bf_route_position_mode
 #: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
 msgid "Worker position"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Your phone did not report how accurate it was."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"Your position was read %(gap)s m from the customer's place, and your phone "
+"reported a margin of %(accuracy)s m: it says neither that you were there nor"
+" that you were not."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Your position was read %s m from the customer's place."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"Your position was read %s m from this customer's place, which was itself "
+"taken from a position read on a route: the two compare a reading with a "
+"reading and confirm nothing."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Your position was read at the customer's place, %s m away."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Your position was read at the customer's place."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"Your position was read here; this customer has no place on the map yet."
 msgstr ""
 
 #. module: bf_route

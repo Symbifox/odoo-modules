@@ -37,6 +37,9 @@
                                     <th class="text-end">Odometer at start</th>
                                     <th class="text-end">Odometer at end</th>
                                     <th class="text-end">Kilometres</th>
+                                    <!-- Beside the odometer, never in its place: a day whose
+                                         readings nobody wrote down is no longer simply blank. -->
+                                    <th class="text-end">Road measured (km)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -53,6 +56,10 @@
                                     <td class="text-end">
                                         <span t-out="day.distance_actual_km" t-options="{'widget': 'float', 'precision': 1}"/>
                                     </td>
+                                    <td class="text-end">
+                                        <span t-if="day.distance_road_km" t-out="day.distance_road_km" t-options="{'widget': 'float', 'precision': 1}"/>
+                                        <span t-if="not day.distance_road_km">-</span>
+                                    </td>
                                 </tr>
                             </tbody>
                             <tfoot>
@@ -61,13 +68,24 @@
                                     <td class="text-end">
                                         <strong t-out="group['total']" t-options="{'widget': 'float', 'precision': 1}"/>
                                     </td>
+                                    <!-- Empty: the road measured is not added into the
+                                         odometer's total, which is the one the register
+                                         asks for. -->
+                                    <td/>
                                 </tr>
                             </tfoot>
                         </table>
                     </t>
                     <p class="text-muted small mt-4">Kilometres from the odometer read at the start and the
                         end of each day. A day without both readings counts 0 km. Customers visited: stops done,
-                        or customer absent.</p>
+                        or customer absent. "Road measured" is the road from the route's start point, through the
+                        positions read when the stops were marked and in the order they were marked, back to its
+                        end point. The two depot legs come from the route's own points, since no position is read
+                        at the depot. It sits beside the odometer for comparison and is never added into the
+                        total, which is the odometer's. It reads "-" when fewer than two stops carried a position,
+                        when the company never turned the positions on, or when the routing engine could not be
+                        reached. Once measured it stays, including after the positions themselves have been
+                        erased: it is a distance, not a place.</p>
                 </div>
             </t>
         </t>

@@ -10,4 +10,39 @@
         <field name="state">code</field>
         <field name="code">action = records.action_bf_route_locate()</field>
     </record>
+    <!--
+        Where a contact's place on the map comes from. Until now the street fallback was
+        invisible on the contact: the office could not tell a point the geocoder found from
+        one accepted out of a position read at the door, and the second kind makes the gap
+        shown on a stop stop being an independent check. Route managers only, like the
+        action above.
+    -->
+    <record id="view_partner_form_bf_route" model="ir.ui.view">
+        <field name="name">res.partner.form.bf.route.place</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <!-- ⚠️ The group goes on the PAGE, not on the view record: Odoo 18 refuses
+                     an inherited view that carries groups_id of its own. -->
+                <page name="bf_route_place" string="Place on the map (routes)"
+                      groups="bf_route.group_route_manager">
+                    <group>
+                        <group string="Street point, for the plans">
+                            <field name="bf_route_street_latitude" readonly="1"/>
+                            <field name="bf_route_street_longitude" readonly="1"/>
+                            <field name="bf_route_street_from_position" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="text-muted small">
+                        The street point is used to plan the kilometres when the contact has no
+                        coordinates of its own. It never guides the phone. When the date above is
+                        filled, the point was accepted from a position read on a route: the gap
+                        shown at a stop of this customer then compares a reading with a reading,
+                        and confirms nothing on its own.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
 </odoo>

@@ -189,6 +189,14 @@ class TestPosition(RouteCase):
         self.company.bf_route_position_mode = "stops"
         Ack = self.env["bf.route.notice.ack"].with_user(self.worker)
         Ack.app_acknowledge(self.company.bf_route_notice_version)
+        # ⚠️ A longer period is also a new DECLARATION. When the privacy bridge is
+        # installed it holds the two equal, so changing one alone is refused: the register
+        # cites a term, and an erasure at another term would make the citation false. This
+        # module works without the bridge, hence the lookup rather than a hard reference.
+        policy = self.env.ref("bf_route_privacy.retention_policy_route_position",
+                              raise_if_not_found=False)
+        if policy:
+            policy.sudo().retention_days = 3650
         self.company.bf_route_position_days = 3650
         self.assertTrue(Ack._status(self.company)["must_read"])
 
@@ -217,6 +225,42 @@ class TestPosition(RouteCase):
         self.company.bf_route_position_mode = "off"
         data = day.stop_ids.sorted("sequence")[0].with_user(self.worker).app_mark("done", position=HERE)
         self.assertFalse(data["_notice"]["may_read_position"])
+
+    def test_the_notice_says_what_outlives_the_position(self):
+        """\U0001f534 The old text ended on "then it is erased", without reserve.
+
+        Two things the module does are not an erasure: the kilometres of the day measured
+        from the readings stay on the day, and a reading accepted as a customer's place has
+        become that customer's address. Section 8.1 asks that the person be informed of what
+        is done with the reading, and a notice that promises an erasure it does not deliver
+        in full is worse than a long one.
+        """
+        notice = self.env["bf.route.notice.ack"]._default_notice(self.company)
+        self.assertIn("kilometres of the day", notice)
+        self.assertIn("outlive", notice)
+        self.assertIn("customer's place", notice)
+        # ⚠️ Not "on your own stops": the notice has to say WHERE the person reads it,
+        # because the desk columns are the route manager's and the sentence is on the phone.
+        self.assertIn("in this application, for the stops you marked yourself", notice)
+
+    def test_the_notice_names_the_map_service_that_leaves_the_country(self):
+        """🔴 `bf_route.tile_url` is empty in production, so the background comes from the
+        OpenStreetMap Foundation, in the United Kingdom, and that service receives the
+        phone's address on the internet and a tile centred where the person is. Section 8.1
+        asks that the person be told what technology is used. Two variants, because a
+        company that set up its own tile server must be told the truth about ITS service.
+        """
+        Ack = self.env["bf.route.notice.ack"]
+        Param = self.env["ir.config_parameter"].sudo()
+        Param.set_param("bf_route.tile_url", "")
+        notice = Ack._default_notice(self.company)
+        self.assertIn("The map of your day", notice)
+        self.assertIn("OpenStreetMap, outside Canada", notice)
+        self.assertIn("never sent to it", notice, "the positions do not go there")
+        Param.set_param("bf_route.tile_url", "https://tiles.example.ca/{z}/{x}/{y}.png")
+        notice = Ack._default_notice(self.company)
+        self.assertIn("the map service your company set up", notice)
+        self.assertNotIn("OpenStreetMap", notice)
 
     def test_the_notice_says_one_day_not_one_days(self):
         Ack = self.env["bf.route.notice.ack"]

@@ -308,7 +308,12 @@ class TestDays(RouteCase):
     def test_app_load_shows_my_day_only(self):
         today = self.today()
         self.route.write({"date_start": today - timedelta(days=today.weekday())})
-        mine = self.make_day(day=today)
+        # ⚠️ Writing date_start regenerates the route's planned days. When today IS the
+        # route's weekday, the route has already made today's day, and creating a second one
+        # breaks UNIQUE(route_id, date). The test used to pass six days out of seven and
+        # fail every Monday.
+        mine = self.env["bf.route.day"].search([
+            ("route_id", "=", self.route.id), ("date", "=", today)]) or self.make_day(day=today)
         data = self.env["bf.route.day"].with_user(self.worker).app_load()
         self.assertEqual([d["id"] for d in data["days"]], [mine.id])
         self.assertEqual(data["days"][0]["stops"][0]["partner"], "Alice Café")

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            The position read at a stop had no record at all in the processing
+            register, although it is the only piece of personal information in
+            the module that bears on the WORKER rather than on the customer.
+            Measured on a real base: dozens of purposes, dozens of
+            calendar rules, none of them about it. This module aside, 16 other
+            applications carry a privacy bridge, and this one carried none.
+
+            ⚠️ No consent to collect. Section 8.1 of Quebec's Law 25 asks that
+            the person be informed beforehand of the use of the technology and
+            told what means are offered to activate it; it does not ask for
+            consent. And an employee's consent to being located by their
+            employer is not free: presenting it as consent would suggest that a
+            refusal carries no consequence. What is really offered is simpler,
+            namely that the browser's permission stays theirs and that a refusal
+            lets the mark go through without a position. Same reasoning as
+            `sms_call_archive` and `surveillance`.
+
+            ⚠️ company_id empty, on all the records of this file. The watcher
+            that erases sweeps EVERY company, archived ones included, and writes
+            one register entry per company. A purpose or a rule owned by one
+            company would have the four others erased under a rule their own
+            register cannot show.
+        -->
+        <record id="purpose_route_position" model="privacy.purpose">
+            <field name="code">route_position</field>
+            <field name="name">Position read at the stops of a route</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>When you mark a stop on your route (done, customer absent,
+                postponed), the application reads your phone's position
+                <b>once</b>, at that moment, and keeps it with the stop as proof
+                of the visit. It does not follow you between stops, nor before
+                the day starts, nor after it ends.</p>
+                <p>What it is for: proving the visit to the customer, settling a
+                disagreement about a delivery, and measuring the kilometres of
+                the day. Who sees it: the people who manage the routes, and you,
+                on your own stops.</p>
+                <p>Your phone asks for your permission the first time. If you
+                refuse, the stops are marked without a position, and your
+                refusal is not recorded.</p>
+                <p>The position is erased at the end of the retention calendar.
+                The stop, its time and your mark remain: they are what proves
+                the visit.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">26</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!--
+            ⚠️ The term declared here documents the regime. What ERASES is
+            bf_route's watcher, and the term it applies is the company's setting
+            (bf_route_position_days), not this number. The two must say the same
+            thing, and since 18.0.1.1.0 they are held equal by a constraint in
+            models/res_company.py rather than by a comment asking someone to
+            check: a sealed destruction entry that cites this rule while naming
+            another number proves only that the declaration was not kept.
+
+            At most 90 days, for the reasons set out in the module's description. ⚠️ A ceiling, not a
+            floor. Section 23 of Law 25 asks for destruction once the purpose is
+            accomplished, so a shorter setting is minimisation and stays true;
+            only a longer one makes this declaration false, and that is the only
+            direction the bridge refuses.
+
+            ⚠️ `data_categories` and `notes` below are in FRENCH, in a module
+            written in English source. Neither field is `translate=True` on
+            `privacy.retention.policy`, so no catalogue can carry them and the
+            module's `.pot` holds no entry for them. The nine other policies of
+            this register are in French. Same reason, same decision, as ROU-001
+            in the other data file.
+
+            `trigger_on` only accepts expiration / withdrawal / both. It is
+            "expiration": the term runs from the marking of the stop, not from a
+            consent that is never asked for.
+        -->
+        <record id="retention_policy_route_position" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_route_position"/>
+            <field name="retention_days">90</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Latitude, longitude et précision en mètres relevées au téléphone de la personne sur la route, au moment où elle marque un arrêt. Rattachées à l'arrêt, donc au client visité, à la date, à l'heure et à la personne qui a marqué.</field>
+            <field name="notes">Au plus 90 jours, la durée de ROU-001. ⚠️ Ce nombre documente le plafond ; l'effacement est fait par le cron de `bf_route` selon le réglage « Garder les positions » de la société. Une société qui relève des positions ne peut pas être réglée plus longtemps que ce qui est déclaré ici, et ne peut pas commencer à relever si rien n'est déclaré ; une durée plus courte est acceptée telle quelle, c'est de la minimisation, et l'entrée de destruction nomme la durée appliquée. ⚠️ L'effacement n'atteint ni la copie qu'une marque en attente de réseau garde dans le navigateur du téléphone, ni les sauvegardes, le temps de leur rotation.</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!--
+            The second purpose is a SECONDARY USE, and that is why it is declared
+            on its own: the position was collected to prove a visit, and it is
+            used to place the customer visited.
+
+            Section 12 para. 2 (1) of Law 25: information may be used for a
+            purpose other than the one it was collected for when that purpose is
+            compatible, the test being a direct and relevant connection with the
+            original purpose. Proving one went to a customer and knowing where
+            that customer is have that connection. On a real base, a small
+            minority of contacts were geocoded, the rest having defeated the
+            geocoder.
+
+            ⚠️ The proposal never writes itself: a person accepts it, into the
+            street fallback field, and never from an imprecise reading. Without
+            that reserve, a reading taken 400 m away would move a customer's
+            record.
+
+            ⚠️ And the copy that lands on the customer OUTLIVES the position it
+            came from, because from that moment it is the customer's address.
+            The destruction entry says so, the notice the person reads says so,
+            and the contact carries the date it happened.
+        -->
+        <record id="purpose_route_place_from_position" model="privacy.purpose">
+            <field name="code">route_place_from_position</field>
+            <field name="name">Customer's place proposed from a position read</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>When a customer's record has no coordinates and their address
+                could not be found automatically, the position read at their
+                stop can be proposed as their place on the map.</p>
+                <p>It is a proposal: someone on the team accepts or refuses it,
+                and nothing is written without that acceptance. A reading that
+                is too imprecise is not proposed at all.</p>
+                <p>What is kept in the end is the customer's place, not the
+                position of the person who marked the stop. But that copy stays
+                with the customer: it has become their address, and it is not
+                erased with the position it came from. The customer's record
+                carries the date it was accepted.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">27</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!--
+            The third purpose, and the one this register was missing until
+            18.0.1.1.0: the kilometres of the day are measured from the
+            positions read, from one mark to the next, and that figure is
+            printed in the kilometre register. It is a second secondary use
+            under s. 12 para. 2 (1), with the same direct connection: the
+            readings prove the visits, and the road between those visits is the
+            road that was driven.
+
+⚠️ An earlier writing of this module declared no rule for the figure and
+            said it "follows the company's kilometre register". No rule of that
+            calendar covered vehicles or route days,
+            so the sentence pointed at nothing, which is exactly the defect this
+            module refuses elsewhere with another hat on. ROU-002 now declares
+            the regime, six years, the term of books and records under Quebec
+            and federal tax law. 🔴 Nothing applies it yet: no cron destroys a
+            route day. The rule says so in its own notes, and makes the gap
+            visible instead of silent.
+
+            ⚠️ A distance is not a place. The figure says how far the day drove,
+            not where it went, which is why it survives the erasure of the
+            readings it was computed from and why the destruction entry names it
+            among the survivors instead of pretending everything left.
+        -->
+        <record id="purpose_route_road_measured" model="privacy.purpose">
+            <field name="code">route_road_measured</field>
+            <field name="name">Kilometres of a day measured from the positions read</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>The road between the positions read at your stops is
+                measured, in the order you marked them, and kept on the day as
+                a number of kilometres, beside the odometer readings.</p>
+                <p>What it is for: comparing the kilometres claimed with the
+                road actually driven, in the register the company keeps for its
+                vehicles. It is never added into the odometer's total.</p>
+                <p>This number is a distance, not a place: it says how far the
+                day drove, not where it went. It stays on the day after the
+                positions themselves have been erased, and it is kept six years
+                under rule ROU-002, the term the tax law sets for books and
+                records.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">28</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!--
+            La politique de conservation des kilomètres mesurés : six ans, soit
+            2 190 jours, la durée de ROU-002. ⚠️ `data_categories` et `notes` ne
+            sont pas traduisibles sur ce modèle, d'où le français, comme pour
+            la politique de ROU-001 ci-dessus.
+        -->
+        <record id="retention_policy_route_road_measured" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_route_road_measured"/>
+            <field name="retention_days">2190</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Nombre de kilomètres d'une journée de route, mesuré entre les positions relevées aux arrêts et les points de dépôt. Rattaché à la journée, donc à la date et à la personne qui l'a faite. Une distance, pas un lieu.</field>
+            <field name="notes">Six ans, soit 2 190 jours, la durée de ROU-002 et celle des livres et registres exigée par la loi fiscale. 🔴 Aucune automatisation ne l'applique : aucun cron ne détruit de journée de route. La politique déclare le régime et rend le trou visible ; l'effacement se fait à la main ou dans un lot ultérieur. ⚠️ Le chiffre survit volontairement à l'effacement des positions dont il est dérivé (ROU-001, au plus 90 jours) parce qu'il ne permet pas de situer la personne.</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

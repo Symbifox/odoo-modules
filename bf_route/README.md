@@ -50,8 +50,13 @@ your server (the map's background tiles excepted, see *Known limits*).
 - **Map of the day**, on the phone (*Map*) and on the day's form (*Map* tab):
   the depot, the stops numbered in order and coloured by their state, the
   return point, and the road between them from OSRM (straight lines without
-  it). Customers' places only, never a position read from the phone. A place
-  without coordinates is named under the map.
+  it). A place without coordinates is named under the map. The positions read
+  at the stops are drawn beside them, smaller and in another colour, each with
+  the accuracy the phone reported as a disc around it: the day as it happened,
+  next to the day as it was planned. A route manager sees every reading of the
+  day; anyone else sees only the readings they made themselves, which is what
+  the mark records, not who holds the day today. Only while the retention
+  period keeps them.
 - **Without network**: a mark is shown at once and queued on the phone; the
   queue is sent when the network comes back, with the phone's time of the
   mark. Each mark carries a key, so a mark sent twice counts once. A phone
@@ -59,11 +64,56 @@ your server (the map's background tiles excepted, see *Known limits*).
 - **Proof at the stop**: who, when, the note and, only if the company turned it
   on, the position read **once** when the stop is marked. There is no
   continuous tracking.
+- **The gap, not the coordinates**: the distance in metres between the
+  position read and the customer's place, and what it means. A reading is a
+  disc, not a point: its centre is the gap away and its radius is the margin
+  the phone reported, so the three answers are about that disc against a
+  150 m block. Whole disc inside, "at the place". Whole disc outside, "away
+  from the place". Straddling the edge, "within the phone's margin", which
+  proves nothing either way. It is symmetric on purpose: a green badge is a
+  claim in the person's favour and an orange one a claim against them, and
+  both have to be earned. "Away from the place" stays a reading and not a
+  verdict, since a large site or a service door at the back land there too.
+  Two more states: "customer without a place", and "place itself from a
+  reading" when the place being compared with was taken from a position read
+  on a route, so the gap compares a reading with a reading.
+- **Who reads the gap**: the coordinates, the gap, its state and the margin
+  are all the route manager's on the desk screens. The person who MARKED the
+  stop reads their own, in words, in the application on their phone: that is
+  the right of access of s. 27 of Law 25, served where the person actually is.
+  Field-level rights cannot express "mine only" on a stored column, and the
+  record rules key on who holds the day, not on who made the mark, so a desk
+  column would have handed a reassigned day's new holder someone else's
+  reading.
+- **A place from a position**: at a customer with no place on the map, the
+  position read can be written as the point of their street, by a person
+  pressing a button, never by a cron. Refused when the customer already has a
+  place of any kind, their own coordinates or a street point the geocoder
+  found; when the position has been erased; when the phone did not report its
+  accuracy; and beyond 50 m. The contact's chatter says where its coordinates
+  came from, and the contact itself carries the date, under *Place on the map
+  (routes)*: a gap measured against a place that came from a reading is not an
+  independent check of that reading.
+- **The road actually driven**: OSRM measures the road from the route's start
+  point, through the positions read in the order the stops were marked, back to
+  its end point, at the end of the day and on demand (*Measure the road from the
+  positions*). The two depot legs come from the route's own points, since no
+  position is read at the depot; without them the figure fell short of the
+  odometer by the whole way out and back, which is most of a day. Printed beside
+  the odometer, never summed into the mileage log, and it stays once measured,
+  including after the positions themselves are erased: it is a distance, not a
+  place.
 - **Position notice** (Law 25, s. 8.1): before any position is read, the
   worker reads the notice and acknowledges it. The acknowledgement keeps the
   text as read. A new text, or turning positions on, asks everyone to read it
   again. Positions are erased after the retention period (90 days by default);
-  the stop and its time stay.
+  the stop and its time stay. Two things outlive the position and the notice
+  says so: the kilometres measured for the day, which are a distance and not a
+  place, and a customer's place accepted from a reading, which has become that
+  customer's address. The standard notice changed in 18.0.1.4.0 to say both, so
+  that version asks every worker whose company reads positions to read it
+  again. A company that replaced the standard text keeps its own: review it
+  against those two points.
 - **Mileage**: odometer at the start and end of the day, logged to the
   vehicle (`fleet.vehicle.odometer`); planned distance and driving time from
   OSRM.
@@ -116,7 +166,23 @@ street or a building.
 | Worker on the road | See their own route days and the routes they drive; start, mark and finish their days. No direct write: every change goes through checked methods. |
 | Route manager | Build routes, plan, optimize, cancel days, see every day and the positions. Reads every vehicle. |
 
-Positions are visible to route managers only.
+Coordinates, the gap, its state and the accuracy the phone reported are visible
+to route managers only on the desk screens. The person who marked the stop reads
+their own gap, its state and its margin as a sentence in the application on their
+phone (s. 27 of Law 25: the office cannot be the only one to see what the person's
+own phone produced). On the map and on the phone, a reading is shown to the person
+who made the mark and to a route manager, never to whoever holds the day
+afterwards.
+
+⚠️ Known gap: once the office reassigns a finished day, the person who made the
+marks can no longer reach that day at all, so an access request about it goes
+through the office. The record rules follow the day's holder; the reading follows
+who marked it.
+
+Install `bf_route_privacy` beside this module to declare the three uses of a
+reading in the privacy register, to record every erasure, and to keep the
+retention setting and the declared term equal: with it installed, a company
+that reads positions cannot be set to a term the register does not declare.
 
 ## Configuration
 
@@ -160,13 +226,32 @@ reported to the office on the day's chatter with one activity per day.
   restarted without network cannot open "My route" until it is back.
 - Marks waiting for the network keep their position on the phone until sent.
 - No signature or photo at the stop.
+- The directions link at a stop (Google Maps, Apple Maps, Waze) sends that
+  customer's address, or their coordinates, to whichever of the three the person
+  presses, outside Canada. It is the one deliberate exception besides the map
+  tiles to everything else staying on your server.
 - The map's background tiles are OpenStreetMap's by default: the viewer's
   browser fetches them from the OpenStreetMap Foundation (United Kingdom),
   which learns the area looked at (no name, no address). Their usage policy
   allows light use with the credit shown. Point *Settings › Work routes › Map
   tiles* to a tile server of your own to keep that on your side too.
+- Accepting a reading as a customer's place changes what every stop of that
+  customer is compared with, past and future, including stops someone else
+  marked. Those stops read "place itself from a reading", which is the honest
+  answer: both points came from the same kind of phone at the same door, so the
+  gap confirms nothing. It stays that way after the reading it came from has
+  been erased. The contact also carries the date, under *Place on the map
+  (routes)*.
+- The map's tiles are fetched by the viewer's browser, so opening the map of a
+  day shows the tile server the area the readings are in. Since 18.0.1.4.0 the
+  standard notice names that service and says it is outside Canada, in two
+  variants depending on whether the company set a tile server of its own;
+  assessing the transfer itself belongs in the privacy impact assessment.
 - The mileage log counts the odometer's kilometres: a day without both
-  readings counts 0 km, even when OSRM planned its distance. Its "Leaving
+  readings counts 0 km, even when OSRM planned its distance or measured the
+  road through the positions. Both are printed beside it, so such a day is not
+  blank, but neither is summed into the total: the log answers to Revenu
+  Québec, which asks for the odometer. Its "Leaving
   from" is the route's depot, not where the worker actually left from.
 - The log holds the business trips of the route days only. For an automobile
   the employer provides, the register Revenu Québec asks the employee to hand

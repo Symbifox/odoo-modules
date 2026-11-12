@@ -5,6 +5,7 @@ server's (UTC) nor the worker's phone: "the 7:30 route" is 7:30 where it runs.
 Datetimes are stored naive UTC, as everywhere in Odoo.
 """
 from datetime import datetime, time, timedelta
+from math import asin, cos, radians, sin, sqrt
 
 import pytz
 
@@ -70,3 +71,33 @@ def parse_client_time(value, now=None, earliest=None):
     if earliest and parsed < earliest:
         return None
     return parsed
+
+
+# Mean Earth radius (m). Good to ~0.3 % anywhere, which is far finer than the
+# accuracy a phone reports in a street (5 m at best, often 20 to 60 m).
+EARTH_RADIUS_M = 6371008.8
+
+
+def haversine_m(lat1, lon1, lat2, lon2):
+    """Distance in metres between two points, as the crow flies, or None.
+
+    ⚠️ Never the road distance: for the gap between a position read at a stop
+    and the customer's place, that is what is wanted. A road distance would
+    answer "how far did it drive", not "was the person there".
+
+    ⚠️ Whether a point EXISTS is the caller's business, not this function's. An
+    Odoo Float reads 0.0 when it was never set, and 0.0 is also a real coordinate:
+    the Greenwich meridian for a longitude, the Gulf of Guinea for both. A guard
+    written here as ``value in (None, False)`` would read a genuine 0 as missing,
+    because ``0.0 == False`` in Python. So the callers test their own fields and
+    only ask for a distance once they hold two points they consider set.
+
+    None only when a coordinate was not given at all.
+    """
+    if None in (lat1, lon1, lat2, lon2):
+        return None
+    phi1, phi2 = radians(lat1), radians(lat2)
+    d_phi = phi2 - phi1
+    d_lambda = radians(lon2) - radians(lon1)
+    a = sin(d_phi / 2) ** 2 + cos(phi1) * cos(phi2) * sin(d_lambda / 2) ** 2
+    return 2 * EARTH_RADIUS_M * asin(min(1.0, sqrt(a)))

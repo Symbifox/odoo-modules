@@ -29,6 +29,14 @@ class ResPartner(models.Model):
         help="Point of the street when the geocoder found the street but not the number: it plans "
              "the kilometres, it never guides the phone.")
     bf_route_street_longitude = fields.Float(string="Street longitude (routes)", digits=(10, 7), copy=False)
+    bf_route_street_from_position = fields.Datetime(
+        string="Street point from a reading", readonly=True, copy=False,
+        groups="bf_route.group_route_manager",
+        help="Set when the street point was accepted from a position read on a route, and "
+             "empty when the geocoder found it. ⚠️ A gap measured against a place that came "
+             "from a reading is not an independent check of that reading: both were read by "
+             "the same phone at the same door. It is here so the office can tell the two "
+             "apart on the screen rather than having to remember.")
 
     def write(self, vals):
         """Coordinates follow the address: a contact that moves loses the old ones, so the
@@ -41,7 +49,10 @@ class ResPartner(models.Model):
                               and any(not _same(p[f], vals[f]) for f in ADDRESS_FIELDS if f in vals))
         result = super().write(vals)
         if moved:
-            super(ResPartner, moved).write(dict.fromkeys(COORDINATE_FIELDS, 0.0))
+            # The stamp goes with the point it describes: a street point from a reading at
+            # the old address says nothing about the new one.
+            super(ResPartner, moved).write(dict(dict.fromkeys(COORDINATE_FIELDS, 0.0),
+                                                bf_route_street_from_position=False))
         return result
 
     def action_bf_route_locate(self):

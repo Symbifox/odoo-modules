@@ -47,6 +47,9 @@
                             invisible="state in ('done', 'canceled')" groups="bf_route.group_route_manager"/>
                     <button name="action_reset" type="object" string="Plan again"
                             invisible="state != 'canceled'" groups="bf_route.group_route_manager"/>
+                    <button name="action_road_distance" type="object"
+                            string="Measure the road from the positions"
+                            invisible="state != 'done'" groups="bf_route.group_route_manager"/>
                     <field name="state" widget="statusbar" statusbar_visible="planned,in_progress,done"/>
                 </header>
                 <sheet>
@@ -73,6 +76,7 @@
                             <field name="odometer_start"/>
                             <field name="odometer_end"/>
                             <field name="distance_actual_km"/>
+                            <field name="distance_road_km"/>
                             <field name="visited" invisible="not visited"/>
                         </group>
                         <group string="Plan" name="plan">
@@ -102,9 +106,26 @@
                                     <field name="done_at" optional="hide" options="{'show_seconds': false}"/>
                                     <field name="sent_later" optional="hide"/>
                                     <field name="note" optional="show"/>
+                                    <!-- "vague" is muted on purpose: a reading inside the
+                                         phone's own margin proves nothing, and a colour
+                                         would make it look like a verdict either way. -->
+                                    <field name="position_check" widget="badge" optional="show"
+                                           decoration-success="position_check == 'near'"
+                                           decoration-warning="position_check == 'far'"
+                                           decoration-muted="position_check == 'vague'"
+                                           decoration-info="position_check in ('unplaced', 'from_reading')"/>
+                                    <field name="position_gap_m" optional="show"
+                                           invisible="position_check not in ('near', 'vague', 'far', 'from_reading')"/>
+                                    <button name="action_propose_place" type="object" icon="fa-map-marker"
+                                            title="Use this position as the customer's place"
+                                            invisible="position_check != 'unplaced'"
+                                            groups="bf_route.group_route_manager"/>
                                     <field name="latitude" optional="hide" groups="bf_route.group_route_manager"/>
                                     <field name="longitude" optional="hide" groups="bf_route.group_route_manager"/>
-                                    <field name="accuracy" optional="hide" groups="bf_route.group_route_manager"/>
+                                    <!-- Shown, not hidden: this is the column that tells the
+                                         badge beside it apart from a verdict, and a gap read
+                                         without its margin is half a reading. -->
+                                    <field name="accuracy" optional="show"/>
                                     <field name="template_stop_id" column_invisible="1"/>
                                 </list>
                             </field>

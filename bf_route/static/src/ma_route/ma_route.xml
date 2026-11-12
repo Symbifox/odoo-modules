@@ -94,6 +94,13 @@
                                             <i class="fa fa-map-marker"/> Arrived at <t t-esc="stop.arrived_at"/>
                                             <t t-if="stop.done_at and stop.state !== 'todo'"> · left at <t t-esc="stop.done_at"/></t>
                                         </div>
+                                        <!-- The person sees the position read on their own stop: the right
+                                             of access of s. 27 of Law 25, and the gap rather than the
+                                             coordinates, which say nothing to anyone. The sentence is
+                                             built by the server: see _position_sentence. -->
+                                        <div class="small text-muted o_bf_position" t-if="stop.position">
+                                            <i class="fa fa-crosshairs"/> <t t-esc="stop.position.label"/>
+                                        </div>
                                         <div class="small fst-italic mt-1" t-if="stop.instructions"><t t-esc="stop.instructions"/></div>
                                     </div>
                                     <span t-if="stop.state !== 'todo'" class="badge o_bf_state_badge flex-shrink-0">

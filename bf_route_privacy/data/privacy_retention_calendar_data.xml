@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            ROU-001, la position relevée à l'arrêt.
+
+            🔴 CE FICHIER EST EN FRANÇAIS, et c'est volontaire, dans un module dont le code
+            est en anglais source. `privacy.retention.calendar` ne porte AUCUN champ
+            `translate=True` : ni `name`, ni `description`, ni `legal_basis`, ni `notes`.
+            Aucun catalogue ne peut donc rattraper la langue de ces quatre champs, et le
+            `.pot` du module n'en contient aucune entrée. Les 26 autres règles du calendrier,
+            venues de onze satellites maison et de `privacy_consent`, sont en français : une
+            règle anglaise au milieu d'elles, et ce serait justement celle du GPS des
+            personnes salariées, dans le registre qu'un responsable de la vie privée montre
+            à un inspecteur. Même raison pour `data_categories` et `notes` de la politique
+            de rétention, dans l'autre fichier. Les finalités, elles, SONT traduisibles et
+            restent en anglais source avec leur catalogue.
+
+            Au plus 90 jours. Pourquoi pas un jour, un réglage vu sur le terrain :
+            l'avis lu par la personne dit que la position sert à régler un
+            désaccord sur une livraison, et un désaccord se lève des jours plus tard. Une
+            position effacée le lendemain ne sert donc pas la fin écrite dans l'avis, ce qui
+            est le reproche inverse de celui qu'on fait d'habitude à une durée.
+
+            Pourquoi pas trois ans, la durée de COR-001 (correspondance) et de RDV-001
+            (différend sur ce qui avait été convenu) : la position d'une personne salariée
+            n'est pas de la correspondance. Trois ans de relevés, même un par arrêt,
+            finissent par dessiner ses journées. Quatre-vingt-dix jours couvrent le cycle de
+            facturation et la contestation qui le suit, sans accumuler cette image.
+            Décision de l'éditeur, consignée avec ses raisons.
+
+            ⚠️ C'est un PLAFOND, pas un plancher. L'art. 23 LPRPSP demande la destruction
+            quand la fin est accomplie ; détruire plus tôt est de la minimisation et reste
+            vrai, chaque entrée nommant la durée réellement appliquée. Le pont tient ce
+            plafond : une société qui relève des positions ne peut pas être réglée plus
+            longtemps que ce qui est déclaré pour elle.
+
+            ⚠️ `active_retention_years` est un entier en ANNÉES et il est obligatoire : 0 et
+            la durée réelle écrite au long, sur le patron de AUD-001 (mesure d'audience) et
+            de ST-CONTENU (transferts). `total_retention_days` se calcule en années fois 365
+            et rendra donc 0 : ce n'est pas la durée appliquée.
+
+            ⚠️ `company_id` vide : la purge balaie toutes les sociétés, archivées comprises,
+            donc le registre de chacune doit pouvoir montrer la règle que ses effacements
+            citent.
+        -->
+        <record id="retention_route_position" model="privacy.retention.calendar">
+            <field name="name">Position relevée à l'arrêt d'une route</field>
+            <field name="code">ROU-001</field>
+            <field name="document_type">hr_file</field>
+            <field name="description">Latitude, longitude et précision en mètres lues une seule fois au téléphone de la personne sur la route, au moment où elle marque un arrêt (fait, client absent, reporté). Conservation d'au plus 90 jours à compter du marquage ; une société peut régler une durée plus courte, et chaque entrée de destruction nomme la durée réellement appliquée. Aucun suivi continu, aucune lecture entre les arrêts. L'arrêt, son heure et la marque ne relèvent pas de cette règle : ils suivent le dossier de projet. Deux choses survivent à la position et sont nommées dans chaque entrée de destruction : les kilomètres de la journée mesurés depuis les relevés, qui sont une distance et non un lieu et qui relèvent de ROU-002, et la place d'un client acceptée depuis un relevé, devenue l'adresse de ce client.</field>
+            <field name="legal_basis">Art. 8.1 LPRPSP : la personne est informée au préalable du recours à une technologie permettant de la localiser, et des moyens offerts pour l'activer. Art. 23 LPRPSP : le renseignement est détruit lorsque la fin pour laquelle il a été recueilli est accomplie ; la durée déclarée est donc un plafond, et détruire plus tôt est conforme. La fin est la preuve de la visite et le règlement d'un désaccord sur une livraison, et 90 jours couvrent le cycle de facturation et la contestation qui le suit. Art. 12 al. 2 (1°) LPRPSP : les deux usages secondaires, situer le client visité et mesurer la route parcourue, ont le lien direct et pertinent exigé. Art. 3.2 LPRPSP : cadre de conservation et de destruction.</field>
+            <field name="active_retention_years">0</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="False"/>
+            <field name="applies_to_model">bf.route.day.stop</field>
+            <field name="notes">Durée réelle : au plus 90 jours, pas 0. Le champ des années est obligatoire et ne descend pas sous l'année (patron AUD-001 et ST-CONTENU). ⚠️ Cette règle ne pilote rien : l'effacement est fait par le cron de `bf_route` (`_purge_positions`), selon le réglage « Garder les positions » de chaque société. Depuis 18.0.1.1.0 le pont tient le plafond : une société qui relève des positions ne peut pas être réglée plus longtemps que la durée déclarée, et elle ne peut pas commencer à relever si rien n'est déclaré. Une durée plus courte est acceptée sans rien déclarer de plus : c'est de la minimisation, et l'entrée de destruction nomme la durée appliquée. L'approbation n'est pas requise parce qu'il n'y a rien à approuver : l'effacement est automatique et limité à trois champs, et c'est le pont `bf_route_privacy` qui inscrit chaque effacement au registre, en portée partielle.</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!--
+            ROU-002, les kilomètres de la journée mesurés depuis les relevés.
+
+            Pourquoi une règle à part, et pas rien. Le chiffre est DÉRIVÉ des positions
+            mais il n'est pas une position : il dit jusqu'où la journée a roulé, pas où
+            elle est allée. Il survit donc à l'effacement des relevés, et il est imprimé au
+            registre des kilomètres. La première écriture de ce module disait qu'il « suit
+            le registre des kilomètres de la société » ; or aucune règle
+            du calendrier ne couvrait les véhicules ni les journées de route, donc ce renvoi
+            pointait vers du vide, ce qui est exactement le défaut que ce module refuse
+            ailleurs. Décision de l'éditeur : une règle, six ans.
+
+            Six ans, et pas trois : c'est la durée des livres et registres que Revenu Québec
+            et l'ARC exigent, à compter de la fin de la dernière année d'imposition visée.
+            Le chiffre est une pièce de ce registre-là, pas de la correspondance.
+
+            🔴 RIEN N'APPLIQUE ENCORE CETTE RÈGLE, et la note le dit. Aucun cron ne détruit
+            de journée de route, ni dans `bf_route` ni ici : détruire automatiquement une
+            pièce fiscale demande sa propre décision et son propre lot. La règle déclare le
+            régime et rend le trou visible ; elle ne prétend pas l'avoir bouché.
+        -->
+        <record id="retention_route_road_measured" model="privacy.retention.calendar">
+            <field name="name">Kilomètres d'une journée de route mesurés depuis les positions</field>
+            <field name="code">ROU-002</field>
+            <field name="document_type">tax</field>
+            <field name="description">Distance par la route d'une journée de travail, mesurée entre les positions relevées aux arrêts et les points de dépôt de la route, conservée sur la journée comme un nombre de kilomètres à côté des relevés d'odomètre. C'est une distance, pas un lieu : elle ne permet pas de situer la personne. Elle survit à l'effacement des positions dont elle est dérivée (ROU-001) parce qu'elle est une pièce du registre des kilomètres de la société.</field>
+            <field name="legal_basis">Art. 12 al. 2 (1°) LPRPSP : usage secondaire compatible, la route parcourue ayant un lien direct et pertinent avec la preuve des visites qui a justifié le relevé. Art. 23 LPRPSP : le renseignement est détruit lorsque la fin est accomplie ; la fin est ici la tenue du registre des kilomètres, dont la durée est fixée par la loi fiscale. Loi sur l'administration fiscale (Québec) et Loi de l'impôt sur le revenu (Canada) : les livres et registres se conservent six ans après la fin de la dernière année d'imposition à laquelle ils se rapportent.</field>
+            <field name="active_retention_years">6</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">bf.route.day</field>
+            <field name="notes">🔴 Aucune automatisation n'applique encore cette règle : ni `bf_route` ni ce pont ne détruisent de journée de route, et aucun cron ne balaie `bf.route.day`. La règle déclare le régime et rend le trou visible ; l'effacement au terme des six ans se fait à la main, ou dans un lot ultérieur. L'approbation est requise, à la différence de ROU-001, précisément parce que détruire une pièce du registre des kilomètres n'est pas un geste automatique et porte sur la journée entière, pas sur trois champs. ⚠️ Le nombre de kilomètres ne permet pas de situer la personne ; c'est pour ça qu'il n'est pas effacé avec les positions de ROU-001.</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

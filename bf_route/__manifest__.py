@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Work Routes",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.4.0",
     "category": "Services/Field Service",
     "summary": "Recurring routes for people on the road: stops in order, proof at each stop, "
                "mileage, alerts, and a phone screen for the worker",
@@ -23,12 +23,25 @@ technicians, sales representatives.
   Marks made without network are sent later and keep the phone's time;
 - a map of the day, on the phone and on the day's form: the stops numbered in
   order and coloured by their state, and the road between them from the
-  self-hosted OSRM. Background tiles from OpenStreetMap by default (fetched by
-  the viewer's browser), or from the tile server set in the settings;
+  self-hosted OSRM. The positions read at the stops are drawn beside them, in a
+  second and smaller mark, with the accuracy the phone reported as a disc, so
+  the day as it happened shows next to the day as it was planned. Background
+  tiles from OpenStreetMap by default (fetched by the viewer's browser), or
+  from the tile server set in the settings;
 - proof at the stop: the time, and the position read once when the stop is
   marked, only if the company turned it on and the worker has read the notice
   (Quebec Law 25, s. 8.1). Positions are erased after the retention period.
   There is no continuous tracking;
+- what the position is FOR, rather than the position itself: the gap in metres
+  between the reading and the customer's place, and what that gap means, on the
+  stop and on the worker's own screen. The coordinates stay with the route
+  manager; the gap is readable by the person who produced it, which is the
+  right of access of s. 27. A reading at a customer with no place on the map
+  can be proposed as that place, by a person, never by a cron;
+- the road actually driven, measured by OSRM through the positions read, in the
+  order the stops were marked. It is printed beside the odometer, never summed
+  into the mileage log: the log answers to Revenu Québec, which asks for the
+  odometer;
 - mileage: odometer at the start and end of the day, logged to the vehicle;
   planned distance from a self-hosted OSRM. The mileage log lists the days
   driven with the customers visited as the purpose of each trip, and prints

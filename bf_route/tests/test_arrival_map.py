@@ -224,7 +224,15 @@ class TestMap(RouteCase):
         self.assertEqual(coords[0], coords[-1])
         self.assertEqual(len(coords), 5)
 
-    def test_never_the_worker_s_positions(self):
+    def test_the_planned_points_never_carry_a_read_position(self):
+        """The stops stay the customers' places. The positions read live in their own list.
+
+        ⚠️ This test used to assert that a read position never reached the map at all, and
+        the README promised it. The decision taken when the register was written is the
+        other way: the day as it happened is drawn beside the day as it was planned. What
+        must not happen is the two being mixed up, which is what this now checks: a stop's
+        point is its customer's place, whatever was read at it.
+        """
         self.company.bf_route_position_mode = "stops"
         self.env["bf.route.notice.ack"].with_user(self.worker).app_acknowledge(
             self.company.bf_route_notice_version, self.company.id)
@@ -235,10 +243,37 @@ class TestMap(RouteCase):
         self.assertAlmostEqual(stop.sudo().latitude, 46.9)
         with patch(REQUEST, side_effect=requests.ConnectionError("down")):
             data = self.map(user=self.manager)
-        flat = repr(data)
-        self.assertNotIn("46.9", flat)
-        self.assertNotIn("-71.1", flat)
-        self.assertEqual(data["points"][1]["lat"], 45.52)
+        self.assertEqual(data["points"][1]["lat"], 45.52,
+                         "the stop is where the customer is, not where the phone was")
+        self.assertNotIn("46.9", repr(data["points"]))
+        self.assertNotIn("46.9", repr(data["line"]))
+
+    def test_the_read_positions_come_as_their_own_list(self):
+        self.company.bf_route_position_mode = "stops"
+        self.env["bf.route.notice.ack"].with_user(self.worker).app_acknowledge(
+            self.company.bf_route_notice_version, self.company.id)
+        self.start(self.day)
+        stop = self.day.stop_ids.sorted("sequence")[0]
+        stop.with_user(self.worker).app_mark("done", position={"latitude": 46.9, "longitude": -71.1,
+                                                               "accuracy": 5})
+        with patch(REQUEST, side_effect=requests.ConnectionError("down")):
+            for user in (self.worker, self.manager):
+                data = self.map(user=user)
+                self.assertEqual(len(data["read"]), 1)
+                self.assertAlmostEqual(data["read"][0]["lat"], 46.9)
+                self.assertEqual(data["read"][0]["accuracy"], 5)
+                self.assertEqual(data["read"][0]["stop_id"], stop.id)
+
+    def test_a_stranger_gets_no_map_at_all(self):
+        """The read positions ride on app_map, so the guard that matters is its own."""
+        self.company.bf_route_position_mode = "stops"
+        self.env["bf.route.notice.ack"].with_user(self.worker).app_acknowledge(
+            self.company.bf_route_notice_version, self.company.id)
+        self.start(self.day)
+        self.day.stop_ids.sorted("sequence")[0].with_user(self.worker).app_mark(
+            "done", position={"latitude": 46.9, "longitude": -71.1, "accuracy": 5})
+        with self.assertRaises(AccessError):
+            self.map(user=self.other)
 
     def test_engine_down_draws_straight_lines(self):
         with patch(REQUEST, side_effect=requests.ConnectionError("down")):

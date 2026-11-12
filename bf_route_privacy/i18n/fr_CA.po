@@ -1,0 +1,314 @@
+# Translation of Work Routes: Privacy Bridge (Quebec Law 25) - French (Canada).
+# The module's source strings are written in English: this catalogue carries the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_route_privacy 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-09 19:57+0000\n"
+"PO-Revision-Date: 2026-11-09 19:57+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/bf_route_day_stop.py:0
+msgid ""
+"Automatic erasure under rule %(rule)s. The approval is the rule itself, "
+"approved when the retention term was decided; there is no case-by-case "
+"approval, the erasure bearing on three fields and not being triggered by a "
+"person. The account named as having destroyed and approved is the one the "
+"watcher runs under."
+msgstr ""
+"Effacement automatique sous la règle %(rule)s. L'approbation est la règle "
+"elle-même, approuvée quand la durée de conservation a été décidée ; il n'y a"
+" pas d'approbation au cas par cas, l'effacement portant sur trois champs et "
+"n'étant pas déclenché par une personne. Le compte nommé comme ayant détruit "
+"et approuvé est celui sous lequel tourne la surveillance."
+
+#. module: bf_route_privacy
+#: model:ir.model,name:bf_route_privacy.model_privacy_document_classification
+msgid "Classification documentaire (RP)"
+msgstr "Classification documentaire (RP)"
+
+#. module: bf_route_privacy
+#: model:ir.model,name:bf_route_privacy.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: bf_route_privacy
+#: model:privacy.purpose,name:bf_route_privacy.purpose_route_place_from_position
+msgid "Customer's place proposed from a position read"
+msgstr "Place d'un client proposée depuis une position relevée"
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/bf_route_day_stop.py:0
+msgid "Fields set back to zero: %s."
+msgstr "Champs remis à zéro : %s."
+
+#. module: bf_route_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_route_privacy.purpose_route_place_from_position
+msgid ""
+"It is a proposal: someone on the team accepts or refuses it,\n"
+"                and nothing is written without that acceptance. A reading that\n"
+"                is too imprecise is not proposed at all."
+msgstr ""
+"C'est une proposition : une personne de l'équipe l'accepte ou la refuse, et "
+"rien ne s'écrit sans cette acceptation. Une lecture trop imprécise n'est pas"
+" proposée."
+
+#. module: bf_route_privacy
+#: model:privacy.purpose,name:bf_route_privacy.purpose_route_road_measured
+msgid "Kilometres of a day measured from the positions read"
+msgstr "Kilomètres d'une journée mesurés depuis les positions relevées"
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/bf_route_day_stop.py:0
+msgid ""
+"Latitude, longitude and accuracy in metres of the person on the road, read "
+"once at the moment they marked the stop."
+msgstr ""
+"Latitude, longitude et précision en mètres de la personne sur la route, "
+"relevées une seule fois au moment où elle a marqué l'arrêt."
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/bf_route_day_stop.py:0
+msgid ""
+"Not covered, and still held: the stop itself, its arrival time, its marking "
+"time, the person who marked it, their note and the time on site, which are "
+"the proof of the visit and follow the project file; the position notice as "
+"it was read (bf.route.notice.ack), which is the proof of the prior "
+"information of s. 8.1 and must outlive the position it made lawful; the "
+"kilometres of the day measured from the readings before they were erased, "
+"which is a distance and not a place and which falls under rule ROU-002, six "
+"years; and, where an office person accepted one of these readings as a "
+"customer's place on the map, that copy, which has become the customer's own "
+"address and carries on the contact the date it was accepted."
+msgstr ""
+"Non visés, et toujours conservés : l'arrêt lui-même, son heure d'arrivée, "
+"son heure de marquage, la personne qui a marqué, sa note et le temps sur "
+"place, qui sont la preuve du passage et suivent le dossier de projet ; "
+"l'avis de position tel qu'il a été lu (bf.route.notice.ack), qui est la "
+"preuve de l'information préalable de l'art. 8.1 et doit survivre à la "
+"position qu'il a rendue licite ; les kilomètres de la journée mesurés depuis"
+" les relevés avant leur effacement, qui sont une distance et non un lieu et "
+"qui relèvent de la règle ROU-002, six ans ; et, là où une personne du bureau"
+" a accepté un de ces relevés comme place d'un client sur la carte, cette "
+"copie, devenue l'adresse propre du client et qui porte sur la fiche la date "
+"de son acceptation."
+
+#. module: bf_route_privacy
+#: model:privacy.purpose,name:bf_route_privacy.purpose_route_position
+msgid "Position read at the stops of a route"
+msgstr "Position relevée aux arrêts d'une route"
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/bf_route_day_stop.py:0
+msgid ""
+"Position read on the phone on %(marked)s, at the \"%(customer)s\" stop of "
+"the day \"%(day)s\", erased at the end of the company's %(days)s day(s) of "
+"retention."
+msgstr ""
+"Position relevée au téléphone le %(marked)s, à l'arrêt « %(customer)s » de "
+"la journée « %(day)s », effacée au terme des %(days)s jour(s) de "
+"conservation de la société."
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/res_company.py:0
+msgid ""
+"Positions cannot be read: the privacy register declares no retention term for them. Its retention policy is missing, archived, or set to zero days.\n"
+"\n"
+"Declare the term first. Each erasure is sealed in the destruction register as an immutable entry citing that rule, and a processing nobody declared is one nobody can object to."
+msgstr ""
+"Les positions ne peuvent pas être relevées : le registre de vie privée ne déclare aucune durée de conservation pour elles. Sa politique de conservation est absente, archivée, ou réglée à zéro jour.\n"
+"\n"
+"Déclarez la durée d'abord. Chaque effacement est scellé au registre des destructions comme une entrée immuable qui cite cette règle, et un traitement que personne n'a déclaré est un traitement auquel personne ne peut s'opposer."
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/bf_route_day_stop.py:0
+msgid ""
+"Section 23 of Quebec's Law 25: personal information is destroyed when the "
+"purpose for which it was collected is accomplished. The purpose is proving "
+"the visit and settling a disagreement about a delivery. Section 8.1: the "
+"person had been informed beforehand of the reading and of the means offered "
+"to activate it. Section 3.2: framework for retention and destruction."
+msgstr ""
+"Art. 23 LPRPSP : le renseignement personnel est détruit lorsque la fin pour "
+"laquelle il a été recueilli est accomplie. La fin est la preuve de la visite"
+" et le règlement d'un désaccord sur une livraison. Art. 8.1 LPRPSP : la "
+"personne avait été informée au préalable du relevé et des moyens offerts "
+"pour l'activer. Art. 3.2 LPRPSP : cadre de conservation et de destruction."
+
+#. module: bf_route_privacy
+#: model:ir.model,name:bf_route_privacy.model_bf_route_day_stop
+msgid "Stop of a route day"
+msgstr "Arrêt d'une journée de route"
+
+#. module: bf_route_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_route_privacy.purpose_route_position
+msgid ""
+"The position is erased at the end of the retention calendar.\n"
+"                The stop, its time and your mark remain: they are what proves\n"
+"                the visit."
+msgstr ""
+"La position s'efface au terme du calendrier de conservation. L'arrêt, son "
+"heure et votre marque restent : ce sont eux qui prouvent le passage."
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/res_company.py:0
+msgid ""
+"The privacy register declares that positions read on a route are kept at most %(declared)s (purpose \"%(rule)s\", rule ROU-001), and %(company)s is set to keep them %(applied)s.\n"
+"\n"
+"Lower the setting, or declare the longer term in the register. Keeping them for LESS is fine and needs nothing: section 23 of Law 25 asks that information be destroyed once its purpose is accomplished, which is a ceiling, and each erasure names the term it actually applied."
+msgstr ""
+"Le registre de vie privée déclare que les positions relevées sur une route se conservent au plus %(declared)s (finalité « %(rule)s », règle ROU-001), et %(company)s est réglée pour les garder %(applied)s.\n"
+"\n"
+"Baissez le réglage, ou déclarez la durée plus longue au registre. Les garder MOINS longtemps est très bien et ne demande rien : l'art. 23 de la Loi 25 veut que le renseignement soit détruit une fois sa fin accomplie, ce qui est un plafond, et chaque effacement nomme la durée réellement appliquée."
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/bf_route_day_stop.py:0
+msgid ""
+"The register refuses to attest the erasure of the position at the stop of "
+"\"%(stop)s\": %(fields)s still hold a value. Nothing was recorded and the "
+"erasure is undone; bf_route's purge will come back on its next pass."
+msgstr ""
+"Le registre refuse d'attester l'effacement de la position à l'arrêt de « "
+"%(stop)s » : %(fields)s porte(nt) encore une valeur. Rien n'a été inscrit et"
+" l'effacement est annulé ; la purge de bf_route reprendra au prochain "
+"passage."
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/bf_route_day_stop.py:0
+msgid ""
+"The register refuses to attest the erasure of the position at the stop of "
+"\"%(stop)s\": the \"position erased\" mark is not set, so nothing on the "
+"record says a position ever existed."
+msgstr ""
+"Le registre refuse d'attester l'effacement de la position à l'arrêt de « "
+"%(stop)s » : la marque « position effacée » n'est pas posée, donc rien sur "
+"la fiche ne dit qu'une position a existé."
+
+#. module: bf_route_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_route_privacy.purpose_route_road_measured
+msgid ""
+"The road between the positions read at your stops is\n"
+"                measured, in the order you marked them, and kept on the day as\n"
+"                a number of kilometres, beside the odometer readings."
+msgstr ""
+"La route entre les positions relevées à vos arrêts est mesurée, dans l'ordre"
+" où vous les avez marqués, et conservée sur la journée comme un nombre de "
+"kilomètres, à côté des relevés d'odomètre."
+
+#. module: bf_route_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_route_privacy.purpose_route_road_measured
+msgid ""
+"This number is a distance, not a place: it says how far the\n"
+"                day drove, not where it went. It stays on the day after the\n"
+"                positions themselves have been erased, and it is kept six years\n"
+"                under rule ROU-002, the term the tax law sets for books and\n"
+"                records."
+msgstr ""
+"Ce nombre est une distance, pas un lieu : il dit jusqu'où la journée a "
+"roulé, pas où elle est allée. Il reste sur la journée après l'effacement des"
+" positions elles-mêmes, et il se conserve six ans sous la règle ROU-002, la "
+"durée que la loi fiscale fixe aux livres et registres."
+
+#. module: bf_route_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_route_privacy.purpose_route_place_from_position
+msgid ""
+"What is kept in the end is the customer's place, not the\n"
+"                position of the person who marked the stop. But that copy stays\n"
+"                with the customer: it has become their address, and it is not\n"
+"                erased with the position it came from. The customer's record\n"
+"                carries the date it was accepted."
+msgstr ""
+"Ce qui est conservé au bout du compte est la place du client, pas la "
+"position de la personne qui a marqué l'arrêt. Mais cette copie reste avec le"
+" client : elle est devenue son adresse, et elle ne s'efface pas avec la "
+"position dont elle vient. La fiche du client porte la date de son "
+"acceptation."
+
+#. module: bf_route_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_route_privacy.purpose_route_road_measured
+msgid ""
+"What it is for: comparing the kilometres claimed with the\n"
+"                road actually driven, in the register the company keeps for its\n"
+"                vehicles. It is never added into the odometer's total."
+msgstr ""
+"À quoi il sert : comparer les kilomètres réclamés à la route réellement "
+"parcourue, dans le registre que la société tient pour ses véhicules. Il ne "
+"s'additionne jamais au total de l'odomètre."
+
+#. module: bf_route_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_route_privacy.purpose_route_position
+msgid ""
+"What it is for: proving the visit to the customer, settling a\n"
+"                disagreement about a delivery, and measuring the kilometres of\n"
+"                the day. Who sees it: the people who manage the routes, and you,\n"
+"                on your own stops."
+msgstr ""
+"À quoi elle sert : prouver la visite au client, régler un désaccord sur une "
+"livraison, et mesurer les kilomètres de la journée. Qui la voit : les "
+"personnes qui gèrent les routes, et vous, sur vos propres arrêts."
+
+#. module: bf_route_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_route_privacy.purpose_route_place_from_position
+msgid ""
+"When a customer's record has no coordinates and their address\n"
+"                could not be found automatically, the position read at their\n"
+"                stop can be proposed as their place on the map."
+msgstr ""
+"Quand la fiche d'un client n'a pas de coordonnées et que son adresse n'a pas"
+" pu être retrouvée automatiquement, la position relevée à son arrêt peut "
+"être proposée comme sa place sur la carte."
+
+#. module: bf_route_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_route_privacy.purpose_route_position
+msgid ""
+"When you mark a stop on your route (done, customer absent,\n"
+"                postponed), the application reads your phone's position\n"
+"                <b>once</b>, at that moment, and keeps it with the stop as proof\n"
+"                of the visit. It does not follow you between stops, nor before\n"
+"                the day starts, nor after it ends."
+msgstr ""
+"Quand vous marquez un arrêt de votre route (fait, client absent, reporté), "
+"l'application lit la position de votre téléphone <b>une seule fois</b>, à ce"
+" moment-là, et la conserve avec l'arrêt comme preuve de la visite. Elle ne "
+"vous suit pas entre les arrêts, ni avant le début de la journée, ni après sa"
+" fin."
+
+#. module: bf_route_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_route_privacy.purpose_route_position
+msgid ""
+"Your phone asks for your permission the first time. If you\n"
+"                refuse, the stops are marked without a position, and your\n"
+"                refusal is not recorded."
+msgstr ""
+"Votre téléphone vous demande la permission la première fois. Si vous "
+"refusez, les arrêts se marquent sans position, et votre refus n'est pas "
+"consigné."
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/bf_route_day_stop.py:0
+msgid "customer removed"
+msgstr "client retiré"
+
+#. module: bf_route_privacy
+#. odoo-python
+#: code:addons/bf_route_privacy/models/bf_route_day_stop.py:0
+msgid "unknown date"
+msgstr "date inconnue"

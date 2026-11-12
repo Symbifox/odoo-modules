@@ -39,3 +39,34 @@
     &.o_bf_pin_start span,
     &.o_bf_pin_end span { background-color: #212529; }
 }
+
+// The position read when a stop was marked: smaller than the stop's pin, and never the
+// same colour, so the day as it happened does not pass for the day as it was planned.
+.o_bf_route_read {
+    align-items: center;
+    background: #fff;
+    border: 2px solid #6c757d;
+    border-radius: 50%;
+    color: #495057;
+    display: flex;
+    font-size: 10px;
+    justify-content: center;
+
+    &.o_bf_read_far {
+        border-color: #d9822b;
+        color: #d9822b;
+    }
+    &.o_bf_read_near {
+        border-color: #28a745;
+        color: #28a745;
+    }
+    // No rule for o_bf_read_vague, o_bf_read_unplaced or o_bf_read_none, on purpose: they
+    // keep the grey above. A reading inside the phone's own margin proves nothing, and a
+    // colour would read as a verdict in one direction or the other.
+}
+
+// The accuracy the phone reported, as a disc around the reading.
+.o_bf_route_accuracy {
+    stroke: #6c757d;
+    fill: #6c757d;
+}

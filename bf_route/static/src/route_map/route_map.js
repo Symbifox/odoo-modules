@@ -12,7 +12,8 @@ const LEAFLET = "/bf_route/static/lib/leaflet/leaflet";
 /**
  * The map of one route day: the start, the stops numbered in order (coloured by their
  * state), the return point, and the road between them from the self-hosted OSRM (straight
- * lines without it). Customers' places only, never the worker's positions.
+ * lines without it). Customers' places, plus the positions read at the stops as a second,
+ * smaller kind of mark when the payload carries them.
  * Leaflet is loaded the first time a map opens, not with the backend.
  */
 export class RouteMap extends Component {
@@ -97,7 +98,43 @@ export class RouteMap extends Component {
             const title = p.kind === "stop" ? `${p.rank}. ${p.label}` : p.label;
             L.marker([p.lat, p.lon], { icon, title, keyboard: true }).bindTooltip(escape(title)).addTo(map);
         }
-        const bounds = path.length ? L.latLngBounds(path) : null;
+        // The positions read when the stops were marked: a second, smaller mark, so the
+        // map shows the day as it happened beside the day as it was planned. They are only
+        // in the payload for the worker of the day and for a route manager (app_map runs
+        // _check_driver), and only while the retention period keeps them.
+        const read = data.read || [];
+        for (const r of read) {
+            // The rank and the customer here; the sentence about the reading comes built
+            // from the server, in the reader's language and in the right voice. Assembled
+            // here out of numbers, it printed "read at 0 m (± 0 m)" for a customer with no
+            // place to compare with and for a phone that reported no margin.
+            const title = _t("%(rank)s. %(label)s", { rank: r.rank, label: r.label });
+            const tooltip = r.note ? `${escape(title)}<br/>${escape(r.note)}` : escape(title);
+            if (r.accuracy) {
+                // What the phone said it was unsure by, drawn rather than told: a gap of
+                // 90 m with a 120 m accuracy is not a gap at all.
+                L.circle([r.lat, r.lon], {
+                    radius: r.accuracy,
+                    className: "o_bf_route_accuracy",
+                    weight: 1,
+                    fillOpacity: 0.08,
+                }).addTo(map);
+            }
+            const icon = L.divIcon({
+                className: `o_bf_route_read o_bf_read_${r.check || "none"}`,
+                html: '<span class="fa fa-crosshairs"/>',
+                iconSize: [18, 18],
+                iconAnchor: [9, 9],
+            });
+            L.marker([r.lat, r.lon], { icon, title, keyboard: true })
+                .bindTooltip(tooltip)
+                .addTo(map);
+        }
+        // Read positions count towards the frame even when nothing was planned with
+        // coordinates: a day whose customers have no place at all would otherwise draw its
+        // marks and then show the whole province.
+        const frame = [...path, ...read.map((r) => [r.lat, r.lon])];
+        const bounds = frame.length ? L.latLngBounds(frame) : null;
         if (bounds && bounds.isValid()) {
             map.fitBounds(bounds, { padding: [24, 24], maxZoom: 15 });
         } else {
