@@ -29,6 +29,8 @@ from odoo import _, http
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
 
+from ..models.bf_capture import ServiceIndisponible
+
 _logger = logging.getLogger(__name__)
 
 STATIQUES = "/bf_capture/static/src/capture"
@@ -337,6 +339,14 @@ class BfCapturePage(http.Controller):
         Les erreurs reviennent dans ``error`` plutôt qu'en exception : la page
         les affiche telles quelles, et une phrase du serveur vaut mieux qu'un
         « erreur inattendue ».
+
+        🔴 Et chaque refus annule sa transaction (18.0.1.4.3). Rendre le refus
+        laisse la requête se terminer normalement, donc Odoo valide ce que le
+        geste avait déjà écrit. Le chemin n'est pas théorique : ``deposer_memo``
+        crée la note PUIS la pièce jointe, et une règle d'accès ou une contrainte
+        sur ``ir.attachment`` laissait une note **sans son audio** dans le
+        bloc-notes de la personne, pendant que l'écran disait que ça n'avait pas
+        marché.
         """
         try:
             octets = base64.b64decode(audio_b64 or "", validate=True)
@@ -352,10 +362,28 @@ class BfCapturePage(http.Controller):
             resultat = request.env["bf.capture"].deposer_memo(
                 octets, nom_source="memo%s" % extension, titre=titre or None)
         except AccessError:
+            request.env.cr.rollback()
             return {"error": _("Ce compte ne peut pas déposer de mémo.")}
+        except ServiceIndisponible as exc:
+            # 🔴 Une panne n'est pas un défaut de la page (18.0.1.4.3, remarque
+            # de relecture). Sans cette branche, un Nextcloud ou une dictée
+            # injoignable tombait dans l'attrape-tout : une trace au journal,
+            # comme pour un bogue, et à l'écran « le serveur n'a pas pu
+            # enregistrer le mémo », qui n'invite pas à réessayer. La route
+            # mobile, elle, rend un 503 que l'app comprend. Ici, personne ne
+            # rejoue à notre place : il faut le dire à la personne, et son son
+            # est encore dans la page (`capture.js` ne jette le blob qu'au
+            # succès).
+            _logger.warning("bf_capture: mémo refusé, service indisponible (%s)", exc)
+            request.env.cr.rollback()
+            return {"error": _("Un service nécessaire est injoignable (la dictée ou le "
+                               "dépôt). Votre enregistrement est encore là : réessayez "
+                               "dans un moment.")}
         except UserError as exc:
+            request.env.cr.rollback()
             return {"error": str(exc)}
         except Exception:  # noqa: BLE001
+            request.env.cr.rollback()
             _logger.exception("bf_capture: échec du mémo depuis la page")
             return {"error": _("Le serveur n'a pas pu enregistrer le mémo.")}
 

@@ -251,7 +251,8 @@ class TestCapture(TransactionCase):
         self.assertIn("Rappeler l'équipe demain", note.body)
 
     def test_le_memo_survit_a_un_fil_qui_refuse(self):
-        """🔴 Relevé en production : `message_post` exige une adresse à l'auteur.
+        """🔴 Relevé en jouant le parcours complet : `message_post` exige une
+        adresse à l'auteur.
 
         Un compte sans courriel faisait échouer tout le dépôt, après la
         création de la note et de la pièce. Le mémo doit survivre : c'est le

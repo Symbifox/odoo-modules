@@ -64,7 +64,7 @@ and numbers the name if it is taken.
 | Key | Default | What it is |
 |---|---|---|
 | `bf_capture.folder` | `Transcriptions` | The watched folder, relative to the root of the active Nextcloud configuration's account. |
-| `bf_capture.max_bytes` | 128 MiB | Cap for a meeting. One hour of AAC 16 kHz mono weighs about 15 MB. |
+| `bf_capture.max_bytes` | 128 MiB | Cap for a meeting. One hour of AAC 16 kHz mono weighs about 5 MB. |
 | `bf_capture.memo_max_bytes` | 8 MiB | Cap for a memo, aligned with the transcription service's own limit. |
 
 ## What the module does not do
@@ -78,10 +78,10 @@ recorded.
 
 ## Offline replay and outages (18.0.1.3.0)
 
-The mobile app replays a recording until it gets an answer. `rencontre` and
-`memo` accept a `client_uuid`: a recording sent again after a dropped connection
-receives the original response instead of creating a second meeting record or a
-second memo. Receipts are kept per user for thirty days.
+The mobile app replays a recording until it gets an answer. `rencontre`, `memo`
+and `televersement/terminer` accept a `client_uuid`: a recording sent again after
+a dropped connection receives the original response instead of creating a second
+meeting record or a second memo. Receipts are kept per user for thirty days.
 
 An outage is not a refusal. When Nextcloud or the transcription service does not
 answer, the routes now return `503` instead of `400`: on a `400` the app dropped
@@ -104,6 +104,41 @@ oldest giving way (`bf_capture.televersement_max_ouverts`); a `503` when free
 space does not cover the announced file plus a 1 GiB margin; and an upload that has received no
 chunk for 48 hours is purged by Odoo's daily cleanup.
 
+Since 18.0.1.4.3 those bounds hold under their own edge cases. An upload's
+metadata and its bytes are required together, and deleting one always removes the
+metadata first: a half-deleted upload answers "not found", a refusal the client
+understands, instead of a server error it would replay forever. Free space is
+counted minus what the uploads already open have not yet written, so two uploads
+opened at the same time cannot promise the same disk, and each chunk re-checks the
+disk and returns `503` under the margin rather than failing on a full filesystem.
+The disk is checked before the oldest upload is evicted, so a refusal for lack of
+space no longer costs a recording. Every size limit tolerates an unreadable
+setting: a non-numeric value is logged and ignored instead of breaking every
+upload, the capability probe, and the general settings screen.
+
+**A finished upload keeps its metadata, and that changes the contract.** The
+deposit is an effect outside the transaction: the file reaches the watched folder,
+and if the answer is lost before the transaction commits, the idempotency receipt
+never exists. A client would then ask for the upload's state, be told it is
+unknown, start over, and deposit a second copy under a numbered name, which a
+folder watcher turns into a second set of minutes for one meeting. This is not a
+rare race: a deposit that takes longer than the client's own read timeout loses
+its answer every time. So the metadata now records the deposited name *before* the
+upload is sent, and the response *after*, which gives three things to count on:
+
+* `etat` reports a finished upload as complete (`recus == taille`) and adds
+  `"depose": true`, so a client does not re-send the bytes;
+* `morceau` answers `409` with the final offset once the file is deposited;
+* `terminer` is replayable: it returns the original response without depositing
+  again, and an interrupted deposit replays onto the name it had reserved, so it
+  overwrites instead of creating a second file.
+
+A reserved name counts as a taken name, exactly like a file already in the folder:
+otherwise two uploads of the same meeting, which compute the same name, would let
+one overwrite the other's recording. The bytes themselves are released as soon as
+the file is out: the metadata carries the idempotency, not the file, and the pair
+is purged with the daily cleanup.
+
 ## Guard
 
 The deposit writes to Nextcloud through a service account, **outside the
@@ -112,7 +147,10 @@ not a portal account. A portal account holding a device token could otherwise
 drop a file into a folder that a robot empties every thirty seconds.
 
 The memo route checks that right **before** transcribing: a portal account no
-longer makes the transcription service run for nothing.
+longer makes the transcription service run for nothing. Since 18.0.1.4.3, a
+refusal on either surface also rolls its transaction back: returning a refusal
+used to let Odoo commit whatever the gesture had already written, such as a note
+without its audio.
 
 Since 18.0.1.4.2 every public method of the model is `@api.private`. Odoo's RPC
 route `/web/dataset/call_kw` is open to any authenticated user, portal included,

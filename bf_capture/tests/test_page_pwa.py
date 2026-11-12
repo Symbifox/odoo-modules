@@ -12,6 +12,7 @@ import json
 
 from unittest.mock import patch
 
+from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import HttpCase, tagged
 
 from ..controllers.page_pwa import _encre_sur
@@ -221,6 +222,63 @@ class TestCapturePage(HttpCase):
         self.assertEqual(note.name, "Depuis la page")
         # Le schéma d'adresse du client web d'Odoo 18.
         self.assertEqual(resultat["url"], "/odoo/m-bf.note/%s" % note.id)
+
+    def test_une_panne_se_dit_en_phrase_et_non_en_bogue(self):
+        """🔴 ``ServiceIndisponible`` tombait dans l'attrape-tout : une
+        trace au journal, comme pour un bogue, et à l'écran « le serveur n'a pas
+        pu enregistrer le mémo », qui n'invite pas à réessayer. La route mobile,
+        elle, rendait déjà un 503 que l'app comprend.
+        """
+        self.authenticate("admin", "admin")
+        son = base64.b64encode(b"x" * 4000).decode()
+        Modele = type(self.env["bf.capture"])
+
+        def dictee_injoignable(self, contenu, nom_source):
+            raise UserError("Service de transcription injoignable")
+
+        avant = self.env["bf.note"].search_count([])
+        with patch.object(Modele, "transcription_disponible", lambda self: True), \
+                patch.object(Modele, "_transcrire", dictee_injoignable):
+            resultat = self._memo(audio_b64=son,
+                                  mimetype="audio/webm").json()["result"]
+        self.assertIn("injoignable", resultat["error"])
+        self.assertIn("réessayez", resultat["error"])
+        self.assertNotIn("n'a pas pu enregistrer", resultat["error"])
+        self.env.invalidate_all()
+        self.assertEqual(self.env["bf.note"].search_count([]), avant,
+                         "une panne a quand même laissé une note")
+
+    def test_un_refus_ne_laisse_pas_une_note_sans_son_audio(self):
+        """🔴 La page rendait son refus et Odoo validait quand même (constat
+        d'une relecture adverse du 2026-11-12).
+
+        ``deposer_memo`` crée la note PUIS la pièce jointe. Une règle d'accès ou
+        une contrainte sur ``ir.attachment`` laissait donc une note **sans son
+        audio** dans le bloc-notes, pendant que l'écran disait que ça n'avait pas
+        marché. C'est le défaut que le lot corrige sur la route mobile, et qui
+        manquait ici.
+        """
+        self.authenticate("admin", "admin")
+        son = base64.b64encode(b"x" * 4000).decode()
+        Piece = type(self.env["ir.attachment"])
+        vrai_create = Piece.create
+
+        def create_qui_refuse(self, vals_list):
+            vals = vals_list if isinstance(vals_list, dict) else (vals_list or [{}])[0]
+            if vals.get("res_model") == "bf.note":
+                raise AccessError("Pas de pièce jointe ici.")
+            return vrai_create(self, vals_list)
+
+        avant = self.env["bf.note"].search_count([])
+        with patch.object(type(self.env["bf.capture"]),
+                          "transcription_disponible", lambda self: False), \
+                patch.object(Piece, "create", create_qui_refuse):
+            resultat = self._memo(audio_b64=son, mimetype="audio/webm",
+                                  titre="Témoin du refus").json()["result"]
+        self.assertIn("error", resultat)
+        self.env.invalidate_all()
+        self.assertEqual(self.env["bf.note"].search_count([]), avant,
+                         "le refus a laissé une note sans son audio")
 
     def test_le_type_du_navigateur_choisit_l_extension(self):
         """Safari rend du MP4, Chrome du WebM : la pièce jointe doit suivre."""

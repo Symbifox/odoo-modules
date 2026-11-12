@@ -84,24 +84,44 @@ def _authed():
 
 
 def _guarded(fn):
+    """Traduit ce que lève le modèle en réponse d'API, et ANNULE la transaction.
+
+    🔴 Le retour en arrière manquait (18.0.1.4.3, remarque de relecture) : une
+    route qui attrape l'exception et rend un refus laisse la requête se
+    terminer normalement, donc Odoo valide la transaction. Ce que le geste avait
+    déjà écrit avant son refus restait en base — la note d'un mémo dont la pièce
+    jointe a échoué, un accusé à moitié posé — et l'app, qui reçoit un refus,
+    n'a aucune raison de revenir le nettoyer. ``bf_scan`` annule depuis
+    toujours ; ici, non.
+
+    ⚠️ Le prix assumé : ``_authed`` écrit ``last_seen`` AVANT le geste, dans la
+    même transaction, et un refus l'annule donc aussi. La dernière présence d'un
+    appareil est un indicateur ; ce qu'un refus doit laisser derrière lui, c'est
+    rien du tout. C'est le même arbitrage que dans ``bf_scan``.
+    """
     try:
         return fn()
     except Conflit as exc:
         # Hors séquence : la position où reprendre, pas un refus.
+        request.env.cr.rollback()
         return _json({"error": "offset", "recus": exc.recus}, 409)
     except ServiceIndisponible:
         # 🔴 Une panne n'est pas un refus. En 400, l'app retirait
         # l'enregistrement de sa file ; en 503, elle le garde et le rejoue.
+        request.env.cr.rollback()
         return _json({"error": "unavailable"}, 503)
     except AccessError as exc:
+        request.env.cr.rollback()
         return _json({"error": "forbidden", "detail": str(exc)}, 403)
     except UserError as exc:
         # ⚠️ Couvre aussi les `ValidationError` : les gardes de chemin de la
         # passerelle Nextcloud lèvent celle-là, et elle DÉRIVE de UserError
         # depuis Odoo 13. Vérifié plutôt que supposé (un essai le rejoue), et
         # l'ajouter explicitement ici ne changerait rien.
+        request.env.cr.rollback()
         return _json({"error": "bad_request", "detail": str(exc)}, 400)
     except Exception:  # noqa: BLE001
+        request.env.cr.rollback()
         _logger.exception("API captation : erreur inattendue")
         return _json({"error": "server_error"}, 500)
 
@@ -176,7 +196,8 @@ class BfCaptureMobileApi(http.Controller):
             # Un bouton qui ne peut pas aboutir vaut moins que pas de bouton.
             "enabled": capture.is_configured(),
             "memo_enabled": capture.transcription_disponible(),
-            # `client_uuid` accepté sur /rencontre et /memo.
+            # `client_uuid` accepté sur /rencontre, /memo et
+            # /televersement/terminer : les trois gestes qui déposent.
             "idempotency": 1,
             "max_bytes": settings["max_bytes"],
             "memo_max_bytes": settings["memo_max_bytes"],

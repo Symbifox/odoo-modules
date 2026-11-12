@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-22 07:51+0000\n"
-"PO-Revision-Date: 2026-09-22 07:51+0000\n"
+"POT-Creation-Date: 2026-11-12 11:46+0000\n"
+"PO-Revision-Date: 2026-11-12 11:46+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -53,6 +53,12 @@ msgstr ""
 #. module: bf_capture
 #. odoo-python
 #: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Ce compte ne peut pas déposer de mémo."
+msgstr ""
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
 msgid ""
 "Ce navigateur ne sait pas enregistrer. Essayez l'application, ou un "
 "navigateur récent."
@@ -81,9 +87,29 @@ msgid "Config Settings"
 msgstr ""
 
 #. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_capture
 #. odoo-python
 #: code:addons/bf_capture/models/bf_capture.py:0
 msgid "Date de début illisible : %s"
+msgstr ""
+
+#. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__client_uuid
+msgid "Device identifier"
+msgstr ""
+
+#. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__display_name
+msgid "Display Name"
 msgstr ""
 
 #. module: bf_capture
@@ -147,8 +173,33 @@ msgstr ""
 
 #. module: bf_capture
 #. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid "Fichier trop volumineux (%(recu)s, maximum %(max)s)."
+msgstr ""
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid "Fichier vide."
+msgstr ""
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid ""
+"Format non pris en charge par le processeur de rencontres : %(ext)s. "
+"Acceptés : %(liste)s."
+msgstr ""
+
+#. module: bf_capture
+#. odoo-python
 #: code:addons/bf_capture/controllers/mobile_api.py:0
 msgid "Format non reconnu : %s"
+msgstr ""
+
+#. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__id
+msgid "ID"
 msgstr ""
 
 #. module: bf_capture
@@ -157,6 +208,11 @@ msgstr ""
 msgid ""
 "Il faut une rencontre ou un titre : c'est le nom du fichier qui dit au "
 "processeur de quel client il s'agit."
+msgstr ""
+
+#. module: bf_capture
+#: model:ir.model.fields,help:bf_capture.field_bf_capture_mobile_receipt__response
+msgid "JSON body returned the first time, returned again on replay."
 msgstr ""
 
 #. module: bf_capture
@@ -181,9 +237,31 @@ msgstr ""
 
 #. module: bf_capture
 #. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "La captation est réservée aux usagers internes."
+msgstr ""
+
+#. module: bf_capture
+#. odoo-python
 #: code:addons/bf_capture/controllers/page_pwa.py:0
 msgid ""
 "La dictée n'est pas configurée ici : le mémo arrivera en audio, sans texte."
+msgstr ""
+
+#. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid "Le fichier dépasse la taille annoncée."
 msgstr ""
 
 #. module: bf_capture
@@ -228,6 +306,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_capture/controllers/page_pwa.py:0
 msgid "Lecture du son impossible."
+msgstr ""
+
+#. module: bf_capture
+#: model:ir.model,name:bf_capture.model_bf_capture_mobile_receipt
+msgid "Mobile idempotency receipt (capture)"
 msgstr ""
 
 #. module: bf_capture
@@ -327,6 +410,16 @@ msgid "Rencontre introuvable."
 msgstr ""
 
 #. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__response
+msgid "Response"
+msgstr ""
+
+#. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__route
+msgid "Route"
+msgstr ""
+
+#. module: bf_capture
 #. odoo-python
 #: code:addons/bf_capture/controllers/page_pwa.py:0
 msgid "Son illisible."
@@ -340,6 +433,11 @@ msgstr ""
 #. module: bf_capture
 #: model:ir.model.fields,field_description:bf_capture.field_res_config_settings__bf_capture_max_bytes
 msgid "Taille maximale d'une rencontre (octets)"
+msgstr ""
+
+#. module: bf_capture
+#: model:ir.model.constraint,message:bf_capture.constraint_bf_capture_mobile_receipt_user_client_uuid_unique
+msgid "This device identifier was already used by this user."
 msgstr ""
 
 #. module: bf_capture
@@ -360,61 +458,27 @@ msgid "Trop d'enregistrements du même nom dans le dossier."
 msgstr ""
 
 #. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid "Téléversement introuvable."
+msgstr ""
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid ""
+"Un service nécessaire est injoignable (la dictée ou le dépôt). Votre "
+"enregistrement est encore là : réessayez dans un moment."
+msgstr ""
+
+#. module: bf_capture
 #: model:ir.model.fields,help:bf_capture.field_res_config_settings__bf_capture_max_bytes
 msgid "Une heure d'audio du téléphone pèse environ 5 Mo."
 msgstr ""
 
 #. module: bf_capture
-#. odoo-python
-#: code:addons/bf_capture/controllers/page_pwa.py:0
-msgid "Votre session a expiré. Rechargez la page."
-msgstr ""
-
-#. module: bf_capture
-#: model:ir.model,name:bf_capture.model_bf_capture_mobile_receipt
-msgid "Mobile idempotency receipt (capture)"
-msgstr ""
-
-#. module: bf_capture
 #: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__user_id
 msgid "User"
-msgstr ""
-
-#. module: bf_capture
-#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__client_uuid
-msgid "Device identifier"
-msgstr ""
-
-#. module: bf_capture
-#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__route
-msgid "Route"
-msgstr ""
-
-#. module: bf_capture
-#: model:ir.model.fields,field_description:bf_capture.field_bf_capture_mobile_receipt__response
-msgid "Response"
-msgstr ""
-
-#. module: bf_capture
-#: model:ir.model.fields,help:bf_capture.field_bf_capture_mobile_receipt__response
-msgid "JSON body returned the first time, returned again on replay."
-msgstr ""
-
-#. module: bf_capture
-#: model:ir.model.constraint,message:bf_capture.constraint_bf_capture_mobile_receipt_user_client_uuid_unique
-msgid "This device identifier was already used by this user."
-msgstr ""
-
-#. module: bf_capture
-#. odoo-python
-#: code:addons/bf_capture/controllers/page_pwa.py:0
-msgid "Ce compte ne peut pas déposer de mémo."
-msgstr ""
-
-#. module: bf_capture
-#. odoo-python
-#: code:addons/bf_capture/models/bf_capture.py:0
-msgid "La captation est réservée aux usagers internes."
 msgstr ""
 
 #. module: bf_capture
@@ -425,30 +489,6 @@ msgstr ""
 
 #. module: bf_capture
 #. odoo-python
-#: code:addons/bf_capture/models/televersement.py:0
-msgid "Téléversement introuvable."
-msgstr ""
-
-#. module: bf_capture
-#. odoo-python
-#: code:addons/bf_capture/models/televersement.py:0
-msgid "Fichier vide."
-msgstr ""
-
-#. module: bf_capture
-#. odoo-python
-#: code:addons/bf_capture/models/televersement.py:0
-msgid "Fichier trop volumineux (%(recu)s, maximum %(max)s)."
-msgstr ""
-
-#. module: bf_capture
-#. odoo-python
-#: code:addons/bf_capture/models/televersement.py:0
-msgid "Format non pris en charge par le processeur de rencontres : %(ext)s. Acceptés : %(liste)s."
-msgstr ""
-
-#. module: bf_capture
-#. odoo-python
-#: code:addons/bf_capture/models/televersement.py:0
-msgid "Le fichier dépasse la taille annoncée."
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Votre session a expiré. Rechargez la page."
 msgstr ""

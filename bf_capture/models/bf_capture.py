@@ -16,6 +16,7 @@ import logging
 import mimetypes
 import posixpath
 import re
+import time
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -23,6 +24,7 @@ from markupsafe import escape
 
 from odoo import _, api, models
 from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.tools import config as odoo_config
 
 _logger = logging.getLogger(__name__)
 
@@ -32,8 +34,9 @@ _UTC = ZoneInfo("UTC")
 # l'horodatage du nom comme une heure de MONTRÉAL pour dater le compte rendu
 # (`services/odoo.py`, conversion `_MTL` → UTC), et la DATE du nom comme une
 # journée UTC pour interroger le calendrier CalDAV. Composer le nom dans le
-# fuseau de l'appareil (Pacific/Auckland pour la flotte d'ici) donne une date en
-# avance d'un jour et une heure fausse de seize heures.
+# fuseau de l'appareil, lui, donne une date en
+# avance d'un jour et une heure fausse de plusieurs heures. Le fuseau de
+# l'appareil n'est pas une hypothèse : un téléphone en voyage suffit.
 _MTL = ZoneInfo("America/Montreal")
 
 _DEFAULT_FOLDER = "Transcriptions"
@@ -53,8 +56,8 @@ _EXTENSIONS = (".m4a", ".mp3", ".mp4", ".wav", ".ogg", ".webm", ".amr", ".mkv")
 
 # Caractères qu'un nom de fichier ne peut pas porter sans casser un client
 # Windows ou WebDAV. Le point-virgule et l'esperluette passent : le parc en
-# contient déjà, et ils traversent WebDAV sans dommage (vérifié sur le
-# Nextcloud de production le 2026-09-21, avec accents et apostrophe).
+# contient déjà, et ils traversent WebDAV sans dommage (vérifié contre un
+# serveur Nextcloud, avec accents et apostrophe).
 #
 # 🔴 Le pour-cent, lui, ne passe pas : `_sanitize_nc_path` REFUSE tout chemin
 # qui se décoderait (« TPS 100%B2 » porte un %XX valide), et il lève une
@@ -118,13 +121,42 @@ class BfCapture(models.AbstractModel):
             raise AccessError(_("La captation est réservée aux usagers internes."))
 
     @api.model
+    def _param_entier(self, cle, defaut, minimum=1):
+        """Un entier lu d'un paramètre système ; illisible, le défaut tient.
+
+        🔴 Un ``int()`` nu sur un paramètre faisait de chaque réglage une mine
+        (18.0.1.4.3) : une valeur non numérique dans
+        ``bf_capture.televersement_max_ouverts`` levait une ``ValueError`` que
+        personne n'attrapait, et le magnétophone rendait un 500 à CHAQUE
+        ouverture jusqu'à ce que quelqu'un retrouve le paramètre. Les quatre
+        plafonds du module se lisent donc ici : un réglage fautif est un réglage
+        ignoré, dit au journal, pas une surface en panne.
+        """
+        brut = self.env["ir.config_parameter"].sudo().get_param(cle)
+        if brut in (None, False, ""):
+            return defaut
+        try:
+            valeur = int(str(brut).strip())
+        except (TypeError, ValueError):
+            _logger.warning(
+                "bf_capture: %s = %r n'est pas un entier ; défaut (%s) retenu",
+                cle, brut, defaut)
+            return defaut
+        if valeur < minimum:
+            _logger.warning(
+                "bf_capture: %s = %s est sous le minimum (%s) ; minimum retenu",
+                cle, valeur, minimum)
+            return minimum
+        return valeur
+
+    @api.model
     def _settings(self):
         ICP = self.env["ir.config_parameter"].sudo()
         return {
             "dossier": (ICP.get_param("bf_capture.folder") or _DEFAULT_FOLDER).strip().strip("/"),
-            "max_bytes": int(ICP.get_param("bf_capture.max_bytes") or _DEFAULT_MAX_BYTES),
-            "memo_max_bytes": int(
-                ICP.get_param("bf_capture.memo_max_bytes") or _DEFAULT_MEMO_MAX_BYTES),
+            "max_bytes": self._param_entier("bf_capture.max_bytes", _DEFAULT_MAX_BYTES),
+            "memo_max_bytes": self._param_entier(
+                "bf_capture.memo_max_bytes", _DEFAULT_MEMO_MAX_BYTES),
         }
 
     @api.model
@@ -222,7 +254,12 @@ class BfCapture(models.AbstractModel):
                 nom = (entree.get("name") or "").strip()
                 if nom and not entree.get("is_dir"):
                     pris.add(nom)
-        return pris
+        # 🔴 Et les noms qu'un téléversement en vol a RÉSERVÉS. Ils ne sont pas
+        # encore dans le dossier, mais ils y seront : un dépôt rejoué pousse sur
+        # le nom qu'il s'était réservé, et sans cette union il écraserait le
+        # fichier que quelqu'un d'autre y a posé entretemps (voir
+        # ``_noms_reserves``, dans le volet téléversement du même modèle).
+        return pris | self._noms_reserves(dossier)
 
     @api.model
     def _nom_libre(self, config, dossier, base, extension):
@@ -348,17 +385,58 @@ class BfCapture(models.AbstractModel):
         config, dossier, nom = cible["config"], cible["dossier"], cible["nom"]
         chemin = posixpath.join(dossier, nom)
         self._nextcloud(config._webdav_mkcol, dossier)
+        depart = time.monotonic()
         self._nextcloud(
             config._webdav_put, chemin, contenu,
             content_type=mimetypes.guess_type(nom)[0] or "application/octet-stream")
+        secondes = time.monotonic() - depart
         _logger.info(
-            "bf_capture: rencontre déposée par %s (uid %s) : %s (%s octets)",
-            self.env.user.login, self.env.uid, chemin, taille)
+            "bf_capture: rencontre déposée par %s (uid %s) : %s (%s octets en %.1f s, "
+            "%.1f Mo/s)",
+            self.env.user.login, self.env.uid, chemin, taille, secondes,
+            taille / (1024.0 * 1024.0) / max(secondes, 0.001))
+        self._avertir_si_long(taille, secondes)
         return {
             "nom": nom,
             "dossier": dossier,
             "event_id": cible["evenement"].id if cible["evenement"] else False,
         }
+
+    @api.model
+    def _avertir_si_long(self, taille, secondes):
+        """Le dépôt tient en UNE requête : le journal dit quand il frôle le plafond.
+
+        ⚠️ ``televersement_terminer`` pousse le fichier entier vers Nextcloud
+        dans la requête qui le termine. Un fichier que le lien n'écrit pas
+        pendant le ``limit_time_real`` de l'instance fait tuer le travailleur en
+        vol, et l'app rejoue un ``terminer`` qui sera tué de la même façon : une
+        boucle qui coûte un travailleur à chaque tour, et qui ne se voit nulle
+        part. Le plafond de taille (4 Gio par défaut) ne protège pas de ça,
+        parce que le temps dépend du DÉBIT, que rien ici ne connaît d'avance.
+
+        Alors on mesure au lieu de deviner : chaque dépôt journalise sa durée,
+        et celui qui mange plus du quart du plafond de temps réel le dit. Deux
+        fois cet avis, et la réponse est au choix : relever
+        ``limit_time_real``, ou baisser ``bf_capture.televersement_max_bytes``.
+
+        ⚠️ Ça ne referme PAS le trou, et il ne faut pas le lire comme ça : cet
+        avis ne porte que sur les dépôts qui ont SURVÉCU. Un travailleur tué en
+        vol meurt avant la ligne de journal, et cette boucle-là reste aussi
+        muette qu'avant. C'est un indicateur avancé : il prévient tant qu'il
+        reste de la marge, et rien de plus.
+        """
+        plafond = 0
+        try:
+            plafond = int(odoo_config.get("limit_time_real") or 0)
+        except (TypeError, ValueError):
+            plafond = 0
+        if plafond > 0 and secondes > plafond / 4.0:
+            _logger.warning(
+                "bf_capture: dépôt de %s octets en %.0f s, soit plus du quart du "
+                "plafond de temps réel (%s s) : un fichier quatre fois plus gros "
+                "serait coupé en vol. Relever limit_time_real, ou baisser "
+                "bf_capture.televersement_max_bytes.",
+                taille, secondes, plafond)
 
     @api.private
     @api.model
@@ -415,7 +493,7 @@ class BfCapture(models.AbstractModel):
         # 🔴 Et le message peut échouer là où le mémo, lui, est déjà là :
         # `message_post` exige une adresse à l'auteur et lève « configurez
         # l'adresse de l'expéditeur » pour un compte qui n'en a pas. Relevé en
-        # jouant le parcours en production avec un usager d'essai. Perdre le
+        # jouant le parcours complet avec un usager d'essai. Perdre le
         # mémo pour une question de présentation serait le mauvais échange :
         # la note et son audio restent, et le défaut est journalisé.
         try:
