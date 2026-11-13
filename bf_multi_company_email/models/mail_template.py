@@ -70,8 +70,8 @@ class MailTemplate(models.Model):
 
         ``install_mode`` is excluded by the caller: during an upgrade the
         template is rewritten before the company brand data is, so a render
-        here would use half-updated values. The install hook ends with a full
-        pass instead.
+        here would use half-updated values. The install hook, and each
+        version's migration, end with a full pass instead.
         """
         Company = self.env["res.company"].sudo()
         Users = self.env["res.users"].sudo()

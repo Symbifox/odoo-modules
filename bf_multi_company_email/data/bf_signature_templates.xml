@@ -24,6 +24,81 @@
       own table borders. Left alone on purpose.
     -->
 
+    <!--
+      LA RANGÉE DE LIENS RAPIDES, ET POURQUOI C'EST DES BOUTONS
+
+      Ce commentaire vit ici, au niveau du <record>, et NON dans
+      `body_html` : Odoo stocke le corps du gabarit tel quel dans
+      `mail.template` chez chaque locataire, où il s'ouvre dans l'éditeur de
+      code. Le raisonnement du module n'a rien à faire dans la donnée d'un
+      locataire. Le corps ne porte que des pointeurs de deux lignes.
+
+      Depuis la 18.0.5.1.0, les liens rapides sont des boutons.
+      Ils étaient du texte de 10 px en #999999 : 2,85:1 de contraste sur blanc,
+      là où WCAG AA en exige 4,5:1, et un signalement d'usager les donnait
+      « très petits » sous Outlook. Trois contraintes du moteur de
+      Word commandent la forme retenue :
+
+      - un bouton est une CELLULE de tableau qui porte son fond et sa marge
+        interne, jamais un `<a>` en `display:inline-block` ni un
+        `border-radius` : Word ignore les deux ;
+      - l'écart entre deux boutons vit en `padding-right` sur une cellule
+        enveloppe sans fond. Une cellule d'espacement de quelques pixels se
+        fait écraser à la largeur de son contenu ;
+      - la taille est en POINTS, l'unité de Word. En pixels, Outlook ne la
+        fait pas suivre la mise à l'échelle de l'affichage sous Windows, et le
+        libellé se retrouve plus petit que le corps du message (Calibri 11 pt
+        par défaut).
+
+      Mesuré au gabarit de police : trois boutons de 9 pt gras font 460 px en
+      Arial — la police dont Outlook dispose, Lexend n'étant pas installée
+      chez le destinataire — et 479 px en Lexend, dans les 520 px de la carte.
+      Avec un émoji par bouton : 533 px, ça ne tient pas, et Word le rend
+      selon la police du système. D'où son absence.
+
+      Pas de `white-space: nowrap` non plus, et ce que ça donne dépend du
+      moteur. Dans un navigateur, la table extérieure de la carte porte
+      `max-width: 100%` : un quatrième lien, ou un écran étroit, fait replier
+      le libellé DANS son bouton et la carte garde sa largeur. Sous Word,
+      `max-width` est ignoré : là, la rangée ÉLARGIT la carte. Le `nowrap` de
+      l'ancienne rangée, lui, débordait dans les deux moteurs.
+
+      `bgcolor` et `mso-line-height-rule` restent — ils ne coûtent rien — mais
+      ce ne sont PAS une ceinture, et il ne faut pas compter sur eux. Mesuré
+      sur une base d'essai : le rendu passé dans `html_sanitize` avec les
+      options exactes de chaque champ, puis relu en SQL.
+
+      - `res.users.signature` est un `fields.Html` nu, donc
+        `sanitize_attributes=True` et `sanitize_style=False` : les trois
+        `bgcolor` SAUTENT, les trois `mso-line-height-rule` restent.
+      - `mail.message.body` est déclaré `sanitize_style=True` : les deux
+        sautent, et le style est réécrit sous forme compacte.
+      - `bf_signature_rendered` est déclaré `sanitize=False`, et c'est lui que
+        lisent les notifications sortantes : les deux survivent entiers.
+
+      Ce qui survit PARTOUT, et porte donc le bouton à lui seul :
+      `background-color`, `padding`, `align="center"`, `font-size: 9pt`,
+      `font-weight: 700` et le `<font>`. Changer l'un de ceux-là, c'est
+      changer le bouton ; les deux attributs ci-dessus ne rattraperaient rien.
+
+      LE LIBELLÉ EST BLANC EN DUR, et le fond est `sig['text_color']`, un
+      champ par société. Une société qui choisirait une « couleur du texte »
+      claire rendrait le libellé illisible — le défaut corrigé ici, à
+      l'envers. Les couleurs sombres d'usage courant sont largement au-dessus
+      du 4,5:1 qu'exige WCAG AA pour du texte normal.
+      Le choix du libellé par la luminance du fond est une suite à faire, au
+      prochain redémarrage du module : il demande une clé de plus dans
+      `bf_signature_data()`, donc du Python, et une pose par gabarit seul ne
+      peut pas la fournir.
+
+      LE FILET au-dessus de la rangée : le moteur de Word ne dessine aucun
+      `linear-gradient`. La couleur unie est déclarée AVANT, en
+      `background-color`, donc le filet tient là où le dégradé ne se rend pas,
+      et le dégradé la recouvre là où il se rend. `font-size` et `line-height`
+      à 1 px empêchent le `<br/>` d'enfler le filet à la hauteur d'une ligne
+      de texte sous Word.
+    -->
+
     <record id="bf_signature_card" model="mail.template">
         <field name="name">Carte — logo, barre d'accent et liens</field>
         <field name="model_id" ref="base.model_res_users"/>
@@ -35,7 +110,7 @@
 <tbody style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;"><tr style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
 
   <td t-if="sig['logo_url']" t-attf-style="border-radius:0px;border-style:none;padding:0 0px 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;width: 120px; padding-right: 0px; vertical-align: middle; color: {{ sig['text_color'] }};" width="120">
-    <a t-att-href="sig['website_href'] or '#'" target="_blank" style="text-decoration:none;border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#008f8c;border-bottom-color:#008f8c;border-right-color:#008f8c;border-top-color:#008f8c;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;color:#008f8c;display: inline-block;">
+    <a t-att-href="sig['website_href'] or '#'" target="_blank" style="text-decoration:none;border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#008f8c;border-bottom-color:#008f8c;border-right-color:#008f8c;border-top-color:#008f8c;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;color:#008f8c;">
       <img t-att-src="sig['logo_url']" t-att-alt="sig['company_name']" t-attf-style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#008f8c;border-bottom-color:#008f8c;border-right-color:#008f8c;border-top-color:#008f8c;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;vertical-align:middle;display: block; width: {{ sig['logo_width'] }}px; height: auto;" t-att-width="sig['logo_width']"/>
     </a>
   </td>
@@ -48,7 +123,7 @@
 
   <td t-attf-style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;vertical-align: middle; line-height: 1.5; color: {{ sig['text_color'] }};">
     <div t-attf-style="font-size: 16px; font-weight: 700; color: {{ sig['text_color'] }}; letter-spacing: 0.2px;">
-      <t t-out="sig['name']"/> <span t-if="sig['pronouns']" style="font-weight: 400; font-size: 11px; color: #999;">(<t t-out="sig['pronouns']"/>)</span>
+      <t t-out="sig['name']"/> <span t-if="sig['pronouns']" t-attf-style="font-weight: 400; font-size: 9pt; color: {{ sig['muted'] }};">(<t t-out="sig['pronouns']"/>)</span>
     </div>
     <div t-if="sig['title']" t-attf-style="font-size: 12px; color: {{ sig['muted'] }}; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;">
       <t t-out="sig['title']"/>
@@ -70,26 +145,32 @@
 
 <tr t-if="sig['links'] or sig['tagline']" style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
   <td colspan="3" t-attf-style="border-radius:0px;border-style:none;padding:14px 0 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding-top: 14px; color: {{ sig['text_color'] }};">
-    <div t-attf-style="height: 1px; background: linear-gradient(to right, {{ sig['accent'] }}, {{ sig['text_color'] }}); border: 0;"><br/></div>
+    <!-- Filet : repli en couleur unie, plus 1 px de line-height/font-size.
+         Pourquoi : commentaire du record, au-dessus de ce gabarit. -->
+    <div t-attf-style="height: 1px; line-height: 1px; font-size: 1px; background-color: {{ sig['accent'] }}; background-image: linear-gradient(to right, {{ sig['accent'] }}, {{ sig['text_color'] }}); border: 0;"><br/></div>
   </td>
 </tr>
 
 
 <tr t-if="sig['links']" style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
   <td colspan="3" t-attf-style="border-radius:0px;border-style:none;padding:10px 0 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding-top: 10px; color: {{ sig['text_color'] }};">
-    <table cellpadding="0" cellspacing="0" t-attf-style="border-radius: 0px; border-style: none; padding: 0px; margin: 0px; box-sizing: border-box; border-color: #808080; border-width: 0px; border-collapse: collapse; caption-side: bottom; font-family: {{ sig['font'] }}; font-size: 10px; line-height: 1.4; width: 100%; color: {{ sig['text_color'] }};" width="100%">
-      <tbody style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;"><tr style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
-        <t t-set="cell_width" t-value="int(100 / len(sig['links']))"/>
+    <!-- Boutons : un lien = une cellule à fond, libellé blanc de 9 pt gras.
+         Pourquoi, et ce que l'assainissement emporte : commentaire du record. -->
+    <table cellpadding="0" cellspacing="0" border="0" t-attf-style="border-collapse: collapse; font-family: {{ sig['font'] }};">
+      <tbody><tr>
         <t t-foreach="sig['links']" t-as="link">
-        <td t-if="not link_first" width="4" style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;color: #ddd; font-size: 9px;" align="center">|</td>
-        <td t-attf-width="{{ cell_width }}%" align="center" t-attf-style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;text-wrap-mode:nowrap;white-space-collapse:collapse;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;vertical-align: top; white-space: nowrap; color: {{ sig['text_color'] }};">
-          <t t-if="link['icon']"><t t-out="link['icon']"/></t>
-          <a t-att-href="link['url']" style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-top-color:#008f8c;border-right-color:#008f8c;border-bottom-color:#008f8c;border-left-color:#008f8c;color:#008f8c;border-radius: 0px;border-style:none; padding: 0px; margin: 0px; box-sizing: border-box; border-color: #008f8c; border-width: 0px; text-decoration: none;"><font style="color: #999999;">
-            <t t-out="link['label']"/>&#160;</font></a>
+        <td style="padding: 0 8px 0 0;">
+          <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+            <tbody><tr>
+              <td t-att-bgcolor="sig['text_color']" align="center" t-attf-style="background-color: {{ sig['text_color'] }}; padding: 8px 12px; mso-line-height-rule: exactly; line-height: 1;">
+                <a t-att-href="link['url']" t-attf-style="font-family: {{ sig['font'] }}; font-size: 9pt; font-weight: 700; line-height: 1; color: #FFFFFF; text-decoration: none;"><font style="color: #FFFFFF;"><t t-out="link['label']"/></font></a>
+              </td>
+            </tr></tbody>
+          </table>
         </td>
         </t>
-      </tr>
-    </tbody></table>
+      </tr></tbody>
+    </table>
   </td>
 </tr>
 
@@ -118,7 +199,7 @@
                 <t t-set="sig" t-value="object.bf_signature_data()"/>
                 <div t-attf-style="font-family: {{ sig['font'] }}; color: {{ sig['text_color'] }}; font-size: 13px; line-height: 1.5;">
                     <p t-attf-style="margin: 0; font-size: 16px; font-weight: 600; color: {{ sig['text_color'] }};">
-                        <t t-out="sig['name']"/> <span t-if="sig['pronouns']" style="font-weight: 400; font-size: 11px; color: #999;">(<t t-out="sig['pronouns']"/>)</span>
+                        <t t-out="sig['name']"/> <span t-if="sig['pronouns']" t-attf-style="font-weight: 400; font-size: 9pt; color: {{ sig['muted'] }};">(<t t-out="sig['pronouns']"/>)</span>
                     </p>
                     <p t-if="sig['title']" t-attf-style="margin: 0; color: {{ sig['muted'] }};">
                         <t t-out="sig['title']"/>

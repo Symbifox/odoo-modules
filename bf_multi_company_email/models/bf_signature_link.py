@@ -92,9 +92,10 @@ class BfSignatureLink(models.Model):
     )
     icon = fields.Char(
         string="Émoji",
-        help="Un seul caractère émoji affiché devant le libellé. Les clients "
-             "de messagerie les rendent tous ; une image demanderait un "
-             "hébergement et casserait au premier changement de domaine.",
+        help="Un seul caractère émoji, gardé avec le lien. ⚠ Aucun gabarit "
+             "livré ne le rend depuis la 18.0.5.1.0 : les liens y sont des "
+             "boutons, et trois boutons de 9 pt avec émoji font 533 px là où "
+             "la carte en fait 520. Il reste lisible par un gabarit maison.",
     )
     sequence = fields.Integer(string="Séquence", default=10)
     active = fields.Boolean(string="Actif", default=True)

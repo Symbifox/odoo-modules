@@ -56,6 +56,19 @@ class ResCompany(models.Model):
     bf_signature_text_color = fields.Char(
         string="Couleur du texte",
         default="#222222",
+        # Depuis la 18.0.5.1.0, ce champ ne porte plus seulement du texte : il
+        # est aussi le FOND des boutons de liens rapides, dont le libellé est
+        # blanc en dur dans les gabarits livrés. Une couleur claire ici rend
+        # donc ce libellé illisible — le défaut que la 18.0.5.1.0 corrige,
+        # exactement à l'envers. Choisir le libellé selon la luminance du fond
+        # demande une clé de plus dans `res.users.bf_signature_data()`, donc
+        # du Python : c'est une suite à faire, au prochain redémarrage du
+        # module, et pas quelque chose qu'une écriture de gabarit peut livrer.
+        help="Couleur du texte principal de la signature. ⚠ C'est aussi le "
+             "fond des boutons de liens rapides, dont le libellé est blanc : "
+             "une couleur claire ici rendrait ces libellés illisibles. "
+             "Garder une couleur foncée — WCAG AA demande 4,5:1 de contraste "
+             "contre le blanc pour du texte normal.",
     )
     bf_signature_muted_color = fields.Char(
         string="Couleur secondaire",

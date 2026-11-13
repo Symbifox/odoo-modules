@@ -2,7 +2,7 @@
     "name": "Symbifox — Courriels multi-sociétés",
     "summary": "Signatures courriel normalisées et pilotées par gabarit + "
                "adresse d'expédition et routage catchall/bounce par société",
-    "version": "18.0.5.0.3",
+    "version": "18.0.5.1.0",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

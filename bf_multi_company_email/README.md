@@ -57,6 +57,30 @@ become someone's signature. Only administrators (`base.group_system`) create,
 mark or edit a signature template: it is rendered with superuser rights and
 ends up in a whole company's signature.
 
+### What a mail client does with it
+
+There is no browser at the end of an email. Outlook renders HTML with Word's
+engine, which ignores `max-width`, `display: inline-block`, `border-radius` and
+`linear-gradient`, and which works in **points** rather than pixels. The shipped
+templates are built for that engine, and `tests/test_gabarits_livres.py`
+measures the properties of what they render rather than only that they render:
+
+- **Quick links are filled buttons** in the card, the banner and the two
+  columns — a table cell with a background colour and a white 9 pt bold label,
+  13.3:1 of contrast. Up to 18.0.5.0.3 they were 10 px grey text at 2.85:1,
+  which Word compared to an 11 pt message body and showed very small.
+- **Nothing smaller than 9 pt**, on a button or on the pronouns beside a name.
+- **Every gradient has a solid fallback declared before it**, because Word draws
+  none.
+- **No SVG logo.** Neither Gmail nor Outlook draws an SVG inside an `<img>`; a
+  `bf_signature_logo_url` served by `/web/image/website/` returns one, and the
+  upgrade logs a warning naming each company that still points there.
+
+One limitation comes with the buttons: their label is hardcoded white and their
+background is the company's **Couleur du texte**. A light colour there makes the
+labels unreadable. The field's help says so; choosing the label from the
+luminance of the background is a follow-up.
+
 ### Signatures stay current
 
 Signatures are **stored**, because `res.users.signature` is the field Odoo, the
@@ -104,8 +128,11 @@ added to all outgoing mail belongs on the mail gateway, not here.
 
 ## Quick links
 
-A quick link (`bf.signature.link`) is a short label with an optional emoji and
-an address, shown in the signature footer. Personal links come first, then the
+A quick link (`bf.signature.link`) is a short label and an address, shown in
+the signature footer as a filled button. The `icon` field still holds one
+emoji per link, but no shipped template renders it since 18.0.5.1.0: three
+9 pt buttons with an emoji are 533 px wide where the card is 520 px. A
+template of your own can still read it. Personal links come first, then the
 company's, unless the person unticks **Reprendre les liens de la société**. A
 booking link that points at one person's calendar belongs on that person: on
 the company it would send every prospect of the team to the same calendar.
@@ -183,6 +210,15 @@ menu.
 
 On install, the module assigns the card template to every company that has
 none, then renders every internal user's signature.
+
+Upgrading to 18.0.5.1.0 runs `migrations/18.0.5.1.0/end-migration.py`, which
+re-renders the stored signatures of the five templates whose body that version
+changes. It is needed because loading a data file sets `install_mode=True`, and
+under that key writing a template body does not trigger the usual re-render:
+without the script the bodies would change while the signatures already stored
+kept the old row. The step runs at `end`, once the registry is complete, so a
+bridge that replaces a signature field is loaded before anything is rendered.
+It never raises; on any error it logs the exact pass to replay by hand.
 
 Brand elements start neutral (a blue accent, a system font stack). An
 installation can seed its own values from an optional `data/brand_seed.private.json`
