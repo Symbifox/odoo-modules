@@ -130,3 +130,23 @@ class TestAccessPrivacy(AccessCase):
             "bf_property_access_privacy.report_access_efvp", self.org.ids)[0].decode()
         html = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", html))
         self.assertIn("retiré à la fin de sa plage", html)
+
+    # Lot 5 : une boîte à colis reliée reçoit un moyen de joindre la personne
+    def test_lot5_notice_names_the_contact_sent_to_a_connected_locker(self):
+        notice = self.env.ref("bf_property_access_privacy.notice_property_access_control")
+        fr = re.sub(r"\s+", " ", str(notice.body_fr))
+        en = re.sub(r"\s+", " ", str(notice.body_en))
+        self.assertIn("boîte à colis reliée au logiciel reçoit en plus un moyen de vous joindre", fr)
+        # Le connecteur peut être réglé sur « courriel ET mobile » : l'avis ne
+        # doit pas promettre un seul des deux (assertion sur la phrase entière,
+        # pas sur le mot « mobile », qui était déjà dans l'avis d'avant).
+        self.assertIn("votre courriel, votre numéro de mobile, ou les deux si l'organisation "
+                      "l'a choisi", fr)
+        self.assertIn("une correction à votre dossier (nom, logement) lui est portée", fr)
+        self.assertIn("parcel locker connected to the software also receives a way to reach you", en)
+        self.assertIn("your e-mail, your mobile number, or both if the organisation chose so", en)
+        summary = re.sub(r"\s+", " ", str(self.env.ref(
+            "bf_property_access_privacy.purpose_property_access_control").plain_language_summary))
+        self.assertIn("boîte à colis de l'immeuble est reliée", summary)
+        policy = self.env.ref("bf_property_access_privacy.retention_property_access_control")
+        self.assertIn("Boîte à colis reliée", policy.data_categories)

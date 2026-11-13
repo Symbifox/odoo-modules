@@ -27,6 +27,10 @@
                 <p>Si l'immeuble a une tablette à l'entrée, vous n'y paraissez que si vous
                 l'acceptez au portail, sous le libellé que vous choisissez ; chaque appel ou
                 livraison est consigné (date, logement) et supprimé au délai fixé.</p>
+                <p>Si la boîte à colis de l'immeuble est reliée au logiciel, elle reçoit
+                aussi un moyen de vous joindre — votre courriel, votre numéro de mobile, ou
+                les deux si l'organisation l'a choisi — parce qu'elle vous avise elle-même
+                qu'un colis vous attend.</p>
                 <p>Aucun code ni aucune donnée biométrique n'est conservé par le
                 logiciel. Vos accès sont retirés une fois votre départ confirmé, et
                 la trace en est supprimée après la durée fixée par
@@ -52,6 +56,11 @@
                 y en a un, n'existe que dans l'appareil. Le logiciel ne conserve
                 aucun code ni aucune donnée biométrique. Vous pouvez demander une clé
                 ou une carte plutôt qu'un identifiant mobile.</p>
+                <p>Une boîte à colis reliée au logiciel reçoit en plus un moyen de vous
+                joindre : votre courriel, votre numéro de mobile, ou les deux si
+                l'organisation l'a choisi. C'est elle qui vous avise qu'un colis vous
+                attend. Au départ, elle vous retire de sa liste, et une correction à votre
+                dossier (nom, logement) lui est portée.</p>
                 <p>Si vous annoncez un visiteur et lui donnez un accès, son nom est
                 consigné pour la durée de la visite et supprimé avec le journal. Une
                 entrée dans votre logement est consignée avec son motif, le préavis
@@ -78,6 +87,11 @@
                 code, if there is one, exists only in the device. The software keeps
                 no code and no biometric data. You may ask for a key or a card
                 instead of a mobile credential.</p>
+                <p>A parcel locker connected to the software also receives a way to
+                reach you: your e-mail, your mobile number, or both if the organisation
+                chose so. It is the locker that tells you a parcel is waiting. When you
+                move out, it takes you off its list, and a correction to your record
+                (name, unit) is carried over to it.</p>
                 <p>If you announce a visitor and give them access, their name is kept for
                 the visit and deleted with the journal. An entry into your dwelling is
                 recorded with its reason, the notice given and, where it applies, your
@@ -106,7 +120,7 @@
             <field name="retention_days">90</field>
             <field name="trigger_on">expiration</field>
             <field name="destruction_method">delete</field>
-            <field name="data_categories">Nom de la personne, immeuble et fraction, origine du droit (propriété, bail, occupant déclaré), points d'accès, type de support et sa référence (numéro de carte, identifiant d'annuaire), dates d'arrivée et de départ, signal de départ tiré du dossier (fin du loyer, résiliation, déguerpissement…), motif de fin d'un droit (départ, perte ou vol), consentements à la porte du logement, notes libres, ordres d'ajout et de retrait (qui, quand). Accès temporaires : nom du titulaire (visiteur, entrepreneur, personnel), entreprise, plage, et pour une entrée au logement motif, préavis, accord du locataire, motif d'urgence (texte libre). Tablette à l'entrée : consentement à l'annuaire (date), libellé choisi, journal des appels et livraisons (date, logement, issue).</field>
+            <field name="data_categories">Nom de la personne, immeuble et fraction, origine du droit (propriété, bail, occupant déclaré), points d'accès, type de support et sa référence (numéro de carte, identifiant d'annuaire), dates d'arrivée et de départ, signal de départ tiré du dossier (fin du loyer, résiliation, déguerpissement…), motif de fin d'un droit (départ, perte ou vol), consentements à la porte du logement, notes libres, ordres d'ajout et de retrait (qui, quand). Accès temporaires : nom du titulaire (visiteur, entrepreneur, personnel), entreprise, plage, et pour une entrée au logement motif, préavis, accord du locataire, motif d'urgence (texte libre). Tablette à l'entrée : consentement à l'annuaire (date), libellé choisi, journal des appels et livraisons (date, logement, issue). Boîte à colis reliée : courriel ou numéro de mobile transmis au fournisseur du casier, avec le nom, le logement et un identifiant de rapprochement.</field>
             <field name="notes">La purge est faite chaque nuit par bf_property_access : résidents partis, droits retirés et ordres clos plus vieux que le délai de l'organisation (0 = jamais). Elle ne supprime jamais un retrait encore à faire.</field>
         </record>
     </data>

@@ -1,0 +1,414 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_access_expedibox
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-13 11:55+0000\n"
+"PO-Revision-Date: 2026-11-13 11:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid " (casier d'essai)"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_organisation.py:0
+msgid ""
+"Au départ confirmé, le logiciel retire le destinataire du casier. Il ne "
+"touche jamais un destinataire qu'il n'a pas inscrit lui-même (rapprochement "
+"par identifiant), et il signale au responsable ceux qu'aucun droit ne "
+"réclame plus au lieu de les supprimer de lui-même."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Aucune inscription de ce droit repérable au casier : elle a pu y être faite "
+"à la main. Vérifiez au casier et retirez-y la personne s'il y est inscrite."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_organisation.py:0
+msgid "Boîte à colis connectée (Expedibox) : %s"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Casier %(locker)s : %(n)s destinataire(s) inscrit(s) par ce logiciel ne "
+"correspondent à aucun droit en vigueur (%(refs)s). Vérifiez au casier : s'il"
+" s'agit de personnes parties, retirez-les. Le logiciel n'y touche pas de "
+"lui-même."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Casier %(locker)s : l'inscription de %(who)s a été corrigée (%(champs)s)."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Casiers Expedibox"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_access_expedibox.view_access_connector_form_expedibox
+msgid "Casiers du jeton"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Ce connecteur n'a pas de jeton d'application."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Ce connecteur n'est pas un connecteur Expedibox."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,help:bf_property_access_expedibox.field_bf_property_access_connector__expedibox_organization_id
+msgid ""
+"Ce qu'Expedibox envoie dans l'en-tête X-Expedibox-Organization-Id de ses "
+"avis. Noté ici pour rapprocher un avis de dépôt de cette organisation ; le "
+"connecteur lui-même ne s'en sert pas."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_organisation.py:0
+msgid ""
+"Ce que le casier montre : son écran sert au livreur à choisir le "
+"destinataire, donc le nom du résident y paraît, et le réglage d'affichage "
+"appartient au casier, pas au logiciel. À vérifier chez le fournisseur et à "
+"nommer ici."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,field_description:bf_property_access_expedibox.field_bf_property_access_connector__expedibox_contact
+msgid "Ce que le casier reçoit pour joindre le résident"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_organisation.py:0
+msgid ""
+"Ce que le logiciel transmet au casier, à l'arrivée du résident : prénom, "
+"nom, logement, %s, et un identifiant de rapprochement propre à ce logiciel. "
+"Aucun numéro fixe, aucune date de bail, aucun code."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Ces points d'accès sont reliés à « %(connector)s » et ne peuvent pas l'être "
+"à un casier Expedibox (il leur faut le type « Boîte à colis » et "
+"l'identifiant de leur casier) : %(points)s."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_grant.py:0
+msgid ""
+"Cette base n'a pas d'identifiant (database.uuid) : le casier ne peut pas "
+"distinguer ses inscriptions de celles d'une autre base."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model,name:bf_property_access_expedibox.model_bf_property_access_connector
+msgid "Connecteur d'accès"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields.selection,name:bf_property_access_expedibox.selection__bf_property_access_connector__expedibox_contact__email_first
+msgid "Courriel ; le mobile seulement s'il n'y a pas de courriel"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields.selection,name:bf_property_access_expedibox.selection__bf_property_access_connector__expedibox_contact__both
+msgid "Courriel et numéro de mobile"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model,name:bf_property_access_expedibox.model_bf_property_access_grant
+msgid "Droit d'accès"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Déjà inscrit au casier (destinataire %(ref)s), corrigé : %(champs)s."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Déjà inscrit au casier (destinataire %s)."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Déjà retiré du casier (le destinataire %s n'y est plus)."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_access_expedibox.view_access_connector_form_expedibox
+msgid "Expedibox"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields.selection,name:bf_property_access_expedibox.selection__bf_property_access_connector__kind__expedibox
+msgid "Expedibox : boîte à colis"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Expedibox : destinataires sans droit"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Expedibox exige un courriel ou un numéro de mobile pour aviser %s d'un colis"
+" : la fiche n'en a aucun. Ajoutez-en un à la fiche, puis demandez à un "
+"gestionnaire de renvoyer l'ordre à l'appareil."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,help:bf_property_access_expedibox.field_bf_property_access_connector__expedibox_contact
+msgid ""
+"Expedibox exige un moyen de joindre le résident pour l'aviser d'un colis. "
+"Par défaut, le logiciel n'en communique qu'un (art. 5 de la Loi sur la "
+"protection des renseignements personnels dans le secteur privé : le minimum "
+"nécessaire)."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Expedibox exige un prénom et un nom : la fiche de « %s » n'en donne pas."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Expedibox n'a pas répondu : %s"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,field_description:bf_property_access_expedibox.field_bf_property_access_connector__expedibox_organization_id
+msgid "Identifiant d'organisation Expedibox"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,field_description:bf_property_access_expedibox.field_bf_property_access_point__expedibox_locker_id
+msgid "Identifiant du casier Expedibox"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Inscrit au casier (destinataire %s)."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,field_description:bf_property_access_expedibox.field_bf_property_access_connector__expedibox_app_token
+msgid "Jeton d'application (X-App-Token)"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,help:bf_property_access_expedibox.field_bf_property_access_point__expedibox_locker_id
+msgid ""
+"L'identifiant que le portail d'Expedibox donne au casier (« Installation "
+"details »). Le bouton « Casiers du jeton » du connecteur en donne la liste."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"La référence %(ref)s ne désigne pas l'inscription de ce droit (identifiant "
+"attendu : %(id)s) : le module n'y touche pas. Retrait à faire à la main au "
+"casier."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_point.py:0
+msgid ""
+"Le connecteur « %(connector)s » est un connecteur de boîte à colis : le "
+"point « %(point)s » doit être de type « Boîte à colis »."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Le connecteur « %s » n'a pas de jeton d'application Expedibox : le casier ne"
+" peut pas être joint."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Le destinataire %(ref)s est inscrit au casier %(autre)s, pas au casier "
+"%(attendu)s de ce point : le module n'y touche pas. Retrait à faire à la "
+"main sur le bon casier."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Le jeton ne voit aucun casier."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Le point d'accès « %s » n'a pas d'identifiant de casier Expedibox (bouton « "
+"Casiers du jeton » sur le connecteur)."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_point.py:0
+msgid ""
+"Le point « %s » est relié à Expedibox : il lui faut l'identifiant de son "
+"casier."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,help:bf_property_access_expedibox.field_bf_property_access_point__connector_kind
+msgid ""
+"Lu par la vue : l'identifiant du casier ne se montre que pour un connecteur "
+"Expedibox."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model,name:bf_property_access_expedibox.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model,name:bf_property_access_expedibox.model_bf_property_access_point
+msgid "Point d'accès"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,help:bf_property_access_expedibox.field_bf_property_access_connector__expedibox_app_token
+msgid ""
+"Portail développeur d'Expedibox : l'application, le casier, « Installation "
+"details ». Un jeton par organisation."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_access_expedibox.view_access_connector_form_expedibox
+msgid "Portail développeur, « Installation details »"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_organisation.py:0
+msgid ""
+"Pourquoi un moyen de joindre la personne : le casier l'avise lui-même qu'un "
+"colis l'attend. Sans courriel ni mobile, Expedibox refuse l'inscription et "
+"l'ordre revient au responsable du point."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Retiré du casier (destinataire %s)."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid "Réservé aux gestionnaires."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model,name:bf_property_access_expedibox.model_bf_property_access_resident
+msgid "Résident (accès)"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_organisation.py:0
+msgid ""
+"Seuls les résidents sont inscrits : un accès temporaire (visiteur, "
+"entrepreneur, personnel) n'est jamais transmis au casier par le logiciel."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,field_description:bf_property_access_expedibox.field_bf_property_access_connector__kind
+msgid "Type"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#: model:ir.model.fields,field_description:bf_property_access_expedibox.field_bf_property_access_point__connector_kind
+msgid "Type de connecteur"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Un accès temporaire ne s'inscrit pas au casier à colis : faites-le à la main"
+" au casier si l'organisation le veut, puis cochez cet ordre."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_organisation.py:0
+msgid ""
+"Une correction au dossier (nom, logement) est portée au casier par le "
+"passage de nuit (art. 28 : la correction suit le renseignement communiqué)."
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_organisation.py:0
+msgid "le courriel et le numéro de mobile"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_organisation.py:0
+msgid "le courriel, ou le numéro de mobile à défaut de courriel"
+msgstr ""
+
+#. module: bf_property_access_expedibox
+#. odoo-python
+#: code:addons/bf_property_access_expedibox/models/bf_property_organisation.py:0
+msgid ""
+"À encadrer hors du logiciel : entente écrite avec le fournisseur du casier "
+"(art. 18.3), lieu d'hébergement de ses serveurs et évaluation préalable s'il"
+" est hors Québec (art. 17), durée de conservation chez lui après le retrait."
+msgstr ""

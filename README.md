@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**313 modules are BUSL-1.1.** The source is published and auditable, and **you
+**314 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -357,8 +357,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.1.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_project_number` | BF Project Number | 18.0.1.1.0 | LGPL-3 | A project number assigned on its own, taking the smallest free number, editable by hand |
 | `bf_property_access` | Immeubles : accès des résidents | 18.0.1.1.2 | BUSL-1.1 | Who may open which door: a resident's access is added on move-in and removed once a person confirms the move-out, through orders to the devices or the caretaker; temporary access for visitors, contractors and entries into a dwelling |
+| `bf_property_access_expedibox` | Immeubles : boîte à colis Expedibox | 18.0.1.0.1 | BUSL-1.1 | A resident is signed up with the Expedibox parcel locker on arrival and taken off it once their departure is confirmed, with nothing retyped |
 | `bf_property_access_portal` | Immeubles : mes accès au portail | 18.0.1.1.3 | BUSL-1.1 | Residents see on the portal the doors they can open, with which credential, and can give a visitor temporary access to the common doors |
-| `bf_property_access_privacy` | Immeubles : accès et vie privée (Loi 25) | 18.0.1.0.2 | BUSL-1.1 | Access control in the Québec Act 25 processing register, declared versus applied retention, and a prefilled privacy impact assessment template |
+| `bf_property_access_privacy` | Immeubles : accès et vie privée (Loi 25) | 18.0.1.0.3 | BUSL-1.1 | Access control in the Québec Act 25 processing register, declared versus applied retention, and a prefilled privacy impact assessment template |
 | `bf_property_core` | Immeubles : socle | 18.0.2.10.1 | BUSL-1.1 | The neutral foundation: organisations, buildings, dwellings and occupants, for divided co-ownership and residential rental alike |
 | `bf_property_cx` | Copropriété : satisfaction des occupants | 18.0.1.4.0 | BUSL-1.1 | Ask the occupant how their maintenance request went, once it is closed |
 | `bf_property_finance` | Copropriété : charges et appels de fonds | 18.0.4.7.2 | BUSL-1.1 | Annual budget, allocation of common expenses and calls for contributions |
@@ -553,7 +554,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **313 modules: BUSL-1.1.** Production use for your own internal business
+- **314 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

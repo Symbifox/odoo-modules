@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_access_point_form_expedibox" model="ir.ui.view">
+        <field name="name">bf.property.access.point.form.expedibox</field>
+        <field name="model">bf.property.access.point</field>
+        <field name="inherit_id" ref="bf_property_access.view_access_point_form"/>
+        <field name="arch" type="xml">
+            <field name="connector_id" position="after">
+                <field name="connector_kind" invisible="1"/>
+                <field name="expedibox_locker_id"
+                       invisible="connector_kind != 'expedibox'"
+                       required="connector_kind == 'expedibox'"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_access_point_list_expedibox" model="ir.ui.view">
+        <field name="name">bf.property.access.point.list.expedibox</field>
+        <field name="model">bf.property.access.point</field>
+        <field name="inherit_id" ref="bf_property_access.view_access_point_list"/>
+        <field name="arch" type="xml">
+            <field name="connector_id" position="after">
+                <field name="expedibox_locker_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

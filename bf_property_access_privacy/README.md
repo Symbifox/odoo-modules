@@ -23,6 +23,15 @@ register (`privacy_consent`), installed automatically when both are present.
   of the software), with boxes for the person in charge of protecting personal
   information to complete. It names no one.
 
+- **What a connected parcel locker receives (18.0.1.0.3).** When a parcel point
+  is wired to a locker (`bf_property_access_expedibox`), the notice, the
+  plain-language summary of the purpose and the categories of the retention
+  policy say that the locker is also given a way to reach the resident: their
+  e-mail, their mobile number, or both if the organisation chose so. They also
+  say that a correction to the resident's record is carried over to the locker.
+  The records are `noupdate`, so a migration rewrites them, and only when the
+  organisation has not edited the notice itself.
+
 ## Security
 
 The template is reserved to the property team (Consultation) on an

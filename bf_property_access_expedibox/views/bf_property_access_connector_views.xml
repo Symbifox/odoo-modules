@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_access_connector_form_expedibox" model="ir.ui.view">
+        <field name="name">bf.property.access.connector.form.expedibox</field>
+        <field name="model">bf.property.access.connector</field>
+        <field name="inherit_id" ref="bf_property_access.view_access_connector_form"/>
+        <field name="arch" type="xml">
+            <field name="note" position="before">
+                <group string="Expedibox" invisible="kind != 'expedibox'">
+                    <field name="expedibox_app_token" password="True"
+                           placeholder="Portail développeur, « Installation details »"/>
+                    <field name="expedibox_organization_id"/>
+                    <field name="expedibox_contact"/>
+                    <button name="action_expedibox_lockers" type="object" string="Casiers du jeton"
+                            class="btn-secondary" icon="fa-list"
+                            groups="bf_property_core.group_bf_property_manager"/>
+                </group>
+            </field>
+        </field>
+    </record>
+</odoo>
