@@ -3,6 +3,7 @@ import logging
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import is_html_empty
 
 _logger = logging.getLogger(__name__)
@@ -193,32 +194,99 @@ class BfTrainingAssignment(models.Model):
     def action_cancel(self):
         self.write({"state": "cancelled"})
 
-    def _relancer(self):
-        """Poste la relance au fil de l'assignation. Rend le nombre de relances."""
+    def _refus_relance(self, gabarit):
+        """La phrase qui refuse le clic « Relancer », ou False.
+
+        🔴 Sans gabarit, le rappel se pose au fil : ça compte, quelque
+        chose est bien arrivé à la personne, et il n'y a rien à refuser. Avec
+        gabarit et sans adresse courriel, rien ne peut partir.
+        """
+        self.ensure_one()
+        if gabarit and not self.partner_id.email:
+            # Vouvoiement : c'est le registre de ces modules, mesuré au
+            # catalogue (10 chaînes au « vous », aucune au « tu »).
+            return _(
+                "%(nom)s n'a pas d'adresse courriel : la relance ne peut pas "
+                "partir. Ajoutez son adresse, puis relancez.",
+                nom=self.partner_id.name)
+        return False
+
+    def _relancer(self, refuser=False):
+        """Poste la relance au fil de l'assignation. Rend le nombre de relances.
+
+        🔴 Une relance qui ne part pas ne se compte pas. Le compteur et
+        la date s'écrivaient avant le moindre envoi, et `send_mail` partait sans
+        `try` ni contrôle de l'adresse. Une personne sans courriel voyait donc
+        « Relances : 3 » sans avoir jamais rien reçu — et le gabarit portant
+        `auto_delete`, même le `mail.mail` en échec était effacé : il ne restait
+        aucune trace. Une seule exception emportait aussi la journée entière de
+        la tâche planifiée.
+
+        `refuser` est pour les boutons : au clic, une relance impossible se
+        refuse tout de suite plutôt que de se ranger quelque part. La tâche
+        planifiée, elle, écarte en amont ce qui ne peut pas partir et le compte
+        à son journal, pour ne pas reposer la même note chaque jour.
+        """
         gabarit = self.env.ref(
             "bf_training.mail_template_training_reminder", raise_if_not_found=False)
+        if refuser:
+            # 🔴 Avant le premier effet : levé en chemin, un refus annulerait
+            # aussi les relances déjà parties du même lot, sans le dire.
+            for rec in self:
+                refus = rec._refus_relance(gabarit)
+                if refus:
+                    raise UserError(refus)
         envoyees = 0
         # 🔴 Sans `email_layout_xmlid`, `send_mail` part SANS mise en page : le
         # courriel reçu faisait 550 caractères de HTML nu, sans logo, sans pied,
         # sans nom de société.
         mise_en_page = self._mise_en_page_relance()
         for rec in self:
-            if gabarit:
-                gabarit.send_mail(
-                    rec.id, force_send=False, email_layout_xmlid=mise_en_page)
-            else:
+            # 🔴 UNE seule garde, et elle sert les deux chemins. Le
+            # bouton l'emploie pour refuser (ci-dessus), la tâche planifiée pour
+            # écarter sans rien compter. Un pont qui ajoute une raison —
+            # `bf_training_slides` et le cours non publié — couvre donc les deux
+            # d'un coup, au lieu d'avoir à répéter sa condition ici.
+            refus = rec._refus_relance(gabarit)
+            if refus:
+                _logger.warning(
+                    "Registre de formation : assignation %s non relancée, %s",
+                    rec.id, refus)
+                continue
+            if not gabarit:
                 rec.message_post(body=_(
                     "Rappel : l'activité « %(activite)s » est attendue pour le "
                     "%(echeance)s.",
                     activite=rec.activity_id.name,
                     echeance=rec.due_date or "sans échéance"))
+            else:
+                try:
+                    # 🔴 Point de sauvegarde. Une
+                    # erreur de la BASE abandonne la transaction, et le
+                    # `message_post` du gestionnaire lèverait alors à son tour,
+                    # depuis l'intérieur du `except` : la tâche planifiée serait
+                    # de nouveau emportée en entier. Le cœur d'Odoo pose la même
+                    # garde dans `mail_mail.py`.
+                    with rec.env.cr.savepoint():
+                        gabarit.send_mail(
+                            rec.id, force_send=False,
+                            email_layout_xmlid=mise_en_page)
+                except Exception as exc:  # noqa: BLE001
+                    # Une exception ne mange plus le reste du lot, et le fil dit
+                    # ce qui n'est pas parti.
+                    _logger.warning(
+                        "Registre de formation : relance en échec pour "
+                        "l'assignation %s : %s", rec.id, exc)
+                    rec.message_post(body=_(
+                        "Relance non envoyée : %(raison)s", raison=exc))
+                    continue
             rec.reminder_count += 1
             rec.last_reminder_date = fields.Datetime.now()
             envoyees += 1
         return envoyees
 
     def action_remind(self):
-        return self._relancer()
+        return self._relancer(refuser=True)
 
     @api.model
     def _cron_reminders(self):
@@ -236,5 +304,14 @@ class BfTrainingAssignment(models.Model):
             lambda a: not a.last_reminder_date
             or a.last_reminder_date.date() < jour)
         envoyees = a_relancer._relancer()
-        _logger.info("Registre de formation : %s relances.", envoyees)
+        # 🔴 La différence est ce qui n'a PAS pu partir. `_relancer`
+        # écarte lui-même ce qui n'a pas d'adresse (et nomme chaque cas à son
+        # journal) : la garde ne vit qu'à UN endroit, et ce total est la seule
+        # chose que le cron ait à dire en plus. Pas de note au fil ici — la
+        # tâche tourne chaque matin et, le compteur ne montant plus, la même
+        # assignation resterait éligible indéfiniment : une note par jour sur la
+        # même fiche. Le bouton « Relancer », lui, refuse et nomme la personne.
+        _logger.info(
+            "Registre de formation : %s relances, %s sautée(s) (rien n'a pu partir).",
+            envoyees, len(a_relancer) - envoyees)
         return envoyees

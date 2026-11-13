@@ -5,3 +5,4 @@ from . import test_relance_mise_en_page
 from . import test_mes_formations
 from . import test_couleur_libre
 from . import test_activites_assignation
+from . import test_relance_muette

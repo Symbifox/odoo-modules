@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 02:51+0000\n"
-"PO-Revision-Date: 2026-09-14 02:51+0000\n"
+"POT-Creation-Date: 2026-11-13 12:41+0000\n"
+"PO-Revision-Date: 2026-11-13 12:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -36,6 +36,14 @@ msgid "Ce cours est déjà adossé à une activité."
 msgstr ""
 
 #. module: bf_training_slides
+#. odoo-python
+#: code:addons/bf_training_slides/models/training_assignment.py:0
+msgid ""
+"Ce cours n'est pas publié : la personne recevrait un lien vers une page "
+"qu'elle ne peut pas ouvrir. Publiez le cours, puis relancez."
+msgstr ""
+
+#. module: bf_training_slides
 #: model:ir.model,name:bf_training_slides.model_slide_channel_partner
 msgid "Channel / Partners (Members)"
 msgstr ""
@@ -57,7 +65,6 @@ msgstr ""
 
 #. module: bf_training_slides
 #. odoo-python
-#: code:addons/bf_training_slides/models/training_activity.py:0
 #: code:addons/bf_training_slides/models/training_activity.py:0
 #: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_activity__slide_channel_id
 #: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_assignment__slide_channel_id
@@ -135,7 +142,6 @@ msgstr ""
 
 #. module: bf_training_slides
 #. odoo-python
-#: code:addons/bf_training_slides/models/slide_channel_partner.py:0
 #: code:addons/bf_training_slides/models/slide_channel_partner.py:0
 msgid "Écrite automatiquement à la complétion du cours en ligne."
 msgstr ""

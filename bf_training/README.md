@@ -136,6 +136,14 @@ Elle se range avec les autres courriels de la société :
 | `bluefox_branding` | celle de la marque (`bf_mail_layout`) : bandeau, accent, police et pied de la société | l'accent de marque de la société | le nom de la société, sauf si elle a une signature par défaut, que la mise en page pose déjà |
 | rien de plus | la mise en page légère d'Odoo | la couleur des boutons de courriel de la société | le nom de la société |
 
+Depuis 18.0.1.4.2, **une relance qui ne peut pas partir ne se compte pas**. Le
+bouton « Relancer » refuse le clic en disant pourquoi — une personne sans adresse
+courriel, par exemple — et la tâche planifiée écarte simplement l'assignation au
+lieu de la compter. Le compteur, la date et l'activité de suivi ne s'écrivent
+qu'après un envoi parti ; un échec inattendu se range au fil de l'assignation, là
+où l'exploitant le verra, et une seule erreur n'emporte plus la journée entière de
+relances.
+
 `bluefox_branding` n'est pas une dépendance : la relance le détecte à l'envoi. Aucune
 couleur n'est écrite dans le gabarit, et aucune n'est assombrie : le bouton emploie
 la couleur que sa mise en page emploie elle-même.
@@ -195,7 +203,7 @@ modules séparés qui s'appuient sur celui-ci.
 
 ## Essais
 
-64 essais. Au registre lui-même, six mutations sur six attrapées : l'expiration
+72 essais. Au registre lui-même, six mutations sur six attrapées : l'expiration
 qui ne périme plus, la dispense défaite par le recalcul, l'exclusion de catégorie
 ignorée, l'échéance ancrée au mauvais jour, la ligne incomplète comptée pour
 complète, et la fenêtre annuelle ouverte sur toute l'histoire.
@@ -213,5 +221,5 @@ odoo -d <base> -u bf_training --test-enable --test-tags bf_training
 
 ## Licence
 
-Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-10-19.
+Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-11-13.
 Voir `LICENSE`.

@@ -1,6 +1,7 @@
 import logging
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 from .reader_lang import operator_env, reader_env
 
@@ -108,9 +109,68 @@ class BfTrainingAssignment(models.Model):
             rec._compute_channel_partner_id()
             rec.state = "invited" if statut == "invited" else "in_progress"
             etats = dict(rec._fields["state"]._description_selection(note.env))
+            # ⚠️ Le nom se lit en SUDO, et c'est de la défense en
+            # profondeur, PAS un défaut bouché. Mesuré dans un
+            # processus neuf, cache vidé juste avant le clic : sous l'Opérateur,
+            # sur un cours non publié, cette lecture ne lève RIEN — avec ou sans
+            # le sudo. `_action_add_members`, juste au-dessus, tourne en sudo et
+            # remplit le cache de l'ORM avec le nom du cours ; une valeur au
+            # cache est servie sans aucun contrôle de règle. Le sudo tient donc
+            # au cas où ce chemin cesserait de réchauffer le cache, et aucun
+            # harnais ne peut l'éprouver aujourd'hui. Rien d'autre du cours
+            # n'est lu, et la note ne fait que nommer à l'opérateur ce qu'il
+            # vient de poser.
             note.message_post(body=note.env._("Enrolled in course \"%s\" (%s).") % (
-                rec.slide_channel_id.name, etats.get(rec.state)))
+                rec.slide_channel_id.sudo().name, etats.get(rec.state)))
         return True
+
+    def _refus_invitation(self, gabarit):
+        """La phrase qui refuse le clic, ou False quand l'invitation peut partir.
+
+        🔴 Trois états rendaient ce bouton muet : le gabarit absent, la
+        personne sans adresse courriel, et le cours non publié. Les deux premiers
+        ne laissaient rien partir du tout ; le troisième laisse bien partir un
+        courriel depuis la 18.0.2.3.2 (le rendu est en sudo), mais son lien mène
+        à un mur — la règle du cœur de l'eLearning
+        (`website_slides.rule_slide_channel_visibility_signed_in_user`) exige
+        `website_published` pour TOUT compte portail, membre inscrit ou pas.
+        Dans les trois cas, le compteur de relances montait quand même.
+        """
+        self.ensure_one()
+        lu = operator_env(self, self.company_id)
+        if not gabarit:
+            return lu.env._(
+                "The training invitation template is missing: nothing would be "
+                "sent. Upgrade the Security awareness module, then try again.")
+        if not self.partner_id.email:
+            return lu.env._(
+                "%s has no email address: the invitation cannot be sent. Add "
+                "their address, then send the invitation.") % self.partner_id.name
+        # 🔴 Les DEUX cours comptent, et ils
+        # peuvent diverger. `channel_id` est celui que le corps du courriel
+        # nomme ; `slide_channel_id` est `related="activity_id.slide_channel_id"`
+        # et c'est lui que le BOUTON emploie (`training_url`). Les deux ne sont
+        # synchronisés qu'au `create` : repointer le cours de l'activité vers une
+        # version non publiée, ou corriger le `channel_id` d'une assignation,
+        # laisse l'autre colonne en arrière. Garder le seul `channel_id`
+        # laisserait partir une invitation dont le lien mène à un mur — le défaut
+        # même que cette version ferme.
+        #
+        # ⚠️ En sudo, pour ces seuls booléens, et `prefetch_fields=False` parce
+        # que ce n'est pas un détail : sans lui, la lecture en sudo ramène TOUS
+        # les champs stockés du cours dans le cache de la transaction, et le code
+        # non-sudo qui suit (le rendu du gabarit) les lit ensuite sans qu'aucune
+        # règle ne soit évaluée. La lecture est donc bornée à ce qu'elle dit
+        # lire. Rien ne s'écrit à partir d'elle, et le nom du cours n'entre pas
+        # dans le message.
+        cours = (self.channel_id | self.slide_channel_id).sudo().with_context(
+            prefetch_fields=False)
+        if cours and not all(c.website_published for c in cours):
+            return lu.env._(
+                "This course is not published: the person would receive a link "
+                "to a page they cannot open. Publish the course, then send the "
+                "invitation.")
+        return False
 
     def action_send_invite(self):
         # 🔴 Ce formulaire est aussi celui qui s'ouvre depuis le registre (même
@@ -119,38 +179,68 @@ class BfTrainingAssignment(models.Model):
         # « Relancer ». Elle prend la relance du registre, jamais l'invitation
         # « Formation en cybersécurité à compléter ».
         registre = self.filtered(lambda a: not a.channel_id)
-        if registre:
-            registre._relancer()
         gabarit = self.env.ref(
             "bf_security_awareness.mail_template_training_invite",
             raise_if_not_found=False)
+        # 🔴 Les refus se lèvent AVANT le premier effet. Levé en chemin,
+        # un refus annulerait aussi ce que les lignes précédentes ont fait — la
+        # relance du registre, un courriel déjà créé — sans que rien le dise.
+        for rec in self - registre:
+            refus = rec._refus_invitation(gabarit)
+            if refus:
+                raise UserError(refus)
+        if registre:
+            # 🔴 `action_remind()`, et pas `_relancer(refuser=True)`.
+            # La même signature existe dans bf_training 1.4.1 comme dans 1.4.2 :
+            # un locataire qui porterait la 2.3.5 avec le socle encore en 1.4.1
+            # lèverait un `TypeError` ici, au premier clic sur une assignation
+            # du registre. Et c'est bien « la relance du registre » : ce bouton
+            # hérite du refus dès que le socle est monté, sans que ce module ait
+            # à le savoir.
+            registre.action_remind()
         # 🔴 Sans `email_layout_xmlid`, `send_mail` part SANS mise en page. Celle de
         # la relance du registre : l'invitation et la relance se ressemblent, et le
         # bouton du gabarit prend la couleur que cette mise en page emploie.
         mise_en_page = self._mise_en_page_relance()
         for rec in self - registre:
-            rec.reminder_count += 1
-            rec.last_reminder_date = fields.Datetime.now()
-            if gabarit and rec.partner_id.email:
-                try:
-                    # 🔴 En sudo : l'opérateur n'a pas à lire le cours pour inviter.
-                    # Une règle de l'eLearning le lui cache (cours non publié, par
-                    # exemple) : le rendu tombait, l'erreur était avalée ici, et
-                    # l'invitation ne partait jamais. L'expéditeur reste `user`.
-                    # Le gabarit porte `lang = {{ object.partner_id.lang }}` : il se
-                    # rend dans la langue de la personne invitée. Ce repli ne sert
-                    # que si elle n'a pas de langue : celle de son organisation,
-                    # sinon de la société.
+            try:
+                # 🔴 En sudo : l'opérateur n'a pas à lire le cours pour inviter.
+                # Une règle de l'eLearning le lui cache (cours non publié, par
+                # exemple) : le rendu tombait, l'erreur était avalée ici, et
+                # l'invitation ne partait jamais. L'expéditeur reste `user`.
+                # Le gabarit porte `lang = {{ object.partner_id.lang }}` : il se
+                # rend dans la langue de la personne invitée. Ce repli ne sert
+                # que si elle n'a pas de langue : celle de son organisation,
+                # sinon de la société.
+                # 🔴 Point de sauvegarde. Une
+                # erreur venue de la BASE (psycopg2) abandonne la transaction, et
+                # TOUT ordre suivant échoue en « current transaction is aborted ».
+                # Sans ce point, le `message_post` du gestionnaire lèverait à son
+                # tour, depuis l'intérieur du `except` donc non rattrapé :
+                # l'opérateur recevrait une trace au lieu de la note honnête, et
+                # le lot serait de nouveau emporté en entier. Le cœur d'Odoo pose
+                # la même garde au même endroit (`mail_mail.py`, psycopg2.Error).
+                with rec.env.cr.savepoint():
                     envoi = reader_env(
                         gabarit.sudo(), rec.partner_id.lang,
                         rec.partner_id.commercial_partner_id.lang,
                         (rec.company_id or rec.env.company).sudo().partner_id.lang)
                     envoi.send_mail(
                         rec.id, force_send=False, email_layout_xmlid=mise_en_page)
-                except Exception as exc:  # noqa: BLE001
-                    _logger.warning(
-                        "bf_security_awareness : courriel d'invitation échoué "
-                        "pour %s : %s", rec.id, exc)
+            except Exception as exc:  # noqa: BLE001
+                # 🔴 L'échec ne se range plus dans le seul journal du
+                # serveur. Le fil le porte, le compteur ne monte pas, la date ne
+                # s'écrit pas et aucune relance ne se planifie : plus rien ne
+                # laisse croire que la personne a été invitée.
+                _logger.warning(
+                    "bf_security_awareness : courriel d'invitation échoué "
+                    "pour %s : %s", rec.id, exc)
+                note = operator_env(rec, rec.company_id)
+                note.message_post(body=note.env._(
+                    "The training invitation could not be sent: %s") % exc)
+                continue
+            rec.reminder_count += 1
+            rec.last_reminder_date = fields.Datetime.now()
             rec._planifier_relance()
         return True
 

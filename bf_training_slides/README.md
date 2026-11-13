@@ -58,9 +58,18 @@ dossier d'employé ne produit aucune ligne au registre, et c'est journalisé. Le
 registre est un registre du personnel ; inventer un employé pour y loger une
 complétion en ferait autre chose.
 
+## Un cours non publié ne se relance pas (18.0.1.0.2)
+
+Le bouton de la relance mène **droit au cours**. Or la règle d'enregistrement du
+cœur de l'eLearning exige `website_published` pour TOUT compte portail, membre
+inscrit ou pas : une relance vers un cours non publié envoie la personne sur une
+page qu'elle ne peut pas ouvrir. Ce raccord refuse donc le clic — et écarte
+l'assignation de la tâche planifiée — tant que le cours n'est pas publié. La garde
+vit ici, et pas dans le socle, qui ne sait rien des cours.
+
 ## Essais
 
-8 essais. Deux mutations éprouvées : la réalisation qui se dédouble à chaque
+16 essais. Deux mutations éprouvées : la réalisation qui se dédouble à chaque
 passage, et la fiche d'employé fabriquée pour une personne hors effectif.
 
 ```
@@ -69,4 +78,4 @@ odoo -d <base> -u bf_training_slides --test-enable --test-tags bf_training_slide
 
 ## Licence
 
-Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-09-13.
+Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-11-13.

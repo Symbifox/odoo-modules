@@ -1,19 +1,19 @@
-# Translation of Security Awareness - French (Canada).
-# The module's source strings are written in English: this catalogue carries
-# the French that users of fr_CA read.
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_security_awareness
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_security_awareness 18.0.2.2.0\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-21 07:27+0000\n"
-"PO-Revision-Date: 2026-10-21 07:27+0000\n"
+"POT-Creation-Date: 2026-11-13 11:20+0000\n"
+"PO-Revision-Date: 2026-11-13 11:20+0000\n"
 "Last-Translator: \n"
-"Language-Team: French (Canada)\n"
-"Language: fr_CA\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
 
 #. module: bf_security_awareness
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_template__teachable_html
@@ -56,6 +56,25 @@ msgstr ""
 
 #. module: bf_security_awareness
 #. odoo-python
+#: code:addons/bf_security_awareness/models/bf_training_assignment.py:0
+msgid ""
+"%s has no email address: the invitation cannot be sent. Add their address, "
+"then send the invitation."
+msgstr ""
+"%s n'a pas d'adresse courriel : l'invitation ne peut pas partir. Ajoutez son"
+" adresse, puis envoyez l'invitation."
+
+#. module: bf_security_awareness
+#: model:ir.actions.report,print_report_name:bf_security_awareness.action_report_phishing_campaign_aggregate
+msgid ""
+"'Aggregate report - %s - %s' % (object.report_reference or '', "
+"object.template_id.name)"
+msgstr ""
+"'Rapport agrégé - %s - %s' % (object.report_reference or '', "
+"object.template_id.name)"
+
+#. module: bf_security_awareness
+#. odoo-python
 #: code:addons/bf_security_awareness/models/bf_reported_phish.py:0
 msgid "(no subject)"
 msgstr "(sans objet)"
@@ -76,6 +95,16 @@ msgid ""
 msgstr ""
 ", vérifiez l'expéditeur,\n"
 "                    et signalez-le à votre équipe TI. Signaler n'est jamais une perte de temps."
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "10% or less"
+msgstr "10 % ou moins"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "90% or more"
+msgstr "90 % ou plus"
 
 #. module: bf_security_awareness
 #: model:mail.template,body_html:bf_security_awareness.mail_template_training_invite
@@ -135,6 +164,11 @@ msgid "<span class=\"o_stat_text\">Mass mailing</span>"
 msgstr "<span class=\"o_stat_text\">Envoi de masse</span>"
 
 #. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_campaign_view_form_report_reference
+msgid "<span>Report reference:</span>"
+msgstr "<span>Référence du rapport :</span>"
+
+#. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_clawback_operation_view_form
 msgid ""
 "<strong>Heuristic</strong> strategy (sender + subject): run "
@@ -153,10 +187,25 @@ msgid "<strong>Lure template</strong>"
 msgstr "<strong>Modèle de leurre</strong>"
 
 #. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "<strong>Previous campaign sent on</strong>"
+msgstr "<strong>Campagne précédente envoyée le</strong>"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "<strong>Recipients of the previous campaign</strong>"
+msgstr "<strong>Destinataires de la campagne précédente</strong>"
+
+#. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
 msgid "<strong>Recipients</strong>"
 msgstr "<strong>Destinataires</strong>"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "<strong>Reference</strong>"
+msgstr "<strong>Référence</strong>"
 
 #. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign
@@ -205,8 +254,6 @@ msgid "Access restricted to the security awareness team."
 msgstr "Accès réservé à l'équipe de sensibilisation à la sécurité."
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_needaction
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_needaction
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_needaction
@@ -226,18 +273,12 @@ msgstr ""
 "accessible aux gestionnaires."
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
-#. hosting_management
-#. odoo-javascript
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__active
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_template__active
 msgid "Active"
 msgstr "Actif"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__activity_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__activity_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__activity_ids
@@ -245,8 +286,6 @@ msgid "Activities"
 msgstr "Activités"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__activity_exception_decoration
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__activity_exception_decoration
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__activity_exception_decoration
@@ -254,8 +293,6 @@ msgid "Activity Exception Decoration"
 msgstr "Indicateur d'exception d'activité"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__activity_state
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__activity_state
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__activity_state
@@ -263,8 +300,6 @@ msgid "Activity State"
 msgstr "État de l'activité"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__activity_type_icon
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__activity_type_icon
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__activity_type_icon
@@ -292,6 +327,20 @@ msgstr ""
 "numérisation sur mobile."
 
 #. module: bf_security_awareness
+#: model:ir.actions.report,name:bf_security_awareness.action_report_phishing_campaign_aggregate
+msgid "Aggregate report"
+msgstr "Rapport agrégé"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid ""
+"Aggregate report: it names no one and shows no department, risk profile or "
+"time of action. It can be handed outside the organization."
+msgstr ""
+"Rapport agrégé : il ne nomme personne et ne montre ni service, ni profil de "
+"risque, ni heure d'action. Il peut être remis hors de l'entreprise."
+
+#. module: bf_security_awareness
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_mail_clawback_connector__mailbox_source__internal_users
 msgid "All internal users (res.users)"
 msgstr "Tous les usagers internes (res.users)"
@@ -306,7 +355,6 @@ msgstr ""
 "inhabituelle…)."
 
 #. module: bf_security_awareness
-#. modules: bf_document_nextcloud_sync, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_mailbox__password
 msgid "App password"
 msgstr "Mot de passe applicatif"
@@ -315,6 +363,11 @@ msgstr "Mot de passe applicatif"
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__auto_assign_training
 msgid "Assign training on failure"
 msgstr "Assigner la formation à l'échec"
+
+#. module: bf_security_awareness
+#: model:ir.model,name:bf_security_awareness.model_bf_training_assignment
+msgid "Assignation de formation"
+msgstr ""
 
 #. module: bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__training_assignment_id
@@ -332,13 +385,16 @@ msgid "Assigned trainings"
 msgstr "Formations assignées"
 
 #. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Assigned trainings completed"
+msgstr "Formations assignées complétées"
+
+#. module: bf_security_awareness
 #: model:ir.ui.menu,name:bf_security_awareness.menu_secaware_training_assignments
 msgid "Assignments"
 msgstr "Assignations"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_attachment_count
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_attachment_count
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_attachment_count
@@ -348,7 +404,6 @@ msgid "Attachment Count"
 msgstr "Nombre de pièces jointes"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_template__attachment_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_report_phish_wizard__attachment_ids
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_template_view_form
@@ -411,7 +466,6 @@ msgid "Button label"
 msgstr "Libellé du bouton"
 
 #. module: bf_security_awareness
-#. modules: bf_fundraising_web, bf_security_awareness
 #. odoo-javascript
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__campaign_id
@@ -454,27 +508,27 @@ msgstr ""
 "Privilège distinct du rôle Gestionnaire."
 
 #. module: bf_security_awareness
-#. modules: bf_credentials, bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_securetransfer, bf_security_awareness, hosting_management
-#. odoo-javascript
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_campaign_view_form
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_report_phish_wizard_form
 msgid "Cancel"
 msgstr "Annuler"
 
 #. module: bf_security_awareness
-#. modules: bf_securetransfer, bf_security_awareness, hosting_management
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_phishing_campaign__state__cancelled
 msgid "Canceled"
 msgstr "Annulée"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_template__category
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__category
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_reported_phish_view_search
 msgid "Category"
 msgstr "Catégorie"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Change since the previous campaign"
+msgstr "Évolution depuis la campagne précédente"
 
 #. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.phishing_lesson
@@ -510,6 +564,11 @@ msgstr "IP du clic"
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__click_country_id
 msgid "Click country"
 msgstr "Pays du clic"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Click rate"
+msgstr "Taux de clic"
 
 #. module: bf_security_awareness
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_phishing_result__state__clicked
@@ -554,16 +613,11 @@ msgid "Client secret (encrypted)"
 msgstr "Secret client (chiffré)"
 
 #. module: bf_security_awareness
-#. modules: bf_nextcloud_browser, bf_securetransfer, bf_security_awareness
-#. odoo-javascript
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_campaign_view_form
 msgid "Close"
 msgstr "Clôturer"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
-#. hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__company_id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__company_id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__company_id
@@ -581,7 +635,6 @@ msgid "Complete the training to sharpen your reflexes."
 msgstr "Complétez la formation pour aiguiser vos réflexes."
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_security_awareness
 #. odoo-javascript
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_training_assignment__completed
@@ -601,11 +654,18 @@ msgid "Completed trainings"
 msgstr "Formations complétées"
 
 #. module: bf_security_awareness
-#. modules: bf_nextcloud_browser, bf_securetransfer, bf_security_awareness,
-#. hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign
+msgid ""
+"Confidential: this report contains individual results. Do not hand over "
+"outside the organization; use the aggregate report instead."
+msgstr ""
+"Confidentiel : ce rapport contient des résultats individuels. Ne pas le "
+"remettre hors de l'entreprise ; remettre plutôt le rapport agrégé."
+
+#. module: bf_security_awareness
 #: model:ir.ui.menu,name:bf_security_awareness.menu_secaware_config
 msgid "Configuration"
-msgstr "Configuration"
+msgstr ""
 
 #. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_clawback_operation_view_form
@@ -641,6 +701,11 @@ msgid "Connector"
 msgstr "Connecteur"
 
 #. module: bf_security_awareness
+#: model:ir.model,name:bf_security_awareness.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: bf_security_awareness
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__mailing_list_ids
 msgid "Contacts from these lists are added to the targeted people."
 msgstr "Les contacts de ces listes sont ajoutés aux personnes ciblées."
@@ -672,9 +737,6 @@ msgid "Create your first lure template"
 msgstr "Créez votre premier modèle de leurre"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_hit__create_uid
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__create_uid
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__create_uid
@@ -689,9 +751,6 @@ msgid "Created by"
 msgstr "Créé par"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_hit__create_date
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__create_date
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__create_date
@@ -721,7 +780,6 @@ msgid "Credentials submitted"
 msgstr "Identifiants soumis"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_security_profile__risk_level__critical
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_security_profile_view_search
 msgid "Critical"
@@ -738,7 +796,6 @@ msgid "Cybersecurity training to complete"
 msgstr "Formation en cybersécurité à compléter"
 
 #. module: bf_security_awareness
-#. modules: bf_securetransfer, bf_security_awareness, hosting_management
 #: model:ir.actions.client,name:bf_security_awareness.action_secaware_dashboard
 #: model:ir.ui.menu,name:bf_security_awareness.menu_secaware_dashboard
 msgid "Dashboard"
@@ -766,7 +823,6 @@ msgid "Declared mailboxes (with password)"
 msgstr "Boîtes déclarées (avec mot de passe)"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_report_phish_wizard__details
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__details
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_reported_phish_view_form
@@ -779,9 +835,6 @@ msgid "Difficulty"
 msgstr "Difficulté"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_hit__display_name
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__display_name
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__display_name
@@ -802,14 +855,11 @@ msgid "Does an email look suspicious? Report it in one click."
 msgstr "Un courriel vous semble suspect ? Signalez-le en un clic."
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_phishing_campaign__state__done
 msgid "Done"
 msgstr "Terminée"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_securetransfer, bf_security_awareness,
-#. hosting_management
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_clawback_operation__state__draft
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_phishing_campaign__state__draft
 msgid "Draft"
@@ -827,9 +877,6 @@ msgid "Easy"
 msgstr "Facile"
 
 #. module: bf_security_awareness
-#. modules: bf_credentials, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_mailbox__email
 msgid "Email"
 msgstr "Courriel"
@@ -921,7 +968,6 @@ msgid "Emails restored to INBOX (%(n)s mailbox(es))."
 msgstr "Courriels restaurés vers INBOX (%(n)s boîte(s))."
 
 #. module: bf_security_awareness
-#. modules: bf_securetransfer, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__sent_count
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign
 msgid "Emails sent"
@@ -964,10 +1010,6 @@ msgid "Entered username length"
 msgstr "Long. identifiant saisi"
 
 #. module: bf_security_awareness
-#. modules: bf_document_nextcloud_sync, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#. odoo-javascript
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_hit__error_message
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_clawback_hit__state__error
 msgid "Error"
@@ -979,15 +1021,11 @@ msgid "Exact Message-ID"
 msgstr "Message-ID exact"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
-#. odoo-javascript
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_clawback_operation__state__failed
 msgid "Failed"
 msgstr "Échec"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__failed_message_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__failed_message_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__failed_message_ids
@@ -1010,13 +1048,11 @@ msgid "Failure rate"
 msgstr "Taux d'échec"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__fail_rate
 msgid "Failure rate (%)"
 msgstr "Taux d'échec (%)"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #. odoo-javascript
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 msgid "Failures"
@@ -1073,8 +1109,6 @@ msgid "Folder to sweep"
 msgstr "Dossier à balayer"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_follower_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_follower_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_follower_ids
@@ -1084,8 +1118,6 @@ msgid "Followers"
 msgstr "Abonnés"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_partner_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_partner_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_partner_ids
@@ -1095,8 +1127,6 @@ msgid "Followers (Partners)"
 msgstr "Abonnés (Partenaires)"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__activity_type_icon
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_result__activity_type_icon
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_reported_phish__activity_type_icon
@@ -1158,8 +1188,6 @@ msgid "Great reflex"
 msgstr "Excellent réflexe"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_campaign_view_search
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_result_view_search
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_reported_phish_view_search
@@ -1183,8 +1211,6 @@ msgid "Hard"
 msgstr "Difficile"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__has_message
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__has_message
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__has_message
@@ -1222,7 +1248,6 @@ msgid "Hello"
 msgstr "Bonjour"
 
 #. module: bf_security_awareness
-#. modules: bf_cx_helpdesk, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__helpdesk_ticket_id
 msgid "Helpdesk ticket"
 msgstr "Ticket Helpdesk"
@@ -1234,7 +1259,6 @@ msgid "Heuristic strategy: a sender or a subject is required."
 msgstr "Stratégie heuristique : un expéditeur ou un sujet est requis."
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_security_profile__risk_level__high
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_security_profile_view_search
 msgid "High"
@@ -1271,9 +1295,6 @@ msgid "High-risk people"
 msgstr "Personnes à risque élevé"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_hit__id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__id
@@ -1285,7 +1306,7 @@ msgstr "Personnes à risque élevé"
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_security_profile__id
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #. module: bf_security_awareness
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_mail_clawback_connector__backend__imap_password
@@ -1313,8 +1334,6 @@ msgid "IMAP port"
 msgstr "Port IMAP"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__activity_exception_icon
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__activity_exception_icon
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__activity_exception_icon
@@ -1322,8 +1341,6 @@ msgid "Icon"
 msgstr "Icône"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__activity_exception_icon
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_result__activity_exception_icon
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_reported_phish__activity_exception_icon
@@ -1331,8 +1348,6 @@ msgid "Icon to indicate an exception activity."
 msgstr "Icône pour indiquer une activité d'exception."
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_clawback_operation__message_needaction
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__message_needaction
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_result__message_needaction
@@ -1342,8 +1357,6 @@ msgid "If checked, new messages require your attention."
 msgstr "Si coché, de nouveaux messages demandent votre attention."
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_clawback_operation__message_has_error
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_clawback_operation__message_has_sms_error
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__message_has_error
@@ -1419,8 +1432,6 @@ msgid "Invited"
 msgstr "Invitée"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_is_follower
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_is_follower
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_is_follower
@@ -1451,9 +1462,6 @@ msgid "Landing page behavior"
 msgstr "Comportement de la page d'atterrissage"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_hit__write_uid
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__write_uid
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__write_uid
@@ -1468,9 +1476,6 @@ msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_hit__write_date
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__write_date
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__write_date
@@ -1530,26 +1535,28 @@ msgid "Learning page only"
 msgstr "Page éducative directe"
 
 #. module: bf_security_awareness
+#: model:ir.model,name:bf_security_awareness.model_link_tracker
+msgid "Link Tracker"
+msgstr "Tracker de liens"
+
+#. module: bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__matched_result_id
 msgid "Linked simulation result"
 msgstr "Résultat de simulation lié"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #. odoo-javascript
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 msgid "Loading error"
 msgstr "Erreur de chargement"
 
 #. module: bf_security_awareness
-#. modules: bf_nextcloud_browser, bf_security_awareness
 #. odoo-javascript
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 msgid "Loading…"
 msgstr "Chargement…"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_security_profile__risk_level__low
 msgid "Low"
 msgstr "Faible"
@@ -1603,8 +1610,6 @@ msgid "Malicious email reported"
 msgstr "Courriel malveillant signalé"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness
 #: model:res.groups,name:bf_security_awareness.group_bf_secaware_manager
 msgid "Manager"
 msgstr "Gestionnaire"
@@ -1625,14 +1630,11 @@ msgid "Measure the length of entered fields"
 msgstr "Mesurer la longueur des champs saisis"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_phishing_template__difficulty__medium
 msgid "Medium"
 msgstr "Moyen"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_content
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_content
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_content
@@ -1642,8 +1644,6 @@ msgid "Message Content"
 msgstr "Contenu du message"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_has_error
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_has_error
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_has_error
@@ -1653,8 +1653,6 @@ msgid "Message Delivery error"
 msgstr "Erreur d'envoi du message"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_search
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_search
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_search
@@ -1664,8 +1662,6 @@ msgid "Message Search"
 msgstr "Recherche de message"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_clawback_operation__message_content
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__message_content
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_result__message_content
@@ -1675,8 +1671,6 @@ msgid "Message content, to be used only in searches"
 msgstr "Contenu du message, à n'utiliser que dans les recherches"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_clawback_operation__message_search
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__message_search
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_result__message_search
@@ -1689,7 +1683,7 @@ msgstr "Recherche de message, à n'utiliser que dans les recherches"
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__message_id
 msgid "Message-ID"
-msgstr "Message-ID"
+msgstr ""
 
 #. module: bf_security_awareness
 #. odoo-python
@@ -1698,15 +1692,13 @@ msgid "Message-ID strategy selected but no Message-ID provided."
 msgstr "Stratégie Message-ID choisie mais aucun Message-ID fourni."
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__message_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_security_profile__message_ids
 msgid "Messages"
-msgstr "Messages"
+msgstr ""
 
 #. module: bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__messages_found
@@ -1721,22 +1713,19 @@ msgstr "Nombre de courriels retirés"
 #. module: bf_security_awareness
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_mail_clawback_connector__backend__m365_oauth
 msgid "Microsoft 365 (OAuth2 app-only / XOAUTH2)"
-msgstr "Microsoft 365 (OAuth2 app-only / XOAUTH2)"
+msgstr ""
 
 #. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_mail_clawback_connector_view_form
 msgid "Microsoft 365 (OAuth2 app-only)"
-msgstr "Microsoft 365 (OAuth2 app-only)"
+msgstr ""
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_security_profile__risk_level__moderate
 msgid "Moderate"
 msgstr "Modéré"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__my_activity_date_deadline
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__my_activity_date_deadline
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__my_activity_date_deadline
@@ -1762,11 +1751,6 @@ msgid "My trainings"
 msgstr "Mes formations"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#. odoo-javascript
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__name
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__name
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__name
@@ -1776,10 +1760,22 @@ msgid "Name"
 msgstr "Nom"
 
 #. module: bf_security_awareness
+#: model:ir.actions.report,name:bf_security_awareness.action_report_phishing_campaign
+msgid "Named report (confidential)"
+msgstr "Rapport nominatif (confidentiel)"
+
+#. module: bf_security_awareness
 #. odoo-python
 #: code:addons/bf_security_awareness/models/bf_security_dashboard.py:0
 msgid "Needs strengthening"
 msgstr "À renforcer"
+
+#. module: bf_security_awareness
+#: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__report_reference
+msgid ""
+"Neutral reference printed on the aggregate report, numbered per company."
+msgstr ""
+"Référence neutre imprimée sur le rapport agrégé, numérotée par société."
 
 #. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.phishing_lesson
@@ -1787,15 +1783,11 @@ msgid "Never enter your credentials outside the official site."
 msgstr "Ne saisissez jamais vos identifiants hors du site officiel."
 
 #. module: bf_security_awareness
-#. modules: bf_securetransfer, bf_security_awareness
-#. odoo-python
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_reported_phish__state__new
 msgid "New"
 msgstr "Nouveau"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__activity_calendar_event_id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__activity_calendar_event_id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__activity_calendar_event_id
@@ -1803,8 +1795,6 @@ msgid "Next Activity Calendar Event"
 msgstr "Événement du calendrier de la prochaine activité"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__activity_date_deadline
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__activity_date_deadline
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__activity_date_deadline
@@ -1812,8 +1802,6 @@ msgid "Next Activity Deadline"
 msgstr "Échéance de la prochaine activité"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__activity_summary
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__activity_summary
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__activity_summary
@@ -1821,8 +1809,6 @@ msgid "Next Activity Summary"
 msgstr "Résumé de la prochaine activité"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__activity_type_id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__activity_type_id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__activity_type_id
@@ -1925,10 +1911,30 @@ msgid "No targeted mailbox to test."
 msgstr "Aucune boîte ciblée à tester."
 
 #. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "No training assigned"
+msgstr "Aucune formation assignée"
+
+#. module: bf_security_awareness
 #. odoo-javascript
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 msgid "Nobody has failed 2 or more simulations. 👏"
 msgstr "Personne n'a échoué à 2 simulations ou plus. 👏"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Not published"
+msgstr "Non publié"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Not published: one of the two rates is not given exactly"
+msgstr "Non publiée : l'un des deux taux n'est pas donné exactement"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Not sent yet"
+msgstr "Pas encore envoyée"
 
 #. module: bf_security_awareness
 #. odoo-python
@@ -1937,8 +1943,6 @@ msgid "Not yet tested"
 msgstr "À découvrir"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_needaction_counter
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_needaction_counter
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_needaction_counter
@@ -1948,8 +1952,6 @@ msgid "Number of Actions"
 msgstr "Nombre d'actions"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_has_error_counter
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_has_error_counter
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_has_error_counter
@@ -1959,8 +1961,6 @@ msgid "Number of errors"
 msgstr "Nombre d'erreurs"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_clawback_operation__message_needaction_counter
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__message_needaction_counter
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_result__message_needaction_counter
@@ -1970,8 +1970,6 @@ msgid "Number of messages requiring action"
 msgstr "Nombre de messages nécessitant une action"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_clawback_operation__message_has_error_counter
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__message_has_error_counter
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_result__message_has_error_counter
@@ -2028,6 +2026,11 @@ msgid "Open course"
 msgstr "Ouvrir le cours"
 
 #. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Open rate"
+msgstr "Taux d'ouverture"
+
+#. module: bf_security_awareness
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_phishing_result__state__opened
 msgid "Opened"
 msgstr "Ouvert"
@@ -2065,7 +2068,6 @@ msgid "Outgoing server"
 msgstr "Serveur d'envoi"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_security_awareness, hosting_management
 #. odoo-javascript
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_training_assignment_view_search
@@ -2087,7 +2089,6 @@ msgid "Overdue trainings"
 msgstr "Formations en retard"
 
 #. module: bf_security_awareness
-#. modules: bf_credentials, bf_document_nextcloud_sync, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_mailbox__password_encrypted
 msgid "Password (encrypted)"
 msgstr "Mot de passe (chiffré)"
@@ -2103,15 +2104,12 @@ msgid "Paste the link WITHOUT clicking (optional)"
 msgstr "Collez le lien SANS cliquer (facultatif)"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_securetransfer, bf_security_awareness
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_clawback_hit__state__pending
 msgid "Pending"
 msgstr "En attente"
 
 #. module: bf_security_awareness
-#. modules: bf_nextcloud_browser, bf_security_awareness
 #. odoo-javascript
-#. odoo-python
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__partner_id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_security_profile__partner_id
@@ -2159,6 +2157,11 @@ msgstr "Résultat de simulation d'hameçonnage"
 #: model:ir.model,name:bf_security_awareness.model_bf_phishing_template
 msgid "Phishing simulation template"
 msgstr "Modèle de simulation d'hameçonnage"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Phishing simulation: aggregate report"
+msgstr "Simulation d'hameçonnage : rapport agrégé"
 
 #. module: bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_res_partner__phishing_result_count
@@ -2248,8 +2251,27 @@ msgstr ""
 "qu'un destinataire alerte les autres. 0 = envoi immédiat à tous."
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Rates"
+msgstr "Taux"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Rates are shown from this number of recipients:"
+msgstr "Les taux s'affichent à partir de ce nombre de destinataires :"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid ""
+"Rates close to 100 % of failures, or to 0 % of reports or of completed "
+"trainings, are shown as a range, or not published, so that no one's result "
+"can be inferred."
+msgstr ""
+"Les taux proches de 100 % d'échecs, ou de 0 % de signalements ou de "
+"formations complétées, s'affichent en plage, ou ne sont pas publiés, pour "
+"qu'on ne puisse déduire le résultat de personne."
+
+#. module: bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__rating_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__rating_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__rating_ids
@@ -2275,9 +2297,7 @@ msgid "Recent campaigns"
 msgstr "Campagnes récentes"
 
 #. module: bf_security_awareness
-#. modules: bf_securetransfer, bf_security_awareness, hosting_management
 #. odoo-javascript
-#. odoo-python
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__recipient_count
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_campaign_view_form
@@ -2290,10 +2310,7 @@ msgid "Recompute score"
 msgstr "Recalculer le score"
 
 #. module: bf_security_awareness
-#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_security_awareness
 #. odoo-javascript
-#. odoo-python
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 msgid "Refresh"
 msgstr "Actualiser"
@@ -2397,7 +2414,6 @@ msgid "Repeat offenders (to coach)"
 msgstr "Récidivistes (à coacher)"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__reported_phish_id
 msgid "Report"
 msgstr "Signalement"
@@ -2445,6 +2461,11 @@ msgstr ""
 " Aucun incident n'a été créé."
 
 #. module: bf_security_awareness
+#: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__report_reference
+msgid "Report reference"
+msgstr "Référence du rapport"
+
+#. module: bf_security_awareness
 #. odoo-python
 #: code:addons/bf_security_awareness/models/bf_reported_phish.py:0
 msgid "Report: %s"
@@ -2457,7 +2478,6 @@ msgid "Reported"
 msgstr "Signalés"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__reporter_id
 msgid "Reported by"
 msgstr "Signalé par"
@@ -2507,7 +2527,6 @@ msgid "Reported the phishing"
 msgstr "A signalé l'hameçonnage"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_reported_phish_view_search
 msgid "Reporter"
 msgstr "Signaleur"
@@ -2522,14 +2541,11 @@ msgid "Reports"
 msgstr "Signalements"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_campaign_view_form
 msgid "Reset to draft"
 msgstr "Remettre en brouillon"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__activity_user_id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__activity_user_id
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_reported_phish__activity_user_id
@@ -2561,7 +2577,6 @@ msgid "Results"
 msgstr "Résultats"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #. odoo-javascript
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 msgid "Retry"
@@ -2613,8 +2628,6 @@ msgid "Run removal"
 msgstr "Exécuter le retrait"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__message_has_sms_error
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__message_has_sms_error
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__message_has_sms_error
@@ -2743,7 +2756,6 @@ msgid "Send spreading (days)"
 msgstr "Étalement des envois (jours)"
 
 #. module: bf_security_awareness
-#. modules: bf_securetransfer, bf_security_awareness
 #. odoo-python
 #: code:addons/bf_security_awareness/models/bf_clawback.py:0
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__email_from
@@ -2766,7 +2778,6 @@ msgid "Sender address"
 msgstr "Adresse d'expéditeur"
 
 #. module: bf_security_awareness
-#. modules: bf_securetransfer, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_template__sender_name
 msgid "Sender name"
 msgstr "Nom de l'expéditeur"
@@ -2820,7 +2831,7 @@ msgstr "Campagnes d'hameçonnage simulées, profils de risque et formation"
 #. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_reported_phish_view_form
 msgid "Simulation"
-msgstr "Simulation"
+msgstr ""
 
 #. module: bf_security_awareness
 #: model:ir.model.fields.selection,name:bf_security_awareness.selection__bf_reported_phish__state__simulation
@@ -2830,7 +2841,7 @@ msgstr "Simulation (reconnue)"
 #. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_reported_phish_view_search
 msgid "Simulations"
-msgstr "Simulations"
+msgstr ""
 
 #. module: bf_security_awareness
 #. odoo-javascript
@@ -2845,10 +2856,6 @@ msgid "Spam / junk"
 msgstr "Pourriel / indésirable"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
-#. bf_securetransfer, bf_security_awareness, hosting_management
-#. odoo-javascript
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_hit__state
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__state
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__state
@@ -2863,8 +2870,6 @@ msgid "Status"
 msgstr "État"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__activity_state
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_result__activity_state
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_reported_phish__activity_state
@@ -2891,7 +2896,6 @@ msgid "Strategy"
 msgstr "Stratégie"
 
 #. module: bf_security_awareness
-#. modules: bf_securetransfer, bf_security_awareness
 #. odoo-python
 #: code:addons/bf_security_awareness/models/bf_clawback.py:0
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__subject
@@ -3003,13 +3007,11 @@ msgid "Targeted people"
 msgstr "Personnes ciblées"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_campaign_view_search
 msgid "Template"
 msgstr "Modèle"
 
 #. module: bf_security_awareness
-#. modules: bf_security_awareness, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_template_view_form
 msgid "Template name"
 msgstr "Nom du modèle"
@@ -3017,10 +3019,9 @@ msgstr "Nom du modèle"
 #. module: bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__tenant_id
 msgid "Tenant ID (Entra)"
-msgstr "Tenant ID (Entra)"
+msgstr ""
 
 #. module: bf_security_awareness
-#. modules: bf_document_nextcloud_sync, bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_mail_clawback_connector_view_form
 msgid "Test connection"
 msgstr "Tester la connexion"
@@ -3028,7 +3029,7 @@ msgstr "Tester la connexion"
 #. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_security_profile_view_form
 msgid "Tests"
-msgstr "Tests"
+msgstr ""
 
 #. module: bf_security_awareness
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_template__landing_button_label
@@ -3094,6 +3095,12 @@ msgid "The phishing result that triggered the assignment."
 msgstr "Le résultat d'hameçonnage qui a déclenché l'assignation."
 
 #. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign_aggregate.py:0
+msgid "The report reference is assigned automatically."
+msgstr "La référence du rapport est attribuée automatiquement."
+
+#. module: bf_security_awareness
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_training_assignment__channel_id
 msgid "The target course. The register activity is resolved from it."
 msgstr "Le cours visé. L'activité du registre est résolue à partir de lui."
@@ -3102,6 +3109,22 @@ msgstr "Le cours visé. L'activité du registre est résolue à partir de lui."
 #: model:ir.model.constraint,message:bf_security_awareness.constraint_bf_phishing_result_token_uniq
 msgid "The token must be unique."
 msgstr "Le jeton doit être unique."
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_training_assignment.py:0
+msgid "The training invitation could not be sent: %s"
+msgstr "L'invitation à la formation n'a pas pu partir : %s"
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_training_assignment.py:0
+msgid ""
+"The training invitation template is missing: nothing would be sent. Upgrade "
+"the Security awareness module, then try again."
+msgstr ""
+"Le gabarit d'invitation à la formation est absent : rien ne partirait. "
+"Montez le module Sensibilisation à la sécurité, puis réessayez."
 
 #. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_mail_clawback_connector_view_form
@@ -3113,6 +3136,16 @@ msgstr ""
 "Ce connecteur permet le <strong>retrait</strong> d'un courriel\n"
 "                        malveillant confirmé dans toutes les boîtes internes. Les secrets\n"
 "                        sont chiffrés (Fernet, clé hors base de données)."
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_training_assignment.py:0
+msgid ""
+"This course is not published: the person would receive a link to a page they"
+" cannot open. Publish the course, then send the invitation."
+msgstr ""
+"Ce cours n'est pas publié : la personne recevrait un lien vers une page "
+"qu'elle ne peut pas ouvrir. Publiez le cours, puis envoyez l'invitation."
 
 #. module: bf_security_awareness
 #: model:ir.model.constraint,message:bf_security_awareness.constraint_bf_mail_clawback_mailbox_email_uniq_per_connector
@@ -3169,6 +3202,18 @@ msgstr "À trier"
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__token
 msgid "Token"
 msgstr "Jeton"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Too few recipients to publish rates without anyone being recognizable."
+msgstr ""
+"Trop peu de destinataires pour publier des taux sans que quelqu'un soit "
+"reconnaissable."
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "Too few trainings to publish this rate"
+msgstr "Trop peu de formations pour publier ce taux"
 
 #. module: bf_security_awareness
 #: model:ir.ui.menu,name:bf_security_awareness.menu_secaware_training_root
@@ -3247,17 +3292,18 @@ msgid "Triggering result"
 msgstr "Résultat déclencheur"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_fundraising_web,
-#. bf_nextcloud_browser, bf_security_awareness, hosting_management
-#. odoo-javascript
-#. odoo-python
-#: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__backend
-msgid "Type"
-msgstr "Type"
+#: model:ir.model.constraint,message:bf_security_awareness.constraint_bf_phishing_campaign_report_reference_company_uniq
+msgid "Two campaigns of the same company cannot share a report reference."
+msgstr ""
+"Deux campagnes d'une même société ne peuvent pas avoir la même référence de "
+"rapport."
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_security_awareness.field_bf_mail_clawback_connector__backend
+msgid "Type"
+msgstr ""
+
+#. module: bf_security_awareness
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__activity_exception_decoration
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_result__activity_exception_decoration
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_reported_phish__activity_exception_decoration
@@ -3290,7 +3336,6 @@ msgid "Used when \"Manual address list\" is selected."
 msgstr "Utilisé quand « Liste manuelle » est choisi."
 
 #. module: bf_security_awareness
-#. modules: bf_securetransfer, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__user_agent
 msgid "User agent"
 msgstr "Agent utilisateur"
@@ -3306,8 +3351,6 @@ msgid "Was a simulation"
 msgstr "Était une simulation"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_clawback_operation__website_message_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__website_message_ids
 #: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_result__website_message_ids
@@ -3317,8 +3360,6 @@ msgid "Website Messages"
 msgstr "Messages du site web"
 
 #. module: bf_security_awareness
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_clawback_operation__website_message_ids
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__website_message_ids
 #: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_result__website_message_ids
@@ -3417,6 +3458,12 @@ msgid "Your cybersecurity dashboard"
 msgstr "Votre tableau de bord cybersécurité"
 
 #. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_reported_phish.py:0
+msgid "[token masked]"
+msgstr "[jeton masqué]"
+
+#. module: bf_security_awareness
 #. odoo-javascript
 #: code:addons/bf_security_awareness/static/src/xml/bf_security_dashboard.xml:0
 msgid "critical"
@@ -3440,7 +3487,6 @@ msgid "e.g. support@example-bank.com"
 msgstr "ex. support@exemple-banque.com"
 
 #. module: bf_security_awareness
-#. modules: bf_securetransfer, bf_security_awareness
 #. odoo-python
 #: code:addons/bf_security_awareness/models/bf_clawback.py:0
 msgid "email"
@@ -3456,6 +3502,11 @@ msgstr "dont"
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_mail_clawback_connector_view_form
 msgid "one address per line"
 msgstr "une adresse par ligne"
+
+#. module: bf_security_awareness
+#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
+msgid "pts"
+msgstr "points"
 
 #. module: bf_security_awareness
 #. odoo-javascript
@@ -3475,6 +3526,11 @@ msgid "to complete"
 msgstr "à compléter"
 
 #. module: bf_security_awareness
+#: model:ir.model.fields,field_description:bf_security_awareness.field_bf_training_assignment__state
+msgid "État"
+msgstr ""
+
+#. module: bf_security_awareness
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_mail_clawback_connector_view_form
 msgid "•••• (write-only)"
 msgstr "•••• (écriture seule)"
@@ -3488,170 +3544,3 @@ msgstr "✓ Il s'agissait d'une simulation autorisée"
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.phishing_reported
 msgid "✓ Well done!"
 msgstr "✓ Bien joué !"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "<strong>Previous campaign sent on</strong>"
-msgstr "<strong>Campagne précédente envoyée le</strong>"
-
-#. module: bf_security_awareness
-#: model:ir.actions.report,name:bf_security_awareness.action_report_phishing_campaign_aggregate
-msgid "Aggregate report"
-msgstr "Rapport agrégé"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid ""
-"Aggregate report: it names no one and shows no department, risk profile or "
-"time of action. It can be handed outside the organization."
-msgstr "Rapport agrégé : il ne nomme personne et ne montre ni service, ni profil de risque, ni heure d'action. Il peut être remis hors de l'entreprise."
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Assigned trainings completed"
-msgstr "Formations assignées complétées"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Change since the previous campaign"
-msgstr "Évolution depuis la campagne précédente"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Click rate"
-msgstr "Taux de clic"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "No training assigned"
-msgstr "Aucune formation assignée"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Not sent yet"
-msgstr "Pas encore envoyée"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Open rate"
-msgstr "Taux d'ouverture"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Phishing simulation: aggregate report"
-msgstr "Simulation d'hameçonnage : rapport agrégé"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Rates"
-msgstr "Taux"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Rates are shown from this number of recipients:"
-msgstr "Les taux s'affichent à partir de ce nombre de destinataires :"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Too few recipients to publish rates without anyone being recognizable."
-msgstr "Trop peu de destinataires pour publier des taux sans que quelqu'un soit reconnaissable."
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Too few trainings to publish this rate"
-msgstr "Trop peu de formations pour publier ce taux"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "pts"
-msgstr "points"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign
-msgid ""
-"Confidential: this report contains individual results. Do not hand over "
-"outside the organization; use the aggregate report instead."
-msgstr "Confidentiel : ce rapport contient des résultats individuels. Ne pas le remettre hors de l'entreprise ; remettre plutôt le rapport agrégé."
-
-#. module: bf_security_awareness
-#: model:ir.actions.report,print_report_name:bf_security_awareness.action_report_phishing_campaign_aggregate
-msgid ""
-"'Aggregate report - %s - %s' % (object.report_reference or '', "
-"object.template_id.name)"
-msgstr "'Rapport agrégé - %s - %s' % (object.report_reference or '', object.template_id.name)"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "10% or less"
-msgstr "10 % ou moins"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "90% or more"
-msgstr "90 % ou plus"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.bf_phishing_campaign_view_form_report_reference
-msgid "<span>Report reference:</span>"
-msgstr "<span>Référence du rapport :</span>"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "<strong>Recipients of the previous campaign</strong>"
-msgstr "<strong>Destinataires de la campagne précédente</strong>"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "<strong>Reference</strong>"
-msgstr "<strong>Référence</strong>"
-
-#. module: bf_security_awareness
-#: model:ir.actions.report,name:bf_security_awareness.action_report_phishing_campaign
-msgid "Named report (confidential)"
-msgstr "Rapport nominatif (confidentiel)"
-
-#. module: bf_security_awareness
-#: model:ir.model.fields,field_description:bf_security_awareness.field_bf_phishing_campaign__report_reference
-msgid "Report reference"
-msgstr "Référence du rapport"
-
-#. module: bf_security_awareness
-#: model:ir.model.fields,help:bf_security_awareness.field_bf_phishing_campaign__report_reference
-msgid ""
-"Neutral reference printed on the aggregate report, numbered per company."
-msgstr "Référence neutre imprimée sur le rapport agrégé, numérotée par société."
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Not published"
-msgstr "Non publié"
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid "Not published: one of the two rates is not given exactly"
-msgstr "Non publiée : l'un des deux taux n'est pas donné exactement"
-
-#. module: bf_security_awareness
-#. odoo-python
-#: code:addons/bf_security_awareness/models/bf_phishing_campaign_aggregate.py:0
-msgid "The report reference is assigned automatically."
-msgstr "La référence du rapport est attribuée automatiquement."
-
-#. module: bf_security_awareness
-#: model:ir.model.constraint,message:bf_security_awareness.constraint_bf_phishing_campaign_report_reference_company_uniq
-msgid "Two campaigns of the same company cannot share a report reference."
-msgstr "Deux campagnes d'une même société ne peuvent pas avoir la même référence de rapport."
-
-#. module: bf_security_awareness
-#: model_terms:ir.ui.view,arch_db:bf_security_awareness.report_phishing_campaign_aggregate
-msgid ""
-"Rates close to 100 % of failures, or to 0 % of reports or of completed "
-"trainings, are shown as a range, or not published, so that no one's result "
-"can be inferred."
-msgstr "Les taux proches de 100 % d'échecs, ou de 0 % de signalements ou de formations complétées, s'affichent en plage, ou ne sont pas publiés, pour qu'on ne puisse déduire le résultat de personne."
-
-#. module: bf_security_awareness
-#. odoo-python
-#: code:addons/bf_security_awareness/models/bf_reported_phish.py:0
-msgid "[token masked]"
-msgstr "[jeton masqué]"

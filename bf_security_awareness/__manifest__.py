@@ -25,7 +25,16 @@
     #   matching a live result. Masking runs AFTER `html_sanitize`, which
     #   decodes entities — masking first let `&#47;phish&#47;<token>` back
     #   out as a live one-click link.
-    "version": "18.0.2.3.3",
+    # 18.0.2.3.5: an invitation that cannot be sent says so. Three states
+    #   were silent — no template, a person without an email address, and a
+    #   course that is not published, whose link lands every portal account
+    #   on a wall (the eLearning record rule requires `website_published`
+    #   whatever the visibility, member or not). The button now refuses the
+    #   click with the reason; the counter, the reminder date and the
+    #   follow-up activity are written only after a send that went out; an
+    #   unexpected failure lands on the assignment's own thread; and one
+    #   failure no longer takes the whole batch down.
+    "version": "18.0.2.3.5",
     "category": "Marketing/Security Awareness",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

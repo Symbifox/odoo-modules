@@ -30,6 +30,12 @@ class TestInvitationFormation(TransactionCase):
             "channel_type": "training",
             "enroll": "invite",
             "visibility": "connected",
+            # 🔴 Publié, parce que depuis la 18.0.2.3.5 le bouton REFUSE
+            # d'inviter à un cours non publié — la personne y recevrait un lien
+            # vers une page qu'elle ne peut pas ouvrir. Ces essais-ci mesurent
+            # l'invitation qui part ; le refus a les siens
+            # (`test_invitation_muette.py`).
+            "is_published": True,
         })
         cls.operateur = new_test_user(
             cls.env, login="operateur_inv", name="Opératrice Sécurité",

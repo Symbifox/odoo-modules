@@ -31,6 +31,36 @@ class BfTrainingAssignment(models.Model):
             if rec.slide_channel_id and rec.slide_channel_id.website_url:
                 rec.training_url = rec.slide_channel_id.website_url
 
+    def _refus_relance(self, gabarit):
+        """Un cours non publié rend mort le lien que la relance porte.
+
+        🔴 `_compute_training_url`, juste au-dessus, fait pointer le
+        bouton de la relance **droit sur le cours**. Or la règle du cœur de
+        l'eLearning (`website_slides.rule_slide_channel_visibility_signed_in_user`)
+        exige `website_published` pour TOUT compte portail, membre inscrit ou
+        pas : une relance vers un cours non publié envoie la personne sur une
+        page qu'elle ne peut pas ouvrir. La garde vit **ici** et pas dans
+        `bf_training`, qui ne sait rien des cours — et le socle l'appelle aussi
+        bien au clic (pour refuser) qu'à la tâche planifiée (pour écarter).
+
+        Sans gabarit il n'y a pas de lien : le socle pose alors son rappel au
+        fil, et il n'y a rien à refuser.
+        """
+        refus = super()._refus_relance(gabarit)
+        if refus:
+            return refus
+        # ⚠️ En sudo, pour ce seul booléen, et `prefetch_fields=False` : sans
+        # lui, la lecture ramènerait TOUS les champs stockés du cours dans le
+        # cache de la transaction, et le code non-sudo qui suit les lirait sans
+        # qu'aucune règle ne soit évaluée.
+        cours = self.slide_channel_id.sudo().with_context(prefetch_fields=False)
+        if gabarit and cours and not cours.website_published:
+            return _(
+                "Ce cours n'est pas publié : la personne recevrait un lien vers "
+                "une page qu'elle ne peut pas ouvrir. Publiez le cours, puis "
+                "relancez.")
+        return False
+
     @api.depends("partner_id", "slide_channel_id")
     def _compute_channel_partner_id(self):
         for rec in self:

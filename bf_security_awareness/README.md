@@ -179,6 +179,17 @@ its token masked (`/phish/[token masked]`), so reading a ticket cannot register
 a click on the lure of the person who received it. The report record itself
 keeps the full link, for the awareness groups only.
 
+**An invitation that cannot be sent says so** (since 18.0.2.3.5): the
+button refuses the click, with the reason, instead of counting a reminder
+nobody received. Three states were silent — no template, a person without an
+email address, and a course that is not published, whose link lands every
+portal account on a wall (the eLearning record rule requires
+`website_published` whatever the visibility, member or not). The counter, the
+reminder date and the follow-up activity are written only after a send that
+went out; an unexpected failure is written to the assignment's own thread
+rather than to the server log alone; and one failure no longer takes the whole
+batch down.
+
 The clawback and the reporting alias are high-impact. Read **`SECURITY.md`** for
 the threat model and controls (least-privilege groups, reversible quarantine,
 IMAP-injection screening, the authorization flag, blast-radius cap, encrypted
@@ -193,5 +204,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-11-07, this version converts automatically to
+- **Change Date**: on 2030-11-13, this version converts automatically to
   **LGPL-3.0-or-later**.
