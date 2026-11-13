@@ -12,6 +12,14 @@ from .brand_color_mixin import _SEUIL_AA_GRAND, assombrir_pour_texte_blanc
 # keeps Odoo's icons rather than shipping a broken list.
 BRAND_MANIFEST_MIMETYPES = ("image/png", "image/jpeg", "image/webp")
 
+# 🔴 Les deux mauves que le CŒUR pose lui-même, et que personne n'a choisis :
+# `report_brand_primary` a pour DÉFAUT `#714B67` (`bf_onboarding_base`), et la
+# mise en page des avis d'Odoo se replie sur `#875A7B`
+# (`res.company.email_secondary_color`, un champ calculé du cœur). Une société
+# restée sur l'un des deux n'a donc PAS d'accent — voir
+# `_brand_email_button_color`, le seul endroit où ce départage se fait.
+BRAND_ACCENTS_PAR_DEFAUT = ("#714b67", "#875a7b")
+
 
 class ResCompany(models.Model):
     _inherit = "res.company"
@@ -139,6 +147,53 @@ class ResCompany(models.Model):
         self.ensure_one()
         return assombrir_pour_texte_blanc(self.report_brand_primary or '',
                                           seuil=_SEUIL_AA_GRAND)
+
+    # -- Le bouton « Voir » d'un avis ----------------------------------------
+
+    def _brand_email_button_color(self):
+        """Le fond du bouton « Voir » d'un avis : l'accent de la marque, à
+        défaut le champ d'Odoo, à défaut le mauve d'Odoo.
+
+        🔴 **Un `report_brand_primary` non vide ne veut pas dire « un accent
+        choisi ».** Le champ a pour DÉFAUT `#714B67`, le mauve d'Odoo
+        (`bf_onboarding_base`) : il n'est jamais vide, donc tout repli écrit
+        derrière lui serait INATTEIGNABLE. Mesuré le 2026-11-12 : une société
+        restée au défaut, dont le champ d'Odoo portait `#000000`, aurait vu
+        son bouton d'avis passer du noir au mauve d'Odoo — l'inverse de
+        l'intention. Les deux mauves du cœur comptent donc pour « pas
+        d'accent », à la casse et aux espaces près : le champ est un `Char`
+        nu, sans contrainte, écrit à la main, par RPC ou par import.
+
+        ⚠️ Conséquence assumée : une société qui voudrait vraiment le mauve
+        d'Odoo comme accent de marque est lue comme une société sans accent.
+        Un défaut ne se distingue pas d'un choix qui lui ressemble — et le
+        repli la ramène au même mauve de toute façon.
+
+        ⚠️ `email_secondary_color` (« Email Button Color ») est un champ du
+        CŒUR, calculé depuis `secondary_color` et replié sur `#875A7B`. Ce
+        module ne le possède pas et personne ne l'aligne sur la marque :
+        mesuré sur un locataire, 930 des 997 avis encore en base portaient sa
+        valeur pour la société d'en-tête, et non l'accent de sa marque.
+        L'accent passe donc devant, et le champ d'Odoo garde sa place de repli
+        pour une société qui n'a pas d'accent à elle.
+
+        L'accent BRUT, pas sa variante lisible (`_brand_primary_on_white`) :
+        c'est le choix du module pour les boutons de courriel depuis la
+        18.0.3.19.0, et déjà celui de `bf_mail_layout`.
+
+        Ici plutôt que dans l'expression QWeb de la vue : la décision se lit,
+        s'éprouve et se mute à un seul endroit, et la vue ne garde que sa
+        garde de société vide. Sûre sur un recordset VIDE pour la même raison
+        — la mise en page peut recevoir une société vide, le cœur rend alors
+        son propre mauve, et une couleur ne vaut jamais une trace d'erreur.
+        """
+        if not self:
+            return '#875A7B'
+        self.ensure_one()
+        accent = (self.report_brand_primary or '').strip()
+        if accent.lower() in BRAND_ACCENTS_PAR_DEFAUT:
+            accent = ''
+        return accent or (self.email_secondary_color or '').strip() or '#875A7B'
 
     # -- Brand icon ---------------------------------------------------------
     # One field feeds three surfaces (tab, apple-touch, PWA manifest); the URL

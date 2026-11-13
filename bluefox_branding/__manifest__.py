@@ -11,7 +11,27 @@
     #   du calendrier perdent leur coquille (ils passent par le gabarit light : carte dans
     #   la carte). Textes des vues en anglais, français dans i18n/fr_CA.po. La migration
     #   n'écrit que ces sept gabarits, jamais les autres surcharges.
-    "version": "18.0.3.26.0",
+    # 18.0.3.26.1: la couleur des boutons d'un courriel suit la société du
+    #   DOSSIER qui envoie (tâche BF #26617, née de la relecture de #26590).
+    #   `mail.mail` et `mail.render.mixin` lisaient `env.company` : la société
+    #   de la session à la création, celle de l'usager du cron de la file à
+    #   l'envoi, jamais celle du dossier. Un courriel d'une filiale sortait
+    #   donc à l'accent de la société d'en-tête, et deux envois du même
+    #   dossier changeaient de couleur selon qui les déclenchait. Règle :
+    #   dossier (`_mail_get_companies`, comme la mise en page des avis), à
+    #   défaut l'auteur du message, à défaut la session. Une société restée
+    #   sans couleur garde le mauve d'Odoo : la société commande jusqu'au bout.
+    #   Et le bouton « Voir » des avis du cœur lit enfin l'accent de la marque :
+    #   la mise en page d'Odoo le peignait avec `email_secondary_color`, un champ
+    #   du cœur que ce module ne possède pas et que personne n'entretient (930
+    #   des 997 courriels de tâches de BF portaient sa valeur, pas la marque).
+    #   L'accent passe devant, le champ d'Odoo reste en repli, le mauve en
+    #   dernier recours (`res.company._brand_email_button_color`). ⚠️ « Sans
+    #   accent » veut dire « resté sur un des mauves du cœur », et non « champ
+    #   vide » : `report_brand_primary` a un DÉFAUT, donc un repli écrit derrière
+    #   lui serait inatteignable — une société restée au défaut aurait vu son
+    #   bouton passer de sa vraie couleur au mauve d'Odoo.
+    "version": "18.0.3.26.1",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
     "description": """
@@ -54,6 +74,7 @@
         "data/mail_layout_override.xml",
         "data/mail_layout_relais.xml",
         "data/mail_layout_light.xml",
+        "data/avis_bouton_marque.xml",
         "data/auth_mail_overrides.xml",
         "data/bf_onboarding.xml",
         "views/res_config_settings_views.xml",

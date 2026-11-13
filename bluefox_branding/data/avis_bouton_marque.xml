@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- Le bouton « Voir » d'un avis lit l'accent de la MARQUE             -->
+    <!--                                                                    -->
+    <!-- 🔴 La mise en page des avis du cœur (celle du chatter, qui reste    -->
+    <!-- volontairement celle d'Odoo) peint son bouton avec                 -->
+    <!-- `company.email_secondary_color` — un champ d'Odoo que ce module ne -->
+    <!-- possède pas et que personne n'aligne sur la marque : le cœur le    -->
+    <!-- calcule depuis `secondary_color` et le replie sur son propre mauve.-->
+    <!-- Mesuré sur un locataire : 930 des 997 avis de tâches encore en base-->
+    <!-- portaient la valeur de ce champ pour la société d'en-tête, et non  -->
+    <!-- l'accent de sa marque. Et une filiale dont ce champ était resté au -->
+    <!-- mauve voyait son bouton repeint à la couleur de la SESSION par le  -->
+    <!-- balayage du mauve.                                                 -->
+    <!--                                                                    -->
+    <!-- La chaîne, dans l'ordre, vit tout entière dans                     -->
+    <!-- `res.company._brand_email_button_color()` :                        -->
+    <!--   1. l'accent de la marque (`report_brand_primary`) ;              -->
+    <!--   2. à défaut, `email_secondary_color`, le champ du cœur ;         -->
+    <!--   3. à défaut, le mauve d'Odoo (`#875A7B`).                        -->
+    <!-- Le bouton rejoint ainsi la mise en page de marque, qui peint le    -->
+    <!-- sien avec `report_brand_primary` depuis toujours                   -->
+    <!-- (`bf_mail_layout`).                                                -->
+    <!--                                                                    -->
+    <!-- 🔴 « Pas d'accent » ne veut PAS dire « champ vide », et c'est le    -->
+    <!-- piège : `report_brand_primary` a pour défaut le mauve d'Odoo       -->
+    <!-- (`#714B67`), donc il n'est jamais vide, et un repli écrit derrière -->
+    <!-- lui serait inatteignable. Les deux mauves du cœur (`#714B67` et    -->
+    <!-- `#875A7B`) comptent donc pour « pas d'accent », à la casse et aux  -->
+    <!-- espaces près. Sans ce départage, une société restée au défaut dont -->
+    <!-- le champ du cœur portait une vraie couleur aurait vu son bouton    -->
+    <!-- passer de cette couleur au mauve d'Odoo : l'inverse de l'intention.-->
+    <!--                                                                    -->
+    <!-- Le départage vit dans la méthode et non dans l'expression QWeb : la-->
+    <!-- décision se lit, s'éprouve et se mute à un seul endroit. La vue ne -->
+    <!-- garde que sa garde de société vide, parce que la mise en page peut -->
+    <!-- recevoir une société vide (le cœur lui-même l'admet) ; elle rend   -->
+    <!-- alors le mauve.                                                    -->
+    <!--                                                                    -->
+    <!-- ⚠️ L'accent BRUT, pas sa variante lisible : c'est le choix du      -->
+    <!-- module pour les boutons de courriel, documenté depuis la           -->
+    <!-- 18.0.3.19.0, et déjà celui de `bf_mail_layout`. Mesuré sur une     -->
+    <!-- marque du parc : sous du texte blanc, le fond passe de 2,93:1      -->
+    <!-- (l'ancienne valeur du champ du cœur) à 2,62:1 (l'accent de la      -->
+    <!-- marque) ; les deux sont sous le seuil AA, et le second est déjà    -->
+    <!-- celui de tous les autres courriels de cette marque. Ce choix change-->
+    <!-- donc la couleur, pas le verdict de contraste.                      -->
+    <!-- `res.company._brand_primary_on_white()` existe si on décide un jour-->
+    <!-- l'inverse.                                                         -->
+    <!--                                                                    -->
+    <!-- Tâche BF #26617. L'héritage couvre les trois vues qui dérivent de  -->
+    <!-- celle-ci : la signature du responsable, l'invitation, et le        -->
+    <!-- contrat.                                                           -->
+    <!-- ================================================================== -->
+    <template id="avis_bouton_marque" inherit_id="mail.mail_notification_layout">
+        <!-- Le second `td t-if="has_button_access"` de la vue ne porte pas de
+             style : on désigne donc celui qui peint, par sa couleur. -->
+        <xpath expr="//td[@t-if='has_button_access'][contains(@t-att-style, 'email_secondary_color')]"
+               position="attributes">
+            <attribute name="t-att-style">'border-radius: 3px; text-align: center; background: ' + ((company and company._brand_email_button_color()) or '#875A7B') + ';'</attribute>
+        </xpath>
+    </template>
+
+</odoo>

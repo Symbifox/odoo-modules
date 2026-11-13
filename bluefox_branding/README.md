@@ -218,8 +218,61 @@ hook so the template is written in every active language.
 
 `mail.mail._send` / `create` / `write` and `mail.render.mixin._render_template`
 run a small regex sweep replacing Odoo's legacy `#875A7B` plum (and its
-`rgb()` / `#714B67` variants) with the active company's brand primary. Shared
-logic lives in `models/brand_color_mixin.py`.
+`rgb()` / `#714B67` variants) with the brand primary of the company the email
+belongs to. Shared logic lives in `models/brand_color_mixin.py`.
+
+**Which company (18.0.3.26.1).** The record that sends the email, read the way
+the core notification layout reads it (`_mail_get_companies`, i.e. the model's
+company field); failing that the author of the message; failing that the
+session. Until 18.0.3.26.1 all four entry points read `env.company` — the
+session's company at creation time, and the queue cron user's at send time —
+so a subsidiary's email went out wearing the parent's accent, and two emails
+from the same record could differ depending on who triggered them. On the
+render path the chain stops at the session on purpose: there the author *is*
+the acting user, and the session's company already carries their company-switcher
+choice.
+
+A company left without a brand primary keeps the field's default, Odoo's plum,
+and the sweep is then a no-op for it. That is deliberate: the company decides
+all the way down, and the fix for a subsidiary emailing in plum is to give it a
+colour, not to fall back to another company's.
+
+### The "View" button of core notification emails
+
+`data/avis_bouton_marque.xml` (new in 18.0.3.26.1) inherits
+`mail.mail_notification_layout` so that button reads
+`res.company._brand_email_button_color()`. Odoo's own layout paints it from
+`res.company.email_secondary_color` ("Email Button Color"), a core field this
+module does not own: it is computed from `secondary_color`, falls back to
+Odoo's plum, and nothing keeps it in step with the brand. Measured on one
+tenant, 930 of 997 task notifications still in the database carried that
+field's value for the parent company rather than the brand accent. The three
+views that inherit the layout (responsible signature, invitation, contract)
+follow from the same override.
+
+The chain is the brand accent, then the core field, then Odoo's plum. **"No
+brand accent" means "left on one of Odoo's own plums"** (`#714B67` or
+`#875A7B`, case and whitespace insensitive), not "empty":
+`report_brand_primary` has a default, so it is never empty, and a fallback
+written behind a non-empty value would be unreachable. A company left on the
+default therefore keeps the colour the core field gives it — a subsidiary whose
+field says black keeps a black button instead of being repainted plum. An empty
+company recordset yields Odoo's plum instead of raising, because the layout can
+be rendered without one.
+
+Note the asymmetry with the sweep above, and it is deliberate. In the body, a
+company without an accent stays on Odoo's plum: the plum is what was already
+there, and the remedy is to give that company a colour. In the notification
+layout the button falls back instead, because there the core was already
+painting a real colour and dropping it to plum would be a regression.
+
+The raw accent, not its readable variant (`res.company._brand_primary_on_white`):
+that is this module's documented choice for email buttons since 18.0.3.19.0,
+and already what `bf_mail_layout` does for its own button. Measured under white
+text, both the core field's value and the brand accent sit below the AA
+threshold on the brand measured, so this changes which colour the button wears,
+not whether its contrast passes. The readable variant stays available if that
+trade-off is ever revisited.
 
 ### Branded PWA manifest
 
@@ -255,6 +308,11 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.3.26.1
+
+- Fixed: the plum sweep painted buttons with the *session's* company accent — `env.company` at creation time and the queue cron user's company at send time — instead of the accent of the company the email belongs to. A subsidiary's email went out wearing the parent's colour, and two emails from the same record could differ depending on who triggered them, while the notification layout around them was already reading the record's company. The company is now resolved from the record that sends the email (`_mail_get_companies`), failing that from the author of the message, failing that from the session, on both `mail.mail` and `mail.render.mixin`. A company left without a brand primary keeps Odoo's plum: the company decides all the way down.
+- The "View" button of a core notification email now reads the brand primary. Odoo's own layout paints it from `res.company.email_secondary_color`, a core field this module does not own and that nothing keeps in step with the brand: measured on one tenant, 930 of 997 task notifications carried that field's value for the parent company rather than the brand accent, and a subsidiary whose field had been left on Odoo's plum had its button repainted with the session's accent by the sweep above. The brand accent now comes first, the core field remains the fallback, and Odoo's plum the last resort. "No brand accent" means the field was left on one of Odoo's own plums, not that it is empty: `report_brand_primary` has a default, so a fallback written behind a non-empty value would be unreachable, and a company left on the default now keeps the colour the core field gives it instead of being repainted plum. The three views that inherit the layout follow. The raw accent, not its readable variant, consistent with `bf_mail_layout` and with the choice documented in 18.0.3.19.0.
 
 ### 18.0.3.26.0
 
