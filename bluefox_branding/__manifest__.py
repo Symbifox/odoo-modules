@@ -11,8 +11,39 @@
     #   du calendrier perdent leur coquille (ils passent par le gabarit light : carte dans
     #   la carte). Textes des vues en anglais, français dans i18n/fr_CA.po. La migration
     #   n'écrit que ces sept gabarits, jamais les autres surcharges.
-    # 18.0.3.26.1: la couleur des boutons d'un courriel suit la société du
-    #   DOSSIER qui envoie (tâche BF #26617, née de la relecture de #26590).
+    # 18.0.3.27.0: forme du cadre par société : coins (Carré, Doux,
+    #   Arrondi), ombres (Aucune, Discrète, Marquée) et bordures (Fine, Appuyée) au
+    #   panneau Identité de marque. Interface : variables de Bootstrap redéfinies dans
+    #   la <style> par société ; courriels : valeurs littérales dans les mises en page
+    #   (carte, boutons, filets) ; PDF : feuille compilée par société d'Odoo, car
+    #   wkhtmltopdf ignore var(). Les valeurs par défaut reprennent l'apparence
+    #   d'avant et n'émettent rien. Le client web seulement : le site public, le
+    #   portail et la page de connexion gardent leur thème.
+    # 18.0.3.29.0: les derniers textes en dur du courriel passent à l'anglais, et
+    #   le français vient du catalogue. « Confidentialité »,
+    #   « Conditions », « Se désabonner » et deux « Aucun » (valeur suivie
+    #   absente) étaient littéraux dans `bf_mail_layout` : un destinataire
+    #   anglais les lisait en français, et un locataire qui n'a que en_US,
+    #   toujours. Même forme que `bf_mail_card` depuis la 3.26.0 ; « Aucun »
+    #   devient « None », le mot d'Odoo lui-même. Le français ne change que sur
+    #   un point : le lien d'arrêt de suivi dit « Ne plus suivre », la
+    #   traduction que le module servait déjà ailleurs, et non plus
+    #   « Se désabonner ».
+    #   Ce lien est aussi enveloppé dans <span id="mail_unfollow"> : sans cette
+    #   enveloppe, `mail.mail._personalize_outgoing_body` ne peut pas le retirer
+    #   et un non-abonné recevait un /mail/unfollow sans jeton.
+    #   L'« Avis de retard sur facture » (gabarit 141) n'existait qu'en français
+    #   et le crochet l'écrivait dans toutes les langues actives. Il a maintenant
+    #   son jeu de phrases anglaises, une seule structure HTML pour les deux, et
+    #   le crochet lui pose sa mise en page et `lang` (sans quoi le corps suit la
+    #   langue de qui envoie, pas celle du client).
+    #   🔴 Le littéral du module portait encore la COQUILLE de cet avis alors que
+    #   la production l'a dé-coquillé le 2026-10-28 : le squelette est désormais
+    #   le corps réel, au caractère près, sinon la reprise aurait rendu une carte
+    #   dans la carte et deux pieds de marque. Le crochet garde intact tout corps
+    #   qui porte notre marque sans être l'un des deux que nous avons publiés.
+    # 18.0.3.30.0: la couleur des boutons d'un courriel suit la société du
+    #   DOSSIER qui envoie.
     #   `mail.mail` et `mail.render.mixin` lisaient `env.company` : la société
     #   de la session à la création, celle de l'usager du cron de la file à
     #   l'envoi, jamais celle du dossier. Un courriel d'une filiale sortait
@@ -31,7 +62,22 @@
     #   vide » : `report_brand_primary` a un DÉFAUT, donc un repli écrit derrière
     #   lui serait inatteignable — une société restée au défaut aurait vu son
     #   bouton passer de sa vraie couleur au mauve d'Odoo.
-    "version": "18.0.3.26.1",
+    # 18.0.3.31.0: la barre du haut tient dans un téléphone. Mesuré au
+    #   banc : à 390 px, les quatre surfaces visées débordent de 212 px, toujours par
+    #   `.o_menu_systray` (566 px, `flex-shrink: 0`, douze éléments). Sous 768 px, la barre
+    #   système peut maintenant rétrécir et défiler à l'horizontale ; rien n'est retiré,
+    #   rien ne change au-dessus de 768 px. Voir static/src/scss/mobile_shell.scss.
+    # 18.0.3.32.0: l'icône du menu mobile se peint vraiment sur un fond sombre.
+    #   Le sélecteur visait `.navbar-toggler .navbar-toggler-icon`, et en Odoo 18
+    #   le bouton du menu mobile ne porte PAS cette classe (c'est un
+    #   `.nav-link.btn` de `.o_header_mobile_buttons_wrap`) : la règle ne matchait
+    #   AUCUN des deux gabarits d'en-tête en service, `default` et `mobile`. Elle
+    #   matchait `template_header_hamburger`, qu'Odoo livre et que personne
+    #   n'active ; le nouveau sélecteur couvre les trois. Sans elle, l'icône
+    #   gardait le repli d'Odoo : blanc à 55 % ici (visible par chance) mais
+    #   presque noir sur un fond marine ailleurs, donc invisible.
+    #   Défaut relevé à la campagne de captures du 2026-10-10.
+    "version": "18.0.3.32.0",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
     "description": """
@@ -80,8 +126,10 @@
         "views/res_config_settings_views.xml",
         "views/webclient_brand_icon.xml",
         "views/brand_css_variables.xml",
+        "views/brand_frame_backend.xml",
         "views/website_brand_css_variables.xml",
         "views/report_layout_overrides.xml",
+        "views/report_frame.xml",
         # mail_template_overrides.xml is NOT loaded by Odoo data loader
         # (original templates have noupdate=True). Instead, post_init_hook
         # reads this file and applies updates via ORM write().
@@ -92,6 +140,13 @@
         ],
         "web.assets_backend": [
             "bluefox_branding/static/src/scss/branding.scss",
+            # La coquille à la largeur d'un téléphone. Paquet d'arrière-guichet
+            # SEULEMENT : mesuré le 2026-11-13, la règle n'est servie ni sur `/`, ni
+            # sur `/my`, ni sur le blogue. ⚠️ Elle atteint quand même UNE barre système
+            # servie sur une URL publique, celle du constructeur de site (`/odoo/website`
+            # rend `/` avec le paquet d'arrière-guichet et une `o_website_systray`) :
+            # trois éléments, 147 px, rien à rétrécir, aucun dommage mesurable.
+            "bluefox_branding/static/src/scss/mobile_shell.scss",
             # Opens "Install App" to every app, not Odoo's three. See the file.
             "bluefox_branding/static/src/js/install_app_menu.js",
             # Second worker registration, scoped to /scoped_app.

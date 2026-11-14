@@ -53,6 +53,22 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.font",
         readonly=False,
     )
+    # Forme du cadre
+    brand_frame_shape = fields.Selection(
+        related="company_id.brand_frame_shape",
+        readonly=False,
+        required=True,
+    )
+    brand_frame_shadow = fields.Selection(
+        related="company_id.brand_frame_shadow",
+        readonly=False,
+        required=True,
+    )
+    brand_frame_border = fields.Selection(
+        related="company_id.brand_frame_border",
+        readonly=False,
+        required=True,
+    )
     company_logo = fields.Binary(
         related="company_id.logo",
         readonly=False,

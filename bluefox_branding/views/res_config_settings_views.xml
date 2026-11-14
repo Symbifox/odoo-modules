@@ -62,6 +62,22 @@
                         </div>
                     </setting>
 
+                    <setting string="Forme du cadre"
+                             help="Coins, ombres et bordures de l'interface Odoo, des courriels brandés et des rapports PDF. Doux, Discrète et Fine reprennent l'apparence d'origine.">
+                        <div class="row mt16">
+                            <label for="brand_frame_shape" class="col-lg-3 o_light_label"/>
+                            <field name="brand_frame_shape"/>
+                        </div>
+                        <div class="row">
+                            <label for="brand_frame_shadow" class="col-lg-3 o_light_label"/>
+                            <field name="brand_frame_shadow"/>
+                        </div>
+                        <div class="row">
+                            <label for="brand_frame_border" class="col-lg-3 o_light_label"/>
+                            <field name="brand_frame_border"/>
+                        </div>
+                    </setting>
+
                     <setting string="Courriels brandés"
                              help="Texte additionnel injecté dans le gabarit de courriel brandé (bf_mail_layout).">
                         <div class="row mt16">

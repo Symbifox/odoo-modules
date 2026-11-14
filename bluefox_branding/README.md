@@ -41,6 +41,32 @@ populated at request time from the **company selected in the switcher**, not
 cookie, so the variables are resolved by `res.company._brand_active_company`
 (v18.0.3.8.0). See `static/src/scss/branding.scss`.
 
+### Frame shape per company (v18.0.3.27.0)
+
+Three settings in the Brand Identity panel give a company the shape of its
+frames: corners (Square, Soft, Rounded), shadow (None, Subtle, Pronounced) and
+border weight (Thin, Strong). They reach the three surfaces that draw a frame,
+each by the only mechanism available to it:
+
+- **web client**: Bootstrap's own variables are redefined in the per-company
+  `<style>` block, so cards, modals, dropdowns and buttons follow;
+- **emails**: literal values are written into the layouts (card, buttons,
+  rules), because a mail client cannot resolve a CSS variable;
+- **PDF**: the per-company stylesheet Odoo compiles for reports, because
+  wkhtmltopdf ignores `var()`.
+
+The defaults reproduce the previous appearance and emit nothing, so a company
+that never opens the panel sees no change. The web client only: the website, the
+portal and the login page keep their own theme.
+
+### The web client's top bar at phone width (v18.0.3.31.0)
+
+Below 768 px the systray may shrink and scroll horizontally instead of pushing
+the bar wider than the viewport. At 390 px the measured overflow was 212 px, and
+it always came from `.o_menu_systray`, which Odoo lays out at `flex-shrink: 0`.
+Nothing is removed and nothing changes above 768 px. See
+`static/src/scss/mobile_shell.scss`.
+
 ### An accent that can carry white text (v18.0.3.10.0)
 
 The brand accent is used as a **background** under white text on primary
@@ -133,6 +159,14 @@ signature, legal links):
 - `bluefox_branding.bf_mail_layout`
 - `bluefox_branding.bf_mail_layout_with_signature`
 
+The literal labels of the layout (`Privacy`, `Terms`, `Unfollow`, and `None`
+for a tracked value that is empty) are written in English in the view and
+translated from `i18n/fr_CA.po`, so they follow the recipient's language and
+not the author's. The unfollow link sits in
+`<span id="mail_unfollow">`: without that wrapper `mail.mail.
+_personalize_outgoing_body` cannot remove it for a recipient who has nothing to
+unfollow, and the email goes out with a token-less `/mail/unfollow`.
+
 These are not overrides of `mail.mail_notification_layout`; the composer wizard
 swaps Odoo's default layouts to them for quotes and contracts, and invoices sent
 with `account.move.send` (Odoo 18's Send button, which no longer goes through the
@@ -191,6 +225,21 @@ that replays the hook. The
 self-contained ones (followups, calendar, survey) and the late-invoice notice
 (stock template 141, no XML ID) read **all** identity from `res.company` — no
 hardcoded brand values — so they follow whichever company owns the record.
+The late-invoice notice lives in `hooks.py` rather than in the data files: one
+HTML skeleton (`_LATE_INVOICE_SQUELETTE`) and two sets of sentences
+(`_LATE_INVOICE_TEXTES`, French and English), picked by language exactly as the
+two XML files are. Until 18.0.3.29.0 it had no English version and the hook
+wrote the French body in every active language.
+That skeleton carries **no shell** (no `<body>`, header or footer): the notice
+renders inside `bf_onboarding_base.bf_mail_layout`, which `_apply_late_invoice`
+sets on the template along with `lang`. Putting the shell back would render a
+card inside the card, with two brand footers and two rows of legal links.
+`_apply_late_invoice` leaves untouched any body that carries `brand_primary`
+without being one this module has published (`_LATE_INVOICE_SHA_CONNUS`), so a
+tenant's rewording of **our** body survives an upgrade. A body with no
+`brand_primary` is not ours (Odoo's own template, or a tenant's own text) and
+the hook brands it, as it always has. Each release that changes a sentence must
+add its own fingerprints to that set; a test refuses the omission.
 
 Since v18.0.3.26.0 four access templates join them: the new user invitation
 (`auth_signup.set_password_email`), the sign-up welcome
@@ -206,13 +255,14 @@ French body carrying its own "Activate my account" button and
 `email_layout_xmlid = bluefox_branding.bf_mail_layout`. A migration replays the
 hook so the template is written in every active language.
 
-> Note: `mail.template.send_mail()` does apply the template's own
-> `email_layout_xmlid` (that is how the portal invitation gets its frame). The
-> followup / survey templates and the calendar's update template predate that and
-> stay self-contained, with their header and footer inlined. The calendar's
-> invitation, date change and reminder are sent through the light layout, so since
-> v18.0.3.26.0 they carry their content only, under a grey eyebrow title: with
-> their own frame they came out as a card inside the card.
+> Note: the followup / calendar / survey templates are self-contained for
+> historical reasons, not because wrapping would not work. Measured on
+> 2026-11-12: `mail.template.send_mail()` **does** apply
+> `email_layout_xmlid` in Odoo 18. The late-invoice notice relies on it since
+> v18.0.3.29.0, and goes out wrapped with a single header card. The calendar's
+> invitation, date change and reminder are sent through the light layout, so
+> since v18.0.3.26.0 they carry their content only, under a grey eyebrow
+> title: with their own frame they came out as a card inside the card.
 
 ### Legacy Odoo purple sweep
 
@@ -221,10 +271,10 @@ run a small regex sweep replacing Odoo's legacy `#875A7B` plum (and its
 `rgb()` / `#714B67` variants) with the brand primary of the company the email
 belongs to. Shared logic lives in `models/brand_color_mixin.py`.
 
-**Which company (18.0.3.26.1).** The record that sends the email, read the way
+**Which company (18.0.3.30.0).** The record that sends the email, read the way
 the core notification layout reads it (`_mail_get_companies`, i.e. the model's
 company field); failing that the author of the message; failing that the
-session. Until 18.0.3.26.1 all four entry points read `env.company` — the
+session. Until 18.0.3.30.0 all four entry points read `env.company` — the
 session's company at creation time, and the queue cron user's at send time —
 so a subsidiary's email went out wearing the parent's accent, and two emails
 from the same record could differ depending on who triggered them. On the
@@ -239,7 +289,7 @@ colour, not to fall back to another company's.
 
 ### The "View" button of core notification emails
 
-`data/avis_bouton_marque.xml` (new in 18.0.3.26.1) inherits
+`data/avis_bouton_marque.xml` (new in 18.0.3.30.0) inherits
 `mail.mail_notification_layout` so that button reads
 `res.company._brand_email_button_color()`. Odoo's own layout paints it from
 `res.company.email_secondary_color` ("Email Button Color"), a core field this
@@ -304,10 +354,36 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-11-13, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.3.32.0
+
+- Fixed: the collapsed-menu icon of a site header painted with the brand's dark colour was never reached by this module's rule, so it kept whatever Odoo's own levelled colouring gave it — white at 55% opacity on one bar, where it happens to be visible, and nearly black on a navy one, where it is not. The rule required a `.navbar-toggler` ancestor, and in Odoo 18 that button carries none: it is a `.nav-link.btn` inside `ul.o_header_mobile_buttons_wrap`. The selector therefore matched neither of the two header templates in service, `default` and `mobile`; it matched only `template_header_hamburger`, which Odoo ships and few sites enable. It is now `.navbar-toggler-icon:not(.offcanvas *)`, which covers all three, and the guard that leaves the off-canvas drawer alone is kept.
+
+### 18.0.3.31.0
+
+- The web client's top bar fits a phone: below 768 px the systray may shrink and scroll horizontally rather than push the bar wider than the viewport. See "The web client's top bar at phone width" above.
+
+### 18.0.3.30.0
+
+- The internal lineage's number for the fix published here as 18.0.3.26.1 (the colour of an email's buttons follows the company of the record that sends it). No further change.
+
+### 18.0.3.29.0
+
+- The last literal strings of the mail layout move to an English source translated from the catalogue: `Privacy`, `Terms`, `Unfollow`, and the two `None` of a tracked value left empty. They used to be written in French in the view, so an English recipient read them in French, and a tenant with only `en_US` active read them in French always. In French, the unfollow link now says the catalogue's own wording for `Unfollow`, the one this module already served elsewhere.
+- The unfollow link is wrapped in `<span id="mail_unfollow">`. Without that wrapper `mail.mail._personalize_outgoing_body` cannot strip it for a recipient who has nothing to unfollow, and the email goes out carrying a token-less `/mail/unfollow`.
+- The late-invoice notice gets its English body, the recipient's language (`{{ object.partner_id.lang }}`, which it did not have while its four neighbours did) and the shared layout. Migration 18.0.3.29.0 rewrites that one template, in every active language, and leaves a body a tenant has edited by hand alone.
+
+### 18.0.3.28.0
+
+- The core calendar invitation names the meeting's agenda when the meeting has one. Migration 18.0.3.28.0 rewrites that one template and nothing else.
+
+### 18.0.3.27.0
+
+- Frame shape per company: corners, shadow and border weight in the Brand Identity panel, applied to the web client, the emails and the PDF. See "Frame shape per company" above. The defaults reproduce the previous appearance.
 
 ### 18.0.3.26.1
 

@@ -858,6 +858,12 @@
                         <t t-if="recurrent"><li><strong t-attf-style="color:{{ brand_dark }};">Quand :</strong> <t t-out="object.recurrence_id.get_recurrence_name()"/></li></t>
                         <t t-if="not object.event_id.allday and object.event_id.duration"><li><strong t-attf-style="color:{{ brand_dark }};">Dur&#233;e :</strong> <t t-out="(&apos;%dH%02d&apos; % (object.event_id.duration,round(object.event_id.duration*60)%60)) or &apos;&apos;"/></li></t>
                         <t t-if="object.event_id.videocall_location"><li><strong t-attf-style="color:{{ brand_dark }};">Visio :</strong> <a t-att-href="object.event_id.videocall_location" target="_blank" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="object.event_id.videocall_location or &apos;&apos;"/></li></t>
+                        <!-- L'ordre du jour, aux invit&#233;s INTERNES seulement.
+                             Ce corps est rendu une fois PAR INVIT&#201;, la ligne ne para&#238;t donc
+                             que dans la copie des coll&#232;gues. Champ et non appel de m&#233;thode : un QWeb EN LIGNE. Lien mou,
+                             bf_meeting n'est pas une d&#233;pendance de ce module. -->
+                        <t t-set="agenda_url" t-value="object.bf_agenda_url if hasattr(object, 'bf_agenda_url') else False"/>
+                        <t t-if="agenda_url"><li><strong t-attf-style="color:{{ brand_dark }};">Ordre du jour&#160;:</strong> <a t-att-href="agenda_url" target="_blank" t-attf-style="color:{{ brand_primary }};text-decoration:none;">Ouvrir l&apos;ordre du jour</a></li></t>
                         <li><strong t-attf-style="color:{{ brand_dark }};">Participants :</strong>
                           <ul style="margin:4px 0 0 0;padding-left:18px;">
                             <li t-foreach="object.event_id.attendee_ids" t-as="attendee" style="list-style:none;margin:2px 0;">

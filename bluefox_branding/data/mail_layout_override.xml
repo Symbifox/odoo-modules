@@ -12,6 +12,7 @@
     <!-- ================================================================== -->
     <template id="bf_mail_layout" name="Branded transactional mail layout">
         <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+        <t t-set="brand_frame" t-value="company._brand_frame_mail() if company else {'card': '16px', 'button': '10px', 'rule': '2px', 'shadow': '0 4px 24px rgba(0,0,0,0.08)'}"/>
         <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
         <t t-set="brand_font_stack" t-value="((company and company.font) or 'Lexend') + &quot;,'Segoe UI',Arial,sans-serif&quot;"/>
         <t t-set="brand_tagline" t-value="(company and (company.brand_email_tagline or company.report_header)) or ''"/>
@@ -34,12 +35,12 @@
                         <td align="center" style="padding:32px 16px;">
 
                             <!-- Card -->
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" t-attf-style="width:600px;max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:{{ brand_frame['card'] }};box-shadow:{{ brand_frame['shadow'] }};">
                                 <tbody>
 
                                     <!-- Header -->
                                     <tr>
-                                        <td t-attf-style="background-color:{{ brand_dark }};padding:20px 32px;border-radius:16px 16px 0 0;">
+                                        <td t-attf-style="background-color:{{ brand_dark }};padding:20px 32px;border-radius:{{ brand_frame['card'] }} {{ brand_frame['card'] }} 0 0;">
                                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                                 <tbody>
                                                     <tr>
@@ -78,7 +79,7 @@
                                                 <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                                                     <tbody>
                                                         <tr>
-                                                            <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                                                            <td t-attf-style="border-radius:{{ brand_frame['button'] }};background-color:{{ brand_primary }};text-align:center;">
                                                                 <a t-att-href="button_access['url']" t-attf-style="display:inline-block;padding:10px 20px;font-family:{{ brand_font_stack }};font-size:14px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">
                                                                     <t t-out="button_access['title']"/>
                                                                 </a>
@@ -108,9 +109,9 @@
                                                 <t t-foreach="tracking_values" t-as="tracking">
                                                     <li style="margin-bottom:4px;">
                                                         <t t-out="tracking[0]"/>:
-                                                        <t t-if="tracking[1]" t-out="tracking[1]"/><em t-else="" style="color:#9CA3AF;">Aucun</em>
+                                                        <t t-if="tracking[1]" t-out="tracking[1]"/><em t-else="" style="color:#9CA3AF;">None</em>
                                                         &#8594;
-                                                        <t t-if="tracking[2]"><strong t-out="tracking[2]"/></t><em t-else="" style="color:#9CA3AF;">Aucun</em>
+                                                        <t t-if="tracking[2]"><strong t-out="tracking[2]"/></t><em t-else="" style="color:#9CA3AF;">None</em>
                                                     </li>
                                                 </t>
                                             </ul>
@@ -159,14 +160,17 @@
                                                     </tr>
                                                     <tr t-if="company and (company.brand_privacy_url or company.brand_terms_url)">
                                                         <td t-attf-style="padding-top:12px;font-family:{{ brand_font_stack }};font-size:11px;">
-                                                            <a t-if="company.brand_privacy_url" t-att-href="company.brand_privacy_url" style="color:#9CA3AF;text-decoration:underline;">Confidentialit&#233;</a>
+                                                            <a t-if="company.brand_privacy_url" t-att-href="company.brand_privacy_url" style="color:#9CA3AF;text-decoration:underline;">Privacy</a>
                                                             <t t-if="company.brand_privacy_url and company.brand_terms_url"><span style="color:#D1D5DB;"> | </span></t>
-                                                            <a t-if="company.brand_terms_url" t-att-href="company.brand_terms_url" style="color:#9CA3AF;text-decoration:underline;">Conditions</a>
+                                                            <a t-if="company.brand_terms_url" t-att-href="company.brand_terms_url" style="color:#9CA3AF;text-decoration:underline;">Terms</a>
                                                         </td>
                                                     </tr>
                                                     <tr t-if="show_footer">
                                                         <td t-attf-style="padding-top:12px;font-family:{{ brand_font_stack }};font-size:11px;">
-                                                            <a href="/mail/unfollow" style="color:#9CA3AF;text-decoration:underline;">Se d&#233;sabonner</a>
+                                                            <!-- Odoo personalises this link for a follower who may unfollow, and removes
+                                                                 the span for everyone else (mail.mail._personalize_outgoing_body).
+                                                                 No span inside it: the removal stops at the first closing span. -->
+                                                            <span id="mail_unfollow"><a href="/mail/unfollow" style="color:#9CA3AF;text-decoration:underline;">Unfollow</a></span>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -181,8 +185,8 @@
                             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:12px auto 0;">
                                 <tbody>
                                     <tr>
-                                        <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_primary }};width:50%;border-radius:2px 0 0 2px;">&#160;</td>
-                                        <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_dark }};width:50%;border-radius:0 2px 2px 0;">&#160;</td>
+                                        <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_primary }};width:50%;border-radius:{{ brand_frame['rule'] }} 0 0 {{ brand_frame['rule'] }};">&#160;</td>
+                                        <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_dark }};width:50%;border-radius:0 {{ brand_frame['rule'] }} {{ brand_frame['rule'] }} 0;">&#160;</td>
                                     </tr>
                                 </tbody>
                             </table>

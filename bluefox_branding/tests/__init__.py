@@ -3,4 +3,5 @@ from . import test_overrides_per_language
 from . import test_courriel_langue
 from . import test_logo_en_tete
 from . import test_courriels_systeme
+from . import test_forme_du_cadre
 from . import test_couleur_par_societe

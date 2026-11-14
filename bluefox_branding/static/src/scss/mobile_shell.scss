@@ -1,0 +1,79 @@
+// La coquille du client web à la largeur d'un téléphone.
+//
+// Mesuré le 2026-11-13 au banc (390 x 844,
+// iPhone, `display-mode: standalone` émulé) : sur les quatre surfaces visées
+// (Courriels, Tâches, Assistant, Calendrier), le document mesure 602 px dans une fenêtre de
+// 390, soit **212 px de débordement horizontal**, et toujours par le même élément.
+// `.o_main_navbar` fait bien 390 ; c'est `.o_menu_systray` qui mesure 566 px avec
+// `flex-shrink: 0`, douze éléments visibles qui s'additionnent. Sur la démo, dont la
+// barre porte quatorze éléments, c'est 659 px et 305 px de débordement : le chiffre suit
+// le nombre d'éléments, la cause est la même.
+//
+// ⚠️ Et c'est le SEUL débordement de document : la table de la liste des courriels mesure
+// 1 896 px, mais elle vit dans un panneau à défilement propre et ne pousse pas la page.
+// Corriger le contenu sans toucher à la barre du haut ne ferait donc pas tomber les 212 px.
+//
+// Odoo applique déjà la convention à ses propres éléments : `o_switch_company_menu` et
+// `o_user_menu` portent `d-none d-md-block` et disparaissent sous 768 px. Ceux des modules
+// BF ne la suivent pas.
+//
+// Ce que fait ce fichier, et rien d'autre : sous 768 px, la barre système a le droit de
+// rétrécir et de défiler à l'horizontale. Aucun élément n'est retiré, tout reste
+// atteignable d'un glissement du doigt, et la page cesse de déborder. Au-dessus de 768 px,
+// pas une règle ne s'applique : le bureau ne bouge pas d'un pixel.
+//
+// Pourquoi pas un `display: none` sur les éléments de trop : lesquels ? Chacun des douze
+// est demandé par quelqu'un, et `bf_systray_prefs` donne déjà à chaque personne le choix de
+// ce qu'elle garde. Un module de marque n'a pas à trancher cette liste à sa place.
+//
+// ⚠️ 767.98px, pas 768px : c'est la borne de Bootstrap, donc celle de `d-md-block`. Un
+// `max-width: 768px` prendrait un pixel de trop et ferait défiler une barre qui tient.
+// La requête est écrite en clair plutôt qu'avec `media-breakpoint-down` : le mixin n'est
+// utilisé nulle part ailleurs dans un paquet d'arrière-guichet de ce locataire.
+//
+// ⚠️ La réserve des deux côtés (`padding` + marge négative) agrandit la boîte de contenu
+// sans déplacer la barre. Elle achète deux choses, mesurées à la relecture du 2026-11-13,
+// et aucune n'est celle qu'on croit : les pastilles de comptage ne sont PAS coupées sans
+// elle (la plus haute reste 8,6 px à l'intérieur, malgré leur `translate(-0.6em, -30%)`).
+// Ce qu'elle protège vraiment :
+//   1. l'anneau de focus du clavier (`outline: 1px auto`) de l'élément focalisé, qui est
+//      à 5 ou 6 px du bord et que l'`overflow` rognerait ;
+//   2. une dérive d'un pixel, DÉFINITIVE pour la session : les enfants de la barre font
+//      46 px dans une boîte de 45, donc `overflow-y` la rend défilable d'un pixel. Un
+//      `scrollIntoView` ou quatorze tabulations la font monter, et rien ne la redescend
+//      (un doigt ne peut pas : le défilement vertical est caché). Avec la réserve en haut
+//      ET en bas, `scrollTop` reste 0 après quatorze tabulations, mesuré.
+//
+// ⚠️ Ce que la réserve coûte, et c'est le seul pixel que ce fichier change hors
+// défilement : le liseré jaune d'avertissement du SUPERUSAGER
+// (`body.o_is_superuser .o_menu_systray`, un `border-image` de 2 px) est peint sur les
+// bords de la boîte, donc ses traits du haut et du bas sortent de l'écran sous 768 px.
+// Les bords gauche et droit restent, l'avertissement reste visible, et seul l'uid 1 le
+// voit. Mesuré : 368 pixels jaunes sur la ligne du haut sans la règle, 4 avec.
+
+// 🔴 `flex-shrink: 1` tout court ne fait RIEN, et le piège est muet : la règle s'applique
+// (mesuré au navigateur : `overflow-x` vaut bien `auto`, `min-width` vaut bien 0), mais
+// `flex-shrink` calcule encore 0 et la barre garde sa largeur. La cause est dans le gabarit
+// d'Odoo, qui pose `class="o_menu_systray d-flex flex-shrink-0 ms-auto"` : l'utilitaire
+// `.flex-shrink-0` de Bootstrap porte un `!important`, qu'aucune spécificité ne bat. Il
+// faut donc le nôtre, et lui seul : sans ce `!important`, la mesure d'après rend exactement
+// la mesure d'avant, et on croit que le correctif est posé.
+
+@media (max-width: 767.98px) {
+    .o_main_navbar .o_menu_systray {
+        flex-shrink: 1 !important;
+        min-width: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-top: 6px;
+        margin-top: -6px;
+        padding-bottom: 6px;
+        margin-bottom: -6px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+}

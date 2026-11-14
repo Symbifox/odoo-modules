@@ -27,6 +27,7 @@
               name="Security notice: brand wording">
         <xpath expr="." position="replace" mode="inner">
             <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+            <t t-set="brand_frame" t-value="company._brand_frame_mail() if company else {'card': '16px', 'button': '10px', 'rule': '2px', 'shadow': '0 4px 24px rgba(0,0,0,0.08)'}"/>
             <p style="margin:0 0 16px 0;">Hello <t t-out="user.name"/>,</p>
             <p style="margin:0 0 16px 0;"><t t-out="security_update_text"/> (<t t-out="update_datetime" t-options='{"widget": "datetime", "hide_seconds": True}'/>).</p>
             <p style="margin:0 0 16px 0;">If this was you, there is nothing to do.</p>
@@ -35,7 +36,7 @@
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px 0;">
                     <tbody>
                         <tr>
-                            <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                            <td t-attf-style="border-radius:{{ brand_frame['button'] }};background-color:{{ brand_primary }};text-align:center;">
                                 <a t-att-href="password_reset_url" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">Reset my password</a>
                             </td>
                         </tr>
@@ -63,6 +64,7 @@
         <xpath expr="." position="replace" mode="inner">
             <t t-set="company" t-value="object.company_id"/>
             <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+            <t t-set="brand_frame" t-value="company._brand_frame_mail() if company else {'card': '16px', 'button': '10px', 'rule': '2px', 'shadow': '0 4px 24px rgba(0,0,0,0.08)'}"/>
             <t t-set="validity_hours" t-value="user.env['ir.config_parameter'].sudo().get_param('auth_signup.reset_password.validity.hours', 4)"/>
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
                 <tbody>
@@ -74,7 +76,7 @@
                                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px 0;">
                                     <tbody>
                                         <tr>
-                                            <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                                            <td t-attf-style="border-radius:{{ brand_frame['button'] }};background-color:{{ brand_primary }};text-align:center;">
                                                 <a t-att-href="object.partner_id._get_signup_url()" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">Choose a new password</a>
                                             </td>
                                         </tr>
@@ -99,6 +101,7 @@
         <xpath expr="." position="replace" mode="inner">
             <t t-set="company" t-value="object.company_id"/>
             <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+            <t t-set="brand_frame" t-value="company._brand_frame_mail() if company else {'card': '16px', 'button': '10px', 'rule': '2px', 'shadow': '0 4px 24px rgba(0,0,0,0.08)'}"/>
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
                 <tbody>
                     <tr>
@@ -118,7 +121,7 @@
                                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px 0;">
                                     <tbody>
                                         <tr>
-                                            <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                                            <td t-attf-style="border-radius:{{ brand_frame['button'] }};background-color:{{ brand_primary }};text-align:center;">
                                                 <a t-attf-href="{{ object.get_base_url() }}/web/reset_password" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">Reset my password</a>
                                             </td>
                                         </tr>

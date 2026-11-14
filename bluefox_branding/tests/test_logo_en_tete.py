@@ -28,10 +28,27 @@ def _migration():
 @tagged("post_install", "-at_install")
 class TestLogoEnTete(TransactionCase):
 
-    def test_l_avis_de_retard_du_crochet_demande_le_logo_de_marque(self):
-        from odoo.addons.bluefox_branding.hooks import _LATE_INVOICE_BODY
-        self.assertIn('/brand/logo/{{ company.id }}/brand"', _LATE_INVOICE_BODY)
-        self.assertNotIn("/web/image/res.company/", _LATE_INVOICE_BODY)
+    def test_l_avis_de_retard_prend_le_logo_de_sa_mise_en_page(self):
+        """Depuis la 18.0.3.29.0, le logo de l'avis de retard vient de la mise en page.
+
+        Le corps était autoporté et demandait le logo lui-même. La production
+        l'a dé-coquillé le 2026-10-28 et rattaché à
+        `bf_onboarding_base.bf_mail_layout` : ce qui se vérifie ici, c'est qu'il
+        ne porte plus d'en-tête du tout (sinon carte dans la carte, deux logos
+        et deux pieds) et qu'il nomme bien la mise en page qui, elle, demande le
+        logo de marque (essai suivant).
+
+        Mesuré sur le gabarit réel et une facture réelle : le courriel sort
+        avec une seule carte d'en-tête, dans la langue du client.
+        """
+        from odoo.addons.bluefox_branding.hooks import _late_invoice_body, _LATE_INVOICE_LAYOUT
+        for lang in ("fr_CA", "en_CA"):
+            with self.subTest(lang=lang):
+                corps = _late_invoice_body(lang)
+                self.assertNotIn("<img", corps)
+                self.assertNotIn("/brand/logo/", corps)
+                self.assertNotIn("/web/image/res.company/", corps)
+        self.assertEqual(_LATE_INVOICE_LAYOUT, "bf_onboarding_base.bf_mail_layout")
 
     def test_la_mise_en_page_demande_le_logo_de_marque(self):
         arch = (RACINE / "data" / "mail_layout_override.xml").read_text(encoding="utf-8")

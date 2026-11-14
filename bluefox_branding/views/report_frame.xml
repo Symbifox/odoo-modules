@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Forme du cadre dans les PDF.
+
+        wkhtmltopdf ignore les variables CSS : la forme passe donc par la
+        feuille qu'Odoo compile pour chaque société (web.styles_company_report,
+        celle de la police et des couleurs), en valeurs littérales, sous
+        .o_company_<id>_layout. Au défaut (« Doux »), rien n'est ajouté.
+    -->
+    <template id="styles_company_report_brand_frame"
+              inherit_id="web.styles_company_report"
+              name="Forme du cadre (PDF)">
+        <xpath expr="//t[@t-foreach='company_ids']" position="inside">
+            <t t-out="company._brand_frame_pdf_scss()"/>
+        </xpath>
+    </template>
+
+</odoo>

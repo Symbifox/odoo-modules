@@ -91,6 +91,132 @@ class TestCourrielLangue(TransactionCase):
         self.gabarit.send_mail(dest.id, force_send=False)
         self.assertIn(SLOGAN_FR, self._courriel(dest).body_html)
 
+    def test_les_liens_legaux_suivent_la_langue(self):
+        """Les trois textes du pied étaient littéraux et français.
+
+        « Confidentialité » et « Conditions » étaient écrits en dur dans la vue :
+        un courriel anglais les portait en français, et un locataire qui n'a que
+        en_US d'actif les lisait en français à chaque envoi.
+        """
+        if not (self.fr and self.en):
+            self.skipTest("fr_CA et en_CA doivent être actives")
+        self.societe.write({'brand_privacy_url': 'https://essai.test/vie-privee',
+                            'brand_terms_url': 'https://essai.test/conditions'})
+        envoyeur = self.gabarit.with_context(lang=self.fr)
+        for lang, attendus, absents in (
+                (self.en, ('>Privacy</a>', '>Terms</a>'),
+                          ('>Confidentialité</a>', '>Conditions</a>')),
+                (self.fr, ('>Confidentialité</a>', '>Conditions</a>'),
+                          ('>Privacy</a>', '>Terms</a>'))):
+            with self.subTest(lang=lang):
+                dest = self._destinataire(lang)
+                envoyeur.send_mail(dest.id, force_send=False)
+                corps = self._courriel(dest).body_html
+                for attendu in attendus:
+                    self.assertIn(attendu, corps)
+                for absent in absents:
+                    self.assertNotIn(absent, corps)
+
+    def test_le_lien_d_arret_de_suivi_est_retirable_et_traduit(self):
+        """« Se désabonner » était littéral, et le lien n'était pas retirable.
+
+        Sans `<span id="mail_unfollow">`, `mail.mail._personalize_outgoing_body`
+        ne peut pas effacer le lien pour un destinataire qui n'a rien à ne plus
+        suivre : le courriel part avec un /mail/unfollow sans jeton.
+        """
+        if not (self.fr and self.en):
+            self.skipTest("fr_CA et en_CA doivent être actives")
+        message = self.env['mail.message'].new({'body': '<p>Avis</p>'})
+        for lang, attendu in ((self.en, '>Unfollow</a>'), (self.fr, '>Ne plus suivre</a>')):
+            with self.subTest(lang=lang):
+                corps = self.env['ir.qweb']._render(
+                    MISE_EN_PAGE,
+                    {'message': message, 'company': self.societe, 'lang': lang,
+                     'is_html_empty': is_html_empty,
+                     'email_notification_force_footer': True},
+                    minimal_qcontext=True, raise_if_not_found=False, lang=lang)
+                self.assertIn('<span id="mail_unfollow">', corps)
+                self.assertIn(attendu, corps)
+                self.assertNotIn('désabonner', corps)
+                # Et le retrait lui-même, par le chemin d'Odoo : sans le span,
+                # `_UNFOLLOW_REGEX` ne trouve rien et le lien part sans jeton.
+                etranger = self.env['res.partner'].create({
+                    'name': 'Non abonné', 'email': 'nonabonne@essai.test'})
+                courriel = self.env['mail.mail'].create({
+                    'subject': 'Essai unfollow', 'body_html': corps,
+                    'recipient_ids': [(4, etranger.id)],
+                    'model': 'res.partner', 'res_id': etranger.id})
+                sortant = courriel._personalize_outgoing_body(corps, etranger, None)
+                self.assertNotIn('/mail/unfollow', sortant)
+                self.assertNotIn(attendu, sortant)
+
+    def test_l_avis_de_retard_a_un_corps_anglais(self):
+        """Le gabarit 141 n'existait qu'en français, écrit dans toutes les langues."""
+        from odoo.addons.bluefox_branding.hooks import _late_invoice_body
+        fr, en = _late_invoice_body('fr_CA'), _late_invoice_body('en_CA')
+        self.assertIn('Bonjour ', fr)
+        self.assertNotIn('Hello ', fr)
+        self.assertIn('Hello ', en)
+        self.assertNotIn('Bonjour ', en)
+        # Aucun jeton de substitution ne doit survivre au rendu.
+        for corps in (fr, en):
+            self.assertNotIn('@@', corps)
+            # 🔴 Le corps est dé-coquillé depuis la 18.0.3.29.0 : il rend DANS
+            # la mise en page partagée. Y remettre un <body> ou un pied de
+            # marque donnerait une carte dans la carte et deux pieds, donc deux
+            # lignes de liens légaux.
+            self.assertNotIn('<body', corps)
+            self.assertNotIn('brand_privacy_url', corps)
+            self.assertNotIn('brand_email_footer_html', corps)
+
+    def test_les_corps_publies_sont_reconnus(self):
+        """Une version qui change une phrase doit ajouter son empreinte.
+
+        Sans cela, la version SUIVANTE trouve un corps qu'elle ne reconnaît pas,
+        garde le gabarit et journalise « réécrit à la main » sur le travail du
+        module lui-même. Le refus serait silencieux et le journal mentirait.
+        """
+        import hashlib
+
+        from odoo.addons.bluefox_branding.hooks import (
+            _late_invoice_body, _LATE_INVOICE_SHA_CONNUS,
+        )
+        for lang in ('fr_CA', 'en_CA'):
+            with self.subTest(lang=lang):
+                empreinte = hashlib.sha256(_late_invoice_body(lang).encode()).hexdigest()
+                self.assertIn(empreinte, _LATE_INVOICE_SHA_CONNUS,
+                              "ajouter cette empreinte à _LATE_INVOICE_SHA_CONNUS")
+
+    def test_l_avis_de_retard_porte_sa_mise_en_page_et_sa_langue(self):
+        """Sans `lang`, le corps suit la langue de la session, pas celle du client.
+
+        Mesuré sur une base réelle : l'avis de retard n'avait pas de `lang`, alors
+        que ses quatre voisins sur account.move portent tous
+        `{{ object.partner_id.lang }}`. Le corps anglais neuf serait resté
+        inatteignable.
+        """
+        from odoo.addons.bluefox_branding.hooks import (
+            _apply_late_invoice, _get_active_langs, _late_invoice_body,
+            _LATE_INVOICE_LANG, _LATE_INVOICE_LAYOUT,
+        )
+        gabarit = self.env['mail.template'].create({
+            'name': 'Avis de retard sur facture (essai)',
+            'model_id': self.env.ref('account.model_account_move').id,
+            'subject': 'Essai',
+            'body_html': '<p>brand_primary</p>',
+        })
+        langs = _get_active_langs(self.env)
+        # Borné au gabarit de l'essai : sans ça, l'appel attrape aussi le vrai
+        # 141 de la base où l'essai tourne.
+        ecrits = _apply_late_invoice(self.env, langs, gabarits=gabarit)
+        self.assertNotIn(gabarit, ecrits,
+                         "un corps qui porte notre marque sans être l'un des nôtres se garde")
+        gabarit.body_html = _late_invoice_body('fr_CA')
+        ecrits = _apply_late_invoice(self.env, langs, gabarits=gabarit)
+        self.assertIn(gabarit, ecrits)
+        self.assertEqual(gabarit.email_layout_xmlid, _LATE_INVOICE_LAYOUT)
+        self.assertEqual(gabarit.lang, _LATE_INVOICE_LANG)
+
     def test_le_rendu_sans_valeurs_ne_casse_pas(self):
         vue = self.env['ir.ui.view'].create({
             'name': 'essai', 'type': 'qweb', 'arch': '<t t-name="essai"><p>RENDU</p></t>'})

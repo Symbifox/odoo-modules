@@ -473,7 +473,7 @@ body.bg-dark,
 // ⚠️ La vraie cause tient plus haut : ce module force la barre en sombre sans le
 // dire à Odoo, qui continue de calculer un en-tête CLAIR. Poser la couleur
 // « menu » du locataire au sombre de la marque ferait appliquer `navbar-dark`
-// par Odoo lui-même, et rendrait tout ce bloc inutile. Napkin ouvert.
+// par Odoo lui-même, et rendrait tout ce bloc inutile. Piste à creuser.
 // ---------------------------------------------------------------------------
 
 #wrapwrap > header .navbar {
@@ -492,7 +492,23 @@ body.bg-dark,
             .o_nav_link_btn:hover { background-color: rgba(255, 255, 255, .10); }
         }
 
-        .navbar-toggler:not(.offcanvas *) .navbar-toggler-icon {
+        // 🔴 PAS `.navbar-toggler .navbar-toggler-icon`. En Odoo 18, l'icône du
+        // menu mobile vit dans un `<button class="nav-link btn">` de
+        // `ul.o_header_mobile_buttons_wrap` (`website_templates.xml`, gabarit
+        // `template_header_mobile`), qui NE PORTE PAS `.navbar-toggler`.
+        // ⚠️ L'ancien sélecteur n'était pas mort partout : il matche encore
+        // `template_header_hamburger`, qui passe par `website.navbar_toggler` et
+        // pose bien la classe dans `#o_main_nav`. Mais ce gabarit n'est en
+        // service chez AUCUN locataire : les deux qui le sont, `default` et
+        // `mobile`, échappaient tous les deux à la règle, et l'icône gardait ce
+        // qu'Odoo lui donne par son mécanisme de niveau coloré — mesuré le
+        // 2026-11-13 sur Blue Fox (blanc à 55 %, visible par chance) et sur la
+        // démo (`rgba(33,37,41,.75)` sur `rgb(13,35,48)`, invisible).
+        // Le nouveau sélecteur couvre les trois gabarits, hamburger compris.
+        // ⚠️ `:not(.offcanvas *)` est gardé par prudence, pas par nécessité : le
+        // tiroir d'Odoo 18 n'a pas d'icône de ce nom (son bouton de fermeture
+        // est `nav-link btn-close`). La garde sert si un tiroir en gagne une.
+        .navbar-toggler-icon:not(.offcanvas *) {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
     }
