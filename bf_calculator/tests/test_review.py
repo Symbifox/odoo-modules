@@ -95,7 +95,15 @@ class TestReview(TransactionCase):
             else:
                 inexact += 1
         self.assertGreater(inexact, 0)  # certains totaux n'ont aucune base exacte
-        res = Entry.calc_tax("100,10", "default_qc", "reverse")
+        # 🔴 Le profil se DEMANDE à la liste. Cet essai passait « default_qc »,
+        # une clé que la comptabilité de la base n'offre pas : il tombait sur le
+        # repli muet d'une clé inconnue et mesurait le premier profil comptable
+        # en croyant mesurer le repli du Québec. Depuis que ce repli refuse,
+        # la clé bidon se voit.
+        profil = Entry.calc_tax_profiles()[0]
+        res = Entry.calc_tax("100,10", profil["key"], "reverse")
+        self.assertTrue(res["ok"], res.get("error"))
+        self.assertEqual(res["profile"], profil["name"])
         if res["inexact"]:
             self.assertNotEqual(res["inexact"], f"100,10{NBSP}$")
 

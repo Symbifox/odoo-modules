@@ -41,7 +41,13 @@ looking at.
     an invoice, and the before-tax amount offered is the one that, invoiced
     again, gives back exactly the total typed. When no amount can, the panel
     says so instead of showing inconsistent taxes. Without any sales tax in
-    the accounting, Québec's rates are used.
+    the accounting, Québec's rates are used. **Each component of a group is
+    also offered on its own** (GST only, QST only, PST only), so a hotel bill
+    from another province or a QST-only refund no longer needs a hand
+    calculation; Québec's taxes come first. A **manual rate** closes the list:
+    one to four rates in ]0, 100], typed `9,975` or `5 + 9,975`, read the same
+    way in French and English. Each profile label carries its total rate when
+    the accounting name does not already state it.
   - *Hours*: `1 h 45` ↔ `1.75`.
   - *%*: margin and markup, change, discount, share of a total.
   - *Dates*: calendar and business days between two dates; a date plus N days,
@@ -52,6 +58,18 @@ looking at.
   - *Column*: paste a column from a spreadsheet or an email to get the sum,
     average, count, minimum and maximum. `(125.00)` counts as negative and
     headers are skipped.
+- **Taxes inside the calculation**: a tax word right after `+` or `-` applies
+  the profile chosen in the *Taxes* tab: `1 000 + taxes`, `1 149,75 - taxes`,
+  `1 000 + tvq`. The arithmetic is exactly the *Taxes* tab's, rounded per tax,
+  and the breakdown follows the calculation into the chatter note. A word that
+  matches several rates, a tax with no amount before it, a tax used with `*` or
+  `/`, and a variable named like a tax are all refused with a message rather
+  than guessed. Taxes are read only when the calculation contains such a word.
+- **Remembers where you were**: the last tab, tax profile, direction and manual
+  rates are kept in the browser, per person, like the rounding.
+- **A new example each time**: the calculation field shows a different example
+  of the grammar each time the panel opens, translated, in a placeholder grey
+  dimmed down to WCAG AA (4.5:1) and no further. The help table stays fixed.
 - **Outputs**: copy the result, copy the calculation with its result, insert
   the result into the last number field you clicked in a form, or **post it to
   a chatter**.
@@ -97,4 +115,11 @@ French (`fr_CA`) is complete.
 
 ## Changelog
 
+- **18.0.1.3.0**: every component of a tax group offered as its own profile,
+  plus a manual rate; taxes inside the calculation (`1 149,75 - taxes`); the
+  total rate in each profile label; a random, translated example in the
+  calculation field, dimmed to AA; the panel remembers its tab, tax profile,
+  direction and manual rates; sessions in a language that is not active on the
+  database fall back to an active language of the same family instead of
+  failing.
 - **18.0.1.2.0**: first public release.

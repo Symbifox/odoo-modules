@@ -13,7 +13,7 @@ droits de la fiche qui le reçoit.
 import logging
 import re
 from datetime import timedelta
-from decimal import ROUND_HALF_UP, Decimal
+from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
@@ -43,6 +43,42 @@ _PROTECTED = ("message_id", "user_id")
 # utilisable : les taux du Québec au 2026-09-22.
 _DEFAULT_QC = [("TPS", Decimal("5")), ("TVQ", Decimal("9.975"))]
 _QC_HINTS = ("TVQ", "QST")
+#: Mots qui désignent « toutes les taxes du profil choisi », dans les deux langues.
+_TAX_ALL = ("taxes", "taxe", "tax")
+#: Une taxe se nomme dans la langue de la base : les deux noms valent toujours.
+_TAX_ALIASES = {"tvq": "qst", "qst": "tvq", "tps": "gst", "gst": "tps",
+                "tvh": "hst", "hst": "tvh", "tvp": "pst", "pst": "tvp"}
+#: Seul cas où les taxes de la comptabilité sont lues : un mot de taxe précédé
+#: de + ou -. Sans cet indice, chaque frappe de l'aperçu ferait une recherche
+#: sur account.tax, comme pour les taux de change.
+_TAX_HINT = re.compile(
+    r"[-+\u2212\u2013]\s*(?:" + "|".join(sorted(set(_TAX_ALL) | set(_TAX_ALIASES))) + r")\b",
+    re.IGNORECASE)
+#: Les mots qu'une variable ne peut pas porter, et ceux dont le mauvais
+#: opérateur se nomme. La liste est FIGÉE : elle ne coûte aucune lecture de
+#: base, et le modèle la passe TOUJOURS à l'évaluateur.
+#: 🔴 Auparavant, l'évaluateur ne connaissait ces mots que par
+#: ``taxes``, injecté seulement quand l'expression porte un mot de taxe précédé
+#: de + ou - : une affectation n'en porte jamais, donc « tvq = 9,975 » était
+#: acceptée, puis « 1 000 * tvq » valait 9 975 (la variable) alors que
+#: « 1 000 + tvq » valait 1 099,75 (la taxe). Le refus du mauvais opérateur,
+#: lui, était inatteignable par le vrai chemin.
+TAX_WORDS = frozenset(_TAX_ALL) | frozenset(_TAX_ALIASES)
+#: Profil de taxe à taux tapés à la main.
+MANUAL_PROFILE = "manual"
+MAX_MANUAL_RATES = 4
+#: Un taux tapé à la main : UN seul nombre, décimale « . » ou « , », un « % »
+#: facultatif, des espaces autour. Tout le reste est refusé en nommant le
+#: morceau fautif.
+#: 🔴 La virgule n'est PAS un séparateur de taux : en français c'est la
+#: décimale, et « 9,975 » doit rester un seul taux. Auparavant, les
+#: morceaux n'étaient pas validés : « 5, 9.975 » se lisait « 5,9.975 », soit
+#: 59,975 %, sans refus ; et « 1e-40 » passait la borne ]0, 100] pour
+#: s'afficher « 0 % ».
+_MANUAL_RATE_RE = re.compile(r"^\s*\d+(?:[.,]\d+)?\s*%?\s*$")
+#: Les nombres écrits dans un nom de taxe, pour savoir si le nom porte déjà son
+#: taux : un taux vaut au plus 100, donc aucun séparateur de milliers à prévoir.
+_NAME_NUMBER_RE = re.compile(r"\d+(?:[.,]\d+)?")
 
 
 def _plain(value):
@@ -53,6 +89,18 @@ def _plain(value):
 
 def _cents(value):
     return value.quantize(CENT, rounding=ROUND_HALF_UP)
+
+
+def _is_qc(components):
+    return any(h in (name or "").upper() for name, _r in components for h in _QC_HINTS)
+
+
+def _tax_slug(name):
+    """Le mot d'un nom de taxe, sans taux ni ponctuation : « TVP 6% » → « tvp »,
+    « 9.975% TVQ » → « tvq ». Rend "" si le nom n'a aucune lettre, ou s'il en a
+    plusieurs mots (un mot-clé doit se taper d'un trait)."""
+    mots = re.findall(r"[^\W\d_]+", name or "")
+    return mots[0].lower() if len(mots) == 1 else ""
 
 
 class BfCalculatorEntry(models.Model):
@@ -130,7 +178,49 @@ class BfCalculatorEntry(models.Model):
     # Mise en forme
     # ------------------------------------------------------------------
     def _lang(self):
-        return self.env["res.lang"]._lang_get(self.env.lang or "en_US")
+        """🔴 `_lang_get` d'une langue INACTIVE rend un recordset VIDE, et tout
+        `lang.format(...)` tombe alors en « Expected singleton ». Mesuré :
+        sur une base en production, **en_US n'était pas active**
+        (deux langues seulement), donc une session en en_US faisait tomber
+        chaque calcul, chaque taxe et chaque aperçu. Le repli prend une langue
+        active.
+
+        🔴 Et il la CHOISIT. ``search(limit=1)`` prenait la première langue
+        active PAR ORDRE DE NOM (``_order = "active desc,name"``) : sur une base
+        dont la première langue active n'est pas anglaise, une session anglaise
+        lisait et écrivait les nombres à la française sans rien dire (mesuré :
+        « 1,250 + 10 » rendait 11,25 au lieu de 1 260, et un
+        montant sortait « $1 000,00 »). On préfère donc une langue active de la
+        MÊME FAMILLE que la session, puis n'importe quelle langue anglaise,
+        puis la première active.
+        """
+        Lang = self.env["res.lang"]
+        for code in (self.env.lang, "en_US"):
+            lang = Lang._lang_get(code) if code else Lang
+            if lang:
+                return lang
+        actives = Lang.search([("active", "=", True)])
+        for famille in ((self.env.lang or "en_US")[:2], "en"):
+            proche = actives.filtered(lambda l, f=famille: (l.code or "")[:2] == f)
+            if proche:
+                return proche[0]
+        return actives[:1]
+
+    def _variables(self):
+        """Les variables de la personne, SANS celles qui portent un mot de taxe
+        réservé.
+
+        🔴 ``TAX_WORDS`` ne ferme que l'affectation NEUVE. Une variable DÉJÀ
+        rangée sous un nom de taxe gardait donc les deux sens (mesuré :
+        « 1 000 * tvq » valait 9 975, la variable, et
+        « 1 000 + tvq » valait 1 099,75, la taxe, dans la même session).
+        L'évaluateur ne la reçoit plus : le mot redevient une taxe partout, et
+        « 1 000 * tvq » dit maintenant qu'une taxe s'applique avec + ou -. La
+        pastille reste dans le panneau, et la personne peut la supprimer.
+        """
+        return {nom: valeur
+                for nom, valeur in self.env["bf.calculator.variable"]._as_dict().items()
+                if nom.lower() not in TAX_WORDS}
 
     def _thousands_sep(self):
         lang = self._lang()
@@ -195,6 +285,19 @@ class BfCalculatorEntry(models.Model):
             "nothing_to_convert": _("Nothing to convert to %(text)s: write currency codes in capitals (100 USD).",
                                     text=err.params.get("text", "")),
             "unknown_variable": _("“%(text)s” is not a known variable.", text=err.params.get("text", "")),
+            "ambiguous_tax": _("Several taxes are named “%(text)s”: pick a profile in the Taxes tab.",
+                               text=err.params.get("text", "")),
+            "tax_needs_amount": _("An amount is missing before “%(text)s”.",
+                                  text=err.params.get("text", "")),
+            "tax_bad_operator": _("A tax applies with + or -: 1 000 + %(text)s.",
+                                  text=err.params.get("text", "")),
+            "no_manual_rate": _("Type a rate, for example 9.975."),
+            "too_many_rates": _("%(limit)s rates at most.", limit=err.params.get("limit")),
+            "bad_tax_rate": _("Unusable tax rate: %(text)s", text=err.params.get("text", "")),
+            "bad_rate_part": _("“%(text)s” is not a single rate: separate the taxes "
+                               "with +, as in 5 + 9.975.", text=err.params.get("text", "")),
+            "unknown_profile": _("This tax profile is no longer available: "
+                                 "choose one in the Taxes tab."),
         }
         return messages.get(err.code, err.code)
 
@@ -244,10 +347,86 @@ class BfCalculatorEntry(models.Model):
         step = Decimal(step)
         return (value / step).quantize(Decimal(1), rounding=ROUND_HALF_UP) * step
 
-    def _evaluate(self, expression, rounding=False):
+    @api.model
+    def _tax_keywords(self, profile_key=False, rates_text=""):
+        """Les mots de taxe acceptés dans une opération : ``taxes`` (le profil
+        choisi, taux libre compris) et chaque taxe nommée des profils de la
+        société (``tvq``, ``tps``, et leurs noms anglais). Une liste vide
+        signale un mot qui désigne plusieurs taux (``tvh`` quand la base en
+        porte trois) : c'est l'évaluateur qui le refuse, en le nommant.
+
+        🔴 Le taux libre s'applique AUSSI dans l'opération. Auparavant,
+        « taxes » retombait en silence sur le premier profil
+        comptable quand le panneau était resté sur le taux libre : l'onglet
+        Taxes rendait 1 200,00 $ pour un taux libre de 20 % sur 1 000, et
+        l'opération « 1 000 + taxes » rendait 1 149,75 dans le même panneau,
+        pour le même profil choisi. Des taux tapés inutilisables refusent
+        maintenant le calcul ; ils ne changent jamais de profil."""
+        profiles = [p for p in self._tax_profiles() if p["key"] != MANUAL_PROFILE]
+        if profile_key == MANUAL_PROFILE:
+            # Lève sur un morceau illisible : le refus de l'onglet Taxes, mot
+            # pour mot, plutôt qu'un repli muet sur la comptabilité.
+            keywords = {word: list(self._manual_components(rates_text))
+                        for word in _TAX_ALL}
+        else:
+            # Aucune branche « la liste est vide » : ``_tax_profiles`` rend
+            # toujours au moins le repli du Québec, et un essai le garde.
+            selected = self._pick_profile(profiles, profile_key)
+            keywords = {word: list(selected["components"]) for word in _TAX_ALL}
+        par_mot = {}
+        for profile in profiles:
+            for name, rate in profile["components"]:
+                slug = _tax_slug(name)
+                if not slug or slug in _TAX_ALL:
+                    continue
+                par_mot.setdefault(slug, {})[rate] = name
+        for slug, rates in par_mot.items():
+            for word in (slug, _TAX_ALIASES.get(slug)):
+                if not word or word in _TAX_ALL:
+                    continue
+                if len(rates) == 1:
+                    rate, name = next(iter(rates.items()))
+                    keywords.setdefault(word, [(name, rate)])
+                else:
+                    keywords.setdefault(word, [])
+        return keywords
+
+    def _pick_profile(self, profiles, profile_key):
+        """Le profil demandé. Une clé VIDE garde le repli sur le premier : c'est
+        la première ouverture du panneau, rien n'a encore été choisi. Une clé
+        non vide et INCONNUE refuse en disant où choisir.
+
+        🔴 Mesuré : ``tax:999999`` rendait 1 149,75 et annonçait
+        « 14.975% TPS+TVQ ». Répondre pour un autre profil que celui demandé est
+        le défaut corrigé ailleurs ; il ne survit pas ici. Le panneau
+        n'y tombe pas en usage normal : l'onglet Taxes recale son menu avant
+        tout calcul, et le champ d'opération ne lit un profil que si
+        l'expression porte un mot de taxe.
+        """
+        if not profile_key:
+            return profiles[0]
+        found = next((p for p in profiles if p["key"] == profile_key), None)
+        if found is None:
+            raise calc.CalcError("unknown_profile")
+        return found
+
+    def _tax_op(self):
+        """L'arithmétique de l'opération « + taxes » : celle de l'onglet Taxes,
+        au cent et par taxe, et non une simple multiplication. Les deux chemins
+        doivent donner le même montant pour le même total."""
+        def apply_tax(value, components, sign):
+            direction = "forward" if sign == "+" else "reverse"
+            base, taxes, total, exact = self._tax_breakdown(value, components, direction)
+            return (total if sign == "+" else base), taxes, exact
+
+        return apply_tax
+
+    def _evaluate(self, expression, rounding=False, tax_profile=False, rates_text=""):
         Rates = self.env["bf.calculator.rates"]
         wants_rates = bool(_CURRENCY_HINT.search(expression or ""))
         currencies = Rates._currencies() if wants_rates else calc.DEFAULT_CURRENCIES
+        wants_taxes = bool(_TAX_HINT.search(expression or ""))
+        taxes = self._tax_keywords(tax_profile, rates_text) if wants_taxes else None
 
         def rate(src, dst):
             found = Rates._rate(src, dst)
@@ -257,14 +436,27 @@ class BfCalculatorEntry(models.Model):
 
         res = calc.evaluate(
             expression, self._thousands_sep(),
-            variables=self.env["bf.calculator.variable"]._as_dict(),
+            variables=self._variables(),
             rate=rate, currencies=currencies,
+            taxes=taxes, tax_op=self._tax_op() if wants_taxes else None,
+            # Toujours passée, et sans lecture de base : c'est elle qui refuse
+            # un nom de variable et qui nomme le mauvais opérateur.
+            tax_words=TAX_WORDS,
         )
         notes = []
         for src, dst, factor, day in res.conversions:
             notes.append(_("1 %(src)s = %(rate)s %(dst)s, Bank of Canada, %(day)s",
                            src=src, rate=self._format_number(factor.quantize(Decimal("0.0001"))),
                            dst=dst, day=day))
+        for step in res.tax_steps:
+            detail = "; ".join(
+                f"{name} ({self._format_number(rate_)}\u00a0%) {self._format_money(amount)}"
+                for name, rate_, amount in step["taxes"])
+            notes.append(_("taxes added: %(detail)s", detail=detail) if step["sign"] == "+"
+                         else _("taxes removed: %(detail)s", detail=detail))
+            if not step["exact"]:
+                notes.append(_("no before-tax amount gives exactly this total "
+                               "once each tax is rounded"))
         rounded = self._round(res.value, rounding)
         if rounded != res.value:
             notes.append(_("rounded to %(step)s", step=self._format_number(Decimal(rounding))))
@@ -272,11 +464,12 @@ class BfCalculatorEntry(models.Model):
         return res, self._format_result(res), "; ".join(notes)
 
     @api.model
-    def calc_evaluate(self, expression, rounding=False):
-        """Aperçu : n'écrit rien."""
+    def calc_evaluate(self, expression, rounding=False, tax_profile=False, rates_text=""):
+        """Aperçu : n'écrit rien. ``rates_text`` porte les taux tapés à la main
+        quand le profil choisi est le taux libre."""
         self._check_internal()
         try:
-            res, text, note = self._evaluate(expression, rounding)
+            res, text, note = self._evaluate(expression, rounding, tax_profile, rates_text)
         except calc.CalcError as err:
             return {"ok": False, "error": self._error_message(err)}
         display = res.display()
@@ -299,13 +492,13 @@ class BfCalculatorEntry(models.Model):
 
     @api.model
     def calc_record(self, expression, title=False, res_model=False, res_id=False,
-                    rounding=False):
+                    rounding=False, tax_profile=False, rates_text=""):
         """Calcule et range dans l'historique. Le titre saisi à part l'emporte
         sur celui écrit en tête de l'expression. « nom = … » range aussi la
         variable."""
         self._check_internal()
         try:
-            res, text, note = self._evaluate(expression, rounding)
+            res, text, note = self._evaluate(expression, rounding, tax_profile, rates_text)
         except calc.CalcError as err:
             return {"ok": False, "error": self._error_message(err)}
         if res.assign:
@@ -473,9 +666,15 @@ class BfCalculatorEntry(models.Model):
     @api.model
     def _tax_profiles(self):
         """Les combinaisons de taxes de vente de la société courante, lues en
-        comptabilité : chaque taxe « groupe » (TPS+TVQ, TPS+TVP…) et chaque taxe
-        en pourcentage qui n'appartient à aucun groupe (TVH). Le Québec en tête.
-        Sans comptabilité, ou sans taxe, un profil Québec par défaut."""
+        comptabilité : chaque taxe « groupe » (TPS+TVQ, TPS+TVP…), chaque taxe
+        en pourcentage qui n'appartient à aucun groupe (TVH), et **chaque
+        composant d'un groupe pris seul** (TVQ seule, TPS seule, TVP seule).
+        Le Québec en tête. Sans comptabilité, ou sans taxe, un profil Québec
+        par défaut.
+
+        🔴 Jusqu'au 18.0.1.3.0, un composant de groupe était écarté : aucune base
+        n'offrait « TVQ seule », alors que la taxe existait bien
+        en comptabilité."""
         profiles = []
         if "account.tax" in self.env:
             Tax = self.env["account.tax"].sudo()
@@ -485,17 +684,26 @@ class BfCalculatorEntry(models.Model):
                 *Tax._check_company_domain(self.env.company),
             ])
             in_group = set()
+            #: {id du composant: (taxe, québécois ?)} ; un composant partagé par
+            #: plusieurs groupes n'apparaît qu'une fois, et il est québécois dès
+            #: qu'UN de ses groupes l'est (la TPS du couple TPS+TVQ).
+            singles = {}
             for tax in taxes.filtered(lambda t: t.amount_type == "group"):
                 children = tax.children_tax_ids.filtered(
                     lambda c: c.amount_type == "percent" and c.amount > 0)
                 if not children:
                     continue
                 in_group.update(children.ids)
+                components = [(c.tax_group_id.name or c.name, Decimal(str(c.amount)))
+                              for c in children]
+                qc = _is_qc(components)
+                for child in children:
+                    kept, was_qc = singles.get(child.id, (child, False))
+                    singles[child.id] = (kept, was_qc or qc)
                 profiles.append({
                     "key": f"tax:{tax.id}",
                     "name": tax.name,
-                    "components": [(c.tax_group_id.name or c.name, Decimal(str(c.amount)))
-                                   for c in children],
+                    "components": components,
                 })
             for tax in taxes.filtered(lambda t: t.amount_type == "percent" and t.amount > 0):
                 if tax.id in in_group:
@@ -505,9 +713,16 @@ class BfCalculatorEntry(models.Model):
                     "name": tax.name,
                     "components": [(tax.tax_group_id.name or tax.name, Decimal(str(tax.amount)))],
                 })
+            for tax, qc in singles.values():
+                profiles.append({
+                    "key": f"tax:{tax.id}",
+                    "name": tax.name,
+                    "components": [(tax.tax_group_id.name or tax.name, Decimal(str(tax.amount)))],
+                    "qc": qc,
+                })
 
         def is_qc(p):
-            return any(h in (name or "").upper() for name, _r in p["components"] for h in _QC_HINTS)
+            return bool(p.get("qc")) or _is_qc(p["components"])
 
         profiles.sort(key=lambda p: (not is_qc(p), -len(p["components"]),
                                      sum(r for _n, r in p["components"]), p["name"]))
@@ -522,15 +737,84 @@ class BfCalculatorEntry(models.Model):
             })
         return profiles
 
+    def _tax_label(self, name, total):
+        """Le nom comptable, et son taux total s'il ne le porte pas déjà :
+        « 14.975% TPS+TVQ » reste tel quel, « TVQ » devient « TVQ (9,975 %) ».
+
+        🔴 La comparaison porte sur des NOMBRES, jamais sur des sous-chaînes :
+        auparavant, « Eco-frais 2015 » à 5 % passait pour un nom qui
+        porte son taux (le « 5 » de 2015), et « Taxe 1 » à 100 % aussi, parce
+        que « 100 ».rstrip("0") vaut « 1 »."""
+        total = Decimal(total)
+        for brut in _NAME_NUMBER_RE.findall(name or ""):
+            if Decimal(brut.replace(",", ".")) == total:
+                return name
+        return _("%(name)s (%(rate)s)", name=name, rate=self._format_number(total) + "\u00a0%")
+
     @api.model
     def calc_tax_profiles(self):
         self._check_internal()
-        return [{
+        profiles = [{
             "key": p["key"],
             "name": p["name"],
+            "label": self._tax_label(p["name"], sum(r for _n, r in p["components"])),
             "default": bool(p.get("default")),
+            "manual": False,
             "components": [{"name": n, "rate": float(r)} for n, r in p["components"]],
         } for p in self._tax_profiles()]
+        # Le taux libre : pour une taxe qui n'est pas dans la comptabilité (une
+        # autre province, un autre pays, un taux d'une autre année). Certaines
+        # bases n'offrent qu'un seul profil.
+        profiles.append({
+            "key": MANUAL_PROFILE,
+            "name": _("Manual rate"),
+            "label": _("Manual rate"),
+            "default": False,
+            "manual": True,
+            "components": [],
+        })
+        return profiles
+
+    def _manual_components(self, rates_text):
+        """« 9,975 » ou « 5 + 9,975 » : les taux tapés à la main, dans l'ordre.
+        Un seul taux par morceau, les morceaux séparés par ``+`` ; la virgule
+        reste la décimale. Lève ``CalcError`` sur un morceau qui n'est pas un
+        nombre seul, ou sur un taux nul, négatif ou trop grand."""
+        # ⚠️ Un seul séparateur, « + » : le texte d'exemple, le message de
+        # refus et la fiche n'en nomment pas d'autre, et « 15/2 » passait pour
+        # 15 % + 2 %.
+        parts = [part for part in (rates_text or "").split("+") if part.strip()]
+        if not parts:
+            raise calc.CalcError("no_manual_rate")
+        if len(parts) > MAX_MANUAL_RATES:
+            raise calc.CalcError("too_many_rates", limit=MAX_MANUAL_RATES)
+        components = []
+        for index, part in enumerate(parts):
+            if not _MANUAL_RATE_RE.match(part):
+                raise calc.CalcError("bad_rate_part", text=part.strip())
+            # 🔴 Lecture indépendante de la LANGUE. Le morceau est déjà validé
+            # par ``_MANUAL_RATE_RE`` : il ne porte qu'UN nombre, donc la
+            # virgule ne peut y être que la décimale. Avec le séparateur de
+            # MILLIERS de la langue, « 9,975 » était REFUSÉ en session anglaise
+            # (la virgule y groupe les milliers) et « 0,075 » était accepté à
+            # 75 %, sans un mot.
+            clean = part.replace("%", "").strip().replace(",", ".")
+            try:
+                rate = Decimal(clean)
+            except InvalidOperation as exc:
+                raise calc.CalcError("bad_rate_part", text=part.strip()) from exc
+            if rate <= 0 or rate > 100:
+                raise calc.CalcError("bad_tax_rate", text=part.strip())
+            name = _("Tax") if len(parts) == 1 else _("Tax %(index)s", index=index + 1)
+            components.append((name, rate))
+        return components
+
+    def _manual_profile(self, rates_text):
+        components = self._manual_components(rates_text)
+        rates = " + ".join(self._format_number(r) + "\u00a0%" for _n, r in components)
+        return {"key": MANUAL_PROFILE,
+                "name": _("Manual rate (%(rates)s)", rates=rates),
+                "components": components}
 
     @api.model
     def _tax_breakdown(self, amount, components, direction):
@@ -567,17 +851,19 @@ class BfCalculatorEntry(models.Model):
 
     @api.model
     def calc_tax(self, amount_text, profile_key, direction="reverse", record=False,
-                 res_model=False, res_id=False):
+                 res_model=False, res_id=False, rates_text=""):
         self._check_internal()
         try:
             amount = calc.parse_amount(amount_text, self._thousands_sep(),
-                                        variables=self.env["bf.calculator.variable"]._as_dict())
+                                        variables=self._variables())
+            # Une clé inconnue REFUSE, ici comme dans l'opération : auparavant,
+            # « tax:999999 » annonçait « 14.975% TPS+TVQ ».
+            profile = (self._manual_profile(rates_text) if profile_key == MANUAL_PROFILE
+                       else self._pick_profile(self._tax_profiles(), profile_key))
         except calc.CalcError as err:
             return {"ok": False, "error": self._error_message(err)}
         if direction not in ("forward", "reverse"):
             direction = "reverse"
-        profiles = self._tax_profiles()
-        profile = next((p for p in profiles if p["key"] == profile_key), profiles[0])
         base, taxes, total, exact = self._tax_breakdown(amount, profile["components"], direction)
         rate_text = lambda r: self._format_number(r) + "\u00a0%"
         lines = [{"name": n, "rate": rate_text(r), "amount": self._format_money(t)}
@@ -628,7 +914,7 @@ class BfCalculatorEntry(models.Model):
         self._check_internal()
         sep = self._thousands_sep()
         try:
-            variables = self.env["bf.calculator.variable"]._as_dict()
+            variables = self._variables()
             a = calc.parse_amount(a_text, sep, variables)
             b = calc.parse_amount(b_text, sep, variables)
         except calc.CalcError as err:

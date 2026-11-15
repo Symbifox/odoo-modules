@@ -19,6 +19,11 @@ Ce qui est accepté, au-delà des quatre opérations :
   valent des heures décimales ;
 * **les pourcentages** à la façon des calculatrices de bureau : ``200 + 10 %``
   vaut 220, ``200 * 10 %`` vaut 20 ;
+* **les taxes** en fin d'opération : ``1 000 + taxes`` ajoute les taxes du profil
+  choisi, ``1 149,75 - taxes`` les retire (la taxe inversée), et un mot de taxe
+  (``+ tvq``, ``- tps``) n'en applique qu'une. Les taux et l'arithmétique
+  viennent de l'appelant (``taxes`` et ``tax_op``), jamais d'ici : le module ne
+  connaît aucun taux ;
 * **une monnaie** (``$``, ``€``, ``£``, ``CA$``, ``USD``…) : si une seule apparaît,
   le résultat la porte. Aucune vérification d'unités n'est faite ;
 * **une conversion** en fin d'expression : ``100 USD en CAD``, ``50 € + 20 $US
@@ -80,6 +85,18 @@ _OPERATORS = {
 _PRETTY = {"+": "+", "-": "\u2212", "*": "\u00d7", "/": "\u00f7", "^": "^"}
 
 
+def _plain_tax_op(value, components, sign):
+    """Arithmétique simple, sans arrondi au cent : le repli quand l'appelant
+    n'injecte pas la sienne (essais de la bibliothèque seule)."""
+    factor = Decimal(1) + sum(Decimal(str(rate)) for _name, rate in components) / 100
+    if factor == 0:
+        raise CalcError("division_by_zero")
+    base = value if sign == "+" else value / factor
+    detail = [(name, Decimal(str(rate)), base * Decimal(str(rate)) / 100)
+              for name, rate in components]
+    return (base * factor if sign == "+" else base), detail, True
+
+
 class CalcError(ValueError):
     """Erreur d'évaluation. ``code`` est stable, ``params`` complète le message."""
 
@@ -91,13 +108,14 @@ class CalcError(ValueError):
 
 @dataclass
 class Token:
-    kind: str  # NUM, OP, LP, RP, PCT, LABEL, CUR
+    kind: str  # NUM, OP, LP, RP, PCT, LABEL, CUR, TAX
     text: str
     value: Decimal = None
     duration: bool = False
     code: str = ""  # CUR : code ISO résolu ; NUM : monnaie du montant
     paren: bool = False  # LABEL écrit entre parenthèses
     var: bool = False  # NUM tiré d'une variable
+    taxes: list = None  # TAX : [(nom, taux)] ; vide = le mot désigne plusieurs taux
 
 
 @dataclass
@@ -109,6 +127,8 @@ class Result:
     tokens: list = field(default_factory=list)
     assign: str = ""
     conversions: list = field(default_factory=list)  # [(de, vers, taux, date)]
+    #: [{"word", "sign", "taxes": [(nom, taux, montant)], "exact": bool}]
+    tax_steps: list = field(default_factory=list)
 
     def display(self):
         """L'expression telle qu'elle sera relue : descriptifs compris,
@@ -173,7 +193,15 @@ def split_title(text):
     return match.group(1).strip(), text[match.end():]
 
 
-def tokenize(text, thousands_sep=",", currencies=DEFAULT_CURRENCIES):
+def _tax_after_operator(tokens):
+    """Un mot n'est une taxe qu'en position « ce qui vient après + ou - » :
+    sinon « 6 taxes » perdrait son descriptif, et une variable nommée tvq
+    deviendrait une taxe au milieu d'un produit."""
+    prev = tokens[-1] if tokens else None
+    return prev is not None and prev.kind == "OP" and prev.text in "+-"
+
+
+def tokenize(text, thousands_sep=",", currencies=DEFAULT_CURRENCIES, taxes=None):
     tokens = []
     i, n = 0, len(text)
     while i < n:
@@ -245,6 +273,11 @@ def tokenize(text, thousands_sep=",", currencies=DEFAULT_CURRENCIES):
             continue
         m = _WORD_RE.match(text, i)
         if m:
+            word = m.group(0).rstrip(".").lower()
+            if taxes and word in taxes and _tax_after_operator(tokens):
+                tokens.append(Token("TAX", m.group(0), taxes=list(taxes[word])))
+                i = m.end()
+                continue
             if m.group(0) in ("x", "X"):
                 # « 6 x 750 » : le x des claviers sans ×.
                 tokens.append(Token("OP", "*"))
@@ -315,10 +348,14 @@ def _bind_currencies(tokens, local):
 
 
 class _Parser:
-    def __init__(self, tokens):
+    def __init__(self, tokens, tax_op=None):
         self.tokens = [t for t in tokens if t.kind not in ("LABEL", "CUR", "CONV")]
         self.pos = 0
         self.depth = 0
+        #: tax_op(valeur, composants, signe) rend (valeur, [(nom, taux, montant)], exact).
+        #: Sans lui, l'arithmétique simple : × (1 + Σ/100) et son inverse.
+        self.tax_op = tax_op or _plain_tax_op
+        self.tax_steps = []
 
     def peek(self):
         return self.tokens[self.pos] if self.pos < len(self.tokens) else None
@@ -334,6 +371,8 @@ class _Parser:
         value, _pct = self.expr()
         tok = self.peek()
         if tok is not None:
+            if tok.kind == "TAX":
+                raise CalcError("tax_needs_amount", text=tok.text)
             if tok.kind in ("NUM", "LP"):
                 raise CalcError("missing_operator", text=tok.text)
             if tok.kind == "RP":
@@ -351,6 +390,12 @@ class _Parser:
         left, pct = self.term()
         while (tok := self.peek()) is not None and tok.kind == "OP" and tok.text in "+-":
             self.take()
+            nxt = self.peek()
+            if nxt is not None and nxt.kind == "TAX":
+                self.take()
+                left = self._check(self._tax(left, nxt, tok.text))
+                pct = False
+                continue
             right, right_pct = self.term()
             if right_pct:
                 # « 200 + 10 % » : le pourcentage porte sur ce qui précède.
@@ -358,6 +403,14 @@ class _Parser:
             left = self._check(left + right if tok.text == "+" else left - right)
             pct = False
         return left, pct
+
+    def _tax(self, value, tok, sign):
+        if not tok.taxes:
+            raise CalcError("ambiguous_tax", text=tok.text)
+        result, detail, exact = self.tax_op(value, tok.taxes, sign)
+        self.tax_steps.append({"word": tok.text, "sign": sign, "taxes": detail,
+                               "exact": exact})
+        return result
 
     def term(self):
         left, pct = self.unary()
@@ -409,6 +462,8 @@ class _Parser:
         tok = self.take()
         if tok is None:
             raise CalcError("missing_operand")
+        if tok.kind == "TAX":
+            raise CalcError("tax_needs_amount", text=tok.text)
         if tok.kind == "NUM":
             # Un littéral de 499 chiffres passait sans opération : float() → inf.
             return self._check(tok.value)
@@ -430,13 +485,28 @@ class _Parser:
 
 
 def evaluate(text, thousands_sep=",", variables=None, rate=None,
-             currencies=DEFAULT_CURRENCIES, local="CAD"):
+             currencies=DEFAULT_CURRENCIES, local="CAD", taxes=None, tax_op=None,
+             tax_words=()):
     """Évalue ``text`` et rend un ``Result``. Lève ``CalcError``.
 
     ``variables`` : {nom: valeur}. ``rate(de, vers)`` rend ``(taux, date)`` ou
     lève ``CalcError("no_rate")`` ; sans lui, une conversion est refusée.
     ``local`` : le code de la monnaie que désigne un ``$`` nu.
+    ``taxes`` : {mot: [(nom, taux)]}, une liste vide pour un mot qui désigne
+    plusieurs taux ; ``tax_op(valeur, composants, signe)`` rend
+    ``(valeur, [(nom, taux, montant)], exact)``.
+
+    ``tax_words`` : TOUS les mots qui désignent une taxe, en minuscules, que
+    l'expression en porte un ou non. ``taxes`` ne porte les taux réels que si
+    l'expression a un mot de taxe précédé de + ou - (le coût d'une lecture de
+    base est à ce prix), donc il ne peut pas servir à refuser un nom de
+    variable ni à nommer le mauvais opérateur : ``tax_words`` est là pour ça,
+    et l'appelant la passe toujours.
+    🔴 Sans elle, « tvq = 9,975 » était acceptée (une affectation ne porte
+    jamais + ni -), et ensuite « 1 000 * tvq » valait 9 975 tandis que
+    « 1 000 + tvq » valait 1 099,75.
     """
+    tax_words = frozenset(tax_words or ())
     text = (text or "").strip()
     if len(text) > MAX_LENGTH:
         raise CalcError("too_long", limit=MAX_LENGTH)
@@ -446,7 +516,7 @@ def evaluate(text, thousands_sep=",", variables=None, rate=None,
     match = _ASSIGN_RE.match(text)
     if match and not match.group(2).lstrip().startswith("="):
         name = match.group(1)
-        if name.lower() in RESERVED or name in currencies:
+        if name.lower() in RESERVED or name in currencies or name.lower() in tax_words:
             raise CalcError("bad_variable", text=name)
         assign, text = name, match.group(2)
     # Un « = » au milieu est refusé par le découpage, sauf dans un descriptif
@@ -469,7 +539,7 @@ def evaluate(text, thousands_sep=",", variables=None, rate=None,
     # « 5 min * 3 » donnait 0,24999999999999999999999999999.
     with localcontext() as ctx:
         ctx.prec = 34
-        tokens = tokenize(body, thousands_sep, currencies)
+        tokens = tokenize(body, thousands_sep, currencies, taxes)
         tokens = _bind_variables(tokens, variables)
         _bind_currencies(tokens, local)
         conversions = []
@@ -486,13 +556,18 @@ def evaluate(text, thousands_sep=",", variables=None, rate=None,
                 # « 100 usd en cad » : rien à convertir, et le taire rendait 100.
                 raise CalcError("nothing_to_convert", text=target)
             tokens.append(Token("CONV", conv_text))
+        parser = _Parser(tokens, tax_op)
         try:
-            value = _Parser(tokens).run()
+            value = parser.run()
         except CalcError as err:
             # « 6 h * taux » sans variable « taux » : le vrai problème est le nom.
             unknown = _unknown_variable(tokens) if err.code in ("missing_operand", "empty") \
                 else None
             if unknown:
+                # « 1 000 * taxes » : le mot est connu, c'est l'opérateur qui ne
+                # peut pas porter une taxe. Le dire, plutôt que « variable inconnue ».
+                if unknown.rstrip(".").lower() in tax_words:
+                    raise CalcError("tax_bad_operator", text=unknown) from err
                 raise CalcError("unknown_variable", text=unknown) from err
             raise
     currencies_seen = {t.code or t.text for t in tokens if t.kind == "CUR"}
@@ -514,6 +589,7 @@ def evaluate(text, thousands_sep=",", variables=None, rate=None,
         tokens=tokens,
         assign=assign,
         conversions=conversions,
+        tax_steps=parser.tax_steps,
     )
 
 

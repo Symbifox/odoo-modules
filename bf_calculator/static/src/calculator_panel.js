@@ -10,17 +10,63 @@ const { DateTime } = luxon;
 
 const MODEL = "bf.calculator.entry";
 const ROUNDING_KEY = "bf_calculator.rounding";
+/** Ce que le panneau retrouve d'une ouverture à l'autre : l'onglet, le
+ * profil de taxe, le sens et les taux tapés à la main. Comme l'arrondi, c'est du
+ * confort par personne et par navigateur, jamais une donnée à relire au serveur. */
+const TAB_KEY = "bf_calculator.tab";
+const TAX_PROFILE_KEY = "bf_calculator.tax_profile";
+const TAX_DIRECTION_KEY = "bf_calculator.tax_direction";
+const TAX_RATES_KEY = "bf_calculator.tax_rates";
+const MANUAL_PROFILE = "manual";
+/** Les onglets, dans l'ordre d'affichage. La liste sert AUSSI à valider ce que
+ * localStorage rend : une valeur inconnue (un vieux nom d'onglet, une clé
+ * bricolée à la main) ouvrait un panneau sans corps, 106 px de haut et aucun
+ * onglet actif. On retombe alors sur « calc ». */
+const TABS = ["calc", "tax", "hours", "percent", "date", "column"];
 const HISTORY_SHOWN = 5;
 /** Touches qui CONTINUENT le calcul à partir de la valeur résiduelle ; toute
  * autre touche imprimable la remplace, comme sur une vraie calculatrice. */
 const CONTINUE_KEYS = new Set(["+", "-", "*", "/", "×", "÷", "−", "^", "%"]);
 
-function readRounding() {
+function readPref(key, fallback = "") {
     try {
-        return browser.localStorage.getItem(ROUNDING_KEY) || "";
+        return browser.localStorage.getItem(key) ?? fallback;
     } catch {
-        return "";
+        // navigation privée, stockage refusé : le réglage vaut pour cette ouverture
+        return fallback;
     }
+}
+
+function writePref(key, value) {
+    try {
+        browser.localStorage.setItem(key, value);
+    } catch {
+        // navigation privée : le réglage vaut pour cette ouverture seulement
+    }
+}
+
+/** Les exemples du champ de calcul, tirés au hasard à chaque ouverture.
+ * Chacun enseigne une forme de la grammaire : descriptif, durée, pourcentage,
+ * division. Traduits : ce sont les mots du métier, pas du décor. */
+/** L'onglet retenu de la dernière fois, validé contre la liste. */
+function readTab() {
+    const tab = readPref(TAB_KEY, "calc");
+    return TABS.includes(tab) ? tab : "calc";
+}
+
+function examples() {
+    return [
+        _t("6 (weeks) * 750 $"),
+        _t("12 (hours) * 95 $"),
+        _t("3 (boxes) * 24 (units)"),
+        _t("2 500 $ / 12 (months)"),
+        _t("45 (km) * 0.68 $"),
+        _t("8 (licences) * 14.99 $"),
+        _t("1 h 45 * 120 $"),
+        _t("260 $ + 15 % (tip)"),
+        _t("4 (people) * 32.50 $"),
+        _t("18 (bags) * 7.25 $"),
+    ];
 }
 
 export class CalculatorPanel extends Component {
@@ -41,8 +87,11 @@ export class CalculatorPanel extends Component {
             ["(", ")", "⌫", "="],
         ];
         this.origin = this.calc.currentRecord();
+        // Tiré à la construction, et non dans le getter : un exemple qui change
+        // à chaque rendu clignoterait à chaque frappe.
+        this.example = examples()[Math.floor(Math.random() * examples().length)];
         this.state = useState({
-            tab: "calc",
+            tab: readTab(),
             expression: "",
             title: "",
             showTitle: false,
@@ -51,13 +100,14 @@ export class CalculatorPanel extends Component {
             preview: null,
             last: null,
             justComputed: false,
-            rounding: readRounding(),
+            rounding: readPref(ROUNDING_KEY),
             history: [],
             search: "",
             variables: [],
             profiles: [],
-            taxProfile: "",
-            taxDirection: "reverse",
+            taxProfile: readPref(TAX_PROFILE_KEY),
+            taxDirection: readPref(TAX_DIRECTION_KEY) === "forward" ? "forward" : "reverse",
+            taxRates: readPref(TAX_RATES_KEY),
             taxAmount: "",
             taxRes: null,
             percentKind: "margin",
@@ -89,7 +139,11 @@ export class CalculatorPanel extends Component {
         this.debouncedPreview = useDebounced(() => this.preview(), 180);
         this.debouncedSearch = useDebounced(() => this.loadHistory(), 250);
         onWillStart(async () => {
-            await Promise.all([this.loadHistory(), this.loadVariables()]);
+            const jobs = [this.loadHistory(), this.loadVariables()];
+            if (this.state.tab === "tax") {
+                jobs.push(this.loadProfiles());
+            }
+            await Promise.all(jobs);
         });
         onMounted(() => this.focusExpression());
     }
@@ -98,14 +152,17 @@ export class CalculatorPanel extends Component {
     // Libellés
     // ------------------------------------------------------------------
     get tabs() {
-        return [
-            ["calc", _t("Calculate")],
-            ["tax", _t("Taxes")],
-            ["hours", _t("Hours")],
-            ["percent", "%"],
-            ["date", _t("Dates")],
-            ["column", _t("Column")],
-        ];
+        // Les libellés sont tirés de TABS, et non d'une seconde liste : ce que
+        // l'écran montre est exactement ce que readTab accepte.
+        const labels = {
+            calc: _t("Calculate"),
+            tax: _t("Taxes"),
+            hours: _t("Hours"),
+            percent: "%",
+            date: _t("Dates"),
+            column: _t("Column"),
+        };
+        return TABS.map((key) => [key, labels[key]]);
     }
 
     get roundings() {
@@ -125,6 +182,29 @@ export class CalculatorPanel extends Component {
         return this.state.insertLabel
             ? _t("Insert into “%s”", this.state.insertLabel)
             : _t("Insert into the last number field");
+    }
+
+    get calcPlaceholder() {
+        return this.example;
+    }
+
+    /** Le profil choisi, pour savoir s'il faut montrer le champ de taux. */
+    get taxManual() {
+        return this.state.taxProfile === MANUAL_PROFILE;
+    }
+
+    /** Les deux arguments que porte TOUT appel à l'évaluateur : le profil de
+     * taxe choisi et les taux tapés à la main. Ils vivent ici, en un seul
+     * endroit, parce qu'un appel qui les oubliait rendait une AUTRE réponse
+     * pour le même calcul : avec un taux libre de 20 %,
+     * « 1 000 + taxes » donnait 1 200 dans Calculer et 1 149,75 dans Heures,
+     * et des taux vides faisaient refuser Calculer pendant que Heures
+     * calculait. Le champ Heures passe par le même évaluateur. */
+    get taxArgs() {
+        return {
+            tax_profile: this.state.taxProfile || false,
+            rates_text: this.state.taxRates || "",
+        };
     }
 
     get taxPlaceholder() {
@@ -182,12 +262,24 @@ export class CalculatorPanel extends Component {
     async setTab(tab) {
         this.state.tab = tab;
         this.state.showHelp = false;
+        writePref(TAB_KEY, tab);
         if (tab === "tax" && !this.state.profiles.length) {
-            this.state.profiles = await this.orm.call(MODEL, "calc_tax_profiles", []);
-            this.state.taxProfile = this.state.profiles[0]?.key || "";
+            await this.loadProfiles();
         }
         if (tab === "calc") {
             this.focusExpression();
+        }
+    }
+
+    /** Les profils de taxe de la société. Le profil retenu de la dernière fois
+     * peut avoir disparu (changement de société) : on retombe sur le premier. */
+    async loadProfiles() {
+        const profiles = await this.orm.call(MODEL, "calc_tax_profiles", []);
+        this.state.profiles = profiles;
+        const known = profiles.some((p) => p.key === this.state.taxProfile);
+        if (!known) {
+            this.state.taxProfile = profiles[0]?.key || "";
+            writePref(TAX_PROFILE_KEY, this.state.taxProfile);
         }
     }
 
@@ -201,11 +293,7 @@ export class CalculatorPanel extends Component {
 
     setRounding(ev) {
         this.state.rounding = ev.target.value;
-        try {
-            browser.localStorage.setItem(ROUNDING_KEY, this.state.rounding);
-        } catch {
-            // navigation privée : le réglage vaut pour cette ouverture seulement
-        }
+        writePref(ROUNDING_KEY, this.state.rounding);
         this.debouncedPreview();
     }
 
@@ -355,6 +443,7 @@ export class CalculatorPanel extends Component {
         const rounding = this.state.rounding;
         const res = await this.orm.call(MODEL, "calc_evaluate", [expression], {
             rounding: rounding || false,
+            ...this.taxArgs,
         });
         if (
             expression === this.state.expression &&
@@ -377,6 +466,7 @@ export class CalculatorPanel extends Component {
             res = await this.orm.call(MODEL, "calc_record", [expression], {
                 title: this.state.title || false,
                 rounding: this.state.rounding || false,
+                ...this.taxArgs,
                 ...this.originArgs,
             });
         } finally {
@@ -449,7 +539,9 @@ export class CalculatorPanel extends Component {
             return;
         }
         const ticket = this.nextTicket("hoursRes");
-        const res = await this.orm.call(MODEL, "calc_evaluate", [this.state.hours]);
+        const res = await this.orm.call(MODEL, "calc_evaluate", [this.state.hours], {
+            ...this.taxArgs,
+        });
         if (ticket !== this.seq.hoursRes) {
             return;
         }
@@ -469,7 +561,10 @@ export class CalculatorPanel extends Component {
         if (!this.state.hours.trim()) {
             return;
         }
-        const res = await this.orm.call(MODEL, "calc_record", [this.state.hours], this.originArgs);
+        const res = await this.orm.call(MODEL, "calc_record", [this.state.hours], {
+            ...this.taxArgs,
+            ...this.originArgs,
+        });
         if (res.ok) {
             this.state.last = { ...res.entry, raw: res.raw };
             await this.loadHistory();
@@ -489,14 +584,31 @@ export class CalculatorPanel extends Component {
             MODEL,
             "calc_tax",
             [this.state.taxAmount, this.state.taxProfile, this.state.taxDirection],
-            { record, ...this.originArgs }
+            { record, rates_text: this.state.taxRates || "", ...this.originArgs }
         );
         await this.keep(res, "taxRes", record, ticket);
     }
 
     setTaxDirection(direction) {
         this.state.taxDirection = direction;
+        writePref(TAX_DIRECTION_KEY, direction);
         this.computeTax();
+    }
+
+    setTaxProfile(ev) {
+        this.state.taxProfile = ev.target.value;
+        writePref(TAX_PROFILE_KEY, this.state.taxProfile);
+        this.computeTax();
+        this.debouncedPreview();
+    }
+
+    setTaxRates(ev) {
+        this.state.taxRates = ev.target.value;
+        writePref(TAX_RATES_KEY, this.state.taxRates);
+        this.computeTax();
+        // Ces taux portent aussi « 1 000 + taxes » : l'aperçu du champ de
+        // calcul est à refaire.
+        this.debouncedPreview();
     }
 
     async computePercent(record = false) {
@@ -585,7 +697,10 @@ export class CalculatorPanel extends Component {
     reuse(entry) {
         this.state.last = { ...entry, raw: String(entry.result) };
         if (["standard", "hours"].includes(entry.mode)) {
+            // Et l'onglet est RETENU : sans ça, le panneau rouvrait sur
+            // l'onglet d'avant alors qu'on venait de reprendre le calcul.
             this.state.tab = "calc";
+            writePref(TAB_KEY, "calc");
             this.state.preview = null;
             this.state.justComputed = true;
             this.setExpression(entry.residual || String(entry.result), { selectAll: true });

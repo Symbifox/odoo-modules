@@ -84,7 +84,10 @@
         text-align: right;
         font-size: 1.05rem;
         padding: 0.15rem 0;
-        &::placeholder { color: #5c636a; opacity: 1; }
+        // Le texte d'exemple : le gris le PLUS atténué qui tienne encore AA
+        // (4,5:1) sur les deux fonds mesurés, pas plus bas.
+        // 4,51:1 sur l'écran clair #f8f9fa. Odoo, lui, sert 1,65:1.
+        &::placeholder { color: #6c747b; opacity: 1; }
     }
     // Après « = », le champ EST l'affichage : la valeur résiduelle en grand,
     // comme sur une vraie calculatrice, sans la répéter en dessous.
@@ -149,6 +152,14 @@
     }
     // « = » est un .btn-primary : il suit la couleur et la décision de contraste
     // du locataire (bluefox_branding : blanc sur la marque, assumé).
+    // ⚠️ La touche « = » est un `btn-primary` : blanc sur le bleu de marque,
+    // donc 2,62:1, mesuré au pixel. Ce n'est PAS un défaut à
+    // corriger ici : `bluefox_branding` (branding.scss, lignes 92 à 112) porte
+    // l'arbitrage explicite du propriétaire de la marque, qui a
+    // mesuré les trois solutions et retenu la marque au prix du contraste,
+    // l'anthracite sur le bleu (5,01:1) étant jugé « bizarre » à l'usage.
+    // Un correctif posé ici serait un retour sur sa décision, pas une passe
+    // d'accessibilité.
     .o_bf_calc_eq {
         font-weight: 600;
     }
@@ -221,7 +232,8 @@ body.bf_dark_mode .o_bf_calc_panel .text-danger {
 }
 // Le segment actif prend le fond du corps : en sombre, celui du thème.
 body.bf_dark_mode .o_bf_calc_panel .o_bf_calc_expression::placeholder {
-    color: #b6bcbf;
+    // 4,53:1 sur l'écran sombre #3d4344 (5,89:1 sur le panneau #2e3132).
+    color: #a8afb2;
 }
 body.bf_dark_mode .o_bf_calc_panel .o_bf_calc_segment button.active {
     background-color: #3d4344;

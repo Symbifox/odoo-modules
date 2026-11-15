@@ -1,6 +1,6 @@
 {
     "name": "BF Calculatrice",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.3.0",
     "category": "Productivity",
     "summary": "Calculatrice de barre du haut : historique, descriptifs, taxes, heures, versement au chatter",
     "description": """
@@ -13,8 +13,11 @@ chatter de la fiche ouverte.
 
 - saisie à la française (virgule décimale, espaces de milliers) ;
 - descriptifs dans l'opération : ``6 (semaines) * 750 (dollars) =`` ;
-- modes Taxes (taux lus en comptabilité, taxe inversée), Heures,
-  Pourcentages et marges, Colonne collée ;
+- modes Taxes (taux lus en comptabilité, taxe inversée, chaque taxe aussi
+  offerte seule, et un taux libre tapé à la main), Heures, Pourcentages et
+  marges, Colonne collée ;
+- les taxes dans l'opération : ``1 000 + taxes``, ``1 149,75 - taxes``,
+  ``1 000 + tvq`` ;
 - insère un résultat dans le dernier champ numérique cliqué d'un formulaire ;
 - valeur résiduelle comme une vraie calculatrice, variables (``taux = 125``),
   mémoire M, épingles, rappel par la flèche haut, arrondi au 5 ¢ ;

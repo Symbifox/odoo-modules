@@ -1,10 +1,13 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_calculator
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 03:22+0000\n"
-"PO-Revision-Date: 2026-09-23 03:22+0000\n"
+"POT-Creation-Date: 2026-11-14 14:19+0000\n"
+"PO-Revision-Date: 2026-11-14 14:19+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_CA\n"
@@ -34,6 +37,12 @@ msgstr "%(a)s sur %(b)s"
 #. module: bf_calculator
 #. odoo-python
 #: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "%(limit)s rates at most."
+msgstr "%(limit)s taux au plus."
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
 msgid "%(n)s business days"
 msgstr "%(n)s jours ouvrables"
 
@@ -46,11 +55,30 @@ msgstr "%(n)s jours"
 #. module: bf_calculator
 #. odoo-python
 #: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "%(name)s (%(rate)s)"
+msgstr "%(name)s (%(rate)s)"
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
 msgid "1 %(src)s = %(rate)s %(dst)s, Bank of Canada, %(day)s"
 msgstr "1 %(src)s = %(rate)s %(dst)s, Banque du Canada, %(day)s"
 
 #. module: bf_calculator
 #. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.xml:0
+msgid "1 000 + taxes"
+msgstr "1 000 + taxes"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.xml:0
+msgid "1 149,75 - tvq"
+msgstr "1 149,75 - tvq"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.js:0
 #: code:addons/bf_calculator/static/src/calculator_panel.xml:0
 msgid "1 h 45 * 120 $"
 msgstr "1 h 45 * 120 $"
@@ -69,6 +97,49 @@ msgstr "100 USD en CAD"
 
 #. module: bf_calculator
 #. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.js:0
+msgid "12 (hours) * 95 $"
+msgstr "12 (heures) * 95 $"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.js:0
+msgid "18 (bags) * 7.25 $"
+msgstr "18 (sacs) * 7,25 $"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.js:0
+msgid "2 500 $ / 12 (months)"
+msgstr "2 500 $ / 12 (mois)"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.js:0
+msgid "260 $ + 15 % (tip)"
+msgstr "260 $ + 15 % (pourboire)"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.js:0
+msgid "3 (boxes) * 24 (units)"
+msgstr "3 (boîtes) * 24 (unités)"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.js:0
+msgid "4 (people) * 32.50 $"
+msgstr "4 (personnes) * 32,50 $"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.js:0
+msgid "45 (km) * 0.68 $"
+msgstr "45 (km) * 0,68 $"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.js:0
 #: code:addons/bf_calculator/static/src/calculator_panel.xml:0
 msgid "6 (weeks) * 750 $"
 msgstr "6 (semaines) * 750 $"
@@ -78,6 +149,18 @@ msgstr "6 (semaines) * 750 $"
 #: code:addons/bf_calculator/static/src/calculator_panel.xml:0
 msgid "6 h * rate"
 msgstr "6 h * taux"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.js:0
+msgid "8 (licences) * 14.99 $"
+msgstr "8 (licences) * 14,99 $"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.xml:0
+msgid "9.975 or 5 + 9.975"
+msgstr "9,975 ou 5 + 9,975"
 
 #. module: bf_calculator
 #. odoo-python
@@ -90,6 +173,12 @@ msgstr "Il manque un nombre."
 #: code:addons/bf_calculator/models/bf_calculator_entry.py:0
 msgid "A parenthesis is not closed, or closed once too often."
 msgstr "Une parenthèse n'est pas fermée, ou l'est une fois de trop."
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "A tax applies with + or -: 1 000 + %(text)s."
+msgstr "Une taxe s'applique avec + ou - : 1 000 + %(text)s."
 
 #. module: bf_calculator
 #. odoo-javascript
@@ -131,6 +220,12 @@ msgstr "Tout ›"
 #: code:addons/bf_calculator/static/src/calculator_panel.js:0
 msgid "Amount before taxes"
 msgstr "Montant avant taxes"
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "An amount is missing before “%(text)s”."
+msgstr "Il manque un montant avant « %(text)s »."
 
 #. module: bf_calculator
 #. odoo-python
@@ -272,17 +367,6 @@ msgstr "Variation de %(a)s à %(b)s"
 #: code:addons/bf_calculator/static/src/calculator_panel.xml:0
 msgid "Change in %"
 msgstr "Variation en %"
-
-#. module: bf_calculator
-#: model:ir.model.fields,help:bf_calculator.field_bf_calculator_post__target_reference
-msgid ""
-"Cherchez par nom, par numéro, par raccourci (task:22299, facture:42, "
-"bf.email:17) ou collez une URL Odoo. Toute fiche dotée d'un chatter est une "
-"cible valide."
-msgstr ""
-"Cherchez par nom, par numéro, par raccourci (task:22299, facture:42, "
-"bf.email:17) ou collez une URL Odoo. Toute fiche dotée d'un chatter est une "
-"cible valide."
 
 #. module: bf_calculator
 #. odoo-python
@@ -469,11 +553,6 @@ msgid "Expression"
 msgstr "Expression"
 
 #. module: bf_calculator
-#: model:ir.model.fields,field_description:bf_calculator.field_bf_calculator_post__target_reference
-msgid "Fiche cible"
-msgstr "Fiche cible"
-
-#. module: bf_calculator
 #: model:ir.model.fields,field_description:bf_calculator.field_bf_calculator_entry__result_text
 msgid "Formatted result"
 msgstr "Résultat mis en forme"
@@ -570,6 +649,18 @@ msgstr "MC"
 #: code:addons/bf_calculator/static/src/calculator_panel.xml:0
 msgid "MR"
 msgstr "MR"
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "Manual rate"
+msgstr "Taux libre"
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "Manual rate (%(rates)s)"
+msgstr "Taux libre (%(rates)s)"
 
 #. module: bf_calculator
 #. odoo-python
@@ -699,6 +790,12 @@ msgstr ""
 #: code:addons/bf_calculator/static/src/calculator_panel.js:0
 msgid "Old value"
 msgstr "Ancienne valeur"
+
+#. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.xml:0
+msgid "One named tax, removed"
+msgstr "Une seule taxe nommée, retirée"
 
 #. module: bf_calculator
 #: model_terms:ir.actions.act_window,help:bf_calculator.action_bf_calculator_history
@@ -869,6 +966,16 @@ msgid "Rounding"
 msgstr "Arrondi"
 
 #. module: bf_calculator
+#: model:ir.model.fields,help:bf_calculator.field_bf_calculator_post__target_reference
+msgid ""
+"Search by name, by number, by shortcut (task:22299, invoice:42, bf.email:17)"
+" or paste an Odoo URL. Any record with a chatter is a valid target."
+msgstr ""
+"Cherchez par nom, par numéro, par raccourci (task:22299, facture:42, "
+"bf.email:17) ou collez une URL Odoo. Toute fiche dotée d'un chatter est une "
+"cible valide."
+
+#. module: bf_calculator
 #. odoo-javascript
 #: code:addons/bf_calculator/static/src/calculator_panel.xml:0
 msgid "Search history"
@@ -885,6 +992,14 @@ msgstr "Choisissez au moins un de vos calculs."
 #: code:addons/bf_calculator/static/src/calculator_panel.js:0
 msgid "Selling price"
 msgstr "Prix de vente"
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "Several taxes are named “%(text)s”: pick a profile in the Taxes tab."
+msgstr ""
+"Plusieurs taxes portent le nom « %(text)s » : choisissez un profil dans "
+"l'onglet Taxes."
 
 #. module: bf_calculator
 #. odoo-python
@@ -930,6 +1045,23 @@ msgstr "Somme"
 #: code:addons/bf_calculator/models/bf_calculator_entry.py:0
 msgid "Sum of a pasted column (%(count)s values, %(skipped)s ignored)"
 msgstr "Somme d'une colonne collée (%(count)s valeurs, %(skipped)s ignorées)"
+
+#. module: bf_calculator
+#: model:ir.model.fields,field_description:bf_calculator.field_bf_calculator_post__target_reference
+msgid "Target record"
+msgstr "Fiche cible"
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "Tax"
+msgstr "Taxe"
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "Tax %(index)s"
+msgstr "Taxe %(index)s"
 
 #. module: bf_calculator
 #. odoo-javascript
@@ -983,6 +1115,12 @@ msgid "The result is too large."
 msgstr "Le résultat est trop grand."
 
 #. module: bf_calculator
+#. odoo-javascript
+#: code:addons/bf_calculator/static/src/calculator_panel.xml:0
+msgid "The taxes of the chosen profile"
+msgstr "Les taxes du profil choisi"
+
+#. module: bf_calculator
 #. odoo-python
 #: code:addons/bf_calculator/models/bf_calculator_entry.py:0
 #: code:addons/bf_calculator/models/bf_calculator_variable.py:0
@@ -994,6 +1132,13 @@ msgstr "Seule la calculatrice pose ce champ."
 #: code:addons/bf_calculator/models/bf_calculator_entry.py:0
 msgid "This power cannot be computed."
 msgstr "Cette puissance ne se calcule pas."
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "This tax profile is no longer available: choose one in the Taxes tab."
+msgstr ""
+"Ce profil de taxe n'est plus offert : choisissez-en un dans l'onglet Taxes."
 
 #. module: bf_calculator
 #: model:ir.model.fields,field_description:bf_calculator.field_bf_calculator_entry__title
@@ -1040,6 +1185,12 @@ msgstr "Tapez un calcul."
 #. module: bf_calculator
 #. odoo-python
 #: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "Type a rate, for example 9.975."
+msgstr "Tapez un taux, par exemple 9,975."
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
 msgid "Unexpected character: %(text)s"
 msgstr "Caractère inattendu : %(text)s"
 
@@ -1060,6 +1211,12 @@ msgstr "Nombre de jours illisible."
 #: code:addons/bf_calculator/models/bf_calculator_entry.py:0
 msgid "Unreadable number: %(text)s"
 msgstr "Nombre illisible : %(text)s"
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "Unusable tax rate: %(text)s"
+msgstr "Taux de taxe inutilisable : %(text)s"
 
 #. module: bf_calculator
 #: model:ir.model.fields,field_description:bf_calculator.field_bf_calculator_entry__user_id
@@ -1097,6 +1254,14 @@ msgid "holidays skipped: %(list)s"
 msgstr "fériés sautés : %(list)s"
 
 #. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "no before-tax amount gives exactly this total once each tax is rounded"
+msgstr ""
+"aucun montant avant taxes ne redonne exactement ce total une fois chaque "
+"taxe arrondie"
+
+#. module: bf_calculator
 #. odoo-javascript
 #: code:addons/bf_calculator/static/src/calculator_panel.xml:0
 msgid "rate = 125"
@@ -1111,6 +1276,18 @@ msgstr "arrondi à %(step)s"
 #. module: bf_calculator
 #. odoo-python
 #: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "taxes added: %(detail)s"
+msgstr "taxes ajoutées : %(detail)s"
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid "taxes removed: %(detail)s"
+msgstr "taxes retirées : %(detail)s"
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
 msgid "“%(text)s” cannot be a variable name."
 msgstr "« %(text)s » ne peut pas nommer une variable."
 
@@ -1119,3 +1296,12 @@ msgstr "« %(text)s » ne peut pas nommer une variable."
 #: code:addons/bf_calculator/models/bf_calculator_entry.py:0
 msgid "“%(text)s” is not a known variable."
 msgstr "« %(text)s » n'est pas une variable connue."
+
+#. module: bf_calculator
+#. odoo-python
+#: code:addons/bf_calculator/models/bf_calculator_entry.py:0
+msgid ""
+"“%(text)s” is not a single rate: separate the taxes with +, as in 5 + 9.975."
+msgstr ""
+"« %(text)s » n'est pas un taux seul : séparez les taxes par +, comme 5 + "
+"9,975."

@@ -48,6 +48,8 @@
                     <tr><td><code>6 (weeks) * 750 $</code></td><td>Labels are kept, ignored in the math</td></tr>
                     <tr><td><code>Budget : 6 * 750</code></td><td>A title before the colon</td></tr>
                     <tr><td><code>200 + 10 %</code></td><td>Percentages like a desk calculator</td></tr>
+                    <tr><td><code>1 000 + taxes</code></td><td>The taxes of the chosen profile</td></tr>
+                    <tr><td><code>1 149,75 - tvq</code></td><td>One named tax, removed</td></tr>
                     <tr><td><code>1 h 45 * 120 $</code></td><td>Durations</td></tr>
                     <tr><td><code>100 USD en CAD</code></td><td>Bank of Canada daily rates</td></tr>
                     <tr><td><code>rate = 125</code></td><td>A variable, then <code>6 h * rate</code></td></tr>
@@ -70,7 +72,7 @@
                              t-att-title="screen.line" t-esc="screen.line"/>
                     </div>
                     <input type="text" class="o_bf_calc_expression" t-ref="expression"
-                           placeholder="6 (weeks) * 750 $" autocomplete="off" spellcheck="false"
+                           t-att-placeholder="calcPlaceholder" autocomplete="off" spellcheck="false"
                            t-on-input="onExpressionInput" t-on-keydown="onExpressionKeydown"/>
                     <div t-if="screen.error" class="o_bf_calc_error small text-danger text-end" t-esc="screen.error"/>
                     <div t-elif="!state.justComputed" t-attf-class="o_bf_calc_result text-end text-truncate {{ screen.live ? 'o_bf_calc_live' : '' }}"
@@ -122,10 +124,13 @@
                     <button t-attf-class="{{ state.taxDirection === 'forward' ? 'active' : '' }}"
                             t-on-click="() => this.setTaxDirection('forward')">Before taxes → total</button>
                 </div>
-                <select class="form-select form-select-sm mb-1" t-on-change="(ev) => this.setField('taxProfile', ev, 'computeTax')">
+                <select class="form-select form-select-sm mb-1 o_bf_calc_tax_profile" t-on-change="setTaxProfile">
                     <option t-foreach="state.profiles" t-as="p" t-key="p.key" t-att-value="p.key"
-                            t-att-selected="p.key === state.taxProfile" t-esc="p.name"/>
+                            t-att-selected="p.key === state.taxProfile" t-esc="p.label"/>
                 </select>
+                <input t-if="taxManual" type="text" class="form-control form-control-sm mb-1 o_bf_calc_tax_rates"
+                       placeholder="9.975 or 5 + 9.975" t-att-value="state.taxRates"
+                       t-on-input="setTaxRates"/>
                 <input type="text" class="form-control form-control-sm o_bf_calc_tax_amount"
                        t-att-placeholder="taxPlaceholder" t-att-value="state.taxAmount"
                        t-on-input="(ev) => this.setField('taxAmount', ev, 'computeTax')"
