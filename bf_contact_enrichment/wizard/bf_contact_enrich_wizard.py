@@ -211,16 +211,45 @@ class BfContactEnrichWizard(models.TransientModel):
         return " ".join(p for p in parts if p) or False
 
     def _fetch_signature(self):
+        """La signature lue, les trois gardes de la passe du 2026-11-11 en place.
+
+        🔴 Les gardes vivent sur les DEUX chemins. L'assistant est celui que
+        l'usager prend (la fiche, puis « Enrichir »), et les poser seulement
+        dans le lot aurait laissé le défaut exactement là où il se voit.
+        """
         if "bf.email" not in self.env:
             raise UserError(_("The email management module is not installed."))
-        text = self.partner_id._bf_signature_text()
+        partner = self.partner_id
+        # Garde A : le texte arrive déjà sans son historique cité.
+        text, sources, attendu = partner._bf_signature_contexte()
+        # ⛔ Pas de moisson ici. Ce chemin peut lever (garde C, retour en
+        # erreur), et une levée depuis un appel RPC fait un `cr.rollback()` :
+        # les lignes `bf.email` qu'on serait allé chercher dans la boîte, et la
+        # date qui empêche de les rechercher demain, seraient jetées avec elle
+        # — on aurait payé l'IMAP pour rien, à chaque clic. La moisson vit sur
+        # le chemin du lot, qui ne lève pas ; d'ici, on dit simplement qu'il
+        # n'y a rien à lire.
         if not text.strip():
             raise UserError(_("No usable incoming email for this contact."))
+        # Garde B : le pont sait de qui il doit lire la signature.
         result = bridge.call_bridge(
-            self.env, "/enrich/signature", {"text": text}, timeout=90)
+            self.env, "/enrich/signature",
+            dict(attendu, text=text), timeout=90)
         if result.get("error"):
             raise UserError(_("Analysis failed: %s") % result["error"])
-        return result.get("data") or {}
+        # Garde C : rien de l'identité de la maison ne sera proposé.
+        data, ecartes = partner._bf_ecarter_identite_maison(
+            result.get("data") or {}, sources)
+        if ecartes:
+            # ⚠️ Pas un mot sur une note au fil : lever depuis un appel RPC
+            # fait un `cr.rollback()`, qui emporte le `message_post` de la
+            # garde. La trace de ce refus-ci vit au journal du serveur ; celle
+            # du lot, elle, est bien au fil, parce que le cron ne lève pas.
+            raise UserError(_(
+                "The only signature in those emails is this Odoo's own "
+                "(quoted in the thread), not this contact's. Nothing is "
+                "proposed."))
+        return data
 
     def _fetch_web(self):
         partner = self.partner_id

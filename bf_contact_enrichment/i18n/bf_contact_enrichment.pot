@@ -1,16 +1,18 @@
-# Translation template for Contact Enrichment.
-# The module's source strings are written in English.
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_contact_enrichment
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_contact_enrichment 18.0.2.5.0\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-25 04:08+0000\n"
-"PO-Revision-Date: 2026-10-25 04:08+0000\n"
+"POT-Creation-Date: 2026-11-16 05:20+0000\n"
+"PO-Revision-Date: 2026-11-16 05:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
 #. module: bf_contact_enrichment
@@ -43,6 +45,15 @@ msgstr ""
 msgid ""
 "<p>Online search by Gen, requested by %(user)s. Sources "
 "read:</p><ul>%(items)s</ul>"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid ""
+"<p>Signature reading <b>refused</b>: it carries the identity of this Odoo's "
+"own mailbox or company, so it belongs to the quoted history rather than to "
+"this contact. Nothing was written.</p><ul>%(items)s</ul>"
 msgstr ""
 
 #. module: bf_contact_enrichment
@@ -256,7 +267,6 @@ msgstr ""
 
 #. module: bf_contact_enrichment
 #: model:res.groups,name:bf_contact_enrichment.group_bf_contact_enrich
-#: model:ir.module.module,shortdesc:base.module_bf_contact_enrichment
 msgid "Contact Enrichment"
 msgstr ""
 
@@ -357,6 +367,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__proposed_country
 #: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
 msgid "Country"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model,name:bf_contact_enrichment.model_bf_email
+msgid "Courriel"
 msgstr ""
 
 #. module: bf_contact_enrichment
@@ -724,6 +739,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_enrich_wizard__write_date
 #: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__write_date
 msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_partner__x_bf_moisson_date
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_users__x_bf_moisson_date
+msgid "Last mailbox harvest"
 msgstr ""
 
 #. module: bf_contact_enrichment
@@ -1251,6 +1272,14 @@ msgstr ""
 
 #. module: bf_contact_enrichment
 #. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid ""
+"The only signature in those emails is this Odoo's own (quoted in the "
+"thread), not this contact's. Nothing is proposed."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
 #: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
 msgid "The photo on the card was dropped: unrecognized format."
 msgstr ""
@@ -1258,6 +1287,14 @@ msgstr ""
 #. module: bf_contact_enrichment
 #: model_terms:ir.ui.view,arch_db:bf_contact_enrichment.scan_page
 msgid "The server answered %s."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid ""
+"The signature read is your own mailbox's, quoted in the thread. Nothing "
+"applied."
 msgstr ""
 
 #. module: bf_contact_enrichment
@@ -1326,6 +1363,11 @@ msgid "Upload an image of a business card."
 msgstr ""
 
 #. module: bf_contact_enrichment
+#: model:ir.model,name:bf_contact_enrichment.model_res_users
+msgid "User"
+msgstr ""
+
+#. module: bf_contact_enrichment
 #: model:ir.model.fields,field_description:bf_contact_enrichment.field_bf_contact_vcard_wizard__vcf_filename
 msgid "Vcf Filename"
 msgstr ""
@@ -1354,6 +1396,14 @@ msgid ""
 "phone and address. “Propose” waits for your confirmation; “Fill in” writes "
 "the empty fields when confidence is high enough; “Do nothing” keeps only the"
 " “Complete with Gen” button."
+msgstr ""
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_partner__x_bf_moisson_date
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_users__x_bf_moisson_date
+msgid ""
+"When the mailboxes were last searched for a message from this address. Keeps"
+" a fruitless search from being repeated at every pass."
 msgstr ""
 
 #. module: bf_contact_enrichment
@@ -1470,12 +1520,4 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_contact_enrichment/wizard/bf_contact_vcard_wizard.py:0
 msgid "vCard import finished"
-msgstr ""
-
-#. module: bf_contact_enrichment
-#: model:ir.module.module,summary:base.module_bf_contact_enrichment
-msgid ""
-"Business cards (OCR, with an installable mobile page), email signatures, "
-"LinkedIn profiles, companies completed by an online search, vCard import, "
-"duplicate detection and completeness score, through Claude"
 msgstr ""

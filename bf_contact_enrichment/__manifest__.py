@@ -22,7 +22,19 @@
     #   i18n/fr_CA.po : Odoo ne traduit jamais vers en_US) ; la fenêtre de la
     #   proposition de Gen porte son titre, ses sources leur étiquette ; les
     #   textes que la tâche écrit sont dans la langue du demandeur.
-    "version": "18.0.2.5.0",
+    # 18.0.2.6.0 : la signature lue est celle de l'expéditeur, pas celle du fil
+    #   cité. Trois gardes — l'historique cité est coupé avant l'envoi au pont,
+    #   la charge dit au pont de qui on attend la signature, et un retour qui
+    #   porte l'identité de la boîte ou de la société hôte est refusé sur la
+    #   fiche d'un tiers (et consigné au fil). S'y ajoute la moisson ciblée par
+    #   adresse, qui va chercher un ou deux messages de la personne dans la
+    #   boîte quand la fenêtre ingérée n'en porte aucun ; elle est éteinte par
+    #   défaut.
+    # 18.0.2.6.1 : trois essais de plus, nés des mutants qui avaient survécu —
+    #   un usager de PORTAIL ne doit pas exempter la garde d'identité, un poste
+    #   téléphonique collé au numéro sans mot, et une raison sociale à un mot
+    #   près. Aucun changement de comportement.
+    "version": "18.0.2.6.1",
     "category": "Contacts",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

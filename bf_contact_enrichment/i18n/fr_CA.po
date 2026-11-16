@@ -3,7 +3,7 @@
 # the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_contact_enrichment 18.0.2.5.0\n"
+"Project-Id-Version: bf_contact_enrichment 18.0.2.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-25 04:08+0000\n"
 "PO-Revision-Date: 2026-10-25 04:08+0000\n"
@@ -1524,3 +1524,60 @@ msgstr ""
 "Cartes d'affaires (OCR, avec page mobile installable), signatures courriel, "
 "profils LinkedIn, sociétés complétées par une recherche en ligne, import "
 "vCard, détection de doublons et score de complétude, par Claude"
+
+#. module: bf_contact_enrichment
+#: model:ir.model,name:bf_contact_enrichment.model_bf_email
+msgid "Courriel"
+msgstr "Courriel"
+
+#. module: bf_contact_enrichment
+#: model:ir.model,name:bf_contact_enrichment.model_res_users
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid ""
+"<p>Signature reading <b>refused</b>: it carries the identity of this Odoo's "
+"own mailbox or company, so it belongs to the quoted history rather than to "
+"this contact. Nothing was written.</p><ul>%(items)s</ul>"
+msgstr ""
+"<p>Lecture de signature <b>refusée</b> : elle porte l'identité de la boîte "
+"ou de la société de cet Odoo, donc elle vient de l'historique cité du fil "
+"et non de ce contact. Rien n'a été écrit.</p><ul>%(items)s</ul>"
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/models/res_partner.py:0
+msgid ""
+"The signature read is your own mailbox's, quoted in the thread. Nothing "
+"applied."
+msgstr ""
+"La signature lue est celle de votre propre boîte, citée dans le fil. Rien "
+"n'a été appliqué."
+
+#. module: bf_contact_enrichment
+#. odoo-python
+#: code:addons/bf_contact_enrichment/wizard/bf_contact_enrich_wizard.py:0
+msgid ""
+"The only signature in those emails is this Odoo's own (quoted in the "
+"thread), not this contact's. Nothing is proposed."
+msgstr ""
+"La seule signature de ces courriels est celle de cet Odoo (citée dans le "
+"fil), pas celle de ce contact. Rien n'est proposé."
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,field_description:bf_contact_enrichment.field_res_partner__x_bf_moisson_date
+msgid "Last mailbox harvest"
+msgstr "Dernière moisson dans les boîtes"
+
+#. module: bf_contact_enrichment
+#: model:ir.model.fields,help:bf_contact_enrichment.field_res_partner__x_bf_moisson_date
+msgid ""
+"When the mailboxes were last searched for a message from this address. Keeps "
+"a fruitless search from being repeated at every pass."
+msgstr ""
+"Quand les boîtes ont été fouillées pour la dernière fois à la recherche d'un "
+"message de cette adresse. Évite de refaire à chaque passe une recherche qui "
+"n'a rien donné."

@@ -6,7 +6,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 from odoo.tools import html2plaintext
 
-from ..tools import bridge
+from ..tools import bridge, citations, identite, matching
 
 _logger = logging.getLogger(__name__)
 
@@ -15,6 +15,40 @@ _logger = logging.getLogger(__name__)
 # x_linkedin_url is deliberately NOT scored: adding a signal nobody has yet
 # would drop every existing contact's percentage and flood "Contacts
 # incomplets" with contacts that lost nothing.
+#: Combien d'un corps de courriel part à l'analyse. Le texte envoyé au pont est
+#: de toute façon coupé à 12 000 caractères après assemblage.
+_CORPS_LU_MAX = 200000
+
+#: Au-delà, ce n'est plus un nom : on n'en fait pas une consigne au pont.
+_NOM_ATTENDU_MAX = 80
+_MOTS_D_UN_NOM = 6
+
+#: Signaux FAIBLES de la garde C, et ils ne portent QUE sur l'adresse : à deux,
+#: une rue, une ville ou un code postal partagés ne sont plus un voisinage.
+#: ⚠️ Le TITRE n'en fait pas partie, et c'est voulu : « Président » est le
+#: quatrième titre le plus fréquent d'une base réelle, et « même titre + même
+#: ville » arrive dans n'importe quelle PME régionale. Le titre se consigne
+#: dans la note quand le retour est condamné par ailleurs, il ne condamne
+#: jamais.
+_FAIBLES_POUR_CONDAMNER = 2
+
+#: Combien de mots significatifs doivent coïncider pour que deux raisons
+#: sociales soient la même maison. ⚠️ L'égalité d'ensembles était trop
+#: stricte : « Blue Fox Consultant » n'était pas « Blue Fox Inc. », un mot de
+#: plus suffisait à s'échapper.
+_MOTS_DE_SOCIETE_COMMUNS = 2
+
+
+def _mots_de_societe(nom):
+    """Les mots significatifs d'une raison sociale, en jeu comparable.
+
+    ⚠️ `identite.nom` garde le suffixe légal : « Maison Essai » ne valait donc
+    pas « Maison Essai inc. », et la garde C laissait passer la société de la
+    maison écrite sans son « inc. ». `matching.significant_words`, déjà dans le
+    module, retire les suffixes légaux et les mots de remplissage.
+    """
+    return frozenset(matching.significant_words(nom or ""))
+
 _PERSON_CHECKS = ("email", "phone_or_mobile", "function", "company", "address", "website")
 _COMPANY_CHECKS = ("email", "phone_or_mobile", "address", "website")
 
@@ -196,32 +230,274 @@ class ResPartner(models.Model):
 
     # ── Signature enrichment core (shared: wizard, 1-click, batch cron) ──
 
-    def _bf_signature_text(self, limit=5):
-        """Concatenated bodies of the partner's recent inbound bf.email rows.
+    def _bf_signature_contexte(self, limit=5):
+        """Le texte à lire, les boîtes qui l'ont fourni, et qui on attend.
 
-        bf.email mirrors IMAP, the mail gateway and chatter, so this already
-        covers IMAP-sourced signatures. Returns '' if none (or no bf.email).
+        Rend ``(texte, sources, attendu)`` :
+
+        - ``texte`` : les corps des derniers courriels REÇUS de ce contact,
+          **historique cité retiré** — c'est la garde A, et elle se pose ici
+          parce que c'est le seul endroit par lequel les trois chemins (fiche,
+          assistant, lot) passent ;
+        - ``sources`` : les lignes ``bf.email`` elles-mêmes. La garde C y lit à
+          qui appartient la boîte — le compte IMAP quand il y en a un, et
+          **toujours** le propriétaire de la ligne, le seul des deux à exister
+          pour une ligne née du chatter ou de la passerelle ;
+        - ``attendu`` : ``expected_email`` / ``expected_name``, que le pont
+          ajoute à son prompt — la garde B.
+
+        ``bf.email`` reflète l'IMAP, la passerelle et le chatter : les
+        signatures venues d'IMAP sont donc déjà couvertes.
         """
         self.ensure_one()
-        if "bf.email" not in self.env:
-            return ""
         BfEmail = self.env["bf.email"]
         emails = BfEmail.search(
             [("partner_id", "=", self.id), ("direction", "=", "in")],
             order="date desc", limit=limit,
         )
         if not emails and self.email:
+            # 🔴 `ilike` est une SOUS-CHAÎNE, et `_` y est un joker SQL : la
+            # fiche de « ric@x.test » récupérait les courriels de
+            # « patric@x.test », et « info_rh@x.test » ceux de
+            # « info_rhXtest@x.test ». Lire le courriel de quelqu'un d'autre
+            # est exactement le défaut qu'on corrige, par un autre chemin.
+            # `=ilike` compare la valeur entière ; les jokers s'échappent.
+            voulue = identite.adresse(self.email) or self.email.strip()
+            for joker in ("\\", "%", "_"):
+                voulue = voulue.replace(joker, "\\" + joker)
             emails = BfEmail.search(
-                [("email_from", "ilike", self.email), ("direction", "=", "in")],
+                [("email_from", "=ilike", voulue), ("direction", "=", "in")],
                 order="date desc", limit=limit,
             )
+            if not emails:
+                # Un en-tête « Nom <adresse> » ne vaut pas l'adresse seule.
+                emails = BfEmail.search(
+                    [("email_from", "=ilike", "%<" + voulue + ">"),
+                     ("direction", "=", "in")],
+                    order="date desc", limit=limit,
+                )
         blocks = []
         for msg in emails:
-            body = msg.body_html or ""
-            text = html2plaintext(body) if body else (msg.body_preview or "")
+            # Borné avant l'analyse : une signature vit dans les premiers
+            # milliers de caractères, et un corps de plusieurs mégaoctets ne
+            # doit pas se payer en temps d'analyse.
+            body = (msg.body_html or "")[:_CORPS_LU_MAX]
+            if body:
+                # Deux étages, parce que les deux formes se croisent dans un
+                # même corps : la structure (blockquote, gmail_quote…) puis les
+                # marqueurs de texte (« Le … a écrit : », lignes en « > »).
+                text = html2plaintext(citations.sans_citation_html(body))
+            else:
+                text = msg.body_preview or ""
+            text = citations.sans_citation_texte(text)
             if text:
                 blocks.append("----- %s -----\n%s" % (msg.date or "", text))
-        return "\n\n".join(blocks)[:12000]
+        return "\n\n".join(blocks)[:12000], emails, self._bf_attendu()
+
+    def _bf_attendu(self):
+        """``expected_email`` / ``expected_name`` pour le pont (garde B).
+
+        ⚠️ Les deux valeurs se posent AU-DESSUS de messages non fiables, dans
+        la partie « consignes » du prompt : elles viennent d'une fiche, donc
+        d'un texte qu'un tiers a pu écrire (vCard, carte numérisée, formulaire
+        du site). L'adresse est donc dégagée de son enveloppe, et un nom qui
+        ressemble à une phrase plutôt qu'à un nom n'est pas envoyé. Le pont
+        borne et dépouille encore ce qu'il reçoit.
+        """
+        self.ensure_one()
+        attendu = {}
+        courriel = identite.adresse(self.email)
+        if courriel:
+            attendu["expected_email"] = courriel
+        # Un nom encore à l'état d'ébauche (vide, ou égal au courriel) n'apprend
+        # rien au pont et pourrait l'induire : on ne l'envoie pas.
+        nom = (self.name or "").strip()
+        if (nom and nom != (self.email or "").strip()
+                and len(nom) <= _NOM_ATTENDU_MAX
+                and len(nom.split()) <= _MOTS_D_UN_NOM):
+            attendu["expected_name"] = nom
+        return attendu
+
+    # ── Garde C : l'identité de la maison ne s'écrit pas sur la fiche d'un tiers ──
+
+    def _bf_identite_maison(self, sources):
+        """Ce qui appartient à la maison, pris sur les lignes qui ont fourni le texte.
+
+        ``sources`` est un jeu de ``bf.email``. On en tire **le propriétaire**
+        (``user_id``, qui existe toujours : le champ est requis) autant que le
+        compte IMAP (``account_id``, vide pour une ligne née du chatter ou de
+        la passerelle). 🔴 Ne lire que le compte laissait sans protection
+        exactement le cas du défaut — le téléphone du propriétaire — dès que la
+        ligne venait du chatter.
+
+        Tout se lit en ``sudo()`` : ``bf.email.account`` est strictement
+        propriétaire, sans dérogation pour l'administrateur du courriel, et un
+        opérateur qui a le droit de LIRE la ligne tombait en ``AccessError``
+        sur le compte. Seuls des champs d'identité sont lus, et aucun n'est
+        montré.
+
+        Rend des ensembles normalisés : ``numeros``, ``adresses``,
+        ``domaines``, ``noms`` (personnes), ``societes`` (mots significatifs
+        d'une raison sociale), et les quatre faibles ``titres``, ``rues``,
+        ``villes``, ``cps``.
+        """
+        maison = {cle: set() for cle in (
+            "numeros", "adresses", "domaines", "noms", "personnes", "societes",
+            "titres", "rues", "villes", "cps")}
+        sources = sources.sudo()
+        comptes = sources.mapped("account_id")
+        proprios = (sources.mapped("user_id.partner_id")
+                    | comptes.mapped("user_id.partner_id"))
+        for proprio in proprios:
+            for valeur in (proprio.phone, proprio.mobile):
+                maison["numeros"] |= identite.numeros(valeur)
+            maison["adresses"].add(identite.adresse(proprio.email))
+            maison["domaines"].add(identite.domaine(proprio.email))
+            maison["noms"].add(identite.nom(proprio.name))
+            maison["personnes"].add(identite.nom(proprio.name))
+            maison["titres"].add(identite.nom(proprio.function))
+            maison["rues"].add(identite.nom(proprio.street))
+            maison["villes"].add(identite.nom(proprio.city))
+            maison["cps"].add(identite.nom(proprio.zip))
+        for compte in comptes:
+            maison["adresses"].add(identite.adresse(compte.login))
+            maison["domaines"].add(identite.domaine(compte.login))
+        societes = (comptes.mapped("company_id")
+                    | sources.mapped("user_id.company_id")
+                    | self.env.company)
+        for societe in societes:
+            maison["numeros"] |= identite.numeros(societe.phone)
+            maison["adresses"].add(identite.adresse(societe.email))
+            maison["domaines"].add(identite.domaine(societe.email))
+            maison["domaines"].add(identite.domaine(societe.website))
+            maison["noms"].add(identite.nom(societe.name))
+            maison["societes"].add(_mots_de_societe(societe.name))
+            maison["rues"].add(identite.nom(societe.street))
+            maison["villes"].add(identite.nom(societe.city))
+            maison["cps"].add(identite.nom(societe.zip))
+        return {cle: {v for v in valeurs if v} for cle, valeurs in maison.items()}
+
+    def _bf_est_de_la_maison(self, sources, maison=None):
+        """Vrai si CETTE fiche est celle de la maison (ou d'un des siens).
+
+        🔴 Sans cette sortie, la garde C mordrait sur la fiche d'un employé qui
+        porte, légitimement, le numéro et la société de la maison.
+        """
+        self.ensure_one()
+        # 🔴 `user_ids` ne suffit pas : un client qui a un accès au portail en a
+        # un. Seul un usager INTERNE (`share` à faux) est de la maison, sinon
+        # la garde se désarmerait précisément sur les fiches clientes les plus
+        # complètes.
+        if self.sudo().user_ids.filtered(lambda u: not u.share):
+            return True
+        maison = maison if maison is not None else self._bf_identite_maison(sources)
+        mon_domaine = identite.domaine(self.email)
+        if mon_domaine and mon_domaine in maison["domaines"]:
+            return True
+        if identite.adresse(self.email) in maison["adresses"]:
+            return True
+        # ⚠️ `personnes` et non `noms` : `noms` porte aussi les raisons sociales,
+        # et une fiche cliente homonyme d'une société de la maison aurait perdu
+        # la garde C en entier.
+        if identite.nom(self.name) in maison["personnes"]:
+            return True
+        societe = self.parent_id
+        if not societe:
+            return False
+        mots = _mots_de_societe(societe.name)
+        return bool(mots and any(
+            len(mots & connue) >= min(_MOTS_DE_SOCIETE_COMMUNS,
+                                      len(mots), len(connue))
+            for connue in maison["societes"]))
+
+    def _bf_ecarter_identite_maison(self, data, sources):
+        """Refuse un retour du pont qui porte l'identité de la maison.
+
+        Rend ``(data, ecartes)``. ``ecartes`` nomme les champs qui ont trahi le
+        retour ; quand il y en a, ``data`` revient **vide**.
+
+        🔴 Pourquoi tout, et pas seulement le champ fautif : une signature
+        appartient à UNE personne. Si le mobile rendu est celui de la maison,
+        c'est la signature de la maison qui a été lue, et sauver la ville ou le
+        titre laisserait une fiche à moitié fausse. C'est l'état exact des deux
+        fiches remises à vide le 2026-11-11 : titre, mobile et société d'une
+        autre personne sur des contacts qui n'ont rien à voir.
+
+        Deux niveaux de preuve, parce que les champs ne pèsent pas pareil :
+
+        - **fort** — un seul condamne : numéro (comparé par ENSEMBLES, pour
+          survivre à un poste téléphonique), adresse exacte, domaine du site ou
+          du courriel, raison sociale (comparée par mots significatifs, donc
+          « Maison Essai » vaut « Maison Essai inc. »), nom de la personne ;
+        - **faible** — il en faut deux : titre, rue, ville, code postal. Seul,
+          chacun est un voisinage ou un titre courant (« Président ») ; à deux,
+          c'est une identité. 🔴 Sans ce second niveau, une signature maison
+          sans numéro ni URL — « Camille Lavoie, Président, Maison Essai, 12
+          rue des Essais » — passait entière.
+        """
+        self.ensure_one()
+        if not data:
+            return data, []
+        maison = self._bf_identite_maison(sources)
+        if self._bf_est_de_la_maison(sources, maison=maison):
+            return data, []
+
+        forts = []
+        for champ in ("phone", "mobile"):
+            if identite.numeros(data.get(champ)) & maison["numeros"]:
+                forts.append((champ, data.get(champ)))
+        if identite.adresse(data.get("email")) in maison["adresses"]:
+            forts.append(("email", data.get("email")))
+        for champ in ("website", "email"):
+            domaine = identite.domaine(data.get(champ))
+            if domaine and domaine in maison["domaines"]:
+                forts.append((champ, data.get(champ)))
+        mots = _mots_de_societe(data.get("company"))
+        if mots and any(
+                len(mots & connue) >= min(_MOTS_DE_SOCIETE_COMMUNS,
+                                          len(mots), len(connue))
+                for connue in maison["societes"]):
+            forts.append(("company", data.get("company")))
+        nom_rendu = identite.nom(data.get("full_name") or " ".join(
+            filter(None, [data.get("first_name"), data.get("last_name")])))
+        if nom_rendu and nom_rendu in maison["noms"]:
+            forts.append(("full_name", data.get("full_name")))
+
+        faibles = []
+        for champ, cle in (("street", "rues"), ("city", "villes"),
+                           ("zip", "cps")):
+            valeur = identite.nom(data.get(champ))
+            if valeur and valeur in maison[cle]:
+                faibles.append((champ, data.get(champ)))
+        # Le titre ne condamne pas ; il se nomme dans la note s'il y a refus.
+        titre = identite.nom(data.get("function"))
+        pour_memoire = ([("function", data.get("function"))]
+                        if titre and titre in maison["titres"] else [])
+
+        if not forts and len(faibles) < _FAIBLES_POUR_CONDAMNER:
+            return data, []
+        vus = []
+        for champ, valeur in forts + faibles + pour_memoire:
+            if champ not in [c for c, _v in vus]:
+                vus.append((champ, valeur))
+        _logger.warning(
+            "Signature enrichment refused for partner %s: the reading carries "
+            "the house identity (%s)", self.id,
+            ", ".join("%s=%r" % (c, v) for c, v in vus))
+        self.message_post(body=self._bf_journal_identite_maison(vus))
+        return {}, [champ for champ, _valeur in vus]
+
+    def _bf_journal_identite_maison(self, ecartes):
+        """La note au fil : ce qui a été refusé, et pourquoi. Jamais en silence."""
+        items = Markup("").join(
+            Markup("<li>%s : %s</li>") % (champ, valeur or "")
+            for champ, valeur in ecartes)
+        return Markup(_(
+            "<p>Signature reading <b>refused</b>: it carries the identity of "
+            "this Odoo's own mailbox or company, so it belongs to the quoted "
+            "history rather than to this contact. Nothing was written.</p>"
+            "<ul>%(items)s</ul>"
+        )) % {"items": items}
 
     def _bf_enrich_from_signature(self, min_confidence=60):
         """Fetch this partner's signature data from the bridge and blank-fill it.
@@ -230,12 +506,18 @@ class ResPartner(models.Model):
         error. Never clobbers populated fields; logs applied fields to chatter.
         """
         self.ensure_one()
-        text = self._bf_signature_text()
+        text, sources, attendu = self._bf_signature_contexte()
+        if not text.strip() and self._bf_moisson_permise():
+            # La fenêtre ingérée ne porte rien de cette personne : on va
+            # chercher un ou deux de ses messages dans la boîte (la correction du 2026-11-11 § 5).
+            if self._bf_moissonner_par_adresse():
+                text, sources, attendu = self._bf_signature_contexte()
         if not text.strip():
             return "no_email"
         try:
             result = bridge.call_bridge(
-                self.env, "/enrich/signature", {"text": text}, timeout=90)
+                self.env, "/enrich/signature",
+                dict(attendu, text=text), timeout=90)
         except Exception:  # noqa: BLE001 — surface as a status, never raise in batch
             _logger.exception("Signature enrichment bridge call failed for partner %s", self.id)
             return "error"
@@ -244,6 +526,11 @@ class ResPartner(models.Model):
         data = result.get("data") or {}
         if (data.get("confidence") or 0) < min_confidence:
             return "low_confidence"
+        # Garde C : la ceinture. Elle rattrape ce que la coupe de l'historique
+        # (A) et la consigne au pont (B) auraient laissé passer.
+        data, ecartes = self._bf_ecarter_identite_maison(data, sources)
+        if ecartes:
+            return "house_identity"
 
         Partner = self.env["res.partner"]
         vals = {
@@ -285,6 +572,8 @@ class ResPartner(models.Model):
             "no_email": _("No incoming email found for this contact."),
             "low_confidence": _("Signature not reliable enough. Nothing "
                                 "applied."),
+            "house_identity": _("The signature read is your own mailbox's, "
+                                "quoted in the thread. Nothing applied."),
             "error": _("Enrichment failed (service unavailable)."),
         }
         return {

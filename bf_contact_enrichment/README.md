@@ -23,6 +23,33 @@ key.
    threshold, never overwriting). A missing or misconfigured gateway degrades
    cleanly (a popup on the wizard side, an "error" status on the cron side,
    never an exception).
+   **Whose signature it reads (18.0.2.6.0).** A reply that the sender did not
+   sign often carries exactly one signature: the one quoted from the person
+   they answered. Three guards keep that signature out of the record. The
+   quoted history is removed before the text leaves Odoo — structurally
+   (`blockquote`, Gmail, Outlook and Thunderbird reply containers, each one
+   taking the quoted body that follows it) and then by text markers
+   (`-----Original message-----`, "On … wrote:", `>` lines, a run of header
+   lines that names a sender). The payload tells the bridge **whose**
+   signature it expects (`expected_email`, `expected_name`), and the prompt
+   returns every field null when the text holds only somebody else's
+   signature. And a reading that carries this Odoo's own identity — a mailbox
+   owner's number, name, address or title, or the hosting company's name,
+   domain or address — is **refused in full** on a third party's record and
+   logged on the chatter, while it still applies on a record that belongs to
+   the house. An internal user is the house; a portal user is not.
+
+   **Finding a message to read (18.0.2.6.0).** Signature enrichment only sees
+   what the mailbox sync already ingested, which is a window of recent weeks.
+   When that window holds nothing from an address, the module can search the
+   mailboxes for one or two messages from that person and ingest only those,
+   preferring a message that is **not** a reply (that is where people sign).
+   It is **off by default**: set `bf_contact_enrichment.moisson_imap` to
+   `True` to enable it per database. Folders are opened read-only, no
+   watermark moves, nothing is marked, moved or archived on the server, and
+   the mail rules that could reply or file are held back during the ingest.
+   A fruitless search is remembered on the record (`x_bf_moisson_date`) so it
+   is not repeated on every pass.
 3. **Create a contact from an email** — a "Create / enrich the contact" button
    on a `bf.email` record: finds or creates the sender, then runs signature
    enrichment.
@@ -158,6 +185,20 @@ records, and the prompt asks the model to report no person's name, title or
 mobile number.
 
 ## Changelog
+
+- **18.0.2.6.1** — Three more tests, each one written because a mutant had
+  survived: a **portal** user must not exempt the identity guard (the branch
+  was covered by nothing), a phone extension written with no word between it
+  and the number, and a company name that differs by one word. No behaviour
+  change.
+
+- **18.0.2.6.0** — The signature read is the sender's, not the one quoted in
+  the thread. Three guards: the quoted history is cut before the text is sent
+  to the bridge, the payload says whose signature is expected, and a reading
+  that carries this Odoo's own identity is refused in full on a third party's
+  record (and logged on the chatter). Added a targeted mailbox harvest for
+  addresses the ingested window does not cover — **off by default**, read-only
+  on the server, and it never marks or moves a message.
 
 - **18.0.2.5.0** — The source is now written in English; French lives in
   `i18n/fr_CA.po` (Odoo never translates *to* `en_US`, so a French source read
