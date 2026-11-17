@@ -1,0 +1,83 @@
+/* Printing a survey — /survey/print/<token>, blank or filled in.
+ *
+ * Odoo 18 keeps its print rules for the statistics page only
+ * (`survey/static/src/scss/survey_templates_results.scss`); the printable page
+ * of the questionnaire itself has none. The browser therefore breaks wherever
+ * the text happens to fall: measured on a 41-question, 8-section
+ * questionnaire, 12 questions had their title on one sheet and their answers
+ * on the next, a matrix crossed a sheet without its header row, and only two
+ * of the eight sections began at the top of a sheet. Afterwards: none cut, and
+ * every section but the first — which follows the survey title — starts a sheet.
+ *
+ * A questionnaire printed to be filled in on paper and handed back cannot
+ * afford that: a cut question is a question answered twice, or not at all.
+ *
+ * The rules ride on two hooks of the core template (`survey.survey_page_print`),
+ * guarded by this module's tests:
+ *   - `fieldset > hr`, which the template renders before every section header
+ *     but the first, so it marks exactly the sheet boundaries to force;
+ *   - `.js_question-wrapper`, one per question, to keep in one piece.
+ */
+
+@media print {
+    /* The core sets `margin: auto 0` here, for the graphs of the statistics
+     * page to be centred: no side margin at all. The text column below is
+     * widened to the sheet, so without this the lines would run into the strip
+     * no printer can reach. 14 mm, with the container's own padding, puts the
+     * text 20 mm from the paper edge. */
+    @page {
+        margin: auto 14mm;
+    }
+}
+
+.o_survey_print {
+    @media print {
+        /* A section starts a new sheet. The separator has no reason to show once
+         * it has become a sheet boundary, and its margin would otherwise push
+         * the section title down the fresh sheet. */
+        fieldset > hr {
+            break-before: page;
+            page-break-before: always;      // engines still reading the 2011 name
+            margin: 0 !important;
+            border: 0;
+            height: 0;
+        }
+
+        /* A question travels in one piece: title, help text, choices, matrix. */
+        .js_question-wrapper {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        /* A section title is never left alone at the foot of a sheet. */
+        .o_page_header {
+            break-inside: avoid;
+            break-after: avoid;
+            page-break-inside: avoid;
+            page-break-after: avoid;
+        }
+
+        /* A question taller than one sheet is broken anyway — the constraint
+         * cannot be met — so keep what is left of it readable: the matrix
+         * repeats its header row and no row of it is ever cut. */
+        .o_survey_question_matrix {
+            thead {
+                display: table-header-group;
+            }
+
+            tr {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+
+        /* On screen the questionnaire is a narrow column, which reads well. On
+         * paper that column left 40 mm of margin on either side, so questions
+         * that would have fitted a sheet were split and the printout ran longer
+         * than it had to: the same questionnaire went from 25 sheets with 1 cut
+         * question to 23 sheets with none, once the column used the sheet. */
+        &.o_container_small {
+            max-width: none;
+        }
+    }
+}

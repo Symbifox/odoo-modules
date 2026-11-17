@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- On a BLANK printable page there is no answer, so `questions_to_display`
+         is empty (`survey.user_input._get_print_questions` on an empty record
+         returns nothing) and the core condition falls back on the section's
+         description alone: a section with no description prints neither its
+         title nor the separator the page breaks ride on. Measured on a real
+         questionnaire of four sections, none of them described: not one of its
+         sheets began on a section.
+
+         A blank page shows every question — `not question.is_page and not
+         answer` on the question branch — so a section is shown here as soon as
+         it holds one. The filled page is untouched: the clause is gated on
+         `not answer`. -->
+    <template id="survey_page_print_section_headers" inherit_id="survey.survey_page_print">
+        <xpath expr="//t[starts-with(@t-if, 'question.is_page and')]" position="attributes">
+            <attribute name="t-if">question.is_page and
+                ((not answer and question.question_ids)
+                or any(q in questions_to_display for q in question.question_ids)
+                or not is_html_empty(question.description))</attribute>
+        </xpath>
+    </template>
+</odoo>
