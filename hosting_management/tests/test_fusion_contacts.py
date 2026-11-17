@@ -5,7 +5,8 @@ from odoo.tests import TransactionCase, new_test_user, tagged
 
 @tagged("post_install", "-at_install")
 class TestFusionContacts(TransactionCase):
-    """La fusion de contacts ne déplace pas de services d'hébergement sans un gestionnaire."""
+    """La fusion de contacts ne déplace pas de services d'hébergement sans un gestionnaire
+."""
 
     @classmethod
     def setUpClass(cls):

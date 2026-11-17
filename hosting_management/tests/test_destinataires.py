@@ -24,7 +24,7 @@ class TestDestinataires(TransactionCase):
                                     groups="base.group_user,base.group_partner_manager,hosting_management.group_hosting_user")
         cls.contacts = new_test_user(cls.env, login="essai_dest_contacts",
                                      groups="base.group_user,base.group_partner_manager,base.group_erp_manager")
-        # Sur une base d'essai, créer un contact peut exiger aussi `base.group_erp_manager`.
+        # Sur ce banc, créer un contact exige aussi `base.group_erp_manager`.
         cls.gestion_contacts = new_test_user(
             cls.env, login="essai_dest_hebergement_contacts",
             groups="base.group_user,base.group_partner_manager,base.group_erp_manager,"

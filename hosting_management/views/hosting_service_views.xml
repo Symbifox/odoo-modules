@@ -45,7 +45,7 @@
                     <button name="action_mark_updated" string="Mark as updated" type="object" class="btn-secondary" invisible="not target_version_id"/>
                     <button name="action_update_to_latest" string="Update to the latest version" type="object" class="btn-secondary" invisible="not update_available"/>
                     <button name="action_check_docker_version" string="Check Docker version" type="object" class="btn-secondary" invisible="not docker_container"/>
-                    <!-- demander une sauvegarde maintenant. Odoo
+                    <!-- lot 3 : demander une sauvegarde maintenant. Odoo
                          n'execute rien ; il ecrit une demande que l'agent de l'hote vient
                          chercher. Le bouton ne s'offre qu'au gestionnaire d'hebergement, et
                          que pour un service que la chaine maison sauvegarde : ailleurs la
@@ -56,7 +56,7 @@
                             class="btn-secondary"
                             groups="hosting_management.group_hosting_manager"
                             invisible="backup_expectation != 'pipeline' or not docker_container or state not in ('active', 'to_disconnect')"/>
-                    <!-- L'action existait sans bouton, donc
+                    <!-- R6 de la relecture : l'action existait sans bouton, donc
                          aucun moyen de voir l'historique des demandes d'un service. -->
                     <button name="action_view_backup_requests" type="object"
                             string="Backup requests"
@@ -95,7 +95,7 @@
                             <field name="backup_snapshot_ids" widget="statinfo" string="Snapshots"/>
                         </button>
                         <button name="action_view_health_history" type="object" class="oe_stat_button"
-                                invisible="not server_url" icon="fa-heartbeat">
+                                invisible="not server_url and health_kind == 'http'" icon="fa-heartbeat">
                             <field name="health_check_count" widget="statinfo" string="Health"/>
                         </button>
                         <button name="action_view_saas_backup_runs" type="object" class="oe_stat_button"
@@ -154,7 +154,7 @@
                                    string="Accepted HTTP codes"
                                    invisible="not server_url or health_kind != 'http'"/>
                             <field name="watchdog_project_id" string="Findings project"
-                                   invisible="health_kind == 'http'"
+                                   invisible="health_kind not in ('softphone_wake', 'calendar_notices')"
                                    options="{'no_create': True}"/>
                             <field name="domain_id" string="Domain"/>
                             <field name="domain_name" string="Domain name"/>
@@ -162,6 +162,10 @@
                             <field name="docker_container" string="Docker container"/>
                             <field name="health_silence_until" invisible="not health_silence_until"/>
                             <field name="docker_host" string="Docker host" readonly="1" invisible="not server_id"/>
+                            <field name="health_ntfy_priority"/>
+                            <field name="health_exempt"/>
+                            <field name="health_exempt_reason" invisible="not health_exempt"
+                                   required="health_exempt"/>
                         </group>
                         <group string="Storage">
                             <field name="storage_quota_gb" string="Quota (GB)"/>
@@ -209,15 +213,41 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Health" name="health" invisible="not server_url">
+                        <!-- 🔴 Aucune condition : l'onglet d'avant se cachait
+                             faute d'URL, et c'est précisément sur une fiche que
+                             rien ne sonde que « Sans relevé » doit se lire. Il
+                             ne peut plus être vide — il porte toujours la
+                             couverture de surveillance. -->
+                        <page string="Health" name="health">
                             <group>
                                 <group string="Health status">
+                                    <field name="health_coverage" widget="badge"
+                                           decoration-success="health_coverage == 'probed'"
+                                           decoration-danger="health_coverage == 'no_data'"
+                                           decoration-muted="health_coverage == 'exempt'"/>
                                     <field name="last_health_status" string="Last status" widget="badge"
                                            decoration-success="last_health_status == 'up'"
-                                           decoration-warning="last_health_status == 'degraded'"
-                                           decoration-danger="last_health_status in ('down', 'timeout')"/>
-                                    <field name="last_health_check" string="Last check"/>
-                                    <field name="uptime_30d" string="Uptime (30d)" widget="progressbar" options="{'max_value': 100}"/>
+                                           decoration-warning="last_health_status in ('degraded', 'unknown')"
+                                           decoration-danger="last_health_status in ('down', 'timeout')"
+                                           decoration-muted="last_health_status == 'no_data'"/>
+                                    <field name="last_health_check" string="Last check"
+                                           invisible="health_coverage != 'probed'"/>
+                                    <!-- 🔴 Deux champs pour une seule idée : la barre quand le
+                                         chiffre mesure quelque chose, la mention sinon. Un
+                                         Float ne sait pas être vide, et 100 % sans relevé
+                                         s'est lu comme une bonne nouvelle. -->
+                                    <field name="uptime_30d" string="Uptime (30d)" widget="progressbar"
+                                           options="{'max_value': 100}"
+                                           invisible="health_coverage != 'probed'"/>
+                                    <field name="uptime_30d_display" string="Uptime (30d)"
+                                           invisible="health_coverage == 'probed'"/>
+                                </group>
+                                <group string="Container agent" invisible="health_kind != 'docker'">
+                                    <field name="agent_report_at"/>
+                                    <field name="agent_container_running"/>
+                                    <field name="agent_container_health"/>
+                                    <field name="agent_restart_count"/>
+                                    <field name="agent_detail"/>
                                 </group>
                                 <group string="Actions">
                                     <button name="action_run_health_check" type="object"
@@ -416,7 +446,14 @@
                 <filter name="filter_update_available" string="Available updates" domain="[('update_available', '=', True)]"/>
                 <filter name="filter_version_missing" string="Version missing" domain="[('installed_version_id', '=', False), ('software_id.versionless', '=', False)]"/>
                 <filter name="filter_storage_configured" string="Storage configured" domain="[('storage_check_type', '!=', 'none')]"/>
-                <filter name="filter_service_down" string="Service offline" domain="[('is_service_up', '=', False)]"/>
+                <!-- 🔴 Juger sur l'ÉTAT, plus sur `is_service_up` : depuis
+                     ce booléen est faux aussi pour un service que RIEN
+                     ne mesure et pour un service sans nouvelles de son agent.
+                     Ce filtre aurait listé vingt-quatre pannes imaginaires. -->
+                <filter name="filter_service_down" string="Service offline"
+                        domain="[('health_coverage', '=', 'probed'), ('last_health_status', 'in', ['down', 'timeout', 'degraded'])]"/>
+                <filter name="filter_service_unmonitored" string="No probe at all"
+                        domain="[('health_coverage', '=', 'no_data')]"/>
                 <separator/>
                 <!-- Les trois filtres passent par `backup_status`, dont la méthode de
                      recherche lit le seuil dans son paramètre système : un domaine qui

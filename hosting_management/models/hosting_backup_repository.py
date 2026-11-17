@@ -291,7 +291,7 @@ class HostingBackupRepository(models.Model):
         # rend un conteneur résoluble : sans ce passage, ses snapshots
         # historiques resteraient orphelins pour toujours.
         # Borné : les snapshots dont le conteneur restera à jamais sans
-        # service (leur nombre croît) seraient relus en entier
+        # service (2 664 aujourd'hui, en croissance) seraient relus en entier
         # chaque nuit pour rien.
         linked = self.env["hosting.backup.snapshot"]._backfill_service_ids(
             limit=5000

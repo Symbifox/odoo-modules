@@ -251,8 +251,8 @@ class HostingSoftware(models.Model):
         # 32.0.15, 33.0.9 et 34.0.4 le 2026-09-10 : `/releases/latest` rend
         # 32.0.15, la branche la PLUS ANCIENNE.
         #
-        # Conséquence : le traqueur portait 32.0.15 pendant que les Nextcloud
-        # suivis tournaient en 34.0.4.
+        # Conséquence : le traqueur portait
+        # 32.0.15 pendant que les Nextcloud suivis tournaient en 34.0.4.
         # Une version installée plus récente que la cible ne déclenche jamais
         # `update_available` — les mises à jour Nextcloud étaient donc
         # INVISIBLES, sans la moindre erreur de vérification pour le dire.

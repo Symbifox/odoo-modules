@@ -95,8 +95,8 @@ class HostingBackupRequest(models.Model):
     )
     claimed_date = fields.Datetime(string="Taken on", readonly=True)
     finished_date = fields.Datetime(string="Finished on", readonly=True)
-    # Quelle machine a pris la demande. Un parc à plusieurs hôtes (une seconde machine
-    # porte un service de secours) doit pouvoir dire qui a fait quoi.
+    # Quelle machine a pris la demande. Un parc à plusieurs hôtes (pegasus porte
+    # déjà le ntfy de secours) doit pouvoir dire qui a fait quoi.
     agent_host = fields.Char(string="Agent host", readonly=True)
     message = fields.Text(string="Agent message", readonly=True)
     run_id = fields.Many2one(

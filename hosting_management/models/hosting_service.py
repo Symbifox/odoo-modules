@@ -13,7 +13,16 @@ from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
 
+from .assignee import assignee_vivant
+
 _logger = logging.getLogger(__name__)
+
+# Les sondes qui ne font aucune requête : elles relisent des champs déposés par
+# l'agent de l'hôte. Deux conséquences, et les deux se paient si on les oublie :
+# elles ne mesurent AUCUNE latence (un chiffre mis dans `response_time_ms` y
+# serait du bruit traité comme une lenteur), et une reprise rapprochée ne peut
+# rien confirmer puisqu'elle relit les mêmes octets.
+SONDES_PAR_DEPOT = ("docker", "container_agent")
 
 # Intervalle minimal entre deux VRAIES mesures de la sonde du réveil softphone.
 # Le cron de santé bat à la minute ; cette sonde-là n'a pas besoin de ce rythme
@@ -25,6 +34,11 @@ CADENCE_AVIS_S = 24 * 60 * 60
 # Tentatives d'écriture d'une mesure heurtée par une écriture concurrente sur la
 # fiche du service. Voir _sante_enregistrer_avec_reprise.
 SANTE_TENTATIVES = 3
+
+# Priorités ntfy, de la plus discrète à la plus forte (« urgent » = max, le seul
+# niveau qui traverse le mode Ne pas déranger).
+NTFY_PRIORITES = ("min", "low", "default", "high", "urgent")
+NTFY_RANG = {p: i for i, p in enumerate(NTFY_PRIORITES)}
 
 try:
     import pytz
@@ -59,7 +73,15 @@ class HostingService(models.Model):
     user_id = fields.Many2one(
         comodel_name="res.users",
         string="Assignee",
-        default=lambda self: self.env.user,
+        # 🔴 Pas `self.env.user` : la route de provisionnement tourne en
+        # `request.env(user=1)` et crée le service SANS `user_id`
+        # (controllers/provisioning_api.py), donc ce défaut posait l'uid 1 — archivé
+        # dans toute base Odoo — comme responsable. C'est la cause des 4 services à
+        # l'uid 1 du ménage du 2026-11-13, dont 3 portent une pièce
+        # `provisioning-*.log`. ⚠️ Et depuis que le repli des avis choisit un compte
+        # vivant, plus aucun constat ne signale la recontamination : seul le
+        # générateur fermé tarit le chemin.
+        default=lambda self: assignee_vivant(self.env),
         tracking=True,
     )
     software_id = fields.Many2one(
@@ -118,6 +140,29 @@ class HostingService(models.Model):
         required=True,
         tracking=True,
     )
+    # Ce que la panne de CE service vaut en poussée ntfy. Le courriel d'alerte,
+    # lui, part toujours. Avant, toute panne partait en « urgent » : le banc de
+    # préproduction et un relais IMAP IDLE, qui ne fait que hâter une ingestion
+    # qui tourne de toute façon
+    # aux cinq minutes, sonnaient comme une prod client tombée.
+    health_ntfy_priority = fields.Selection(
+        selection=[
+            ("auto", "By environment"),
+            ("urgent", "Urgent push"),
+            ("high", "High push"),
+            ("default", "Normal push"),
+            ("low", "Silent push"),
+            ("none", "No push (email only)"),
+        ],
+        string="Outage push (ntfy)",
+        default="auto",
+        required=True,
+        tracking=True,
+        help="Priority of the ntfy push when this service goes down. The alert "
+             "email is always sent. \"By environment\": urgent in production, "
+             "silent for staging, development and test. Below urgent, a "
+             "failed night repair does not wake anyone either.",
+    )
     linked_production_id = fields.Many2one(
         comodel_name="hosting.service",
         string="Linked production",
@@ -151,6 +196,8 @@ class HostingService(models.Model):
             ("http", "HTTP request"),
             ("softphone_wake", "Softphone push wake-up"),
             ("calendar_notices", "Appointment change notice"),
+            ("docker", "Docker container state"),
+            ("container_agent", "Container agent freshness"),
         ],
         string="Check type",
         default="http",
@@ -161,7 +208,11 @@ class HostingService(models.Model):
              "server) without ringing any phone. \"Appointment change "
              "notice\" checks every day that everything due to go out to "
              "guests did go out, on both sides: the Odoo register and the "
-             "copy in the remote calendar.",
+             "copy in the remote calendar. \"Docker container state\" judges "
+             "the facts the host agent reports about the container, for a "
+             "service with nothing to query over HTTP. \"Container agent "
+             "freshness\" is the canary of that agent: it watches the age of "
+             "the readings instead of a service.",
     )
     domain_id = fields.Many2one(
         comodel_name="hosting.domain",
@@ -353,6 +404,8 @@ class HostingService(models.Model):
             ("degraded", "Degraded"),
             ("down", "Offline"),
             ("timeout", "Timed out"),
+            ("unknown", "Unknown"),
+            ("no_data", "No reading"),
         ],
         string="Health status",
         compute="_compute_health_status",
@@ -372,6 +425,17 @@ class HostingService(models.Model):
         string="30d uptime (%)",
         compute="_compute_uptime_30d",
         digits=(5, 2),
+        help="Only meaningful when Monitoring is \"Probed\": a service with "
+             "no reading has no uptime, and this field then reads 0.",
+    )
+    # 🔴 Un Float ne sait pas être vide : 100,0 sans un seul relevé s'est lu
+    # comme une bonne nouvelle pendant que le service de réunion d'un client
+    # était à terre. L'écran lit donc cette
+    # chaîne, qui sait dire « non surveillé », et le nombre reste pour les
+    # calculs.
+    uptime_30d_display = fields.Char(
+        string="30d uptime",
+        compute="_compute_uptime_30d",
     )
     health_check_count = fields.Integer(
         string="Health check count",
@@ -385,7 +449,7 @@ class HostingService(models.Model):
     )
     # Une pose recrée le conteneur : deux à cinq minutes de 502 attendus, qui
     # franchissaient le seuil de deux échecs et partaient en courriel et en ntfy
-    # (constaté sur des mises à jour en production). Les contrôles
+    #. Les contrôles
     # continuent d'être enregistrés pendant le silence : s'il expire sur une
     # panne, les échecs déjà comptés font partir l'alerte au cycle suivant.
     health_silence_until = fields.Datetime(
@@ -394,6 +458,81 @@ class HostingService(models.Model):
         help="During this period, the probe records its checks without "
              "sending outage alerts. Set by the update tool before the "
              "container stops, lifted when the service responds again.",
+    )
+
+    # ── Dépôt de l'agent de conteneurs ──────────────────────
+    # 🔴 Dix-sept services actifs n'étaient sondés par RIEN : ni URL publique,
+    # ni port publié, ni réseau Docker commun avec le conteneur Odoo — il n'y a
+    # littéralement rien à interroger en HTTP. Et le conteneur Odoo n'a ni
+    # socket Docker ni clé SSH, par décision : la machine parle, le
+    # centre écoute.
+    #
+    # L'agent dépose donc des FAITS, jamais un verdict : c'est `_do_docker_check`
+    # qui juge, au même endroit que les sondes HTTP. Deux juges finiraient par
+    # dire deux choses de la même panne.
+    agent_report_at = fields.Datetime(
+        string="Agent reading",
+        readonly=True,
+        copy=False,
+        help="When the host agent last reported this container.",
+    )
+    agent_container_running = fields.Boolean(
+        string="Container running",
+        readonly=True,
+        copy=False,
+    )
+    agent_container_health = fields.Selection(
+        selection=[
+            ("healthy", "Healthy"),
+            ("unhealthy", "Unhealthy"),
+            ("starting", "Starting"),
+            ("none", "No internal probe"),
+        ],
+        string="Docker probe",
+        readonly=True,
+        copy=False,
+        help="What the container's own HEALTHCHECK says. \"No internal "
+             "probe\" means the image declares none: the reading then only "
+             "proves the container is running, nothing about what it serves.",
+    )
+    agent_restart_count = fields.Integer(
+        string="Restart count",
+        readonly=True,
+        copy=False,
+    )
+    agent_detail = fields.Char(
+        string="Agent detail",
+        readonly=True,
+        copy=False,
+    )
+
+    # ⚠️ Un service qu'aucune sonde ne peut éprouver ne doit pas se compter
+    # parmi les angles morts : il se nomme, avec son motif. Sans ce champ, la
+    # liste des services sans sonde garde un résidu qu'on finit par ignorer —
+    # et un angle mort qu'on ignore vaut un angle mort invisible.
+    health_exempt = fields.Boolean(
+        string="Monitoring not applicable",
+        default=False,
+        tracking=True,
+        help="This service cannot be probed as it stands (no container, no "
+             "endpoint, external provider). It leaves the blind-spot count "
+             "and never claims an uptime.",
+    )
+    health_exempt_reason = fields.Char(
+        string="Why not monitored",
+        tracking=True,
+    )
+    health_coverage = fields.Selection(
+        selection=[
+            ("probed", "Probed"),
+            ("no_data", "No reading"),
+            ("exempt", "Not applicable"),
+        ],
+        string="Monitoring",
+        compute="_compute_health_status",
+        store=True,
+        help="\"No reading\" means nothing has ever measured this service: "
+             "its uptime and its online flag say nothing at all.",
     )
 
     active = fields.Boolean(
@@ -620,7 +759,7 @@ class HostingService(models.Model):
             # vert éternel. Dès qu'un service a sa propre preuve, par son
             # conteneur, elle seule tranche. Le dépôt ne sert plus qu'aux
             # services sans résolution possible (conteneur partagé, pas de
-            # conteneur du tout).
+            # conteneur du tout). 
             if not snapshot_date:
                 repo_dates = [
                     d
@@ -1111,7 +1250,8 @@ class HostingService(models.Model):
         for record in self:
             record.docker_host = record.server_id.hostname if record.server_id else False
 
-    @api.depends("health_check_ids", "health_check_ids.status", "health_check_ids.check_date")
+    @api.depends("health_check_ids", "health_check_ids.status",
+                 "health_check_ids.check_date", "health_exempt")
     def _compute_health_status(self):
         # LATERAL JOIN: one indexed lookup per service via
         # (service_id, check_date DESC). DISTINCT ON would still scan every
@@ -1120,7 +1260,7 @@ class HostingService(models.Model):
         if self.ids:
             self.env.cr.execute(
                 """
-                SELECT s.id, hc.status, hc.check_date
+                SELECT s.id, hc.status, hc.check_date, mes.oui
                 FROM (SELECT unnest(%s::integer[]) AS id) s
                 LEFT JOIN LATERAL (
                     SELECT status, check_date
@@ -1129,22 +1269,62 @@ class HostingService(models.Model):
                     ORDER BY check_date DESC
                     LIMIT 1
                 ) hc ON TRUE
+                -- ⚠️ La couverture se juge sur l'existence d'une MESURE, dans
+                -- la même fenêtre que `uptime_30d` et avec les mêmes
+                -- exclusions. Sans ça, dix-sept fiches dont l'agent ne dit
+                -- encore rien portaient un badge vert « Éprouvé », une barre
+                -- de progression à zéro, et cachaient la mention
+                -- « Non surveillé » : deux champs de la même idée, commutés
+                -- par deux conditions différentes.
+                --
+                -- 🔴 AUCUN signe de pourcentage dans cette requête, pas même
+                -- dans un commentaire : psycopg2 interpole la chaîne entière et
+                -- lit un pourcent suivi d'une lettre comme un format, donc
+                -- « tuple index out of range » — sur un commentaire.
+                LEFT JOIN LATERAL (
+                    SELECT TRUE AS oui
+                    FROM hosting_health_check
+                    WHERE service_id = s.id
+                      AND status != 'unknown'
+                      AND COALESCE(excluded_from_stats, false) = false
+                      AND check_date >= NOW() - INTERVAL '30 days'
+                    LIMIT 1
+                ) mes ON TRUE
                 """,
                 (list(self.ids),),
             )
             latest_by_service = {
-                row[0]: (row[1], row[2]) for row in self.env.cr.fetchall()
+                row[0]: (row[1], row[2], row[3]) for row in self.env.cr.fetchall()
             }
         for record in self:
-            status, check_date = latest_by_service.get(record.id, (None, None))
+            status, check_date, mesure = latest_by_service.get(
+                record.id, (None, None, None))
             if status:
                 record.last_health_status = status
                 record.last_health_check = check_date
                 record.is_service_up = status == "up"
+                record.health_coverage = (
+                    "exempt" if record.health_exempt
+                    else "probed" if mesure else "no_data"
+                )
             else:
-                record.last_health_status = False
+                # 🔴 Rendre « En ligne » sans un seul relevé, c'est le mensonge
+                # qui a coûté la panne du 2026-11-06 : la fiche rassurait
+                # pendant que le service était à terre. Aucune
+                # mesure ne vaut pas une bonne nouvelle.
+                #
+                # ⚠️ Les quatre lecteurs qui prennent `is_service_up = False`
+                # pour « ce service est en panne » (le filtre « Service
+                # offline », `action_view_health_issues` et `_get_alerts` du
+                # tableau de bord, la section santé du digest) exigent en plus
+                # `health_coverage = 'probed'` : sans ça, ce correctif
+                # déplacerait le mensonge au lieu de le lever.
+                record.last_health_status = "no_data"
                 record.last_health_check = False
-                record.is_service_up = True
+                record.is_service_up = False
+                record.health_coverage = (
+                    "exempt" if record.health_exempt else "no_data"
+                )
 
     def _compute_uptime_30d(self):
         """Calculer le pourcentage de disponibilité des 30 derniers jours.
@@ -1164,6 +1344,11 @@ class HostingService(models.Model):
                 WHERE service_id IN %s
                   AND check_date >= %s
                   AND COALESCE(excluded_from_stats, false) = false
+                  -- ⚠️ `unknown` veut dire « la sonde n'a pas pu savoir »
+                  -- (agent muet). Le compter en panne ferait d'une panne de
+                  -- la surveillance une panne du service ; le compter en
+                  -- marche rassurerait sans mesure. Il ne compte pas.
+                  AND status != 'unknown'
                 GROUP BY service_id
                 """,
                 (tuple(self.ids), thirty_days_ago),
@@ -1171,7 +1356,13 @@ class HostingService(models.Model):
             stats = {row[0]: (row[1], row[2]) for row in self.env.cr.fetchall()}
         for record in self:
             up, total = stats.get(record.id, (0, 0))
-            record.uptime_30d = (up / total) * 100 if total else 100.0
+            record.uptime_30d = (up / total) * 100 if total else 0.0
+            if total:
+                record.uptime_30d_display = "%.1f %%" % record.uptime_30d
+            elif record.health_exempt:
+                record.uptime_30d_display = self.env._("Not applicable")
+            else:
+                record.uptime_30d_display = self.env._("Not monitored")
 
     def _compute_health_check_count(self):
         counts = {}
@@ -1379,7 +1570,7 @@ class HostingService(models.Model):
                         )
                         # Activité dans la langue de l'ASSIGNÉ, et créée dans son
                         # env : l'objet de l'avis d'Odoo suit la langue du cadre.
-                        assignee = self.user_id or self.env.user
+                        assignee = assignee_vivant(self.env, self.user_id)
                         act_env = self.with_context(lang=assignee.lang or self.env.lang).env
                         act_env["mail.activity"].create({
                             "res_model_id": self.env["ir.model"]._get_id("hosting.service"),
@@ -1402,7 +1593,7 @@ class HostingService(models.Model):
                     "maintenance_type": line.maintenance_type,
                     "frequency": line.frequency,
                     "instructions": line.instructions,
-                    "user_id": self.user_id.id or self.env.user.id,
+                    "user_id": assignee_vivant(self.env, self.user_id).id,
                     "template_line_id": line.id,
                     "last_performed": today,
                 }
@@ -1468,7 +1659,7 @@ class HostingService(models.Model):
         for service in services:
             # Travail planifié : la langue est celle de l'ASSIGNÉ, et l'activité naît
             # dans son env (l'objet de l'avis d'Odoo suit la langue du cadre).
-            assignee = service.user_id or self.env.user
+            assignee = assignee_vivant(self.env, service.user_id)
             act_env = service.with_context(lang=assignee.lang or self.env.lang).env
             client = service.partner_id.name or ""
             act_env["mail.activity"].create({
@@ -1658,9 +1849,8 @@ class HostingService(models.Model):
         # dernière ligne. Le cron écrit une ligne pour chaque répétition, avec
         # sa propre date : ancrée sur la dernière ligne, la cadence n'atteignait
         # jamais quinze minutes et la sonde répétait indéfiniment la même
-        # mesure (constaté en production : des centaines de lignes par jour pour
-        # quelques vraies mesures, et un rouge figé longtemps après le retour du
-        # service). Une vraie mesure porte
+        # mesure (le 2026-09-25 : 1 019 lignes en 24 h pour DEUX mesures, et un
+        # rouge figé deux heures sur un ntfy revenu). Une vraie mesure porte
         # toujours un temps de réponse ; une répétition n'en porte aucun, ce
         # qui la distingue ici et la tient hors des moyennes du tableau de bord.
         derniere = self.env["hosting.health.check"].search(
@@ -1924,6 +2114,211 @@ class HostingService(models.Model):
                          code=rep.status_code)
         return None
 
+    def _sous_silence(self):
+        """Les alertes de ce service sont-elles suspendues en ce moment ?
+
+        ⚠️ Lu par le chemin « hors ligne » ET par le chemin « lent ». Le second
+        ne le consultait pas : un silence posé pour écouter une sonde neuve
+        laissait partir un courriel de lenteur à chaque passe.
+        """
+        self.ensure_one()
+        return bool(self.health_silence_until
+                    and self.health_silence_until > fields.Datetime.now())
+
+    def _est_lent(self, status, response_time_ms, seuil_ms):
+        """Ce relevé mérite-t-il un courriel « service lent » ?
+
+        Quatre conditions, et les deux dernières ont été ajoutées après la
+        du 2026-11-12 :
+
+        * le relevé est « up » et plus lent que le seuil — c'est la règle
+          d'origine ;
+        * ⚠️ La sonde MESURE une latence : une sonde par dépôt relit des champs
+          stockés, et le canari y mettait l'ÂGE de son relevé le plus frais.
+          À un cron par minute, ça fait un courriel par passe ;
+        * ⚠️ Les alertes de ce service ne sont pas suspendues : ce chemin ne
+          lisait pas `health_silence_until`, donc un silence posé pour écouter
+          une sonde neuve laissait quand même partir le courriel.
+        """
+        self.ensure_one()
+        return bool(status == "up"
+                    and response_time_ms
+                    and response_time_ms > seuil_ms
+                    and self.health_kind not in SONDES_PAR_DEPOT
+                    and not self._sous_silence())
+
+    def _agent_age_max_min(self):
+        """Âge au-delà duquel un relevé de l'agent ne dit plus rien (minutes).
+
+        🔴 `int()` sur un paramètre système saisi à la main peut lever, et la
+        passe de santé n'entoure PAS la sonde d'un try : une faute de frappe
+        dans l'ICP aurait tué la passe ENTIÈRE, pour les quatre-vingt-dix
+        services. Une valeur illisible retombe donc sur le défaut.
+        """
+        brut = self.env["ir.config_parameter"].sudo().get_param(
+            "hosting.agent_max_age_min", "15")
+        try:
+            return max(int(brut), 2)
+        except (TypeError, ValueError):
+            _logger.warning(
+                "hosting.agent_max_age_min illisible (%r) : 15 min par défaut", brut)
+            return 15
+
+    def _do_docker_check(self):
+        """Juger un conteneur sur les faits que l'agent de l'hôte a déposés.
+
+        Même contrat de retour que ``_do_health_check`` : (statut, ms, code
+        HTTP, message d'erreur).
+
+        🔴 **Pourquoi un dépôt et pas une requête.** Les dix-sept services
+        visés n'ont ni
+        URL publique, ni port publié, ni réseau Docker commun avec le conteneur
+        Odoo : il n'y a rien à interroger. Et le conteneur Odoo n'a ni socket
+        Docker ni clé SSH, par décision — un socket Docker dans Odoo
+        ferait de n'importe quelle faille Odoo un root sur l'hôte, et
+        ``docker inspect`` expose en plus l'environnement complet des
+        conteneurs. L'hôte parle, le centre écoute.
+
+        ⚠️ **Un dépôt périmé n'est pas une panne du service.** L'agent peut
+        être mort, le cron de l'hôte arrêté, le réseau coupé : on ne sait plus
+        rien, et « on ne sait pas » n'est ni vert ni rouge. Le statut est alors
+        ``unknown`` — il n'alerte pas (une panne d'agent paierait dix-huit fois
+        pour une seule cause) et il ne compte pas dans la disponibilité. C'est
+        la fiche canari ``container_agent`` qui crie, une fois.
+
+        ⚠️ **« Le conteneur tourne » n'est pas « le service répond ».** Quand
+        l'image ne déclare aucun HEALTHCHECK, le relevé ne prouve que la
+        vivacité du processus. Le constat le dit, pour qu'un vert faible ne se
+        lise pas comme un vert fort.
+        """
+        self.ensure_one()
+        ops = self._hosting_ops_env()
+        if not self.docker_container:
+            return ("unknown", None, None, ops._(
+                "This service has no container name: the agent has nothing to "
+                "report about it."))
+        if not self.agent_report_at:
+            return ("unknown", None, None, ops._(
+                "No reading from the container agent yet for %(container)s.",
+                container=self.docker_container))
+        age_max = self._agent_age_max_min()
+        age = (fields.Datetime.now() - self.agent_report_at).total_seconds() / 60.0
+        # ⚠️ Un âge NÉGATIF compte comme périmé, la même règle que le canari :
+        # si l'horloge recule, un dépôt mort se lirait frais jusqu'à ce qu'elle
+        # rattrape. Deux juges, une seule règle.
+        if not 0 <= age <= age_max:
+            return ("unknown", None, None, ops._(
+                "The container agent has said nothing about %(container)s for "
+                "%(age)s min (limit %(limit)s): nothing is known about this "
+                "service right now.",
+                container=self.docker_container,
+                age=int(age), limit=age_max))
+        if not self.agent_container_running:
+            return ("down", None, None, ops._(
+                "Container %(container)s is not running: %(detail)s",
+                container=self.docker_container,
+                detail=self.agent_detail or ops._("no detail")))
+        if self.agent_container_health == "unhealthy":
+            return ("degraded", None, None, ops._(
+                "Container %(container)s is running but its own probe says "
+                "unhealthy.", container=self.docker_container))
+        if self.agent_container_health == "starting":
+            return ("degraded", None, None, ops._(
+                "Container %(container)s is starting.",
+                container=self.docker_container))
+        if self.agent_container_health == "none":
+            return ("up", None, None, ops._(
+                "Container %(container)s is running. Its image declares no "
+                "probe: liveness only, nothing is known about what it serves.",
+                container=self.docker_container))
+        return ("up", None, None, False)
+
+    @api.model
+    def _domaine_sonde_conteneur(self):
+        """Les fiches que l'agent de conteneurs est censé couvrir."""
+        return [
+            ("health_kind", "=", "docker"),
+            ("state", "=", "active"),
+            ("health_exempt", "=", False),
+        ]
+
+    def _do_container_agent_check(self, services=None):
+        """Le canari de l'agent : ses relevés sont-ils encore frais ?
+
+        🔴 Sans lui, une panne de l'agent ferait passer dix-sept services à
+        ``unknown`` en silence — l'angle mort reviendrait par la porte de la
+        surveillance elle-même. Avec lui, la même panne paie une fois, et le
+        message nomme la cause plutôt qu'un service.
+
+        ⚠️ Il ne sonde pas l'agent, il lit l'âge de ce que l'agent a écrit :
+        l'instrument ne vit pas dans l'objet mesuré. Un agent qui tourne sans
+        rien envoyer est donc vu, comme un agent mort.
+        """
+        self.ensure_one()
+        ops = self._hosting_ops_env()
+        # ⚠️ `services` n'existe que pour les essais. Sans lui, la sonde lit
+        # TOUTE la base : au banc, où aucune fiche n'est en `docker` (la
+        # configuration du lot vit dans le script de pose), un essai passait en
+        # ne mesurant rien, et les mêmes essais rougissaient en production où
+        # dix-sept fiches réelles répondent. Le chemin de production ne passe
+        # jamais l'argument.
+        suivis = (services if services is not None
+                  else self.search(self._domaine_sonde_conteneur()))
+        if not suivis:
+            # Pas « up » : il n'y a rien à surveiller, donc rien de mesuré.
+            # Un vert ici serait la forme même du défaut que ce lot corrige.
+            return ("unknown", None, None, ops._(
+                "No service is probed through the container agent yet."))
+        age_max = self._agent_age_max_min()
+        maintenant = fields.Datetime.now()
+        # ⚠️ Un âge NÉGATIF compte comme muet : si l'horloge recule, un dépôt
+        # mort se lirait frais jusqu'à ce qu'elle rattrape. On n'accepte qu'un
+        # âge dans [0, age_max].
+        def muet(r):
+            if not r.agent_report_at:
+                return True
+            age = (maintenant - r.agent_report_at).total_seconds() / 60.0
+            return not 0 <= age <= age_max
+
+        muets = suivis.filtered(muet)
+        if not muets:
+            # 🔴 Pas de millisecondes : ce que la sonde connaît est un ÂGE, pas
+            # un temps de réponse. L'y mettre faisait partir un courriel
+            # « service lent » à chaque passe du cron (~1 400 par jour).
+            return ("up", None, None, False)
+        if len(muets) == len(suivis):
+            return ("down", None, None, ops._(
+                "The container agent has reported nothing for any of the "
+                "%(count)s services it covers in the last %(limit)s min.",
+                count=len(suivis), limit=age_max))
+        # ⚠️ `filter(None, ...)` : un service en sonde de conteneur SANS nom
+        # de conteneur existe (fiche mal réglée), et `join` sur un False lève.
+        # La sonde ne doit pas tomber sur le défaut qu'elle est là pour dire.
+        noms = ", ".join(filter(None, muets[:5].mapped("docker_container")))
+        return ("degraded", None, None, ops._(
+            "%(muets)s of the %(count)s services covered by the container "
+            "agent have no fresh reading: %(list)s",
+            muets=len(muets), count=len(suivis), list=noms))
+
+    @api.model
+    def _domaine_sonde_active(self):
+        """Les services que la passe de santé doit éprouver.
+
+        ⚠️ Un contrôle non-HTTP n'a pas d'URL à interroger : sans l'alternative,
+        la sonde du réveil, celle des avis et celles de conteneurs seraient
+        filtrées hors de la boucle et ne tourneraient jamais — en silence.
+
+        ⚠️ `health_exempt` écarte ce qu'aucune sonde ne peut éprouver (un
+        fournisseur externe, une chaîne sans conteneur). Sans ce filtre, le cron
+        fabriquerait des relevés « on ne sait pas » à la minute pour des fiches
+        dont on sait déjà qu'elles ne mesurent rien.
+        """
+        return [
+            ("state", "=", "active"),
+            ("health_exempt", "=", False),
+            "|", ("server_url", "!=", False), ("health_kind", "!=", "http"),
+        ]
+
     @api.model
     def _cron_health_check(self):
         """Vérifier la santé de tous les services actifs avec URL.
@@ -1937,13 +2332,7 @@ class HostingService(models.Model):
             _logger.warning("Bibliothèque requests non installée, vérifications de santé ignorées")
             return
 
-        # ⚠️ Un contrôle non-HTTP n'a pas d'URL à interroger : sans cette
-        # alternative, la sonde du réveil serait filtrée hors de la boucle et
-        # ne tournerait jamais — en silence, comme d'habitude.
-        services = self.search([
-            ("state", "=", "active"),
-            "|", ("server_url", "!=", False), ("health_kind", "!=", "http"),
-        ])
+        services = self.search(self._domaine_sonde_active())
 
         response_time_threshold = int(
             self.env["ir.config_parameter"]
@@ -1984,6 +2373,10 @@ class HostingService(models.Model):
                 return service._do_softphone_wake_check()
             if service.health_kind == "calendar_notices":
                 return service._do_calendar_notices_check()
+            if service.health_kind == "docker":
+                return service._do_docker_check()
+            if service.health_kind == "container_agent":
+                return service._do_container_agent_check()
             codes = set(service.accepted_http_code_ids.mapped("code"))
             return self._do_health_check(
                 requests, service.server_url, codes or None, env=ops,
@@ -1992,8 +2385,13 @@ class HostingService(models.Model):
         for service in services:
             status, response_time_ms, http_code, error_message = _sonder(service)
 
-            # On failure, do rapid retries to confirm it's a real outage
-            if status in ("down", "timeout", "degraded"):
+            # On failure, do rapid retries to confirm it's a real outage.
+            # ⚠️ Sauf pour une sonde par dépôt : la reprise relit les MÊMES
+            # champs stockés, donc elle ne confirme rien par construction, et
+            # elle coûte 6,7 s par fiche. Dix-sept conteneurs arrêtés =
+            # ~113 s de sommeil dans un cron qui bat à la minute.
+            if (status in ("down", "timeout", "degraded")
+                    and service.health_kind not in SONDES_PAR_DEPOT):
                 confirmed_down = True
                 for attempt in range(1, retry_count):
                     time.sleep(retry_delay)
@@ -2017,11 +2415,11 @@ class HostingService(models.Model):
             # 🔴 Une transaction PAR SERVICE, plus une seule pour la passe.
             # La passe dure près d'une minute et Odoo travaille en REPEATABLE
             # READ : l'instantané date de la première requête. Toute écriture
-            # commitée entre-temps sur une fiche de service (le silence posé au
-            # début et levé à la fin de chaque mise à jour, surtout) faisait échouer l'UPDATE
+            # commitée entre-temps sur une fiche de service (silence_sonde.py au
+            # début et à la fin de chaque pose, surtout) faisait échouer l'UPDATE
             # final de last_health_check, et la passe ENTIÈRE était annulée.
-            # Mesuré en production : des passes perdues par dizaines au rythme des
-            # mises à jour, avec leurs constats « hors ligne ».
+            # Le 2 oct. : 18 passes perdues entre 05 h et 09 h UTC, au rythme des
+            # poses, avec leurs constats « hors ligne ».
             # On clôt d'abord la transaction de la sonde (une tâche de veille
             # qu'elle aurait ouverte est gardée), puis la mesure s'écrit dans une
             # transaction de quelques millisecondes, rejouée si elle est heurtée.
@@ -2043,8 +2441,8 @@ class HostingService(models.Model):
                     "response_time_ms": response_time_ms,
                 })
 
-            if (status == "up" and response_time_ms
-                    and response_time_ms > response_time_threshold):
+            if service._est_lent(status, response_time_ms,
+                                 response_time_threshold):
                 services_slow.append({
                     "service": service,
                     "response_time_ms": response_time_ms,
@@ -2113,8 +2511,7 @@ class HostingService(models.Model):
         # one cycle and never pages; a real sustained outage still alerts
         # within ~N cycles. The check created just above is the newest row,
         # so it counts toward the window.
-        silence = (service.health_silence_until
-                   and service.health_silence_until > fields.Datetime.now())
+        silence = service._sous_silence()
         if status in ("down", "timeout", "degraded") and silence:
             _logger.info(
                 "Service %s : %s pendant un silence d'alerte (jusqu'à %s UTC), pas d'alerte",
@@ -2122,8 +2519,24 @@ class HostingService(models.Model):
             )
         elif status in ("down", "timeout", "degraded"):
             if not service.health_alert_active:
+                # ⚠️ Les relevés `unknown` sortent de la fenêtre : ils ne
+                # mesurent rien, donc ils ne peuvent ni confirmer ni démentir
+                # une panne. Les garder dedans ferait alerter au PREMIER
+                # vrai défaut suivant un silence de l'agent, et
+                # l'amortissement des battements ne vaudrait plus rien.
+                # ⚠️ Et BORNÉE : écarter les `unknown` sans borne de temps
+                # laissait un `degraded` d'il y a trois semaines « confirmer »
+                # le premier défaut qui suit un long silence de l'agent. Le
+                # cron bat à la minute : une heure est large.
                 recent = self.env["hosting.health.check"].search(
-                    [("service_id", "=", service.id)],
+                    [("service_id", "=", service.id),
+                     ("status", "!=", "unknown"),
+                     # ⚠️ Une heure borne large pour un cron à la MINUTE
+                     # (ir_cron 86 en base, pas les 30 min du XML) : jusqu'à
+                     # soixante relevés dans la fenêtre. Si ce cron repassait
+                     # un jour aux 30 minutes, cette borne ferait taire les
+                     # alertes — elle se relit avec la cadence.
+                     ("check_date", ">=", fields.Datetime.now() - timedelta(hours=1))],
                     order="check_date desc, id desc",
                     limit=min_consecutive,
                 )
@@ -2177,13 +2590,38 @@ class HostingService(models.Model):
                 time.sleep(0.2 * tentative)
         return None
 
+    def _ntfy_priorite_panne(self):
+        """Priorité ntfy effective d'une panne de ce service.
+
+        ``auto`` : urgente en production, discrète partout ailleurs. Rend
+        ``none`` quand la panne ne doit rien pousser du tout.
+        """
+        self.ensure_one()
+        choix = self.health_ntfy_priority or "auto"
+        if choix == "auto":
+            return "urgent" if self.environment == "production" else "low"
+        return choix
+
     def _send_ntfy_alert(self, services_list, alert_type="down"):
         """Envoyer une notification push via ntfy pour les événements de santé.
+
+        La priorité est la plus haute des services du lot (voir
+        ``_ntfy_priorite_panne``) : un lot qui mêle la prod et le banc sonne
+        pour la prod, un lot de banc seul reste discret. Les services en
+        ``none`` sortent du lot ; un lot vide ne pousse rien.
 
         Args:
             services_list: Liste de dicts avec les informations de service
             alert_type: "down" ou "recovered"
         """
+        services_list = [
+            item for item in services_list
+            if item["service"]._ntfy_priorite_panne() != "none"
+        ]
+        if not services_list:
+            return
+        rang = max(NTFY_RANG[item["service"]._ntfy_priorite_panne()]
+                   for item in services_list)
         # Alerte aux opérateurs : langue de la société (titre, corps, libellés d'état
         # lus dans le même env épinglé).
         ops = self._hosting_ops_env()
@@ -2192,7 +2630,7 @@ class HostingService(models.Model):
         count = len(services_list)
         if alert_type == "down":
             title = ops._("ALERT: %(count)s service(s) offline", count=count)
-            priority = "urgent"
+            priority = NTFY_PRIORITES[rang]
             tags = "rotating_light"
             lines = []
             for item in services_list:
@@ -2206,7 +2644,9 @@ class HostingService(models.Model):
                 lines.append(line)
         elif alert_type == "recovered":
             title = ops._("RECOVERED: %(count)s service(s) back online", count=count)
-            priority = "default"
+            # Un retour ne sonne jamais plus fort que sa panne, ni plus fort
+            # qu'avant (« default » pour une panne urgente ou haute).
+            priority = NTFY_PRIORITES[min(rang, NTFY_RANG["default"])]
             tags = "white_check_mark"
             lines = []
             for item in services_list:
@@ -2410,6 +2850,28 @@ class HostingService(models.Model):
                     "title": self.env._("Wake-up check finished"),
                     "message": erreur or self.env._(
                         "State: %(state)s — wake-up chain tested, no phone rang.",
+                        state=(etats.get(statut) or statut).upper()),
+                    "type": "success" if statut == "up" else "warning",
+                },
+            }
+        if self.health_kind in ("docker", "container_agent"):
+            statut, ms, code, erreur = (
+                self._do_docker_check() if self.health_kind == "docker"
+                else self._do_container_agent_check()
+            )
+            vals = {"service_id": self.id, "status": statut}
+            if ms is not None:
+                vals["response_time_ms"] = ms
+            if erreur:
+                vals["error_message"] = erreur
+            self.env["hosting.health.check"].create(vals)
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": self.env._("Container check finished"),
+                    "message": erreur or self.env._(
+                        "State: %(state)s.",
                         state=(etats.get(statut) or statut).upper()),
                     "type": "success" if statut == "up" else "warning",
                 },

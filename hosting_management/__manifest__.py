@@ -29,7 +29,28 @@
     #   Jeton propre à ces deux routes, distinct de celui des rapports.
     # 18.0.2.67.1: le drapeau « demandée à la main » était posé dans la route de
     #   rapport ZIP et non dans celle de restic, la seule que l'agent appelle.
-    "version": "18.0.2.67.1",
+    # 18.0.2.68.0: la surveillance dit ce qu'elle MESURE. `health_kind` gagne `docker`
+    #   (l'état du conteneur) et `container_agent` (la fraîcheur du dépôt de l'agent) ;
+    #   `last_health_status` gagne `no_data` et `unknown` ; `health_coverage` (calculé,
+    #   stocké) dit si une fiche est éprouvée, aveugle ou exemptée ; `health_exempt` et son
+    #   motif obligatoire ; la route de dépôt de l'agent de conteneurs et ses cinq champs ;
+    #   une tuile qui compte les services sans sonde au lieu de les noyer dans un taux.
+    #   🔴 « Sans relevé » ne vaut plus « en ligne » : un service jamais sondé affichait
+    #   100 % de disponibilité, un chiffre qui ne mesurait rien. Migration fournie : le
+    #   calcul est STOCKÉ, donc Odoo ne le refait pas parce que le code a changé.
+    # 18.0.2.68.1: les disponibilités d'une fenêtre sans relevé rendaient `None`, que le
+    #   sérialiseur XML-RPC d'Odoo refuse : tout lecteur XML-RPC du tableau de bord tombait
+    #   en faute, pendant que le navigateur, en JSON-RPC, acceptait `null`. Rendu `False`,
+    #   qui se sérialise, se lit comme faux en JavaScript, et reste distinct de « zéro ».
+    # 18.0.2.68.3: priorité de poussée ntfy par service (`health_ntfy_priority`, « par
+    #   environnement » par défaut), et `Ntfy.send()` accepte un sujet : une panne de
+    #   service client et un relevé quotidien n'ont plus à arriver au même endroit.
+    # 18.0.2.68.4: garde d'adressage des assignés. Le repli ne choisit plus jamais un
+    #   compte archivé, un compte portail ni un compte de service, et le défaut de
+    #   `hosting.service.user_id` ferme le générateur : la route publique de
+    #   provisionnement tourne en `env(user=1)` et créait des services dont le responsable
+    #   était l'uid 1.
+    "version": "18.0.2.68.4",
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

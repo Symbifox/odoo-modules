@@ -99,7 +99,7 @@ class HostingVoipCdr(models.Model):
         return count
 
     # ------------------------------------------------------------------
-    # Helpers (VOIP.ms REST call + CDR parsing)
+    # Helpers (portés de scripts/sync_voipms_recordings.py)
     # ------------------------------------------------------------------
     @api.model
     def _dedup_cdr(self, cdr):

@@ -4,7 +4,7 @@
     <!-- Extend Partner Form View with Hosting Services Smart Buttons.
          Chaque nœud porte groups= : le client web lit tous les champs de la vue,
          invisibles compris, et un interne sans le groupe ne peut lire aucun
-         modèle hosting.* (la fiche contact ne s'ouvrait plus). -->
+         modèle hosting.*. -->
     <record id="res_partner_view_form_inherit_hosting" model="ir.ui.view">
         <field name="name">res.partner.form.inherit.hosting</field>
         <field name="model">res.partner</field>

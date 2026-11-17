@@ -3,7 +3,7 @@
 
 Un travail planifié, un webhook, une route publique : `_()` y prendrait la
 langue d'OdooBot ou de la requête, et un champ traduit se lirait dans la
-source (anglaise). Les alertes ntfy, les notes au fil des
+source. Les alertes ntfy, les notes au fil des
 opérations et le journal d'audit sont lus par l'équipe d'hébergement : la
 langue de la société, sinon l'anglais. Un courriel à un contact suit d'abord
 la langue du contact.

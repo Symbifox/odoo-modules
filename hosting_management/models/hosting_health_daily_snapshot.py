@@ -39,9 +39,24 @@ class HostingHealthDailySnapshot(models.Model):
         string="Uptime (%)",
         digits=(5, 2),
         required=True,
+        help="Share of the checks that measured something and found the "
+             "service up. Only meaningful when \"Unmeasured checks\" is "
+             "below \"Aggregated checks\": a day where nothing could be "
+             "measured reads 0.",
     )
     avg_response_ms = fields.Integer(
         string="Average response time (ms)",
+    )
+    measured_count = fields.Integer(
+        string="Measured checks",
+        help="Checks that actually measured something. The percentage means "
+             "nothing when this is zero: that day, the service was not "
+             "measured at all.",
+    )
+    unknown_count = fields.Integer(
+        string="Unmeasured checks",
+        help="Checks that measured nothing at all (the host agent said "
+             "nothing). They count in neither side of the percentage.",
     )
     excluded_count = fields.Integer(
         string="Excluded checks",
@@ -68,9 +83,12 @@ class HostingHealthDailySnapshot(models.Model):
     def _compute_display_name(self):
         for rec in self:
             if rec.service_id and rec.snapshot_date:
+                # ⚠️ Un jour sans mesure ne porte pas « (0.0%) » : ce
+                # pourcentage n'existe pas, il n'est pas nul.
+                chiffre = (f"{rec.uptime_pct:.1f}%" if rec.measured_count
+                           else self.env._("not measured"))
                 rec.display_name = (
-                    f"{rec.service_id.name} – {rec.snapshot_date} "
-                    f"({rec.uptime_pct:.1f}%)"
+                    f"{rec.service_id.name} – {rec.snapshot_date} ({chiffre})"
                 )
             else:
                 rec.display_name = "Snapshot"

@@ -77,7 +77,7 @@ class TestCourrielMarque(TransactionCase):
         self.assertIn("Slogan d&#39;essai 4417", corps)
         self.assertIn("https://exemple.test/confidentialite", corps)
         # Pas de lien de conditions sans adresse. Le libellé suit désormais la langue de
-        # la société (« Terms » / « Conditions ») : on vérifie la forme du
+        # la société : on vérifie la forme du
         # bloc de liens, qui ne porte que celui de confidentialité.
         self.assertRegex(
             corps,

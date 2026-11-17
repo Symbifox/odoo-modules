@@ -13,8 +13,8 @@ Ce que ces essais tiennent en place :
 
 Le heurt est simulé en levant SerializationFailure APRÈS l'écriture de la mesure,
 là où le flush de last_health_check le lève en production. La vraie collision
-(second curseur qui commite pendant la passe) se joue hors de ces essais : un
-curseur de test ne peut ni commiter ni annuler.
+(second curseur qui commite pendant la passe) est jouée sur banc par
+scripts/_bf_t26354_repro.py : un curseur de test ne peut ni commiter ni annuler.
 """
 
 from unittest.mock import patch

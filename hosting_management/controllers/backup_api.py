@@ -25,9 +25,9 @@ def _host_timestamp_to_utc(env, value):
     """Lire l'horodatage d'un rapport, qui est l'heure LOCALE de l'hôte.
 
     🔴 `backup-all-services.restic.sh` pose son horodatage avec
-    `date +'%Y-%m-%d %H:%M:%S'`, donc l'heure locale de l'hôte, sans
+    `date +'%Y-%m-%d %H:%M:%S'`, donc l'heure locale de serveur1, sans
     fuseau. Rangée telle quelle, elle se lisait comme de l'UTC : les
-    snapshots portaient 04:00:01 pendant que le watchdog, lui
+    snapshots du 2026-11-01 portaient 04:00:01 pendant que le watchdog, lui
     en ISO, datait les mêmes sauvegardes de 09:00 à 11:31 UTC. Cinq heures
     d'écart, donc une sauvegarde déclarée périmée cinq heures trop tôt,
     chaque jour, sur l'écran bâti pour qu'un rouge veuille dire quelque
@@ -148,7 +148,7 @@ class BackupAPIController(http.Controller):
         Avec un seul jeton, un porteur pouvait prendre les demandes d'un
         gestionnaire, ou les fermer en « terminée » en citant le numéro d'une
         vraie exécution nocturne, et donc peindre un service en vert sans qu'une
-        sauvegarde ait tourné.
+        sauvegarde ait tourné. Arbitrage d'le propriétaire : deux jetons.
 
         Pas de repli sur l'autre jeton : un repli annulerait la séparation. Si le
         paramètre manque, les routes refusent et le disent.
@@ -358,7 +358,7 @@ class BackupAPIController(http.Controller):
                     "backup_run_name": existing.name,
                 })
 
-        # Une execution demandee a la main ne doit pas voler le creneau du
+        # C-2 : une execution demandee a la main ne doit pas voler le creneau du
         # rapport quotidien, qui ne retient que la plus recente par societe et par
         # hote. Un clic a 05 h 30 faisait partir, a 06 h 00, un rapport d'une seule
         # ligne, et repoussait d'une heure celui de la nuit, c'est-a-dire
@@ -429,8 +429,8 @@ class BackupAPIController(http.Controller):
 
         # ⚠️ Lecture TOLÉRANTE : voir `_icp_truthy`. Un `== "1"` ici rendait le
         # rapport muet dès qu'on enregistrait la page des réglages, qui écrit la
-        # chaîne « True ». Même famille que le piège décrit dans `_icp_truthy`,
-        # et que le réveil du softphone, éteint huit jours par un seul clic.
+        # chaîne « True ». Même famille que l'incident BKP-00168 et que le réveil
+        # du softphone, mort huit jours par un seul clic.
         send_email = _icp_truthy(
             request.env["ir.config_parameter"]
             .sudo()
@@ -480,8 +480,8 @@ class BackupAPIController(http.Controller):
         une nuit infonuagique versée là les ferait noter la mauvaise. Voir
         `models/hosting_saas_backup.py`.
 
-        Il n'envoie ni courriel ni ntfy : l'alerte n'est pas encore
-        décidée. Un lecteur qui verse trois mois d'archives d'un coup ne doit
+        Il n'envoie ni courriel ni ntfy : l'alerte n'est pas décidée (
+        lot 1). Un lecteur qui verse trois mois d'archives d'un coup ne doit
         réveiller personne.
         """
         provider = (data.get("provider") or "cubebackup").strip()
@@ -904,12 +904,12 @@ class BackupAPIController(http.Controller):
             # le second agent passe à la suivante au lieu d'attendre.
             #
             # 🔴 B5 : et la demande doit être pour CETTE machine. Le parc en a deux
-            # (une seconde machine porte un service de secours). Sans ce filtre, le premier agent
+            # (pegasus porte le ntfy de secours). Sans ce filtre, le premier agent
             # qui sonde prend des demandes pour des conteneurs absents de chez lui :
             # le script sort alors en 0 sans instantané, Odoo écrit « échouée » sur
             # une demande parfaitement saine, et le vrai hôte ne la voit jamais.
             # La comparaison porte sur la PREMIÈRE étiquette du nom : la base dit
-            # « machine.exemple.com » et la machine répond « machine ».
+            # « serveur1.example.com » et la machine répond « serveur1 ».
             court = agent_host.split(".")[0].lower()
             request.env.cr.execute(
                 """
@@ -1054,7 +1054,7 @@ class BackupAPIController(http.Controller):
             # arrivait ensuite sur un 409, donc était perdu. On pouvait ainsi faire
             # écrire « sauvegarde terminée » sur une sauvegarde qui n'a pas tourné.
             # ⚠️ Comparer la PREMIERE etiquette, comme la prise : un agent qui
-            # prend en « machine » et rend en « machine.exemple.com »
+            # prend en « serveur1 » et rend en « serveur1.example.com »
             # prenait un 409, la demande restait prise, et le cron la fermait en
             # echec deux heures plus tard.
             dit_par = str(data.get("host") or "")[:128]

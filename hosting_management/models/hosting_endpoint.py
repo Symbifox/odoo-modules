@@ -12,6 +12,7 @@ from markupsafe import Markup, escape as _esc
 
 from odoo import api, fields, models
 
+from .assignee import assignee_vivant
 from .hosting_lang import reader_lang, user_env
 
 _logger = logging.getLogger(__name__)
@@ -401,7 +402,13 @@ class HostingEndpoint(models.Model):
                 service = self.env["hosting.service"].sudo().search(
                     [("partner_id", "=", partner.id)], limit=1
                 )
-                recipient_user = service.user_id if service and service.user_id else None
+                # ⚠️ `.filtered("active")[:1]` rendait un recordset VIDE quand le
+                # responsable du service est archivé, et le `continue` d'en dessous
+                # faisait alors tomber l'avis en silence : ni courriel, ni journal, ni
+                # constat. C'est la forme que le tour 1 a retirée de
+                # `document_distribution.py` ; le repli vivant la remplace, comme dans
+                # la branche sœur de `hosting_license`.
+                recipient_user = assignee_vivant(self.env, service.user_id)
                 if not recipient_user or not recipient_user.email:
                     continue
 

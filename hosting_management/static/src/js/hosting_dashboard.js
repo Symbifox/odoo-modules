@@ -175,6 +175,7 @@ export class HostingDashboard extends Component {
     openUpdates() { this._doAction("action_view_updates"); }
     openStorageAlerts() { this._doAction("action_view_storage_alerts"); }
     openHealthIssues() { this._doAction("action_view_health_issues"); }
+    openUnmonitored() { this._doAction("action_view_unmonitored_services"); }
 
     // Services
     openActiveServices() { this._doAction("action_view_active_services"); }

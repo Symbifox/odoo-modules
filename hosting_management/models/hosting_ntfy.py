@@ -21,8 +21,14 @@ class HostingNtfy(models.AbstractModel):
         }
 
     @api.model
-    def send(self, title, body, priority="default", tags=None, click=None):
-        """Publier un message sur le sujet ntfy configuré.
+    def send(self, title, body, priority="default", tags=None, click=None,
+             topic=None):
+        """Publier un message sur un sujet ntfy.
+
+        ``topic`` prime sur ``hosting.ntfy_topic``. Sans lui, tout partait sur un
+        sujet unique : la panne d'un service client et le relevé quotidien des
+        versions arrivaient au même endroit, ce qui obligeait à choisir entre
+        rater la première et subir le second. Tâche 
 
         Retourne True si envoyé, False si non configuré ou erreur.
         """
@@ -32,6 +38,7 @@ class HostingNtfy(models.AbstractModel):
             return False
 
         cfg = self._get_config()
+        cfg["topic"] = topic or cfg["topic"]
         if not all([cfg["url"], cfg["token"], cfg["topic"]]):
             _logger.debug("ntfy non configuré, notification push ignorée")
             return False
@@ -60,8 +67,8 @@ class HostingNtfy(models.AbstractModel):
         # périmé ou une ACL manquante rend un 403 bien poli, et l'appelant
         # lisait « envoyé » sur une alerte que personne n'a reçue. Un contrôle
         # qui ment coûte plus cher qu'un contrôle absent : au moins l'absence
-        # se voit. Relevé en écrivant la sonde du réveil, qui s'est fait
-        # refuser exactement comme ça.
+        # se voit. relevé en écrivant la sonde du réveil, qui
+        # s'est fait refuser exactement comme ça.
         if not rep.ok:
             _logger.warning(
                 "ntfy a REFUSÉ la publication sur « %s » (HTTP %s) : "

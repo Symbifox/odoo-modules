@@ -7,7 +7,7 @@ Ce que ces essais tiennent en place, et pourquoi chacun a été écrit :
   légitimement que quelqu'un presse le bouton, et un contrôle qui crie dessus
   finit désarmé, ce qui emporte la vraie panne avec lui ;
 * un changement d'hier que personne n'a annoncé en est une ;
-* 🔴 la moitié indépendante compte autant que l'autre. Si le rapatriement
+* 🔴 La moitié indépendante compte autant que l'autre. Si le rapatriement
   s'arrête, Odoo n'apprend plus rien, plus aucun avis n'est dû, le registre est
   vert, et personne n'est prévenu de rien. Un essai qui ne vérifie que le
   registre rendrait exactement le même vert dans les deux cas ;
@@ -45,8 +45,8 @@ class TestSondeAvisRdv(TransactionCase):
         })
         cls.client = cls.env["res.partner"].create({"name": "Locataire de banc"})
         cls.logiciel = cls.env["hosting.software"].create({
-            "name": "Agenda de banc",
-            "code": "TAVIS",
+            "name": "Agenda de banc ",
+            "code": "T25873",
             "software_type": "self_hosted",
         })
         # ⚠️ Une fiche d'agenda RÉELLE, même vide : sans elle, la boucle de la
@@ -54,7 +54,7 @@ class TestSondeAvisRdv(TransactionCase):
         # appelé. L'essai rendrait vert en n'ayant rien éprouvé, ce qui est
         # exactement le défaut que cette moitié existe pour attraper.
         cls.agenda = cls.env["nextcloud.calendar.sync.config"].create({
-            "name": "Agenda de banc",
+            "name": "Agenda de banc ",
             "nextcloud_base_url": "https://nextcloud.example.invalid",
             "nextcloud_user": "banc",
             "caldav_path": "/remote.php/dav/calendars/banc/banc/",

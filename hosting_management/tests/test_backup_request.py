@@ -223,7 +223,7 @@ class TestBackupRequest(TransactionCase):
         self.env["hosting.backup.request"]._cron_expire_requests()
         self.assertEqual(demande.state, "failed")
         # ⚠️ Ne pas eprouver le TEXTE : ce message passe par les catalogues, et la
-        # base d'essai est en français. Le contrat est qu'un message explique la
+        # base du banc est en francais. Le contrat est qu'un message explique la
         # fermeture, pas qu'il contienne tel mot anglais. Le premier jet comparait
         # « never reported » a « n'a jamais rendu compte ».
         self.assertTrue(demande.message)
@@ -571,8 +571,8 @@ class TestBackupRequestAPI(HttpCase):
     def test_the_same_host_under_its_long_name_is_accepted(self):
         """The claim compares the first label, so the report must too.
 
-        An agent claiming by its short name and reporting by its
-        fully qualified name used to take a 409, and the cron then closed its
+        An agent claiming as `serveur1` and reporting as
+        `serveur1.example.com` used to take a 409, and the cron then closed its
         request as failed two hours later.
         """
         service = self._service("Service nom long", "nomlong-app")
@@ -837,7 +837,7 @@ class TestBackupRequestAPI(HttpCase):
         """🔴 A chatter body is HTML, and this text comes in over a token route.
 
         Inserted as is, a `<` breaks the display and a tag runs in the reader's
-        browser. Same family as the escaped chatter HTML, taken from
+        browser. Same family as the escaped chatter HTML of taken from
         the other end.
         """
         service = self._service("Service echappement", "echap-app")

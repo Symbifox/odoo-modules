@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
 
+from .assignee import assignee_vivant
 from .hosting_lang import reader_env, user_env
 
 FREQUENCY_DELTAS = {
@@ -149,7 +150,7 @@ class HostingMaintenanceSchedule(models.Model):
             # Note dans la langue de l'assigné, activité créée dans son env
             # (objet de l'avis d'activité, piège 63) ; libellés de sélection
             # traduits sur le même env.
-            assignee = record.user_id or self.env.user
+            assignee = assignee_vivant(self.env, record.user_id)
             aenv = user_env(self.env, assignee)
             arecord = record.with_env(aenv)
             note_parts = [
@@ -179,11 +180,12 @@ class HostingMaintenanceSchedule(models.Model):
     # ------------------------------------------------------------ crochets
     # Tous les lecteurs de ce modèle (tableau de bord, résumé, alertes mobiles,
     # échéancier) passent par ces trois méthodes au lieu de recopier leur
-    # propre filtre. Il y en avait onze copies de
+    # propre filtre. mesuré : onze copies de
     # ("service_id.state", "=", "active"), et une planification qui vise une
     # machine plutôt qu'un service (bf_hosting_patch) n'a pas de service, donc
-    # ces onze lecteurs l'écartaient en silence : des correctifs de sécurité en
-    # retard manquaient au compte du tableau de bord.
+    # ces onze lecteurs l'écartaient en silence. Cinq correctifs de sécurité
+    # étaient en retard depuis une semaine pendant que le tableau de bord
+    # affichait trois retards.
 
     @api.model
     def _target_active_domain(self):

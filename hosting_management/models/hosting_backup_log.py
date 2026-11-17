@@ -139,7 +139,7 @@ class HostingBackupRun(models.Model):
         string="Report sent",
         default=False,
     )
-    # une exécution demandée à la main depuis la fiche d'un
+    # lot 3 : une exécution demandée à la main depuis la fiche d'un
     # service. Elle n'entre pas dans le rapport quotidien, qui ne retient que la
     # plus récente par société et par hôte : un clic en matinée aurait volé le
     # créneau de celle de la nuit, et repoussé d'une heure l'artefact sur lequel

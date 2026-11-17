@@ -20,7 +20,7 @@
                           <tbody>
                             <tr>
                               <td align="left">
-                                <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
+                                <a t-attf-href="{{ company.website or 'https://bluefoxconsultant.com' }}" style="text-decoration:none;">
                                   <img t-attf-src="/brand/logo/{{ company.id }}" t-att-alt="company.name or 'Company'" style="height:44px;width:auto;display:block;border:0;" height="44"/>
                                 </a>
                               </td>
@@ -125,7 +125,7 @@
                         </p>
                         <p t-attf-style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:{{ brand_dark }};font-weight:400;">
                           Cordialement,<br/>
-                          <strong>L'&#233;quipe <t t-out="company.name"/></strong>
+                          <strong>L'&#233;quipe <t t-out="company.name or 'Blue Fox'"/></strong>
                         </p>
                       </td>
                     </tr>
@@ -146,7 +146,7 @@
                           <tbody>
                             <tr>
                               <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#6B7280;line-height:20px;">
-                                <strong t-attf-style="color:{{ brand_dark }};font-size:14px;"><t t-out="company.name"/></strong><br/>
+                                <strong t-attf-style="color:{{ brand_dark }};font-size:14px;"><t t-out="company.name or 'Blue Fox'"/></strong><br/>
                                 Solutions &#233;thiques et souveraines pour vos donn&#233;es.
                               </td>
                             </tr>
@@ -165,9 +165,9 @@
                                   <tbody>
                                     <tr>
                                       <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;">
-                                        <a t-attf-href="{{ company.website or object.get_base_url() }}/r/politique-de-confidentialite" style="color:#9CA3AF;text-decoration:underline;">Confidentialit&#233;</a>
+                                        <a t-attf-href="{{ company.website or 'https://bluefoxconsultant.com' }}/r/politique-de-confidentialite" style="color:#9CA3AF;text-decoration:underline;">Confidentialit&#233;</a>
                                         <span style="color:#D1D5DB;"> | </span>
-                                        <a t-attf-href="{{ company.website or object.get_base_url() }}/r/termes-et-conditions" style="color:#9CA3AF;text-decoration:underline;">Conditions</a>
+                                        <a t-attf-href="{{ company.website or 'https://bluefoxconsultant.com' }}/r/termes-et-conditions" style="color:#9CA3AF;text-decoration:underline;">Conditions</a>
                                       </td>
                                     </tr>
                                   </tbody>

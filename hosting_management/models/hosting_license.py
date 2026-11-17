@@ -16,6 +16,7 @@ from markupsafe import escape as _esc
 
 from odoo import _, api, fields, models
 
+from .assignee import assignee_vivant
 from .hosting_lang import reader_env, user_env
 
 _logger = logging.getLogger(__name__)
@@ -96,7 +97,7 @@ class HostingLicense(models.Model):
 
     expiry_date = fields.Date(string="Expiry date", tracking=True)
 
-    # ── Relevé du fournisseur ────────────────────────────────────────────
+    # ── Relevé du fournisseur ────────────────────────────────
     # « Sièges activés » se calcule sur les enregistrements de siège. Pour une
     # licence infonuagique, personne ne saisit de siège : l'occupation réelle
     # n'est connue que du fournisseur, qui l'écrit dans son rapport périodique.
@@ -337,12 +338,20 @@ class HostingLicense(models.Model):
                 # Destinataire : responsable hosting principal du partner,
                 # ou admin si propriétaire = company root
                 if partner == self.env.company.partner_id:
-                    recipient_user = self.env.user  # admin sera env.user dans le cron
+                    # ⚠️ Pas `self.env.user` : sous le cron c'est `__system__` (uid 1),
+                    # archivé, et son courriel est la boîte d'accueil.
+                    recipient_user = assignee_vivant(self.env)
                 else:
                     service = self.env["hosting.service"].sudo().search(
                         [("partner_id", "=", partner.id)], limit=1
                     )
-                    recipient_user = service.user_id if service else False
+                    # ⚠️ Un responsable archivé garde son adresse : l'avis partait vers
+                    # une boîte que plus personne ne lit. Mais
+                    # `.filtered("active")[:1]` rendait alors un recordset VIDE, et le
+                    # `continue` d'en dessous faisait tomber l'avis en silence — un mal
+                    # pire que l'adressage. Même repli que la branche sœur ci-dessus
+                    #.
+                    recipient_user = assignee_vivant(self.env, service.user_id)
                 if not recipient_user or not recipient_user.email:
                     continue
 

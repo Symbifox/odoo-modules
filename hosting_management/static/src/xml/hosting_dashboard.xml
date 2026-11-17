@@ -103,6 +103,11 @@
                             <div class="card-body text-center">
                                 <h2 t-attf-class="mb-0 {{state.data.uptime_overview.down_count > 0 ? 'text-danger' : 'text-success'}}" t-esc="state.data.uptime_overview.down_count"/>
                                 <small class="text-muted">Services down</small>
+                                <div t-if="state.data.uptime_overview.unknown_services > 0" class="mt-2">
+                                    <small class="text-warning">
+                                        <i class="fa fa-question-circle me-1"/><t t-esc="state.data.uptime_overview.unknown_services"/> with no news
+                                    </small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -111,6 +116,15 @@
                             <div class="card-body text-center">
                                 <h2 class="text-muted mb-0" t-esc="state.data.uptime_overview.monitored_services"/>
                                 <small class="text-muted">Monitored services</small>
+                                <!-- 🔴 « 64 services surveillés » était exact pour les 64
+                                     qu'il regardait, et muet sur les 24 autres : le tableau
+                                     ne mentait pas, il ne disait rien. -->
+                                <div t-if="state.data.uptime_overview.unmonitored_services > 0" class="mt-2">
+                                    <a href="#" class="text-danger small"
+                                       t-on-click.stop.prevent="openUnmonitored">
+                                        <i class="fa fa-eye-slash me-1"/><t t-esc="state.data.uptime_overview.unmonitored_services"/> without a probe
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -172,7 +186,8 @@
                                                         </span>
                                                     </td>
                                                     <td class="text-end">
-                                                        <span t-att-class="getUptimeClass(grp.min_uptime_24h)">
+                                                        <span t-if="grp.min_uptime_24h === false" class="text-muted">&#8212;</span>
+                                                        <span t-else="" t-att-class="getUptimeClass(grp.min_uptime_24h)">
                                                             <t t-esc="grp.min_uptime_24h"/>%
                                                         </span>
                                                     </td>
@@ -207,17 +222,20 @@
                                                         </td>
                                                         <td class="text-muted" t-esc="svc.partner_name"/>
                                                         <td class="text-end">
-                                                            <span t-att-class="getUptimeClass(svc.uptime_24h)">
+                                                            <span t-if="svc.uptime_24h === false" class="text-muted" title="No reading in this window">&#8212;</span>
+                                                            <span t-else="" t-att-class="getUptimeClass(svc.uptime_24h)">
                                                                 <t t-esc="svc.uptime_24h"/>%
                                                             </span>
                                                         </td>
                                                         <td class="text-end">
-                                                            <span t-att-class="getUptimeClass(svc.uptime_7d)">
+                                                            <span t-if="svc.uptime_7d === false" class="text-muted" title="No reading in this window">&#8212;</span>
+                                                            <span t-else="" t-att-class="getUptimeClass(svc.uptime_7d)">
                                                                 <t t-esc="svc.uptime_7d"/>%
                                                             </span>
                                                         </td>
                                                         <td class="text-end">
-                                                            <span t-att-class="getUptimeClass(svc.uptime_30d)">
+                                                            <span t-if="svc.uptime_30d === false" class="text-muted" title="No reading in this window">&#8212;</span>
+                                                            <span t-else="" t-att-class="getUptimeClass(svc.uptime_30d)">
                                                                 <t t-esc="svc.uptime_30d"/>%
                                                             </span>
                                                         </td>

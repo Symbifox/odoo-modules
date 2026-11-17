@@ -66,7 +66,7 @@ class TestSaasBackupAPI(HttpCase):
             "finished_at": "2026-09-20T22:28:16Z",
             "duration_sec": 896.5,
             "result": "succeeded",
-            "apps_total": 40,
+            "apps_total": 84,
             "apps_failed": 0,
             "failures": [],
         }
@@ -88,7 +88,7 @@ class TestSaasBackupAPI(HttpCase):
         self.assertEqual(run.service_id, self.service)
         self.assertEqual(run.partner_id, self.partner)
         self.assertEqual(run.result, "succeeded")
-        self.assertEqual(run.apps_total, 40)
+        self.assertEqual(run.apps_total, 84)
         self.assertTrue(run.name.startswith("SBK-"), run.name)
 
         self.service.invalidate_recordset()
@@ -107,7 +107,7 @@ class TestSaasBackupAPI(HttpCase):
                 "app_type": "mail",
                 "subject_name": "Personne Essai",
                 "subject_login": "personne@exemple.test",
-                "subject_ref": "00000000-0000-4000-8000-0000000000aa",
+                "subject_ref": "c560f7d0-d79f-4432-b606-793a98e31782",
                 "http_code": "403",
                 "error_code": "ErrorQuotaExceeded",
                 "error_message": "Cannot save changes made to an item to store.",
@@ -281,19 +281,19 @@ class TestSaasReadingAPI(HttpCase):
         base = {
             "period_start": "2026-09-14",
             "period_end": "2026-09-21",
-            "seats_total": 40,
-            "seats_used": 40,
-            "license_expiry": "2027-01-15",
+            "seats_total": 84,
+            "seats_used": 84,
+            "license_expiry": "2026-12-28",
             "storage_kind": "Amazon S3 compatible storage",
             "storage_location": "un-seau",
             "storage_available": "unlimited",
             "index_path": "/cubebackup_index",
-            "index_free_display": "20.0 GB / 100.0 GB = 20 % free",
-            "index_free_pct": 20.0,
-            "source_ref": "12345",
+            "index_free_display": "64.8 GB / 386.9 GB = 16 % free",
+            "index_free_pct": 16.0,
+            "source_ref": "17593",
             "organizations": [
                 {"organization_name": "Organisation Essai", "errors": 4,
-                 "items": 1200, "size_display": "4 GB"},
+                 "items": 9373, "size_display": "4 GB"},
             ],
         }
         base.update(kw)
@@ -310,11 +310,11 @@ class TestSaasReadingAPI(HttpCase):
         self.assertEqual(body["readings_unmatched"], [])
         rd = self._get()
         self.assertEqual(len(rd), 1)
-        self.assertEqual(rd.seats_used, 40)
+        self.assertEqual(rd.seats_used, 84)
         self.assertEqual(rd.seats_free, 0)
         self.assertTrue(rd.saturated)
         self.assertEqual(rd.error_count, 4)
-        self.assertEqual(rd.index_free_pct, 20.0)
+        self.assertEqual(rd.index_free_pct, 16.0)
         self.assertEqual(rd.line_ids.service_id, self.service,
                          "la ligne se rattache par le nom, via l'exécution versée")
 
@@ -341,12 +341,12 @@ class TestSaasReadingAPI(HttpCase):
     def test_la_licence_porte_ce_que_le_fournisseur_affirme(self):
         self._post([self._reading()])
         self.license.invalidate_recordset()
-        self.assertEqual(self.license.reported_seats_used, 40)
+        self.assertEqual(self.license.reported_seats_used, 84)
         self.assertEqual(
             self.license.reported_seats_date.strftime("%Y-%m-%d"), "2026-09-21")
-        self.assertEqual(self.license.seats_total, 40, "le total suit le relevé")
+        self.assertEqual(self.license.seats_total, 84, "le total suit le relevé")
         self.assertEqual(
-            self.license.expiry_date.strftime("%Y-%m-%d"), "2027-01-15")
+            self.license.expiry_date.strftime("%Y-%m-%d"), "2026-12-28")
         self.assertTrue(self.license.reported_saturated)
         self.assertEqual(self.license.seats_used, 0,
                          "aucun siège n'a été inventé pour faire coïncider")
@@ -355,12 +355,12 @@ class TestSaasReadingAPI(HttpCase):
         """Un rattrapage verse les semaines dans l'ordre : c'est la DERNIÈRE
         période qui doit rester sur la fiche, pas le dernier enregistrement."""
         self._post([
-            self._reading(period_end="2026-09-21", seats_used=40),
+            self._reading(period_end="2026-09-21", seats_used=84),
             self._reading(period_start="2026-07-20", period_end="2026-07-27",
-                          seats_used=35),
+                          seats_used=79),
         ])
         self.license.invalidate_recordset()
-        self.assertEqual(self.license.reported_seats_used, 40)
+        self.assertEqual(self.license.reported_seats_used, 84)
         self.assertEqual(
             self.license.reported_seats_date.strftime("%Y-%m-%d"), "2026-09-21")
 

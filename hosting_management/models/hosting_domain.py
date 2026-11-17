@@ -7,6 +7,7 @@ from markupsafe import Markup
 
 from odoo import api, fields, models
 
+from .assignee import assignee_vivant
 from .hosting_lang import reader_env, user_env
 
 DMARC_DOH_ENDPOINT = "https://cloudflare-dns.com/dns-query"
@@ -500,7 +501,7 @@ class HostingDomain(models.Model):
 
         for domain in expiring_domains:
             # Activité dans la langue de l'assigné, créée dans son env (objet de l'avis).
-            assignee = domain.user_id or self.env.user
+            assignee = assignee_vivant(self.env, domain.user_id)
             aenv = user_env(self.env, assignee)
             aenv["mail.activity"].create({
                 "res_model_id": self.env["ir.model"]._get_id("hosting.domain"),
@@ -537,7 +538,7 @@ class HostingDomain(models.Model):
         )
 
         for domain in ssl_expiring:
-            assignee = domain.user_id or self.env.user
+            assignee = assignee_vivant(self.env, domain.user_id)
             aenv = user_env(self.env, assignee)
             aenv["mail.activity"].create({
                 "res_model_id": self.env["ir.model"]._get_id("hosting.domain"),
@@ -638,7 +639,7 @@ class HostingDomain(models.Model):
         for domain in domains:
             previous_drift = domain.dmarc_drift
             domain._dmarc_run_check(post_chatter=False)
-            assignee = domain.user_id or self.env.user
+            assignee = assignee_vivant(self.env, domain.user_id)
             aenv = user_env(self.env, assignee)
             if domain.dmarc_drift and not domain.dmarc_drift_notified:
                 new_drifts |= domain

@@ -262,8 +262,8 @@ class TestBackupResticAPI(HttpCase):
         """Depuis 18.0.2.66.0, une destination inconnue n'est plus jetée.
 
         Elle était écartée avec un avertissement au journal que personne ne
-        lit, et un dépôt qui portait de vraies sauvegardes restait invisible.
-        Elle est maintenant enregistrée, marquée « à
+        lit, et un dépôt qui portait de vraies sauvegardes restait invisible
+. Elle est maintenant enregistrée, marquée « à
         reconnaître », et elle ne couvre aucun service tant que personne ne
         l'a reconnue. Elle reste nommée dans `repos_unknown`, qui est le
         contrat attendu par le watchdog de l'hôte.

@@ -2,8 +2,8 @@
 """Connecteur API VOIP.ms — LECTURE SEULE.
 
 Mixin partagé par les modèles téléphonie (DID, CDR, transactions). Porte la
-mécanique d'appel REST VOIP.ms en réutilisant un pattern REST éprouvé
-(GET/redaction/retry) :
+mécanique d'appel REST VOIP.ms en réutilisant le pattern éprouvé du script
+``scripts/sync_voipms_recordings.py`` du dépôt tentaclaude :
   - GET ``https://voip.ms/api/v1/rest.php`` avec ``api_username`` + ``api_password``,
   - 3 essais avec pause de 2 s,
   - redaction systématique des secrets dans les messages d'erreur (l'URL d'appel

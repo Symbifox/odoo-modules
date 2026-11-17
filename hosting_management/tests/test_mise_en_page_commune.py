@@ -5,7 +5,7 @@ au titre, filet, pied de marque). Ils ne gardent que leur contenu ;
 `bf_onboarding_base.bf_mail_layout`, que bluefox_branding remplace par la sienne, les
 habille à l'envoi.
 
-Depuis la bascule de la source en anglais, la source des corps est ANGLAISE (fichiers de données) et leur
+Depuis le lot 9 de la source des corps est ANGLAISE (fichiers de données) et leur
 français vit au catalogue (`i18n/fr_CA.po`, entrées `model:mail.template,body_html:…`,
 corps traduits en bloc ; `fr.po` en est une copie). Les essais qui portaient sur le
 corps français le lisent donc dans le msgstr du catalogue.
@@ -51,8 +51,8 @@ def _norme(corps):
 
 CORPS_AU_CATALOGUE = "model:mail.template,body_html:hosting_management."
 VIDES = ("br", "hr", "img")
-# Replis de marque retirés des corps par la même bascule (curation : plus de « Blue Fox »
-# ni d'adresse de BF en dur dans un gabarit publié). Les instantanés `*_avant.html`
+# Replis de marque retirés des corps par le même lot 9 (curation : plus de « Blue Fox »
+# ni d'adresse sur une base réelle en dur dans un gabarit publié). Les instantanés `*_avant.html`
 # gardent les anciens, comme les bases qui n'ont pas encore migré.
 REPLIS_RETIRES = (
     ("company.name or 'Blue Fox'", "company.name or 'de soutien'"),
@@ -171,7 +171,7 @@ class TestMiseEnPageCommune(TransactionCase):
     def test_la_migration_rend_la_source(self):
         """La migration rend, des instantanés français, le corps français LIVRÉ.
 
-        Avant la bascule en anglais, ce corps était la source du fichier de données ; il est désormais
+        Avant le lot 9, ce corps était la source du fichier de données ; il est désormais
         le msgstr du catalogue fr_CA (la source est anglaise). Seuls les replis de marque
         retirés par le lot (`REPLIS_RETIRES`) sont reportés sur le rendu, chacun seulement
         si le français livré a bien perdu l'ancien et porte le nouveau : aucun autre écart
@@ -227,7 +227,7 @@ class TestMiseEnPageCommune(TransactionCase):
     def test_les_traductions_ne_recopient_pas_les_corps(self):
         """Aucun corps du catalogue ne recopie une ancienne coquille.
 
-        Changement de règle à la bascule en anglais : tant que la source était française, la
+        Changement de règle au lot 9 de tant que la source était française, la
         règle était « aucun corps au catalogue » (une traduction n'aurait pu que recopier
         une coquille). La source étant désormais anglaise, le français des sept corps vit
         AU catalogue, traduit en bloc. L'intention se vérifie donc sur chaque corps :

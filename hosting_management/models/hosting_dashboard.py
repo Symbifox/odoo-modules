@@ -358,9 +358,31 @@ class HostingDashboard(models.AbstractModel):
             "name": self.env._("Health issues"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"], [False, "kanban"]],
+            # 🔴 Juger sur l'ÉTAT, plus sur `is_service_up`. Ce booléen a
+            # maintenant trois causes de fausseté : en panne, jamais mesuré
+            #, ou mesuré sans réponse de l'agent. Les deux dernières
+            # ne sont pas des pannes, et une liste de pannes qui les contient
+            # se fait ignorer — ce qui emporte les vraies avec elles.
+            # ⚠️ Et `health_coverage` : un service déclaré hors de portée
+            # garde son dernier relevé, qui peut être une panne vieille de six
+            # mois. Il figurerait dans cette liste pour toujours.
             "domain": [
                 ("state", "=", "active"),
-                ("is_service_up", "=", False),
+                ("health_coverage", "=", "probed"),
+                ("last_health_status", "in", ["down", "timeout", "degraded"]),
+            ],
+        }
+
+    @api.model
+    def action_view_unmonitored_services(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Services without a probe"),
+            "res_model": "hosting.service",
+            "views": [[False, "list"], [False, "form"], [False, "kanban"]],
+            "domain": [
+                ("state", "=", "active"),
+                ("health_coverage", "=", "no_data"),
             ],
         }
 
@@ -559,6 +581,9 @@ class HostingDashboard(models.AbstractModel):
             FROM hosting_health_check
             WHERE check_date >= NOW() - INTERVAL '24 hours'
               AND NOT excluded_from_stats
+              -- `unknown` = la sonde n'a pas pu savoir (agent muet) : ni up
+              -- ni down, donc hors de la moyenne.
+              AND status != 'unknown'
         """)
         row = self.env.cr.dictfetchone()
         total = row["total"] or 0
@@ -569,6 +594,30 @@ class HostingDashboard(models.AbstractModel):
         # Current down count via lateral join (one query for all services).
         # Excluded checks are skipped so an ignored external incident doesn't
         # count a service as down.
+        #
+        # 🔴 La portée ne peut plus être « a une URL » : une sonde de conteneur
+        # n'en a pas, et les dix-huit services qu'elle couvre seraient restés
+        # hors du tableau — c'est-à-dire invisibles, exactement comme avant
+        #. Elle devient « éprouvé par quelque chose, et pas
+        # déclaré hors de portée ».
+        # 🔴 La portée n'est PLUS « a une URL, ou n'est pas HTTP ». Mesuré sur
+        # une base réelle : un PBX Asterisk est `health_kind = http` SANS
+        # `server_url` et reçoit de vrais relevés d'un écrivain qui n'est pas
+        # ce cron. Il tombait hors de tous les chiffres, « services en panne »
+        # compris : s'il était tombé, aucun compteur ne l'aurait dit.
+        #
+        # Et les deux nombres doivent s'additionner : surveillés (éprouvés) +
+        # sans sonde = les fiches actives qu'on prétend surveiller. Avec
+        # l'ancienne portée, les dix-sept sondes de conteneur entraient dans
+        # « surveillés » avant d'avoir reçu un seul dépôt.
+        # ⚠️ `hs.active` : tout `search` de l'ORM écarte les archivées par
+        # défaut, le SQL brut non. Dix fiches `active = false` portent encore
+        # `state = 'active'` en production — elles entraient dans « surveillés »
+        # et dans « sans sonde ».
+        rendement = """
+              AND hs.active
+              AND NOT COALESCE(hs.health_exempt, false)
+        """
         self.env.cr.execute("""
             SELECT COUNT(*) FROM hosting_service hs
             CROSS JOIN LATERAL (
@@ -578,17 +627,48 @@ class HostingDashboard(models.AbstractModel):
                 ORDER BY hc.check_date DESC LIMIT 1
             ) latest
             WHERE hs.state = 'active'
-              AND hs.server_url IS NOT NULL AND hs.server_url != ''
-              AND latest.status != 'up'
+        """ + rendement + """
+              -- ⚠️ `unknown` n'est pas une panne du service : c'est la mesure
+              -- qui manque. Le compter ici ferait d'une panne de l'agent une
+              -- panne de dix-huit services.
+              AND latest.status NOT IN ('up', 'unknown')
         """)
         down_count = self.env.cr.fetchone()[0] or 0
 
+        # « Surveillés » = ce qui est réellement MESURÉ, pas ce qui porte une
+        # URL : c'est le seul sens qui fait de « surveillés + sans sonde » le
+        # parc entier.
+        self.env.cr.execute(
+            """SELECT COUNT(*) FROM hosting_service hs
+               WHERE hs.state = 'active'
+                 AND hs.health_coverage = 'probed'""" + rendement
+        )
+        monitored = self.env.cr.fetchone()[0] or 0
+
+        # 🔴 Le chiffre qui manquait au tableau : « 64 services surveillés »
+        # était exact pour les 64 qu'il regardait, et muet sur les 24 autres.
+        # Un décompte d'angles morts qui ne s'affiche nulle part ne corrige
+        # rien.
         self.env.cr.execute("""
             SELECT COUNT(*) FROM hosting_service
-            WHERE state = 'active'
-              AND server_url IS NOT NULL AND server_url != ''
+            WHERE state = 'active' AND active
+              AND health_coverage = 'no_data'
         """)
-        monitored = self.env.cr.fetchone()[0] or 0
+        unmonitored = self.env.cr.fetchone()[0] or 0
+
+        self.env.cr.execute("""
+            SELECT COUNT(*) FROM hosting_service hs
+            CROSS JOIN LATERAL (
+                SELECT status FROM hosting_health_check hc
+                WHERE hc.service_id = hs.id
+                  AND NOT hc.excluded_from_stats
+                ORDER BY hc.check_date DESC LIMIT 1
+            ) latest
+            WHERE hs.state = 'active'
+        """ + rendement + """
+              AND latest.status = 'unknown'
+        """)
+        unknown_count = self.env.cr.fetchone()[0] or 0
 
         return {
             "uptime_pct": uptime_pct,
@@ -596,6 +676,8 @@ class HostingDashboard(models.AbstractModel):
             "down_count": down_count,
             "total_checks_24h": total,
             "monitored_services": monitored,
+            "unmonitored_services": unmonitored,
+            "unknown_services": unknown_count,
         }
 
     @api.model
@@ -605,8 +687,8 @@ class HostingDashboard(models.AbstractModel):
         self.env.cr.execute("""
             WITH service_ids AS (
                 SELECT id FROM hosting_service
-                WHERE state = 'active'
-                  AND server_url IS NOT NULL AND server_url != ''
+                WHERE state = 'active' AND active
+                  AND NOT COALESCE(health_exempt, false)
             ),
             latest_check AS (
                 SELECT DISTINCT ON (service_id)
@@ -646,6 +728,7 @@ class HostingDashboard(models.AbstractModel):
                 WHERE hc.service_id IN (SELECT id FROM service_ids)
                   AND hc.check_date >= NOW() - INTERVAL '30 days'
                   AND NOT hc.excluded_from_stats
+                  AND hc.status != 'unknown'
                 GROUP BY hc.service_id
             )
             SELECT
@@ -673,8 +756,8 @@ class HostingDashboard(models.AbstractModel):
             LEFT JOIN hosting_software sw ON sw.id = hs.software_id
             LEFT JOIN latest_check lc ON lc.service_id = hs.id
             LEFT JOIN agg a ON a.service_id = hs.id
-            WHERE hs.state = 'active'
-              AND hs.server_url IS NOT NULL AND hs.server_url != ''
+            WHERE hs.state = 'active' AND hs.active
+              AND NOT COALESCE(hs.health_exempt, false)
             ORDER BY
                 CASE COALESCE(lc.status, 'unknown')
                     WHEN 'down' THEN 0
@@ -706,14 +789,27 @@ class HostingDashboard(models.AbstractModel):
                     fields.Datetime.to_string(r["last_check"])
                     if r["last_check"] else ""
                 ),
+                # 🔴 `0.0` pour une fenêtre VIDE se lit comme une panne
+                # totale, exactement comme 100,0 se lisait comme une bonne
+                # nouvelle. Aucun relevé, aucun chiffre : l'écran
+                # affiche un tiret.
+                #
+                # 🔴 Et `False`, pas `None` : cette charge part aussi par
+                # XML-RPC (les outils MCP, les skills), dont le sérialiseur
+                # d'Odoo REFUSE `None` — « cannot marshal None unless
+                # allow_none is enabled ». Le navigateur passe par JSON-RPC et
+                # accepte `null` : un parcours au navigateur vert ne dit rien
+                # du second transport. En Python, `0.0 is False` vaut faux,
+                # donc l'identité distingue encore « aucune mesure » de
+                # « zéro pour cent ».
                 "uptime_24h": (
-                    round((r["up_24h"] / t24) * 100, 1) if t24 else 0.0
+                    round((r["up_24h"] / t24) * 100, 1) if t24 else False
                 ),
                 "uptime_7d": (
-                    round((r["up_7d"] / t7) * 100, 1) if t7 else 0.0
+                    round((r["up_7d"] / t7) * 100, 1) if t7 else False
                 ),
                 "uptime_30d": (
-                    round((r["up_30d"] / t30) * 100, 1) if t30 else 0.0
+                    round((r["up_30d"] / t30) * 100, 1) if t30 else False
                 ),
                 "avg_response_ms": r["avg_response_ms"],
                 "total_checks_30d": t30,
@@ -756,7 +852,11 @@ class HostingDashboard(models.AbstractModel):
                     "timeout_count": 0,
                     "unknown_count": 0,
                     "worst_status": "up",
-                    "min_uptime_24h": 100.0,
+                    # 🔴 `False`, pas 100.0 : un groupe dont AUCUN service
+                    # n'a de relevé gardait 100 % et sortait en vert. Le défaut
+                    # d'origine, un étage plus haut, dans l'écran qu'on corrige.
+                    # (`False` et non `None` : XML-RPC refuse `None`.)
+                    "min_uptime_24h": False,
                     "max_avg_response_ms": 0,
                     "max_storage_pct": 0.0,
                     "has_issues": False,
@@ -769,7 +869,9 @@ class HostingDashboard(models.AbstractModel):
             g[f"{status}_count" if status in ("up", "degraded", "down", "timeout", "unknown") else "unknown_count"] += 1
             if status_rank.get(status, 5) < status_rank.get(g["worst_status"], 5):
                 g["worst_status"] = status
-            if svc["uptime_24h"] < g["min_uptime_24h"]:
+            if svc["uptime_24h"] is not False and (
+                    g["min_uptime_24h"] is False
+                    or svc["uptime_24h"] < g["min_uptime_24h"]):
                 g["min_uptime_24h"] = svc["uptime_24h"]
             if svc["avg_response_ms"] > g["max_avg_response_ms"]:
                 g["max_avg_response_ms"] = svc["avg_response_ms"]
@@ -779,11 +881,14 @@ class HostingDashboard(models.AbstractModel):
         for g in groups.values():
             g["has_issues"] = (
                 g["worst_status"] != "up"
-                or g["min_uptime_24h"] < 99.5
+                or (g["min_uptime_24h"] is not False
+                    and g["min_uptime_24h"] < 99.5)
                 or g["max_storage_pct"] >= 75.0
                 or g["max_avg_response_ms"] > threshold
             )
-            g["min_uptime_24h"] = round(g["min_uptime_24h"], 1)
+            g["min_uptime_24h"] = (
+                round(g["min_uptime_24h"], 1)
+                if g["min_uptime_24h"] is not False else False)
             g["max_storage_pct"] = round(g["max_storage_pct"], 1)
 
         # Sort: issues first (by worst status), then by software name
@@ -809,7 +914,13 @@ class HostingDashboard(models.AbstractModel):
                 active_domain + [("storage_alert", "=", True)]
             ),
             "health_issues": Service.search_count(
-                active_domain + [("is_service_up", "=", False)]
+                active_domain
+                + [("health_coverage", "=", "probed"),
+                   ("last_health_status", "in",
+                    ["down", "timeout", "degraded"])]
+            ),
+            "unmonitored": Service.search_count(
+                active_domain + [("health_coverage", "=", "no_data")]
             ),
         }
 

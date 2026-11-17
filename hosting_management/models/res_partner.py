@@ -75,9 +75,9 @@ class ResPartner(models.Model):
         compute="_compute_hosting_alerts",
     )
     # Les personnes qui reçoivent les avis de maintenance de ce client et qui, avec un
-    # compte portail, voient sa page d'état. Une liste tenue à la main : ni « tous les
-    # contacts » (un employé parti garde l'accès), ni le seul contact principal (un client
-    # n'a pas toujours de courriel sur la fiche de la société).
+    # compte portail, voient sa page d'état. Une liste tenue à la main :
+    # ni « tous les contacts » (un employé parti garde l'accès), ni le seul
+    # contact principal (cinq clients n'ont pas de courriel sur la fiche de la société).
     # 🔴 `groups=` sur le champ ET sur le nœud de vue : un interne sans le groupe doit
     # toujours ouvrir la fiche contact.
     # 🔴 `copy=False` : un Many2many se copie par défaut, et `copy_data` lit le champ. Copiable,

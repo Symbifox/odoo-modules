@@ -19,11 +19,11 @@ class TestFicheSansGroupe(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.sans = new_test_user(cls.env, login="essai_sans_groupe", groups="base.group_user,project.group_project_user")
-        cls.avec = new_test_user(cls.env, login="essai_avec_groupe", groups=f"base.group_user,project.group_project_user,{GROUPE}")
-        cls.client = cls.env["res.partner"].create({"name": "Client Essai Parc", "is_company": True, "has_sla": True})
-        cls.env["hosting.endpoint"].create({"name": "Poste Essai", "partner_id": cls.client.id})
-        cls.projet = cls.env["project.project"].create({"name": "Projet Essai Parc", "partner_id": cls.client.id})
+        cls.sans = new_test_user(cls.env, login="t26602_sans", groups="base.group_user,project.group_project_user")
+        cls.avec = new_test_user(cls.env, login="t26602_avec", groups=f"base.group_user,project.group_project_user,{GROUPE}")
+        cls.client = cls.env["res.partner"].create({"name": "Client t26602", "is_company": True, "has_sla": True})
+        cls.env["hosting.endpoint"].create({"name": "Poste t26602", "partner_id": cls.client.id})
+        cls.projet = cls.env["project.project"].create({"name": "Projet t26602", "partner_id": cls.client.id})
 
     def _ouvrir(self, user, record):
         """Ce que fait le client web : la vue du formulaire, puis la lecture de ses champs.

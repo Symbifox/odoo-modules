@@ -36,11 +36,69 @@ A comprehensive Odoo 18 module for managing hosting services, including version 
 - **Rapid Retry Confirmation**: On failure, immediately retries within 10 seconds (configurable count, default 3 checks) to filter transient glitches before alerting
 - **One transaction per service**: each result is committed on its own and replayed if a concurrent write on the service record collides with it, so a deployment touching one record no longer discards the whole pass
 - **Response Time Tracking**: Monitor response times and detect slow services
-- **Status Tracking**: Up, degraded, down, and timeout states with visual indicators
-- **30-Day Uptime Calculation**: Automatic uptime percentage based on health check history
+- **Status Tracking**: Online, degraded, offline, timed out, **unknown** (a reading is too old to mean anything) and **no reading** (nothing has ever measured this service), with visual indicators
+- **30-Day Uptime Calculation**: Automatic uptime percentage based on health check history. A service that nothing has ever measured shows **no** percentage rather than 100 %: an uptime of 100 % on an unprobed service reads as good news when it means "no data", which is worse than no figure at all
 - **Email Alerts**: Configurable email notifications for service outages and recoveries
 - **Push Notifications (ntfy)**: Instant push notifications via self-hosted ntfy server when services go down or recover
 - **Maintenance Window**: Suppress alerts (email and push) during scheduled maintenance periods (configurable start/end times and timezone)
+
+### What the Monitoring Measures (18.0.2.68.0)
+
+Monitoring used to answer "is it up?" with a single HTTP request, and a service with no URL
+simply had no answer — which the dashboard counted as up. A service is now described by
+**how** it is watched and by **whether** anything has measured it:
+
+- `health_kind` chooses the probe: **HTTP request**, **Docker container state**, **container
+  agent freshness**, and two semantic probes (softphone push wake-up, appointment change
+  notice). A service with nothing to query over HTTP is no longer a blind spot by default;
+- `health_coverage` says what is actually known: **Probed**, **No reading**, or **Not
+  applicable** — the last one only with a written reason, because an exemption without one is
+  how a real gap closes itself by mistake;
+- `last_health_status` gains **Unknown** (the reading is too old to mean anything) and **No
+  reading** (nothing has measured this service yet). The dashboard counts services without a
+  probe instead of diluting them into a percentage.
+
+**The container agent.** A container with no published port and no network in common with
+Odoo cannot be reached from Odoo, and giving Odoo a Docker socket would turn any Odoo flaw
+into root on the host. So the host speaks and Odoo listens: a timed agent posts the state of
+its containers to `/api/hosting/agent/containers/public`, guarded by its own token
+(`hosting.agent_api_token`), and a cron judges the deposit. Odoo never runs a command and
+never reaches out to the host.
+
+The route writes nothing but five fields, and only on service records that already asked for
+this probe (`health_kind = docker`, active, not exempt): it creates no service, archives
+none, and writes no health reading. Every value in the payload is constrained — the container
+name must match a pattern, the health must be one of a closed list, `running` must be a real
+boolean, the restart count is clamped and the detail truncated. The answer names only what
+the caller itself sent.
+
+Two things worth knowing before you deploy it:
+
+- **the token is required.** Until `hosting.agent_api_token` is set to something other than
+  `CHANGE_ME`, the route answers `503` and refuses the deposit;
+- **one token writes for the whole host.** The agent reports every container it sees, so the
+  deposit is matched across all companies. That is the intent — the operator of a host is one
+  party — but it means the token is as sensitive as the host itself.
+
+A **canary** cries once when the agent stops talking, rather than once per service: the
+freshness of the deposit is itself a probe (`container agent freshness`).
+
+### Push Priority Per Service (18.0.2.68.3)
+
+`health_ntfy_priority` sets how loudly a service's outage pushes: **By environment** (the
+default), **Urgent**, **High**, **Normal**, **Silent**, or **No push (email only)**. And
+`Ntfy.send()` now takes a topic, so a client service going down and a daily version report no
+longer have to arrive in the same place — which forced a choice between missing the first and
+enduring the second.
+
+### Addressing the Assignee (18.0.2.68.4)
+
+Activities and notices are written in the assignee's own language, in their own environment.
+The fallback used to be "the assignee, or else the current user", which could land on an
+account nobody reads: an archived account, a portal account, or a service account. It now
+walks to a live internal account, and the default owner of a service is no longer left to
+chance — the public provisioning route runs as the superuser, and services created through it
+had the superuser as their owner.
 
 ### Storage Monitoring
 - **Quota Tracking**: Set storage quotas and monitor usage for each service
@@ -725,6 +783,21 @@ Labels and messages are written in English in the source; the French ships in `i
 
 ## Changelog
 
+### Version 18.0.2.68.4
+- Fix: the assignee fallback for activities and notices never lands on an archived, portal or service account any more, and `hosting.service.user_id` no longer defaults to whoever the route runs as. See the "Addressing the Assignee" section.
+
+### Version 18.0.2.68.3
+- New: `health_ntfy_priority` per service, and `Ntfy.send()` accepts a topic so different kinds of alert can go to different places. See the "Push Priority Per Service" section.
+
+### Version 18.0.2.68.1
+- Fix: uptime for a window with no reading returned `None`, which Odoo's XML-RPC marshaller refuses — every XML-RPC reader of the dashboard raised, while a browser (JSON-RPC) accepted `null` and showed nothing wrong. It now returns `False`, which serialises, reads as false in JavaScript, and stays distinct from zero per cent.
+
+### Version 18.0.2.68.0
+- New: monitoring says what it measures. `health_kind` gains **Docker container state** and **container agent freshness**, `health_coverage` says whether a service is probed, unread or exempt (with a mandatory reason), and `last_health_status` gains **Unknown** and **No reading**. See the "What the Monitoring Measures" section.
+- New: the container agent deposit route `/api/hosting/agent/containers/public`, guarded by `hosting.agent_api_token`, with a canary that cries once when the agent falls silent.
+- Change: a service that nothing has ever measured no longer shows 100 % uptime. **Readers of these fields must be checked**: an unprobed service used to read as online.
+- Migration included: `health_coverage` and its siblings are stored computed fields, so Odoo does not recompute them because the code changed.
+
 ### Version 18.0.2.67.1
 - Fix: the "asked for by hand" flag was set on the legacy ZIP report route instead of the restic one, which is the only one the agent calls, so a backup asked for in the morning could still take the daily report's slot.
 
@@ -1040,7 +1113,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-11-02, this version converts automatically to
+- **Change Date**: on 2030-11-17, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Support

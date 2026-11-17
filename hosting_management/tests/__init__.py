@@ -18,3 +18,8 @@ from . import test_fusion_contacts
 from . import test_destinataires
 from . import test_backup_coverage
 from . import test_backup_request
+from . import test_sondes_conteneurs
+from . import test_route_agent
+from . import test_ntfy_priorite
+from . import test_assignee_vivant
+from . import test_avis_responsable_archive

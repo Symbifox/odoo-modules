@@ -5,10 +5,9 @@ Une fenêtre est une interruption PONCTUELLE qu'on annonce : un serveur, un déb
 un objet et un impact rédigés pour le client. Ce n'est pas une routine
 (`hosting.maintenance.schedule`) : celles-là sont internes et n'ont pas d'heure.
 
-L'outillage qui annonce une maintenance crée la fenêtre AVANT d'envoyer l'avis et en tire le
-contexte du gabarit (`_hosting_notice_context`) : la page d'état et le courriel lisent
-alors la même vérité. La sourdine quotidienne des alertes (`_is_in_maintenance_window`
-du service) est un autre mécanisme et ne lit pas ces fenêtres.
+Le skill `plan-maintenance-window` crée la fenêtre AVANT d'envoyer l'avis et en tire le
+contexte du gabarit (`_hosting_notice_context`) : la page d'état, le courriel et la
+suppression des alertes lisent alors la même vérité.
 
 🔴 L'objet et l'impact sont lus par TOUS les clients dont un service est touché (page d'état,
 avis). Ils ne nomment jamais un client ; les services, eux, sont filtrés par client au moment
@@ -33,7 +32,8 @@ def recharger_traduction_avis(env):
     traduction déjà en base reste celle d'avant (une mise à jour n'écrase pas une
     traduction existante), et l'avis partait en français SANS le paragraphe neuf. Ne
     recharger que ce gabarit, et pas tout le module, préserve les retouches faites en
-    base sur les autres.
+    base sur les autres (mesuré : aucune retouche sur celui-ci, chez les
+    trois locataires qui ont le français).
     """
     from odoo.tools.translate import TranslationImporter
 
@@ -190,7 +190,7 @@ class HostingMaintenanceWindow(models.Model):
         celles finies depuis moins de `horizon_days` jours. Lues en sudo par l'appelant."""
         limite = fields.Datetime.now() - timedelta(days=horizon_days)
         # Les services d'une fenêtre se calculent depuis le serveur : une fenêtre neuve,
-        # pas encore écrite, échappait à la recherche.
+        # pas encore écrite, échappait à la recherche (vu à l'essai).
         self.sudo().flush_model(["service_ids", "state", "date_end"])
         return self.sudo().search([
             ("state", "=", "announced"),

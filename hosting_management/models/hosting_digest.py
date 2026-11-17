@@ -154,9 +154,13 @@ class HostingDigest(models.Model):
             )
 
         if self.include_health_issues:
+            # 🔴 Depuis `is_service_up` est faux aussi pour un
+            # service que rien ne mesure, et pour un service dont l'agent ne
+            # dit plus rien : le digest aurait annoncé vingt-quatre pannes qui
+            # n'existent pas. Le digest juge donc sur l'état mesuré.
             data["health_issue_services"] = active_services.filtered(
-                lambda s: hasattr(s, "is_service_up")
-                and s.is_service_up is False
+                lambda s: s.health_coverage == "probed"
+                and s.last_health_status in ("down", "timeout", "degraded")
             )
 
         if self.include_maintenance_due:

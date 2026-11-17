@@ -6,13 +6,13 @@
 figés à la dernière écriture et c'est un cron horaire qui les rafraîchit. Deux
 choses peuvent casser sans faire de bruit, et ces tests couvrent les deux :
 
-* le cron cesse d'écrire vraiment (un recalcul qui n'atteint pas la base laisse
-  la lecture juste dans la transaction et la valeur périmée en base) ;
-* le cron tourne, mais pas assez souvent. Les valeurs deviennent fausses à minuit
-  dans le fuseau du serveur, et l'heure à laquelle un passage quotidien tombe
-  dépend de l'heure d'installation : il peut donc être faux la majeure partie de
-  la journée. Un test qui appelle la méthode ne voit rien de ce défaut-là, il
-  faut regarder la cadence du cron lui-même.
+* le cron cesse d'écrire vraiment (un ``_compute`` sans ``flush_recordset``
+  n'atteint pas la base : la lecture semble juste dans la transaction, et la
+  valeur en base reste périmée) ;
+* le cron tourne, mais à la mauvaise HEURE. Il a longtemps été ancré à 23:03 UTC,
+  soit 19:03 à Montréal : les valeurs redevenaient fausses à minuit local et le
+  restaient 19 heures par jour. Un test qui appelle la méthode ne voit rien de ce
+  défaut-là : il faut regarder ``nextcall``.
 """
 from datetime import timedelta
 
@@ -26,14 +26,14 @@ class TestMaintenanceDueIndicators(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.partner = cls.env["res.partner"].create({"name": "Client de test"})
+        cls.partner = cls.env["res.partner"].create({"name": "Client de test "})
         cls.software = cls.env["hosting.software"].create({
-            "name": "Logiciel de test",
-            "code": "TMAINT",
+            "name": "Logiciel de test ",
+            "code": "T24490",
             "software_type": "self_hosted",
         })
         cls.service = cls.env["hosting.service"].create({
-            "name": "Service de test",
+            "name": "Service de test ",
             "partner_id": cls.partner.id,
             "software_id": cls.software.id,
         })
@@ -45,7 +45,7 @@ class TestMaintenanceDueIndicators(TransactionCase):
         donc la dernière exécution d'un cycle complet avant la cible.
         """
         schedule = self.env["hosting.maintenance.schedule"].create({
-            "name": "Planification de test",
+            "name": "Planification de test ",
             "service_id": self.service.id,
             "frequency": "weekly",
             "last_performed": next_due - timedelta(weeks=1),
@@ -117,12 +117,12 @@ class TestMaintenanceDueIndicators(TransactionCase):
         """La cadence doit borner l'écart à moins d'une journée.
 
         Les indicateurs deviennent faux à minuit dans le fuseau du SERVEUR, celui
-        que suit ``fields.Date.today()`` : selon l'image, ce fuseau est UTC ou
-        un fuseau local, et le module ne peut rien en supposer. Un passage
-        quotidien n'est donc juste que de son heure de passage jusqu'à minuit,
-        et cette heure est celle où Odoo a ancré ``nextcall`` à l'installation.
-        Seule une cadence infra-journalière borne l'écart sans rien supposer du
-        déploiement.
+        que suit ``fields.Date.today()``, soit America/Montreal en production BF et UTC
+        sur le banc. Un passage quotidien ne peut donc pas être juste partout :
+        il l'est quelques minutes par jour et faux le reste du temps, selon
+        l'heure où Odoo a ancré ``nextcall`` à l'installation (23:03 UTC en prod,
+        soit 19:03 local, c'est le défaut de la ). Seule une cadence
+        infra-journalière borne l'écart sans rien supposer du déploiement.
         """
         periods = {
             "minutes": timedelta(minutes=1),

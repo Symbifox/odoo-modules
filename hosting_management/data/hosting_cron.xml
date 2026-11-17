@@ -178,22 +178,23 @@
              il faut ce passage pour qu'ils restent vrais.
 
              ⚠️ La CADENCE compte autant que l'existence du passage. Les deux
-             champs se comparent à fields.Date.today(), qui bascule à minuit
-             dans le fuseau du SERVEUR : beaucoup d'images Odoo tournent en UTC,
-             d'autres portent un fuseau local, et le module ne peut rien en
-             supposer. Odoo ancre par ailleurs nextcall à l'heure d'INSTALLATION,
-             qui peut tomber n'importe où dans la journée. Un passage quotidien
-             ancré après minuit local n'est donc juste que de son heure de
-             passage jusqu'à minuit, et faux tout le reste du temps.
+             champs se comparent à fields.Date.today(), qui suit le fuseau du
+             serveur, et ce fuseau varie d'un déploiement à l'autre : la prod
+             BF tourne en TZ=America/Montreal, le banc odoo-staging en UTC. Un
+             passage quotidien est donc juste au mieux quelques minutes par jour
+             et faux le reste du temps, selon l'heure à laquelle Odoo a ancré
+             nextcall à l'installation. Sur la prod BF, cet ancrage était tombé à
+             23:03 UTC (19:03 local) : les 103 planifications actives portaient
+             un days_until_due en retard d'un jour 19 heures sur 24.
 
-             Caler l'heure ne règle rien de portable : nextcall n'avance que par
-             pas de 24 h UTC, il glisse donc d'une heure à chaque changement
-             d'heure et peut repasser du mauvais côté de minuit. Un passage
-             HORAIRE supprime la question, l'écart restant borné à une heure quel
-             que soit le fuseau. Le coût est un UPDATE groupé par heure sur une
-             table déjà réécrite chaque jour.
+             Caler l'heure ne règle rien de portable : l'ancrage n'avance que par
+             pas de 24 h UTC, donc il glisse d'une heure à chaque changement
+             d'heure, et le bon créneau n'est pas le même à Montréal et en UTC.
+             Un passage HORAIRE supprime la question : quel que soit le fuseau,
+             l'écart reste borné à une heure. Le coût est une centaine de lignes
+             réécrites par heure sur une table déjà réécrite chaque jour.
              ⚠️ Ce fichier est noupdate="1" : sur une base déjà installée, le
-             record existant n'est PAS réécrit. Voir migrations/18.0.2.51.2. -->
+             record existant n'est PAS réécrit. Voir migrations/18.0.2.51.3. -->
         <record id="ir_cron_hosting_maintenance_refresh_due" model="ir.cron">
             <field name="name">Hosting: refresh due date indicators</field>
             <field name="model_id" ref="model_hosting_maintenance_schedule"/>

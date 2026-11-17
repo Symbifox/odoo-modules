@@ -5,9 +5,12 @@
         <field name="name">hosting.health.daily.snapshot.tree</field>
         <field name="model">hosting.health.daily.snapshot</field>
         <field name="arch" type="xml">
-            <list decoration-success="uptime_pct >= 99.5"
-                  decoration-warning="uptime_pct &gt;= 95 and uptime_pct &lt; 99.5"
-                  decoration-danger="uptime_pct &lt; 95">
+            <!-- Les trois décorations exigent `measured_count` : une journée
+                 où rien n'a pu être mesuré ne se peint ni en vert ni en rouge,
+                 parce que son pourcentage ne veut rien dire. -->
+            <list decoration-success="measured_count > 0 and uptime_pct >= 99.5"
+                  decoration-warning="measured_count &gt; 0 and uptime_pct &gt;= 95 and uptime_pct &lt; 99.5"
+                  decoration-danger="measured_count &gt; 0 and uptime_pct &lt; 95">
                 <field name="snapshot_date"/>
                 <field name="service_id"/>
                 <field name="partner_id" optional="show"/>
@@ -15,6 +18,8 @@
                 <field name="uptime_pct" widget="percentage" string="Uptime"/>
                 <field name="check_count" string="Checks"/>
                 <field name="up_count" string="Up" optional="hide"/>
+                <field name="measured_count" optional="show"/>
+                <field name="unknown_count" optional="show"/>
                 <field name="excluded_count" string="Excluded" optional="hide"/>
                 <field name="avg_response_ms" string="Average time (ms)" optional="show"/>
                 <field name="archive_filename" optional="hide"/>
@@ -30,12 +35,18 @@
                 <field name="service_id"/>
                 <field name="partner_id"/>
                 <field name="snapshot_date"/>
+                <!-- ⚠️ Les trois filtres exigent une MESURE : sans ça,
+                     « Below SLA » listait les journées où l'agent s'est tû,
+                     dans un registre permanent qu'on relit pour juger un
+                     service. -->
                 <filter string="100% uptime" name="filter_perfect"
-                        domain="[('uptime_pct', '=', 100)]"/>
+                        domain="[('measured_count', '&gt;', 0), ('uptime_pct', '=', 100)]"/>
                 <filter string="Degraded (&lt; 99.5%)" name="filter_degraded"
-                        domain="[('uptime_pct', '&lt;', 99.5)]"/>
+                        domain="[('measured_count', '&gt;', 0), ('uptime_pct', '&lt;', 99.5)]"/>
                 <filter string="Below SLA (&lt; 95%)" name="filter_under_sla"
-                        domain="[('uptime_pct', '&lt;', 95)]"/>
+                        domain="[('measured_count', '&gt;', 0), ('uptime_pct', '&lt;', 95)]"/>
+                <filter string="Not measured" name="filter_sans_mesure"
+                        domain="[('measured_count', '=', 0)]"/>
                 <separator/>
                 <filter string="Last 30 archived days" name="filter_recent"
                         domain="[('snapshot_date', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>

@@ -13770,3 +13770,341 @@ msgstr "Ce qui s'est passé"
 #: model_terms:ir.ui.view,arch_db:hosting_management.view_hosting_backup_request_form
 msgid "What was asked"
 msgstr "Ce qui a été demandé"
+
+# — sondes de conteneurs, et « sans relevé » au lieu de 100 %
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__health_kind
+msgid ""
+"\"HTTP request\" queries the URL and judges by the status code. \"Softphone "
+"push wake-up\" tests the wake-up chain end to end (switch, registered "
+"devices, token and ntfy server) without ringing any phone. \"Appointment "
+"change notice\" checks every day that everything due to go out to guests did"
+" go out, on both sides: the Odoo register and the copy in the remote "
+"calendar. \"Docker container state\" judges the facts the host agent reports"
+" about the container, for a service with nothing to query over HTTP. "
+"\"Container agent freshness\" is the canary of that agent: it watches the "
+"age of the readings instead of a service."
+msgstr "« Requête HTTP » interroge l'adresse et juge sur le code de statut. « Réveil push du softphone » éprouve la chaîne de réveil de bout en bout (interrupteur, appareils inscrits, jeton et serveur ntfy) sans faire sonner un seul appareil. « Avis de modification de rendez-vous » contrôle chaque jour que tout ce qui devait partir aux invités est bien parti, des deux côtés : le registre d'Odoo et la copie dans l'agenda distant. « État du conteneur Docker » juge les faits que l'agent de l'hôte rapporte du conteneur, pour un service qui n'a rien à interroger en HTTP. « Fraîcheur de l'agent de conteneurs » est le canari de cet agent : elle surveille l'âge des relevés plutôt qu'un service."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__health_coverage
+msgid ""
+"\"No reading\" means nothing has ever measured this service: its uptime and "
+"its online flag say nothing at all."
+msgstr "« Sans relevé » veut dire que rien n'a jamais mesuré ce service : sa disponibilité et son drapeau « en ligne » ne disent rien du tout."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid ""
+"%(muets)s of the %(count)s services covered by the container agent have no "
+"fresh reading: %(list)s"
+msgstr "%(muets)s des %(count)s services couverts par l'agent de conteneurs n'ont aucun relevé frais : %(list)s"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__uptime_30d_display
+msgid "30d uptime"
+msgstr "Disponibilité 30 j"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__agent_detail
+msgid "Agent detail"
+msgstr "Détail de l'agent"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__agent_report_at
+msgid "Agent reading"
+msgstr "Relevé de l'agent"
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_health_daily_snapshot__unknown_count
+msgid ""
+"Checks that measured nothing at all (the host agent said nothing). They "
+"count in neither side of the percentage."
+msgstr "Relevés qui n'ont rien mesuré du tout (l'agent de l'hôte n'a rien dit). Ils ne comptent ni d'un côté ni de l'autre du pourcentage."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid "Container %(container)s is not running: %(detail)s"
+msgstr "Le conteneur %(container)s ne tourne pas : %(detail)s"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid "Container %(container)s is running but its own probe says unhealthy."
+msgstr "Le conteneur %(container)s tourne, mais sa propre sonde le dit en défaut."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid ""
+"Container %(container)s is running. Its image declares no probe: liveness "
+"only, nothing is known about what it serves."
+msgstr "Le conteneur %(container)s tourne. Son image ne déclare aucune sonde : vivacité seulement, rien n'est connu de ce qu'il sert."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid "Container %(container)s is starting."
+msgstr "Le conteneur %(container)s démarre."
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_form
+msgid "Container agent"
+msgstr "Agent de conteneurs"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_kind__container_agent
+msgid "Container agent freshness"
+msgstr "Fraîcheur de l'agent de conteneurs"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid "Container check finished"
+msgstr "Contrôle du conteneur terminé"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__agent_container_running
+msgid "Container running"
+msgstr "Conteneur en marche"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_kind__docker
+msgid "Docker container state"
+msgstr "État du conteneur Docker"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__agent_container_health
+msgid "Docker probe"
+msgstr "Sonde Docker"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__agent_container_health__healthy
+msgid "Healthy"
+msgstr "Saine"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__health_coverage
+msgid "Monitoring"
+msgstr "Surveillance"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__health_exempt
+msgid "Monitoring not applicable"
+msgstr "Surveillance sans objet"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__agent_container_health__none
+msgid "No internal probe"
+msgstr "Aucune sonde interne"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_search
+msgid "No probe at all"
+msgstr "Aucune sonde"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_coverage__no_data
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__last_health_status__no_data
+msgid "No reading"
+msgstr "Sans relevé"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid "No reading from the container agent yet for %(container)s."
+msgstr "Aucun relevé de l'agent de conteneurs pour %(container)s."
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+msgid "No reading in this window"
+msgstr "Aucun relevé dans cette fenêtre"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid "No service is probed through the container agent yet."
+msgstr "Aucun service n'est encore éprouvé par l'agent de conteneurs."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_coverage__exempt
+msgid "Not applicable"
+msgstr "Sans objet"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid "Not monitored"
+msgstr "Non surveillé"
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__uptime_30d
+msgid ""
+"Only meaningful when Monitoring is \"Probed\": a service with no reading has"
+" no uptime, and this field then reads 0."
+msgstr "N'a de sens que si la surveillance est « Éprouvé » : un service sans relevé n'a pas de disponibilité, et ce champ rend alors 0."
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_coverage__probed
+msgid "Probed"
+msgstr "Éprouvé"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__agent_restart_count
+msgid "Restart count"
+msgstr "Redémarrages"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_dashboard.py:0
+msgid "Services without a probe"
+msgstr "Services sans sonde"
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_health_daily_snapshot__uptime_pct
+msgid ""
+"Share of the checks that measured something and found the service up. Only "
+"meaningful when \"Unmeasured checks\" is below \"Aggregated checks\": a day "
+"where nothing could be measured reads 0."
+msgstr "Part des relevés qui ont mesuré quelque chose et trouvé le service en marche. N'a de sens que si « Relevés sans mesure » est inférieur à « Relevés agrégés » : une journée où rien n'a pu être mesuré rend 0."
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__agent_container_health__starting
+msgid "Starting"
+msgstr "En démarrage"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid "State: %(state)s."
+msgstr "État : %(state)s."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid ""
+"The container agent has reported nothing for any of the %(count)s services "
+"it covers in the last %(limit)s min."
+msgstr "L'agent de conteneurs n'a rien rapporté pour aucun des %(count)s services qu'il couvre depuis %(limit)s min."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid ""
+"The container agent has said nothing about %(container)s for %(age)s min "
+"(limit %(limit)s): nothing is known about this service right now."
+msgstr "L'agent de conteneurs n'a rien dit de %(container)s depuis %(age)s min (limite %(limit)s) : on ne sait rien de ce service en ce moment."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__health_exempt
+msgid ""
+"This service cannot be probed as it stands (no container, no endpoint, "
+"external provider). It leaves the blind-spot count and never claims an "
+"uptime."
+msgstr "Ce service ne peut pas être éprouvé tel quel (aucun conteneur, aucun point d'entrée, fournisseur externe). Il sort du décompte des angles morts et n'annonce jamais de disponibilité."
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid ""
+"This service has no container name: the agent has nothing to report about "
+"it."
+msgstr "Ce service ne nomme aucun conteneur : l'agent n'a rien à en dire."
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__agent_container_health__unhealthy
+msgid "Unhealthy"
+msgstr "En défaut"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_health_daily_snapshot__unknown_count
+msgid "Unmeasured checks"
+msgstr "Relevés sans mesure"
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__agent_container_health
+msgid ""
+"What the container's own HEALTHCHECK says. \"No internal probe\" means the "
+"image declares none: the reading then only proves the container is running, "
+"nothing about what it serves."
+msgstr "Ce que dit le HEALTHCHECK du conteneur lui-même. « Aucune sonde interne » veut dire que l'image n'en déclare pas : le relevé ne prouve alors que la marche du conteneur, rien de ce qu'il sert."
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__agent_report_at
+msgid "When the host agent last reported this container."
+msgstr "Moment du dernier relevé de ce conteneur par l'agent de l'hôte."
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__health_exempt_reason
+msgid "Why not monitored"
+msgstr "Motif de l'absence de sonde"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_service.py:0
+msgid "no detail"
+msgstr "aucun détail"
+
+#. module: hosting_management
+#. odoo-python
+#: code:addons/hosting_management/models/hosting_health_daily_snapshot.py:0
+msgid "not measured"
+msgstr "non mesuré"
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+msgid "with no news"
+msgstr "sans nouvelles"
+
+#. module: hosting_management
+#. odoo-javascript
+#: code:addons/hosting_management/static/src/xml/hosting_dashboard.xml:0
+msgid "without a probe"
+msgstr "sans sonde"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__health_ntfy_priority
+msgid "Outage push (ntfy)"
+msgstr "Poussée ntfy en panne"
+
+#. module: hosting_management
+#: model:ir.model.fields,help:hosting_management.field_hosting_service__health_ntfy_priority
+msgid "Priority of the ntfy push when this service goes down. The alert email is always sent. \"By environment\": urgent in production, silent for staging, development and test. Below urgent, a failed night repair does not wake anyone either."
+msgstr "Priorité de la poussée ntfy quand ce service tombe. Le courriel d'alerte part toujours. « Selon l'environnement » : urgente en production, silencieuse pour la préproduction, le développement et les essais. Sous « urgente », une réparation de nuit ratée ne réveille personne non plus."
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_ntfy_priority__auto
+msgid "By environment"
+msgstr "Selon l'environnement"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_ntfy_priority__urgent
+msgid "Urgent push"
+msgstr "Poussée urgente"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_ntfy_priority__high
+msgid "High push"
+msgstr "Poussée haute"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_ntfy_priority__default
+msgid "Normal push"
+msgstr "Poussée normale"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_ntfy_priority__low
+msgid "Silent push"
+msgstr "Poussée silencieuse"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service__health_ntfy_priority__none
+msgid "No push (email only)"
+msgstr "Aucune poussée (courriel seul)"

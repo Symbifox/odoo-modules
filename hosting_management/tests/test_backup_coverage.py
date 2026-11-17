@@ -25,9 +25,9 @@ class TestBackupCoverage(TransactionCase):
         super().setUpClass()
         cls.partner = cls.env["res.partner"].create({"name": "Client Couverture"})
         cls.server = cls.env["hosting.server"].create({
-            "name": "essai-couverture",
+            "name": "banc-couverture",
             "code": "SRV-COUV",
-            "hostname": "essai-couverture.invalid",
+            "hostname": "banc-couverture.invalid",
         })
         cls.software = cls.env["hosting.software"].create({
             "name": "Produit Couverture", "code": "couv",
@@ -416,7 +416,7 @@ class TestWatchdogDiscovery(HttpCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.env["ir.config_parameter"].sudo().set_param(
-            "hosting.backup_api_token", "test-token-couverture"
+            "hosting.backup_api_token", "test-token-essai"
         )
 
     def _push(self, repos):
@@ -424,13 +424,13 @@ class TestWatchdogDiscovery(HttpCase):
             "/api/hosting/backup/watchdog/public",
             data=json.dumps({
                 "collected_iso": "2026-11-01T12:00:00Z",
-                "host": "essai",
+                "host": "banc",
                 "repos": repos,
                 "bucket": {"total_objects": 1, "total_bytes": 2},
             }).encode(),
             headers={
                 "Content-Type": "application/json",
-                "X-Backup-Token": "test-token-couverture",
+                "X-Backup-Token": "test-token-essai",
             },
         )
 
@@ -472,13 +472,13 @@ class TestWatchdogDiscovery(HttpCase):
             "/api/hosting/backup/watchdog/public",
             data=json.dumps({
                 "collected_iso": "2026-11-01T12:00:00Z",
-                "host": "essai",
+                "host": "banc",
                 "repos": "pas un objet",
                 "bucket": {},
             }).encode(),
             headers={
                 "Content-Type": "application/json",
-                "X-Backup-Token": "test-token-couverture",
+                "X-Backup-Token": "test-token-essai",
             },
         )
         self.assertEqual(resp.status_code, 200)
@@ -515,7 +515,7 @@ class TestWatchdogDiscovery(HttpCase):
     def test_a_report_timestamp_is_read_in_the_host_timezone(self):
         """L'hôte envoie son heure locale, Odoo range de l'UTC.
 
-        Mesuré sur une base réelle : les snapshots portaient 04:00:01 pendant que
+        mesuré : les snapshots portaient 04:00:01 pendant que
         le watchdog, lui en ISO, datait les mêmes sauvegardes de 09:00 UTC.
         Cinq heures d'écart, donc un « périmé » cinq heures trop tôt.
         """
@@ -527,7 +527,7 @@ class TestWatchdogDiscovery(HttpCase):
             data=json.dumps({
                 "report_type": "restic",
                 "timestamp": "2026-11-01 04:00:01",
-                "hostname": "essai-fuseau",
+                "hostname": "banc-fuseau",
                 "summary": {"total": 1, "success": 1, "failed": 0, "skipped": 0},
                 "results": [{
                     "service": "Essai fuseau",
@@ -542,12 +542,12 @@ class TestWatchdogDiscovery(HttpCase):
             }).encode(),
             headers={
                 "Content-Type": "application/json",
-                "X-Backup-Token": "test-token-couverture",
+                "X-Backup-Token": "test-token-essai",
             },
         )
         self.assertEqual(resp.status_code, 200, resp.text)
         run = self.env["hosting.backup.run"].search(
-            [("hostname", "=", "essai-fuseau")], limit=1
+            [("hostname", "=", "banc-fuseau")], limit=1
         )
         self.assertTrue(run)
         self.assertEqual(

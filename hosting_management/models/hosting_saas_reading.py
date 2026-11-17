@@ -12,15 +12,15 @@ Un relevé est donc un constat daté, pas une exécution : une ligne par périod
 par produit, avec ce que le fournisseur affirme lui-même sur chaque
 organisation. Il sert à trois choses :
 
-1. Voir venir la saturation d'une licence. Sur une base réelle, elle s'est
-   remplie jusqu'au dernier siège, et personne ne l'a vue passer.
+1. Voir venir la saturation d'une licence. Sur une base réelle, la trajectoire est
+   79 → 83 → 84 sièges utilisés sur 84, et personne ne l'a vue passer.
 2. Suivre le stockage, que rien d'autre ne mesure.
 3. **Recouper** : le fournisseur compte ses erreurs de son côté, on compte les
    nôtres depuis le journal. Deux sources qui divergent, ça se remarque.
 
 ⚠️ Le module ne lit aucun courriel. Il reçoit une charge normalisée, comme pour
-les exécutions. Un lecteur peut passer par `bf.email`, par IMAP ou par l'API
-de la console, sans rien changer ici.
+les exécutions. Chez Blue Fox le lecteur passe par `bf.email` ; ailleurs il
+passerait par IMAP ou par l'API de la console, sans rien changer ici.
 """
 
 import logging

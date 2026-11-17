@@ -174,7 +174,7 @@ class HostingVoipDid(models.Model):
     @api.model
     def _sync_dids(self, now):
         """Upsert des DID depuis getDIDsInfo. Jamais d'unlink : un DID disparu
-        passe à l'état ``inactive`` (cas d'un numéro déjà relâché)."""
+        passe à l'état ``inactive`` (cas vu en production)."""
         dids = self._voipms_fetch_dids()
         seen = set()
         count = 0
