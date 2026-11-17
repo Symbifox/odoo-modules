@@ -1,6 +1,10 @@
+import logging
 from datetime import timedelta
 
 from odoo import api, fields, models
+
+
+_logger = logging.getLogger(__name__)
 
 
 class PrivacyRetentionCalendar(models.Model):
@@ -177,6 +181,59 @@ class PrivacyRetentionCalendar(models.Model):
     def _compute_display_name(self):
         for record in self:
             record.display_name = f"[{record.code}] {record.name}" if record.code else record.name
+
+
+    # === La méthode LIVRÉE de CST-001 ===
+    #
+    # Valeur livrée jusqu'en 18.0.5.6.0 : « Anonymiser ». Depuis le lot de la
+    # 18.0.6.0.0, l'anonymiseur de `privacy.consent` lève toujours (son champ
+    # « Sujet » est obligatoire), donc cette règle faisait échouer la même ligne
+    # de campagne tous les mois sans que l'obligation soit jamais honorée.
+    _PRIVACY_DELIVERED_CONSENT_RULE = "privacy_consent.retention_calendar_consent_records"
+    _PRIVACY_DELIVERED_METHOD = "anonymize"
+
+    def _privacy_switch_delivered_consent_rule(self):
+        """Bascule « Anonymiser » vers « Supprimer », SANS toucher un choix du locataire.
+
+        Appelée sans enregistrement (depuis la migration 18.0.6.0.0), elle
+        résout la règle livrée CST-001 ; appelée sur `self`, elle traite ces
+        règles-là, ce qui la rend éprouvable sur des règles d'essai.
+
+        🔴 **Pourquoi la condition compte plus que la bascule.** Un locataire
+        qui a délibérément choisi « Révision manuelle » ou « Effacement
+        sécurisé » sur ses consentements ne doit pas voir sa décision réécrite
+        par une montée : la migration corrige un défaut LIVRÉ, elle n'impose pas
+        une politique. Seule la valeur livrée est touchée, et le reste est
+        journalisé tel quel.
+
+        ⚠ `final_disposition` suit la même règle, séparément : laisser « Sort
+        final : Anonymisation » à côté de « Méthode : Supprimer » donnerait une
+        règle qui se contredit à l'écran, et les vues du calendrier rangent et
+        filtrent par ce champ.
+        """
+        regles = self
+        if not regles:
+            regles = self.env.ref(
+                self._PRIVACY_DELIVERED_CONSENT_RULE, raise_if_not_found=False,
+            ) or self.browse()
+        touchees = self.browse()
+        for regle in regles.sudo():
+            if not regle.exists():
+                continue
+            vals = {}
+            if regle.destruction_method == self._PRIVACY_DELIVERED_METHOD:
+                vals["destruction_method"] = "delete"
+            if regle.final_disposition == self._PRIVACY_DELIVERED_METHOD:
+                vals["final_disposition"] = "destroy"
+            if not vals:
+                _logger.info(
+                    "privacy_consent : règle %s laissée telle quelle "
+                    "(méthode « %s », choisie par le locataire).",
+                    regle.code or regle.id, regle.destruction_method)
+                continue
+            regle.write(vals)
+            touchees |= regle
+        return touchees
 
     def action_view_classifications(self):
         """View documents classified under this calendar rule."""

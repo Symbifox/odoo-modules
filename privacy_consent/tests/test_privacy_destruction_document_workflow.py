@@ -18,11 +18,19 @@ class TestPrivacyDestructionDocumentWorkflow(TransactionCase):
 
         cls.officer_group = cls.env.ref("privacy_consent.group_privacy_officer")
         cls.manager_group = cls.env.ref("privacy_consent.group_privacy_manager")
+        # ⚠ `base.group_partner_manager` est indispensable :
+        # l'exécuteur contrôle le droit d'écriture sur la cible avant
+        # d'escalader en `sudo()`. Sans lui, le document est SAUTÉ, la demande
+        # ne détruit rien, et les deux essais qui attendent une entrée de
+        # registre passaient en mesurant une attestation à vide.
         cls.officer = cls.env["res.users"].create({
             "name": "Doc Officer",
             "login": "test_doc_officer",
             "email": "doc-officer@example.com",
-            "groups_id": [(4, cls.officer_group.id)],
+            "groups_id": [
+                (4, cls.officer_group.id),
+                (4, cls.env.ref("base.group_partner_manager").id),
+            ],
         })
         cls.manager_user = cls.env["res.users"].create({
             "name": "Doc Manager",
@@ -72,6 +80,11 @@ class TestPrivacyDestructionDocumentWorkflow(TransactionCase):
         initial = self.Register.search_count([])
         req.with_user(self.officer).action_execute()
         self.assertEqual(req.state, "executed")
+        # 🔴 L'entrée n'existe que parce que quelque chose a VRAIMENT
+        # été détruit. Sans cette ligne, l'essai repasse au vert le jour où le
+        # document est sauté, et il atteste de nouveau le vide.
+        self.assertEqual(req.destroyed_count, 1)
+        self.assertFalse(req.skipped_count)
         self.assertTrue(req.executed_at)
         self.assertTrue(req.verification_hash)
         self.assertEqual(self.Register.search_count([]) - initial, 1)
@@ -96,14 +109,14 @@ class TestPrivacyDestructionDocumentWorkflow(TransactionCase):
             req.with_user(plain).action_approve()
 
     def test_destruction_method_used_has_secure_wipe(self):
-        """destruction_method_used selection includes secure_wipe (fix #2)."""
+        """Destruction_method_used selection includes secure_wipe (fix #2)."""
         selection_vals = dict(
             self.Destruction._fields["destruction_method_used"]._description_selection(self.env)
         )
         self.assertIn("secure_wipe", selection_vals)
 
     def test_action_view_certificate_returns_report(self):
-        """action_view_certificate returns a report action (fix #4)."""
+        """Action_view_certificate returns a report action (fix #4)."""
         req = self._create_document_request()
         req.with_user(self.manager_user).action_approve()
         req.with_user(self.officer).action_execute()
@@ -138,6 +151,7 @@ class TestPrivacyDestructionDocumentWorkflow(TransactionCase):
         req = self._create_document_request()
         req.with_user(self.manager_user).action_approve()
         req.with_user(self.officer).action_execute()
+        self.assertEqual(req.destroyed_count, 1, "Rien détruit, rien certifié.")
         self.assertTrue(req.register_entry_ids)
         entry = req.register_entry_ids[0]
         self.assertEqual(entry.destruction_request_id, req)

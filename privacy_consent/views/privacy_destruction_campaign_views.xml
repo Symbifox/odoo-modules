@@ -75,6 +75,12 @@
                                            decoration-muted="state == 'skipped'"/>
                                     <field name="register_entry_id" optional="show"/>
                                     <field name="error_message" optional="hide"/>
+                                    <!-- 🔴 La portée et les champs que
+                                         la primitive a rendus, et que l'entrée
+                                         de registre reprend. -->
+                                    <field name="applied_label" optional="show"/>
+                                    <field name="applied_scope" optional="hide"/>
+                                    <field name="applied_fields" optional="hide"/>
                                     <button name="action_skip" type="object" string="Ignorer"
                                             icon="fa-ban" invisible="state != 'pending'"/>
                                 </list>

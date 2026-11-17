@@ -57,6 +57,21 @@
                             <field name="nextcloud_activity_id"/>
                         </group>
                     </group>
+                    <!-- 🔴 Ce que l'exécution a VRAIMENT fait, lisible
+                         dès l'état « approuvé », parce qu'une certification
+                         refusée laisse la demande dans cet état avec son
+                         journal. -->
+                    <group invisible="state not in ('approved', 'executed')"
+                           string="Ce que l'exécution a fait">
+                        <field name="applied_effects"/>
+                        <field name="execution_log"/>
+                        <field name="document_anonymized_fields"
+                               invisible="not document_anonymized_fields"/>
+                        <field name="consent_applied" invisible="not consent_applied"/>
+                        <field name="anonymized_fields" invisible="not anonymized_fields"/>
+                        <field name="consent_refused_reason"
+                               invisible="not consent_refused_reason"/>
+                    </group>
                     <notebook invisible="request_type == 'consent' and not register_entry_ids">
                         <page string="Documents classifiés" name="classifications"
                               invisible="request_type == 'consent'">

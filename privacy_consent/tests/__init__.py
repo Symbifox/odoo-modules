@@ -24,3 +24,4 @@ from . import test_lien_echu
 from . import test_mise_en_page
 from . import test_lien_prolonge_et_destinataires
 from . import test_rprp_designe
+from . import test_anonymisation_contrat

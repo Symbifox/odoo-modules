@@ -203,6 +203,51 @@
                     </div>
                 </div>
 
+                <!-- 🔴 Le refus se lit sur la
+                     PIÈCE, pas seulement dans la chaîne hachée ni en bas du
+                     journal. Même traitement en rouge que les documents non
+                     détruits, juste au-dessus. -->
+                <div class="row mb-4" t-if="o.state == 'executed' and o.consent_id and not o.consent_applied">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #c0392b; padding-bottom: 5px; color: #c0392b;">
+                            NON DÉTRUIT / NOT DESTROYED
+                        </h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td width="30%"><strong>Enregistrement de consentement / Consent record:</strong></td>
+                                <td><t t-esc="o.consent_id.display_name"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>État / State:</strong></td>
+                                <td>intact, aucun élément retiré / intact, nothing removed</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Motif / Reason:</strong></td>
+                                <td><t t-esc="o.consent_refused_reason or 'voir le journal, see execution log'"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 🔴 N6 : les catégories réellement atteintes. La liste
+                     vient de `_privacy_certificate_categories()`, la même méthode
+                     que le texte certifié et haché : deux sources pour la même
+                     affirmation divergeraient à la première correction, et c'est
+                     précisément ce qui a laissé ce PDF dire « Anonymisation »
+                     sans un mot du refus. -->
+                <div class="row mb-4" t-if="o.state == 'executed'">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
+                            Catégories de données détruites / Data categories destroyed
+                        </h5>
+                        <ul style="font-size: 11px;">
+                            <t t-foreach="o._privacy_certificate_categories()" t-as="categorie">
+                                <li><t t-esc="categorie[2:] if categorie[:2] == '- ' else categorie"/></li>
+                            </t>
+                        </ul>
+                    </div>
+                </div>
+
                 <!-- Registre de destruction / Destruction Register -->
                 <div class="row mb-4" t-if="o.register_entry_ids">
                     <div class="col-12">

@@ -2,7 +2,7 @@ import hashlib
 import logging
 from datetime import timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 from . import privacy_destruction_ops as destruction_ops
@@ -215,6 +215,55 @@ class PrivacyDestructionRequest(models.Model):
         copy=False,
         help="Ce que l'exécution a réellement fait, ligne par ligne, y compris les échecs.",
     )
+    # 🔴 Le journal dit tout, y compris les refus ; celui-ci ne garde que
+    # ce qui a VRAIMENT été détruit ou anonymisé. `action_execute` refuse de
+    # certifier quand il est vide : un certificat de destruction qui ne détruit
+    # rien est faux, et le registre ne se corrige pas.
+    applied_effects = fields.Text(
+        string="Effets réels",
+        readonly=True,
+        copy=False,
+        help="Ce qui a réellement été détruit ou anonymisé. Vide = rien à certifier.",
+    )
+    anonymized_fields = fields.Char(
+        string="Champs anonymisés (consentement)",
+        readonly=True,
+        copy=False,
+        help="Champs vidés par l'anonymisation du consentement visé. Repris par "
+             "le registre comme « Éléments détruits », sous une portée partielle.",
+    )
+    # 🔴 La portée partielle promise
+    # ne s'écrivait QUE depuis le consentement, dont l'anonymiseur lève
+    # toujours. Donc aucune demande n'écrivait jamais de portée partielle :
+    # cinq pièces jointes anonymisées donnaient une entrée en portée
+    # « entière ». Les champs vidés sur les DOCUMENTS se relèvent maintenant
+    # aussi, modèle par modèle.
+    document_anonymized_fields = fields.Char(
+        string="Champs anonymisés (documents)",
+        readonly=True,
+        copy=False,
+        help="Ce que l'anonymisation a retiré des documents classifiés, par "
+             "modèle. Repris par le registre comme « Éléments détruits ».",
+    )
+    # 🔴 Le certificat nommait « Enregistrement de
+    # consentement » dans les catégories détruites dès qu'un consentement était
+    # VISÉ, sans égard à ce qui lui était arrivé. Ces deux champs disent ce qui
+    # a été fait, et ce qui a été refusé, et le certificat les lit.
+    consent_applied = fields.Char(
+        string="Effet sur le consentement",
+        readonly=True,
+        copy=False,
+        help="Ce que l'exécution a réellement fait du consentement visé. "
+             "Vide = rien, et le certificat ne le compte donc pas comme détruit.",
+    )
+    consent_refused_reason = fields.Text(
+        string="Consentement non détruit, motif",
+        readonly=True,
+        copy=False,
+        help="Pourquoi le consentement visé n'a rien perdu : refus motivé de "
+             "son anonymiseur, ou méthode qui ne retire rien (archivage). "
+             "Imprimé au certificat, section « NON DÉTRUIT ».",
+    )
 
     # Company
     company_id = fields.Many2one(
@@ -368,7 +417,79 @@ class PrivacyDestructionRequest(models.Model):
                 "pi_categories": request.purpose_id.name or "",
             } if request.consent_id else None
 
+            # 🔴 La garde ci-dessous lit TROIS
+            # compteurs STOCKÉS (`applied_effects`, `skipped_count`,
+            # `destroyed_count`), et leur `readonly` ne vaut qu'à l'écran : un
+            # `destroyed_count` posé par RPC avant l'exécution ferait certifier
+            # une demande qui n'a rien touché. On les remet à zéro ici, donc ce
+            # que la garde lit ensuite a été écrit par CETTE exécution, et par
+            # elle seule. Même raison pour les deux listes de résultat, que le
+            # certificat imprime et que le registre lit : seules les CIBLES
+            # (`classification_ids`) sont conservées.
+            # ⚠ Durcissement, pas une brèche connue : exécuter demande l'état
+            # « approuvée » et le groupe du responsable de la vie privée. Mais
+            # c'est l'invariant porteur du lot, et un invariant qui repose sur
+            # un champ inscriptible ne tient que par convention.
+            request.write({
+                "execution_log": False,
+                "applied_effects": False,
+                "anonymized_fields": False,
+                "document_anonymized_fields": False,
+                "consent_applied": False,
+                "consent_refused_reason": False,
+                "destroyed_count": 0,
+                "skipped_count": 0,
+                "destroyed_classification_ids": [(5, 0, 0)],
+                "skipped_classification_ids": [(5, 0, 0)],
+            })
+
             request._execute_destruction(method)
+
+            # 🔴 Rien détruit, rien certifié. Le cas mesuré : un « droit
+            # à l'oubli » sur une fiche sans classification et sans consentement
+            # ne touchait aucun champ de la fiche, et rendait quand même un
+            # certificat intitulé « CERTIFICAT DE DESTRUCTION » plus une entrée de
+            # registre scellée. La levée annule aussi ce qui aurait été fait à
+            # moitié : ou bien la demande a un effet ET une pièce, ou bien ni
+            # l'un ni l'autre.
+            # ⚠ « Manuelle » et « Archivage » sont exemptées : elles ne
+            # prétendent rien détruire. La première programme une revue
+            # humaine, la seconde met de côté en conservant tout. Elles
+            # n'écrivent plus RIEN au registre (règle retenue du
+            # 2026-11-15, voir `_privacy_removed_something`), donc leur
+            # exécution ne peut plus rien attester de faux ; la refuser
+            # bloquerait une mise de côté parfaitement légitime, jour après
+            # jour, par le cron.
+            # ⚠ Et un document SAUTÉ n'est pas « rien » : depuis la garde du socle le
+            # certificat porte une section « Documents NON détruits » qui le dit,
+            # et la demande garde son journal. Ce qu'on refuse, c'est la demande
+            # qui n'a RIEN tenté : ni document ciblé, ni consentement, ni
+            # identifiant. C'est le cas mesuré du « droit à l'oubli » sur une
+            # fiche sans classification.
+            # 🔴 `destroyed_count` fait partie du test depuis l'origine : un
+            # document dont la CIBLE avait déjà disparu entre
+            # dans les détruits (branche « DÉJÀ ABSENT ») sans entrer dans les
+            # effets, et sans être sauté. La demande n'avait donc ni effet ni
+            # saut, la garde levait, et le `rollback` de la levée annulait une
+            # destruction qui venait de réussir, le cas d'un pont qui
+            # supprime vraiment avant de relayer à `super()`, ou d'une cible
+            # supprimée à la main avant l'exécution. Le droit n'était jamais
+            # honoré et le cron rejouait l'échec chaque jour. Un document
+            # ciblé dont la cible avait disparu EST une tentative.
+            if (method not in ("manual", "archive")
+                    and not request.applied_effects
+                    and not request.skipped_count
+                    and not request.destroyed_count):
+                raise UserError(_(
+                    "La demande %(num)s n'a rien détruit et n'a rien tenté : "
+                    "aucun document ciblé, aucun consentement, aucun "
+                    "identifiant. Rien ne sera certifié et rien ne sera inscrit "
+                    "au registre, parce qu'un certificat de destruction qui ne "
+                    "détruit rien est faux et qu'il ne se corrige "
+                    "pas.\n\nJournal d'exécution :\n%(journal)s",
+                    num=request.certificate_number or request.id,
+                    journal=request.execution_log or _("(vide)"),
+                ))
 
             # ⚠ L'ORDRE COMPTE. Le certificat était scellé AVANT ce write, donc il
             # tombait sur `executed_at` vide et `destruction_method_used` vide, et
@@ -384,10 +505,39 @@ class PrivacyDestructionRequest(models.Model):
             # Generate certificate
             request._generate_certificate()
 
-            # Create register entry
-            self.env["privacy.destruction.register"].create_from_destruction_request(
-                request, consent_snapshot=consent_snapshot,
-            )
+            # 🔴 Règle retenue du 2026-11-15 : une exécution qui
+            # n'a RIEN retiré n'écrit RIEN au registre. Trois chemins
+            # écrivaient encore une entrée sans avoir rien retiré :
+            # « Archivage », « Manuelle », et la demande en « Anonymisation »
+            # dont TOUS les documents ont été refusés (fiche porteuse d'une
+            # pièce comptable ou d'un compte usager, donc les deux refus que ce
+            # lot ajoute). La dernière passait la garde ci-dessus par son
+            # `skipped_count`, n'avait touché à rien, et scellait une entrée en
+            # portée « entière » : sur un
+            # chemin que ce lot a créé.
+            # Un registre dont certaines entrées n'attestent aucune destruction
+            # perd la propriété qui le rend probant, « une entrée, une
+            # destruction ». La trace reste au journal d'exécution, au fil de la
+            # demande et à l'activité de revue, qui sont auditables ET
+            # corrigeables, contrairement à la table scellée.
+            if request._privacy_removed_something():
+                self.env["privacy.destruction.register"].create_from_destruction_request(
+                    request, consent_snapshot=consent_snapshot,
+                )
+            else:
+                request._privacy_log(_(
+                    "REGISTRE : aucune entrée. Cette exécution n'a rien "
+                    "retiré. La trace reste ici, au fil de la demande et à "
+                    "l'activité de revue, qui se corrigent ; le registre, "
+                    "lui, ne se corrige pas."))
+                request.message_post(
+                    body=_(
+                        "Aucune entrée au registre de destruction : cette "
+                        "exécution n'a RIEN retiré. Le journal d'exécution "
+                        "dit ce qui a été fait, et il se corrige ; une entrée "
+                        "de registre, non."),
+                    message_type="notification",
+                )
 
             request.message_post(
                 body=f"Destruction exécutée avec la méthode : {method}",
@@ -432,16 +582,36 @@ class PrivacyDestructionRequest(models.Model):
         # 1. Handle consent record
         if consent:
             if method == "anonymize":
-                consent.write({
-                    "notes": f"[ANONYMISÉ] Notes originales supprimées le {fields.Date.today()}",
-                    "active": False,
-                })
-                # Clear evidence files
-                if hasattr(consent, 'evidence_ids') and consent.evidence_ids:
-                    consent.evidence_ids.write({
-                        "attachment_file": False,
-                        "note": "[ANONYMISÉ]",
-                    })
+                # 🔴 Cette branche écrivait elle-même « [ANONYMISÉ] »
+                # dans les notes et archivait le consentement. Or
+                # `subject_partner_id` est OBLIGATOIRE : la personne restait
+                # désignée par une clé étrangère vivante, et le registre scellait
+                # pourtant une anonymisation. Mesuré sur une base réelle, plusieurs
+                # attestations dans ce cas.
+                #
+                # Le consentement déclare maintenant son refus motivé
+                # (`_privacy_anonymize`), et on CONSIGNE ce refus au lieu
+                # d'abandonner la demande entière : les documents anonymisés plus
+                # haut restent acquis, et la garde d'`action_execute` refusera de
+                # certifier s'il ne s'est rien passé du tout.
+                try:
+                    with self.env.cr.savepoint():
+                        applied = destruction_ops.destroy_record(consent, "anonymize")
+                except UserError as exc:
+                    # ⚠ Le motif est AUSSI gardé dans un champ : le certificat
+                    # n'imprime pas le journal, et sans ce champ il taisait un
+                    # refus qu'il comptait pourtant parmi les catégories
+                    # détruites.
+                    self.consent_refused_reason = str(exc)
+                    self._privacy_log(_("CONSENTEMENT NON anonymisé — %s", exc))
+                else:
+                    self.anonymized_fields = applied.fields
+                    self.consent_applied = applied.label
+                    self._privacy_log(
+                        _("CONSENTEMENT %(nom)s : %(fait)s",
+                          nom=consent.display_name, fait=applied.label),
+                        effet=True,
+                    )
 
             elif method in ("delete", "secure_wipe"):
                 # 🔴 Troisième copie du même défaut, sur l'objet le plus
@@ -456,14 +626,45 @@ class PrivacyDestructionRequest(models.Model):
                 if hasattr(consent, "evidence_ids") and consent.evidence_ids:
                     for evidence in consent.evidence_ids:
                         destruction_ops.destroy_record(evidence, "delete")
-                destruction_ops.destroy_record(consent, method)
+                # ⚠ Le nom se lit AVANT l'unlink : après, le recordset est vide.
+                nom_consentement = consent.display_name
+                applied = destruction_ops.destroy_record(consent, method)
+                self.consent_applied = applied.label
+                self._privacy_log(
+                    _("CONSENTEMENT %(nom)s : %(fait)s",
+                      nom=nom_consentement, fait=applied.label),
+                    effet=True,
+                )
 
             elif method == "archive":
-                consent.write({"active": False})
+                # Par la primitive, comme les autres : elle archive et nomme ce
+                # qu'elle a fait, sans prétendre détruire. ⚠ `consent_applied`
+                # reste VIDE : l'archivage ne retire rien, donc le certificat
+                # ne doit pas compter le consentement parmi les catégories
+                # détruites. Il le dira sous « NON DÉTRUIT », avec le motif.
+                # 🔴 Et le journal ne consigne PAS d'effet réel : cette branche était le TROISIÈME écrivain du
+                # registre, et le seul qui ne lisait pas `removed`. Elle
+                # remplissait `applied_effects`, donc la garde de
+                # certification passait et une entrée immuable se scellait
+                # pour une opération dont la primitive dit qu'elle n'a RIEN
+                # retiré. Sans effet, `_privacy_removed_something()` est faux
+                # et le registre ne reçoit rien ; la garde de certification
+                # exempte « Archivage », qui ne prétend rien détruire.
+                applied = destruction_ops.destroy_record(consent, "archive")
+                self.consent_refused_reason = _(
+                    "Méthode « Archivage » : le consentement est mis de côté, "
+                    "rien n'a été retiré.")
+                self._privacy_log(
+                    _("CONSENTEMENT %(nom)s : %(fait)s",
+                      nom=consent.display_name, fait=applied.label),
+                )
 
         # 2. Destroy credentials (if project_knowledge_matrix is installed)
         credentials_count = self._destroy_partner_credentials(partner)
         self.credentials_destroyed = credentials_count
+        if credentials_count:
+            self._privacy_log(
+                _("IDENTIFIANTS effacés : %s", credentials_count), effet=True)
 
         # 3. Create Nextcloud deletion activity
         self._create_nextcloud_deletion_activity(partner)
@@ -475,6 +676,45 @@ class PrivacyDestructionRequest(models.Model):
                 note=f"Révision manuelle de destruction requise pour {partner.name}",
                 user_id=self.env.user.id,
             )
+
+    def _privacy_removed_something(self):
+        """Cette exécution a-t-elle VRAIMENT retiré quelque chose ?
+
+        🔴 **Règle retenue.** C'est la condition pour
+        écrire au registre immuable. Deux sources, et deux seulement :
+
+        * ``applied_effects``, que seuls les gestes qui ont retiré quelque
+          chose alimentent (``_privacy_log(..., effet=True)``) : un document
+          anonymisé ou supprimé, un consentement supprimé ou anonymisé, des
+          identifiants effacés. « Archivage » et « Manuelle » n'y entrent pas,
+          la primitive déclarant ``removed=False`` ;
+        * ``destroyed_count``, pour le seul cas où la cible a disparu AVANT
+          l'exécution (branche « DÉJÀ ABSENT »). L'enregistrement n'existe
+          plus, l'obligation est honorée, et la raison dite plus haut dit pourquoi refuser cela annulerait une destruction
+          réussie. L'entrée atteste alors une absence vraie.
+
+        ⚠ Ce qui continue d'écrire : une demande qui a détruit ne serait-ce
+        qu'un document, même si d'autres ont été sautés. Le certificat nomme
+        l'échec dans sa section « Documents NON détruits » depuis la garde du socle, et
+        une destruction partielle est une destruction.
+        """
+        self.ensure_one()
+        return bool(self.applied_effects) or bool(self.destroyed_count)
+
+    def _privacy_log(self, ligne, effet=False):
+        """Ajoute une ligne au journal d'exécution, et au besoin aux effets réels.
+
+        ⚠ Lecture, modification, écriture : le volet consentement s'exécute
+        APRÈS le volet documentaire, qui a déjà écrit son journal. Un `write`
+        sec effacerait ce qu'il vient d'y mettre.
+        """
+        self.ensure_one()
+        vals = {"execution_log": "\n".join(
+            p for p in (self.execution_log, ligne) if p)}
+        if effet:
+            vals["applied_effects"] = "\n".join(
+                p for p in (self.applied_effects, ligne) if p)
+        self.write(vals)
 
     def _execute_document_destruction(self, method):
         """Execute destruction for classified documents.
@@ -501,6 +741,16 @@ class PrivacyDestructionRequest(models.Model):
         destroyed = self.env["privacy.document.classification"]
         skipped = self.env["privacy.document.classification"]
         log_lines = []
+        # 🔴 Ce qui a VRAIMENT été détruit, pour la garde de
+        # certification. Un document « déjà absent » n'y entre pas : il n'y a
+        # rien à certifier d'une destruction que cette demande n'a pas faite.
+        effets = []
+        # 🔴 Les champs vidés, par modèle, pour que l'entrée de
+        # registre déclare la portée partielle promise. Sans eux,
+        # cinq pièces jointes anonymisées s'inscrivaient en portée
+        # « entière », dont l'aide dit « affirme que l'enregistrement visé
+        # n'existe plus ».
+        champs_par_modele = {}
 
         def _skip(classification, reason):
             nonlocal skipped
@@ -574,13 +824,38 @@ class PrivacyDestructionRequest(models.Model):
                 _skip(classification, f"destruction en échec : {exc}")
                 continue
 
+            # 🔴 Rien détruit, rien certifié ici aussi, et pas
+            # seulement à la certification de la demande. `archive` et `manual`
+            # ne retirent RIEN : les compter parmi les détruits archivait la
+            # classification, qui devenait invisible aux campagnes suivantes,
+            # et le journal écrivait « DÉTRUIT (aucune opération
+            # automatique) ». Le document tombe donc parmi les NON détruits,
+            # avec le motif, et sa classification reste active.
+            if not applied.removed:
+                _skip(classification, "%s : rien n'a été retiré, donc rien "
+                                      "n'est certifié" % applied.label)
+                continue
+
+            # 🔴 Le nom se relit APRÈS l'anonymisation. La
+            # classification fige `res_name` au classement, et le certificat
+            # comme les vues le reprennent : sur une fiche anonymisée, le nom
+            # d'avant survivait à son propre effacement.
+            if applied.scope == "partial":
+                destruction_ops.refresh_res_name(record, classification)
+                champs_par_modele.setdefault(classification.res_model, set()).update(
+                    c.strip() for c in (applied.fields or "").split(",") if c.strip()
+                )
+
             # Deactivate classification
             classification.write({"active": False})
             destroyed |= classification
-            log_lines.append(
-                f"DÉTRUIT ({applied}) — {classification.display_name or classification.id} "
+            ligne = (
+                f"DÉTRUIT ({applied.label}) — "
+                f"{classification.display_name or classification.id} "
                 f"({classification.res_model},{classification.res_id})"
             )
+            log_lines.append(ligne)
+            effets.append(ligne)
 
         self.write({
             "destroyed_classification_ids": [(6, 0, destroyed.ids)],
@@ -588,6 +863,11 @@ class PrivacyDestructionRequest(models.Model):
             "destroyed_count": len(destroyed),
             "skipped_count": len(skipped),
             "execution_log": "\n".join(log_lines) or "Aucun document ciblé.",
+            "applied_effects": "\n".join(effets),
+            "document_anonymized_fields": "; ".join(
+                "%s : %s" % (modele, ", ".join(sorted(champs)))
+                for modele, champs in sorted(champs_par_modele.items()) if champs
+            ),
         })
 
         # Un échec partiel ne doit pas se lire seulement dans le journal du serveur :
@@ -808,6 +1088,70 @@ class PrivacyDestructionRequest(models.Model):
         recomputed = hashlib.sha256(self.certificate_content.encode()).hexdigest()
         return recomputed == self.verification_hash
 
+    def _privacy_certificate_categories(self):
+        """La liste des catégories atteintes, UNE seule fois pour deux sorties.
+
+        🔴 Le correctif C2 n'atteignait pas le
+        document livré : `certificate_content` n'est affiché par aucune vue et
+        imprimé par aucun rapport, donc la catégorie corrigée et la section
+        « NON DÉTRUIT » ne vivaient que dans la chaîne HACHÉE. Le PDF, lui,
+        imprimait « Référence du consentement » puis « Méthode :
+        Anonymisation », sans un mot du refus. La seule atténuation était
+        `execution_log`, imprimé en bas de page.
+
+        ⚠ La liste vit ICI, et non recopiée dans le gabarit QWeb : deux sources
+        pour la même affirmation divergent à la première correction, et c'est
+        exactement ce que ce constat décrit. Le texte haché et le PDF lisent donc la
+        même méthode.
+        """
+        self.ensure_one()
+        # ⚠ Cette liste était STATIQUE : elle certifiait la destruction
+        # d'identifiants de projet et de fichiers Nextcloud même quand rien de tel
+        # n'avait été touché — et sur cette instance `project.credential` n'existe
+        # pas, donc la ligne était fausse à 100 %. On n'énumère plus que ce qui a
+        # effectivement été atteint.
+        categories = []
+        # 🔴 La catégorie se lit sur l'EFFET, pas sur la cible. Un
+        # consentement VISÉ dont l'anonymisation a été refusée reste actif,
+        # notes intactes : le certificat ne peut pas le compter parmi les
+        # données détruites. `consent_applied` n'est renseigné que par une
+        # opération qui a vraiment retiré quelque chose, donc il vaut aussi pour
+        # une suppression réussie, après laquelle `consent_id` est vide.
+        if self.consent_applied:
+            categories.append(
+                "- Enregistrement de consentement / Consent record"
+            )
+        if self.destroyed_count:
+            categories.append(
+                f"- Documents classifiés ({self.destroyed_count}) / "
+                f"Classified documents ({self.destroyed_count})"
+            )
+        if self.credentials_destroyed:
+            categories.append(
+                f"- Identifiants de projet ({self.credentials_destroyed}) : mots de passe, "
+                f"clés API, fichiers de clés / Project credentials "
+                f"({self.credentials_destroyed})"
+            )
+        if self.nextcloud_activity_id:
+            categories.append(
+                "- Fichiers Nextcloud : SUPPRESSION MANUELLE EN ATTENTE, non encore "
+                "effectuée / Nextcloud files: MANUAL DELETION PENDING, not yet performed"
+            )
+        if not categories:
+            categories.append(
+                "- Aucune catégorie de données n'a été atteinte par cette exécution. / "
+                "No data category was reached by this execution."
+            )
+        # Le stockage objet n'est relié à aucun chemin de destruction : `privacy_consent`
+        # ne dépend pas de `bf_securetransfer` et n'appelle jamais `_purge_s3()`.
+        # Tant que la portée de la purge n'est pas tranchée, le certificat le DIT
+        # au lieu de laisser croire le contraire par omission.
+        categories.append(
+            "- Stockage objet (transferts sécurisés S3) : NON TOUCHÉ par cette "
+            "destruction. / Object storage (secure transfers, S3): NOT AFFECTED."
+        )
+        return categories
+
     def _build_certificate_content(self):
         """Build certificate content for hash and PDF."""
         self.ensure_one()
@@ -858,46 +1202,22 @@ Documents NON détruits / Documents NOT destroyed: {self.skipped_count}
                     "⚠ PARTIAL destruction — see execution log.\n"
                 )
 
-        # ⚠ Cette liste était STATIQUE : elle certifiait la destruction
-        # d'identifiants de projet et de fichiers Nextcloud même quand rien de tel
-        # n'avait été touché — et sur cette instance `project.credential` n'existe
-        # pas, donc la ligne était fausse à 100 %. On n'énumère plus que ce qui a
-        # effectivement été atteint.
-        categories = []
-        if self.consent_id:
-            categories.append(
-                "- Enregistrement de consentement / Consent record"
-            )
-        if self.destroyed_count:
-            categories.append(
-                f"- Documents classifiés ({self.destroyed_count}) / "
-                f"Classified documents ({self.destroyed_count})"
-            )
-        if self.credentials_destroyed:
-            categories.append(
-                f"- Identifiants de projet ({self.credentials_destroyed}) : mots de passe, "
-                f"clés API, fichiers de clés / Project credentials "
-                f"({self.credentials_destroyed})"
-            )
-        if self.nextcloud_activity_id:
-            categories.append(
-                "- Fichiers Nextcloud : SUPPRESSION MANUELLE EN ATTENTE, non encore "
-                "effectuée / Nextcloud files: MANUAL DELETION PENDING, not yet performed"
-            )
-        if not categories:
-            categories.append(
-                "- Aucune catégorie de données n'a été atteinte par cette exécution. / "
-                "No data category was reached by this execution."
-            )
-        # Le stockage objet n'est relié à aucun chemin de destruction : `privacy_consent`
-        # ne dépend pas de `bf_securetransfer` et n'appelle jamais `_purge_s3()`.
-        # Tant que la portée de la purge n'est pas tranchée, le certificat le DIT
-        # au lieu de laisser croire le contraire par omission.
-        categories.append(
-            "- Stockage objet (transferts sécurisés S3) : NON TOUCHÉ par cette "
-            "destruction. / Object storage (secure transfers, S3): NOT AFFECTED."
-        )
-        categories_section = "\n".join(categories) + "\n"
+        # 🔴 Le certificat DIT ce qui a été refusé. Il n'imprime ni
+        # le journal d'exécution ni les effets réels, donc la ligne
+        # « CONSENTEMENT NON anonymisé » ne paraissait nulle part, et le
+        # responsable lisait une attestation muette sur le seul enregistrement
+        # qui n'avait pas bougé.
+        if self.consent_id and not self.consent_applied:
+            outcome_section += f"""
+NON DÉTRUIT / NOT DESTROYED
+-----------------------------
+Enregistrement de consentement / Consent record: {self.consent_id.display_name}
+État / State: intact, aucun élément retiré / intact, nothing removed
+Motif / Reason: {self.consent_refused_reason or 'voir le journal, see execution log'}
+"""
+
+        categories_section = "\n".join(
+            self._privacy_certificate_categories()) + "\n"
 
         content = f"""
 CERTIFICAT DE DESTRUCTION / DESTRUCTION CERTIFICATE

@@ -3,7 +3,7 @@ import hashlib
 import json
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -359,3 +359,37 @@ class PrivacyConsentEvidence(models.Model):
         except Exception:
             _logger.exception("Failed to sign PDF")
             return None
+
+    def _privacy_anonymize(self):
+        """Une preuve de consentement : le fichier, la note et les traces techniques.
+
+        L'adresse IP, l'agent utilisateur, la langue acceptée et
+        la provenance sont des renseignements personnels à part entière : la
+        version d'avant ne vidait que le fichier et la note, par la branche
+        inline de `_execute_destruction`.
+
+        🔴 **`consent_snapshot` et `digital_signature`**. L'instantané est un JSON écrit par
+        `create_from_http_request`, et il porte `"subject":
+        consent.subject_partner_id.name` : le NOM de la personne, en clair, dans
+        le champ que la version d'avant laissait intact. C'est l'argument qui
+        fait REFUSER l'anonymisation d'un `privacy.consent` (son sujet reste
+        désigné), appliqué à sa preuve avec la conclusion inverse. La signature
+        RSA du PDF, elle, scelle un document qui nommait la personne : la garder
+        sans son document n'atteste plus rien.
+
+        ⚠ Aucun des deux n'entre dans `evidence_hash` (il porte le
+        consentement, le type, les horodatages, l'IP, l'agent et la note) : les
+        vider ne casse pas une empreinte que l'anonymisation ne périmerait pas
+        déjà.
+        """
+        self.ensure_one()
+        vals = {}
+        for champ in ("attachment_file", "attachment_filename", "ip_address",
+                      "user_agent", "session_id", "accept_language",
+                      "referer_url", "consent_snapshot", "digital_signature"):
+            if champ in self._fields:
+                vals[champ] = False
+        if "note" in self._fields:
+            vals["note"] = _("[ANONYMISÉ le %s]", fields.Date.today())
+        self.sudo().write(vals)
+        return sorted(vals)

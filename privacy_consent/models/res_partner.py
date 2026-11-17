@@ -1,5 +1,5 @@
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools import email_normalize
 
 
@@ -277,3 +277,153 @@ class ResPartner(models.Model):
             "target": "new",
             "context": {"default_partner_ids": [(6, 0, subject_ids)]},
         }
+
+    # === Ce qu'une fiche de contact perd quand on l'anonymise ===
+    #
+    # `name` est REMPLACÉ, pas vidé : il est obligatoire chez Odoo. Les champs
+    # ci-dessous sont vidés quand ils existent sur le locataire.
+    # ⚠ La seconde ligne a été ajoutée après coup : ces quatre champs
+    # identifient DIRECTEMENT, et trois d'entre eux survivaient à l'effacement
+    # de la rue, de la ville et du code postal. `company_registry` porte le NEQ
+    # au Québec (les numéros vivent hors du champ `vat`), les deux coordonnées
+    # géographiques pointent le domicile à sept décimales, et `barcode` sert de
+    # clé d'identification aux lecteurs. Ils sont vidés QUAND ils existent : un
+    # locataire sans `barcode` n'en porte pas le champ.
+    _PRIVACY_ANONYMIZE_CLEARED = (
+        "email", "phone", "mobile", "street", "street2", "city", "zip",
+        "vat", "website", "function", "title", "comment", "ref", "image_1920",
+        "company_registry", "partner_latitude", "partner_longitude", "barcode",
+    )
+
+    def _privacy_anonymize(self):
+        """Retire de la fiche ce qui identifie la personne, ou refuse et le dit.
+
+        🔴 Avant ce lot, « anonymiser » un contact l'ARCHIVAIT, point : la fiche
+        restait en base avec son nom, son courriel et son téléphone,
+        consultable en cochant « Archivé », pendant que le registre scellait une
+        anonymisation. `res.partner` porte `active` et pas `notes`, donc c'était
+        le cas le plus courant du défaut.
+
+        ⚠ **Refus sur une fiche qui porte des pièces comptables** (règle retenue). Les factures se conservent six ans et portent
+        le nom du client : anonymiser la fiche les rendrait au nom d'une
+        « Personne anonymisée », ce qui est une décision comptable et juridique,
+        pas un geste d'exécution. La demande consigne le refus et la décision
+        remonte à une personne.
+
+        ⚠ **Refus sur une fiche qui porte un compte usager** (règle retenue, archivés compris). Sans lui, anonymiser la fiche d'un
+        employé renommait son compte « Personne anonymisée » et archivait la
+        fiche sans retirer un seul accès : le compte gardait ses groupes, ses
+        jetons et son historique. Retirer un accès est une décision, pas un
+        geste d'exécution.
+
+        ⚠ **Ce qui reste, et que l'entrée de registre ne prétend donc pas avoir
+        détruit** : le fil de discussion (`mail.message`), les comptes bancaires
+        (`res.partner.bank`), et les enregistrements liés qui portent leur propre
+        copie. Le registre nomme exactement les champs partis, donc l'entrée ne
+        surclaime pas. Les ponts les prendront un modèle à la fois.
+        """
+        self.ensure_one()
+        retenues = self._privacy_accounting_holds()
+        if retenues:
+            raise UserError(_(
+                "« %(nom)s » porte %(n)s pièce(s) comptable(s) qui la nomment. "
+                "L'anonymisation est refusée : ces pièces se conservent et "
+                "resteraient au nom d'une « Personne anonymisée ». La décision "
+                "revient à une personne, elle n'est pas automatique.",
+                nom=self.display_name, n=retenues,
+            ))
+        comptes = self._privacy_user_account_holds()
+        if comptes:
+            raise UserError(_(
+                "« %(nom)s » porte %(n)s compte(s) usager. L'anonymisation est "
+                "refusée : vider la fiche renommerait le compte « Personne "
+                "anonymisée » et archiverait la fiche sans retirer un seul "
+                "accès. Retirer le compte, ses groupes et ses jetons est une "
+                "décision qui revient à une personne.",
+                nom=self.display_name, n=comptes,
+            ))
+        vals = {"name": _("Personne anonymisée (RP effacés le %s)", fields.Date.today())}
+        # 🔴 **On ne nomme au registre que ce qui portait VRAIMENT une valeur**
+        #. La version d'avant écrivait `False` sur les 17
+        # champs présents et rendait les clés de `vals` : une fiche qui ne
+        # portait qu'un nom et un courriel faisait attester DIX-NEUF éléments
+        # détruits pour deux réels. C'est le surclaim que toute cette tâche
+        # combat, et le lot avait déjà retiré `active` de la liste pour
+        # exactement ce motif.
+        # ⚠ L'écriture, elle, porte sur TOUS les champs présents : écrire
+        # `False` sur un champ déjà vide ne coûte rien, et un champ « faux mais
+        # renseigné » (une chaîne vide, un 0.0 de latitude) part quand même.
+        # Ce qui est mesuré pour le registre, c'est la valeur d'AVANT.
+        vides = []
+        for champ in self._PRIVACY_ANONYMIZE_CLEARED:
+            if champ in self._fields:
+                if self[champ]:
+                    vides.append(champ)
+                vals[champ] = False
+        if "active" in self._fields:
+            vals["active"] = False
+        self.sudo().write(vals)
+        # ⚠ `active` ne figure PAS dans la liste rendue, alors qu'il est bien
+        # écrit. Le registre reprend cette liste dans « Éléments détruits » :
+        # y nommer `active` présenterait l'archivage comme un effacement, et
+        # l'archivage ne retire rien. La fiche archivée se lit dans son état,
+        # pas dans une attestation de destruction.
+        # ⚠ `name` est toujours nommé : il est obligatoire, donc il portait une
+        # valeur, et il vient d'être remplacé. La liste n'est donc jamais vide,
+        # et la primitive ne lève pas sur une fiche qui ne portait qu'un nom.
+        return ["name"] + sorted(vides)
+
+    def _privacy_accounting_holds(self):
+        """Nombre de pièces comptables COMPTABILISÉES qui nomment cette fiche.
+
+        Lu sur `account.move` plutôt que sur une règle de conservation : c'est la
+        pièce rendue au client qui porte son nom, et c'est elle qui se conserve.
+        Rend 0 quand la comptabilité n'est pas installée chez le locataire.
+
+        🔴 **Trois canaux, un seul état**. La
+        version d'avant ne comptait que `partner_id` et retenait tout état hors
+        brouillon :
+
+        * une fiche « Adresse de livraison » n'est nommée que par
+          `partner_shipping_id` : elle rendait 0, s'anonymisait, et des pièces
+          conservées six ans imprimaient « Personne anonymisée » en adresse de
+          livraison, exactement le dommage que la règle retenue voulait
+          empêcher ;
+        * une personne portée seulement par une LIGNE d'écriture
+          (`account.move.line.partner_id`, le cas des ventilations analytiques et
+          des écritures de salaire) passait aussi ;
+        * à l'inverse, une facture ANNULÉE suffisait à refuser l'effacement :
+          `state != "draft"` englobe `cancel`. Une pièce annulée n'est pas une
+          facture émise, et un faux refus empêche une personne d'exercer son
+          droit. On retient donc `posted` SEULEMENT.
+
+        La règle est écrite ici : la règle écrite ici est « compte une
+        pièce comptabilisée qui NOMME la personne, par l'un des trois canaux ».
+        """
+        self.ensure_one()
+        if "account.move" not in self.env:
+            return 0
+        Move = self.env["account.move"].sudo()
+        domaine = [("state", "=", "posted")]
+        canaux = [("partner_id", "=", self.id)]
+        if "partner_shipping_id" in Move._fields:
+            canaux.append(("partner_shipping_id", "=", self.id))
+        if "line_ids" in Move._fields and "account.move.line" in self.env:
+            canaux.append(("line_ids.partner_id", "=", self.id))
+        # Une seule recherche, donc une pièce nommée par deux canaux ne compte
+        # qu'une fois : le nombre paraît dans le message de refus.
+        domaine += ["|"] * (len(canaux) - 1) + canaux
+        return Move.search_count(domaine)
+
+    def _privacy_user_account_holds(self):
+        """Nombre de comptes usager portés par cette fiche, ARCHIVÉS COMPRIS.
+
+        ⚠ `active_test=False` est voulu : un compte archivé garde ses groupes,
+        ses jetons d'API et son historique, et se rouvre d'un clic. Une
+        autre forme envisagée offrait « refuser seulement si le compte est
+        actif » ; on a tranché le refus simple, pour que la règle se dise
+        au registre en une phrase.
+        """
+        self.ensure_one()
+        return self.env["res.users"].sudo().with_context(
+            active_test=False).search_count([("partner_id", "=", self.id)])

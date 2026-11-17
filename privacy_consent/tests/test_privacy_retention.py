@@ -71,7 +71,27 @@ class TestPrivacyRetention(TransactionCase):
         self.assertEqual(destruction.partner_id, self.partner)
 
     def test_destruction_workflow(self):
-        """Test destruction request workflow."""
+        """Une exécution « Archivage » s\'exécute, et n\'inscrit RIEN au registre.
+
+        🔴 **Règle retenue.** Cet essai
+        exécutait exactement le chemin « Archivage » et n\'assurait que
+        `state == "executed"`. Or l\'archivage ne retire RIEN : il met de côté,
+        contenu conservé, et il scellait pourtant une entrée au registre
+        immuable. Un registre dont certaines entrées n\'attestent aucune
+        destruction perd la propriété qui le rend probant, « une entrée, une
+        destruction ».
+
+        Les trois chemins qui cessent d\'y écrire sont « Archivage »,
+        « Manuelle », et la demande dont TOUS les documents ont été refusés. La
+        trace reste au journal d\'exécution, au fil de la demande et à
+        l\'activité de revue, qui sont auditables ET corrigeables, contrairement
+        à la table scellée.
+
+        ⚠ L\'exécution, elle, reste permise : « Archivage » ne prétend rien
+        détruire, donc la garde « rien détruit, rien certifié » l\'exempte, comme
+        « Manuelle ». La refuser bloquerait une mise de côté légitime, jour
+        après jour, par le cron.
+        """
         Policy = self.env["privacy.retention.policy"]
         Consent = self.env["privacy.consent"]
         Destruction = self.env["privacy.destruction.request"]
@@ -104,6 +124,24 @@ class TestPrivacyRetention(TransactionCase):
         self.assertEqual(destruction.state, "executed")
         self.assertTrue(destruction.executed_at)
         self.assertTrue(destruction.verification_hash)
+
+        # 🔴 Rien retiré, rien au registre.
+        self.assertFalse(
+            self.env["privacy.destruction.register"].search(
+                [("destruction_request_id", "=", destruction.id)]),
+            "L'archivage ne retire rien : le registre immuable ne doit porter "
+            "aucune entrée pour cette exécution.",
+        )
+        self.assertFalse(
+            destruction.applied_effects,
+            "L'archivage ne consigne aucun effet réel.",
+        )
+        self.assertIn("REGISTRE : aucune entrée", destruction.execution_log or "")
+        # La mise de côté a bien eu lieu, elle : l'absence d'entrée n'est pas
+        # une absence d'exécution.
+        consent.invalidate_recordset()
+        self.assertFalse(consent.active, "Le consentement est mis de côté.")
+        self.assertTrue(consent.subject_partner_id, "Et rien ne lui a été retiré.")
 
     def test_destruction_cancellation(self):
         """Test cancelling a destruction request."""

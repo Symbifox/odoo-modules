@@ -238,6 +238,45 @@ The manual covers:
 - Secure destruction of credentials (cryptographic overwrite)
 - An activity created for manually deleting the Nextcloud folder
 
+#### Anonymisation is a contract (v18.0.6.0.0)
+
+"Anonymise" used to archive the record and leave its fields in place, while the register
+certified a destruction. It is now a contract between the engine and the model:
+
+- the engine asks the model to anonymise itself (`_privacy_anonymize()`, which returns the
+  fields it cleared) and **raises** when the model does not declare the method, or when it
+  clears nothing. The document lands in "Documents NOT destroyed" with its reason, and
+  nothing is certified;
+- three anonymisers ship with the module — `ir.attachment` (payload emptied, and the file
+  name replaced, since the name itself identifies), `res.partner` (name replaced, contact
+  details, address, tax ids, comment and image cleared, record archived) and
+  `privacy.consent.evidence` (file, note, IP address, user agent, snapshot, signature).
+  `privacy.consent` refuses, because its subject is a required field: the person would
+  stay named;
+- `res.partner` also **refuses** when the record carries a user account, or an accounted
+  journal entry that names it: clearing the record would rename the account and archive
+  the record without removing a single access;
+- the register receives the real scope. An anonymisation is recorded as a **partial**
+  scope with the cleared fields listed, from the campaign path as from the request path,
+  and a guard on `create()` refuses an "Anonymisation" entry that claims a whole record,
+  or a partial scope that names no field. The entry carries the record's name **after**
+  anonymisation: a register is immutable, and copying the old name into it would let it
+  outlive its own erasure;
+- **nothing is certified for nothing.** A request whose execution had no effect is no
+  longer certified; a campaign line whose method removes nothing is skipped instead of
+  being recorded, its classification staying to be handled; and the certificate counts
+  only the categories actually reached, naming under "NOT destroyed" what was refused and
+  why. An execution that removed nothing writes **nothing** to the immutable register —
+  "Archive", "Manual review" and a request whose documents were all refused keep their
+  trace in the execution log, the request's thread and a review activity, which can be
+  corrected, rather than in a sealed table.
+
+**Migration.** `migrations/18.0.6.0.0/post-migrate.py` switches the shipped retention rule
+for consent registers (`CST-001`) from "Anonymise" to "Delete", only where it still holds
+the shipped value: a tenant that chose its own disposition is left alone, and the change is
+logged. Without it, a consent classified under that rule failed the same campaign line
+every month, the consent anonymiser always raising, and the obligation was never met.
+
 ### Contacts integration
 
 - A new **"Privacy (Law 25)"** tab on the contact record
@@ -669,7 +708,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-04, this version converts automatically to
+- **Change Date**: on 2030-11-17, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Disclaimer
@@ -691,6 +730,7 @@ open a ticket in the repository.
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 18.0.6.0.0 | 2026-11-16 | Anonymisation becomes a contract: the engine asks the model to anonymise itself (`_privacy_anonymize()`) and raises when the model does not declare the method or clears nothing, so the document lands in "Documents NOT destroyed" with its reason instead of being certified. Three anonymisers ship with the module (`ir.attachment`, `res.partner`, `privacy.consent.evidence`) and `privacy.consent` refuses, its subject being required; `res.partner` also refuses a record that carries a user account or an accounted journal entry naming it. The register receives the real scope — an anonymisation is recorded as partial with the cleared fields listed, and a guard on `create()` refuses an "Anonymisation" entry that claims a whole record, or a partial scope naming no field; the entry carries the name after anonymisation, not before. Nothing is certified for nothing: a request or a campaign line whose execution removed nothing is no longer certified or recorded, the certificate counts only the categories actually reached, and an execution that removed nothing writes no register entry at all, its trace staying in the execution log, the thread and a review activity. Migration: the shipped `CST-001` rule switches from "Anonymise" to "Delete" where it still holds the shipped value |
 | 18.0.5.6.0 | 2026-10-08 | Designated privacy officer on organisation contacts (person, reception address, public page), tracked and reserved to privacy managers; such contacts cannot be deleted while referenced nor merged except by an administrator. The company's privacy emails prefer the designated address. Used by `privacy_breach_notice` to address legal notices |
 | 18.0.5.5.0 | 2026-10-02 | Emails: every email that carries the public link extends it by 90 days with the same token, including an email written in the composer (from the record or in bulk from the list); the links in earlier emails come back to life with it. New "Your link" template (`mail_template_consent_link`), whose text and button follow the consent's state: it serves the new link requested from an expired link's page and the "Envoyer lien portail" button, which both sent the request even for a granted consent. Reminders, the renewal confirmation and the link go through the same sending path as the request: for a minor, to those legal guardians who have an email address, never to the child. The templates' "To" field gives the same recipients for a manual send (the six `noupdate` templates are migrated only while they still hold the shipped value). The chatter note records an SMTP failure as a failure, and a reminder that did not go out is not counted |
 | 18.0.5.4.0 | 2026-10-02 | Emails: no consent email leads to the preference centre any more; it needs a session, so a person without an account landed on the login screen. The request, the reminders and the expiry notice drop that link (their main button already opens the consent's token page); the button of the two confirmations (granted, renewed) opens the consent's token page, where the consent can be withdrawn. The request's 4-hour "choose a password" link is removed. English fallbacks ("No expiry", "Soon", "No description available."); the `noupdate` templates are migrated language by language |

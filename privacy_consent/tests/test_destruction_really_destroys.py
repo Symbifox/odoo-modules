@@ -392,15 +392,36 @@ class TestDestructionReallyDestroys(TransactionCase):
         self.assertEqual(entree.res_field, "fichiers déposés")
         self.assertTrue(survivant.exists())
 
-    def test_register_stays_silent_on_anonymisation(self):
-        """« Anonymiser » n'affirme pas la disparition : la garde ne dit rien."""
+    def test_register_demands_a_scope_from_an_anonymisation(self):
+        """« Anonymiser » n'affirme pas la disparition. La portée par défaut, si.
+
+        🔴 La garde du socle se tait pour « anonymiser »,
+        au motif que c'est une affirmation moins forte. Elle l'est — mais
+        l'entrée passait alors avec la portée par défaut, `full`, dont l'aide dit
+        en propres termes « affirme que l'enregistrement visé n'existe plus »,
+        pendant que l'enregistrement était là, intact ou simplement archivé.
+        L'entrée se contredisait elle-même et rien ne l'arrêtait.
+
+        Cet essai disait l'inverse jusqu'à la 18.0.6.0.0 : il vérifiait que
+        l'entrée passait. Il vérifie maintenant qu'elle doit déclarer sa portée
+        partielle et nommer les champs vidés.
+        """
         survivant = self._cible("Anonymisé 24897")
         survivant.write({"active": False})
+        with self.assertRaises(UserError):
+            self.Register.create(self._vals_registre(
+                res_model="res.partner",
+                res_id=survivant.id,
+                res_name=survivant.name,
+                destruction_method="anonymize",
+            ))
         entree = self.Register.create(self._vals_registre(
             res_model="res.partner",
             res_id=survivant.id,
             res_name=survivant.name,
             destruction_method="anonymize",
+            destruction_scope="partial",
+            res_field="email, phone, street",
         ))
         self.assertTrue(entree.exists())
 

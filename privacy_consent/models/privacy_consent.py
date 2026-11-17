@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from markupsafe import Markup
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 # Les états depuis lesquels le lien reçu par la personne peut encore produire
@@ -1227,3 +1227,35 @@ class PrivacyConsent(models.Model):
             user_id=self.create_uid.id or self.env.user.id,
             date_deadline=deadline,
         )
+
+    def _privacy_anonymize(self):
+        """Un consentement ne s'anonymise pas : il se supprime.
+
+        🔴 `subject_partner_id` est OBLIGATOIRE (« Sujet », required=True) :
+        quoi qu'on vide — les notes, les preuves, les traces techniques — la
+        personne reste désignée par une clé étrangère vivante. Une entrée de
+        registre disant « Anonymisation » sur un consentement est donc fausse
+        par construction.
+
+        Mesuré sur une base réelle : des demandes exécutées y attestent une
+        anonymisation de consentements dont le sujet
+        est toujours lié ().
+
+        La sortie honnête est « Suppression » : depuis la garde du socle, il supprime
+        vraiment le consentement, ses preuves d'abord pour que les fichiers du
+        filestore partent avec.
+
+        ⚠ Une autre sortie existe et n'est pas retenue ici : repointer le sujet
+        vers une fiche « Personne anonymisée », comme `bf_appointment` le fait
+        pour les participants d'une réservation. Elle demande une fiche de
+        remplacement livrée avec le socle et une décision sur ce que deviennent
+        les statistiques de consentement. À reprendre plus tard si le besoin se confirme.
+        """
+        self.ensure_one()
+        raise UserError(_(
+            "Le consentement « %(nom)s » ne peut pas être anonymisé : son champ "
+            "« Sujet » est obligatoire, donc la personne reste désignée même "
+            "après avoir vidé les notes et les preuves. Utilisez "
+            "« Suppression » : le socle supprime vraiment, les preuves d'abord.",
+            nom=self.display_name,
+        ))

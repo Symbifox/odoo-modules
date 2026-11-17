@@ -7,6 +7,11 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
+# 🔴 Les méthodes qui GARDENT l'enregistrement debout. Une entrée qui
+# en désigne un sous l'une d'elles ne peut pas se dire « entière », dont l'aide
+# du champ affirme que l'enregistrement visé n'existe plus.
+_SURVIVING_METHODS = ("anonymize", "archive", "manual")
+
 # Les méthodes qui affirment que l'enregistrement a DISPARU. « anonymize » et
 # « archive » disent l'inverse : la ligne survit, neutralisée ou mise de côté.
 _REMOVAL_METHODS = ("delete", "secure_wipe")
@@ -245,6 +250,7 @@ class PrivacyDestructionRegister(models.Model):
             vals.pop("verification_hash", None)
             vals.pop("previous_hash", None)
             self._assert_destruction_really_happened(vals)
+            self._assert_scope_tells_the_truth(vals)
             if not vals.get("register_number"):
                 vals["register_number"] = self.env["ir.sequence"].next_by_code(
                     "privacy.destruction.register"
@@ -270,6 +276,74 @@ class PrivacyDestructionRegister(models.Model):
                 "verification_hash": hash_val,
             })
         return records
+
+    @api.model
+    def _assert_scope_tells_the_truth(self, vals):
+        """Refuse une anonymisation qui s'inscrit comme si l'enregistrement avait disparu.
+
+        🔴 `_assert_destruction_really_happened` se tait
+        volontairement pour `anonymize`, au motif que c'est « une affirmation
+        moins forte ». Elle l'est, mais l'entrée passait alors avec son défaut de
+        portée, `full`, dont l'aide dit en propres termes « affirme que
+        l'enregistrement visé n'existe plus » — pendant que l'enregistrement était
+        toujours là, anonymisé en apparence seulement. L'entrée se contredisait
+        elle-même et rien ne l'arrêtait.
+
+        Deux règles, et elles valent quel que soit le chemin d'exécution, parce
+        que cette garde vit sur `create()` comme sa jumelle :
+
+        * une entrée « Anonymisation » qui désigne un enregistrement précis DOIT
+          déclarer une portée partielle. L'enregistrement survit par définition :
+          anonymiser, c'est le garder en retirant ce qui identifie ;
+        * toute portée partielle DOIT nommer ce qui est parti dans `res_field`.
+          Sans ce nom, « partie de l'enregistrement » ne dit rien de vérifiable.
+
+        🔴 **Elle lit le MODÈLE, plus seulement l'identifiant**. La version d'avant rendait la main dès qu'il
+        n'y avait pas de `res_id`, or l'entrée construite depuis une demande
+        RETIRE `res_model` et `res_id` quand rien n'a été vidé : elle partait
+        donc avec le défaut du champ, `full`. Une entrée qui nomme un modèle
+        anonymisé doit déclarer sa portée partielle, qu'elle désigne un
+        identifiant ou un ensemble : « anonymisation » et « l'enregistrement
+        n'existe plus » ne peuvent pas être vrais ensemble.
+
+        ⚠ Elle se tait quand l'entrée ne nomme AUCUN modèle, et c'est voulu :
+        sans modèle, `destruction_scope` n'a pas de référent, et deux formes
+        légitimes passent par là. La première est l'entrée d'une demande dont
+        la cible avait déjà disparu avant l'exécution (branche « DÉJÀ ABSENT ») : l'enregistrement n'existe vraiment plus, donc
+        `full` est vrai, et refuser ferait annuler par la levée une destruction
+        qui a réussi. La seconde est l'entrée de lot historique. `bf_appointment`
+        écrit déjà exactement la forme attendue (`anonymize` + `partial` +
+        `res_field`), et `bf_securetransfer_privacy` aussi : la garde formalise
+        une convention déjà en production, elle ne l'invente pas.
+        """
+        portee = vals.get("destruction_scope") or "full"
+        if portee == "partial" and not vals.get("res_field"):
+            raise UserError(
+                "Une destruction partielle doit nommer ce qui a été détruit "
+                "dans « Éléments détruits » : sans ce nom, « partie de "
+                "l'enregistrement » n'affirme rien de vérifiable."
+            )
+        if vals.get("destruction_method") != "anonymize":
+            return
+        if not vals.get("res_model"):
+            return
+        if portee == "partial":
+            return
+        cible = vals.get("res_id") or "ensemble"
+        _logger.error(
+            "privacy_consent: refus d'inscrire une anonymisation de %s,%s en "
+            "portée « enregistrement entier » — anonymiser garde "
+            "l'enregistrement, la portée doit être partielle et nommer les "
+            "champs vidés.",
+            vals.get("res_model"), cible,
+        )
+        raise UserError(
+            f"L'entrée dit « Anonymisation » de « {vals.get('res_name') or cible} » "
+            f"({vals.get('res_model')},{cible}) avec une portée "
+            f"« Enregistrement entier », qui affirme que l'enregistrement n'existe "
+            f"plus. Anonymiser le GARDE : l'entrée doit déclarer une portée "
+            f"« Partie de l'enregistrement » et nommer les champs vidés."
+        )
 
     @api.model
     def _assert_destruction_really_happened(self, vals):
@@ -475,6 +549,44 @@ class PrivacyDestructionRegister(models.Model):
                 "res_name": snapshot["name"],
                 "pi_categories": snapshot["pi_categories"],
             })
+            # 🔴 Le nom se relit quand le consentement a SURVÉCU. Son
+            # `display_name` est « <nom du sujet> - <finalité> », et l'instantané
+            # a été pris AVANT l'exécution, pour le cas où le consentement est
+            # supprimé pour de bon. Quand la même demande anonymise la fiche du
+            # sujet, l'instantané scellerait donc au registre immuable le nom
+            # qu'on vient d'effacer.
+            vivant = self.env["privacy.consent"].browse(snapshot["id"]).exists()
+            if vivant and vivant.display_name:
+                vals["res_name"] = vivant.display_name
+            # 🔴 Une anonymisation garde l'enregistrement : la portée est
+            # partielle, et `res_field` nomme les champs vidés, relevés par
+            # l'exécution elle-même. Si rien n'a été vidé (le consentement
+            # refuse l'anonymisation, son sujet étant une clé obligatoire),
+            # l'entrée ne DÉSIGNE plus le consentement comme sa cible : elle le
+            # nomme dans sa description, sans affirmer l'avoir touché.
+            if request.destruction_method_used in _SURVIVING_METHODS:
+                champs = (getattr(request, "anonymized_fields", "") or "").strip()
+                if champs:
+                    vals["destruction_scope"] = "partial"
+                    vals["res_field"] = champs
+                else:
+                    vals.pop("res_model", None)
+                    vals.pop("res_id", None)
+
+        # 🔴 La portée partielle que le lot 2
+        # promet ne s'écrivait QUE depuis le consentement, dont l'anonymiseur
+        # lève toujours : aucune demande n'en écrivait donc jamais une, et cinq
+        # pièces jointes anonymisées s'inscrivaient en portée « entière ».
+        # ⚠ Les champs des DOCUMENTS ne se posent que si l'entrée ne désigne
+        # plus un enregistrement précis : les attribuer au consentement visé
+        # dirait qu'on a vidé sur LUI ce qu'on a vidé sur les pièces jointes.
+        if (request.destruction_method_used in _SURVIVING_METHODS
+                and not vals.get("res_id")):
+            champs_doc = (
+                getattr(request, "document_anonymized_fields", "") or "").strip()
+            if champs_doc:
+                vals["destruction_scope"] = "partial"
+                vals["res_field"] = champs_doc
 
         # Add partner subject count
         if request.partner_id:

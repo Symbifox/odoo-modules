@@ -101,8 +101,8 @@
         <field name="legal_basis">Art. 14 et 23 LPRPSP — Conservation aussi longtemps que le consentement est actif, plus la période de prescription applicable (3 ans, art. 2925 C.c.Q.).</field>
         <field name="active_retention_years">3</field>
         <field name="semi_active_retention_years">0</field>
-        <field name="final_disposition">anonymize</field>
-        <field name="destruction_method">anonymize</field>
+        <field name="final_disposition">destroy</field>
+        <field name="destruction_method">delete</field>
         <field name="requires_approval" eval="True"/>
     </record>
 </odoo>

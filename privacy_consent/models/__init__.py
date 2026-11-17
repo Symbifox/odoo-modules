@@ -3,6 +3,7 @@ from . import privacy_lawful_basis
 from . import privacy_right
 from . import privacy_framework_mixin
 from . import res_company
+from . import ir_attachment
 from . import privacy_purpose
 from . import privacy_notice
 from . import privacy_notice_version
