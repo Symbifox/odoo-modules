@@ -94,6 +94,11 @@ msgid "File upload"
 msgstr "Téléversement de fichiers"
 
 #. module: bf_survey_upload
+#: model_terms:ir.ui.view,arch_db:bf_survey_upload.question_file_upload_print
+msgid "Files to attach:"
+msgstr "Fichiers à joindre :"
+
+#. module: bf_survey_upload
 #: model:ir.model.fields,field_description:bf_survey_upload.field_survey_user_input_line__value_file_upload
 msgid "Has uploaded files"
 msgstr "A des fichiers téléversés"
@@ -122,6 +127,11 @@ msgstr "Taille max :"
 #: model:ir.model.fields,field_description:bf_survey_upload.field_survey_question__file_upload_multiple
 msgid "Multiple files allowed"
 msgstr "Plusieurs fichiers autorisés"
+
+#. module: bf_survey_upload
+#: model_terms:ir.ui.view,arch_db:bf_survey_upload.question_file_upload_print
+msgid "No file attached."
+msgstr "Aucun fichier joint."
 
 #. module: bf_survey_upload
 #: model:ir.model.fields,field_description:bf_survey_upload.field_survey_user_input__bf_attachment_count
@@ -268,6 +278,11 @@ msgid ""
 msgstr ""
 "Quota total dépassé pour cette réponse au sondage (maximum %(mb)s Mo "
 "cumulés)."
+
+#. module: bf_survey_upload
+#: model_terms:ir.ui.view,arch_db:bf_survey_upload.question_file_upload_print
+msgid "This question was skipped"
+msgstr "Cette question a été ignorée"
 
 #. module: bf_survey_upload
 #: model_terms:ir.ui.view,arch_db:bf_survey_upload.survey_question_form_inherit_bf_survey_upload

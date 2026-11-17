@@ -10,6 +10,7 @@ Adds a **File Upload** question type to Odoo Surveys.
 - Public portal UI: file picker, list of uploaded files, remove button
 - Server-side validation: size, extension, mandatory check, max file count
 - Optional auto-copy of uploaded attachments to the respondent's project on completion (per-survey opt-in)
+- Printed and reviewed too: a blank sheet says what may be attached, a filled one names the files received
 
 ## Models
 
@@ -37,9 +38,19 @@ docker exec <client>-odoo /usr/bin/odoo --stop-after-init -d <db> -u bf_survey_u
 
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The copy of an upload filed on the target project is described in the language of the project's team (its manager's, else the company's), not in the respondent's. The upload errors shown on the public survey page are translated too: the module now declares itself to the website, which only loads the translations of the modules that do. On upgrade, the onboarding step and panel still carrying the delivered French switch to English; edited ones are left.
 
+## On paper (v18.0.1.4.0)
+
+The question type was injected into the form's question container only, never
+into the printable page. Printing a survey showed the question's title and
+nothing under it, and the printed copy of a filled answer did not name a single
+one of the files the respondent had sent — in silence, since nothing on the page
+said a question had been left out. A blank sheet now carries the accepted
+formats and the size limit, a filled one lists the files, a skipped one says so.
+
 ## Changelog
 
-### 18.0.1.3.0
+### 18.0.1.4.0
+- The file upload question renders on the printable page (`/survey/print/...`), blank or filled: formats and size limit on a blank sheet, the names of the files received on a filled one, and the native "skipped" notice when the question was left out.
 - Labels and messages in English, French in `i18n/fr_CA.po`; the project copy is described in the team's language; the upload errors are translated on the public survey page.
 
 ### 18.0.1.2.0

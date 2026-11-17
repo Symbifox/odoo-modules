@@ -4,7 +4,11 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.3.0",
+    # 18.0.1.4.0: le type de question n'était injecté que dans le conteneur du
+    #   formulaire, jamais dans la page imprimable : une question
+    #   « Téléversement » y imprimait son titre et rien d'autre, et les fichiers
+    #   reçus manquaient au PDF d'une réponse remplie, sans un mot.
+    "version": "18.0.1.4.0",
     "category": "Marketing/Surveys",
     "summary": "Type de question Téléversement de fichiers pour les sondages Odoo",
     "description": """

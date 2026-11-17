@@ -14,6 +14,51 @@
         </xpath>
     </template>
 
+    <!-- Printed survey and review of a submitted answer, as
+         bf_survey_allocation does. The dropzone of the form means nothing on
+         paper: a blank sheet says what may be attached, a filled one lists what
+         was. Without this, the question printed its title and NOTHING under it
+         — on a filled page, the files the respondent sent were missing from the
+         printout without a word. -->
+    <template id="survey_page_print_inherit_bf_survey_upload"
+              inherit_id="survey.survey_page_print">
+        <xpath expr="//t[@t-call='survey.question_matrix']" position="after">
+            <t t-if="question.question_type == 'file_upload'"
+               t-call="bf_survey_upload.question_file_upload_print"/>
+        </xpath>
+    </template>
+
+    <template id="question_file_upload_print" name="Question: file upload (printed)">
+        <t t-set="printed_attachments"
+           t-value="answer_lines.mapped('bf_attachment_ids') if answer_lines else []"/>
+        <div class="o_survey_answer_wrapper o_survey_form_file_upload_print"
+             t-att-data-name="question.id">
+            <div t-if="not answer" class="text-muted o_bf_upload_print_hint">
+                <!-- Label in an element of its own: Odoo exports a text-only
+                     node as a clean term, where a bare <span> among siblings
+                     would carry its own markup into the catalogue. -->
+                <div>Files to attach:</div>
+                <div>
+                    <span t-if="question.file_upload_allowed_extensions">
+                        Accepted formats: <t t-out="question.file_upload_allowed_extensions"/>.
+                    </span>
+                    <span>Max size: <t t-out="question.file_upload_max_size_mb"/> MB per file.</span>
+                </div>
+            </div>
+            <div t-elif="answer_lines and answer_lines[0].skipped" class="row g-0">
+                <div class="col-12 o_survey_choice_question_skipped mt-1">
+                    This question was skipped
+                </div>
+            </div>
+            <ul t-elif="printed_attachments" class="list-unstyled mb-0 o_bf_upload_print_files">
+                <li t-foreach="printed_attachments" t-as="att" class="mt-1 text-break">
+                    <i class="fa fa-file-o me-2"/><t t-out="att.name"/>
+                </li>
+            </ul>
+            <div t-else="" class="text-muted o_bf_upload_print_none">No file attached.</div>
+        </div>
+    </template>
+
     <!-- File upload question rendering -->
     <template id="question_file_upload" name="Question: file upload">
         <div class="o_survey_form_file_upload"
