@@ -228,27 +228,45 @@ def _apply_locale_from_request():
 
     The booking pages reached from confirmation/cancel emails
     (`/appointment/b/<id>/<token>/...`) are prefix-less, so the URL gives no
-    language hint. There - and only there - we fall back to the booker's
-    Accept-Language to choose en_CA vs fr_CA.
+    language hint. There - and only there - the `frontend_lang` cookie set by
+    the language toggle decides, and the booker's Accept-Language is the
+    first-visit fallback behind it.
 
-    Falls back to fr_CA if the resolved lang is not installed on this tenant
-    (e.g. a mono-lingual tenant shipping fr_CA only - setting en_CA would 400).
+    Falls back to the site's own default language when the resolved one is not
+    published here (e.g. a mono-lingual tenant shipping fr_CA only - setting
+    en_CA would 400), which is what makes this inert on a single-language site.
     """
     # Public pages: the URL prefix is authoritative. Leave the context lang
     # exactly as the website middleware resolved it from the URL.
     if "/appointment/b/" not in (request.httprequest.path or ""):
         return
-    # Email-link booking pages: no URL language signal, use Accept-Language.
-    current = request.env.context.get("lang")
-    if current and current.lower().startswith("en"):
+    # A language named by the URL still wins here: `/en/appointment/b/...`
+    # resolves to en_CA and nothing below may undo it. Not readable from the
+    # path - Odoo strips the prefix before routing - so the resolved context
+    # lang is the only reliable tell, same guard as the two helpers below.
+    if _url_carries_lang():
         return
-    lang = _resolve_lang_from_accept_header()
-    if lang != _BF_DEFAULT_LANG:
-        installed = request.env["res.lang"].sudo().search(
-            [("code", "=", lang), ("active", "=", True)], limit=1
-        )
-        if not installed:
-            lang = _BF_DEFAULT_LANG
+    # Prefix-less email-link page: the URL says nothing, and on this tenant the
+    # default language cannot say anything either - Odoo answers
+    # `/fr/appointment/b/...` with a 303 back to the bare path. So the
+    # `frontend_lang` cookie the language toggle sets is the ONLY carrier a
+    # deliberate choice has on these pages, and it is read FIRST, exactly as
+    # `_visitor_lang()` and `_maybe_redirect_to_visitor_lang()` already do.
+    # Reading Accept-Language alone made Francais unreachable here for anyone
+    # on an English browser: the toggle set the cookie, the page came back in
+    # English, and it looked like the menu snapped back by itself (reported by a prospect on 2026-11-16). The other direction was never
+    # ours: when the resolved lang is NOT the default, Odoo puts it in the URL
+    # by redirecting, and the prefix then speaks for itself.
+    current = request.env.context.get("lang")
+    # Each term is validated against the languages the SITE publishes, and the
+    # last one is the site's own default: a mono-lingual tenant (PMEC and BSI
+    # ship fr_CA only) ends up asking for the language it already serves, so the
+    # whole block is inert there - asking for an absent language would 400, and
+    # serving one the site does not publish strands the visitor on a page whose
+    # selector cannot get them out.
+    lang = (_lang_cookie()
+            or _frontend_lang(_resolve_lang_from_accept_header())
+            or _site_default_lang())
     if current != lang:
         request.update_context(lang=lang)
 
@@ -262,24 +280,69 @@ def _installed_lang(code):
     )
 
 
+def _site_default_lang():
+    """The language a prefix-less URL resolves to HERE, as Odoo computes it.
+
+    `ir.http._get_default_lang()` is what the website middleware itself uses to
+    resolve a request, and `website` overrides it to return the current site's
+    `default_lang_id`. Asking Odoo is the only way to be right on a tenant whose
+    default is not fr_CA: hardcoding fr_CA there inverted the order below - the
+    URL prefix stopped winning, and a prefix-less page could redirect to itself.
+
+    No `try` around the call, deliberately: `http_routing._match()` already ran
+    it for THIS request, before dispatch, to resolve `request.lang`. A guard here
+    could only catch what has already succeeded - dead code, the way a guard
+    around a `del` that cannot raise is dead code. The `or` covers the one real
+    case, a dummy LangData whose `code` is False.
+    """
+    return request.env["ir.http"]._get_default_lang().code or _BF_DEFAULT_LANG
+
+
+def _frontend_lang(code):
+    """`code` resolved against the languages THIS SITE publishes, or None.
+
+    `ir.http.get_nearest_lang()` is Odoo's own answer: it validates against
+    `res.lang._get_frontend()` - the site's `language_ids`, not the globally
+    active languages - and it returns the nearest sibling (fr_BE -> fr_CA).
+    Validating against global `res.lang.active` instead served English on a site
+    that publishes French only, where the selector offers no way back out.
+
+    It never reaches SQL - `_get_frontend()` is a cached dict and a missing key
+    yields a dummy - so no forged cookie can get to psycopg2 through here. Odoo
+    runs the raw `frontend_lang` cookie through this very call in `_match()`,
+    which is also why no `try` is needed: it has already run for this request.
+    """
+    return request.env["ir.http"].get_nearest_lang(code) or None
+
+
 def _lang_cookie():
-    """The `frontend_lang` cookie, if it names a lang installed here."""
+    """The `frontend_lang` cookie, if it names a lang this site publishes.
+
+    ⚠️ The cookie is visitor-supplied text and it must never reach SQL as it
+    comes: a NUL byte in it made `res.lang.search([("code", "=", ...)])` raise
+    « A string literal cannot contain NUL (0x00) characters » and answered 500 on
+    six public routes, no valid token needed. An unreadable cookie is simply an
+    absent one - no trace, no error page.
+    """
     try:
         cookie = request.httprequest.cookies.get("frontend_lang")
     except Exception:
         return None
-    return cookie if cookie and _installed_lang(cookie) else None
+    if not cookie or "\x00" in cookie:
+        return None
+    return _frontend_lang(cookie)
 
 
 def _url_carries_lang():
-    """True when the URL named a language other than the tenant default.
+    """True when the URL named a language other than this site's default.
 
     ⚠️ Not readable from the path: Odoo strips the `/en/` prefix before
     routing, so `request.httprequest.path` is already `/appointment/...` on an
     English URL. What survives is the resolved context lang - a prefix-less URL
-    always resolves to the default, so anything else means the URL said so.
+    always resolves to the SITE default, so anything else means the URL said so.
     """
-    return (request.env.context.get("lang") or _BF_DEFAULT_LANG) != _BF_DEFAULT_LANG
+    defaut = _site_default_lang()
+    return (request.env.context.get("lang") or defaut) != defaut
 
 
 def _visitor_lang():
@@ -299,15 +362,17 @@ def _visitor_lang():
     the URL says nothing and the cookie carries the truth - Odoo sets
     `frontend_lang` on the very page the form was served from.
 
-    Returns a lang code that is installed and active, or the tenant default.
+    Returns a lang code this site publishes, or the site's default language.
     """
     if _url_carries_lang():
         return request.env.context["lang"]
     cookie = _lang_cookie()
     if cookie:
         return cookie
-    lang = _resolve_lang_from_accept_header()
-    return lang if _installed_lang(lang) else _BF_DEFAULT_LANG
+    # Validated against the languages the SITE publishes, not the globally
+    # active ones: this code is written to `res.partner.lang`, and a contact
+    # must not be stamped with a language its site never offers.
+    return _frontend_lang(_resolve_lang_from_accept_header()) or _site_default_lang()
 
 
 def _msg(fr, en):
@@ -347,8 +412,15 @@ def _maybe_redirect_to_visitor_lang():
         return None
     if _url_carries_lang():
         return None
-    wanted = _lang_cookie() or _resolve_lang_from_accept_header()
-    if wanted == _BF_DEFAULT_LANG:
+    # Both carriers are resolved against the languages the SITE publishes:
+    # sending a visitor to `/en/...` on a site that publishes French only
+    # answered 404, since Odoo does not route a language the site does not
+    # offer (measured on the single-language site of the 27727 bench).
+    wanted = _lang_cookie() or _frontend_lang(_resolve_lang_from_accept_header())
+    # The SITE's default, not a hardcoded fr_CA: on a tenant defaulting to
+    # English, pushing the default language into the URL made Odoo strip the
+    # now-redundant prefix straight back off, and the two bounced forever.
+    if not wanted or wanted == _site_default_lang():
         return None
     lang = _installed_lang(wanted)
     if not lang or not lang.url_code:

@@ -386,6 +386,70 @@ on that page are still recorded, without any emailed request.
 Known limit: a booking moved from the back office keeps its room but the room
 is not renamed.
 
+## Personal booking links, listed (18.0.2.68.0)
+
+A personal booking link **is** a pending booking carrying its own token: the
+wizard writes the meeting title on that record, not on the booking type. The
+mechanism had existed for a while and nothing listed it, so an open link could
+only be read one record at a time, by whoever knew which one to open.
+
+A *Personal booking links* menu now sits under *Bookings*, next to the wizard
+that creates them, and opens on the links that are **asleep**: pending, no slot
+chosen.
+
+The other states live in a **single filter group** (*Active link*, *Link already
+used*, *Expired link*, *Booking taken, link still open*, *Cancelled*): ticking
+them **adds** them to what is shown, and dropping the "Still open" facet leaves
+the chosen state alone. Separate filters would be intersected, and three of them
+would then return nothing at all while the screen claimed an absence.
+
+`link_state` is computed, not stored, because it depends on the time of day; it
+is searchable through `_search_link_state`, which returns a plain SQL domain, and
+it is deliberately not groupable. The list offers neither creation nor deletion:
+a link is made by the wizard, which sets the title, the token, the expiry and the
+guests.
+
+## Language of the token pages (18.0.2.68.1)
+
+The pages reached from a personal link or from a booking email
+(`/appointment/b/<id>/<token>/…`) carry no language prefix in their URL, and the
+site's default language cannot carry one either: Odoo answers
+`/fr/appointment/b/…` with a redirect back to the bare path. On those pages the
+`frontend_lang` cookie set by the language selector is therefore the **only**
+carrier a deliberate choice has, and it is now read **before** the browser's
+`Accept-Language` header.
+
+Before, the header overwrote the choice. A visitor on an English browser switched
+to French, the page came back in English, and it came back in English on every
+later visit: French was unreachable for them.
+
+The order, from the most explicit to the weakest:
+
+1. the **URL prefix** (`/en/appointment/b/…`);
+2. the **`frontend_lang` cookie**, that is, the last click on the selector;
+3. the **`Accept-Language`** header, for a first visit;
+4. the site's default language, asked of `ir.http._get_default_lang()` rather
+   than hardcoded, since one database can serve several sites.
+
+Every step is validated against the languages the **site publishes**
+(`res.lang._get_frontend()`, through `ir.http.get_nearest_lang()`) and not
+against the languages active in the database. The two differ, and the difference
+is visible: a redirect aimed at a language that is active but unpublished lands
+on a 404, and a cookie naming such a language would serve a page the selector
+cannot leave.
+
+A cookie is visitor-supplied text, so it never reaches SQL: a single NUL byte in
+it used to raise out of psycopg2 and turn a public page into a 500. An unreadable
+cookie is now treated as an absent one.
+
+On a site that publishes a single language there is no selector, hence no toggle
+to hold, and the page comes out in that language as before. One thing does change
+there, and it is not visible on the page: the language written on a **contact**
+created by the public form is brought back to the languages the site publishes.
+That language then decides the language of every email for the booking, and a
+site that does not offer English has no reason to write to its visitors in
+English.
+
 ## Notes on the confirmation links
 
 Booking, cancellation and guest-confirmation links travel by email and by

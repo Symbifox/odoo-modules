@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Liens personnalisés de réservation (2.68.0).
+
+         Un lien personnel EST une réservation en attente qui porte son jeton :
+         il n'y a donc rien de neuf à stocker, seulement de quoi les VOIR. Au
+         2026-11-11, 42 des 58 liens de Blue Fox étaient encore ouverts et
+         aucun écran ne les listait : ils se lisaient une fiche à la fois, pour
+         qui savait laquelle ouvrir.
+
+         La liste n'offre ni création ni suppression : un lien se fabrique par
+         l'assistant (« Créer un lien de réservation »), qui pose le titre, le
+         jeton, l'expiration et les invités. Un « Nouveau » d'ici aurait rendu
+         une réservation ordinaire, absente de cette liste par son domaine. -->
+    <record id="resource_booking_view_list_onetime" model="ir.ui.view">
+        <field name="name">resource.booking.list.bf_appointment.onetime</field>
+        <field name="model">resource.booking</field>
+        <!-- 🔴 La priorité n'est PAS décorative sur une vue primaire : le défaut
+             du modèle se prend sur `priority, name, id`, donc une vue à 16
+             peut voler l'écran de quelqu'un d'autre par son seul nom. -->
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+            <list string="Liens personnalisés de réservation"
+                  create="0" delete="0" default_order="create_date desc"
+                  decoration-muted="not active">
+                <field name="active" column_invisible="True"/>
+                <field name="create_date" string="Lien créé le" optional="show"/>
+                <field name="partner_ids" widget="many2many_tags"
+                       string="Destinataires" optional="show"/>
+                <field name="name" string="Titre de la rencontre"/>
+                <field name="type_id" optional="show"/>
+                <field name="link_state" widget="badge"
+                       decoration-success="link_state == 'active'"
+                       decoration-info="link_state == 'used'"
+                       decoration-danger="link_state == 'expired'"/>
+                <field name="link_expires_at" optional="show"/>
+                <field name="link_single_use" optional="hide"/>
+                <field name="link_used_at" optional="hide"/>
+                <!-- Le créneau dit ce que l'état du lien ne dit pas : un lien
+                     sans usage unique reste « actif » après le rendez-vous, et
+                     un second clic produit une seconde rencontre (vécu le
+                     2026-09-10, réservation 737). La colonne le montre. -->
+                <field name="start" string="Créneau choisi" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'pending'"
+                       decoration-success="state in ('scheduled', 'confirmed')"
+                       optional="show"/>
+                <field name="one_time_url" widget="CopyClipboardChar"
+                       string="Adresse à transmettre" optional="hide"/>
+                <field name="user_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- La liste refuse la création ; le formulaire atteint EN CLIQUANT une
+         ligne la rendait par la porte d'à côté (bouton « Nouveau », rouage
+         « Supprimer »), et la réservation née là sortait de la liste par son
+         domaine. Variante primaire : les extensions BF du formulaire d'OCA
+         (motif d'annulation, origine, renvoi des invitations) s'y appliquent
+         comme sur l'original. -->
+    <record id="resource_booking_view_form_onetime" model="ir.ui.view">
+        <field name="name">resource.booking.form.bf_appointment.onetime</field>
+        <field name="model">resource.booking</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_view_form"/>
+        <field name="mode">primary</field>
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">0</attribute>
+                <attribute name="delete">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="resource_booking_view_search_onetime" model="ir.ui.view">
+        <field name="name">resource.booking.search.bf_appointment.onetime</field>
+        <field name="model">resource.booking</field>
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+            <search string="Liens personnalisés de réservation">
+                <field name="partner_ids" string="Destinataires"
+                       filter_domain="[('partner_ids', 'ilike', self)]"/>
+                <field name="name" string="Titre"/>
+                <field name="type_id"/>
+                <field name="user_id"/>
+                <!-- Le défaut de l'écran. « Encore ouvert » se lit sur le
+                     CRÉNEAU, pas sur l'état du lien : c'est la question qu'on
+                     se pose (« à qui ai-je envoyé un lien qui dort ? »). -->
+                <filter name="liens_ouverts"
+                        string="Encore ouverts"
+                        domain="[('state', '=', 'pending'), ('start', '=', False)]"
+                        help="Lien transmis, aucun créneau choisi à ce jour."/>
+                <!-- 🔴 AUCUN séparateur jusqu'à « Annulés » : ces filtres sont
+                     les ÉTATS possibles d'un lien, et ils doivent s'ajouter en
+                     OU à la facette par défaut. Séparés, Odoo les combine en ET
+                     avec elle, et TROIS d'entre eux rendaient alors zéro :
+                     deux par construction — « rendez-vous déjà pris » veut un
+                     `start` que le défaut exclut, « annulés » un état annulé
+                     qui n'est plus « en attente » — et le troisième par un
+                     invariant de production : « déjà utilisé » n'est marqué
+                     qu'APRÈS la confirmation d'un créneau. Les deux autres se
+                     réduisaient sans le dire. L'écran
+                     affichait « Aucun lien personnalisé n'attend de réponse »
+                     sur trois réservations bien réelles. -->
+                <filter name="lien_actif" string="Lien actif"
+                        domain="[('link_state', '=', 'active')]"/>
+                <filter name="lien_utilise" string="Lien déjà utilisé"
+                        domain="[('link_state', '=', 'used')]"/>
+                <filter name="lien_expire" string="Lien expiré"
+                        domain="[('link_state', '=', 'expired')]"/>
+                <filter name="lien_rdv_pris"
+                        string="Rendez-vous déjà pris, lien encore ouvert"
+                        domain="[('start', '!=', False), ('link_state', '=', 'active')]"
+                        help="Un lien sans usage unique reste cliquable après le rendez-vous : un second clic en produirait un autre."/>
+                <filter name="lien_annule" string="Annulés" domain="[('active', '=', False)]"/>
+                <separator/>
+                <!-- Ceux-ci AFFINENT, donc chacun son groupe (ET). « Qui dort
+                     et peut encore suivre son lien » est la question que
+                     l'écran dit poser : des liens qui dorment, une bonne
+                     moitié sont déjà expirés. -->
+                <filter name="liens_ouverts_vivants"
+                        string="Encore ouverts et toujours valides"
+                        domain="[('state', '=', 'pending'), ('start', '=', False), ('link_state', '=', 'active')]"
+                        help="Les liens qui dorment et que la personne peut encore suivre : ceux sur lesquels une relance a un sens."/>
+                <separator/>
+                <filter name="lien_expire_bientot"
+                        string="Expire dans les 7 jours"
+                        domain="[('link_expires_at', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')), ('link_expires_at', '&lt;=', (datetime.datetime.now() + relativedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_type" string="Type de rendez-vous"
+                            context="{'group_by': 'type_id'}"/>
+                    <filter name="group_state" string="État de la réservation"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_user" string="Organisateur"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_create_date" string="Lien créé le"
+                            context="{'group_by': 'create_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="resource_booking_action_onetime" model="ir.actions.act_window">
+        <field name="name">Liens personnalisés de réservation</field>
+        <field name="res_model">resource.booking</field>
+        <field name="path">booking-links</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 10, 'view_mode': 'list',
+                    'view_id': ref('resource_booking_view_list_onetime')}),
+            (0, 0, {'sequence': 20, 'view_mode': 'form',
+                    'view_id': ref('resource_booking_view_form_onetime')})]"/>
+        <field name="search_view_id" ref="resource_booking_view_search_onetime"/>
+        <field name="domain">[('bf_source', '=', 'onetime')]</field>
+        <field name="context">{'search_default_liens_ouverts': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun lien ne répond à ce filtre</p>
+            <p>L'écran s'ouvre sur les liens qui dorment. Retirez la facette « Encore ouverts » pour voir aussi les liens utilisés, expirés ou annulés.</p>
+            <p>Un lien se fabrique par « Créer un lien de réservation » : c'est une réservation en attente qui porte son jeton, et la personne choisit son créneau elle-même.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_appointment_onetime_links"
+              name="Liens personnalisés de réservation"
+              parent="resource_booking.resource_booking_main_menu"
+              action="resource_booking_action_onetime"
+              sequence="13"/>
+</odoo>

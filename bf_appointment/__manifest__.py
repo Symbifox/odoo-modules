@@ -448,7 +448,71 @@
     #   morsure du 2026-07-24. Trouvé par les essais : une saisie faite de
     #   blancs seuls était vraie et n'était pas un masque, donc elle chiffrait
     #   des espaces par-dessus le vrai jeton ; `.strip()` la refuse désormais.
-    "version": "18.0.2.67.0",
+    # 18.0.2.68.0: un menu « Liens personnalisés de réservation ».
+    #   Les liens personnels existent depuis la 2.42.0 et ne se lisaient qu'une fiche
+    #   à la fois : au 2026-11-11, 42 des 58 liens de Blue Fox étaient encore ouverts
+    #   et aucun écran ne les listait. Le menu s'ajoute sous Rendez-vous (séquence 13 ;
+    #   l'assistant garde le sien, séquence 12) et s'ouvre sur les liens qui DORMENT —
+    #   en attente, aucun créneau choisi — plutôt que sur les « actifs » du champ :
+    #   trois liens de BF y étaient actifs alors que le rendez-vous était déjà pris,
+    #   parce qu'un lien sans usage unique reste cliquable après coup (morsure du
+    #   2026-09-10, réservation 737). Un filtre nomme ce cas.
+    #   ⚠️ Les filtres d'état vivent dans UN SEUL groupe, exprès : Odoo combine un
+    #   groupe en OU et deux groupes en ET, donc isolés, trois d'entre eux rendaient
+    #   zéro ligne — deux par construction, le troisième par un invariant de
+    #   production — et l'écran affirmait une absence. Défaut trouvé avant la pose.
+    #   ⚠️ Et les trois vues du menu sont PRIMAIRES en priorité 32 : à 16, celle de
+    #   recherche volait le défaut du modèle (l'ordre est `priority, name, id`) et
+    #   l'écran « Bookings » perdait sa recherche et les filtres de consentement.
+    #   Le formulaire atteint depuis cette liste est une variante primaire sans
+    #   création ni suppression : `create="0"` sur la liste seule se contournait en
+    #   deux clics, la vue courante étant la seule que le client regarde.
+    #   `link_state` devient filtrable par `search="_search_link_state"` : ses quatre
+    #   états s'écrivent entièrement sur des champs stockés, donc le chercheur rend un
+    #   domaine et ne lit aucune fiche, contrairement à `_search_bf_consent_state`.
+    #   Rien n'est stocké : un état qui dépend de l'heure deviendrait faux tout seul,
+    #   et pour la même raison il n'est pas groupable.
+    #   La liste n'offre ni création ni suppression — un lien se fabrique par
+    #   l'assistant, qui pose le titre, le jeton, l'expiration et les invités.
+    # 18.0.2.68.1: la bascule de langue tient sur les pages de lien personnel.
+    #   Signalé par un prospect le 2026-11-16 : « je ne pouvais pas choisir la langue
+    #   en français (en haut à droite, il revenait toujours en anglais) ».
+    #   Odoo résout déjà la langue d'une requête de site dans cet ordre : préfixe de
+    #   l'URL, témoin `frontend_lang`, langue de la session (donc `Accept-Language`),
+    #   langue par défaut du site — et il REDIRIGE vers `/en/…` quand la langue
+    #   résolue n'est pas celle par défaut sur une URL sans préfixe. Un navigateur
+    #   anglais arrivait donc déjà en anglais sans nous. Restait le seul cas qui nous
+    #   appartenait : le témoin qui nomme la langue PAR DÉFAUT, où Odoo ne redirige
+    #   pas (l'URL nue EST le français) et où `_apply_locale_from_request()` écrasait
+    #   ce choix avec l'en-tête du navigateur. Le français était donc inatteignable
+    #   sur ces pages pour qui a un navigateur anglais : le choix s'écrivait dans le
+    #   témoin, et la page suivante le jetait, à chaque clic et à chaque retour.
+    #   Le témoin se lit désormais AVANT l'en-tête, comme le font déjà `_visitor_lang()`
+    #   et `_maybe_redirect_to_visitor_lang()`, et un préfixe d'URL garde la priorité
+    #   sur les deux. Le repli sur l'en-tête reste pour la première visite.
+    #   Les trois étages sont validés contre les langues que le SITE publie
+    #   (`ir.http.get_nearest_lang()`, donc `res.lang._get_frontend()`) et non contre
+    #   les langues actives de la base : un témoin `en_CA` servait sinon une page
+    #   anglaise sur un site qui ne publie que le français, sans sélecteur pour en
+    #   sortir. La langue par défaut vient elle aussi d'Odoo
+    #   (`ir.http._get_default_lang()`, donc `website.default_lang_id`) et non d'un
+    #   `fr_CA` en dur : sur un site dont le défaut est anglais, le préfixe de l'URL
+    #   cessait de gagner. ⚠️ Un témoin est du texte fourni par le visiteur : un octet
+    #   NUL dedans partait dans un `res.lang.search()` et rendait 500 sur les deux routes
+    #   publiques, sans jeton valide ; un témoin illisible vaut désormais un témoin
+    #   absent. Inerte sur un site qui ne publie qu'une seule langue, et c'est
+    #   affirmé par un essai, pas sauté.
+    #   Essais : `tests/test_langue_lien_personnel.py` (neuf cas, dont le parcours
+    #   entier du visiteur). ⚠️ Le parcours ne se mesure pas au `curl` : son agent
+    #   est reconnu comme un robot, et Odoo ne REDIRIGE jamais un robot — il lui
+    #   impose la langue par défaut en résolvant la requête. Le témoin et l'en-tête,
+    #   eux, restent pleinement honorés sur ces routes-ci, puisque c'est le
+    #   contrôleur qui les lit, APRÈS cette résolution : mesuré au `curl/8.5.0`,
+    #   un robot à navigateur français portant un témoin `en_CA` reçoit bien une
+    #   page anglaise, et sans témoin il reçoit le français de son en-tête. Ce
+    #   qu'un robot ne voit pas, c'est le 303 d'Odoo, et rien d'autre : le
+    #   parcours entier exige donc un agent de navigateur.
+    "version": "18.0.2.68.1",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',
@@ -467,6 +531,7 @@
         "templates/appointment_confirmation.xml",
         "views/resource_booking_type_views.xml",
         "views/resource_booking_views.xml",
+        "views/resource_booking_onetime_views.xml",
         "views/calendar_event_views.xml",
         "views/calendar_event_booking_access.xml",
         "views/res_config_settings_views.xml",

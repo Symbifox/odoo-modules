@@ -14,6 +14,7 @@ from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.osv import expression
 from odoo.tools.misc import hmac as hmac_base
 
 from odoo.addons.resource_booking.models.resource_booking import (
@@ -259,6 +260,7 @@ class ResourceBooking(models.Model):
         ],
         string="État du lien",
         compute="_compute_link_state",
+        search="_search_link_state",
         help="Ce que verra la personne qui suit le lien.",
     )
     one_time_url = fields.Char(
@@ -2800,6 +2802,85 @@ class ResourceBooking(models.Model):
             if booking.bf_source == "onetime" and not booking.link_used_at:
                 booking.sudo().link_used_at = fields.Datetime.now()
         return True
+
+    # L'état du lien est un CALCUL (il dépend de l'heure qu'il est), donc aucun
+    # domaine ne peut le viser : `[('link_state', '=', 'expired')]` lève
+    # « Non-stored field link_state cannot be searched ». Sans ces deux
+    # méthodes, le menu des liens personnalisés n'aurait aucun filtre.
+    #
+    # Le module connaît déjà la parade pour `bf_consent_state`, qui parcourt les
+    # fiches en Python parce que son état croise le type, le contact et des
+    # consentements. Ici c'est beaucoup moins cher : les quatre états
+    # s'expriment ENTIÈREMENT sur des champs stockés et indexés, donc le
+    # chercheur rend un vrai domaine et ne lit aucune fiche.
+    ETATS_DU_LIEN = ("none", "active", "used", "expired")
+
+    @api.model
+    def _bf_domaine_link_state(self, etat, maintenant=None):
+        """Le domaine, en champs stockés, qui sélectionne un état de lien.
+
+        Miroir de `_compute_link_state`, PRÉSÉANCE COMPRISE : un lien à usage
+        unique déjà servi ET expiré est « expiré », jamais « utilisé ». Les
+        quatre états partitionnent la table — toute réservation en porte un et
+        un seul — ce dont `_search_link_state` se sert pour nier.
+        """
+        # ⚠️ Un instant par appel ferait mentir la partition : dans un OU
+        # multi-états, deux branches calculées de part et d'autre d'une
+        # frontière de seconde peuvent laisser un lien dans AUCUNE. Le
+        # chercheur passe donc le sien, et ne le lit qu'une fois.
+        maintenant = maintenant or fields.Datetime.now()
+        onetime = [("bf_source", "=", "onetime")]
+        encore_valide = ["|", ("link_expires_at", "=", False),
+                         ("link_expires_at", ">", maintenant)]
+        if etat == "none":
+            return [("bf_source", "!=", "onetime")]
+        if etat == "expired":
+            return onetime + [("link_expires_at", "!=", False),
+                              ("link_expires_at", "<=", maintenant)]
+        if etat == "used":
+            return onetime + encore_valide + [("link_single_use", "=", True),
+                                              ("link_used_at", "!=", False)]
+        if etat == "active":
+            # Ni expiré, ni consommé. La négation de « usage unique ET déjà
+            # servi » s'écrit en clair plutôt qu'avec un « ! » devant un ET
+            # implicite, qui est le genre de domaine qu'on relit de travers.
+            return onetime + encore_valide + [
+                "|", ("link_single_use", "=", False),
+                ("link_used_at", "=", False)]
+        raise ValueError("état de lien inconnu : %s" % (etat,))
+
+    def _search_link_state(self, operator, value):
+        """Rend « État du lien » filtrable, sans parcours Python.
+
+        ⚠️ Les états étant exhaustifs et exclusifs, la négation se traite par
+        COMPLÉMENT (`!= 'active'` devient « none, used ou expired ») plutôt
+        qu'en niant les domaines : nier à la main un domaine qui porte un « | »
+        se rate une fois sur deux.
+        """
+        if operator not in ("=", "!=", "in", "not in"):
+            raise UserError(_(
+                "« État du lien » se filtre par égalité ou par appartenance "
+                "(est, n'est pas, fait partie de), pas par « %s ». C'est un "
+                "état calculé à l'heure qu'il est, pas un texte.", operator))
+        cibles = set(value if isinstance(value, (list, tuple)) else [value])
+        connues = cibles & set(self.ETATS_DU_LIEN)
+        inconnues = {c for c in cibles - connues if c not in (False, None, "")}
+        if inconnues:
+            raise NotImplementedError(
+                "État de lien inconnu au filtre : %s"
+                % (sorted(str(c) for c in inconnues),))
+        # Un « sans valeur » (`= False`) ne désigne aucune réservation : chacune
+        # porte un des quatre états. Son contraire les désigne toutes.
+        if operator in ("!=", "not in"):
+            connues = set(self.ETATS_DU_LIEN) - connues
+        if not connues:
+            return list(expression.FALSE_DOMAIN)
+        if connues == set(self.ETATS_DU_LIEN):
+            return list(expression.TRUE_DOMAIN)
+        maintenant = fields.Datetime.now()
+        return expression.OR([
+            self._bf_domaine_link_state(etat, maintenant=maintenant)
+            for etat in sorted(connues)])
 
     @api.model
     def _bf_find_onetime_to_reuse(self, booking_type, partner):

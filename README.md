@@ -97,7 +97,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.2.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_activity_cancel_note` | Symbifox — Activity Cancel Note | 18.0.1.0.1 | LGPL-3 | Cancelling an activity can leave a note in the chatter, like marking it done |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.2.0 | LGPL-3 | The single transport to the AI bridge service |
-| `bf_appointment` | Symbifox Appointment | 18.0.2.67.0 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
+| `bf_appointment` | Symbifox Appointment | 18.0.2.68.1 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_google_meet` | Symbifox Appointment — Google Meet | 18.0.1.1.0 | LGPL-3 | Adds Google Meet as a videoconference provider on appointment types. The Meet is attached to the host's own Google Calendar event; Nextcloud Talk is the fallback. |
 | `bf_appointment_meeting` | Symbifox Appointment Agenda | 18.0.1.2.0 | BUSL-1.1 | Creates the meeting agenda when an appointment is booked, and hands the booker its link |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.18.1 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
@@ -148,7 +148,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_calendar_subscribe` | BF Calendar Subscriptions | 18.0.1.0.2 | LGPL-3 | Show calendars published elsewhere (Outlook, Google, Apple) in the Odoo calendar, read only, and keep their busy times out of online booking. |
 | `bf_calendar_subscribe_absence` | BF Calendar Subscriptions - Out of office | 18.0.1.0.0 | LGPL-3 | Repeated events of a subscribed calendar (public holidays) do not turn on the out-of-office replies. |
 | `bf_calendar_trash` | BF Calendar — trash | 18.0.1.0.2 | LGPL-3 | Deleted and archived meetings go to a trash, where they can be restored or deleted for good. A meeting moved to the trash leaves Nextcloud with it, and comes back there when restored. |
-| `bf_capture` | Captation audio | 18.0.1.4.2 | BUSL-1.1 | Record a meeting or a memo from a phone; the server names the file and drops it where the rest is already automatic |
+| `bf_capture` | Captation audio | 18.0.1.4.3 | BUSL-1.1 | Record a meeting or a memo from a phone; the server names the file and drops it where the rest is already automatic |
 | `bf_celebrations` | Célébrations | 18.0.2.2.0 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
 | `bf_celebrations_email` | Célébrations : groupes de destinataires | 18.0.1.0.0 | LGPL-3 | Tend une carte de fête aux groupes de destinataires du composeur de courriels |
 | `bf_charge` | Plan de charge | 18.0.1.2.0 | BUSL-1.1 | What is actually left to do, placed on weeks, against a declared capacity rather than a guessed one |

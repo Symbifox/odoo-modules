@@ -24,3 +24,4 @@ from . import test_privacy_appointment
 from . import test_ressource_sans_groupe
 from . import test_salle_gardee_au_deplacement
 from . import test_facade_reglages
+from . import test_langue_lien_personnel

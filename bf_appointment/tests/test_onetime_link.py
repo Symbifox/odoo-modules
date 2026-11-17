@@ -2,10 +2,14 @@
 """Liens de réservation personnels (2.42.0), et leur reprise (2.57.0)."""
 
 import re
-from unittest.mock import patch
+from ast import literal_eval
 from datetime import timedelta
+from unittest.mock import patch
+
+from lxml import etree
 
 from odoo import Command, fields
+from odoo.osv import expression
 from odoo.exceptions import UserError
 from odoo.tests import HttpCase, TransactionCase, tagged
 
@@ -165,6 +169,402 @@ class TestOnetimeLink(TransactionCase):
         """La page qui explique doit exister : sans elle, le contrôleur lève."""
         self.assertTrue(self.env.ref(
             "bf_appointment.appointment_link_closed", raise_if_not_found=False))
+
+    # -- Voir et filtrer les liens (2.68.0) ----------------------------------
+
+    def _lien(self, **vals):
+        """Un lien personnel semé directement, pour choisir son état."""
+        base = {
+            "type_id": self.booking_type.id,
+            "partner_ids": [Command.set([self.destinataire.id])],
+            "bf_source": "onetime",
+        }
+        base.update(vals)
+        return self.env["resource.booking"].create(base)
+
+    def _semis_des_quatre_etats(self):
+        """Six liens qui couvrent les quatre états, préséance comprise."""
+        passe = fields.Datetime.now() - timedelta(minutes=1)
+        hier = fields.Datetime.now() - timedelta(days=1)
+        self.ordinaire = self.env["resource.booking"].create({
+            "type_id": self.booking_type.id,
+            "partner_ids": [Command.set([self.destinataire.id])],
+        })
+        self.actif = self._lien()
+        self.actif_servi = self._lien(link_single_use=False, link_used_at=hier)
+        self.utilise = self._lien(link_single_use=True, link_used_at=hier)
+        self.expire = self._lien(link_expires_at=passe)
+        self.expire_et_servi = self._lien(
+            link_expires_at=passe, link_single_use=True, link_used_at=hier)
+        return (self.ordinaire | self.actif | self.actif_servi | self.utilise
+                | self.expire | self.expire_et_servi)
+
+    def _filtre(self, domaine, parmi):
+        """Ce que le FILTRE rend, borné aux fiches semées par l'essai.
+
+        🔴 Sans la borne, l'essai lirait aussi les liens de la base : sur un
+        banc tiré de la production, une recherche nue rend des dizaines de
+        fiches et l'essai passerait sans rien éprouver.
+        """
+        return self.env["resource.booking"].search(
+            domaine + [("id", "in", parmi.ids)])
+
+    def test_chaque_filtre_rend_exactement_ce_que_le_calcul_annonce(self):
+        """🔴 Le contrôle qui compte : `search` est le MIROIR du calcul.
+
+        Deux chemins écrivent la même règle — `_compute_link_state` en Python,
+        `_bf_domaine_link_state` en SQL — et rien n'oblige le second à suivre
+        le premier. Un essai qui appellerait le filtre pour compter ses lignes
+        passerait avec un domaine faux ; ici chaque fiche semée est confrontée
+        à SON état calculé, état par état, et le semis doit couvrir les quatre
+        (sinon deux ensembles vides se ressembleraient).
+        """
+        semis = self._semis_des_quatre_etats()
+        for etat in ("none", "active", "used", "expired"):
+            attendu = semis.filtered(lambda b, e=etat: b.link_state == e)
+            self.assertTrue(attendu, "le semis ne couvre pas l'état %s" % etat)
+            self.assertEqual(
+                self._filtre([("link_state", "=", etat)], semis), attendu,
+                "le filtre « %s » ne rend pas ce que le calcul annonce" % etat)
+
+    def test_un_lien_expire_et_servi_est_expire_des_deux_cotes(self):
+        """La préséance du calcul doit se retrouver dans le domaine."""
+        semis = self._semis_des_quatre_etats()
+        self.assertEqual(self.expire_et_servi.link_state, "expired")
+        self.assertIn(self.expire_et_servi,
+                      self._filtre([("link_state", "=", "expired")], semis))
+        self.assertNotIn(self.expire_et_servi,
+                         self._filtre([("link_state", "=", "used")], semis))
+
+    def test_un_lien_reutilisable_deja_servi_reste_actif(self):
+        """Le piège du 2026-09-10 doit rester VISIBLE, donc filtrable."""
+        semis = self._semis_des_quatre_etats()
+        self.assertEqual(self.actif_servi.link_state, "active")
+        self.assertIn(self.actif_servi,
+                      self._filtre([("link_state", "=", "active")], semis))
+
+    def test_la_negation_rend_le_complement(self):
+        semis = self._semis_des_quatre_etats()
+        for etat in ("none", "active", "used", "expired"):
+            attendu = semis.filtered(lambda b, e=etat: b.link_state != e)
+            self.assertEqual(
+                self._filtre([("link_state", "!=", etat)], semis), attendu,
+                "la négation de « %s » n'est pas son complément" % etat)
+        self.assertEqual(
+            self._filtre([("link_state", "in", ["used", "expired"])], semis),
+            semis.filtered(lambda b: b.link_state in ("used", "expired")))
+        self.assertEqual(
+            self._filtre([("link_state", "not in", ["none"])], semis),
+            semis.filtered(lambda b: b.link_state != "none"))
+
+    def test_un_filtre_sans_valeur_ne_designe_personne(self):
+        """Aucune réservation n'est « sans état » : chacune en porte un."""
+        semis = self._semis_des_quatre_etats()
+        self.assertFalse(self._filtre([("link_state", "=", False)], semis))
+        self.assertEqual(self._filtre([("link_state", "!=", False)], semis),
+                         semis)
+
+    def test_un_operateur_non_pris_en_charge_le_dit_lisiblement(self):
+        """Mieux vaut refuser que rendre une liste vide qui a l'air d'un fait.
+
+        ⚠️ Depuis que le champ porte `search=`, il apparaît dans « Ajouter un
+        filtre personnalisé » : choisir « contient » est un geste d'USAGER, pas
+        un défaut de programmeur, et doit rendre un message, pas un traceback.
+        L'état inconnu, lui, ne peut venir que du code : il garde sa levée nue.
+        """
+        with self.assertRaises(UserError):
+            self.env["resource.booking"].search([("link_state", "ilike", "act")])
+        with self.assertRaises(NotImplementedError):
+            self.env["resource.booking"].search([("link_state", "=", "ouvert")])
+
+    def test_les_etats_du_chercheur_sont_ceux_du_champ(self):
+        """Une cinquième valeur ajoutée au champ et oubliée ici serait refusée."""
+        champ = self.env["resource.booking"]._fields["link_state"]
+        self.assertEqual(
+            sorted(self.env["resource.booking"].ETATS_DU_LIEN),
+            sorted(code for code, _libelle in champ.selection),
+            "le chercheur et le champ ne connaissent pas les mêmes états")
+
+    def test_les_filtres_d_etat_s_ajoutent_au_defaut_au_lieu_de_le_contredire(self):
+        """🔴 Quatre filtres sur six rendaient ZÉRO, par construction.
+
+        Odoo combine les filtres en OU dans un groupe et en ET entre les
+        groupes (`search_model.js` : `Domain.or` par groupe, puis ET). Chaque
+        filtre d'état isolé par un `<separator/>` s'ajoutait donc en ET à la
+        facette par défaut « en attente, sans créneau » — qu'il CONTREDIT :
+        « déjà utilisé » n'existe qu'après la confirmation d'un créneau,
+        « rendez-vous déjà pris » exige un `start`, « annulés » un état annulé.
+        L'écran rendait zéro ligne et affichait « Aucun lien… » sur des
+        réservations bien réelles (3 sur BF au 2026-11-11).
+
+        L'essai tient les deux bouts : le ET est bien vide — donc la structure
+        de la vue décide — et l'arch ne porte AUCUN séparateur entre le défaut
+        et le dernier filtre d'état, donc le client les met en OU.
+        """
+        vue = self.env.ref("bf_appointment.resource_booking_view_search_onetime")
+        recherche = etree.fromstring(vue.arch)
+        etats = ["liens_ouverts", "lien_actif", "lien_utilise", "lien_expire",
+                 "lien_rdv_pris", "lien_annule"]
+
+        rangs, separateurs = {}, []
+        for i, noeud in enumerate(recherche):
+            if noeud.tag == "filter" and noeud.get("name") in etats:
+                rangs[noeud.get("name")] = i
+            elif noeud.tag == "separator":
+                separateurs.append(i)
+        self.assertEqual(sorted(rangs), sorted(etats),
+                         "un filtre d'état a disparu de la vue")
+        debut, fin = min(rangs.values()), max(rangs.values())
+        self.assertFalse(
+            [i for i in separateurs if debut < i < fin],
+            "un séparateur s'est glissé entre les filtres d'état : chacun "
+            "s'ajouterait alors en ET à la facette par défaut, et ceux qui la "
+            "contredisent rendraient zéro quelles que soient les données")
+
+        defaut = literal_eval(
+            recherche.xpath("//filter[@name='liens_ouverts']")[0].get("domain"))
+        utilise = literal_eval(
+            recherche.xpath("//filter[@name='lien_utilise']")[0].get("domain"))
+
+        # ⚠️ Le semis doit avoir la forme que la PRODUCTION produit, pas une
+        # forme commode : `_mark_link_used` n'est appelé qu'APRÈS la
+        # confirmation du créneau (controllers/main.py), donc un lien « déjà
+        # utilisé » porte toujours un créneau et n'est jamais « en attente ».
+        # Un lien marqué utilisé sans créneau — ce que `_semis_des_quatre_etats`
+        # fabrique pour éprouver le calcul — rendrait le ET non vide et cet
+        # essai ne surveillerait plus rien.
+        dort = self._lien()
+        utilise_reel = self._lien(
+            combination_id=self.combination.id,
+            combination_auto_assign=False,
+            duration=1.0,
+            start=(fields.Datetime.now() + timedelta(days=5)).replace(
+                minute=0, second=0, microsecond=0),
+            link_single_use=True,
+            link_used_at=fields.Datetime.now() - timedelta(hours=1),
+        )
+        self.assertEqual(utilise_reel.link_state, "used")
+        self.assertNotEqual(utilise_reel.state, "pending")
+        semis = dort | utilise_reel
+
+        self.assertFalse(
+            self._filtre(expression.AND([defaut, utilise]), semis),
+            "le ET du défaut et de « déjà utilisé » ne peut rien rendre : "
+            "c'est pourquoi ces filtres doivent s'ajouter en OU")
+        self.assertEqual(
+            self._filtre(expression.OR([defaut, utilise]), semis), semis,
+            "le OU doit montrer le lien qui dort ET le lien déjà utilisé")
+
+    def test_les_filtres_d_affinage_gardent_leur_propre_groupe(self):
+        """L'envers du contrôle précédent : ceux-là doivent rester en ET.
+
+        « Encore ouverts et toujours valides » et « Expire dans les 7 jours »
+        RESSERRENT ce qui est montré. Glissés dans le groupe des états, ils
+        l'élargiraient en silence — et une mutation l'a vérifié : les essais
+        restaient verts.
+        """
+        recherche = etree.fromstring(self.env.ref(
+            "bf_appointment.resource_booking_view_search_onetime").arch)
+        enfants = list(recherche)
+        rang = {n.get("name"): i for i, n in enumerate(enfants) if n.tag == "filter"}
+        separateurs = [i for i, n in enumerate(enfants) if n.tag == "separator"]
+        for avant, apres in (("lien_annule", "liens_ouverts_vivants"),
+                             ("liens_ouverts_vivants", "lien_expire_bientot")):
+            self.assertIn(avant, rang, "le filtre « %s » a disparu" % avant)
+            self.assertIn(apres, rang, "le filtre « %s » a disparu" % apres)
+            self.assertTrue(
+                [i for i in separateurs if rang[avant] < i < rang[apres]],
+                "« %s » doit rester séparé de « %s » : sans séparateur il "
+                "élargit au lieu de resserrer" % (apres, avant))
+
+    def test_les_vues_du_menu_ne_volent_pas_le_defaut_du_modele(self):
+        """🔴 Une vue PRIMAIRE en priorité 16 devient le défaut du modèle.
+
+        `ir.ui.view._order` vaut `priority, name, id` : à priorité égale c'est
+        le NOM qui tranche, et « resource.booking.search.bf_appointment… »
+        passe avant « resource.booking.view.search » d'OCA. L'écran
+        « Bookings », dont l'action n'épingle aucune recherche, perdait alors
+        sa vue de recherche, sa facette « Involving me » ET les filtres de
+        consentement de Blue Fox — qui sont des extensions de la vue d'OCA,
+        donc l'écran par lequel on trouve les réservations sans consentement.
+
+        Rien ne regardait la priorité : c'est par là que le défaut est passé.
+        """
+        for nom in ("resource_booking_view_list_onetime",
+                    "resource_booking_view_search_onetime",
+                    "resource_booking_view_form_onetime"):
+            vue = self.env.ref("bf_appointment.%s" % nom)
+            self.assertEqual(
+                vue.mode, "primary",
+                "%s n'est plus une vue primaire : les attributs qu'elle pose "
+                "s'appliqueraient alors à la vue d'OCA elle-même" % nom)
+            self.assertGreater(
+                vue.priority, 16,
+                "%s est en priorité %d : elle peut voler le défaut du modèle"
+                % (nom, vue.priority))
+
+        for type_vue, xmlid in (
+                ("list", "resource_booking.resource_booking_view_tree"),
+                ("form", "resource_booking.resource_booking_view_form"),
+                ("search", "resource_booking.resource_booking_view_search")):
+            _arch, retenue = self.env["resource.booking"]._get_view(
+                view_type=type_vue)
+            self.assertEqual(
+                retenue, self.env.ref(xmlid),
+                "le défaut du modèle pour « %s » n'est plus celui d'OCA, mais "
+                "« %s » : tout écran qui ne pinne pas sa vue le subit"
+                % (type_vue, retenue.name))
+
+    def test_le_formulaire_du_menu_n_offre_ni_creation_ni_suppression(self):
+        """🔴 La liste le refusait ; le formulaire le rendait à côté.
+
+        `getActiveActions` ne lit que l'arch de la vue COURANTE
+        (`web/views/utils.js`) : le contexte de l'action n'y change rien. En
+        cliquant une ligne, on atteignait le formulaire d'OCA avec son bouton
+        « Nouveau » et son « Supprimer », et la réservation née là sortait de
+        la liste par son domaine — exactement ce que la vue disait empêcher.
+
+        L'essai lit l'arch COMBINÉE, pas la surcharge : c'est elle que le
+        client reçoit, et elle doit garder les extensions BF du formulaire.
+        """
+        action = self.env.ref("bf_appointment.resource_booking_action_onetime")
+        formulaire = self.env.ref(
+            "bf_appointment.resource_booking_view_form_onetime")
+        self.assertIn(
+            ("form", formulaire.id),
+            {(v.view_mode, v.view_id.id) for v in action.view_ids},
+            "l'action n'impose pas sa variante de formulaire")
+
+        combinee = etree.fromstring(
+            self.env["resource.booking"].get_view(formulaire.id, "form")["arch"])
+        self.assertEqual(combinee.get("create"), "0")
+        self.assertEqual(combinee.get("delete"), "0")
+        self.assertTrue(
+            combinee.xpath("//field[@name='one_time_url']"),
+            "la variante a perdu les extensions BF du formulaire")
+
+    def test_le_filtre_ne_lit_aucune_fiche(self):
+        """Le domaine doit être pur SQL, sur des champs STOCKÉS.
+
+        `bf_consent_state` paie un `search` par couple (demandeur, type) ;
+        celui-ci ne doit rien payer du tout, sinon la liste s'écroule le jour
+        où les liens se comptent par milliers. Les QUATRE états sont regardés,
+        et une feuille qui viserait un champ non stocké est refusée elle aussi :
+        elle ferait lever la recherche au premier clic.
+        """
+        Res = self.env["resource.booking"]
+        for etat in Res.ETATS_DU_LIEN:
+            for feuille in Res._bf_domaine_link_state(etat):
+                if not isinstance(feuille, (list, tuple)):
+                    continue  # un opérateur « | » ou « & »
+                self.assertNotEqual(
+                    feuille[0], "id",
+                    "le domaine de « %s » passe par une liste d'ids : il a lu "
+                    "des fiches" % etat)
+                self.assertTrue(
+                    Res._fields[feuille[0]].store,
+                    "le domaine de « %s » vise %s, qui n'est pas stocké"
+                    % (etat, feuille[0]))
+
+    def test_l_action_du_menu_vise_les_liens_et_s_ouvre_sur_ceux_qui_dorment(self):
+        """L'écran promis par la napkin : le menu, son action, son défaut."""
+        action = self.env.ref("bf_appointment.resource_booking_action_onetime")
+        self.assertEqual(action.res_model, "resource.booking")
+        self.assertEqual(literal_eval(action.domain),
+                         [("bf_source", "=", "onetime")])
+        self.assertEqual(
+            literal_eval(action.context).get("search_default_liens_ouverts"), 1,
+            "l'écran doit s'ouvrir sur les liens qui dorment")
+        menu = self.env.ref("bf_appointment.menu_appointment_onetime_links")
+        self.assertEqual(menu.action, action,
+                         "le menu ne pointe pas sur l'action des liens")
+        self.assertTrue(self.env.ref(
+            "bf_appointment.menu_appointment_onetime",
+            raise_if_not_found=False),
+            "l'assistant garde son propre menu (arbitrage du 2026-11-11)")
+
+    def test_le_defaut_lu_DANS_la_vue_ne_montre_que_les_liens_qui_dorment(self):
+        """🔴 Le domaine est lu dans la vue livrée, pas retapé ici.
+
+        Un essai qui recopie le domaine du filtre éprouve sa propre copie :
+        changer la vue ne le ferait pas rougir. Celui-ci lit l'arch servi par
+        la base, donc il tombe si le filtre est renommé ou retouché.
+        """
+        vue = self.env.ref("bf_appointment.resource_booking_view_search_onetime")
+        filtres = etree.fromstring(vue.arch).xpath(
+            "//filter[@name='liens_ouverts']")
+        self.assertTrue(filtres, "le filtre par défaut a disparu de la vue")
+        domaine = literal_eval(filtres[0].get("domain"))
+
+        dort = self._lien()
+        pris = self._lien(
+            combination_id=self.combination.id,
+            combination_auto_assign=False,
+            duration=1.0,
+            start=(fields.Datetime.now() + timedelta(days=3)).replace(
+                minute=0, second=0, microsecond=0),
+        )
+        self.assertEqual(pris.state, "scheduled", "le semis n'a pas réservé")
+        rendu = self._filtre(domaine, dort | pris)
+        self.assertEqual(rendu, dort,
+                         "le défaut doit montrer le lien qui dort, et lui seul")
+
+    def test_le_defaut_tient_le_cas_du_creneau_sans_evenement(self):
+        """🔴 La seconde feuille du défaut (`start = False`) est une GARDE.
+
+        Mesuré le 2026-11-12, uid 2 : aucune réservation de BF ni de PMEC n'est
+        « en attente » avec un créneau, archivées comprises. OCA dérive l'état
+        du `meeting_id` (`_compute_state`), jamais du `start`. Une mutation qui
+        retire cette feuille survit donc à tout semis ordinaire — et ça ne dit
+        pas que la garde est morte, ça dit qu'aucun contrôle ne la regarde.
+
+        Le cas qu'elle protège existe : un événement d'agenda supprimé sous une
+        réservation laisse le créneau en base et l'état retombé à « en
+        attente ». On le FORGE en SQL, parce que l'ORM refuse de le produire —
+        `_compute_start` relirait l'événement absent et effacerait le créneau.
+        L'écran, lui, ne doit pas présenter ce lien comme endormi.
+        """
+        vue = self.env.ref("bf_appointment.resource_booking_view_search_onetime")
+        filtres = etree.fromstring(vue.arch).xpath(
+            "//filter[@name='liens_ouverts']")
+        self.assertTrue(filtres, "le filtre par défaut a disparu de la vue")
+        domaine = literal_eval(filtres[0].get("domain"))
+
+        dort = self._lien()
+        orphelin = self._lien(
+            combination_id=self.combination.id,
+            combination_auto_assign=False,
+            duration=1.0,
+            start=(fields.Datetime.now() + timedelta(days=3)).replace(
+                minute=0, second=0, microsecond=0),
+        )
+        self.assertTrue(orphelin.meeting_id, "le semis n'a pas réservé")
+        creneau = orphelin.start
+        # 🔴 Vider les écritures en attente AVANT le SQL brut : sans ce vidage,
+        # la première lecture d'après déclenche le flush de l'ORM, qui réécrit
+        # la ligne avec ses valeurs en mémoire — « scheduled » — et chasse le
+        # semis forgé. L'essai rougissait en annonçant un semis raté alors que
+        # c'était la lecture qui l'avait défait.
+        self.env.flush_all()
+        self.env.cr.execute(
+            "UPDATE resource_booking SET meeting_id = NULL, state = 'pending', "
+            "start = %s WHERE id = %s", (creneau, orphelin.id))
+        orphelin.invalidate_recordset()
+        self.assertEqual(orphelin.state, "pending", "le semis forgé a raté")
+        self.assertEqual(orphelin.start, creneau, "le créneau devait survivre")
+
+        rendu = self._filtre(domaine, dort | orphelin)
+        self.assertEqual(
+            rendu, dort,
+            "un lien dont le créneau survit à son événement ne dort pas : le "
+            "défaut de l'écran ne doit pas le présenter comme tel")
+
+    def test_la_liste_du_menu_n_offre_ni_creation_ni_suppression(self):
+        """Un « Nouveau » d'ici rendrait une réservation hors de la liste."""
+        vue = self.env.ref("bf_appointment.resource_booking_view_list_onetime")
+        liste = etree.fromstring(vue.arch)
+        self.assertEqual(liste.get("create"), "0")
+        self.assertEqual(liste.get("delete"), "0")
 
 
 @tagged("bf_appointment", "bf_appointment_cancel_link")
