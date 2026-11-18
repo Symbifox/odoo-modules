@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_bf_retail_order_guide_company" model="ir.rule">
+        <field name="name">Order guide: own companies</field>
+        <field name="model_id" ref="model_bf_retail_order_guide"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_retail_order_guide_line_company" model="ir.rule">
+        <field name="name">Order guide item: own companies</field>
+        <field name="model_id" ref="model_bf_retail_order_guide_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_retail_price_file_company" model="ir.rule">
+        <field name="name">Price file: own companies</field>
+        <field name="model_id" ref="model_bf_retail_price_file"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_retail_price_file_line_company" model="ir.rule">
+        <field name="name">Price file line: own companies</field>
+        <field name="model_id" ref="model_bf_retail_price_file_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_retail_credit_company" model="ir.rule">
+        <field name="name">Retail credit: own companies</field>
+        <field name="model_id" ref="model_bf_retail_credit"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

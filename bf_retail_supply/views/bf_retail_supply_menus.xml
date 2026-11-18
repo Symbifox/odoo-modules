@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_retail_supply" name="Suppliers" parent="bf_retail.menu_bf_retail_root"
+              sequence="15" groups="bf_retail.group_retail_manager"/>
+    <menuitem id="menu_bf_retail_order_guide" name="Order guides"
+              parent="menu_bf_retail_supply" action="action_bf_retail_order_guide"
+              sequence="10"/>
+    <menuitem id="menu_bf_retail_price_file" name="Price files"
+              parent="menu_bf_retail_supply" action="action_bf_retail_price_file"
+              sequence="20"/>
+    <menuitem id="menu_bf_retail_supplierinfo" name="Compare the suppliers"
+              parent="menu_bf_retail_supply" action="action_bf_retail_supplierinfo"
+              sequence="30"/>
+    <menuitem id="menu_bf_retail_credit" name="What came back"
+              parent="menu_bf_retail_supply" action="action_bf_retail_credit"
+              sequence="40"/>
+</odoo>

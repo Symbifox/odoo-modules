@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_retail_credit_view_list" model="ir.ui.view">
+        <field name="name">bf.retail.credit.list</field>
+        <field name="model">bf.retail.credit</field>
+        <field name="arch" type="xml">
+            <list string="Credits for returns">
+                <field name="date"/>
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <field name="qty" sum="Quantity"/>
+                <field name="amount" sum="Credited"/>
+                <field name="move_id" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_retail_credit_view_search" model="ir.ui.view">
+        <field name="name">bf.retail.credit.search</field>
+        <field name="model">bf.retail.credit</field>
+        <field name="arch" type="xml">
+            <search string="Credits">
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_product" string="Item"
+                            context="{'group_by': 'product_id'}"/>
+                    <filter name="group_supplier" string="Supplier"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_month" string="Month"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_retail_credit" model="ir.actions.act_window">
+        <field name="name">What came back</field>
+        <field name="res_model">bf.retail.credit</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_group_product': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing came back</p>
+            <p>A validated credit note from a supplier lands here, item by item. It is a
+               reason to order less, not a cheaper unit: the cost series is left alone.</p>
+        </field>
+    </record>
+</odoo>

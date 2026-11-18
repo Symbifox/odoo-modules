@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_retail_weekday_all,bf.retail.weekday read,model_bf_retail_weekday,base.group_user,1,0,0,0
+access_bf_retail_weekday_manager,bf.retail.weekday manager,model_bf_retail_weekday,bf_retail.group_retail_manager,1,1,1,1
+access_bf_retail_order_guide_manager,bf.retail.order.guide manager,model_bf_retail_order_guide,bf_retail.group_retail_manager,1,1,1,1
+access_bf_retail_order_guide_line_manager,bf.retail.order.guide.line manager,model_bf_retail_order_guide_line,bf_retail.group_retail_manager,1,1,1,1
+access_bf_retail_price_file_manager,bf.retail.price.file manager,model_bf_retail_price_file,bf_retail.group_retail_manager,1,1,1,1
+access_bf_retail_price_file_line_manager,bf.retail.price.file.line manager,model_bf_retail_price_file_line,bf_retail.group_retail_manager,1,1,1,1
+access_bf_retail_credit_manager,bf.retail.credit manager,model_bf_retail_credit,bf_retail.group_retail_manager,1,1,1,1

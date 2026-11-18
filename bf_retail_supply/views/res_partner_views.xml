@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_form_view_retail_supply" model="ir.ui.view">
+        <field name="name">res.partner.form.retail.supply</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Retail supply" name="bf_retail_supply"
+                      groups="bf_retail.group_retail_manager"
+                      invisible="not supplier_rank and not bf_retail_supplier">
+                    <group>
+                        <group string="Deliveries">
+                            <field name="bf_retail_supplier"/>
+                            <field name="bf_retail_delivery_day_ids" widget="many2many_tags"
+                                   invisible="not bf_retail_supplier"/>
+                            <field name="bf_retail_order_cutoff" widget="float_time"
+                                   invisible="not bf_retail_supplier"/>
+                            <field name="bf_retail_lead_days"
+                                   invisible="not bf_retail_supplier"/>
+                            <field name="bf_retail_supply_mode"
+                                   invisible="not bf_retail_supplier"/>
+                        </group>
+                        <group string="Terms">
+                            <field name="bf_retail_currency_id" invisible="1"/>
+                            <field name="bf_retail_min_order"
+                                   invisible="not bf_retail_supplier"/>
+                            <field name="bf_retail_returns_credited"
+                                   invisible="not bf_retail_supplier"/>
+                            <field name="bf_retail_rep_id"
+                                   invisible="not bf_retail_supplier"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

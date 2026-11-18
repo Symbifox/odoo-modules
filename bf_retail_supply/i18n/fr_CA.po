@@ -1,0 +1,1487 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_retail_supply
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "%(lues)s row(s) read, %(prises)s to apply, %(hors)s left out."
+msgstr ""
+"%(lues)s ligne(s) lue(s), %(prises)s à appliquer, %(hors)s laissée(s) de"
+" côté."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "%(posees)s vendor price(s) applied, %(hors)s row(s) left out."
+msgstr ""
+"%(posees)s prix fournisseur appliqué(s), %(hors)s ligne(s) laissée(s) de"
+" côté."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/order_guide.py:0
+msgid "%s is already ordered."
+msgstr "%s est déjà commandé."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/order_guide.py:0
+msgid "%s is closed: write a new guide."
+msgstr "%s est fermé : écrire un nouveau guide."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid ""
+"%s was read from this supplier, this file and this date. Changing one of "
+"them now would apply prices nobody read: write a new price file instead."
+msgstr ""
+"%s a été lu sur ce fournisseur, ce fichier et cette date. En changer un "
+"maintenant appliquerait des prix que personne n'a lus : écrire plutôt un"
+" nouveau fichier de prix."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "A price file is the retail manager's."
+msgstr "Un fichier de prix est au gérant du commerce."
+
+#. module: bf_retail_supply
+#: model_terms:ir.actions.act_window,help:bf_retail_supply.action_bf_retail_supplierinfo
+msgid ""
+"A price quoted by the dozen says nothing next to a shelf that sells by the\n"
+" unit. In Odoo the purchase unit belongs to the item, not to the vendor: a\n"
+" supplier selling in another pack size shows it in its minimum quantity."
+msgstr ""
+"Un prix chiffré à la douzaine ne dit rien à côté d'une tablette qui vend"
+" à l'unité. Dans Odoo, l'unité d'achat appartient à l'article, pas au "
+"fournisseur : un fournisseur qui vend dans un autre format le montre "
+"dans sa quantité minimale."
+
+#. module: bf_retail_supply
+#: model:ir.model.constraint,message:bf_retail_supply.constraint_bf_retail_order_guide_line_qty_positive
+msgid "A quantity cannot be negative."
+msgstr "Une quantité ne peut pas être négative."
+
+#. module: bf_retail_supply
+#: model_terms:ir.actions.act_window,help:bf_retail_supply.action_bf_retail_credit
+msgid ""
+"A validated credit note from a supplier lands here, item by item. It is a\n"
+" reason to order less, not a cheaper unit: the cost series is left alone."
+msgstr ""
+"Une note de crédit validée d'un fournisseur arrive ici, article par "
+"article. C'est une raison d'en commander moins, pas une unité moins "
+"chère : la série des coûts n'est pas touchée."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__res_partner__bf_retail_supply_mode__van
+msgid "A van to the store"
+msgstr "Un camion au commerce"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_needaction
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide_line__cost_delta_pct
+msgid "Against the cost before it, from the cost series of the store."
+msgstr "Contre le coût précédent, pris dans la série des coûts du commerce."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__in_progress
+msgid "Already ordered"
+msgstr "Déjà commandé"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__write_costs
+msgid "Also write the cost series"
+msgstr "Écrire aussi la série des coûts"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__amount
+msgid "Amount"
+msgstr "Montant"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/order_guide.py:0
+msgid "An order guide is the retail manager's."
+msgstr "Un guide de commande est au gérant du commerce."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file__state__applied
+msgid "Applied"
+msgstr "Appliqué"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_price_file_view_form
+msgid "Apply the prices"
+msgstr "Appliquer les prix"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_attachment_count
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file_line__matched_on__barcode
+msgid "Barcode"
+msgstr "Code-barres"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__below_minimum
+msgid "Below the minimum"
+msgstr "Sous le minimum"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_res_partner__bf_retail_returns_credited
+#: model:ir.model.fields,help:bf_retail_supply.field_res_users__bf_retail_returns_credited
+msgid ""
+"Bread, milk and magazines are often on sale or return. What came back shows "
+"in the order guide either way; this says whether it cost the store anything."
+msgstr ""
+"Le pain, le lait et les magazines sont souvent en vente avec retour. Ce "
+"qui est revenu paraît au guide de commande dans les deux cas ; ceci dit "
+"si ça a coûté quelque chose au commerce."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__credited_qty
+msgid "Came back"
+msgstr "Revenu"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_product_supplierinfo__bf_retail_best
+msgid "Cheapest today"
+msgstr "Le moins cher aujourd'hui"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_order_guide__state__closed
+msgid "Closed"
+msgstr "Fermé"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__code
+msgid "Code in the file"
+msgstr "Code dans le fichier"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file_line__rejected__unknown
+msgid "Code with no item in this store"
+msgstr "Code sans article dans ce commerce"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__res_partner__bf_retail_supply_mode__depot
+msgid "Collected from a depot"
+msgstr "À prendre au dépôt"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__columns_note
+msgid "Columns read"
+msgstr "Colonnes lues"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "Columns read: %s."
+msgstr "Colonnes lues : %s."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__company_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__company_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__company_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__company_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_retail_supply
+#: model:ir.actions.act_window,name:bf_retail_supply.action_bf_retail_supplierinfo
+#: model:ir.ui.menu,name:bf_retail_supply.menu_bf_retail_supplierinfo
+msgid "Compare the suppliers"
+msgstr "Comparer les fournisseurs"
+
+#. module: bf_retail_supply
+#: model:ir.model,name:bf_retail_supply.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__cost_delta_pct
+msgid "Cost moved (%)"
+msgstr "Coût bougé (%)"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__cost_date
+msgid "Cost of"
+msgstr "Coût du"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__cover_until
+msgid "Covering until"
+msgstr "Couvre jusqu'au"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__create_uid
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__create_uid
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__create_uid
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__create_uid
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__create_uid
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_weekday__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__create_date
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__create_date
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__create_date
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__create_date
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__create_date
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_weekday__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/order_guide.py:0
+msgid ""
+"Creating a request for quotation takes the Purchase rights: ask purchasing, "
+"or give the retail manager the Purchase user group."
+msgstr ""
+"Créer une demande de prix exige les droits d'achat : demander aux "
+"achats, ou donner au gérant du commerce le groupe Achats."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__move_id
+msgid "Credit note"
+msgstr "Note de crédit"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__move_line_id
+msgid "Credit note line"
+msgstr "Ligne de note de crédit"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__amount
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_credit_view_list
+msgid "Credited"
+msgstr "Crédité"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide_line__credited_qty
+msgid ""
+"Credited by the supplier over the last three months, in the item's own unit:"
+" a reason to order less."
+msgstr ""
+"Crédité par le fournisseur sur les trois derniers mois, dans l'unité de "
+"l'article : une raison d'en commander moins."
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_credit_view_search
+msgid "Credits"
+msgstr "Crédits"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_credit_view_list
+msgid "Credits for returns"
+msgstr "Crédits pour retours"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_partner__bf_retail_returns_credited
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_users__bf_retail_returns_credited
+msgid "Credits what did not sell"
+msgstr "Crédite ce qui ne s'est pas vendu"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__currency_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__currency_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__currency_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__currency_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__currency_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_partner__bf_retail_currency_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_users__bf_retail_currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_weekday__name
+msgid "Day"
+msgstr "Jour"
+
+#. module: bf_retail_supply
+#: model:ir.model,name:bf_retail_supply.model_bf_retail_weekday
+msgid "Day of the week"
+msgstr "Jour de la semaine"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_res_partner__bf_retail_lead_days
+#: model:ir.model.fields,help:bf_retail_supply.field_res_users__bf_retail_lead_days
+msgid ""
+"Days between an order placed before the cut-off and the delivery it makes."
+msgstr ""
+"Jours entre une commande passée avant l'heure de coupure et la livraison"
+" qu'elle prend."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_partner__bf_retail_lead_days
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_users__bf_retail_lead_days
+msgid "Days to deliver"
+msgstr "Jours pour livrer"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__edited
+msgid "Decided by hand"
+msgstr "Décidé à la main"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.res_partner_form_view_retail_supply
+msgid "Deliveries"
+msgstr "Livraisons"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_partner__bf_retail_delivery_day_ids
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_users__bf_retail_delivery_day_ids
+msgid "Delivers on"
+msgstr "Livre le"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__name
+msgid "Description in the file"
+msgstr "Description dans le fichier"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__display_name
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__display_name
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__display_name
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__display_name
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__display_name
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_weekday__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_order_guide__state__draft
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_price_file_view_form
+msgid ""
+"Each price opens a new vendor line dated from the file, and closes the one "
+"before it. Carry on?"
+msgstr ""
+"Chaque prix ouvre une ligne fournisseur neuve datée du fichier, et ferme"
+" celle d'avant. On continue ?"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__failed_message_ids
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__file
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__file_id
+msgid "File"
+msgstr "Fichier"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__filename
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_form
+msgid "Fill from the shelf"
+msgstr "Remplir depuis la tablette"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_order_guide__state__computed
+msgid "Filled"
+msgstr "Rempli"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__digest
+msgid "Fingerprint"
+msgstr "Empreinte"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_follower_ids
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_partner_ids
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__delivery_date
+msgid "For the delivery of"
+msgstr "Pour la livraison du"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__forecast
+msgid "Forecast"
+msgstr "Prévision"
+
+#. module: bf_retail_supply
+#: model:bf.retail.weekday,name:bf_retail_supply.weekday_4
+msgid "Friday"
+msgstr "vendredi"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_credit_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__guide_id
+msgid "Guide"
+msgstr "Guide"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__has_message
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_partner__bf_retail_supply_mode
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_users__bf_retail_supply_mode
+msgid "How it arrives"
+msgstr "Comment ça arrive"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_weekday__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__message_needaction
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+"Si cette case est cochée, de nouveaux messages demandent votre "
+"attention."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__message_has_error
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__message_has_sms_error
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__message_has_error
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si cette case est cochée, des messages ont une erreur de livraison."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__date
+msgid "In force from"
+msgstr "En vigueur du"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide_line__on_hand
+msgid "In the item's own unit, the one it is stocked in."
+msgstr "Dans l'unité de l'article, celle où il est tenu en stock."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file_line__matched_on__default_code
+msgid "Internal reference"
+msgstr "Référence interne"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_is_follower
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__product_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__product_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__product_id
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_credit_view_search
+msgid "Item"
+msgstr "Article"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__line_count
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_form
+msgid "Items"
+msgstr "Articles"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__to_order_count
+msgid "Items to order"
+msgstr "Articles à commander"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__price_missing_count
+msgid ""
+"Items to order whose supplier has no price in force today: an expired vendor"
+" line is not a price of 0.00, and the total below does not include them."
+msgstr ""
+"Les articles à commander dont le fournisseur n'a aucun prix en vigueur "
+"aujourd'hui : une ligne fournisseur périmée n'est pas un prix de 0,00, "
+"et le total ci-dessous ne les compte pas."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__price_missing_count
+msgid "Items without a price"
+msgstr "Articles sans prix"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_res_partner__bf_retail_supplier
+#: model:ir.model.fields,help:bf_retail_supply.field_res_users__bf_retail_supplier
+msgid "Its order guide is offered in Retail, and its price file can be read."
+msgstr ""
+"Son guide de commande est offert dans Détail, et son fichier de prix "
+"peut être lu."
+
+#. module: bf_retail_supply
+#: model:ir.model,name:bf_retail_supply.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__write_uid
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__write_uid
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__write_uid
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__write_uid
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__write_uid
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_weekday__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__write_date
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__write_date
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__write_date
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__write_date
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__write_date
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_weekday__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__cost_last
+msgid "Last cost"
+msgstr "Dernier coût"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_res_partner__bf_retail_delivery_day_ids
+#: model:ir.model.fields,help:bf_retail_supply.field_res_users__bf_retail_delivery_day_ids
+msgid "Left empty: every day counts as a delivery day."
+msgstr "Laissé vide : chaque jour compte comme un jour de livraison."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__rejected_count
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__rejected
+msgid "Left out"
+msgstr "Laissée de côté"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__line_count
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_price_file_view_form
+msgid "Lines"
+msgstr "Lignes"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_form
+msgid "Make the request for quotation"
+msgstr "Faire la demande de prix"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__matched_count
+msgid "Matched"
+msgstr "Appariées"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__matched_on
+msgid "Matched on"
+msgstr "Apparié sur"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__max_qty
+msgid "Maximum"
+msgstr "Maximum"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_content
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_has_error
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur de livraison du message"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_search
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__message_content
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à utiliser seulement dans les recherches"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__message_search
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à utiliser seulement dans les recherches"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_ids
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__min_qty
+msgid "Minimum"
+msgstr "Minimum"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__minimum
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_partner__bf_retail_min_order
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_users__bf_retail_min_order
+msgid "Minimum order"
+msgstr "Commande minimale"
+
+#. module: bf_retail_supply
+#: model:bf.retail.weekday,name:bf_retail_supply.weekday_0
+msgid "Monday"
+msgstr "lundi"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_credit_view_search
+msgid "Month"
+msgstr "Mois"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__delta_pct
+msgid "Moves (%)"
+msgstr "Bouge de (%)"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid ""
+"No column holding a code and a column holding a price were both found in the first %(fenetre)s rows. What was read:\n"
+"%(apercu)s"
+msgstr ""
+"Aucune colonne portant un code et aucune colonne portant un prix n'ont "
+"été trouvées dans les %(fenetre)s premières lignes. Ce qui a été lu :\n"
+"%(apercu)s"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "No file."
+msgstr "Aucun fichier."
+
+#. module: bf_retail_supply
+#: model_terms:ir.actions.act_window,help:bf_retail_supply.action_bf_retail_order_guide
+msgid "No order guide yet"
+msgstr "Aucun guide de commande pour l'instant"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__price_missing
+msgid "No price"
+msgstr "Sans prix"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/order_guide.py:0
+msgid ""
+"No price in force for %(articles)s: this supplier's vendor line is expired "
+"or missing. Read a price file, or write the price on the vendor line, before"
+" asking for a quotation — an order does not leave at 0.00."
+msgstr ""
+"Aucun prix en vigueur pour %(articles)s : la ligne fournisseur de ce "
+"fournisseur est périmée ou absente. Lire un fichier de prix, ou écrire "
+"le prix sur la ligne fournisseur, avant de demander un prix — une "
+"commande ne part pas à 0,00."
+
+#. module: bf_retail_supply
+#: model_terms:ir.actions.act_window,help:bf_retail_supply.action_bf_retail_supplierinfo
+msgid "No vendor price on a retail item"
+msgstr "Aucun prix fournisseur sur un article du commerce"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__unmatched_count
+msgid "Not matched"
+msgstr "Non appariées"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__note
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_form
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_retail_supply
+#: model_terms:ir.actions.act_window,help:bf_retail_supply.action_bf_retail_credit
+msgid "Nothing came back"
+msgstr "Rien n'est revenu"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid ""
+"Nothing to apply: not one row of this file carries a price this store can "
+"read on an item it follows."
+msgstr ""
+"Rien à appliquer : aucune ligne de ce fichier ne porte un prix lisible "
+"sur un article suivi par le commerce."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/order_guide.py:0
+msgid "Nothing to order: every quantity is 0."
+msgstr "Rien à commander : toutes les quantités sont à 0."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_weekday__code
+msgid "Number"
+msgstr "Numéro"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__message_needaction_counter
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__message_has_error_counter
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur de livraison"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__write_costs
+msgid ""
+"Off: the file only moves the vendor prices, and the cost stays what the "
+"bills say. On: each price also lands in the cost series, for a store whose "
+"supplier does not bill item by item."
+msgstr ""
+"Décoché : le fichier ne bouge que les prix fournisseur, et le coût reste"
+" ce que disent les factures. Coché : chaque prix entre aussi dans la "
+"série des coûts, pour un commerce dont le fournisseur ne facture pas "
+"article par article."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__date
+msgid "On"
+msgstr "Le"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide_line__in_progress
+msgid ""
+"On a request for quotation not confirmed yet: Odoo's forecast ignores it. In"
+" the item's own unit."
+msgstr ""
+"Sur une demande de prix pas encore confirmée : la prévision d'Odoo "
+"l'ignore. Dans l'unité de l'article."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__on_hand
+msgid "On hand"
+msgstr "En main"
+
+#. module: bf_retail_supply
+#: model_terms:ir.actions.act_window,help:bf_retail_supply.action_bf_retail_order_guide
+msgid ""
+"One guide per supplier and per order. It stays open while the aisle is walked,\n"
+" keeps what was typed, and makes Odoo's request for quotation when it is done."
+msgstr ""
+"Un guide par fournisseur et par commande. Il reste ouvert pendant la "
+"tournée de l'allée, garde ce qui a été saisi, et fait la demande de prix"
+" d'Odoo à la fin."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_partner__bf_retail_order_cutoff
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_users__bf_retail_order_cutoff
+msgid "Order by"
+msgstr "Commander avant"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_form
+msgid "Order guide"
+msgstr "Guide de commande"
+
+#. module: bf_retail_supply
+#: model:ir.actions.act_window,name:bf_retail_supply.action_bf_retail_order_guide
+#: model:ir.ui.menu,name:bf_retail_supply.menu_bf_retail_order_guide
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_list
+msgid "Order guides"
+msgstr "Guides de commande"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_order_guide__state__ordered
+msgid "Ordered"
+msgstr "Commandé"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__uom_id
+msgid "Ordered in"
+msgstr "Commandé en"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__price_unit
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__price
+msgid "Price"
+msgstr "Prix"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__price_header
+msgid "Price column"
+msgstr "Colonne du prix"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_price_file_view_form
+msgid "Price file"
+msgstr "Fichier de prix"
+
+#. module: bf_retail_supply
+#: model:ir.actions.act_window,name:bf_retail_supply.action_bf_retail_price_file
+#: model:ir.ui.menu,name:bf_retail_supply.menu_bf_retail_price_file
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_price_file_view_list
+msgid "Price files"
+msgstr "Fichiers de prix"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file_line__rejected__price
+msgid "Price not readable"
+msgstr "Prix illisible"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file_line__rejected__zero
+msgid "Price of zero or less"
+msgstr "Prix à zéro ou négatif"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_product_supplierinfo__bf_retail_price_per_unit
+msgid "Price per unit"
+msgstr "Prix à l'unité"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__qty
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_credit_view_list
+msgid "Quantity"
+msgstr "Quantité"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__rating_ids
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file__state__read
+msgid "Read"
+msgstr "Lu"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_price_file_view_form
+msgid "Read the file"
+msgstr "Lire le fichier"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "Read the file first."
+msgstr "Lire le fichier d'abord."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "Reading an Excel file takes the openpyxl package."
+msgstr "Lire un fichier Excel exige le paquet openpyxl."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__name
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__name
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_form
+msgid ""
+"Refreshes every item of this supplier. A quantity typed by hand is left "
+"alone."
+msgstr ""
+"Rafraîchit chaque article de ce fournisseur. Une quantité saisie à la "
+"main n'est pas touchée."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_partner__bf_retail_rep_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_users__bf_retail_rep_id
+msgid "Representative"
+msgstr "Représentant"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__order_id
+msgid "Request for quotation"
+msgstr "Demande de prix"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/order_guide.py:0
+msgid "Request for quotation %s, %s item(s)."
+msgstr "Demande de prix %s, %s article(s)."
+
+#. module: bf_retail_supply
+#: model:ir.model,name:bf_retail_supply.model_bf_retail_credit
+msgid "Retail credit for a return"
+msgstr "Crédit de détail pour un retour"
+
+#. module: bf_retail_supply
+#: model:ir.model,name:bf_retail_supply.model_bf_retail_order_guide
+msgid "Retail order guide"
+msgstr "Guide de commande de détail"
+
+#. module: bf_retail_supply
+#: model:ir.model,name:bf_retail_supply.model_bf_retail_order_guide_line
+msgid "Retail order guide item"
+msgstr "Article d'un guide de commande"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_partner__bf_retail_supplier
+#: model:ir.model.fields,field_description:bf_retail_supply.field_res_users__bf_retail_supplier
+msgid "Retail supplier"
+msgstr "Fournisseur du commerce"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.res_partner_form_view_retail_supply
+msgid "Retail supply"
+msgstr "Approvisionnement du détail"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__row_no
+msgid "Row"
+msgstr "Ligne"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "Row %(numero)s: %(cellules)s"
+msgstr "Ligne %(numero)s : %(cellules)s"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file_line__rejected__code
+msgid "Row without a code"
+msgstr "Ligne sans code"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur de livraison du SMS"
+
+#. module: bf_retail_supply
+#: model:bf.retail.weekday,name:bf_retail_supply.weekday_5
+msgid "Saturday"
+msgstr "samedi"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "Separator: %s."
+msgstr "Séparateur : %s."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "Sheet read: %s."
+msgstr "Feuille lue : %s."
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_form
+msgid ""
+"Some items have no price in force from this supplier: the No price\n"
+" column says which, the total leaves them out, and no request for\n"
+" quotation goes out on them."
+msgstr ""
+"Des articles n'ont aucun prix en vigueur chez ce fournisseur : la "
+"colonne Sans prix dit lesquels, le total les laisse de côté, et aucune "
+"demande de prix ne part sur eux."
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_price_file_view_form
+msgid ""
+"Some rows are left out, and the Left out column says why, row by\n"
+" row. The prices that can be read are applied all the same."
+msgstr ""
+"Des lignes sont laissées de côté, et la colonne Laissée de côté dit "
+"pourquoi, ligne par ligne. Les prix lisibles s'appliquent quand même."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide_line__edited
+msgid "Somebody typed this quantity: filling the guide again leaves it alone."
+msgstr ""
+"Quelqu'un a saisi cette quantité : un nouveau remplissage n'y touche "
+"pas."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__state
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__stock_uom_id
+msgid "Stocked in"
+msgstr "Unité de stock"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__warehouse_id
+msgid "Store"
+msgstr "Commerce"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__suggested
+msgid "Suggested"
+msgstr "Proposé"
+
+#. module: bf_retail_supply
+#: model:bf.retail.weekday,name:bf_retail_supply.weekday_6
+msgid "Sunday"
+msgstr "dimanche"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_credit__partner_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__partner_id
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_credit_view_search
+msgid "Supplier"
+msgstr "Fournisseur"
+
+#. module: bf_retail_supply
+#: model:ir.model,name:bf_retail_supply.model_product_supplierinfo
+msgid "Supplier Pricelist"
+msgstr "Liste de prix du fournisseur"
+
+#. module: bf_retail_supply
+#: model:ir.ui.menu,name:bf_retail_supply.menu_bf_retail_supply
+msgid "Suppliers"
+msgstr "Fournisseurs"
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.res_partner_form_view_retail_supply
+msgid "Terms"
+msgstr "Conditions"
+
+#. module: bf_retail_supply
+#: model:ir.model.constraint,message:bf_retail_supply.constraint_bf_retail_weekday_code_unique
+msgid "That day is already there."
+msgstr "Ce jour est déjà là."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__date
+msgid ""
+"The day the prices of this file take effect: the new vendor lines start "
+"then, and the lines before them are closed the day before."
+msgstr ""
+"Le jour où les prix de ce fichier prennent effet : les lignes "
+"fournisseur neuves commencent là, et celles d'avant sont fermées la "
+"veille."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__cover_until
+msgid ""
+"The delivery after the next one: the quantities cover until then, so the "
+"shelf does not empty the day after a delivery."
+msgstr ""
+"La livraison d'après la prochaine : les quantités couvrent jusque-là, "
+"pour que la tablette ne se vide pas le lendemain d'une livraison."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__delivery_date
+msgid ""
+"The first delivery this order can still make, from the supplier's delivery "
+"days, its cut-off hour and its lead time."
+msgstr ""
+"La première livraison que cette commande peut encore prendre, d'après "
+"les jours de livraison du fournisseur, son heure de coupure et son "
+"délai."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_res_partner__bf_retail_order_cutoff
+#: model:ir.model.fields,help:bf_retail_supply.field_res_users__bf_retail_order_cutoff
+msgid ""
+"The hour of the day, in the store's own time zone, past which an order no "
+"longer makes the next delivery. 0: no cut-off."
+msgstr ""
+"L'heure du jour, dans le fuseau du commerce, passé laquelle une commande"
+" ne prend plus la prochaine livraison. 0 : aucune heure de coupure."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/res_partner.py:0
+msgid "The hour to order by is an hour of the day, from 0:00 to 23:59."
+msgstr "L'heure de coupure est une heure du jour, de 0 h à 23 h 59."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide_line__stock_uom_id
+msgid ""
+"The item's own unit. What is on hand, what the forecast says and what came "
+"back are counted in it, and the quantity to order is not: a guide can read "
+"24 came back and 2 to order without contradicting itself."
+msgstr ""
+"L'unité de l'article. En main, la prévision et ce qui est revenu se "
+"comptent dedans, la quantité à commander non : un guide peut dire 24 "
+"revenues et 2 à commander sans se contredire."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_product_supplierinfo__bf_retail_best
+msgid ""
+"The lowest price per unit among the vendor lines of this item that are valid"
+" today in this company."
+msgstr ""
+"Le plus bas prix à l'unité parmi les lignes fournisseur de cet article "
+"valides aujourd'hui dans cette société."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__price_header
+msgid ""
+"The name the file gives the column the prices were read from. When it names "
+"a case, the price is the price of the case and the rows are left out rather "
+"than applied per unit."
+msgstr ""
+"Le nom que le fichier donne à la colonne d'où les prix ont été lus. "
+"Quand il nomme une caisse, le prix est celui de la caisse et les lignes "
+"sont laissées de côté au lieu d'être appliquées à l'unité."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__minimum
+#: model:ir.model.fields,help:bf_retail_supply.field_res_partner__bf_retail_min_order
+#: model:ir.model.fields,help:bf_retail_supply.field_res_users__bf_retail_min_order
+msgid ""
+"The order guide says so when the total is below it. It does not refuse."
+msgstr ""
+"Le guide de commande le dit quand le total est en dessous. Il ne refuse "
+"pas."
+
+#. module: bf_retail_supply
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_form
+msgid "The order is below this supplier's minimum."
+msgstr "La commande est sous le minimum de ce fournisseur."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide_line__uom_id
+msgid "The purchase unit of the item: the quantity to order is counted in it."
+msgstr ""
+"L'unité d'achat de l'article : la quantité à commander se compte dedans."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file_line__rejected__repeat
+msgid "The same item again further down the file"
+msgstr "Le même article revient plus loin dans le fichier"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file_line__rejected__clash
+msgid "The same item at two different prices"
+msgstr "Le même article à deux prix différents"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file_line__matched_on__supplier_code
+msgid "The supplier's own code"
+msgstr "Le code du fournisseur"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file_line__check_unit
+msgid ""
+"The unit written in the file does not look like the unit of the vendor line "
+"in Odoo. The line is left out of the apply: a case priced as a unit is worse"
+" than no price at all."
+msgstr ""
+"L'unité écrite dans le fichier ne ressemble pas à celle de la ligne "
+"fournisseur dans Odoo. La ligne reste hors de l'application : une caisse"
+" chiffrée à l'unité est pire qu'aucun prix."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_product_supplierinfo__bf_retail_price_per_unit
+msgid ""
+"The vendor price brought to the item's own unit of measure. Zero when the "
+"two units do not measure the same thing: nothing is guessed."
+msgstr ""
+"Le prix fournisseur ramené à l'unité de mesure de l'article. Zéro quand "
+"les deux unités ne mesurent pas la même chose : rien n'est deviné."
+
+#. module: bf_retail_supply
+#: model:ir.model.constraint,message:bf_retail_supply.constraint_bf_retail_credit_one_per_move_line
+msgid "This credit note line is already recorded."
+msgstr "Cette ligne de note de crédit est déjà enregistrée."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "This exact file was already applied as %s on %s."
+msgstr "Ce fichier exact a déjà été appliqué comme %s le %s."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "This file carries a header and not one row under it."
+msgstr "Ce fichier porte une entête et aucune ligne en dessous."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "This file has no line."
+msgstr "Ce fichier n'a aucune ligne."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid ""
+"This file holds %(lues)s rows, more than the %(plafond)s a price list is "
+"read up to. Split it, or check that it is a price list."
+msgstr ""
+"Ce fichier porte %(lues)s lignes, plus que les %(plafond)s qu'une liste "
+"de prix se lit. Le séparer, ou vérifier que c'est bien une liste de "
+"prix."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "This file is already applied."
+msgstr "Ce fichier est déjà appliqué."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "This file is not readable as text."
+msgstr "Ce fichier n'est pas lisible comme du texte."
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid ""
+"This is an old Excel file (.xls). Save it as .xlsx or as a CSV, and read it "
+"again."
+msgstr ""
+"C'est un vieux fichier Excel (.xls). L'enregistrer en .xlsx ou en CSV, "
+"puis le relire."
+
+#. module: bf_retail_supply
+#: model:ir.model.constraint,message:bf_retail_supply.constraint_bf_retail_order_guide_line_one_product_per_guide
+msgid "This item is already in the guide."
+msgstr "Cet article est déjà dans le guide."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide_line__price_missing
+msgid ""
+"This supplier has no price in force for the item today: its vendor line is "
+"expired, or there is none. The price shown is not 0.00 because the item is "
+"free, and no request for quotation leaves on it."
+msgstr ""
+"Ce fournisseur n'a aucun prix en vigueur pour l'article aujourd'hui : sa"
+" ligne fournisseur est périmée, ou il n'en a pas. Le prix affiché n'est "
+"pas 0,00 parce que l'article serait gratuit, et aucune demande de prix "
+"ne part dessus."
+
+#. module: bf_retail_supply
+#: model:bf.retail.weekday,name:bf_retail_supply.weekday_3
+msgid "Thursday"
+msgstr "jeudi"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__qty
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_list
+msgid "To order"
+msgstr "À commander"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__amount_total
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_form
+#: model_terms:ir.ui.view,arch_db:bf_retail_supply.bf_retail_order_guide_view_list
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_retail_supply
+#: model:bf.retail.weekday,name:bf_retail_supply.weekday_1
+msgid "Tuesday"
+msgstr "mardi"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "Unit"
+msgstr "Unité"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__uom_label
+msgid "Unit in the file"
+msgstr "Unité dans le fichier"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__doubt_count
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__check_unit
+#: model:ir.model.fields.selection,name:bf_retail_supply.selection__bf_retail_price_file_line__rejected__unit
+msgid "Unit to check"
+msgstr "Unité à vérifier"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide_line__supplierinfo_id
+msgid "Vendor line"
+msgstr "Ligne fournisseur"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file_line__current_price
+msgid "Vendor price now"
+msgstr "Prix fournisseur actuel"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__website_message_ids
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_price_file__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide__website_message_ids
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des communications du site web"
+
+#. module: bf_retail_supply
+#: model:bf.retail.weekday,name:bf_retail_supply.weekday_2
+msgid "Wednesday"
+msgstr "mercredi"
+
+#. module: bf_retail_supply
+#: model:ir.actions.act_window,name:bf_retail_supply.action_bf_retail_credit
+#: model:ir.ui.menu,name:bf_retail_supply.menu_bf_retail_credit
+msgid "What came back"
+msgstr "Ce qui est revenu"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_order_guide_line__forecast
+msgid ""
+"What is left at the delivery after the next one, as Odoo forecasts it, in "
+"the item's own unit."
+msgstr ""
+"Ce qui reste à la livraison d'après la prochaine, telle qu'Odoo la "
+"prévoit, dans l'unité de l'article."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file_line__row_no
+msgid "Where this row sits in the file."
+msgstr "Où cette ligne se trouve dans le fichier."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file__columns_note
+msgid ""
+"Which column of the file was read as the code, the description, the price "
+"and the unit, and what the rows were split on. A wholesaler who sends a "
+"retail price next to a net price sends two columns of prices: this says "
+"which one the store applied."
+msgstr ""
+"Quelle colonne du fichier a été lue comme le code, la description, le "
+"prix et l'unité, et sur quoi les lignes ont été découpées. Un grossiste "
+"qui envoie un prix de détail à côté d'un prix net envoie deux colonnes "
+"de prix : ceci dit laquelle le commerce a appliquée."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_res_partner__bf_retail_rep_id
+#: model:ir.model.fields,help:bf_retail_supply.field_res_users__bf_retail_rep_id
+msgid "Who to call about an order, a shortage or a credit."
+msgstr "Qui appeler pour une commande, un manque ou un crédit."
+
+#. module: bf_retail_supply
+#: model:ir.model,name:bf_retail_supply.model_bf_retail_price_file
+msgid "Wholesaler price file"
+msgstr "Fichier de prix d'un grossiste"
+
+#. module: bf_retail_supply
+#: model:ir.model,name:bf_retail_supply.model_bf_retail_price_file_line
+msgid "Wholesaler price file line"
+msgstr "Ligne d'un fichier de prix"
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,help:bf_retail_supply.field_bf_retail_price_file_line__rejected
+msgid ""
+"Why this row is left out of the apply. It is kept and named either way: a "
+"file of 300 rows with 2 broken ones applies the 298 and says which 2 it "
+"could not read."
+msgstr ""
+"Pourquoi cette ligne reste hors de l'application. Elle est gardée et "
+"nommée dans tous les cas : un fichier de 300 lignes dont 2 sont brisées "
+"applique les 298 et nomme les 2 qu'il n'a pas pu lire."
+
+#. module: bf_retail_supply
+#: model:ir.model.fields,field_description:bf_retail_supply.field_bf_retail_order_guide__date
+msgid "Written on"
+msgstr "Écrit le"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "a tab"
+msgstr "une tabulation"
+
+#. module: bf_retail_supply
+#. odoo-python
+#: code:addons/bf_retail_supply/models/price_file.py:0
+msgid "and %s more"
+msgstr "et %s de plus"
