@@ -329,6 +329,17 @@ def _unknown_variable(tokens):
     return None
 
 
+def _head_label(tokens):
+    """Le mot nu en TÊTE d'expression. _unknown_variable ne peut pas le
+    voir : il cherche un mot PRÉCÉDÉ d'un opérateur ou d'une parenthèse, et
+    rien ne précède le premier jeton. Un descriptif entre parenthèses
+    appartient au nombre d'à côté : il n'est pas en tête au sens d'ici."""
+    tok = tokens[0] if tokens else None
+    if tok is not None and tok.kind == "LABEL" and not tok.paren:
+        return tok.text
+    return None
+
+
 def _bind_currencies(tokens, local):
     """Chaque montant prend la monnaie écrite juste après lui (« 100 USD »), ou
     juste avant (« $750 ») si ce symbole n'appartient pas déjà au nombre d'avant."""
@@ -541,6 +552,24 @@ def evaluate(text, thousands_sep=",", variables=None, rate=None,
         ctx.prec = 34
         tokens = tokenize(body, thousands_sep, currencies, taxes)
         tokens = _bind_variables(tokens, variables)
+        # 🔴 Un mot de taxe EN TÊTE n'est ni un opérande ni une taxe : une taxe
+        # ne s'applique qu'après + ou -. Les deux chemins qui en sortaient
+        # mentaient chacun à leur façon : « tvq * 2 » rendait « Il manque un
+        # nombre », qui nomme le mauvais coupable, et « tvq + 100 » rendait
+        # 100 EN SILENCE, le mot passant pour un descriptif. On refuse ici, à
+        # un seul endroit, avant que l'un échoue et que l'autre réussisse.
+        # ⚠️ Deux bornes, chacune mesurée :
+        #   - seuls les mots de taxe. Un mot quelconque en tête reste un
+        #     descriptif, et le nommer ferait dire « variable inconnue » dès la
+        #     première frappe, l'aperçu tournant à chaque caractère tapé ;
+        #   - et seulement si l'expression n'applique AUCUNE taxe plus loin.
+        #     « TVQ 1 149,75 - taxes » étiquette une taxe inversée et vaut
+        #     1 000 : là, le mot EST un descriptif, et le refuser casserait un
+        #     usage qui marchait.
+        head = _head_label(tokens)
+        if (head is not None and head.rstrip(".").lower() in tax_words
+                and not any(tok.kind == "TAX" for tok in tokens)):
+            raise CalcError("tax_bad_operator", text=head)
         _bind_currencies(tokens, local)
         conversions = []
         if target:

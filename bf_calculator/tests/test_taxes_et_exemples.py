@@ -564,6 +564,67 @@ class TestTaxProfiles(TransactionCase):
         self.assertIn("tvq", res["error"])
         self.assertIn("+", res["error"])
 
+    def test_a_tax_word_in_head_position_is_named_too(self):
+        """🔴 En TÊTE d'expression, le mot de taxe sortait par deux chemins qui
+        mentaient chacun à leur façon. « tvq * 2 » rendait « Il manque un
+        nombre », qui nomme le mauvais coupable : le nombre ne manque pas, le
+        mot n'est pas à sa place. Et « tvq + 100 » rendait **100**, EN SILENCE,
+        le mot passant pour un descriptif comme « semaines » : le même nom,
+        deux sens, celui qui réussit étant le plus dangereux des deux.
+
+        Le repère qui nommait le mot cherchait un mot PRÉCÉDÉ d'un opérateur ;
+        rien ne précède le premier jeton, donc il ne voyait jamais la tête."""
+        if "account.tax" not in self.env:
+            self.skipTest("account absent")
+        self._taxes()
+        entry = self.as_alice()
+        for texte in ("tvq * 2", "tvq", "tps / 2", "TVQ * 2", "tvq.", "taxes * 2",
+                      "taxes", "tvq + 100", "tvq - 100"):
+            res = entry.calc_evaluate(texte)
+            self.assertFalse(res["ok"], f"« {texte} » passe encore : {res}")
+            self.assertIn("+", res["error"],
+                          f"« {texte} » ne dit pas avec quel opérateur : {res['error']}")
+            self.assertNotIn("100", res.get("result_text", ""),
+                             f"« {texte} » a quand même calculé : {res}")
+
+    def test_an_ordinary_word_in_head_position_stays_a_label(self):
+        """⚠️ La garde ne vise QUE les mots de taxe, et cet essai arme le piège.
+        L'aperçu du panneau tourne à chaque caractère tapé : nommer tout mot nu
+        en tête ferait dire « variable inconnue : p » dès la première frappe.
+        Un descriptif en tête doit donc rester un descriptif, et un mot inconnu
+        garder le message d'avant, qui ne le nomme pas."""
+        if "account.tax" not in self.env:
+            self.skipTest("account absent")
+        self._taxes()
+        entry = self.as_alice()
+        res = entry.calc_evaluate("pommes * 2")
+        self.assertFalse(res["ok"], res)
+        self.assertNotIn("pommes", res["error"],
+                         "un mot quelconque en tête est nommé : l'aperçu devient bavard")
+        # Le descriptif en tête, lui, calcule toujours.
+        for texte in ("semaines 6 * 750", "6 semaines * 750"):
+            res = entry.calc_evaluate(texte)
+            self.assertTrue(res["ok"], f"« {texte} » ne calcule plus : {res}")
+            self.assertEqual(res["value"], 4500.0, res)
+        # Entre parenthèses, le mot appartient au nombre d'à côté : pas une tête.
+        res = entry.calc_evaluate("(tvq) * 2")
+        self.assertFalse(res["ok"], res)
+        self.assertNotIn("+", res["error"], res["error"])
+        # 🔴 Et le mot de taxe qui ÉTIQUETTE une vraie taxe reste un descriptif :
+        # « TVQ 1 149,75 - taxes » vaut 1 000 et marchait avant la garde. La
+        # refuser aurait cassé un usage pour en corriger un autre.
+        for texte, attendu in (("TVQ 1 149,75 - taxes", 1000.0),
+                               ("Taxes 1 000 + taxes", 1149.75)):
+            res = entry.calc_evaluate(texte)
+            self.assertTrue(res["ok"], f"« {texte} » est refusé à tort : {res}")
+            self.assertEqual(res["value"], attendu, res)
+        # Le titre écrit à la façon documentée ne dépend d'aucune de ces règles.
+        res = entry.calc_evaluate("tvq : 1 000 * 2")
+        self.assertTrue(res["ok"], res)
+        self.assertEqual((res["title"], res["value"]), ("tvq", 2000.0), res)
+        # Et les chemins qui marchaient marchent encore.
+        self.assertEqual(entry.calc_evaluate("1 000 + tvq")["value"], 1099.75)
+
 
 def _luminance(hexa):
     canaux = [int(hexa[i:i + 2], 16) / 255 for i in (1, 3, 5)]

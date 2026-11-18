@@ -1,6 +1,6 @@
 {
     "name": "BF Calculatrice",
-    "version": "18.0.1.3.0",
+    "version": "18.0.1.3.1",
     "category": "Productivity",
     "summary": "Calculatrice de barre du haut : historique, descriptifs, taxes, heures, versement au chatter",
     "description": """

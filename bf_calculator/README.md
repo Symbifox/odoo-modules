@@ -115,6 +115,10 @@ French (`fr_CA`) is complete.
 
 ## Changelog
 
+- **18.0.1.3.1**: a tax word at the head of a calculation (`tvq * 2`, `tvq + 100`)
+  is refused by name. It used to name the wrong culprit ("a number is missing") or,
+  worse, pass for a label and return the amount unchanged. A word that labels a
+  reversed tax (`QST 1,149.75 - taxes`) still reads as a label and still works.
 - **18.0.1.3.0**: every component of a tax group offered as its own profile,
   plus a manual rate; taxes inside the calculation (`1 149,75 - taxes`); the
   total rate in each profile label; a random, translated example in the
