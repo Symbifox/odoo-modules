@@ -1,7 +1,15 @@
 {
     "name": "Symbifox — LLM Provider",
     "summary": "Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules",
-    "version": "18.0.1.0.1",
+    # 18.0.1.1.0: le modèle par défaut suit la famille courante de Claude.
+    # 18.0.1.2.0: neuf messages d'erreur étaient écrits en français sans accents
+    #   dans la source anglaise du module : ils passent à l'anglais. Les
+    #   adaptateurs ne portent pas d'environnement : ils traduisent par
+    #   `self.r.env._()`, jamais par `_()`, qui devinerait la langue.
+    # 18.0.1.2.0: le module était déjà écrit en anglais, mais n'avait aucun
+    #   catalogue français : un usager réglé en fr_CA le lisait en anglais.
+    #   i18n/fr_CA.po et le .pot du module portent maintenant le français.
+    "version": "18.0.1.2.0",
     "category": "Technical",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

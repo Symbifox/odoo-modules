@@ -1,0 +1,192 @@
+# Translation of Gen : Cockpit - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_claude_chat_cockpit 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 00:47+0000\n"
+"PO-Revision-Date: 2026-11-18 00:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_usage_tree
+msgid "API-equiv. $"
+msgstr "Équiv. API $"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Active This Week"
+msgstr "Actives cette semaine"
+
+#. module: bf_claude_chat_cockpit
+#. modules: bf_claude_chat_cockpit, contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Attached to a Record"
+msgstr "Rattachées à une fiche"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Clear the failure counter on this session"
+msgstr "Remettre à zéro le compteur d'échecs de cette session"
+
+#. module: bf_claude_chat_cockpit
+#: model:ir.actions.act_window,name:bf_claude_chat_cockpit.action_claude_cockpit
+#: model:ir.ui.menu,name:bf_claude_chat_cockpit.menu_claude_cockpit
+msgid "Cockpit"
+msgstr "Cockpit"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Failing"
+msgstr "En échec"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Failures"
+msgstr "Échecs"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Forking on next message"
+msgstr "Bifurque au prochain message"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+msgid "Gen"
+msgstr "Gen"
+
+#. module: bf_claude_chat_cockpit
+#. modules: bf_claude_chat_cockpit, contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Group By"
+msgstr "Regrouper par"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Last Activity"
+msgstr "Dernière activité"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Last Error"
+msgstr "Dernière erreur"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.actions.act_window,help:bf_claude_chat_cockpit.action_claude_cockpit
+msgid "Nothing to look at, which is good news"
+msgstr "Rien à regarder, et c'est une bonne nouvelle"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+msgid "People"
+msgstr "Personnes"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Record Type"
+msgstr "Type de fiche"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Reset"
+msgstr "Remettre à zéro"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+msgid "Role"
+msgstr "Rôle"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Sessions"
+msgstr "Sessions"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.actions.act_window,help:bf_claude_chat_cockpit.action_claude_cockpit
+msgid ""
+"Sessions show up here with their failure counter. A session that reaches\n"
+"                three consecutive stream failures stops resuming its Claude thread and\n"
+"                forks a fresh one on the next message. Clear the counter once the cause\n"
+"                is understood."
+msgstr ""
+"Les sessions paraissent ici avec leur compteur d'échecs. Une session qui atteint\n"
+"                trois échecs de flux d'affilée cesse de reprendre son fil Claude et\n"
+"                en ouvre un neuf au message suivant. Remettez le compteur à zéro\n"
+"                quand la cause est comprise."
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_usage_tree
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_usage_tree
+msgid "Turns"
+msgstr "Tours"
+
+#. module: bf_claude_chat_cockpit
+#: model:ir.actions.act_window,name:bf_claude_chat_cockpit.action_claude_usage
+#: model:ir.ui.menu,name:bf_claude_chat_cockpit.menu_claude_usage
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_graph
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_pivot
+msgid "Usage"
+msgstr "Consommation"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "User"
+msgstr "Usager"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+msgid "Week"
+msgstr "Semaine"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_usage_tree
+msgid "When"
+msgstr "Quand"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+msgid "With token counts"
+msgstr "Avec compteurs"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_usage_tree
+msgid "ms"
+msgstr "ms"
+
+#. module: bf_claude_chat_cockpit
+#: model:ir.module.module,shortdesc:base.module_bf_claude_chat_cockpit
+msgid "Gen — Cockpit"
+msgstr "Gen — Cockpit"
+
+#. module: bf_claude_chat_cockpit
+#: model:ir.module.module,summary:base.module_bf_claude_chat_cockpit
+msgid "Admin view of Gen sessions: stream failures and token usage"
+msgstr ""
+"Vue d'administration des sessions Gen : échecs de flux et consommation"

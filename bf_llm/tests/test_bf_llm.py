@@ -24,7 +24,7 @@ class TestBfLlm(TransactionCase):
             {
                 "name": "Test Anthropic",
                 "provider": "anthropic",
-                "model": "claude-opus-4-8",
+                "model": "claude-opus-5",
                 "model_triage": "claude-haiku-4-5",
                 "is_default": True,
                 "enabled": True,
@@ -67,7 +67,7 @@ class TestBfLlm(TransactionCase):
         # A feature with no override falls back to the base model.
         self.assertEqual(
             self.env["bf.llm"].for_feature("chat")._resolve_model(None),
-            "claude-opus-4-8",
+            "claude-opus-5",
         )
 
     def test_single_default_enforced(self):
@@ -75,7 +75,7 @@ class TestBfLlm(TransactionCase):
             {
                 "name": "Second",
                 "provider": "anthropic",
-                "model": "claude-opus-4-8",
+                "model": "claude-opus-5",
                 "is_default": True,
                 "enabled": True,
             }
@@ -111,7 +111,7 @@ class TestBfLlm(TransactionCase):
         self.assertTrue(res["ok"])
         self.assertEqual(res["text"], "hello")
         self.assertEqual(res["provider"], "anthropic")
-        self.assertEqual(res["model"], "claude-opus-4-8")
+        self.assertEqual(res["model"], "claude-opus-5")
         self.assertEqual(res["usage"]["input_tokens"], 5)
         self.assertEqual(res["stop_reason"], "end_turn")
         self.assertIsNone(res["error"])

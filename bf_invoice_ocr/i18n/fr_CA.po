@@ -1,0 +1,145 @@
+# Translation of Symbifox : Invoice OCR Scanner - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_invoice_ocr 18.0.1.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 00:47+0000\n"
+"PO-Revision-Date: 2026-11-18 00:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_invoice_ocr
+#: model:ir.model.fields.selection,name:bf_invoice_ocr.selection__account_move__ocr_state__done
+msgid "Done"
+msgstr "Lue"
+
+#. module: bf_invoice_ocr
+#. odoo-python
+#: code:addons/bf_invoice_ocr/models/account_move.py:0
+msgid "Empty PDF attachment"
+msgstr "Pièce jointe PDF vide"
+
+#. module: bf_invoice_ocr
+#. modules: bf_invoice_ocr, contacts_nextcloud_sync
+#: model:ir.model.fields.selection,name:bf_invoice_ocr.selection__account_move__ocr_state__error
+msgid "Error"
+msgstr "Erreur"
+
+#. module: bf_invoice_ocr
+#: model:ir.actions.server,name:bf_invoice_ocr.ir_cron_ocr_batch_ir_actions_server
+msgid "Invoice OCR: Batch Scan"
+msgstr "OCR des factures : lecture par lots"
+
+#. module: bf_invoice_ocr
+#: model:ir.model,name:bf_invoice_ocr.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: bf_invoice_ocr
+#. odoo-python
+#: code:addons/bf_invoice_ocr/models/account_move.py:0
+msgid "No PDF attachment found"
+msgstr "Aucune pièce jointe PDF trouvée"
+
+#. module: bf_invoice_ocr
+#. odoo-python
+#: code:addons/bf_invoice_ocr/models/account_move.py:0
+msgid "No attached document and no source email"
+msgstr "Aucun document joint ni courriel source"
+
+#. module: bf_invoice_ocr
+#: model:ir.model.fields.selection,name:bf_invoice_ocr.selection__account_move__ocr_state__none
+msgid "Not scanned"
+msgstr "Non lue"
+
+#. module: bf_invoice_ocr
+#: model_terms:ir.ui.view,arch_db:bf_invoice_ocr.view_move_form_ocr
+msgid "OCR"
+msgstr "OCR"
+
+#. module: bf_invoice_ocr
+#: model:ir.model.fields,field_description:bf_invoice_ocr.field_account_bank_statement_line__ocr_confidence
+#: model:ir.model.fields,field_description:bf_invoice_ocr.field_account_move__ocr_confidence
+msgid "OCR Confidence"
+msgstr "Fiabilité de la lecture"
+
+#. module: bf_invoice_ocr
+#: model:ir.model.fields,field_description:bf_invoice_ocr.field_account_bank_statement_line__ocr_error_message
+#: model:ir.model.fields,field_description:bf_invoice_ocr.field_account_move__ocr_error_message
+msgid "OCR Error"
+msgstr "Erreur de lecture"
+
+#. module: bf_invoice_ocr
+#: model:ir.model.fields,field_description:bf_invoice_ocr.field_account_bank_statement_line__ocr_raw_response
+#: model:ir.model.fields,field_description:bf_invoice_ocr.field_account_move__ocr_raw_response
+msgid "OCR Raw Response"
+msgstr "Réponse brute de l'OCR"
+
+#. module: bf_invoice_ocr
+#: model:ir.model.fields,field_description:bf_invoice_ocr.field_account_bank_statement_line__ocr_scanned_date
+#: model:ir.model.fields,field_description:bf_invoice_ocr.field_account_move__ocr_scanned_date
+msgid "OCR Scan Date"
+msgstr "Date de la lecture"
+
+#. module: bf_invoice_ocr
+#: model:ir.model.fields,field_description:bf_invoice_ocr.field_account_bank_statement_line__ocr_state
+#: model:ir.model.fields,field_description:bf_invoice_ocr.field_account_move__ocr_state
+msgid "OCR Status"
+msgstr "État de la lecture"
+
+#. module: bf_invoice_ocr
+#. odoo-python
+#: code:addons/bf_invoice_ocr/models/account_move.py:0
+msgid "OCR returned no data"
+msgstr "OCR sans données"
+
+#. module: bf_invoice_ocr
+#. odoo-python
+#: code:addons/bf_invoice_ocr/models/account_move.py:0
+msgid "OCR service unavailable"
+msgstr "Service OCR indisponible"
+
+#. module: bf_invoice_ocr
+#: model:ir.model.fields.selection,name:bf_invoice_ocr.selection__account_move__ocr_state__pending
+msgid "Pending"
+msgstr "En attente"
+
+#. module: bf_invoice_ocr
+#: model_terms:ir.ui.view,arch_db:bf_invoice_ocr.view_move_form_ocr
+msgid "Raw OCR Data"
+msgstr "Données brutes de l'OCR"
+
+#. module: bf_invoice_ocr
+#: model_terms:ir.ui.view,arch_db:bf_invoice_ocr.view_move_form_ocr
+msgid "Scan Results"
+msgstr "Résultat de la lecture"
+
+#. module: bf_invoice_ocr
+#: model_terms:ir.ui.view,arch_db:bf_invoice_ocr.view_move_form_ocr
+msgid "Scan with OCR"
+msgstr "Lire par OCR"
+
+#. module: bf_invoice_ocr
+#. odoo-python
+#: code:addons/bf_invoice_ocr/models/account_move.py:0
+msgid "Timed out"
+msgstr "Délai d'attente dépassé"
+
+#. module: bf_invoice_ocr
+#: model:ir.module.module,shortdesc:base.module_bf_invoice_ocr
+msgid "Symbifox — Invoice OCR Scanner"
+msgstr "Symbifox — Lecteur OCR des factures"
+
+#. module: bf_invoice_ocr
+#: model:ir.module.module,summary:base.module_bf_invoice_ocr
+msgid "Extract vendor bill data from PDF attachments via the bf_llm gateway"
+msgstr ""
+"Lit les données d'une facture de fournisseur dans une pièce jointe PDF, par "
+"la passerelle bf_llm"

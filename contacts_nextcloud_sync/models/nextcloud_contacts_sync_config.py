@@ -7,7 +7,7 @@ from xml.etree import ElementTree
 
 import requests
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -252,7 +252,7 @@ class NextcloudContactsSyncConfig(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": f"Contacts: {self.name}",
+            "name": _("Contacts: %(book)s", book=self.name),
             "res_model": "res.partner",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("x_nc_contacts_config_id", "=", self.id)],
@@ -264,9 +264,9 @@ class NextcloudContactsSyncConfig(models.Model):
 
         password = self.nextcloud_app_password
         if not password:
-            self.update_sync_status("error", "No app password configured.")
+            self.update_sync_status("error", _("No app password configured."))
             return self._notify(
-                "No app password configured. Enter the Nextcloud app password first.",
+                _("No app password configured. Enter the Nextcloud app password first."),
                 "warning",
             )
 
@@ -291,41 +291,45 @@ class NextcloudContactsSyncConfig(models.Model):
                 timeout=15,
             )
         except requests.ConnectionError:
-            msg = f"Cannot reach {self.nextcloud_base_url} — check URL and network."
+            msg = _("Cannot reach %(url)s — check URL and network.",
+                    url=self.nextcloud_base_url)
             self.update_sync_status("error", msg)
             return self._notify(msg, "danger")
         except requests.Timeout:
-            msg = f"Connection to {self.nextcloud_base_url} timed out (15s)."
+            msg = _("Connection to %(url)s timed out (15s).",
+                    url=self.nextcloud_base_url)
             self.update_sync_status("error", msg)
             return self._notify(msg, "danger")
         except requests.RequestException as e:
-            msg = f"Request error: {e}"
+            msg = _("Request error: %(error)s", error=e)
             self.update_sync_status("error", msg)
             return self._notify(msg, "danger")
 
         if response.status_code in (401, 403):
-            msg = (
-                f"Authentication failed (HTTP {response.status_code}). "
-                "Check username and app password."
+            msg = _(
+                "Authentication failed (HTTP %(code)s). "
+                "Check username and app password.",
+                code=response.status_code,
             )
             self.update_sync_status("error", msg)
             return self._notify(msg, "danger")
 
         if response.status_code == 404:
-            msg = f"Address book not found at {self.carddav_path}. Check the CardDAV path."
+            msg = _("Address book not found at %(path)s. Check the CardDAV path.",
+                    path=self.carddav_path)
             self.update_sync_status("error", msg)
             return self._notify(msg, "danger")
 
         if response.status_code != 207:
-            msg = f"Unexpected response: HTTP {response.status_code}"
+            msg = _("Unexpected response: HTTP %(code)s", code=response.status_code)
             self.update_sync_status("error", msg)
             return self._notify(msg, "danger")
 
         display_name = self._parse_propfind_displayname(response.text)
         msg = (
-            f"Connected successfully! Address book: {display_name}"
+            _("Connected successfully! Address book: %(book)s", book=display_name)
             if display_name
-            else "Connected successfully! (could not parse address book name)"
+            else _("Connected successfully! (could not parse address book name)")
         )
         self.update_sync_status("success", msg)
         return self._notify(msg, "success")
@@ -348,12 +352,12 @@ class NextcloudContactsSyncConfig(models.Model):
 
         if self.sync_direction == "nc_to_odoo":
             return self._notify(
-                "Sync direction is Nextcloud → Odoo only. Cannot push.", "warning"
+                _("Sync direction is Nextcloud → Odoo only. Cannot push."), "warning"
             )
 
         password = self.nextcloud_app_password
         if not password:
-            return self._notify("No app password configured.", "warning")
+            return self._notify(_("No app password configured."), "warning")
 
         # Get all contacts except those with the exclusion tag
         # Includes both companies and individuals (type=contact)
@@ -364,7 +368,7 @@ class NextcloudContactsSyncConfig(models.Model):
         ])
 
         if not partners:
-            return self._notify("No contacts to sync.", "info")
+            return self._notify(_("No contacts to sync."), "info")
 
         created = 0
         updated = 0
@@ -398,13 +402,22 @@ class NextcloudContactsSyncConfig(models.Model):
                 and tracked
                 and len(would_stale) / len(tracked) > stale_ratio_max
             ):
-                msg = (
-                    f"Aborting sync: {len(would_stale)}/{len(tracked)} "
-                    f"tracked UIDs missing from NC PROPFIND "
-                    f"({len(nc_uids)} entries returned). Likely a truncated "
-                    f"response — refusing to recreate the address book."
+                # Le journal du serveur reste en anglais, quelle que soit la langue
+                # de qui a cliqué : il se lit en exploitation, pas dans l'interface.
+                _logger.warning(
+                    "Aborting sync: %s/%s tracked UIDs missing from NC PROPFIND "
+                    "(%s entries returned). Likely a truncated response — "
+                    "refusing to recreate the address book.",
+                    len(would_stale), len(tracked), len(nc_uids),
                 )
-                _logger.warning(msg)
+                msg = _(
+                    "Sync stopped: %(missing)s of %(tracked)s synced contacts are "
+                    "missing from the Nextcloud address book (%(returned)s entries "
+                    "returned). The response looks truncated, so the address book "
+                    "was left untouched.",
+                    missing=len(would_stale), tracked=len(tracked),
+                    returned=len(nc_uids),
+                )
                 self.update_sync_status("error", msg)
                 return self._notify(msg, "warning")
 
@@ -430,38 +443,38 @@ class NextcloudContactsSyncConfig(models.Model):
             try:
                 if not partner.x_nc_contact_uid:
                     # New contact — generate UID first, then build vCard
-                    uid = str(uuid.uuid4())
-                    vcard_text = self._partner_to_vcard(partner, uid=uid)
-                    new_etag = self._carddav_put_vcard(uid, vcard_text)
+                    vcard_uid = str(uuid.uuid4())
+                    vcard_text = self._partner_to_vcard(partner, uid=vcard_uid)
+                    new_etag = self._carddav_put_vcard(vcard_uid, vcard_text)
                     partner.with_context(skip_nc_contact_sync=True).write({
-                        "x_nc_contact_uid": uid,
+                        "x_nc_contact_uid": vcard_uid,
                         "x_carddav_etag": new_etag or "",
                         "x_nc_contacts_config_id": self.id,
                         "x_contact_sync_source": "odoo",
                         "x_contact_last_sync": fields.Datetime.now(),
                     })
-                    odoo_uids.add(uid)
+                    odoo_uids.add(vcard_uid)
                     created += 1
                 elif not partner.x_carddav_etag:
                     # Contact marked dirty (etag cleared) — check if
                     # content actually changed before pushing
-                    uid = partner.x_nc_contact_uid
+                    vcard_uid = partner.x_nc_contact_uid
                     vcard_text = self._partner_to_vcard(partner)
 
-                    if uid in nc_uids:
+                    if vcard_uid in nc_uids:
                         # Fetch current NC content for comparison
-                        if uid not in nc_content_cache:
+                        if vcard_uid not in nc_content_cache:
                             try:
                                 existing_text, existing_etag = (
-                                    self._carddav_get_vcard(uid)
+                                    self._carddav_get_vcard(vcard_uid)
                                 )
-                                nc_content_cache[uid] = (
+                                nc_content_cache[vcard_uid] = (
                                     existing_text, existing_etag
                                 )
                             except Exception:
-                                nc_content_cache[uid] = (None, None)
+                                nc_content_cache[vcard_uid] = (None, None)
 
-                        existing_text, existing_etag = nc_content_cache[uid]
+                        existing_text, existing_etag = nc_content_cache[vcard_uid]
                         if (
                             existing_text
                             and existing_text.strip() == vcard_text.strip()
@@ -473,12 +486,12 @@ class NextcloudContactsSyncConfig(models.Model):
                                 "x_carddav_etag": existing_etag or "",
                                 "x_contact_last_sync": fields.Datetime.now(),
                             })
-                            odoo_uids.add(uid)
+                            odoo_uids.add(vcard_uid)
                             skipped += 1
                             continue
 
                     new_etag = self._carddav_put_vcard(
-                        uid, vcard_text,
+                        vcard_uid, vcard_text,
                         etag=None,  # No If-Match — force overwrite
                     )
                     partner.with_context(skip_nc_contact_sync=True).write({
@@ -486,7 +499,7 @@ class NextcloudContactsSyncConfig(models.Model):
                         "x_nc_contacts_config_id": self.id,
                         "x_contact_last_sync": fields.Datetime.now(),
                     })
-                    odoo_uids.add(uid)
+                    odoo_uids.add(vcard_uid)
                     updated += 1
                 else:
                     # Unchanged — ETag present means no Odoo-side changes
@@ -539,17 +552,17 @@ class NextcloudContactsSyncConfig(models.Model):
         # Summary
         parts = []
         if created:
-            parts.append(f"{created} created")
+            parts.append(_("%(n)s created", n=created))
         if updated:
-            parts.append(f"{updated} updated")
+            parts.append(_("%(n)s updated", n=updated))
         if deleted:
-            parts.append(f"{deleted} orphans removed")
+            parts.append(_("%(n)s orphan(s) removed", n=deleted))
         if skipped:
-            parts.append(f"{skipped} unchanged")
+            parts.append(_("%(n)s unchanged", n=skipped))
         if errors:
-            parts.append(f"{errors} errors")
-        summary = ", ".join(parts) if parts else "No contacts to push"
-        msg = f"Push complete: {summary}"
+            parts.append(_("%(n)s error(s)", n=errors))
+        summary = ", ".join(parts) if parts else _("No contacts to push")
+        msg = _("Push complete: %(summary)s", summary=summary)
 
         status = "error" if errors and not (created or updated) else (
             "partial" if errors else "success"
@@ -563,24 +576,24 @@ class NextcloudContactsSyncConfig(models.Model):
 
         if self.sync_direction == "odoo_to_nc":
             return self._notify(
-                "Sync direction is Odoo → Nextcloud only. Cannot pull.", "warning"
+                _("Sync direction is Odoo → Nextcloud only. Cannot pull."), "warning"
             )
 
         password = self.nextcloud_app_password
         if not password:
-            return self._notify("No app password configured.", "warning")
+            return self._notify(_("No app password configured."), "warning")
 
         # PROPFIND Depth:1 to get all UIDs + ETags
         try:
             nc_entries = self._carddav_propfind_vcards()
         except Exception as e:
-            msg = f"Failed to list address book: {e}"
+            msg = _("Failed to list address book: %(error)s", error=e)
             self.update_sync_status("error", msg)
             return self._notify(msg, "danger")
 
         if not nc_entries:
-            self.update_sync_status("success", "Address book is empty")
-            return self._notify("Address book is empty.", "info")
+            self.update_sync_status("success", _("Address book is empty."))
+            return self._notify(_("Address book is empty."), "info")
 
         # Pre-fetch existing partners with sync UIDs for this config
         existing_partners = self.env["res.partner"].search([
@@ -596,14 +609,15 @@ class NextcloudContactsSyncConfig(models.Model):
         skipped = 0
 
         for entry in nc_entries:
-            uid = entry["uid"]
+            vcard_uid = entry["uid"]
             etag = entry["etag"]
-            nc_uids_seen.add(uid)
+            nc_uids_seen.add(vcard_uid)
 
-            if uid in existing_etags and existing_etags[uid] == etag:
+            if (vcard_uid in existing_etags
+                    and existing_etags[vcard_uid] == etag):
                 skipped += 1
                 continue
-            to_fetch.append(uid)
+            to_fetch.append(vcard_uid)
 
         # Fetch changed/new vCards
         created = 0
@@ -612,29 +626,29 @@ class NextcloudContactsSyncConfig(models.Model):
         Partner = self.env["res.partner"]
         ctx = {"skip_nc_contact_sync": True, "tracking_disable": True}
 
-        for uid in to_fetch:
+        for vcard_uid in to_fetch:
             try:
-                vcard_text, etag = self._carddav_get_vcard(uid)
+                vcard_text, etag = self._carddav_get_vcard(vcard_uid)
                 if not vcard_text:
                     continue
 
                 contact_data = self._parse_vcard(vcard_text)
                 if not contact_data:
-                    _logger.warning("Could not parse vCard for UID %s", uid)
+                    _logger.warning("Could not parse vCard for UID %s", vcard_uid)
                     errors += 1
                     continue
 
                 # Build partner vals
                 vals = self._vcard_data_to_partner_vals(contact_data)
                 vals.update({
-                    "x_nc_contact_uid": uid,
+                    "x_nc_contact_uid": vcard_uid,
                     "x_carddav_etag": etag or "",
                     "x_nc_contacts_config_id": self.id,
                     "x_contact_sync_source": "nextcloud",
                     "x_contact_last_sync": fields.Datetime.now(),
                 })
 
-                existing = existing_by_uid.get(uid)
+                existing = existing_by_uid.get(vcard_uid)
                 if existing:
                     existing.with_context(**ctx).write(vals)
                     updated += 1
@@ -649,15 +663,15 @@ class NextcloudContactsSyncConfig(models.Model):
 
                     if match:
                         match.with_context(**ctx).write(vals)
-                        existing_by_uid[uid] = match
+                        existing_by_uid[vcard_uid] = match
                         updated += 1
                     else:
                         new_partner = Partner.with_context(**ctx).create(vals)
-                        existing_by_uid[uid] = new_partner
+                        existing_by_uid[vcard_uid] = new_partner
                         created += 1
 
             except Exception as e:
-                _logger.error("Error pulling vCard UID %s: %s", uid, e)
+                _logger.error("Error pulling vCard UID %s: %s", vcard_uid, e)
                 errors += 1
 
         # Orphan detection: partners with config but UID not in NC → clear sync fields
@@ -680,17 +694,17 @@ class NextcloudContactsSyncConfig(models.Model):
         # Summary
         parts = []
         if created:
-            parts.append(f"{created} created")
+            parts.append(_("%(n)s created", n=created))
         if updated:
-            parts.append(f"{updated} updated")
+            parts.append(_("%(n)s updated", n=updated))
         if deleted:
-            parts.append(f"{deleted} orphans cleared")
+            parts.append(_("%(n)s orphan(s) cleared", n=deleted))
         if skipped:
-            parts.append(f"{skipped} unchanged")
+            parts.append(_("%(n)s unchanged", n=skipped))
         if errors:
-            parts.append(f"{errors} errors")
-        summary = ", ".join(parts) if parts else "No contacts found"
-        msg = f"Pull complete: {summary}"
+            parts.append(_("%(n)s error(s)", n=errors))
+        summary = ", ".join(parts) if parts else _("No contacts found")
+        msg = _("Pull complete: %(summary)s", summary=summary)
 
         status = "error" if errors and not (created or updated) else (
             "partial" if errors else "success"
@@ -754,7 +768,8 @@ class NextcloudContactsSyncConfig(models.Model):
                     "Cron sync failed for config %s (id=%s)",
                     config.name, config.id,
                 )
-                config.update_sync_status("error", "Cron sync error: see logs")
+                config.update_sync_status(
+                    "error", _("Scheduled sync failed — see the server log."))
 
     @api.model
     def _cron_full_resync(self):
@@ -771,7 +786,8 @@ class NextcloudContactsSyncConfig(models.Model):
                     "Cron full resync failed for config %s (id=%s)",
                     config.name, config.id,
                 )
-                config.update_sync_status("error", "Full resync error: see logs")
+                config.update_sync_status(
+                    "error", _("Full resync failed — see the server log."))
 
     # === CardDAV HTTP Operations ===
 
@@ -911,8 +927,8 @@ class NextcloudContactsSyncConfig(models.Model):
             )
 
             # Extract UID from href (filename without .vcf)
-            uid = href.rstrip("/").rsplit("/", 1)[-1].replace(".vcf", "")
-            entries.append({"uid": uid, "etag": etag, "href": href})
+            vcard_uid = href.rstrip("/").rsplit("/", 1)[-1].replace(".vcf", "")
+            entries.append({"uid": vcard_uid, "etag": etag, "href": href})
 
         return entries
 
@@ -1259,7 +1275,7 @@ class NextcloudContactsSyncConfig(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Contacts Sync",
+                "title": _("Contacts Sync"),
                 "message": message,
                 "type": notif_type,
                 "sticky": notif_type == "danger",

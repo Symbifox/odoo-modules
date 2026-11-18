@@ -22,7 +22,7 @@ class AnthropicAdapter(_BaseAdapter):
         key = self.r.provider._decrypt_key()
         if not key:
             raise UserError(
-                _("Aucune cle API n'est configuree pour le fournisseur LLM « %s ».")
+                self.r.env._("No API key is configured for the LLM provider “%s”.")
                 % self.r.provider.name
             )
         base = self.r.provider._effective_base_url()
@@ -44,7 +44,7 @@ class AnthropicAdapter(_BaseAdapter):
             env["stop_reason"] = "error"
             return env
         except (urllib.error.URLError, TimeoutError, OSError) as e:
-            env["error"] = _("Anthropic API injoignable : %s") % e
+            env["error"] = self.r.env._("Anthropic API unreachable: %s") % e
             env["stop_reason"] = "error"
             return env
         self._parse_into(env, data)
@@ -113,4 +113,5 @@ class AnthropicAdapter(_BaseAdapter):
             body = e.read().decode("utf-8", errors="replace")
         except Exception:
             body = ""
-        return "Anthropic API HTTP %s: %s" % (e.code, body[:200])
+        return self.r.env._("Anthropic API HTTP %(code)s: %(body)s",
+                            code=e.code, body=body[:200])

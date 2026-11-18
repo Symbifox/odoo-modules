@@ -308,7 +308,21 @@ The module is designed to self-heal from interrupted operations:
 | Cron not running | Check Settings > General Settings > Nextcloud Contacts Sync > cron toggle |
 | Encryption errors | `cryptography` library installed? Check `ir.config_parameter` for `contacts_nextcloud_sync.encryption_key` |
 
+## Languages (18.0.1.3.0)
+
+The module is written in English, and `i18n/fr_CA.po` now carries the French
+translation of its field labels, help texts, selection values, view labels and
+user-facing messages: a user whose language is set to French reads the module in
+French, and an English-speaking user is unaffected.
+
+The connection test, the push and pull summaries and the notification titles
+were f-strings, so they stayed English whatever the user's language. They now
+go through `_()`.
+
 ## Changelog
+
+### 18.0.1.3.0
+- **French catalogue**, and messages that can actually be translated: the connection test, the push and pull summaries and the notification titles were f-strings and read in English whatever the user's language. They now go through `_()`, and `i18n/fr_CA.po` ships the French.
 
 ### 18.0.1.2.0
 - **Contact photo sync**: bidirectional `PHOTO` &harr; `image_1920` mapping. Export emits embedded base64 (`PHOTO;ENCODING=b;TYPE=JPEG|PNG`), folded per RFC 6350 §3.2; import accepts both vCard 3.0 inline base64 and vCard 4.0 data URIs. External URL references and images over 5 MB are skipped, and `image_1920` is now a sync-relevant field (a photo change triggers a push).

@@ -1,24 +1,31 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Gen — Cockpit",
-    "version": "18.0.1.0.1",
+    # 18.0.1.1.0: le résumé et la description étaient les dernières chaînes
+    #   françaises d'un module à source anglaise ; ils passent à l'anglais, en
+    #   reprenant les libellés que les vues portent déjà. Le français du
+    #   résumé vit au catalogue ; une description ne se traduit pas.
+    # 18.0.1.1.0: le module était déjà écrit en anglais, mais n'avait aucun
+    #   catalogue français : un usager réglé en fr_CA le lisait en anglais.
+    #   i18n/fr_CA.po et le .pot du module portent maintenant le français.
+    "version": "18.0.1.1.0",
     "category": "Productivity",
-    "summary": "Vue d'administration des sessions Gen : pannes de flux et consommation",
+    "summary": "Admin view of Gen sessions: stream failures and token usage",
     "description": """
-Le cockpit d'administration de Gen, sorti de ``bf_claude_chat`` pour que le
-module de base reste ce qu'on donne à tout le monde : le clavardage.
+The administration cockpit for Gen, split out of ``bf_claude_chat`` so the base
+module stays what everyone gets: the chat itself.
 
-Deux écrans, tous deux réservés à ``base.group_system`` :
+Two screens, both restricted to ``base.group_system``:
 
-* **Cockpit** — les sessions et leur compteur d'échecs de flux. Une session qui
-  atteint trois échecs consécutifs cesse de reprendre son fil et en ouvre un
-  neuf au message suivant. Le bouton remet le compteur à zéro une fois la cause
-  comprise.
-* **Consommation** — jetons et coût équivalent-API par personne et par semaine.
-  Informatif, délibérément séparé de l'opérationnel.
+* **Cockpit** — sessions and their stream failure counter. A session that
+  reaches three consecutive failures stops resuming its thread and forks a
+  fresh one on the next message. The button clears the counter once the cause
+  is understood.
+* **Usage** — tokens and API-equivalent cost per person and per week.
+  Informational, deliberately kept apart from operations.
 
-Installer ce module ajoute les deux entrées sous le menu d'administration de
-Gen. Ne pas l'installer ne retire rien au clavardage.
+Installing this module adds both entries under Gen's administration menu. Not
+installing it takes nothing away from the chat.
     """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

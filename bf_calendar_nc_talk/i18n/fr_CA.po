@@ -1,0 +1,214 @@
+# Translation of BF Calendar : Nextcloud Talk button - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_calendar_nc_talk 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 00:47+0000\n"
+"PO-Revision-Date: 2026-11-18 00:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_calendar_nc_talk
+#: model_terms:ir.ui.view,arch_db:bf_calendar_nc_talk.view_calendar_event_form_nc_talk
+#: model_terms:ir.ui.view,arch_db:bf_calendar_nc_talk.view_calendar_event_form_quick_create_nc_talk
+msgid "<span class=\"fa fa-plus\"/><span> Nextcloud Talk</span>"
+msgstr "<span class=\"fa fa-plus\"/><span> Nextcloud Talk</span>"
+
+#. module: bf_calendar_nc_talk
+#: model_terms:ir.ui.view,arch_db:bf_calendar_nc_talk.res_config_settings_view_form_nc_talk
+msgid ""
+"Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar "
+"events. Creates a public Talk conversation and stores its URL."
+msgstr ""
+"Ajoute un bouton « + Nextcloud Talk » à côté de « + Réunion Odoo » sur les "
+"événements de l'agenda. Crée une conversation Talk publique et garde son "
+"adresse."
+
+#. module: bf_calendar_nc_talk
+#: model:ir.model.fields,field_description:bf_calendar_nc_talk.field_res_config_settings__bf_nc_talk_password
+msgid "App password"
+msgstr "Mot de passe d'application"
+
+#. module: bf_calendar_nc_talk
+#: model:ir.model.fields,help:bf_calendar_nc_talk.field_res_config_settings__bf_nc_talk_url
+msgid ""
+"Base URL of the Nextcloud instance hosting Talk (e.g. "
+"https://nextcloud.bluefoxconsultant.com). No trailing slash."
+msgstr ""
+"Adresse de base de l'instance Nextcloud qui héberge Talk (p. ex. "
+"https://nextcloud.bluefoxconsultant.com). Sans barre oblique finale."
+
+#. module: bf_calendar_nc_talk
+#: model:ir.model,name:bf_calendar_nc_talk.model_calendar_event
+msgid "Calendar Event"
+msgstr "Événement calendrier"
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/calendar_event.py:0
+msgid "Could not reach Nextcloud Talk at %(url)s: %(err)s"
+msgstr "Nextcloud Talk est injoignable à %(url)s : %(err)s"
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/res_config_settings.py:0
+msgid "Created test room %(token)s at %(url)s"
+msgstr "Salle d'essai %(token)s créée à %(url)s"
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/res_config_settings.py:0
+msgid "Fill in URL, service account and app password before testing."
+msgstr ""
+"Remplissez l'adresse, le compte de service et le mot de passe d'application "
+"avant d'essayer."
+
+#. module: bf_calendar_nc_talk
+#: model_terms:ir.ui.view,arch_db:bf_calendar_nc_talk.res_config_settings_view_form_nc_talk
+msgid "Nextcloud Talk"
+msgstr "Nextcloud Talk"
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/res_config_settings.py:0
+msgid "Nextcloud Talk OK"
+msgstr "Nextcloud Talk répond"
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/calendar_event.py:0
+msgid "Nextcloud Talk created no token. Raw data: %(data)s"
+msgstr "Nextcloud Talk n'a créé aucun jeton. Données brutes : %(data)s"
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/calendar_event.py:0
+msgid ""
+"Nextcloud Talk is not configured. Set the URL, service account and app "
+"password under Settings → Calendar → Nextcloud Talk."
+msgstr ""
+"Nextcloud Talk n'est pas configuré. Posez l'adresse, le compte de service et"
+" le mot de passe d'application sous Paramètres → Agenda → Nextcloud Talk."
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/calendar_event.py:0
+msgid "Nextcloud Talk refused the request (HTTP %(code)s): %(body)s"
+msgstr "Nextcloud Talk a refusé la requête (HTTP %(code)s) : %(body)s"
+
+#. module: bf_calendar_nc_talk
+#. modules: bf_calendar_nc_talk, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_calendar_nc_talk.field_res_config_settings__bf_nc_talk_url
+msgid "Nextcloud URL"
+msgstr "Adresse de Nextcloud"
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/calendar_event.py:0
+msgid ""
+"Nextcloud accepted the service account but refused the action (HTTP 403). "
+"Check that the account is allowed to create conversations in Talk."
+msgstr ""
+"Nextcloud a accepté le compte de service mais refusé l'action (HTTP 403). "
+"Vérifiez que ce compte a le droit de créer des conversations dans Talk."
+
+#. module: bf_calendar_nc_talk
+#: model:ir.model.fields,help:bf_calendar_nc_talk.field_res_config_settings__bf_nc_talk_password
+msgid ""
+"Nextcloud app password for the service account (Settings → Security → Create"
+" new app password)."
+msgstr ""
+"Mot de passe d'application Nextcloud du compte de service (Paramètres → "
+"Sécurité → Créer un nouveau mot de passe d'application)."
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/calendar_event.py:0
+msgid ""
+"Nextcloud has no Talk API at this address (HTTP 404). Check the URL under "
+"Settings → Calendar → Nextcloud Talk, and that the Talk app is enabled."
+msgstr ""
+"Nextcloud n'a aucune API Talk à cette adresse (HTTP 404). Vérifiez l'adresse"
+" sous Paramètres → Agenda → Nextcloud Talk, et que l'application Talk est "
+"activée."
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/calendar_event.py:0
+msgid ""
+"Nextcloud refused the service account (HTTP 401). The app password is wrong,"
+" expired or revoked. Create a new app password for this account in Nextcloud"
+" (Settings → Security → Create new app password) and paste it under Settings"
+" → Calendar → Nextcloud Talk."
+msgstr ""
+"Nextcloud a refusé le compte de service (HTTP 401). Le mot de passe "
+"d'application est faux, échu ou révoqué. Créez-en un neuf pour ce compte "
+"dans Nextcloud (Paramètres → Sécurité → Créer un nouveau mot de passe "
+"d'application) et collez-le sous Paramètres → Agenda → Nextcloud Talk."
+
+#. module: bf_calendar_nc_talk
+#: model:ir.model.fields,help:bf_calendar_nc_talk.field_res_config_settings__bf_nc_talk_user
+msgid "Nextcloud username used to create Talk rooms on behalf of users."
+msgstr "Identifiant Nextcloud qui crée les salles Talk au nom des usagers."
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/calendar_event.py:0
+msgid "Only internal users can create Nextcloud Talk rooms."
+msgstr "Seuls les usagers internes peuvent créer des salles Nextcloud Talk."
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/calendar_event.py:0
+msgid "Save the event before creating a Nextcloud Talk room."
+msgstr "Enregistrez l'événement avant de créer une salle Nextcloud Talk."
+
+#. module: bf_calendar_nc_talk
+#: model:ir.model.fields,field_description:bf_calendar_nc_talk.field_res_config_settings__bf_nc_talk_user
+msgid "Service account"
+msgstr "Compte de service"
+
+#. module: bf_calendar_nc_talk
+#: model_terms:ir.ui.view,arch_db:bf_calendar_nc_talk.res_config_settings_view_form_nc_talk
+msgid "Test connection (creates throwaway room)"
+msgstr "Essayer la connexion (crée une salle jetable)"
+
+#. module: bf_calendar_nc_talk
+#. odoo-python
+#: code:addons/bf_calendar_nc_talk/models/calendar_event.py:0
+msgid "Unexpected Nextcloud Talk response: %(body)s"
+msgstr "Réponse inattendue de Nextcloud Talk : %(body)s"
+
+#. module: bf_calendar_nc_talk
+#. modules: bf_calendar_nc_talk, contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_calendar_nc_talk.res_config_settings_view_form_nc_talk
+msgid "https://nextcloud.example.com"
+msgstr "https://nextcloud.example.com"
+
+#. module: bf_calendar_nc_talk
+#: model_terms:ir.ui.view,arch_db:bf_calendar_nc_talk.res_config_settings_view_form_nc_talk
+msgid "talk-bot"
+msgstr "talk-bot"
+
+#. module: bf_calendar_nc_talk
+#: model:ir.module.module,shortdesc:base.module_bf_calendar_nc_talk
+msgid "BF Calendar — Nextcloud Talk button"
+msgstr "Agenda BF — bouton Nextcloud Talk"
+
+#. module: bf_calendar_nc_talk
+#: model:ir.module.module,summary:base.module_bf_calendar_nc_talk
+msgid ""
+"Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar "
+"events. Creates a public Talk conversation via the Spreed OCS API and writes"
+" the room URL into videocall_location."
+msgstr ""
+"Ajoute un bouton « + Nextcloud Talk » à côté de « + Réunion Odoo » sur les "
+"événements de l'agenda. Crée une conversation Talk publique par l'API OCS de"
+" Spreed et écrit l'adresse de la salle dans videocall_location."

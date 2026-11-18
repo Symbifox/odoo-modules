@@ -118,6 +118,18 @@ odoo -d <database> -i bf_invoice_ocr --stop-after-init
 
 Odoo dependencies: `account`, `bf_llm`.
 
+## Languages (18.0.1.5.0)
+
+The module is written in English, and `i18n/fr_CA.po` now carries the French
+translation of its field labels, help texts, selection values, view labels and
+user-facing messages: a user whose language is set to French reads the module in
+French, and an English-speaking user is unaffected.
+
+Three messages written into `ocr_error_message` were French inside that English
+source, and outside any `_()`. They now read in English and go through `_()`,
+and the header button reads **Scan with OCR** rather than a half-translated
+label.
+
 ## Licence
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
@@ -127,5 +139,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-11-17, this version converts automatically to
   **LGPL-3.0-or-later**.

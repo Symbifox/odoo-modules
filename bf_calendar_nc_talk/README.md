@@ -21,6 +21,13 @@ events.
 
 `calendar`.
 
+## Languages (18.0.1.2.0)
+
+The module is written in English, and `i18n/fr_CA.po` now carries the French
+translation of its field labels, help texts, selection values, view labels and
+user-facing messages: a user whose language is set to French reads the module in
+French, and an English-speaking user is unaffected.
+
 ## Licence
 
 Distributed under the **LGPL-3** licence. See the `LICENSE` file.

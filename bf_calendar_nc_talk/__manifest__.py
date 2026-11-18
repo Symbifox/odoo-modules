@@ -3,7 +3,10 @@
     "summary": "Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on "
                "calendar events. Creates a public Talk conversation via the "
                "Spreed OCS API and writes the room URL into videocall_location.",
-    "version": "18.0.1.1.0",
+    # 18.0.1.2.0: le module était déjà écrit en anglais, mais n'avait aucun
+    #   catalogue français : un usager réglé en fr_CA le lisait en anglais.
+    #   i18n/fr_CA.po et le .pot du module portent maintenant le français.
+    "version": "18.0.1.2.0",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

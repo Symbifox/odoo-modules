@@ -128,3 +128,15 @@ install-time `ImportError`):
 One-shot request/response only. Streaming and adaptive-thinking are out of scope
 for v1 — all current consumers issue single small requests. The default model is
 `claude-opus-4-8`; the Anthropic Messages API version header is `2023-06-01`.
+
+## Languages
+
+The module is written in English, and `i18n/fr_CA.po` now carries the French
+translation of its field labels, help texts, selection values, view labels and
+user-facing messages: a user whose language is set to French reads the module in
+French, and an English-speaking user is unaffected.
+
+Nine error messages were written in French inside that English source and now
+read in English. The provider adapters hold no environment of their own: they
+translate through `self.r.env._()`, never through a bare `_()`, which would
+otherwise guess the language from the caller's frame.

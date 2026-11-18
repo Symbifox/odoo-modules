@@ -31,9 +31,9 @@ class OpenAIAdapter(_BaseAdapter):
             if _base.convert_from_bytes is None:
                 env = self.empty_envelope(model)
                 env["degraded"] = degraded
-                env["error"] = _(
-                    "PDF rasterization indisponible (installer pdf2image + poppler) "
-                    "ou utiliser un fournisseur Anthropic"
+                env["error"] = self.r.env._(
+                    "PDF rasterization is unavailable. Install pdf2image and "
+                    "poppler, or use an Anthropic provider."
                 )
                 env["stop_reason"] = "error"
                 return env
@@ -44,7 +44,7 @@ class OpenAIAdapter(_BaseAdapter):
             except Exception as e:
                 env = self.empty_envelope(model)
                 env["degraded"] = degraded
-                env["error"] = _("Echec de la rasterisation du PDF : %s") % e
+                env["error"] = self.r.env._("PDF rasterization failed: %s") % e
                 env["stop_reason"] = "error"
                 return env
             for img in images[: _base.MAX_RASTER_PAGES]:
@@ -93,7 +93,7 @@ class OpenAIAdapter(_BaseAdapter):
         key = self.r.provider._decrypt_key()
         if not key and self.provider_type == "openai":
             raise UserError(
-                _("Aucune cle API n'est configuree pour le fournisseur LLM « %s ».")
+                self.r.env._("No API key is configured for the LLM provider “%s”.")
                 % self.r.provider.name
             )
         base = self.r.provider._effective_base_url()
@@ -114,7 +114,7 @@ class OpenAIAdapter(_BaseAdapter):
             env["stop_reason"] = "error"
             return env
         except (urllib.error.URLError, TimeoutError, OSError) as e:
-            env["error"] = _("OpenAI API injoignable : %s") % e
+            env["error"] = self.r.env._("OpenAI API unreachable: %s") % e
             env["stop_reason"] = "error"
             return env
         self._parse_into(env, data)
@@ -174,5 +174,7 @@ class OpenAIAdapter(_BaseAdapter):
         except Exception:
             pass
         if msg:
-            return "OpenAI API HTTP %s: %s" % (e.code, msg)
-        return "OpenAI API HTTP %s: %s" % (e.code, body[:200])
+            return self.r.env._("OpenAI API HTTP %(code)s: %(body)s",
+                                code=e.code, body=msg)
+        return self.r.env._("OpenAI API HTTP %(code)s: %(body)s",
+                            code=e.code, body=body[:200])

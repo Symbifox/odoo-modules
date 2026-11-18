@@ -1,0 +1,68 @@
+# Translation of Symbifox Timezone Utilities - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_timezone 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 00:47+0000\n"
+"PO-Revision-Date: 2026-11-18 00:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_timezone
+#: model_terms:ir.ui.view,arch_db:bf_timezone.res_config_settings_view_form
+msgid "Blue Fox Timezone"
+msgstr "Fuseau horaire Blue Fox"
+
+#. module: bf_timezone
+#: model:ir.model,name:bf_timezone.model_bf_timezone
+msgid "Blue Fox Timezone Helpers"
+msgstr "Outils de fuseau horaire de Blue Fox"
+
+#. module: bf_timezone
+#: model:ir.model.fields,field_description:bf_timezone.field_res_config_settings__bf_default_tz
+#: model_terms:ir.ui.view,arch_db:bf_timezone.res_config_settings_view_form
+msgid "Default timezone"
+msgstr "Fuseau horaire par défaut"
+
+#. module: bf_timezone
+#: model_terms:ir.ui.view,arch_db:bf_timezone.res_config_settings_view_form
+msgid ""
+"Fallback timezone for meeting displays, appointment emails and ICS files "
+"when no contact/user/calendar timezone is set."
+msgstr ""
+"Fuseau de repli pour l'affichage des rencontres, les courriels de rendez-"
+"vous et les fichiers ICS, quand aucun fuseau de contact, d'usager ou "
+"d'agenda n'est posé."
+
+#. module: bf_timezone
+#: model:ir.model.fields,help:bf_timezone.field_res_config_settings__bf_default_tz
+msgid ""
+"Fallback timezone used by Blue Fox modules when no contact, user or calendar"
+" timezone is available (e.g. meeting displays, appointment emails, ICS "
+"files). Set this to Pacific/Auckland after relocating."
+msgstr ""
+"Fuseau de repli employé par les modules Blue Fox quand aucun fuseau de "
+"contact, d'usager ou d'agenda n'est disponible (affichage des rencontres, "
+"courriels de rendez-vous, fichiers ICS). À poser sur Pacific/Auckland après "
+"un déménagement."
+
+#. module: bf_timezone
+#: model:ir.module.module,shortdesc:base.module_bf_timezone
+msgid "Symbifox Timezone Utilities"
+msgstr "Fuseaux horaires Symbifox"
+
+#. module: bf_timezone
+#: model:ir.module.module,summary:base.module_bf_timezone
+msgid ""
+"Shared timezone helpers and a configurable default timezone for Blue Fox "
+"modules"
+msgstr ""
+"Outils de fuseau horaire partagés et fuseau par défaut réglable, pour les "
+"modules Blue Fox"

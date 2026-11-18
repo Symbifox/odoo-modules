@@ -153,7 +153,8 @@ class CalendarEvent(models.Model):
             ))
         nc_url, nc_user, password = self._get_nc_talk_settings()
         token, room_url = create_talk_room(
-            nc_url, nc_user, password, room_name=room_name or _("Odoo meeting"),
+            # Lu dans Nextcloud, par un lecteur inconnu : anglais pour tous.
+            nc_url, nc_user, password, room_name=room_name or "Odoo meeting",
         )
         _logger.info(
             "bf_calendar_nc_talk: created Talk room %s for %r (user %s)",
@@ -174,6 +175,7 @@ class CalendarEvent(models.Model):
                 "Save the event before creating a Nextcloud Talk room."
             ))
         self.videocall_location = self.create_nc_talk_room(
-            room_name=self.name or _("Odoo meeting"),
+            # Lu dans Nextcloud, par un lecteur inconnu : anglais pour tous.
+            room_name=self.name or "Odoo meeting",
         )
         return True

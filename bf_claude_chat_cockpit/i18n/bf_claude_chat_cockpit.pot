@@ -1,0 +1,185 @@
+# Translation template for Gen : Cockpit.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_claude_chat_cockpit 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 00:47+0000\n"
+"PO-Revision-Date: 2026-11-18 00:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_usage_tree
+msgid "API-equiv. $"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Active This Week"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#. modules: bf_claude_chat_cockpit, contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Archived"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Attached to a Record"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Clear the failure counter on this session"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model:ir.actions.act_window,name:bf_claude_chat_cockpit.action_claude_cockpit
+#: model:ir.ui.menu,name:bf_claude_chat_cockpit.menu_claude_cockpit
+msgid "Cockpit"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Failing"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Failures"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Forking on next message"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+msgid "Gen"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#. modules: bf_claude_chat_cockpit, contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "Group By"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Last Activity"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Last Error"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Messages"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.actions.act_window,help:bf_claude_chat_cockpit.action_claude_cockpit
+msgid "Nothing to look at, which is good news"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+msgid "People"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Record Type"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Reset"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+msgid "Role"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Sessions"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.actions.act_window,help:bf_claude_chat_cockpit.action_claude_cockpit
+msgid ""
+"Sessions show up here with their failure counter. A session that reaches\n"
+"                three consecutive stream failures stops resuming its Claude thread and\n"
+"                forks a fresh one on the next message. Clear the counter once the cause\n"
+"                is understood."
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_usage_tree
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_tree
+msgid "Total"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_usage_tree
+msgid "Turns"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model:ir.actions.act_window,name:bf_claude_chat_cockpit.action_claude_usage
+#: model:ir.ui.menu,name:bf_claude_chat_cockpit.menu_claude_usage
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_graph
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_pivot
+msgid "Usage"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_session_cockpit_search
+msgid "User"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+msgid "Week"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_usage_tree
+msgid "When"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_search
+msgid "With token counts"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat_cockpit.view_claude_message_usage_tree
+msgid "ms"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model:ir.module.module,shortdesc:base.module_bf_claude_chat_cockpit
+msgid "Gen — Cockpit"
+msgstr ""
+
+#. module: bf_claude_chat_cockpit
+#: model:ir.module.module,summary:base.module_bf_claude_chat_cockpit
+msgid "Admin view of Gen sessions: stream failures and token usage"
+msgstr ""

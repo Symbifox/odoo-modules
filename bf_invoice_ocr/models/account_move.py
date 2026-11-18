@@ -4,7 +4,7 @@ import logging
 import re
 import unicodedata
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.addons.bf_llm.models.bf_llm import OCR_PROMPT
 
 _logger = logging.getLogger(__name__)
@@ -180,7 +180,7 @@ class AccountMove(models.Model):
         if not attachment:
             self.write({
                 "ocr_state": "error",
-                "ocr_error_message": "Aucune pièce jointe PDF trouvée",
+                "ocr_error_message": _("No PDF attachment found"),
             })
             return
 
@@ -188,7 +188,7 @@ class AccountMove(models.Model):
         if not pdf_b64:
             self.write({
                 "ocr_state": "error",
-                "ocr_error_message": "Pièce jointe PDF vide",
+                "ocr_error_message": _("Empty PDF attachment"),
             })
             return
 
@@ -204,7 +204,7 @@ class AccountMove(models.Model):
         if res["error"] or not res["ok"]:
             self.write({
                 "ocr_state": "error",
-                "ocr_error_message": (res["error"] or "OCR sans données")[:255],
+                "ocr_error_message": (res["error"] or _("OCR returned no data"))[:255],
                 "ocr_raw_response": json.dumps(res.get("raw") or {}, ensure_ascii=False),
             })
             return

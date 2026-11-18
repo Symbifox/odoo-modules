@@ -5,7 +5,10 @@
     # 18.0.1.1.0: la table Windows->IANA couvre l'Asie-Pacifique. Un TZID
     #   « New Zealand Standard Time » ne s'y résolvait pas et une invitation
     #   arrivait décalée de douze heures.
-    "version": "18.0.1.1.0",
+    # 18.0.1.2.0: le module était déjà écrit en anglais, mais n'avait aucun
+    #   catalogue français : un usager réglé en fr_CA le lisait en anglais.
+    #   i18n/fr_CA.po et le .pot du module portent maintenant le français.
+    "version": "18.0.1.2.0",
     "summary": "Shared timezone helpers and a configurable default timezone "
                "for Blue Fox modules",
     "author": "Les services de consultation Blue Fox, Inc.",

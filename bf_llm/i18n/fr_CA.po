@@ -1,0 +1,499 @@
+# Translation of Symbifox : LLM Provider - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_llm 18.0.1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 00:47+0000\n"
+"PO-Revision-Date: 2026-11-18 00:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__enabled
+msgid "A disabled provider is never returned by default()/for_feature()."
+msgstr ""
+"Un fournisseur désactivé n'est jamais rendu par default() ni par "
+"for_feature()."
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__api_key
+msgid "API Key"
+msgstr "Clé API"
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__base_url
+msgid ""
+"API base URL. Blank uses the per-provider default (Anthropic: "
+"https://api.anthropic.com, OpenAI: https://api.openai.com/v1). Required for "
+"OpenAI-compatible/local (e.g. http://localhost:11434/v1)."
+msgstr ""
+"Adresse de base de l'API. Laissée vide, celle du fournisseur s'applique "
+"(Anthropic : https://api.anthropic.com, OpenAI : https://api.openai.com/v1)."
+" Nécessaire pour un serveur compatible OpenAI ou local (p. ex. "
+"http://localhost:11434/v1)."
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/bf_llm_provider.py:0
+msgid ""
+"An internal/private address is not allowed for a cloud provider base URL."
+msgstr ""
+"Une adresse interne ou privée n'est pas permise comme adresse de base d'un "
+"fournisseur en nuage."
+
+#. module: bf_llm
+#: model:ir.model.fields.selection,name:bf_llm.selection__bf_llm_provider__provider__anthropic
+msgid "Anthropic"
+msgstr "Anthropic"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/adapters/anthropic.py:0
+msgid "Anthropic API HTTP %(code)s: %(body)s"
+msgstr "API d'Anthropic, HTTP %(code)s : %(body)s"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/adapters/anthropic.py:0
+msgid "Anthropic API unreachable: %s"
+msgstr "API d'Anthropic injoignable : %s"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/bf_llm_provider.py:0
+msgid ""
+"Anthropic/OpenAI providers require an https:// base URL (the API key must "
+"never travel in cleartext)."
+msgstr ""
+"Les fournisseurs Anthropic et OpenAI exigent une adresse de base en https://"
+" (la clé API ne doit jamais circuler en clair)."
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__is_default
+msgid ""
+"At most one provider may be the default. Setting this unsets the others."
+msgstr ""
+"Un seul fournisseur peut être celui par défaut : le cocher ici décoche les "
+"autres."
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__base_url
+msgid "Base URL"
+msgstr "Adresse de base"
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__model
+msgid ""
+"Base/default model id — the fallback for every feature whose override is "
+"empty."
+msgstr ""
+"Identifiant du modèle de base : le repli de toute fonction dont la surcharge"
+" est vide."
+
+#. module: bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.view_bf_llm_provider_form
+msgid "Blank = per-provider default"
+msgstr "Vide = celle du fournisseur"
+
+#. module: bf_llm
+#: model:ir.model,name:bf_llm.model_bf_llm
+msgid "Blue Fox LLM Gateway"
+msgstr "Passerelle LLM de Blue Fox"
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__supports_tools
+msgid "Capability flag — drives chat(tools=…) degradation."
+msgstr "Drapeau de capacité : il commande le repli de chat(tools=…)."
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__supports_vision
+msgid ""
+"Capability flag — drives the extract() degradation path (Tesseract text pre-"
+"pass when disabled)."
+msgstr ""
+"Drapeau de capacité : il commande le repli d'extract() (prélecture du texte "
+"par Tesseract quand il est décoché)."
+
+#. module: bf_llm
+#: model_terms:ir.actions.act_window,help:bf_llm.action_bf_llm_provider
+msgid "Configure an LLM provider"
+msgstr "Configurer un fournisseur LLM"
+
+#. module: bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.res_config_settings_view_form_bf_llm
+msgid "Configure providers"
+msgstr "Configurer les fournisseurs"
+
+#. module: bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.view_bf_llm_provider_form
+msgid "Connection"
+msgstr "Connexion"
+
+#. module: bf_llm
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_llm
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_res_config_settings__bf_llm_default_provider_id
+msgid "Default LLM Provider"
+msgstr "Fournisseur LLM par défaut"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_res_config_settings__bf_llm_default_provider_name
+msgid "Default LLM Provider Name"
+msgstr "Nom du fournisseur LLM par défaut"
+
+#. module: bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.res_config_settings_view_form_bf_llm
+msgid "Default provider"
+msgstr "Fournisseur par défaut"
+
+#. module: bf_llm
+#: model_terms:ir.actions.act_window,help:bf_llm.action_bf_llm_provider
+msgid ""
+"Define a provider (Anthropic, OpenAI, or an OpenAI-compatible/local\n"
+"                server), set its API key, and mark one provider as the default."
+msgstr ""
+"Définissez un fournisseur (Anthropic, OpenAI, ou un serveur compatible OpenAI ou local),\n"
+"                posez sa clé API, et désignez-en un comme celui par défaut."
+
+#. module: bf_llm
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__name
+#: model:ir.model.fields,help:bf_llm.field_res_config_settings__bf_llm_default_provider_name
+msgid "Display label, e.g. 'Anthropic (prod)'."
+msgstr "Libellé affiché, p. ex. « Anthropic (prod) »."
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__enabled
+msgid "Enabled"
+msgstr "Activé"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/_fernet.py:0
+msgid ""
+"Encryption key missing. Set %(env)s in the environment, or %(conf)s in "
+"odoo.conf."
+msgstr ""
+"Clé de chiffrement manquante. Posez %(env)s dans l'environnement, ou "
+"%(conf)s dans odoo.conf."
+
+#. module: bf_llm
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__is_default
+msgid "Is Default"
+msgstr "Par défaut"
+
+#. module: bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.res_config_settings_view_form_bf_llm
+msgid "LLM Gateway"
+msgstr "Passerelle LLM"
+
+#. module: bf_llm
+#: model:res.groups,name:bf_llm.group_bf_llm_manager
+msgid "LLM Gateway Manager"
+msgstr "Gestionnaire de la passerelle LLM"
+
+#. module: bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.view_bf_llm_provider_form
+msgid "LLM Provider"
+msgstr "Fournisseur LLM"
+
+#. module: bf_llm
+#: model:ir.model,name:bf_llm.model_bf_llm_provider
+msgid "LLM Provider Configuration"
+msgstr "Configuration du fournisseur LLM"
+
+#. module: bf_llm
+#: model:ir.actions.act_window,name:bf_llm.action_bf_llm_provider
+#: model:ir.ui.menu,name:bf_llm.menu_bf_llm_provider
+#: model_terms:ir.ui.view,arch_db:bf_llm.res_config_settings_view_form_bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.view_bf_llm_provider_list
+msgid "LLM Providers"
+msgstr "Fournisseurs LLM"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/bf_llm.py:0
+msgid "LLM did not return valid JSON"
+msgstr "Le modèle de langage n'a pas rendu de JSON valide"
+
+#. module: bf_llm
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_llm
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__max_tokens
+msgid "Max Tokens"
+msgstr "Nombre maximal de jetons"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__model
+msgid "Model"
+msgstr "Modèle"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__model_ocr
+msgid "Model (OCR)"
+msgstr "Modèle (OCR)"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__model_chat
+msgid "Model (chat)"
+msgstr "Modèle (conversation)"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__model_title
+msgid "Model (title)"
+msgstr "Modèle (titres)"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__model_triage
+msgid "Model (triage)"
+msgstr "Modèle (triage)"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__model_vision
+msgid "Model (vision/extract)"
+msgstr "Modèle (vision et extraction)"
+
+#. module: bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.view_bf_llm_provider_form
+msgid "Models"
+msgstr "Modèles"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/adapters/anthropic.py:0
+#: code:addons/bf_llm/models/adapters/openai.py:0
+msgid "No API key is configured for the LLM provider “%s”."
+msgstr "Aucune clé API n'est configurée pour le fournisseur LLM « %s »."
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/bf_llm_provider.py:0
+msgid ""
+"No base URL is configured for the LLM provider “%s” (required for OpenAI-"
+"compatible/local)."
+msgstr ""
+"Aucune adresse de base n'est configurée pour le fournisseur LLM « %s » "
+"(nécessaire pour un serveur compatible OpenAI ou local)."
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/bf_llm.py:0
+msgid "No default LLM provider is configured (bf.llm.provider)."
+msgstr "Aucun fournisseur LLM par défaut n'est configuré (bf.llm.provider)."
+
+#. module: bf_llm
+#: model:ir.model.fields.selection,name:bf_llm.selection__bf_llm_provider__provider__openai
+msgid "OpenAI"
+msgstr "OpenAI"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/adapters/openai.py:0
+msgid "OpenAI API HTTP %(code)s: %(body)s"
+msgstr "API d'OpenAI, HTTP %(code)s : %(body)s"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/adapters/openai.py:0
+msgid "OpenAI API unreachable: %s"
+msgstr "API d'OpenAI injoignable : %s"
+
+#. module: bf_llm
+#: model:ir.model.fields.selection,name:bf_llm.selection__bf_llm_provider__provider__openai_compatible
+msgid "OpenAI-compatible / local"
+msgstr "Compatible OpenAI ou local"
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__model_chat
+msgid "Override for chat. Blank → base model."
+msgstr "Surcharge pour la conversation. Vide → modèle de base."
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__model_triage
+msgid "Override for helpdesk triage. Blank → base model."
+msgstr "Surcharge pour le triage de l'assistance. Vide → modèle de base."
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__model_ocr
+msgid "Override for invoice OCR. Blank → base model."
+msgstr "Surcharge pour l'OCR des factures. Vide → modèle de base."
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__model_title
+msgid "Override for short title generation. Blank → base model."
+msgstr "Surcharge pour la génération de titres courts. Vide → modèle de base."
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__model_vision
+msgid "Override for vision/extract. Blank → base model."
+msgstr "Surcharge pour la vision et l'extraction. Vide → modèle de base."
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/adapters/openai.py:0
+msgid "PDF rasterization failed: %s"
+msgstr "Échec de la rastérisation du PDF : %s"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/adapters/openai.py:0
+msgid ""
+"PDF rasterization is unavailable. Install pdf2image and poppler, or use an "
+"Anthropic provider."
+msgstr ""
+"La rastérisation des PDF n'est pas disponible. Installez pdf2image et "
+"poppler, ou passez par un fournisseur Anthropic."
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__max_tokens
+msgid "Per-call max_tokens ceiling unless the caller passes one."
+msgstr "Plafond de max_tokens par appel, sauf si l'appelant en donne un."
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__provider
+msgid "Provider"
+msgstr "Fournisseur"
+
+#. module: bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.res_config_settings_view_form_bf_llm
+msgid ""
+"Provider used by bf.llm.default(). Configure providers and encrypted API "
+"keys below."
+msgstr ""
+"Fournisseur employé par bf.llm.default(). Les fournisseurs et les clés API "
+"chiffrées se configurent ci-dessous."
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__timeout
+msgid "Request timeout in seconds."
+msgstr "Délai d'attente de la requête, en secondes."
+
+#. module: bf_llm
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.view_bf_llm_provider_form
+msgid "Status"
+msgstr "État"
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__api_key
+msgid ""
+"Stored Fernet-encrypted in ir.config_parameter — never as a column. May be "
+"blank for OpenAI-compatible/local servers that need no key."
+msgstr ""
+"Stockée chiffrée par Fernet dans ir.config_parameter, jamais en colonne. "
+"Peut rester vide pour un serveur compatible OpenAI ou local qui n'exige "
+"aucune clé."
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__supports_tools
+msgid "Supports Tools"
+msgstr "Gère les outils"
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__supports_vision
+msgid "Supports Vision"
+msgstr "Gère la vision"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/bf_llm.py:0
+msgid "Tesseract pre-processing failed: %s"
+msgstr "Échec du prétraitement Tesseract : %s"
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/_fernet.py:0
+msgid "The 'cryptography' package is required to store the API key securely."
+msgstr ""
+"Le paquet « cryptography » est nécessaire pour stocker la clé API de façon "
+"sûre."
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/bf_llm_provider.py:0
+msgid "The base URL must be a valid http(s) URL."
+msgstr "L'adresse de base doit être une adresse http(s) valide."
+
+#. module: bf_llm
+#. odoo-python
+#: code:addons/bf_llm/models/bf_llm.py:0
+msgid "The provider does not support vision, and Tesseract is not installed."
+msgstr ""
+"Le fournisseur ne gère pas la vision, et Tesseract n'est pas installé."
+
+#. module: bf_llm
+#: model:ir.model.fields,help:bf_llm.field_bf_llm_provider__sequence
+msgid "Tie-break ordering."
+msgstr "Ordre de départage."
+
+#. module: bf_llm
+#: model:ir.model.fields,field_description:bf_llm.field_bf_llm_provider__timeout
+msgid "Timeout"
+msgstr "Délai d'attente"
+
+#. module: bf_llm
+#: model_terms:ir.ui.view,arch_db:bf_llm.view_bf_llm_provider_form
+msgid "e.g. Anthropic (prod)"
+msgstr "p. ex. Anthropic (prod)"
+
+#. module: bf_llm
+#: model:ir.module.module,shortdesc:base.module_bf_llm
+msgid "Symbifox — LLM Provider"
+msgstr "Symbifox — Fournisseur LLM"
+
+#. module: bf_llm
+#: model:ir.module.module,summary:base.module_bf_llm
+msgid ""
+"Provider-agnostic LLM access (chat + document/vision extraction) for "
+"Symbifox modules"
+msgstr ""
+"Accès aux modèles de langage sans dépendre d'un fournisseur (conversation, "
+"lecture de documents et d'images) pour les modules Symbifox"

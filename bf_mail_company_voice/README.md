@@ -32,6 +32,13 @@ System parameter `bf_mail_company_voice.company_voice`:
 
 Only `mail.message.create` is extended (`mail.mail` goes through it by delegation). The author is replaced on system message types only (`notification`, `email_outgoing`, `user_notification`, `auto_comment`). A failure in the renaming is logged and never blocks the message.
 
+## Languages (18.0.1.1.0)
+
+The module is written in English, and `i18n/fr_CA.po` now carries the French
+translation of its field labels, help texts, selection values, view labels and
+user-facing messages: a user whose language is set to French reads the module in
+French, and an English-speaking user is unaffected.
+
 ## Requirements
 
 - Odoo 18.0 (Community)

@@ -116,16 +116,42 @@ class TestNcTalkButton(TransactionCase):
     # --- failures the user has to be able to act on ---------------------
 
     def test_a_refused_password_says_what_to_do(self):
-        """The raw OCS 401 payload told the user nothing actionable."""
+        """The raw OCS 401 payload told the user nothing actionable.
+
+        🔴 The language is pinned since 18.0.1.2.0: the module now ships a
+        fr_CA catalogue, and OdooBot may read fr_CA depending on the database. A test that
+        checks the English SOURCE has to say which language it reads.
+
+        ⚠️ Measured: this message comes out of `_http_error_message`, a MODULE-level
+        function. `_()` there sees no `self.env`, so outside an HTTP request it resolves
+        to no language and always returns English. Its French is only reachable through
+        `request.env.lang` — the browser pass is the only place that measures it.
+        """
+        self.env["res.lang"]._activate_lang("en_US")
         response = _FakeResponse(
             401, text='{"ocs":{"meta":{"status":"failure","statuscode":401}}}')
         with patch("odoo.addons.bf_calendar_nc_talk.models.calendar_event."
                    "requests.post", return_value=response):
             with self.assertRaises(UserError) as caught:
-                self.env["calendar.event"].create_nc_talk_room("Kickoff")
+                self.env["calendar.event"].with_context(
+                    lang="en_US").create_nc_talk_room("Kickoff")
         message = str(caught.exception)
         self.assertIn("app password", message)
         self.assertIn("Nextcloud Talk", message)
+
+    def test_the_401_message_has_a_french_twin_in_the_catalogue(self):
+        """Le français de ce message existe, même si aucun essai ne peut le faire
+        rendre par `_()` (voir l'avertissement ci-dessus) : on le lit au catalogue, qui
+        est ce que la page publique servira."""
+        import polib
+        from pathlib import Path as _P
+        catalogue = polib.pofile(str(
+            _P(__file__).resolve().parent.parent / "i18n" / "fr_CA.po"))
+        entree = next(
+            (e for e in catalogue
+             if e.msgid.startswith("Nextcloud refused the service account")), None)
+        self.assertIsNotNone(entree, "le refus 401 doit être au catalogue")
+        self.assertIn("mot de passe d'application", entree.msgstr)
 
     def test_settings_test_button_reports_empty_fields(self):
         """Same `user`-named-local trap as above, on the settings page."""
@@ -140,11 +166,31 @@ class TestNcTalkButton(TransactionCase):
     def test_missing_configuration_is_reported_before_any_call(self):
         self.env["ir.config_parameter"].sudo().set_param(
             "bf_calendar_nc_talk.password", "")
+        # 🔴 La langue est épinglée depuis la 18.0.1.2.0 : le module porte
+        # maintenant un catalogue fr_CA, et OdooBot peut lire en fr_CA selon la base.
+        # Un essai qui vérifie la SOURCE anglaise doit dire dans quelle langue il lit,
+        # sinon il mesure la traduction et tombe sans qu'aucun défaut existe.
+        self.env["res.lang"]._activate_lang("en_US")
+        evenements = self.env["calendar.event"].with_context(lang="en_US")
         with patch("odoo.addons.bf_calendar_nc_talk.models.calendar_event."
                    "requests.post") as post:
             with self.assertRaises(UserError) as caught:
-                self.env["calendar.event"].create_nc_talk_room("Kickoff")
+                evenements.create_nc_talk_room("Kickoff")
         post.assert_not_called()
         # Not a ValueError: `_()` reads frame locals and used to choke on a
         # local named `user` holding the Nextcloud account name.
         self.assertIn("not configured", str(caught.exception))
+
+    def test_missing_configuration_is_reported_in_french_too(self):
+        """Le même refus, lu en français : c'est ce que le catalogue a ajouté."""
+        self.env["ir.config_parameter"].sudo().set_param(
+            "bf_calendar_nc_talk.password", "")
+        self.env["ir.module.module"]._load_module_terms(
+            ["bf_calendar_nc_talk"], ["fr_CA"], overwrite=True)
+        evenements = self.env["calendar.event"].with_context(lang="fr_CA")
+        with patch("odoo.addons.bf_calendar_nc_talk.models.calendar_event."
+                   "requests.post") as post:
+            with self.assertRaises(UserError) as caught:
+                evenements.create_nc_talk_room("Kickoff")
+        post.assert_not_called()
+        self.assertIn("n'est pas configuré", str(caught.exception))

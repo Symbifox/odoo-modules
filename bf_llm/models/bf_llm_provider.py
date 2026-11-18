@@ -17,7 +17,7 @@ _DEFAULT_BASE_URL = {
 }
 
 _DEFAULT_MODEL = {
-    "anthropic": "claude-opus-4-8",
+    "anthropic": "claude-opus-5",
     "openai": "gpt-4o",
 }
 
@@ -51,6 +51,7 @@ class BfLlmProvider(models.Model):
         default="anthropic",
     )
     base_url = fields.Char(
+        string="Base URL",
         groups="bf_llm.group_bf_llm_manager",
         help="API base URL. Blank uses the per-provider default "
         "(Anthropic: https://api.anthropic.com, OpenAI: https://api.openai.com/v1). "
@@ -66,7 +67,7 @@ class BfLlmProvider(models.Model):
     )
     model = fields.Char(
         required=True,
-        default="claude-opus-4-8",
+        default="claude-opus-5",
         help="Base/default model id — the fallback for every feature whose "
         "override is empty.",
     )
@@ -176,8 +177,8 @@ class BfLlmProvider(models.Model):
         if not base:
             raise UserError(
                 _(
-                    "Aucune URL de base n'est configuree pour le fournisseur LLM "
-                    "« %s » (requis pour OpenAI-compatible/local)."
+                    "No base URL is configured for the LLM provider “%s” "
+                    "(required for OpenAI-compatible/local)."
                 )
                 % self.name
             )

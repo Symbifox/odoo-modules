@@ -213,8 +213,9 @@ class _ResolvedProvider:
         if _base.pytesseract is None or _base.PILImage is None:
             env = self.adapter.empty_envelope(model)
             env["degraded"] = degraded
-            env["error"] = _(
-                "Le fournisseur ne supporte pas la vision et Tesseract n'est pas installe"
+            env["error"] = self.env._(
+                "The provider does not support vision, and Tesseract is "
+                "not installed."
             )
             env["stop_reason"] = "error"
             return env
@@ -223,7 +224,7 @@ class _ResolvedProvider:
         except Exception as e:
             env = self.adapter.empty_envelope(model)
             env["degraded"] = degraded
-            env["error"] = _("Echec du pre-traitement Tesseract : %s") % e
+            env["error"] = self.env._("Tesseract pre-processing failed: %s") % e
             env["stop_reason"] = "error"
             return env
         degraded.append("ocr_text_prepass")
@@ -242,7 +243,7 @@ class _ResolvedProvider:
         if data is None:
             env["ok"] = False
             env["data"] = None
-            env["error"] = "LLM did not return valid JSON"
+            env["error"] = self.env._("LLM did not return valid JSON")
         else:
             env["data"] = data
             env["ok"] = True
@@ -260,7 +261,7 @@ class BfLlm(models.AbstractModel):
         )
         if not provider:
             raise UserError(
-                _("Aucun fournisseur LLM par defaut n'est configure (bf.llm.provider).")
+                _("No default LLM provider is configured (bf.llm.provider).")
             )
         return provider
 

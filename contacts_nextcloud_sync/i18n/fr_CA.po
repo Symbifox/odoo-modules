@@ -1,0 +1,665 @@
+# Translation of Contacts Nextcloud Sync - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: contacts_nextcloud_sync 18.0.1.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 00:47+0000\n"
+"PO-Revision-Date: 2026-11-18 00:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "%(n)s created"
+msgstr "%(n)s créé(s)"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "%(n)s error(s)"
+msgstr "%(n)s erreur(s)"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "%(n)s orphan(s) cleared"
+msgstr "%(n)s orphelin(s) délié(s)"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "%(n)s orphan(s) removed"
+msgstr "%(n)s orphelin(s) retiré(s)"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "%(n)s unchanged"
+msgstr "%(n)s inchangé(s)"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "%(n)s updated"
+msgstr "%(n)s mis à jour"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "/remote.php/dav/addressbooks/users/jdoe/contacts/"
+msgstr "/remote.php/dav/addressbooks/users/jdoe/contacts/"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__active
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_search
+msgid "Active"
+msgstr "Actif"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.actions.act_window,help:contacts_nextcloud_sync.action_nextcloud_contacts_sync_config
+msgid ""
+"Add Nextcloud CardDAV address books to sync contacts between Odoo and Nextcloud.\n"
+"                Only contacts with the configured tag will be synchronized."
+msgstr ""
+"Ajoutez des carnets d'adresses CardDAV de Nextcloud pour synchroniser les contacts entre Odoo et Nextcloud.\n"
+"                Seuls les contacts portant l'étiquette configurée sont synchronisés."
+
+#. module: contacts_nextcloud_sync
+#: model:ir.ui.menu,name:contacts_nextcloud_sync.menu_nextcloud_contacts_sync_config
+msgid "Address Book Configurations"
+msgstr "Configurations de carnet d'adresses"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__name
+msgid "Address Book Name"
+msgstr "Nom du carnet d'adresses"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Address book is empty."
+msgstr "Le carnet d'adresses est vide."
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Address book not found at %(path)s. Check the CardDAV path."
+msgstr "Aucun carnet d'adresses à %(path)s. Vérifiez le chemin CardDAV."
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__nextcloud_app_password
+msgid "App Password"
+msgstr "Mot de passe d'application"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__nextcloud_app_password_encrypted
+msgid "App Password (encrypted)"
+msgstr "Mot de passe d'application (chiffré)"
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_claude_chat_cockpit, contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid ""
+"Authentication failed (HTTP %(code)s). Check username and app password."
+msgstr ""
+"Authentification refusée (HTTP %(code)s). Vérifiez l'identifiant et le mot "
+"de passe d'application."
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__nextcloud_base_url
+msgid "Base URL of Nextcloud instance (e.g., https://nextcloud.example.com)"
+msgstr ""
+"Adresse de base de l'instance Nextcloud (p. ex. "
+"https://nextcloud.example.com)"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields.selection,name:contacts_nextcloud_sync.selection__nextcloud_contacts_sync_config__sync_direction__both
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_search
+msgid "Bidirectional"
+msgstr "Les deux sens"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Cannot reach %(url)s — check URL and network."
+msgstr "%(url)s est injoignable : vérifiez l'adresse et le réseau."
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_partner__x_carddav_etag
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_users__x_carddav_etag
+msgid "CardDAV ETag"
+msgstr "ETag CardDAV"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_partner__x_carddav_href
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_users__x_carddav_href
+msgid "CardDAV HREF"
+msgstr "HREF CardDAV"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__carddav_path
+msgid "CardDAV Path"
+msgstr "Chemin CardDAV"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__carddav_sync_token
+msgid "CardDAV Sync Token"
+msgstr "Jeton de synchronisation CardDAV"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model,name:contacts_nextcloud_sync.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.res_config_settings_view_form_nc_contacts_sync
+msgid "Configure Nextcloud Address Books"
+msgstr "Configurer les carnets d'adresses Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.actions.act_window,help:contacts_nextcloud_sync.action_nextcloud_contacts_sync_config
+msgid "Configure Nextcloud address books for contact synchronization"
+msgstr ""
+"Configurer les carnets d'adresses Nextcloud pour la synchronisation des "
+"contacts"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Connected successfully! (could not parse address book name)"
+msgstr "Connexion réussie. (le nom du carnet d'adresses n'a pas pu être lu)"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Connected successfully! Address book: %(book)s"
+msgstr "Connexion réussie. Carnet d'adresses : %(book)s"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Connection to %(url)s timed out (15s)."
+msgstr "La connexion à %(url)s a expiré (15 s)."
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model,name:contacts_nextcloud_sync.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_partner__x_contact_sync_source
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_users__x_contact_sync_source
+msgid "Contact Sync Source"
+msgstr "Origine du contact"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "Contacts"
+msgstr "Contacts"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Contacts Sync"
+msgstr "Synchronisation des contacts"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__exclude_tag_id
+msgid "Contacts with this tag will NOT be synchronized"
+msgstr "Les contacts portant cette étiquette ne seront PAS synchronisés"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Contacts: %(book)s"
+msgstr "Contacts : %(book)s"
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields.selection,name:contacts_nextcloud_sync.selection__res_partner__x_contact_sync_source__odoo
+msgid "Created in Odoo"
+msgstr "Créé dans Odoo"
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_config_settings__nc_contacts_sync_default_config_id
+msgid "Default Address Book"
+msgstr "Carnet d'adresses par défaut"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_config_settings__nc_contacts_sync_default_config_id
+msgid "Default Nextcloud address book configuration"
+msgstr "Configuration du carnet d'adresses Nextcloud par défaut"
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__name
+msgid "Display name for this Nextcloud address book"
+msgstr "Nom affiché pour ce carnet d'adresses Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_partner__x_carddav_etag
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_users__x_carddav_etag
+msgid "ETag from Nextcloud for change detection"
+msgstr "ETag donné par Nextcloud, pour détecter les changements"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_config_settings__nc_contacts_sync_cron_enabled
+msgid "Enable Nextcloud Contacts Sync Cron"
+msgstr "Activer la synchronisation planifiée des contacts Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_invoice_ocr, contacts_nextcloud_sync
+#: model:ir.model.fields.selection,name:contacts_nextcloud_sync.selection__nextcloud_contacts_sync_config__last_sync_status__error
+msgid "Error"
+msgstr "Erreur"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__exclude_tag_id
+msgid "Exclusion Tag"
+msgstr "Étiquette d'exclusion"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Failed to list address book: %(error)s"
+msgstr "Le carnet d'adresses n'a pas pu être lu : %(error)s"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "Force Full Resync"
+msgstr "Forcer une resynchronisation complète"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_partner__x_carddav_href
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_users__x_carddav_href
+msgid "Full CardDAV URL of this contact in Nextcloud"
+msgstr "Adresse CardDAV complète de ce contact dans Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Full resync failed — see the server log."
+msgstr "La resynchronisation complète a échoué — voir le journal du serveur."
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_claude_chat_cockpit, contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_search
+msgid "Group By"
+msgstr "Regrouper par"
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__id
+msgid "ID"
+msgstr "ID"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_partner__x_contact_last_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_users__x_contact_last_sync
+msgid "Last Contact Sync"
+msgstr "Dernière synchronisation du contact"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__last_sync
+msgid "Last Sync"
+msgstr "Dernière synchronisation"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__last_sync_message
+msgid "Last Sync Message"
+msgstr "Message de la dernière synchronisation"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__last_sync_status
+msgid "Last Sync Status"
+msgstr "État de la dernière synchronisation"
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_search
+msgid "NC → Odoo"
+msgstr "NC → Odoo"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_partner__x_nc_contacts_config_id
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_users__x_nc_contacts_config_id
+msgid "Nextcloud Address Book"
+msgstr "Carnet d'adresses Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.actions.act_window,name:contacts_nextcloud_sync.action_nextcloud_contacts_sync_config
+msgid "Nextcloud Address Books"
+msgstr "Carnets d'adresses Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "Nextcloud Configuration"
+msgstr "Configuration Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_partner__x_nc_contact_uid
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_users__x_nc_contact_uid
+msgid "Nextcloud Contact UID"
+msgstr "UID du contact dans Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.actions.server,name:contacts_nextcloud_sync.cron_nextcloud_contacts_full_resync_ir_actions_server
+msgid "Nextcloud Contacts Full Resync"
+msgstr "Resynchronisation complète des contacts Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.actions.server,name:contacts_nextcloud_sync.cron_nextcloud_contacts_sync_ir_actions_server
+#: model:ir.ui.menu,name:contacts_nextcloud_sync.menu_nextcloud_contacts_sync_root
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.res_config_settings_view_form_nc_contacts_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_partner_form_nc_contacts_sync
+msgid "Nextcloud Contacts Sync"
+msgstr "Synchronisation des contacts Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model,name:contacts_nextcloud_sync.model_nextcloud_contacts_sync_config
+msgid "Nextcloud Contacts Sync Configuration"
+msgstr "Configuration de la synchronisation des contacts Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_calendar_nc_talk, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__nextcloud_base_url
+msgid "Nextcloud URL"
+msgstr "Adresse de Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__nextcloud_user
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_search
+msgid "Nextcloud User"
+msgstr "Usager Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__nextcloud_app_password
+msgid "Nextcloud app password for CardDAV authentication"
+msgstr "Mot de passe d'application Nextcloud pour l'authentification CardDAV"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_partner__x_nc_contacts_config_id
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_users__x_nc_contacts_config_id
+msgid "Nextcloud sync configuration for this contact"
+msgstr "Configuration de synchronisation Nextcloud de ce contact"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields.selection,name:contacts_nextcloud_sync.selection__nextcloud_contacts_sync_config__sync_direction__nc_to_odoo
+msgid "Nextcloud → Odoo only"
+msgstr "Nextcloud → Odoo seulement"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "No app password configured."
+msgstr "Aucun mot de passe d'application n'est configuré."
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "No app password configured. Enter the Nextcloud app password first."
+msgstr ""
+"Aucun mot de passe d'application n'est configuré. Saisissez d'abord celui de"
+" Nextcloud."
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "No contacts found"
+msgstr "Aucun contact trouvé"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "No contacts to push"
+msgstr "Aucun contact à envoyer"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "No contacts to sync."
+msgstr "Aucun contact à synchroniser."
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_search
+msgid "Odoo → NC"
+msgstr "Odoo → NC"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields.selection,name:contacts_nextcloud_sync.selection__nextcloud_contacts_sync_config__sync_direction__odoo_to_nc
+msgid "Odoo → Nextcloud only"
+msgstr "Odoo → Nextcloud seulement"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__carddav_sync_token
+msgid "Opaque token from last sync for incremental pull (RFC 6578)"
+msgstr ""
+"Jeton opaque de la dernière synchronisation, pour une lecture incrémentale "
+"(RFC 6578)"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_partner__x_contact_sync_source
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_users__x_contact_sync_source
+msgid "Origin of this contact"
+msgstr "Origine de ce contact"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields.selection,name:contacts_nextcloud_sync.selection__nextcloud_contacts_sync_config__last_sync_status__partial
+msgid "Partial"
+msgstr "Partiel"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__carddav_path
+msgid ""
+"Path to the address book (e.g., "
+"/remote.php/dav/addressbooks/users/jdoe/contacts/)"
+msgstr ""
+"Chemin du carnet d'adresses (p. ex. "
+"/remote.php/dav/addressbooks/users/jdoe/contacts/)"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Pull complete: %(summary)s"
+msgstr "Lecture terminée : %(summary)s"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "Pull from Nextcloud"
+msgstr "Lire depuis Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Push complete: %(summary)s"
+msgstr "Envoi terminé : %(summary)s"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "Push to Nextcloud"
+msgstr "Envoyer vers Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Request error: %(error)s"
+msgstr "Erreur de requête : %(error)s"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Scheduled sync failed — see the server log."
+msgstr "La synchronisation planifiée a échoué — voir le journal du serveur."
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_llm, contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields.selection,name:contacts_nextcloud_sync.selection__nextcloud_contacts_sync_config__last_sync_status__success
+msgid "Success"
+msgstr "Réussite"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__sync_direction
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_search
+msgid "Sync Direction"
+msgstr "Sens de la synchronisation"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_res_config_settings__nc_contacts_sync_cron_interval
+msgid "Sync Interval (minutes)"
+msgstr "Intervalle de synchronisation (minutes)"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "Sync Settings"
+msgstr "Réglages de synchronisation"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "Sync Status"
+msgstr "État de la synchronisation"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Sync direction is Nextcloud → Odoo only. Cannot push."
+msgstr ""
+"Le sens de synchronisation est Nextcloud → Odoo seulement : rien n'est "
+"envoyé."
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Sync direction is Odoo → Nextcloud only. Cannot pull."
+msgstr ""
+"Le sens de synchronisation est Odoo → Nextcloud seulement : rien n'est lu."
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid ""
+"Sync stopped: %(missing)s of %(tracked)s synced contacts are missing from "
+"the Nextcloud address book (%(returned)s entries returned). The response "
+"looks truncated, so the address book was left untouched."
+msgstr ""
+"Synchronisation arrêtée : %(missing)s des %(tracked)s contacts synchronisés "
+"manquent au carnet d'adresses Nextcloud (%(returned)s entrées rendues). La "
+"réponse semble tronquée, le carnet d'adresses est resté intact."
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,field_description:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__contact_count
+msgid "Synced Contacts"
+msgstr "Contacts synchronisés"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields.selection,name:contacts_nextcloud_sync.selection__res_partner__x_contact_sync_source__nextcloud
+msgid "Synced from Nextcloud"
+msgstr "Synchronisé depuis Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.res_config_settings_view_form_nc_contacts_sync
+msgid "Synchronize contacts with Nextcloud via CardDAV"
+msgstr "Synchroniser les contacts avec Nextcloud par CardDAV"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "Test Connection"
+msgstr "Essayer la connexion"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "This will clear all ETags and re-sync all contacts. Continue?"
+msgstr ""
+"Tous les ETags seront effacés et tous les contacts resynchronisés. Continuer"
+" ?"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_partner__x_contact_last_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_users__x_contact_last_sync
+msgid "Timestamp of last synchronization"
+msgstr "Horodatage de la dernière synchronisation"
+
+#. module: contacts_nextcloud_sync
+#. odoo-python
+#: code:addons/contacts_nextcloud_sync/models/nextcloud_contacts_sync_config.py:0
+msgid "Unexpected response: HTTP %(code)s"
+msgstr "Réponse inattendue : HTTP %(code)s"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_nextcloud_contacts_sync_config__nextcloud_user
+msgid "Username for CardDAV authentication"
+msgstr "Identifiant pour l'authentification CardDAV"
+
+#. module: contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "e.g., Nextcloud Contacts"
+msgstr "p. ex. Contacts Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#. modules: bf_calendar_nc_talk, contacts_nextcloud_sync
+#: model_terms:ir.ui.view,arch_db:contacts_nextcloud_sync.view_nextcloud_contacts_sync_config_form
+msgid "https://nextcloud.example.com"
+msgstr "https://nextcloud.example.com"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_partner__x_nc_contact_uid
+#: model:ir.model.fields,help:contacts_nextcloud_sync.field_res_users__x_nc_contact_uid
+msgid "vCard UID in Nextcloud"
+msgstr "UID de la vCard dans Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.module.module,shortdesc:base.module_contacts_nextcloud_sync
+msgid "Contacts Nextcloud Sync"
+msgstr "Synchronisation des contacts Nextcloud"
+
+#. module: contacts_nextcloud_sync
+#: model:ir.module.module,summary:base.module_contacts_nextcloud_sync
+msgid "Synchronize Odoo contacts with Nextcloud address book via CardDAV"
+msgstr ""
+"Synchronise les contacts d'Odoo avec le carnet d'adresses Nextcloud, par "
+"CardDAV"

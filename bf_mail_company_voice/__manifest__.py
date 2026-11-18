@@ -6,7 +6,10 @@
     # 18.0.1.0.1 : l'avis d'activité gardait le nom mais perdait sa phrase (xpath replace).
     # 18.0.1.0.0 : sorti de bf_onboarding_base pour poser sans remonter
     #   les 159 modules qui dépendent de ce dernier.
-    'version': '18.0.1.0.2',
+    # 18.0.1.1.0: le module était déjà écrit en anglais, mais n'avait aucun
+    #   catalogue français : un usager réglé en fr_CA le lisait en anglais.
+    #   i18n/fr_CA.po et le .pot du module portent maintenant le français.
+    'version': '18.0.1.1.0',
     'summary': 'Automatic notices speak for the company, never as « Public user » or a bot.',
     'description': """
 Automatic notices speak for the company.

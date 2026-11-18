@@ -142,7 +142,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_calendar_hold` | BF Calendar Held Slots | 18.0.1.0.3 | LGPL-3 | Hold several candidate slots for a meeting that has to move, see them on the meeting and in their own colour, and move the meeting to the one that is chosen: the others are released. |
 | `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.7.0.1 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
 | `bf_calendar_mobile` | Symbifox — Agenda mobile | 18.0.3.9.0 | LGPL-3 | Calendar, deadlines and activities for a mobile client, carrying what CalDAV cannot: the meeting agenda, the minutes, the RSVP and the two reminder gestures |
-| `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
+| `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.2.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
 | `bf_calendar_share` | BF Calendar Sharing | 18.0.1.1.4 | LGPL-3 | Choose what each colleague sees of your calendar: availability only, titles and locations, all details, or the right to edit. |
 | `bf_calendar_share_nextcloud` | BF Calendar Sharing - Nextcloud calendars | 18.0.1.0.0 | LGPL-3 | Choose which Nextcloud calendars a calendar sharing link shows. |
 | `bf_calendar_subscribe` | BF Calendar Subscriptions | 18.0.1.0.2 | LGPL-3 | Show calendars published elsewhere (Outlook, Google, Apple) in the Odoo calendar, read only, and keep their busy times out of online booking. |
@@ -157,7 +157,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.1.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
 | `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.3.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
 | `bf_claude_chat` | Gen | 18.0.1.42.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
-| `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
+| `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.1.0 | BUSL-1.1 | Admin view of Gen sessions: stream failures and token usage |
 | `bf_claude_chat_digest` | Gen — consommation Claude dans le digest quotidien | 18.0.1.3.0 | BUSL-1.1 | Daily digest sections: Claude usage per account (windows, reset, probe state) and the recipient's Gen conversations to follow |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.4.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
 | `bf_color` | BF Color | 18.0.1.1.2 | LGPL-3 | Free colors resolved per user, per company and by automatic rules, with saved swatches |
@@ -273,7 +273,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_impersonate_privacy` | Incarnation — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Finalité, calendrier de conservation et purge du journal des incarnations, avec inscription au registre de destruction |
 | `bf_invoice_followup` | Relances de factures | 18.0.1.3.1 | BUSL-1.1 | Suivi et relances des factures clients en retard (statut manuel, activités automatiques, digest hebdomadaire) |
 | `bf_invoice_followup_digest` | Recevables en retard — section du digest quotidien | 18.0.1.0.4 | BUSL-1.1 | Ajoute une section « Factures en retard » au digest quotidien et retire le courriel séparé de bf_invoice_followup |
-| `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
+| `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.5.0 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_irregularity` | BF Irregularities | 18.0.1.0.1 | BUSL-1.1 | Shared registry of irregularities: late, off-process, hazardous, silent, orphaned or abnormal records |
 | `bf_irregularity_digest` | BF Irregularities — Daily digest section | 18.0.1.0.1 | BUSL-1.1 | Adds the reader's open irregularities to the daily digest |
 | `bf_irregularity_project` | BF Irregularities — Projects and timesheets | 18.0.1.2.0 | BUSL-1.1 | Detectors for tasks stuck waiting, orphaned tasks and days without a timesheet |
@@ -293,8 +293,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_lexend` | Lexend Typeface | 18.0.3.1.1 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
 | `bf_linkpage` | Pages de liens | 18.0.10.1.0 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
 | `bf_live_base` | Séance en direct : le socle | 18.0.1.1.0 | BUSL-1.1 | The projected palette, the contrast calculation and the brand ramp, shared by every live-session screen |
-| `bf_llm` | Symbifox — LLM Provider | 18.0.1.0.1 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
-| `bf_mail_company_voice` | Company Voice for Automatic Notices | 18.0.1.0.2 | LGPL-3 | Automatic notices speak for the company, never as « Public user » or a bot. |
+| `bf_llm` | Symbifox — LLM Provider | 18.0.1.2.0 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
+| `bf_mail_company_voice` | Company Voice for Automatic Notices | 18.0.1.1.0 | LGPL-3 | Automatic notices speak for the company, never as « Public user » or a bot. |
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.5.0 | LGPL-3 | Import .eml files into the Odoo chatter |
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.2.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.4.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
@@ -462,7 +462,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_time_of_day` | BF Time of Day | 18.0.1.5.2 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.14.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timesheet_timer_mobile` | Chronomètre : application Android | 18.0.1.3.2 | BUSL-1.1 | API for the Symbifox Chronomètre Android app: PKCE device pairing and timer gestures, stop and log in one request |
-| `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.1.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
+| `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.2.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
 | `bf_training` | Registre de formation | 18.0.1.4.2 | BUSL-1.1 | Qui doit quelle formation, pour quand, prouvé par quelle pièce, valide jusqu'à quand. Le registre nominatif que le lecteur eLearning ne tient pas |
 | `bf_training_budget` | Registre de formation : ce qu'elle coûte vraiment | 18.0.1.0.0 | BUSL-1.1 | Le coût des formations suivies porté au budget, et les heures dont le coût manque comptées comme manquantes plutôt que comme zéro |
 | `bf_training_mobile` | Registre de formation : mes formations au téléphone | 18.0.1.0.0 | BUSL-1.1 | L'écran « mes formations » de Symbifox Mobile : ce que je dois, pour quand, et ce que j'ai déjà prouvé |
@@ -494,7 +494,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_zerotouch_install` | Symbifox — Blue Fox OS Zero-Touch Install | 18.0.4.1.0 | BUSL-1.1 | The kickstart a Blue Fox OS installer fetches from its boot menu, rendered from the company's policy, with an OIDC device flow approved on a second device |
 | `bluefox_branding` | Symbifox Branding | 18.0.3.32.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.28.1 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
-| `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
+| `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.3.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.3.0.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
 | `hosting_management` | Gestion d'hébergement | 18.0.2.68.4 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
 | `partner_legal_name` | Symbifox — Partner Legal Name | 18.0.1.0.2 | LGPL-3 | A company's registered legal name next to its trade name, printed in the document header |

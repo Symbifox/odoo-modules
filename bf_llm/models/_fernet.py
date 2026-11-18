@@ -58,16 +58,16 @@ def encrypt(value):
     if not Fernet:
         raise UserError(
             _(
-                "Le paquet 'cryptography' est requis pour stocker "
-                "la cle API de maniere securisee."
+                "The 'cryptography' package is required to store the API "
+                "key securely."
             )
         )
     key = get_encryption_key()
     if not key:
         raise UserError(
             _(
-                "Cle de chiffrement manquante. Configurez "
-                "%(env)s dans l'environnement ou %(conf)s dans odoo.conf.",
+                "Encryption key missing. Set %(env)s in the environment, "
+                "or %(conf)s in odoo.conf.",
                 env=ENV_VAR,
                 conf=CONF_KEY,
             )
