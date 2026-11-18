@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_retail_label_queue_view_list" model="ir.ui.view">
+        <field name="name">bf.retail.label.queue.list</field>
+        <field name="model">bf.retail.label.queue</field>
+        <field name="arch" type="xml">
+            <list string="Shelf labels" decoration-muted="printed">
+                <header>
+                    <button name="action_open_labels" type="object" string="Print labels"
+                            class="btn-primary"/>
+                    <button name="action_mark_printed" type="object" string="Mark as printed"/>
+                </header>
+                <field name="product_id"/>
+                <field name="price"/>
+                <field name="reason"/>
+                <field name="date_added"/>
+                <field name="change_id" optional="show"/>
+                <field name="printed" widget="boolean_toggle" readonly="1"/>
+                <field name="printed_on" optional="hide"/>
+                <field name="printed_by" optional="hide" widget="many2one_avatar_user"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_retail_label_queue_view_search" model="ir.ui.view">
+        <field name="name">bf.retail.label.queue.search</field>
+        <field name="model">bf.retail.label.queue</field>
+        <field name="arch" type="xml">
+            <search string="Shelf labels">
+                <field name="product_id"/>
+                <filter name="to_print" string="To print" domain="[('printed', '=', False)]"/>
+                <filter name="printed" string="Printed" domain="[('printed', '=', True)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_reason" string="Why" context="{'group_by': 'reason'}"/>
+                    <filter name="group_batch" string="Batch" context="{'group_by': 'change_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_retail_label_queue" model="ir.actions.act_window">
+        <field name="name">Shelf labels</field>
+        <field name="res_model">bf.retail.label.queue</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_to_print': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Every label says the right price</p>
+            <p>A price applied by a batch queues its label here, until someone walks the aisle
+               and marks it printed.</p>
+        </field>
+    </record>
+</odoo>

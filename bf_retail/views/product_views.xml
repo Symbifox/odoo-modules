@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_category_form_view_retail" model="ir.ui.view">
+        <field name="name">product.category.form.retail</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='first']" position="after">
+                <group string="Retail" name="bf_retail" groups="bf_retail.group_retail_manager">
+                    <field name="bf_retail_managed"/>
+                    <field name="bf_retail_margin_target"
+                           help="Empty: the category above, else the company."/>
+                    <field name="bf_retail_price_rounding"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_form_view_retail" model="ir.ui.view">
+        <field name="name">product.template.form.retail</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Retail" name="bf_retail" invisible="not bf_retail_managed">
+                    <!-- Le champ témoin du modificateur de la page vit DANS la page et non
+                         dans le groupe du gérant : sorti avec le groupe, il laissait un
+                         modificateur qui lit un champ absent de la vue du commis. -->
+                    <field name="bf_retail_managed" invisible="1"/>
+                    <group>
+                        <group string="Cost" groups="bf_retail.group_retail_manager">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="bf_retail_cost" widget="monetary"
+                                   options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                            <field name="bf_retail_cost_date"/>
+                            <field name="bf_retail_cost_stale" invisible="not bf_retail_cost_stale"/>
+                            <button name="action_bf_retail_costs" type="object" class="btn-link"
+                                    icon="oi-arrow-right" string="The cost series"/>
+                        </group>
+                        <group string="Price" groups="bf_retail.group_retail_manager">
+                            <field name="bf_retail_target_pct"/>
+                            <field name="bf_retail_margin_pct"/>
+                            <field name="bf_retail_price_suggested"/>
+                            <field name="bf_retail_price_gap"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" groups="bf_retail.group_retail_manager"
+                         invisible="not bf_retail_cost_stale">
+                        This cost is older than the company allows: the margin shown above is
+                        no longer trustworthy.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_search_view_retail" model="ir.ui.view">
+        <field name="name">product.template.search.retail</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/group[1]" position="before">
+                <separator/>
+                <filter name="bf_retail_managed" string="Followed at retail"
+                        domain="[('bf_retail_managed', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bf_retail_products" model="ir.actions.act_window">
+        <field name="name">Retail products</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form,kanban</field>
+        <!-- Le domaine suffit : la facette de recherche par-dessus filtrait une deuxième
+             fois sur la même condition. -->
+        <field name="domain">[('bf_retail_managed', '=', True)]</field>
+    </record>
+</odoo>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_retail_cost_view_list" model="ir.ui.view">
+        <field name="name">bf.retail.cost.list</field>
+        <field name="model">bf.retail.cost</field>
+        <field name="arch" type="xml">
+            <list string="Cost series" create="1" editable="bottom"
+                  decoration-danger="delta_pct &gt; 0" decoration-success="delta_pct &lt; 0">
+                <field name="date"/>
+                <field name="product_id" options="{'no_create': True}"/>
+                <field name="cost" widget="monetary"
+                       options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                <field name="uom_id" groups="uom.group_uom" optional="show"/>
+                <field name="previous_cost" optional="hide" widget="monetary"
+                       options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                <field name="delta" optional="show" widget="monetary"
+                       options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                <field name="delta_pct" optional="show"/>
+                <field name="source"/>
+                <field name="partner_id" optional="show"/>
+                <field name="move_id" optional="hide"/>
+                <field name="note" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="has_previous" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_retail_cost_view_form" model="ir.ui.view">
+        <field name="name">bf.retail.cost.form</field>
+        <field name="model">bf.retail.cost</field>
+        <field name="arch" type="xml">
+            <form string="Cost observed">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id" options="{'no_create': True}"/>
+                            <field name="date"/>
+                            <field name="cost" widget="monetary"
+                                   options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                            <field name="uom_id" groups="uom.group_uom"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="source"/>
+                            <field name="partner_id"/>
+                            <field name="move_line_id" invisible="not move_line_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Against the previous cost" invisible="not has_previous">
+                        <field name="has_previous" invisible="1"/>
+                        <field name="previous_cost" widget="monetary"
+                               options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                        <field name="delta" widget="monetary"
+                               options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                        <field name="delta_pct"/>
+                    </group>
+                    <group>
+                        <field name="note" placeholder="A deal, a one-off, a price read on the invoice by hand."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_retail_cost_view_search" model="ir.ui.view">
+        <field name="name">bf.retail.cost.search</field>
+        <field name="model">bf.retail.cost</field>
+        <field name="arch" type="xml">
+            <search string="Costs">
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <filter name="went_up" string="Went up" domain="[('delta', '&gt;', 0)]"/>
+                <filter name="went_down" string="Went down" domain="[('delta', '&lt;', 0)]"/>
+                <separator/>
+                <filter name="from_bill" string="From a bill" domain="[('source', '=', 'bill')]"/>
+                <separator/>
+                <filter name="this_year" string="This year"
+                        domain="[('date', '&gt;=', (context_today() + relativedelta(month=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_product" string="Product" context="{'group_by': 'product_id'}"/>
+                    <filter name="group_supplier" string="Supplier" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_source" string="From" context="{'group_by': 'source'}"/>
+                    <filter name="group_month" string="Month" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_retail_cost" model="ir.actions.act_window">
+        <field name="name">Cost series</field>
+        <field name="res_model">bf.retail.cost</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_product': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No cost observed yet</p>
+            <p>A validated vendor bill writes this series by itself, for every product of a
+               retail category. A price read somewhere else is added by hand.</p>
+        </field>
+    </record>
+</odoo>

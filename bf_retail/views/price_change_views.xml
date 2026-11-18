@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_retail_price_change_view_list" model="ir.ui.view">
+        <field name="name">bf.retail.price.change.list</field>
+        <field name="model">bf.retail.price.change</field>
+        <field name="arch" type="xml">
+            <list string="Price changes">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="reason"/>
+                <field name="line_count" string="Prices"/>
+                <field name="up_count" string="Up"/>
+                <field name="down_count" string="Down"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'" decoration-success="state == 'applied'"
+                       decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_retail_price_change_view_form" model="ir.ui.view">
+        <field name="name">bf.retail.price.change.form</field>
+        <field name="model">bf.retail.price.change</field>
+        <field name="arch" type="xml">
+            <form string="Price change">
+                <header>
+                    <button name="action_propose" type="object" string="Propose from the costs"
+                            class="btn-primary" invisible="state != 'draft'"
+                            confirm="The lines this button proposed before are replaced. The lines you decided by hand are kept. Carry on?"
+                            help="Fills the batch with every followed product whose price has drifted from its target."/>
+                    <button name="action_apply" type="object" string="Apply"
+                            class="btn-primary" invisible="state != 'draft' or line_count == 0"
+                            confirm="The prices are written on the products and their labels go to the queue. Carry on?"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state != 'draft'"/>
+                    <button name="action_back_to_draft" type="object" string="Back to draft"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,applied"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="reason" readonly="state != 'draft'"/>
+                            <field name="user_id" readonly="state != 'draft'"/>
+                            <field name="follow_down" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="line_count"/>
+                            <field name="applied_at" invisible="state != 'applied'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Prices" name="lines">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom" create="1"
+                                      decoration-danger="margin_new &lt; target_pct - 0.05">
+                                    <field name="product_id" options="{'no_create': True}"
+                                           domain="[('bf_retail_managed', '=', True)]"/>
+                                    <field name="cost" widget="monetary" readonly="1"
+                                           options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                                    <field name="price_old" readonly="1"/>
+                                    <field name="price_new"/>
+                                    <field name="margin_old" readonly="1" optional="show"/>
+                                    <field name="margin_new" readonly="1" optional="show"/>
+                                    <field name="target_pct" readonly="1" optional="hide"/>
+                                    <field name="by_hand" optional="hide"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note" placeholder="What the batch answers to: a delivery, a price file, the end of a deal."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_retail_price_change_view_search" model="ir.ui.view">
+        <field name="name">bf.retail.price.change.search</field>
+        <field name="model">bf.retail.price.change</field>
+        <field name="arch" type="xml">
+            <search string="Price changes">
+                <field name="name"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="applied" string="Applied" domain="[('state', '=', 'applied')]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_reason" string="Reason" context="{'group_by': 'reason'}"/>
+                    <filter name="group_month" string="Month" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_retail_price_change" model="ir.actions.act_window">
+        <field name="name">Price changes</field>
+        <field name="res_model">bf.retail.price.change</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No price change yet</p>
+            <p>A batch proposes every followed product whose price has drifted from its target,
+               and applies them in one walk down the aisle.</p>
+        </field>
+    </record>
+</odoo>

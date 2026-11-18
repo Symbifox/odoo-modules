@@ -1,0 +1,1448 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_retail
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/retail_cost.py:0
+msgid ""
+"%(uom)s does not measure the same thing as %(product_uom)s, the unit of "
+"%(product)s: a cost in that unit cannot be read per unit."
+msgstr "%(uom)s ne mesure pas la même chose que %(product_uom)s, l'unité de %(product)s : un coût dans cette unité ne peut pas se lire à l'unité."
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid "%s is not a draft any more."
+msgstr "%s n'est plus un brouillon."
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid "%s price(s) applied."
+msgstr "%s prix appliqué(s)."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_index_view_form
+msgid ""
+"100 means nothing moved. A spread below zero says the shelf price\n"
+" followed the cost by less than the cost moved: the store is paying the\n"
+" difference. Only the products with a cost at both ends of the period\n"
+" are counted, and a price moved by hand outside a batch is read as\n"
+" having always been today's price."
+msgstr "100 : rien n'a bougé. Un écart sous zéro dit que le prix en tablette a suivi le coût de moins que le coût n'a bougé : le commerce paie la différence. Seuls les produits qui ont un coût aux deux bouts de la période sont comptés, et un prix bougé à la main hors d'un lot se lit comme ayant toujours été le prix d'aujourd'hui."
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_index__cost_index
+msgid "100 means the cost did not move over the period."
+msgstr "100 : le coût n'a pas bougé sur la période."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.res_config_settings_view_form_retail
+msgid ""
+"A batch leaves out a product whose suggested price differs from its price by"
+" less than this."
+msgstr "Un lot laisse de côté un produit dont le prix proposé s'écarte de son prix de moins que ça."
+
+#. module: bf_retail
+#: model_terms:ir.actions.act_window,help:bf_retail.action_bf_retail_price_change
+msgid ""
+"A batch proposes every followed product whose price has drifted from its target,\n"
+" and applies them in one walk down the aisle."
+msgstr "Un lot propose chaque produit suivi dont le prix a dérivé de sa cible, et les applique en une seule tournée d'allée."
+
+#. module: bf_retail
+#: model:ir.model.constraint,message:bf_retail.constraint_bf_retail_cost_cost_positive
+msgid "A cost cannot be negative."
+msgstr "Un coût ne peut pas être négatif."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_res_company__bf_retail_cost_max_age
+#: model:ir.model.fields,field_description:bf_retail.field_res_config_settings__bf_retail_cost_max_age
+#: model_terms:ir.ui.view,arch_db:bf_retail.res_config_settings_view_form_retail
+msgid "A cost gets old after (days)"
+msgstr "Un coût vieillit après (jours)"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_price_change__follow_down
+msgid ""
+"A cost that goes up has to be passed on to hold the margin, and the batch "
+"proposes it. A cost that goes down leaves a margin above target, and giving "
+"it back is a decision, not an arithmetic: those are left out unless this is "
+"set."
+msgstr "Un coût qui monte doit être passé au prix pour tenir la marge, et le lot le propose. Un coût qui descend laisse une marge au-dessus de la cible, et la redonner est une décision, pas un calcul : ces produits restent dehors, sauf si c'est coché."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_form
+msgid "A deal, a one-off, a price read on the invoice by hand."
+msgstr "Une aubaine, un coup unique, un prix lu sur la facture à la main."
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_price_change_line__by_hand
+msgid ""
+"A line a manager added rather than one the proposal wrote: proposing from "
+"the costs again leaves it alone."
+msgstr "Une ligne ajoutée par le gérant plutôt qu'écrite par la proposition : reproposer depuis les coûts la laisse tranquille."
+
+#. module: bf_retail
+#: model_terms:ir.actions.act_window,help:bf_retail.action_bf_retail_label_queue
+msgid ""
+"A price applied by a batch queues its label here, until someone walks the aisle\n"
+" and marks it printed."
+msgstr "Un prix appliqué par un lot met son étiquette ici, jusqu'à ce que quelqu'un fasse la tournée et la marque imprimée."
+
+#. module: bf_retail
+#: model:ir.model.constraint,message:bf_retail.constraint_bf_retail_price_change_line_price_positive
+msgid "A price cannot be negative."
+msgstr "Un prix ne peut pas être négatif."
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_res_company__bf_retail_price_gap_min
+#: model:ir.model.fields,help:bf_retail.field_res_config_settings__bf_retail_price_gap_min
+msgid ""
+"A price change batch leaves out a product whose suggested price differs from"
+" its price by less than this: a reprinted label costs more than the cent it "
+"recovers."
+msgstr "Un lot de changement de prix laisse de côté un produit dont le prix proposé s'écarte de son prix de moins que ça : une étiquette réimprimée coûte plus cher que le cent qu'elle récupère."
+
+#. module: bf_retail
+#: model_terms:ir.actions.act_window,help:bf_retail.action_bf_retail_cost
+msgid ""
+"A validated vendor bill writes this series by itself, for every product of a\n"
+" retail category. A price read somewhere else is added by hand."
+msgstr "Une facture fournisseur validée écrit cette série d'elle-même, pour chaque produit d'une catégorie de détail. Un prix lu ailleurs s'ajoute à la main."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_form
+msgid "Against the previous cost"
+msgstr "Contre le coût précédent"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__follow_down
+msgid "Also propose decreases"
+msgstr "Proposer aussi les baisses"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_price_change__state__applied
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_search
+msgid "Applied"
+msgstr "Appliqué"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__applied_at
+msgid "Applied on"
+msgstr "Appliqué le"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_res_company__bf_retail_price_rounding
+#: model:ir.model.fields,help:bf_retail.field_res_config_settings__bf_retail_price_rounding
+msgid ""
+"Applied to the price as it is shown on the shelf, which is the price written"
+" on the product: tax included where the taxes are, tax excluded elsewhere."
+msgstr "Appliqué au prix tel qu'il paraît en tablette, c'est-à-dire au prix écrit sur le produit : taxe comprise là où les taxes le sont, hors taxe ailleurs."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.res_config_settings_view_form_retail
+msgid ""
+"Applied to the price as the shelf shows it. A category can set its own."
+msgstr "Appliqué au prix tel que la tablette l'affiche. Une catégorie peut avoir le sien."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+msgid "Apply"
+msgstr "Appliquer"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_label_queue__reason__manual
+msgid "Asked for"
+msgstr "Demandée"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+msgid "Back to draft"
+msgstr "Remettre en brouillon"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__change_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__change_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__change_id
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_label_queue_view_search
+msgid "Batch"
+msgstr "Lot"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__change_line_id
+msgid "Batch line"
+msgstr "Ligne du lot"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__move_id
+msgid "Bill"
+msgstr "Facture"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__move_line_id
+msgid "Bill line"
+msgstr "Ligne de facture"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_price_change__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_index_view_form
+msgid "Categories"
+msgstr "Catégories"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__categ_id
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__delta
+msgid "Change"
+msgstr "Variation"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__delta_pct
+msgid "Change (%)"
+msgstr "Variation (%)"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__company_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__company_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__company_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__company_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__company_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__company_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_index_view_form
+msgid "Compute"
+msgstr "Calculer"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__computed
+msgid "Computed"
+msgstr "Calculé"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: bf_retail
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.product_template_form_view_retail
+msgid "Cost"
+msgstr "Coût"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/retail_index.py:0
+#: model:ir.actions.act_window,name:bf_retail.action_bf_retail_index
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_index
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_index_view_form
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_index_view_list
+msgid "Cost against price"
+msgstr "Coût contre prix"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/retail_index.py:0
+msgid "Cost against price, %(start)s to %(end)s"
+msgstr "Coût contre prix, du %(start)s au %(end)s"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__cost_end
+msgid "Cost at the end"
+msgstr "Coût à la fin"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__cost_start
+msgid "Cost at the start"
+msgstr "Coût au début"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_cost_source
+msgid "Cost from"
+msgstr "Coût venu de"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__cost_index
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__cost_index
+msgid "Cost index"
+msgstr "Indice des coûts"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_cost_stale
+#: model:ir.model.fields,field_description:bf_retail.field_product_template__bf_retail_cost_stale
+msgid "Cost is old"
+msgstr "Coût vieilli"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_form
+msgid "Cost observed"
+msgstr "Coût relevé"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_cost_date
+#: model:ir.model.fields,field_description:bf_retail.field_product_template__bf_retail_cost_date
+msgid "Cost of"
+msgstr "Coût du"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__cost
+msgid "Cost per unit"
+msgstr "Coût unitaire"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/product.py:0
+#: model:ir.actions.act_window,name:bf_retail.action_bf_retail_cost
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_cost_ids
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_cost
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_list
+msgid "Cost series"
+msgstr "Série des coûts"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__cost
+msgid "Cost then"
+msgstr "Coût d'alors"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_search
+msgid "Costs"
+msgstr "Coûts"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_cost_count
+#: model:ir.model.fields,field_description:bf_retail.field_product_template__bf_retail_cost_count
+msgid "Costs observed"
+msgstr "Coûts relevés"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__create_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__create_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__create_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__create_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__create_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__create_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__create_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__create_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__create_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__create_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__create_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__create_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__currency_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__currency_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__currency_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__currency_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__currency_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__currency_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_cost_id
+msgid "Current cost row"
+msgstr "Ligne du coût courant"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__date
+msgid "Day"
+msgstr "Jour"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__user_id
+msgid "Decided by"
+msgstr "Décidé par"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__by_hand
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_price_change__reason__manual
+msgid "Decided by hand"
+msgstr "Décidé à la main"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_res_company__bf_retail_margin_target
+#: model:ir.model.fields,help:bf_retail.field_res_config_settings__bf_retail_margin_target
+msgid ""
+"Default target for a retail category that sets none: the share of the price,"
+" excluding tax, left after the cost."
+msgstr "Cible par défaut d'une catégorie de détail qui n'en fixe aucune : la part du prix, hors taxe, qui reste après le coût."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__display_name
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__display_name
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__display_name
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__display_name
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__display_name
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__display_name
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_list
+msgid "Down"
+msgstr "Baisse"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_price_change__state__draft
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_search
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_product_category__bf_retail_margin_target
+msgid ""
+"Empty or zero: the company's target is used. A category below this one with "
+"no target of its own uses this one."
+msgstr "Vide ou zéro : la cible de la société sert. Une catégorie sous celle-ci qui n'a pas de cible propre prend celle-ci."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.product_category_form_view_retail
+msgid "Empty: the category above, else the company."
+msgstr "Vide : la catégorie au-dessus, sinon la société."
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_product_category__bf_retail_price_rounding
+msgid ""
+"Empty: the category above, else the company. Bread and milk are often priced"
+" to the cent while confectionery ends in 0.99."
+msgstr "Vide : la catégorie au-dessus, sinon la société. Le pain et le lait se chiffrent souvent au cent, alors que la confiserie finit en 0,99."
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_price_change__reason__promo_end
+msgid "End of a promotion"
+msgstr "Fin d'une promotion"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_cost__source__manual
+msgid "Entered by hand"
+msgstr "Saisi à la main"
+
+#. module: bf_retail
+#: model_terms:ir.actions.act_window,help:bf_retail.action_bf_retail_label_queue
+msgid "Every label says the right price"
+msgstr "Chaque étiquette dit le bon prix"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+msgid ""
+"Fills the batch with every followed product whose price has drifted from its"
+" target."
+msgstr "Remplit le lot avec chaque produit suivi dont le prix a dérivé de sa cible."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_managed
+#: model:ir.model.fields,field_description:bf_retail.field_product_template__bf_retail_managed
+#: model_terms:ir.ui.view,arch_db:bf_retail.product_template_search_view_retail
+msgid "Followed at retail"
+msgstr "Suivi au détail"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__source
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__date_from
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__source
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_search
+msgid "From"
+msgstr "Du"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_search
+msgid "From a bill"
+msgstr "Venu d'une facture"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__change_line_id
+msgid "From the batch"
+msgstr "Du lot"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_price_gap
+#: model:ir.model.fields,field_description:bf_retail.field_product_template__bf_retail_price_gap
+msgid "Gap"
+msgstr "Écart"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__down_count
+msgid "Going down"
+msgstr "En baisse"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__up_count
+msgid "Going up"
+msgstr "En hausse"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_search
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_label_queue_view_search
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__has_previous
+msgid "Has a previous cost"
+msgstr "A un coût précédent"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_price_change__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si cette case est cochée, de nouveaux messages demandent votre attention."
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_price_change__message_has_error
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_price_change__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si cette case est cochée, des messages ont une erreur de livraison."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__index_id
+msgid "Index"
+msgstr "Indice"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_account_move_line
+msgid "Journal Item"
+msgstr "Écriture comptable"
+
+#. module: bf_retail
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_label_queue
+msgid "Labels to print"
+msgstr "Étiquettes à imprimer"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__write_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__write_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__write_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__write_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__write_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__write_uid
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__write_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__write_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__write_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__write_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__write_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__write_date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid "Left out, more than one store would read their price: %s."
+msgstr "Écartés, plus d'un commerce lirait leur prix : %s."
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid ""
+"Left out, their price cannot be moved without moving a sister variant: %s."
+msgstr "Écartés, leur prix ne peut pas bouger sans déplacer une variante sœur : %s."
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/retail_cost.py:0
+msgid "Line %(number)s of %(total)s: %(reason)s"
+msgstr "Ligne %(number)s sur %(total)s : %(reason)s"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_margin_pct
+#: model:ir.model.fields,field_description:bf_retail.field_product_template__bf_retail_margin_pct
+msgid "Margin (%)"
+msgstr "Marge (%)"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__margin_new
+msgid "Margin after (%)"
+msgstr "Marge après (%)"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__margin_end
+msgid "Margin at the end (%)"
+msgstr "Marge à la fin (%)"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__margin_start
+msgid "Margin at the start (%)"
+msgstr "Marge au début (%)"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__margin_old
+msgid "Margin before (%)"
+msgstr "Marge avant (%)"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_label_queue_view_list
+msgid "Mark as printed"
+msgstr "Marquer imprimées"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur de livraison du message"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_price_change__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à utiliser seulement dans les recherches"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_price_change__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à utiliser seulement dans les recherches"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_search
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_search
+msgid "Month"
+msgstr "Mois"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid ""
+"More than one store would read these prices: %s. In Odoo the shelf price is "
+"not kept per company, so applying the batch here would write it for the "
+"other store too. Give this store its own product."
+msgstr "Plus d'un commerce lirait ces prix : %s. Dans Odoo, le prix de tablette n'est pas tenu par société : appliquer le lot ici l'écrirait aussi pour l'autre commerce. Donnez à ce commerce son propre produit."
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_label_queue__reason__new
+msgid "New on the shelf"
+msgstr "Nouveau en tablette"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__price_new
+msgid "New price"
+msgstr "Nouveau prix"
+
+#. module: bf_retail
+#: model_terms:ir.actions.act_window,help:bf_retail.action_bf_retail_cost
+msgid "No cost observed yet"
+msgstr "Aucun coût relevé pour l'instant"
+
+#. module: bf_retail
+#: model_terms:ir.actions.act_window,help:bf_retail.action_bf_retail_price_change
+msgid "No price change yet"
+msgstr "Aucun changement de prix pour l'instant"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/account_move.py:0
+msgid ""
+"No retail cost read for %s: the line costs nothing, or its quantity does not"
+" convert to the unit of the product."
+msgstr "Aucun coût de détail lu pour %s : la ligne ne coûte rien, ou sa quantité ne se convertit pas dans l'unité du produit."
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__product_category__bf_retail_price_rounding__none
+#: model:ir.model.fields.selection,name:bf_retail.selection__res_company__bf_retail_price_rounding__none
+msgid "No rounding"
+msgstr "Aucun arrondi"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__note
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__note
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid "Nothing to apply: the batch is empty."
+msgstr "Rien à appliquer : le lot est vide."
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/label_queue.py:0
+msgid "Nothing to print."
+msgstr "Rien à imprimer."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_price_change__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_price_change__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur de livraison"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__date
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__date
+msgid "On"
+msgstr "Le"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid "Only a cancelled batch goes back to draft."
+msgstr "Seul un lot annulé revient en brouillon."
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_cost__source__init
+msgid "Opening cost"
+msgstr "Coût de départ"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_res_company__bf_retail_cost_max_age
+#: model:ir.model.fields,help:bf_retail.field_res_config_settings__bf_retail_cost_max_age
+msgid ""
+"Past that age the cost is flagged on the product: the margin computed from "
+"it is no longer trustworthy."
+msgstr "Passé cet âge, le coût est signalé sur le produit : la marge calculée dessus ne tient plus."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.res_config_settings_view_form_retail
+msgid ""
+"Past that age the product says so: the margin computed from that cost is no "
+"longer trustworthy."
+msgstr "Passé cet âge, le produit le dit : la marge calculée sur ce coût ne tient plus."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__uom_id
+msgid "Per"
+msgstr "Par"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__previous_cost
+msgid "Previous cost"
+msgstr "Coût précédent"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.product_template_form_view_retail
+msgid "Price"
+msgstr "Prix"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__price_new
+msgid "Price after"
+msgstr "Prix après"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__price_end
+msgid "Price at the end"
+msgstr "Prix à la fin"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__price_start
+msgid "Price at the start"
+msgstr "Prix au début"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__price_old
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__price_old
+msgid "Price before"
+msgstr "Prix avant"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+msgid "Price change"
+msgstr "Changement de prix"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_price_move__source__batch
+msgid "Price change batch"
+msgstr "Lot de changement de prix"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_label_queue__reason__price
+msgid "Price changed"
+msgstr "Prix changé"
+
+#. module: bf_retail
+#: model:ir.actions.act_window,name:bf_retail.action_bf_retail_price_change
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_price_change
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_list
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_search
+msgid "Price changes"
+msgstr "Changements de prix"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_price_untaxed
+msgid "Price excluding tax"
+msgstr "Prix hors taxe"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_cost__source__file
+msgid "Price file"
+msgstr "Fichier de prix"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__price_index
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__price_index
+msgid "Price index"
+msgstr "Indice des prix"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_index__spread
+msgid ""
+"Price index less cost index. Below zero, the store is paying the increase "
+"itself."
+msgstr "Indice des prix moins indice des coûts. Sous zéro, le commerce paie la hausse lui-même."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_category__bf_retail_price_rounding
+msgid "Price rounding"
+msgstr "Arrondi du prix"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__price
+msgid "Price to print"
+msgstr "Prix à imprimer"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__line_ids
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_prices
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_list
+#: model_terms:ir.ui.view,arch_db:bf_retail.res_config_settings_view_form_retail
+msgid "Prices"
+msgstr "Prix"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__line_count
+msgid "Prices in the batch"
+msgstr "Prix dans le lot"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/label_queue.py:0
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_label_queue_view_list
+msgid "Print labels"
+msgstr "Imprimer les étiquettes"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__printed
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_label_queue_view_search
+msgid "Printed"
+msgstr "Imprimée"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__printed_by
+msgid "Printed by"
+msgstr "Imprimée par"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__printed_on
+msgid "Printed on"
+msgstr "Imprimée le"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_product_template
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__product_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__product_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__product_id
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__product_id
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_search
+msgid "Product"
+msgstr "Produit"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_product_category
+msgid "Product Category"
+msgstr "Catégorie de produits"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_product_template_attribute_value
+msgid "Product Template Attribute Value"
+msgstr "Valeur caratéristique du modèle produit"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_product_product
+msgid "Product Variant"
+msgstr "Variante de produit"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__product_count
+msgid "Products"
+msgstr "Produits"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__product_count
+msgid "Products counted"
+msgstr "Produits comptés"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+msgid "Propose from the costs"
+msgstr "Proposer depuis les coûts"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid "Propose the batch again to read them as they are now."
+msgstr "Proposer le lot de nouveau pour les relire tels qu'ils sont."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__date_added
+msgid "Queued on"
+msgstr "Mise en file le"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__reason
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_search
+msgid "Reason"
+msgstr "Motif"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__name
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__name
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_retail
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_reporting
+msgid "Reporting"
+msgstr "Analyse"
+
+#. module: bf_retail
+#: model:ir.module.category,name:bf_retail.module_category_retail
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_root
+#: model_terms:ir.ui.view,arch_db:bf_retail.product_category_form_view_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.product_template_form_view_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.res_config_settings_view_form_retail
+msgid "Retail"
+msgstr "Détail"
+
+#. module: bf_retail
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_categories
+msgid "Retail categories"
+msgstr "Catégories de détail"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_category__bf_retail_managed
+msgid "Retail category"
+msgstr "Catégorie de détail"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_cost
+#: model:ir.model.fields,field_description:bf_retail.field_product_template__bf_retail_cost
+msgid "Retail cost"
+msgstr "Coût de détail"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_bf_retail_index
+msgid "Retail cost against price index"
+msgstr "Indice coût contre prix de détail"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/account_move.py:0
+msgid "Retail cost moved on %s of the %s product(s) of this bill."
+msgstr "Le coût de détail a bougé sur %s des %s produit(s) de cette facture."
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_bf_retail_cost
+msgid "Retail cost observed"
+msgstr "Coût de détail relevé"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_bf_retail_index_line
+msgid "Retail index, one category"
+msgstr "Indice de détail, une catégorie"
+
+#. module: bf_retail
+#: model:res.groups,name:bf_retail.group_retail_manager
+msgid "Retail manager"
+msgstr "Gérant du commerce"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_bf_retail_price_change
+msgid "Retail price change"
+msgstr "Changement de prix de détail"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_bf_retail_price_change_line
+msgid "Retail price change line"
+msgstr "Ligne de changement de prix de détail"
+
+#. module: bf_retail
+#: model:ir.actions.act_window,name:bf_retail.action_bf_retail_products
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_products
+msgid "Retail products"
+msgstr "Produits de détail"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_bf_retail_price_move
+msgid "Retail shelf price move"
+msgstr "Mouvement de prix de tablette"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_price_change__reason__rounding
+msgid "Rounding of the category"
+msgstr "Arrondi de la catégorie"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur de livraison du SMS"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_product_product__bf_retail_managed
+msgid "Set by the product's category, or by a category above it."
+msgstr "Posé par la catégorie du produit, ou par une catégorie au-dessus."
+
+#. module: bf_retail
+#: model:ir.ui.menu,name:bf_retail.menu_bf_retail_shelf
+msgid "Shelf"
+msgstr "Tablette"
+
+#. module: bf_retail
+#: model:res.groups,name:bf_retail.group_retail_user
+msgid "Shelf clerk"
+msgstr "Commis aux rayons"
+
+#. module: bf_retail
+#: model:ir.model,name:bf_retail.model_bf_retail_label_queue
+msgid "Shelf label to print"
+msgstr "Étiquette de tablette à imprimer"
+
+#. module: bf_retail
+#: model:ir.actions.act_window,name:bf_retail.action_bf_retail_label_queue
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_label_queue_view_list
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_label_queue_view_search
+msgid "Shelf labels"
+msgstr "Étiquettes de tablette"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid "Shelf price of %(product)s: %(old)s to %(new)s (%(reference)s)."
+msgstr "Prix en tablette de %(product)s : %(old)s à %(new)s (%(reference)s)."
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid "Shelf prices are the retail manager's."
+msgstr "Les prix en tablette sont au gérant du commerce."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_res_company__bf_retail_price_gap_min
+#: model:ir.model.fields,field_description:bf_retail.field_res_config_settings__bf_retail_price_gap_min
+#: model_terms:ir.ui.view,arch_db:bf_retail.res_config_settings_view_form_retail
+msgid "Smallest gap worth a change"
+msgstr "Plus petit écart qui mérite un changement"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__spread
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index_line__spread
+msgid "Spread"
+msgstr "Écart entre les deux"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__state
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__state
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_search
+msgid "State"
+msgstr "État"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_price_suggested
+#: model:ir.model.fields,field_description:bf_retail.field_product_template__bf_retail_price_suggested
+msgid "Suggested price"
+msgstr "Prix proposé"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_product_product__bf_retail_price_gap
+msgid "Suggested price less the price on the shelf."
+msgstr "Prix proposé moins le prix en tablette."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_res_company__bf_retail_price_rounding
+#: model:ir.model.fields,field_description:bf_retail.field_res_config_settings__bf_retail_price_rounding
+#: model_terms:ir.ui.view,arch_db:bf_retail.res_config_settings_view_form_retail
+msgid "Suggested price rounding"
+msgstr "Arrondi du prix proposé"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_cost__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_search
+msgid "Supplier"
+msgstr "Fournisseur"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change_line__target_pct
+msgid "Target (%)"
+msgstr "Cible (%)"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.res_config_settings_view_form_retail
+msgid "Target margin"
+msgstr "Marge visée"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_product_category__bf_retail_margin_target
+#: model:ir.model.fields,field_description:bf_retail.field_product_product__bf_retail_target_pct
+#: model:ir.model.fields,field_description:bf_retail.field_product_template__bf_retail_target_pct
+#: model:ir.model.fields,field_description:bf_retail.field_res_company__bf_retail_margin_target
+#: model:ir.model.fields,field_description:bf_retail.field_res_config_settings__bf_retail_margin_target
+msgid "Target margin (%)"
+msgstr "Marge visée (%)"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/retail_cost.py:0
+msgid ""
+"The change against the previous cost is read from the series, it is not "
+"written by hand."
+msgstr "La variation contre le coût précédent se lit dans la série, elle ne s'écrit pas à la main."
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_price_change__reason__cost
+msgid "The cost moved"
+msgstr "Le coût a bougé"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.product_template_form_view_retail
+msgid "The cost series"
+msgstr "La série des coûts"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_product_product__bf_retail_cost
+msgid "The last cost observed for this product in this company."
+msgstr "Le dernier coût relevé pour ce produit dans cette société."
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_cost__move_line_id
+msgid "The line of the validated vendor bill this cost was read from."
+msgstr "La ligne de la facture fournisseur validée d'où ce coût a été lu."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+msgid ""
+"The lines this button proposed before are replaced. The lines you decided by"
+" hand are kept. Carry on?"
+msgstr "Les lignes déjà proposées par ce bouton sont remplacées. Les lignes décidées à la main sont gardées. On continue ?"
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/retail_index.py:0
+msgid "The period starts after it ends."
+msgstr "La période commence après sa fin."
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_product_product__bf_retail_price_untaxed
+msgid ""
+"The price on the shelf, with the taxes of the sale taken out. The margin is "
+"computed on this one, so a price that includes GST and a price that excludes"
+" the sales taxes give the same margin."
+msgstr "Le prix en tablette, taxes de la vente retirées. La marge se calcule sur celui-là : un prix qui comprend la TPS et un prix qui exclut les taxes de vente donnent la même marge."
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_product_product__bf_retail_price_suggested
+msgid ""
+"The price that reaches the target margin, taken up to the rounding of the "
+"category."
+msgstr "Le prix qui atteint la marge visée, monté jusqu'à l'arrondi de la catégorie."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+msgid ""
+"The prices are written on the products and their labels go to the queue. "
+"Carry on?"
+msgstr "Les prix sont écrits sur les produits et leurs étiquettes passent en file. On continue ?"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_cost__uom_id
+msgid "The product's own unit of measure."
+msgstr "L'unité de mesure propre du produit."
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_product_category__bf_retail_managed
+msgid ""
+"The products of this category, and of the categories below it, are followed "
+"at retail: their cost is kept as a series and their price answers to it."
+msgstr "Les produits de cette catégorie, et des catégories en dessous, sont suivis au détail : leur coût est gardé en série et leur prix y répond."
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid "Their cost moved since the proposal: %s."
+msgstr "Leur coût a bougé depuis la proposition : %s."
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid ""
+"Their price cannot be moved on its own: %s. They are variants of a model "
+"whose attributes cross, and the price of one is carried by an attribute "
+"value their sister variants share."
+msgstr "Leur prix ne peut pas bouger tout seul : %s. Ce sont des variantes d'un modèle dont les attributs se croisent, et le prix de l'une est porté par une valeur d'attribut que ses variantes sœurs partagent."
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/price_change.py:0
+msgid "Their price moved since the proposal: %s."
+msgstr "Leur prix a bougé depuis la proposition : %s."
+
+#. module: bf_retail
+#: model:ir.model.constraint,message:bf_retail.constraint_bf_retail_cost_one_per_bill_line
+msgid "This bill line already wrote a cost in the series."
+msgstr "Cette ligne de facture a déjà écrit un coût dans la série."
+
+#. module: bf_retail
+#. odoo-python
+#: code:addons/bf_retail/models/retail_cost.py:0
+msgid "This cost did not come from a bill."
+msgstr "Ce coût ne vient pas d'une facture."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.product_template_form_view_retail
+msgid ""
+"This cost is older than the company allows: the margin shown above is\n"
+" no longer trustworthy."
+msgstr "Ce coût est plus vieux que ce que la société permet : la marge montrée au-dessus ne tient plus."
+
+#. module: bf_retail
+#: model:ir.model.constraint,message:bf_retail.constraint_bf_retail_price_change_line_one_product_per_batch
+msgid "This product is already in the batch."
+msgstr "Ce produit est déjà dans le lot."
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_search
+msgid "This year"
+msgstr "Cette année"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_index__date_to
+msgid "To"
+msgstr "Au"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_label_queue_view_search
+msgid "To print"
+msgstr "À imprimer"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__product_category__bf_retail_price_rounding__cent
+#: model:ir.model.fields.selection,name:bf_retail.selection__res_company__bf_retail_price_rounding__cent
+msgid "To the cent"
+msgstr "Au cent"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_list
+msgid "Up"
+msgstr "Hausse"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__product_category__bf_retail_price_rounding__0_05
+#: model:ir.model.fields.selection,name:bf_retail.selection__res_company__bf_retail_price_rounding__0_05
+msgid "Up to the next 0.05"
+msgstr "Au prochain 0,05"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__product_category__bf_retail_price_rounding__0_09
+#: model:ir.model.fields.selection,name:bf_retail.selection__res_company__bf_retail_price_rounding__0_09
+msgid "Up to the next ending in 0.09"
+msgstr "À la prochaine fin en 0,09"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__product_category__bf_retail_price_rounding__0_49
+#: model:ir.model.fields.selection,name:bf_retail.selection__res_company__bf_retail_price_rounding__0_49
+msgid "Up to the next ending in 0.49 or 0.99"
+msgstr "À la prochaine fin en 0,49 ou 0,99"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__product_category__bf_retail_price_rounding__0_95
+#: model:ir.model.fields.selection,name:bf_retail.selection__res_company__bf_retail_price_rounding__0_95
+msgid "Up to the next ending in 0.95"
+msgstr "À la prochaine fin en 0,95"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__product_category__bf_retail_price_rounding__0_99
+#: model:ir.model.fields.selection,name:bf_retail.selection__res_company__bf_retail_price_rounding__0_99
+msgid "Up to the next ending in 0.99"
+msgstr "À la prochaine fin en 0,99"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.res_config_settings_view_form_retail
+msgid ""
+"Used by a retail category that sets none: the share of the price, excluding "
+"tax, left after the cost."
+msgstr "Sert à une catégorie de détail qui n'en fixe aucune : la part du prix, hors taxe, qui reste après le coût."
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_cost__source__bill
+msgid "Vendor bill"
+msgstr "Facture fournisseur"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_change__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_retail
+#: model:ir.model.fields,help:bf_retail.field_bf_retail_price_change__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des communications du site web"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_search
+msgid "Went down"
+msgstr "A baissé"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_cost_view_search
+msgid "Went up"
+msgstr "A monté"
+
+#. module: bf_retail
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_price_change_view_form
+msgid ""
+"What the batch answers to: a delivery, a price file, the end of a deal."
+msgstr "Ce à quoi le lot répond : une livraison, un fichier de prix, la fin d'une aubaine."
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_label_queue__reason
+#: model_terms:ir.ui.view,arch_db:bf_retail.bf_retail_label_queue_view_search
+msgid "Why"
+msgstr "Pourquoi"
+
+#. module: bf_retail
+#: model:ir.model.fields,field_description:bf_retail.field_bf_retail_price_move__user_id
+msgid "Written by"
+msgstr "Écrit par"
+
+#. module: bf_retail
+#: model:ir.model.fields.selection,name:bf_retail.selection__bf_retail_price_move__source__hand
+msgid "Written on the product"
+msgstr "Écrit sur le produit"

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_bf_retail_price_change" model="ir.sequence">
+        <field name="name">Retail price change</field>
+        <field name="code">bf.retail.price.change</field>
+        <field name="prefix">PRIX/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

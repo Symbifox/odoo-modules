@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_retail" model="ir.module.category">
+        <field name="name">Retail</field>
+        <field name="sequence">41</field>
+    </record>
+
+    <!-- The clerk walks the aisle: reads what has to be relabelled, prints it, marks it done.
+         No cost and no margin, in the queue or on the product (the fields carry the manager
+         group). -->
+    <record id="group_retail_user" model="res.groups">
+        <field name="name">Shelf clerk</field>
+        <field name="category_id" ref="module_category_retail"/>
+    </record>
+
+    <!-- The retail manager reads the costs and moves the prices. No record rule is added on
+         products: a group rule there would become the only one on the model and restrict a
+         stock, purchase or sales manager who is also in the store. The scope is held by the
+         retail flag of the category and by the manager group on the cost fields.
+
+         🔴 The group used to have NO right at all on the products: the manager proposed a
+         batch, then `action_apply` raised "Access Denied by ACLs for operation: write, model:
+         product.product". The central button of the module was out of reach of the very role
+         the module creates. Read and WRITE on product.template, product.product and
+         product.category come from this module's own ACL lines,
+         without create and without unlink: creating or deleting an article stays with the
+         buyer and the inventory clerk, who have their own role in Odoo. And no core group is
+         implied: the manager does not inherit menus nobody asked for. -->
+    <record id="group_retail_manager" model="res.groups">
+        <field name="name">Retail manager</field>
+        <field name="category_id" ref="module_category_retail"/>
+        <field name="implied_ids" eval="[(4, ref('group_retail_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <record id="rule_bf_retail_cost_company" model="ir.rule">
+        <field name="name">Retail cost: own companies</field>
+        <field name="model_id" ref="model_bf_retail_cost"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_retail_price_change_company" model="ir.rule">
+        <field name="name">Price change: own companies</field>
+        <field name="model_id" ref="model_bf_retail_price_change"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_retail_price_change_line_company" model="ir.rule">
+        <field name="name">Price change line: own companies</field>
+        <field name="model_id" ref="model_bf_retail_price_change_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_retail_label_queue_company" model="ir.rule">
+        <field name="name">Shelf label: own companies</field>
+        <field name="model_id" ref="model_bf_retail_label_queue"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_retail_index_company" model="ir.rule">
+        <field name="name">Retail index: own companies</field>
+        <field name="model_id" ref="model_bf_retail_index"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_retail_index_line_company" model="ir.rule">
+        <field name="name">Retail index line: own companies</field>
+        <field name="model_id" ref="model_bf_retail_index_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_retail_price_move_company" model="ir.rule">
+        <field name="name">Shelf price move: own companies</field>
+        <field name="model_id" ref="model_bf_retail_price_move"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_retail" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.retail</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Retail" string="Retail" name="bf_retail"
+                     groups="bf_retail.group_retail_manager">
+                    <block title="Prices" name="bf_retail_prices">
+                        <setting string="Target margin"
+                                 help="Used by a retail category that sets none: the share of the price, excluding tax, left after the cost.">
+                            <field name="bf_retail_margin_target"/>
+                        </setting>
+                        <setting string="Suggested price rounding"
+                                 help="Applied to the price as the shelf shows it. A category can set its own.">
+                            <field name="bf_retail_price_rounding"/>
+                        </setting>
+                        <setting string="A cost gets old after (days)"
+                                 help="Past that age the product says so: the margin computed from that cost is no longer trustworthy.">
+                            <field name="bf_retail_cost_max_age"/>
+                        </setting>
+                        <setting string="Smallest gap worth a change"
+                                 help="A batch leaves out a product whose suggested price differs from its price by less than this.">
+                            <field name="bf_retail_price_gap_min"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

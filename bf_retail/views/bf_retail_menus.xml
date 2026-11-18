@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_retail_root" name="Retail"
+              web_icon="bf_retail,static/description/icon.png"
+              sequence="56" groups="bf_retail.group_retail_user"/>
+
+    <menuitem id="menu_bf_retail_prices" name="Prices" parent="menu_bf_retail_root" sequence="10"
+              groups="bf_retail.group_retail_manager"/>
+    <menuitem id="menu_bf_retail_price_change" name="Price changes" parent="menu_bf_retail_prices"
+              action="action_bf_retail_price_change" sequence="10"/>
+    <menuitem id="menu_bf_retail_cost" name="Cost series" parent="menu_bf_retail_prices"
+              action="action_bf_retail_cost" sequence="20"/>
+    <menuitem id="menu_bf_retail_products" name="Retail products" parent="menu_bf_retail_prices"
+              action="action_bf_retail_products" sequence="30"/>
+
+    <menuitem id="menu_bf_retail_shelf" name="Shelf" parent="menu_bf_retail_root" sequence="20"/>
+    <menuitem id="menu_bf_retail_label_queue" name="Labels to print" parent="menu_bf_retail_shelf"
+              action="action_bf_retail_label_queue" sequence="10"/>
+
+    <menuitem id="menu_bf_retail_reporting" name="Reporting" parent="menu_bf_retail_root"
+              sequence="30" groups="bf_retail.group_retail_manager"/>
+    <menuitem id="menu_bf_retail_index" name="Cost against price" parent="menu_bf_retail_reporting"
+              action="action_bf_retail_index" sequence="10"/>
+
+    <menuitem id="menu_bf_retail_config" name="Configuration" parent="menu_bf_retail_root"
+              sequence="90" groups="bf_retail.group_retail_manager"/>
+    <menuitem id="menu_bf_retail_categories" name="Retail categories" parent="menu_bf_retail_config"
+              action="product.product_category_action_form" sequence="10"/>
+</odoo>
