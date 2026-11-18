@@ -1,0 +1,28 @@
+.o_bf_planogram_elevation {
+    .o_bf_planogram_toile {
+        overflow: auto;
+        max-height: 70vh;
+        border: 1px solid #E0E3E5;
+        border-radius: 4px;
+        padding: 4px;
+        background: #FAFAFA;
+    }
+
+    .o_bf_planogram_position {
+        cursor: pointer;
+
+        &:hover rect {
+            stroke-width: 1;
+        }
+    }
+
+    .o_bf_planogram_puce {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 4px;
+        border: 1px solid #2E3132;
+        border-radius: 2px;
+        vertical-align: middle;
+    }
+}

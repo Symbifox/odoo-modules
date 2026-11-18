@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_planogram_letter_landscape" model="report.paperformat">
+        <field name="name">Letter landscape (planogram)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">14</field>
+        <field name="margin_bottom">12</field>
+        <field name="margin_left">8</field>
+        <field name="margin_right">8</field>
+        <field name="header_spacing">6</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_planogram" model="ir.actions.report">
+        <field name="name">Planogram</field>
+        <field name="model">bf.planogram.fixture</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_planogram.report_planogram</field>
+        <field name="report_file">bf_planogram.report_planogram</field>
+        <field name="print_report_name">object.display_name</field>
+        <field name="binding_model_id" ref="model_bf_planogram_fixture"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_planogram_letter_landscape"/>
+    </record>
+
+    <!-- The same drawing as the screen, drawn by the server from to_dict.
+         ⚠️ wkhtmltopdf renders an inline SVG with no width/height at ZERO, without a word:
+         both attributes are set explicitly. The lesson is bf_floorplan's, already paid for
+         there. -->
+    <template id="report_planogram">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <!-- basic_layout and not the external one: a planogram is a drawing, and the
+                     company header of the external layout runs over the title on a letter
+                     in landscape with narrow margins. -->
+                <t t-call="web.basic_layout">
+                    <t t-set="d" t-value="o.to_dict()"/>
+                    <!-- The letters, the margin and the box come from `to_dict`: the screen
+                         and the paper read ONE geometry, and the box spans what is really
+                         drawn, which is the fixture unless a shelf is wider than it or a
+                         stack rises past its top. -->
+                    <t t-set="fz" t-value="d['font_size']"/>
+                    <t t-set="m" t-value="d['margin']"/>
+                    <!-- 🔴 The drawn size in pixels comes from `to_dict` as well, and
+                         no arithmetic of its own is left here: dividing a
+                         height frozen at 380 px by the ratio of the drawing never read the
+                         width of the page, so the default gondola landed 248 px wide on
+                         the 993 px a letter in landscape offers, with its lettering at
+                         2.40 pt. The box is fitted in the page both ways, and the font
+                         that goes in it is sized with it, once, for the screen and the
+                         paper alike. -->
+                    <div class="page">
+                        <h3 style="margin-bottom:2px;">
+                            <t t-out="d['title']"/>
+                        </h3>
+                        <!-- The same sentence as the screen, built by the server: see
+                             `to_dict`. The pieces around a field would be msgid nobody can
+                             translate right. -->
+                        <div style="color:#73787A;font-size:11px;margin-bottom:8px;">
+                            <t t-out="d['kind_label']"/>
+                            <t t-if="d['aisle']"> · <t t-out="d['aisle']"/></t>
+                            · <t t-out="d['summary']"/>
+                            <t t-if="d['frozen_label']"> · <t t-out="d['frozen_label']"/></t>
+                            · <t t-out="d['company']"/>
+                        </div>
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             t-att-viewBox="d['view_box']"
+                             t-attf-width="#{d['paper_px_width']}px"
+                             t-attf-height="#{d['paper_px_height']}px"
+                             preserveAspectRatio="xMidYMin meet">
+                            <defs>
+                                <pattern id="hatch" width="2" height="2"
+                                         patternUnits="userSpaceOnUse"
+                                         patternTransform="rotate(45)">
+                                    <rect width="2" height="2" fill="#FFFFFF"/>
+                                    <line x1="0" y1="0" x2="0" y2="2" stroke="#D69921"
+                                          stroke-width="0.6"/>
+                                </pattern>
+                            </defs>
+                            <rect x="0" y="0" t-att-width="d['width']"
+                                  t-att-height="d['height']" fill="#FFFFFF"
+                                  stroke="#2E3132" stroke-width="0.5"/>
+                            <line x1="0" t-att-y1="d['height']" t-att-x2="d['width']"
+                                  t-att-y2="d['height']" stroke="#2E3132" stroke-width="1.2"/>
+                            <t t-foreach="d['shelves']" t-as="s">
+                                <rect x="0" t-att-y="d['height'] - s['height']"
+                                      t-att-width="s['usable_width']"
+                                      t-att-height="s['board']"
+                                      t-att-fill="s['overflow'] and '#C0392B' or '#2E3132'"/>
+                                <text t-att-x="-m * 0.2"
+                                      t-att-y="d['height'] - s['height'] - 1"
+                                      text-anchor="end" t-att-font-size="fz" fill="#73787A">
+                                    <t t-out="s['height_label']"/>
+                                </text>
+                                <t t-foreach="s['positions']" t-as="p">
+                                    <rect t-att-x="p['x']"
+                                          t-att-y="d['height'] - s['height'] - p['h']"
+                                          t-att-width="p['w']" t-att-height="p['h']"
+                                          t-att-fill="p['nominal'] and 'url(#hatch)' or (p['outside'] and '#FBEAE7' or '#EAF7FD')"
+                                          t-att-stroke="p['outside'] and '#C0392B' or (p['too_tall'] or p['nominal']) and '#D69921' or '#29ABE2'"
+                                          stroke-width="0.4"/>
+                                    <text t-if="p['label_fits']"
+                                          t-att-x="p['x'] + p['w'] / 2.0"
+                                          t-att-y="d['height'] - s['height'] - p['h'] / 2.0 + fz / 3.0"
+                                          text-anchor="middle" t-att-font-size="fz"
+                                          fill="#2E3132">
+                                        <t t-out="p['label']"/>
+                                    </text>
+                                </t>
+                            </t>
+                        </svg>
+
+                        <div style="font-size:10px;color:#73787A;margin:6px 0 10px 0;">
+                            Blue frame: the width is read from the product. Amber hatch: the product carries no width, so the box is drawn at a nominal width and counts for nothing in the numbers above. Amber frame without hatch: taller than the gap to the shelf above. Red: past the end of the shelf.
+                            <t t-if="d['unmeasured']">
+                                <strong><t t-out="d['unmeasured']"/> position(s) without dimensions</strong>
+                            </t>
+                            <t t-if="d['wide_shelf']">A shelf is wider than the fixture, and drawn whole.</t>
+                        </div>
+
+                        <table class="table table-sm" style="font-size:11px;">
+                            <thead>
+                                <tr>
+                                    <th>Shelf</th>
+                                    <th>Product</th>
+                                    <th class="text-end">Facings</th>
+                                    <th class="text-end">Deep</th>
+                                    <th class="text-end">Stacked</th>
+                                    <th class="text-end">Capacity</th>
+                                    <th class="text-end">Taken (cm)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="d['shelves']" t-as="s">
+                                    <tr style="background:#F4F4F4;">
+                                        <td colspan="2"><strong><t t-out="s['label']"/></strong></td>
+                                        <td class="text-end" colspan="3">
+                                            <t t-out="s['summary']"/>
+                                        </td>
+                                        <td class="text-end"><strong><t t-out="s['capacity']"/></strong></td>
+                                        <td class="text-end"><strong><t t-out="s['used_width']"/></strong></td>
+                                    </tr>
+                                    <tr t-foreach="s['positions']" t-as="p">
+                                        <td></td>
+                                        <td>
+                                            <t t-out="p['product']"/>
+                                            <t t-if="p['nominal']"> *</t>
+                                        </td>
+                                        <td class="text-end"><t t-out="p['facings']"/></td>
+                                        <td class="text-end"><t t-out="p['deep']"/></td>
+                                        <td class="text-end"><t t-out="p['stacked']"/></td>
+                                        <td class="text-end"><t t-out="p['capacity']"/></td>
+                                        <td class="text-end"><t t-out="p['w'] if p['measured'] else 0"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

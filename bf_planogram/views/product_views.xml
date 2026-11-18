@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_template_only_form_view_bf_planogram" model="ir.ui.view">
+        <field name="name">product.template.form.bf.planogram</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Shelf" name="bf_planogram"
+                      groups="bf_planogram.group_planogram_user">
+                    <group>
+                        <group string="The selling unit (cm)"
+                               groups="bf_planogram.group_planogram_manager">
+                            <field name="bf_planogram_unit_width"/>
+                            <field name="bf_planogram_unit_height"/>
+                            <field name="bf_planogram_unit_depth"/>
+                        </group>
+                        <group string="The case (cm)"
+                               groups="bf_planogram.group_planogram_manager">
+                            <field name="bf_planogram_case_width"/>
+                            <field name="bf_planogram_case_height"/>
+                            <field name="bf_planogram_case_depth"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert"
+                         invisible="bf_planogram_measured">
+                        <field name="bf_planogram_measured" invisible="1"/>
+                        Without a width for the selling unit, this product takes zero centimetre on every shelf it sits on, and the space left on those shelves reads as more than it is.
+                    </div>
+                    <group string="On the shelf">
+                        <field name="bf_planogram_position_count"/>
+                        <button name="action_bf_planogram_positions" type="object"
+                                string="See the positions" class="btn-link"
+                                icon="fa-arrow-right"
+                                invisible="not bf_planogram_position_count"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_search_view_bf_planogram" model="ir.ui.view">
+        <field name="name">product.template.search.bf.planogram</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/group[1]" position="before">
+                <filter name="bf_planogram_unmeasured" string="Not measured for the shelf"
+                        domain="[('bf_planogram_measured', '=', False)]"
+                        groups="bf_planogram.group_planogram_manager"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

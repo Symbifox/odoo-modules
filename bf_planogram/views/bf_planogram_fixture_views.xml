@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_planogram_fixture_view_list" model="ir.ui.view">
+        <field name="name">bf.planogram.fixture.list</field>
+        <field name="model">bf.planogram.fixture</field>
+        <field name="arch" type="xml">
+            <list string="Fixtures" decoration-warning="overflow"
+                  decoration-muted="locked">
+                <!-- 🔴 Forme, la poignee de tri comprise. `sequence`
+                     n'est pas dans WRITABLE_WHEN_FROZEN, donc glisser une version gelee
+                     levait APRES le geste au lieu de ne pas s'offrir. -->
+                <field name="sequence" widget="handle" readonly="locked"/>
+                <field name="aisle"/>
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="kind"/>
+                <field name="width" optional="hide"/>
+                <field name="height" optional="hide"/>
+                <field name="shelf_count"/>
+                <field name="position_count"/>
+                <field name="linear_width" sum="Linear shelf (cm)"/>
+                <field name="fill_pct" optional="show"/>
+                <field name="capacity" sum="Capacity (units)"/>
+                <field name="unmeasured_count" optional="show"/>
+                <field name="version" optional="hide"/>
+                <field name="locked" optional="hide" widget="boolean_toggle" readonly="1"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="overflow" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_planogram_fixture_view_form" model="ir.ui.view">
+        <field name="name">bf.planogram.fixture.form</field>
+        <field name="model">bf.planogram.fixture</field>
+        <field name="arch" type="xml">
+            <form string="Fixture">
+                <header>
+                    <button name="action_freeze" type="object" string="Freeze a version"
+                            class="oe_highlight" invisible="locked"
+                            help="Publish the planogram as it stands: a frozen copy a compliance round can be counted against."/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Frozen" bg_color="text-bg-secondary"
+                            invisible="not locked"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_versions" type="object"
+                                class="oe_stat_button" icon="fa-clock-o"
+                                invisible="locked or not version_count">
+                            <field name="version_count" widget="statinfo" string="Versions"/>
+                        </button>
+                        <button name="action_open_positions" type="object"
+                                class="oe_stat_button" icon="fa-shopping-basket">
+                            <field name="position_count" widget="statinfo" string="Positions"/>
+                        </button>
+                    </div>
+                    <!-- 🔴 Forme, sur une version gelee, tout ce que le
+                         gel protege est en lecture seule A L'ECRAN. Seul `shelf_ids` l'etait,
+                         alors on tapait, on sauvait, et on recevait la levee de la garde
+                         apres coup. La garde reste, elle : la vue ne la remplace pas. -->
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Aisle 3, left side"
+                                   readonly="locked"/></h1>
+                        <h3><field name="code" placeholder="G12" readonly="locked"/></h3>
+                    </div>
+                    <group>
+                        <group string="Where" name="where">
+                            <field name="aisle" placeholder="Aisle 3" readonly="locked"/>
+                            <field name="kind" readonly="locked"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   options="{'no_create': True}"/>
+                            <field name="active" invisible="1"/>
+                            <field name="locked" invisible="1"/>
+                        </group>
+                        <group string="The fixture itself" name="fixture">
+                            <field name="width" readonly="locked"/>
+                            <field name="height" readonly="locked"/>
+                            <field name="depth" readonly="locked"/>
+                            <field name="linear_width"/>
+                            <field name="capacity"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="not overflow">
+                        <field name="overflow" invisible="1"/>
+                        A shelf holds more width than it has. The drawing shows it, and the capacity below counts what was asked for, not what fits.
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not wide_shelf">
+                        <field name="wide_shelf" invisible="1"/>
+                        A shelf of this fixture is wider than the fixture itself. It is drawn whole and counted as typed, but in centimetres a usable width wider than the fixture is usually a measurement typed in millimetres, and it multiplies the linear shelf below.
+                    </div>
+                    <div class="alert alert-info" role="alert"
+                         invisible="not unmeasured_count">
+                        <field name="unmeasured_count" readonly="1" class="oe_inline"/>
+                        position(s) sit on a product with no width: they take zero on the drawing. Type the six dimensions on the product and the space taken answers by itself.
+                    </div>
+                    <notebook>
+                        <page string="Elevation" name="elevation">
+                            <!-- Read only, and not for want of time: a position's place on
+                                 the shelf is its order and the widths before it, so there is
+                                 nothing here a mouse could move. -->
+                            <widget name="bf_planogram_elevation"/>
+                        </page>
+                        <page string="Shelves" name="shelves">
+                            <field name="shelf_ids" readonly="locked"
+                                   context="{'default_usable_width': width,
+                                             'default_usable_depth': depth}">
+                                <list string="Shelves" editable="bottom"
+                                      decoration-warning="overflow or wider_than_fixture">
+                                    <field name="height_from_floor"/>
+                                    <field name="name" optional="show"/>
+                                    <field name="usable_width"/>
+                                    <field name="usable_depth" optional="show"/>
+                                    <field name="tilt" optional="hide"/>
+                                    <field name="max_load" optional="hide"/>
+                                    <field name="position_count"/>
+                                    <field name="used_width"/>
+                                    <field name="free_width"/>
+                                    <field name="fill_pct"/>
+                                    <field name="capacity"/>
+                                    <field name="unmeasured_count" optional="show"/>
+                                    <field name="overflow" column_invisible="1"/>
+                                    <field name="wider_than_fixture" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" readonly="locked"
+                                   placeholder="What this fixture is for, and what was decided about it."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_planogram_fixture_view_search" model="ir.ui.view">
+        <field name="name">bf.planogram.fixture.search</field>
+        <field name="model">bf.planogram.fixture</field>
+        <field name="arch" type="xml">
+            <search string="Fixtures">
+                <field name="name" string="Fixture"
+                       filter_domain="['|', '|', ('name', 'ilike', self),
+                                       ('code', 'ilike', self), ('aisle', 'ilike', self)]"/>
+                <field name="kind"/>
+                <field name="aisle"/>
+                <!-- A separator, never a bare filter between two others: a filter alone in
+                     its group would answer zero against the default facet
+                     (reference_odoo_filtres_separes_contredisent_la_facette_par_defaut). -->
+                <filter name="fixture_live" string="Live" domain="[('locked', '=', False)]"/>
+                <filter name="fixture_frozen" string="Frozen versions"
+                        domain="[('locked', '=', True)]"/>
+                <separator/>
+                <filter name="fixture_overflow" string="Overflowing"
+                        domain="[('overflow', '=', True)]"/>
+                <filter name="fixture_unmeasured" string="Without dimensions"
+                        domain="[('unmeasured_count', '>', 0)]"/>
+                <separator/>
+                <filter name="fixture_archived" string="Archived"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_aisle" string="Aisle" context="{'group_by': 'aisle'}"/>
+                    <filter name="group_kind" string="Kind" context="{'group_by': 'kind'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_planogram_fixture_action" model="ir.actions.act_window">
+        <field name="name">Fixtures</field>
+        <field name="res_model">bf.planogram.fixture</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_fixture_live': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Draw a first fixture</p>
+            <p>A gondola, a cooler, a wall run: its width, its height, its shelves, and what sits on each shelf. The capacity and the linear shelf answer by themselves.</p>
+        </field>
+    </record>
+</odoo>

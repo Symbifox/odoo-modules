@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_planogram_position_view_list" model="ir.ui.view">
+        <field name="name">bf.planogram.position.list</field>
+        <field name="model">bf.planogram.position</field>
+        <field name="arch" type="xml">
+            <list string="Positions" decoration-muted="not measured">
+                <field name="fixture_id" optional="show"/>
+                <field name="shelf_id"/>
+                <field name="sequence" widget="handle"/>
+                <field name="product_id"/>
+                <field name="facings"/>
+                <field name="deep"/>
+                <field name="stacked"/>
+                <field name="unit_width" optional="show" invisible="fixture_locked"/>
+                <field name="frozen_unit_width" optional="show"
+                       invisible="not fixture_locked"/>
+                <field name="fixture_locked" column_invisible="1"/>
+                <field name="used_width" sum="Taken (cm)"/>
+                <field name="capacity" sum="Capacity (units)"/>
+                <field name="measured" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_planogram_position_view_form" model="ir.ui.view">
+        <field name="name">bf.planogram.position.form</field>
+        <field name="model">bf.planogram.position</field>
+        <field name="arch" type="xml">
+            <form string="Position">
+                <sheet>
+                    <group>
+                        <group string="Where">
+                            <field name="shelf_id" options="{'no_create': True}"/>
+                            <field name="fixture_id" readonly="1"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="What, and how much of it">
+                            <field name="product_id" options="{'no_create': True}"/>
+                            <field name="facings"/>
+                            <field name="deep"/>
+                            <field name="stacked"/>
+                            <field name="capacity"/>
+                        </group>
+                        <!-- On a frozen version the width and the height are the COPIES
+                             taken by the freeze, not the product sheet: the sheet keeps
+                             changing, and the numbers beside them are computed from the
+                             copies. Showing the live ones here said the version had moved
+                             when it had not. -->
+                        <group string="Read from the product">
+                            <field name="fixture_locked" invisible="1"/>
+                            <field name="unit_width" invisible="fixture_locked"/>
+                            <field name="unit_height" invisible="fixture_locked"/>
+                            <field name="frozen_unit_width" invisible="not fixture_locked"/>
+                            <field name="frozen_unit_height" invisible="not fixture_locked"/>
+                            <field name="unit_depth"/>
+                            <field name="used_width"/>
+                            <field name="measured" invisible="1"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert" invisible="measured">
+                        This product carries no width, so this position takes zero centimetre on the shelf. Type its dimensions on the product.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_planogram_position_view_search" model="ir.ui.view">
+        <field name="name">bf.planogram.position.search</field>
+        <field name="model">bf.planogram.position</field>
+        <field name="arch" type="xml">
+            <search string="Positions">
+                <field name="product_id"/>
+                <field name="fixture_id"/>
+                <field name="shelf_id"/>
+                <filter name="position_measured" string="Measured"
+                        domain="[('measured', '=', True)]"/>
+                <filter name="position_unmeasured" string="Without dimensions"
+                        domain="[('measured', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_fixture" string="Fixture"
+                            context="{'group_by': 'fixture_id'}"/>
+                    <filter name="group_shelf" string="Shelf"
+                            context="{'group_by': 'shelf_id'}"/>
+                    <filter name="group_product" string="Product"
+                            context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_planogram_position_action" model="ir.actions.act_window">
+        <field name="name">Positions</field>
+        <field name="res_model">bf.planogram.position</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

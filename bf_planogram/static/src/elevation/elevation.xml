@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="bf_planogram.Elevation">
+    <div class="o_bf_planogram_elevation">
+        <div t-if="state.error" class="alert alert-warning" role="alert">
+            <t t-esc="state.error"/>
+        </div>
+        <div t-elif="!state.data" class="text-muted p-3">…</div>
+        <t t-else="">
+            <div class="o_bf_planogram_bar d-flex align-items-center gap-2 mb-2">
+                <button class="btn btn-sm btn-secondary" t-on-click="() => this.zoom(-0.2)"
+                        title="Smaller">−</button>
+                <button class="btn btn-sm btn-secondary" t-on-click="() => this.zoom(0.2)"
+                        title="Bigger">+</button>
+                <button class="btn btn-sm btn-secondary" t-on-click="toggleLabels">
+                    <t t-if="state.labels">Hide the names</t>
+                    <t t-else="">Show the names</t>
+                </button>
+                <!-- One sentence, built by the server: a statistics line made of « cm · »
+                     and « position(s) · » gives msgid nobody can translate right. -->
+                <span class="text-muted small ms-2" t-esc="state.data.summary"/>
+                <span t-if="state.data.frozen" class="badge text-bg-secondary ms-auto">
+                    <t t-esc="state.data.frozen_label"/>
+                </span>
+            </div>
+
+            <div t-if="state.data.empty" class="text-muted p-3">
+                <t t-esc="state.data.empty"/>
+            </div>
+
+            <div t-else="" class="o_bf_planogram_toile"
+                 t-attf-style="width: {{ (state.zoom * 100).toFixed(0) }}%;">
+                <svg xmlns="http://www.w3.org/2000/svg" t-att-viewBox="viewBox"
+                     width="100%" preserveAspectRatio="xMidYMin meet">
+                    <defs>
+                        <pattern id="bf-planogram-hatch" width="2" height="2"
+                                 patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                            <rect width="2" height="2" fill="#FFFFFF"/>
+                            <line x1="0" y1="0" x2="0" y2="2" stroke="#D69921"
+                                  stroke-width="0.6"/>
+                        </pattern>
+                    </defs>
+
+                    <!-- the fixture, and the floor it stands on -->
+                    <rect x="0" y="0" t-att-width="state.data.width"
+                          t-att-height="state.data.height"
+                          fill="#FFFFFF" stroke="#2E3132" stroke-width="0.5"/>
+                    <line x1="0" t-att-y1="state.data.height" t-att-x2="state.data.width"
+                          t-att-y2="state.data.height" stroke="#2E3132" stroke-width="1.2"/>
+
+                    <t t-foreach="state.data.shelves" t-as="shelf" t-key="shelf.id">
+                        <!-- the board, and how far along it is usable -->
+                        <rect x="0" t-att-y="yOf(shelf.height)"
+                              t-att-width="shelf.usable_width" t-att-height="shelf.board"
+                              t-att-fill="shelf.overflow ? '#C0392B' : '#2E3132'"/>
+                        <text t-att-x="-margin * 0.2" t-att-y="yOf(shelf.height) - 1"
+                              text-anchor="end" t-att-font-size="fontSize" fill="#73787A">
+                            <t t-esc="shelf.height_label"/>
+                        </text>
+
+                        <t t-foreach="shelf.positions" t-as="position" t-key="position.id">
+                            <g class="o_bf_planogram_position"
+                               t-on-click="() => this.openPosition(position)">
+                                <title><t t-esc="titleOf(position)"/></title>
+                                <rect t-att-x="position.x"
+                                      t-att-y="yOfPosition(shelf, position)"
+                                      t-att-width="position.w" t-att-height="position.h"
+                                      t-att-fill="fillOf(position)"
+                                      t-att-stroke="colorOf(position)"
+                                      stroke-width="0.4"/>
+                                <text t-if="fits(position)"
+                                      t-att-x="position.x + position.w / 2"
+                                      t-att-y="yOfPosition(shelf, position) + position.h / 2 + fontSize / 3"
+                                      text-anchor="middle" t-att-font-size="fontSize"
+                                      fill="#2E3132">
+                                    <t t-esc="shortOf(position)"/>
+                                </text>
+                            </g>
+                        </t>
+                    </t>
+                </svg>
+            </div>
+
+            <div class="o_bf_planogram_legende text-muted small mt-2">
+                <span class="me-3"><span class="o_bf_planogram_puce"
+                      style="background:#EAF7FD;border-color:#29ABE2"></span> measured</span>
+                <span class="me-3"><span class="o_bf_planogram_puce"
+                      style="background:#FFFFFF;border-color:#D69921"></span> no width on the product, drawn at a nominal width</span>
+                <span class="me-3"><span class="o_bf_planogram_puce"
+                      style="background:#EAF7FD;border-color:#D69921"></span> taller than the gap to the shelf above</span>
+                <span class="me-3"><span class="o_bf_planogram_puce"
+                      style="background:#FBEAE7;border-color:#C0392B"></span> past the end of the shelf</span>
+                <span t-if="state.data.unmeasured">
+                    · <t t-esc="state.data.unmeasured"/> position(s) without dimensions
+                </span>
+                <span t-if="state.data.wide_shelf" class="ms-3">a shelf is wider than the fixture, and drawn whole</span>
+            </div>
+        </t>
+    </div>
+</t>
+
+</templates>

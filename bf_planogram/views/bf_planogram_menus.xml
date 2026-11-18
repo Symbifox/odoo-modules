@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The icon is approved by hand, and the file must exist BEFORE `web_icon` names it:
+         pointing it at a file that is not there puts a broken image in the app drawer and a
+         warning in the log at every start. Approved by hand (a store shelf); the file is `static/description/icon.png`, reduced to
+         256 px from the approved master. -->
+    <menuitem id="menu_bf_planogram_root" name="Planograms"
+              web_icon="bf_planogram,static/description/icon.png"
+              groups="bf_planogram.group_planogram_user" sequence="46"/>
+
+    <menuitem id="menu_bf_planogram_fixtures" name="Fixtures"
+              parent="menu_bf_planogram_root" action="bf_planogram_fixture_action"
+              sequence="10"/>
+    <menuitem id="menu_bf_planogram_shelves" name="Shelves"
+              parent="menu_bf_planogram_root" action="bf_planogram_shelf_action"
+              sequence="20"/>
+    <menuitem id="menu_bf_planogram_positions" name="Positions"
+              parent="menu_bf_planogram_root" action="bf_planogram_position_action"
+              sequence="30"/>
+</odoo>

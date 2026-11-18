@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_planogram" model="ir.module.category">
+        <field name="name">Planograms</field>
+        <field name="sequence">42</field>
+    </record>
+
+    <!-- Whoever stocks the shelf reads the plan and prints it. No change to the drawing:
+         a facing moved by the person restocking, without the plan being redrawn, is how a
+         planogram stops describing the aisle. -->
+    <record id="group_planogram_user" model="res.groups">
+        <field name="name">Shelf reader</field>
+        <field name="category_id" ref="module_category_planogram"/>
+    </record>
+
+    <!-- 🔴 Read AND write on the product come from this module's own ACL lines, with no
+         create and no unlink. The lesson is paid for: in lot 1 of this suite the retail
+         manager group had no right at all on products, so the central button of the module
+         raised "Access Denied by ACLs for operation: write" on the very role the module
+         creates. Here the manager types the six dimensions on the product, so the right is
+         granted up front. Creating or deleting an article stays with the buyer and the
+         inventory clerk, who have their own role in Odoo, and no core group is implied:
+         the manager does not inherit menus nobody asked for. -->
+    <record id="group_planogram_manager" model="res.groups">
+        <field name="name">Planogram manager</field>
+        <field name="category_id" ref="module_category_planogram"/>
+        <field name="implied_ids" eval="[(4, ref('group_planogram_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- One store reads its own aisles. The three models carry company_id: the fixture by
+         itself, the shelf and the position as a stored related, precisely so that the rule
+         holds on them without walking up the drawing on every read. -->
+    <record id="rule_bf_planogram_fixture_company" model="ir.rule">
+        <field name="name">Planogram fixture: own companies</field>
+        <field name="model_id" ref="model_bf_planogram_fixture"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_planogram_shelf_company" model="ir.rule">
+        <field name="name">Planogram shelf: own companies</field>
+        <field name="model_id" ref="model_bf_planogram_shelf"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_planogram_position_company" model="ir.rule">
+        <field name="name">Planogram position: own companies</field>
+        <field name="model_id" ref="model_bf_planogram_position"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

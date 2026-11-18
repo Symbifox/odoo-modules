@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fixture_user,Planogram fixture: shelf reader,model_bf_planogram_fixture,group_planogram_user,1,0,0,0
+access_shelf_user,Planogram shelf: shelf reader,model_bf_planogram_shelf,group_planogram_user,1,0,0,0
+access_position_user,Planogram position: shelf reader,model_bf_planogram_position,group_planogram_user,1,0,0,0
+access_fixture_manager,Planogram fixture: manager,model_bf_planogram_fixture,group_planogram_manager,1,1,1,1
+access_shelf_manager,Planogram shelf: manager,model_bf_planogram_shelf,group_planogram_manager,1,1,1,1
+access_position_manager,Planogram position: manager,model_bf_planogram_position,group_planogram_manager,1,1,1,1
+access_product_template_manager,Product: dimensions typed by the manager,product.model_product_template,group_planogram_manager,1,1,0,0
+access_product_product_manager,Product variant: dimensions typed by the manager,product.model_product_product,group_planogram_manager,1,1,0,0

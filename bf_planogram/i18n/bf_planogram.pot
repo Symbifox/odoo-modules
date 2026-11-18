@@ -1,0 +1,1290 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_planogram
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-17 10:55+0000\n"
+"PO-Revision-Date: 2026-11-17 10:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid "%(name)s, version %(no)s"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/position.py:0
+msgid "%(product)s, %(facings)s facing(s)"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/rendering.py:0
+msgid "%(usable)s cm usable, %(left)s left, %(capacity)s unit(s)"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid ""
+"%(what)s belongs to « %(name)s », a frozen version: freeze a new version "
+"instead of changing this one."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/rendering.py:0
+msgid ""
+"%(width)s × %(height)s × %(depth)s cm · %(shelves)s shelf/shelves · "
+"%(positions)s position(s) · %(capacity)s unit(s) of capacity · %(linear)s cm"
+" of linear shelf, %(filled)s %% filled"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/shelf.py:0
+msgid "%s cm from the floor"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.js:0
+msgid "%s facing(s)"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.js:0
+msgid "%s unit(s) of capacity"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_shelf__tilt
+msgid "A bread rack or a produce shelf is tilted towards the aisle."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/product_template.py:0
+msgid "A dimension is not negative."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/product_template.py:0
+msgid ""
+"A dimension of %(value)s cm is not a unit on a shelf: the field is in "
+"centimetres, and nothing on a shelf is wider than %(max)s cm."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid "A fixture does not go past %s cm on a side."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid ""
+"A fixture has a width, a height and a depth, in centimetres, and all three "
+"are positive."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid "A fixture is overflowing or it is not."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__locked
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_position__fixture_locked
+msgid "A frozen version is read and printed, never modified."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.actions.act_window,help:bf_planogram.bf_planogram_fixture_action
+msgid ""
+"A gondola, a cooler, a wall run: its width, its height, its shelves, and "
+"what sits on each shelf. The capacity and the linear shelf answer by "
+"themselves."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/shelf.py:0
+msgid "A load allowed is not negative."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/position.py:0
+msgid "A position"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/position.py:0
+msgid ""
+"A position holds at least one facing, one deep and one stacked: a product "
+"that is not on the shelf is taken off the shelf, not set to zero."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/product_template.py:0
+msgid "A product is measured for the shelf or it is not."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/shelf.py:0
+msgid "A shelf"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/shelf.py:0
+msgid "A shelf at %(shelf)s cm does not fit in a fixture %(fixture)s cm high."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/shelf.py:0
+msgid "A shelf does not hang below the floor."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/shelf.py:0
+msgid ""
+"A shelf has a usable width and a usable depth, in centimetres, and both are "
+"positive."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid ""
+"A shelf holds more width than it has. The drawing shows it, and the capacity"
+" below counts what was asked for, not what fits."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/shelf.py:0
+msgid "A shelf is tilted between 0 and %s degrees."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.report_planogram
+msgid "A shelf is wider than the fixture, and drawn whole."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid ""
+"A shelf of this fixture is wider than the fixture itself. It is drawn whole "
+"and counted as typed, but in centimetres a usable width wider than the "
+"fixture is usually a measurement typed in millimetres, and it multiplies the"
+" linear shelf below."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__wide_shelf
+msgid "A shelf wider than the fixture"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid "A version is already frozen."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid ""
+"A version is frozen from the fixture itself, never from another version."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_position__unit_width
+#: model:ir.model.fields,help:bf_planogram.field_product_product__bf_planogram_unit_width
+#: model:ir.model.fields,help:bf_planogram.field_product_template__bf_planogram_unit_width
+msgid ""
+"Across the facing, as the product stands on the shelf. This is the one the "
+"space taken is read from."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/rendering.py:0
+msgid ""
+"Add a shelf, then put a product on it: the drawing follows the records."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__aisle
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+msgid "Aisle"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid "Aisle 3"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid "Aisle 3, left side"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+msgid "Archived"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__wide_shelf
+msgid ""
+"At least one shelf carries a usable width wider than the fixture itself, "
+"which in centimetres is usually a measurement typed in millimetres. It is "
+"counted and drawn whole, never refused."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__overflow
+msgid "At least one shelf holds more width than it has."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.xml:0
+msgid "Bigger"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.report_planogram
+msgid ""
+"Blue frame: the width is read from the product. Amber hatch: the product "
+"carries no width, so the box is drawn at a nominal width and counts for "
+"nothing in the numbers above. Amber frame without hatch: taller than the gap"
+" to the shelf above. Red: past the end of the shelf."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.report_planogram
+msgid "Capacity"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__capacity
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__capacity
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__capacity
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_list
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_list
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_shelf_view_form
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_shelf_view_list
+msgid "Capacity (units)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_product_product__bf_planogram_case_depth
+#: model:ir.model.fields,field_description:bf_planogram.field_product_template__bf_planogram_case_depth
+msgid "Case depth (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_product_product__bf_planogram_case_height
+#: model:ir.model.fields,field_description:bf_planogram.field_product_template__bf_planogram_case_height
+msgid "Case height (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_product_product__bf_planogram_case_width
+#: model:ir.model.fields,field_description:bf_planogram.field_product_template__bf_planogram_case_width
+msgid "Case width (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields.selection,name:bf_planogram.selection__bf_planogram_fixture__kind__checkout
+msgid "Checkout display"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__company_id
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__company_id
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__company_id
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+msgid "Company"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields.selection,name:bf_planogram.selection__bf_planogram_fixture__kind__cooler
+msgid "Cooler"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields.selection,name:bf_planogram.selection__bf_planogram_fixture__kind__counter
+msgid "Counter"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__create_uid
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__create_uid
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__create_date
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__create_date
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__deep
+#: model_terms:ir.ui.view,arch_db:bf_planogram.report_planogram
+msgid "Deep"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__depth
+msgid "Depth (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__display_name
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__display_name
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.actions.act_window,help:bf_planogram.bf_planogram_fixture_action
+msgid "Draw a first fixture"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid "Elevation"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields.selection,name:bf_planogram.selection__bf_planogram_fixture__kind__endcap
+msgid "End cap"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__aisle
+msgid "Ex.: « Aisle 3 », « Back wall », « Front till »."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_shelf_view_form
+msgid "Eye level"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__facings
+#: model_terms:ir.ui.view,arch_db:bf_planogram.report_planogram
+msgid "Facings"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__capacity
+msgid "Facings times deep times stacked, over every position of the fixture."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__fill_pct
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__fill_pct
+msgid "Filled (%)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__name
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__fixture_id
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__fixture_id
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_search
+msgid "Fixture"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.actions.act_window,name:bf_planogram.bf_planogram_fixture_action
+#: model:ir.ui.menu,name:bf_planogram.menu_bf_planogram_fixtures
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_list
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+msgid "Fixtures"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid "Freeze a version"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields.selection,name:bf_planogram.selection__bf_planogram_fixture__kind__freezer
+msgid "Freezer"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__locked
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid "Frozen"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__frozen_by_id
+msgid "Frozen by"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__frozen_on
+msgid "Frozen on"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__fixture_locked
+msgid "Frozen version"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+msgid "Frozen versions"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid "G12"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields.selection,name:bf_planogram.selection__bf_planogram_fixture__kind__gondola
+msgid "Gondola"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__height
+msgid "Height (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__height_from_floor
+msgid "Height from floor (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__frozen_unit_height
+msgid "Height when frozen (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.xml:0
+msgid "Hide the names"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_position__stacked
+msgid "How many are piled on top of each other."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_position__deep
+msgid "How many stand behind each facing."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__id
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__id
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__kind
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+msgid "Kind"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__write_uid
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__write_uid
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__write_date
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__write_date
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__free_width
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__free_width
+msgid "Left (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_position__sequence
+msgid "Left to right along the shelf."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__linear_width
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_list
+msgid "Linear shelf (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+msgid "Live"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__max_load
+msgid "Load allowed (kg)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__measured
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_search
+msgid "Measured"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_product_product__bf_planogram_measured
+#: model:ir.model.fields,field_description:bf_planogram.field_product_template__bf_planogram_measured
+msgid "Measured for the shelf"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.product_template_search_view_bf_planogram
+msgid "Not measured for the shelf"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__notes
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid "Notes"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/product_template.py:0
+#: model:ir.model.fields,field_description:bf_planogram.field_product_product__bf_planogram_position_count
+#: model:ir.model.fields,field_description:bf_planogram.field_product_template__bf_planogram_position_count
+#: model_terms:ir.ui.view,arch_db:bf_planogram.product_template_only_form_view_bf_planogram
+msgid "On the shelf"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__sequence
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__sequence
+msgid "Order"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields.selection,name:bf_planogram.selection__bf_planogram_fixture__kind__other
+msgid "Other"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__overflow
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__overflow
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+msgid "Overflowing"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.actions.report,name:bf_planogram.action_report_planogram
+msgid "Planogram"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model,name:bf_planogram.model_bf_planogram_fixture
+msgid "Planogram fixture"
+msgstr ""
+
+#. module: bf_planogram
+#: model:res.groups,name:bf_planogram.group_planogram_manager
+msgid "Planogram manager"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model,name:bf_planogram.model_bf_planogram_position
+msgid "Planogram position"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model,name:bf_planogram.model_bf_planogram_shelf
+msgid "Planogram shelf"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.module.category,name:bf_planogram.module_category_planogram
+#: model:ir.ui.menu,name:bf_planogram.menu_bf_planogram_root
+msgid "Planograms"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_form
+msgid "Position"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+#: model:ir.actions.act_window,name:bf_planogram.bf_planogram_position_action
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__position_count
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__position_count
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__position_ids
+#: model:ir.ui.menu,name:bf_planogram.menu_bf_planogram_positions
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_list
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_search
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_shelf_view_form
+msgid "Positions"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__unmeasured_count
+msgid ""
+"Positions whose product has no width: they take zero on the drawing, which "
+"is why they are counted here instead of being quietly treated as fitting."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model,name:bf_planogram.model_product_template
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__product_id
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_search
+#: model_terms:ir.ui.view,arch_db:bf_planogram.report_planogram
+msgid "Product"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model,name:bf_planogram.model_product_product
+msgid "Product Variant"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__frozen_product_name
+msgid "Product when frozen"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__product_count
+msgid "Products"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid ""
+"Publish the planogram as it stands: a frozen copy a compliance round can be "
+"counted against."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_form
+msgid "Read from the product"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__code
+msgid "Reference"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__frozen_product_code
+msgid "Reference when frozen"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.js:0
+msgid "Save first, the drawing follows."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.product_template_only_form_view_bf_planogram
+msgid "See the positions"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__shelf_id
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__name
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_search
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_shelf_view_form
+#: model_terms:ir.ui.view,arch_db:bf_planogram.product_template_only_form_view_bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.report_planogram
+msgid "Shelf"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_product_product__bf_planogram_position_ids
+msgid "Shelf positions"
+msgstr ""
+
+#. module: bf_planogram
+#: model:res.groups,name:bf_planogram.group_planogram_user
+msgid "Shelf reader"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.actions.act_window,name:bf_planogram.bf_planogram_shelf_action
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__shelf_count
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__shelf_ids
+#: model:ir.ui.menu,name:bf_planogram.menu_bf_planogram_shelves
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_shelf_view_list
+msgid "Shelves"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.xml:0
+msgid "Show the names"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.xml:0
+msgid "Smaller"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__stacked
+#: model_terms:ir.ui.view,arch_db:bf_planogram.report_planogram
+msgid "Stacked"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__used_width
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__used_width
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__used_width
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_list
+#: model_terms:ir.ui.view,arch_db:bf_planogram.report_planogram
+msgid "Taken (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.constraint,message:bf_planogram.constraint_bf_planogram_fixture_version_number_unique
+msgid ""
+"That version number is already taken on this fixture: a round counted "
+"against « version 2 » must have one version 2 to read."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.product_template_only_form_view_bf_planogram
+msgid "The case (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid "The fixture itself"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_shelf_view_form
+msgid "The positions on this shelf ask for more width than the shelf has."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_position__measured
+msgid ""
+"The product carries a width, so the space it takes is read and not guessed."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.product_template_only_form_view_bf_planogram
+msgid "The selling unit (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_shelf_view_form
+msgid "The shelf"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__company_id
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_position__company_id
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_shelf__company_id
+msgid ""
+"The store. A cost series, a price and a planogram all belong to one store."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__linear_width
+msgid ""
+"The usable width of every shelf added up. This is the denominator of a space"
+" to sales ratio, and the reason a shelf has a usable width of its own."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_shelf__wider_than_fixture
+msgid ""
+"The usable width typed here is wider than the fixture itself. In centimetres"
+" that is usually a measurement typed in millimetres."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_form
+msgid ""
+"This product carries no width, so this position takes zero centimetre on the"
+" shelf. Type its dimensions on the product."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_shelf_view_form
+msgid ""
+"This shelf is wider than the fixture it belongs to. It is drawn whole and "
+"counted as typed, nothing is refused, but in centimetres this is usually a "
+"width typed in millimetres: 1220 for 122 cm multiplies the linear shelf of "
+"the fixture by ten."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__tilt
+msgid "Tilt (°)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__unit_depth
+#: model:ir.model.fields,field_description:bf_planogram.field_product_product__bf_planogram_unit_depth
+#: model:ir.model.fields,field_description:bf_planogram.field_product_template__bf_planogram_unit_depth
+msgid "Unit depth (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__unit_height
+#: model:ir.model.fields,field_description:bf_planogram.field_product_product__bf_planogram_unit_height
+#: model:ir.model.fields,field_description:bf_planogram.field_product_template__bf_planogram_unit_height
+msgid "Unit height (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__unit_width
+#: model:ir.model.fields,field_description:bf_planogram.field_product_product__bf_planogram_unit_width
+#: model:ir.model.fields,field_description:bf_planogram.field_product_template__bf_planogram_unit_width
+msgid "Unit width (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__usable_depth
+msgid "Usable depth (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__usable_width
+msgid "Usable width (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__version
+msgid "Version"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+#: code:addons/bf_planogram/tests/test_planogram.py:0
+msgid ""
+"Version %(no)s frozen: %(shelves)s shelf/shelves, %(positions)s position(s),"
+" %(capacity)s unit(s) of capacity."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid "Version %(no)s, frozen %(date)s"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__origin_id
+msgid "Version of"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__version_count
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__version_ids
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid "Versions"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields.selection,name:bf_planogram.selection__bf_planogram_fixture__kind__wall
+msgid "Wall run"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_shelf_view_form
+msgid "What it holds"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_shelf__name
+msgid ""
+"What the aisle calls it, if it calls it anything. Ex.: « Eye level », « "
+"Bottom », « Over the cooler »."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_position__facings
+msgid "What the aisle sees, side by side."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_shelf__max_load
+msgid ""
+"What the shelf is rated for. Nothing is refused on it: it is printed on the "
+"plan for whoever stocks it."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,help:bf_planogram.field_bf_planogram_fixture__code
+msgid "What the shelf tag or the store map calls it. Ex.: G12."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid "What this fixture is for, and what was decided about it."
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_form
+msgid "What, and how much of it"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_form
+msgid "Where"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__wider_than_fixture
+msgid "Wider than the fixture"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__width
+msgid "Width (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_position__frozen_unit_width
+msgid "Width when frozen (cm)"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.product_template_only_form_view_bf_planogram
+msgid ""
+"Without a width for the selling unit, this product takes zero centimetre on "
+"every shelf it sits on, and the space left on those shelves reads as more "
+"than it is."
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_fixture__unmeasured_count
+#: model:ir.model.fields,field_description:bf_planogram.field_bf_planogram_shelf__unmeasured_count
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_search
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_position_view_search
+msgid "Without dimensions"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.xml:0
+msgid "a shelf is wider than the fixture, and drawn whole"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.xml:0
+msgid "measured"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.xml:0
+msgid "no width on the product, drawn at a nominal width"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.js:0
+msgid "no width on the product: drawn at a nominal width"
+msgstr ""
+
+#. module: bf_planogram
+#: model:ir.actions.report,print_report_name:bf_planogram.action_report_planogram
+msgid "object.display_name"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.js:0
+#: code:addons/bf_planogram/static/src/elevation/elevation.xml:0
+msgid "past the end of the shelf"
+msgstr ""
+
+#. module: bf_planogram
+#: model_terms:ir.ui.view,arch_db:bf_planogram.bf_planogram_fixture_view_form
+msgid ""
+"position(s) sit on a product with no width: they take zero on the drawing. "
+"Type the six dimensions on the product and the space taken answers by "
+"itself."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_planogram.report_planogram
+msgid "position(s) without dimensions"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.js:0
+msgid "taller than the gap above it"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-javascript
+#: code:addons/bf_planogram/static/src/elevation/elevation.xml:0
+msgid "taller than the gap to the shelf above"
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid ""
+"« %s » holds no position: a version frozen empty would let a compliance "
+"round pass without counting anything."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid ""
+"« %s » is a frozen version: freeze a new version instead of changing this "
+"one."
+msgstr ""
+
+#. module: bf_planogram
+#. odoo-python
+#: code:addons/bf_planogram/models/fixture.py:0
+msgid ""
+"« Without dimensions » counts positions: compare it to a number, with =, !=,"
+" <, <=, > or >=."
+msgstr ""

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_planogram_shelf_view_list" model="ir.ui.view">
+        <field name="name">bf.planogram.shelf.list</field>
+        <field name="model">bf.planogram.shelf</field>
+        <field name="arch" type="xml">
+            <list string="Shelves" decoration-warning="overflow or wider_than_fixture">
+                <field name="fixture_id"/>
+                <field name="height_from_floor"/>
+                <field name="name" optional="show"/>
+                <field name="usable_width"/>
+                <field name="usable_depth" optional="hide"/>
+                <field name="position_count"/>
+                <field name="used_width"/>
+                <field name="free_width"/>
+                <field name="fill_pct"/>
+                <field name="capacity" sum="Capacity (units)"/>
+                <field name="unmeasured_count" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="overflow" column_invisible="1"/>
+                <field name="wider_than_fixture" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_planogram_shelf_view_form" model="ir.ui.view">
+        <field name="name">bf.planogram.shelf.form</field>
+        <field name="model">bf.planogram.shelf</field>
+        <field name="arch" type="xml">
+            <form string="Shelf">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="fixture_id"/>
+                        <h1><field name="fixture_id" options="{'no_create': True}"/></h1>
+                    </div>
+                    <group>
+                        <group string="The shelf">
+                            <field name="name" placeholder="Eye level"/>
+                            <field name="height_from_floor"/>
+                            <field name="usable_width"/>
+                            <field name="usable_depth"/>
+                            <field name="tilt"/>
+                            <field name="max_load"/>
+                        </group>
+                        <group string="What it holds">
+                            <field name="position_count"/>
+                            <field name="capacity"/>
+                            <field name="used_width"/>
+                            <field name="free_width"/>
+                            <field name="fill_pct"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   invisible="1"/>
+                            <field name="overflow" invisible="1"/>
+                            <field name="wider_than_fixture" invisible="1"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="not overflow">
+                        The positions on this shelf ask for more width than the shelf has.
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not wider_than_fixture">
+                        This shelf is wider than the fixture it belongs to. It is drawn whole and counted as typed, nothing is refused, but in centimetres this is usually a width typed in millimetres: 1220 for 122 cm multiplies the linear shelf of the fixture by ten.
+                    </div>
+                    <field name="position_ids">
+                        <list string="Positions" editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id" options="{'no_create': True}"/>
+                            <field name="facings"/>
+                            <field name="deep"/>
+                            <field name="stacked"/>
+                            <!-- 🔴 la liste encastree ICI montrait
+                                 `unit_width`, un *related* VIVANT de la fiche produit, a
+                                 cote d'un `used_width` calcule sur la copie du gel. Le
+                                 correctif du n'avait tenu que sur les deux vues de
+                                 position. -->
+                            <field name="fixture_locked" column_invisible="1"/>
+                            <field name="unit_width" readonly="1"
+                                   invisible="fixture_locked"/>
+                            <field name="frozen_unit_width" readonly="1"
+                                   invisible="not fixture_locked"/>
+                            <field name="used_width" readonly="1"/>
+                            <field name="capacity" readonly="1" sum="Capacity (units)"/>
+                            <field name="measured" optional="show" readonly="1"
+                                   widget="boolean_toggle"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_planogram_shelf_action" model="ir.actions.act_window">
+        <field name="name">Shelves</field>
+        <field name="res_model">bf.planogram.shelf</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
