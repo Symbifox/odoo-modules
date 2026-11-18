@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**314 modules are BUSL-1.1.** The source is published and auditable, and **you
+**319 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -105,8 +105,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_appointment_visit_property` | Visites de propriétés — pont Immeubles | 18.0.1.0.0 | LGPL-3 | Show a dwelling from your portfolio without retyping its address: address, occupant and the 24-hour notice for a rented unit come from the Immeubles socle |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.2.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons; on a phone, Odoo's own drawer gets the same search field |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.2.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
-| `bf_avatar` | Symbifox Avatars | 18.0.1.0.1 | BUSL-1.1 | An avatar in your house style for anyone without a photo, and a builder to make your own |
+| `bf_avatar` | Symbifox Avatars | 18.0.1.1.0 | BUSL-1.1 | An avatar in your house style for anyone without a photo, and a builder to make your own |
 | `bf_avatar_gamification` | Symbifox Avatars pour Fox Quest | 18.0.1.0.1 | BUSL-1.1 | Unlock avatar parts with the XP earned in Fox Quest |
+| `bf_avatar_school` | Symbifox Avatars at School | 18.0.1.0.0 | BUSL-1.1 | A minor student's avatar, without a beard or a bald head |
 | `bf_babillard` | Babillard | 18.0.1.8.0 | BUSL-1.1 | Announcements with an audience, an expiry date and named read receipts, with a confidential reporting path |
 | `bf_babillard_appointment_poll` | Babillard : sondage de disponibilités | 18.0.1.0.1 | BUSL-1.1 | An editor announces on the feed that a date poll is looking for answers |
 | `bf_babillard_celebrations` | Babillard : célébrations | 18.0.1.1.0 | BUSL-1.1 | A delivered group greeting card appears on the noticeboard |
@@ -134,7 +135,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget_purchase` | Budgets opérationnels — bons de commande | 18.0.1.1.0 | BUSL-1.1 | Confirmed purchase orders count as committed until a posted bill carries them, and their planned dates feed the calendar |
 | `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.4.0 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.2 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
-| `bf_calculator` | BF Calculatrice | 18.0.1.3.0 | LGPL-3 | Top-bar calculator: history, labels in the math, reverse tax, hours, dates, Bank of Canada rates, post to chatter |
+| `bf_calculator` | BF Calculatrice | 18.0.1.3.1 | LGPL-3 | Top-bar calculator: history, labels in the math, reverse tax, hours, dates, Bank of Canada rates, post to chatter |
 | `bf_calendar_address` | BF Calendar — the address comes from the address book | 18.0.1.0.0 | LGPL-3 | A meeting with a customer gets the customer's address as its place, taken from the address book, on one line a phone can turn into directions. Suggested, never imposed: the picker lists the addresses already on file, and a place typed or picked by hand is never overwritten. |
 | `bf_calendar_block` | BF Calendar Work Blocks | 18.0.1.1.0 | LGPL-3 | Book typed blocks of time (focus, production, meeting slot, catch-up), each with its own pictogram and colour in the calendar, and carried to other calendars as a category. |
 | `bf_calendar_block_appointment` | BF Calendar Work Blocks - Online Booking | 18.0.1.0.1 | LGPL-3 | Meeting slots booked in your calendar open online booking times, on top of your working hours. |
@@ -340,6 +341,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_persona` | Persona des contacts | 18.0.3.3.0 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
 | `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.1.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
 | `bf_persona_privacy` | Persona des contacts — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Privacy bridge for contact personas: relationship-profile and payer-rating purpose in the register, retention from the end of the relationship, verified destruction recorded in the register, classifiable personas |
+| `bf_planogram` | Planograms | 18.0.1.0.2 | BUSL-1.1 | The shelf drawn from the records: fixtures, shelves, facings, capacity, and a version frozen for the round that counts it |
+| `bf_planogram_floorplan` | Planograms on the floor plan | 18.0.1.0.0 | BUSL-1.1 | Where the fixture stands, on the plan of the store, and what the plan says about what is on it |
 | `bf_policy` | Symbifox — Blue Fox OS Policy | 18.0.2.13.0 | BUSL-1.1 | Manage Blue Fox OS workstations from Odoo: install, sign-in, disk encryption, apps and browser policy served to each machine, with machine enrolment and disk-passphrase escrow |
 | `bf_policy_live` | Symbifox — Blue Fox OS Policy, Live USB Key | 18.0.1.3.0 | BUSL-1.1 | Key escrow and one-time Odoo sign-in for the Blue Fox OS live USB key |
 | `bf_preferred_name` | Symbifox Noms d'usage et pronoms | 18.0.1.1.1 | BUSL-1.1 | The preferred name everywhere, the legal name kept apart and protected, and the pronouns the person chose |
@@ -394,6 +397,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_rental_portal` | Locatif : portail du locataire | 18.0.1.9.1 | BUSL-1.1 | Tenant portal: their lease, their notices and due dates, what they have paid |
 | `bf_rental_privacy` | Locatif : pont vie privée (Loi 25) | 18.0.1.2.0 | BUSL-1.1 | Record in the Law 25 register what a termination notice says about the tenant |
 | `bf_rental_rent` | Locatif : loyer et arrérages | 18.0.1.4.1 | BUSL-1.1 | Rent instalments, what remains due, and what the module refuses to conclude from it |
+| `bf_retail` | Retail prices | 18.0.1.0.0 | BUSL-1.1 | The cost of what a store buys, kept as a series, and the shelf price that follows it |
+| `bf_retail_supply` | Retail suppliers and orders | 18.0.1.0.0 | BUSL-1.1 | The days a supplier delivers, the order guide that fills itself, the price file of the wholesaler, and what keeps coming back |
 | `bf_route` | Symbifox Work Routes | 18.0.1.4.0 | BUSL-1.1 | Recurring routes for people on the road: stops in order, proof at each stop, mileage, alerts, and a phone screen for the worker |
 | `bf_route_expense` | Symbifox Work Routes: Mileage Expenses | 18.0.1.0.0 | BUSL-1.1 | The kilometres of a route day driven with the worker's own car become a draft expense at the per-km rate |
 | `bf_route_privacy` | Work Routes: Privacy Bridge (Quebec Law 25) | 18.0.1.1.0 | BUSL-1.1 | Declares the position read at a stop, its retention rule and the two uses made of it, and writes every erasure by bf_route's watcher to the register |
@@ -555,7 +560,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **314 modules: BUSL-1.1.** Production use for your own internal business
+- **319 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
