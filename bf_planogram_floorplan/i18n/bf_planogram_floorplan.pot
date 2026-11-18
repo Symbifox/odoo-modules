@@ -1,0 +1,122 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_planogram_floorplan
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-14 11:01+0000\n"
+"PO-Revision-Date: 2026-11-14 11:01+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid ""
+"%(shelves)s shelf/shelves, %(positions)s position(s), %(capacity)s unit(s)"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid "%s position(s) without dimensions"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid "%s version(s) frozen"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+#: model:ir.model.fields,field_description:bf_planogram_floorplan.field_bf_floorplan_element__planogram_fixture_count
+#: model:ir.model.fields,field_description:bf_planogram_floorplan.field_bf_floorplan_element__planogram_fixture_ids
+msgid "Fixtures"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#: model:ir.model.fields,field_description:bf_planogram_floorplan.field_bf_planogram_fixture__floorplan_id
+#: model_terms:ir.ui.view,arch_db:bf_planogram_floorplan.bf_planogram_fixture_view_search_floorplan
+msgid "Floor plan"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#: model:ir.model.fields,field_description:bf_planogram_floorplan.field_bf_planogram_fixture__floorplan_element_id
+#: model_terms:ir.ui.view,arch_db:bf_planogram_floorplan.bf_planogram_fixture_view_form_floorplan
+msgid "On the plan"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#: model_terms:ir.ui.view,arch_db:bf_planogram_floorplan.bf_floorplan_element_view_form_planogram
+msgid "Planogram"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#: model:ir.model,name:bf_planogram_floorplan.model_bf_planogram_fixture
+msgid "Planogram fixture"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#: model_terms:ir.ui.view,arch_db:bf_planogram_floorplan.bf_floorplan_element_view_form_planogram
+msgid "See the elevation"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#: model:ir.model.fields,help:bf_planogram_floorplan.field_bf_planogram_fixture__floorplan_element_id
+msgid ""
+"The shape of the store plan this fixture stands on. A shape can carry "
+"several fixtures (a wall run split in sections); a fixture stands in one "
+"place."
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid "a shelf holds more than it has"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid "nothing on the shelves yet"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/fixture.py:0
+msgid ""
+"« %(fixture)s » belongs to %(store)s and the plan « %(plan)s » to %(other)s:"
+" a fixture stands on the plan of its own store."
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/fixture.py:0
+msgid "« %s » does not stand on any plan yet."
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#: model:ir.model,name:bf_planogram_floorplan.model_bf_floorplan_element
+msgid "Élément d'un plan d'étage"
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid ""
+"Nothing on « %s » that you may open: the fixtures standing here belong to the "
+"planogram, which your rights do not open."
+msgstr ""
+
+#. module: bf_planogram_floorplan
+#: model:ir.model.fields,field_description:bf_planogram_floorplan.field_bf_floorplan_element__planogram_resume
+msgid "Planogram summary"
+msgstr ""

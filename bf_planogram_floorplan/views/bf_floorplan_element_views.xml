@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_floorplan_element_view_form_planogram" model="ir.ui.view">
+        <field name="name">bf.floorplan.element.form.planogram</field>
+        <field name="model">bf.floorplan.element</field>
+        <field name="inherit_id" ref="bf_floorplan.bf_floorplan_element_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Planogram"
+                       invisible="not planogram_fixture_count"
+                       groups="bf_planogram.group_planogram_user">
+                    <field name="planogram_fixture_count"/>
+                    <button name="action_open_planogram" type="object" class="btn-link"
+                            string="See the elevation" icon="fa-arrow-right"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

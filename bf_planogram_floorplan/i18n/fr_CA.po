@@ -1,0 +1,123 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_planogram_floorplan
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid ""
+"%(shelves)s shelf/shelves, %(positions)s position(s), %(capacity)s unit(s)"
+msgstr "%(shelves)s tablette(s), %(positions)s position(s), %(capacity)s unité(s)"
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid "%s position(s) without dimensions"
+msgstr "%s position(s) sans dimensions"
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid "%s version(s) frozen"
+msgstr "%s version(s) gelée(s)"
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+#: model:ir.model.fields,field_description:bf_planogram_floorplan.field_bf_floorplan_element__planogram_fixture_count
+#: model:ir.model.fields,field_description:bf_planogram_floorplan.field_bf_floorplan_element__planogram_fixture_ids
+msgid "Fixtures"
+msgstr "Meubles"
+
+#. module: bf_planogram_floorplan
+#: model:ir.model.fields,field_description:bf_planogram_floorplan.field_bf_planogram_fixture__floorplan_id
+#: model_terms:ir.ui.view,arch_db:bf_planogram_floorplan.bf_planogram_fixture_view_search_floorplan
+msgid "Floor plan"
+msgstr "Plan d'étage"
+
+#. module: bf_planogram_floorplan
+#: model:ir.model.fields,field_description:bf_planogram_floorplan.field_bf_planogram_fixture__floorplan_element_id
+#: model_terms:ir.ui.view,arch_db:bf_planogram_floorplan.bf_planogram_fixture_view_form_floorplan
+msgid "On the plan"
+msgstr "Sur le plan"
+
+#. module: bf_planogram_floorplan
+#: model_terms:ir.ui.view,arch_db:bf_planogram_floorplan.bf_floorplan_element_view_form_planogram
+msgid "Planogram"
+msgstr "Planogramme"
+
+#. module: bf_planogram_floorplan
+#: model:ir.model,name:bf_planogram_floorplan.model_bf_planogram_fixture
+msgid "Planogram fixture"
+msgstr "Meuble de planogramme"
+
+#. module: bf_planogram_floorplan
+#: model_terms:ir.ui.view,arch_db:bf_planogram_floorplan.bf_floorplan_element_view_form_planogram
+msgid "See the elevation"
+msgstr "Voir l'élévation"
+
+#. module: bf_planogram_floorplan
+#: model:ir.model.fields,help:bf_planogram_floorplan.field_bf_planogram_fixture__floorplan_element_id
+msgid ""
+"The shape of the store plan this fixture stands on. A shape can carry "
+"several fixtures (a wall run split in sections); a fixture stands in one "
+"place."
+msgstr "La forme du plan du magasin sur laquelle ce meuble est posé. Une forme peut porter plusieurs meubles (un mur de rayonnage découpé en sections) ; un meuble est posé à un seul endroit."
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid "a shelf holds more than it has"
+msgstr "une tablette porte plus qu'elle n'en a"
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid "nothing on the shelves yet"
+msgstr "rien en tablette pour l'instant"
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/fixture.py:0
+msgid ""
+"« %(fixture)s » belongs to %(store)s and the plan « %(plan)s » to %(other)s:"
+" a fixture stands on the plan of its own store."
+msgstr "« %(fixture)s » appartient à %(store)s et le plan « %(plan)s » à %(other)s : un meuble est posé sur le plan de son propre commerce."
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/fixture.py:0
+msgid "« %s » does not stand on any plan yet."
+msgstr "« %s » n'est encore posé sur aucun plan."
+
+#. module: bf_planogram_floorplan
+#: model:ir.model,name:bf_planogram_floorplan.model_bf_floorplan_element
+msgid "Élément d'un plan d'étage"
+msgstr "Élément d'un plan d'étage"
+
+#. module: bf_planogram_floorplan
+#. odoo-python
+#: code:addons/bf_planogram_floorplan/models/element.py:0
+msgid ""
+"Nothing on « %s » that you may open: the fixtures standing here belong to the "
+"planogram, which your rights do not open."
+msgstr ""
+"Rien sur « %s » que vous puissiez ouvrir : les meubles posés ici relèvent du "
+"planogramme, que vos droits n'ouvrent pas."
+
+#. module: bf_planogram_floorplan
+#: model:ir.model.fields,field_description:bf_planogram_floorplan.field_bf_floorplan_element__planogram_resume
+msgid "Planogram summary"
+msgstr "Résumé du planogramme"

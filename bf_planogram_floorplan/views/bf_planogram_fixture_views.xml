@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_planogram_fixture_view_form_floorplan" model="ir.ui.view">
+        <field name="name">bf.planogram.fixture.form.floorplan</field>
+        <field name="model">bf.planogram.fixture</field>
+        <field name="inherit_id" ref="bf_planogram.bf_planogram_fixture_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='where']" position="inside">
+                <field name="floorplan_element_id"
+                       domain="[('plan_id.company_id', 'in', [company_id, False])]"
+                       options="{'no_create': True}"/>
+                <field name="floorplan_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <!-- The label travels in `string`, not in a span inside a div: Odoo
+                     extracts the CONTENT of an element that holds markup, so the nested
+                     version gave a translatable term carrying its own <span> tag. -->
+                <button name="action_open_floorplan" type="object" class="oe_stat_button"
+                        icon="fa-map-o" string="On the plan"
+                        invisible="not floorplan_element_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_planogram_fixture_view_list_floorplan" model="ir.ui.view">
+        <field name="name">bf.planogram.fixture.list.floorplan</field>
+        <field name="model">bf.planogram.fixture</field>
+        <field name="inherit_id" ref="bf_planogram.bf_planogram_fixture_view_list"/>
+        <field name="arch" type="xml">
+            <field name="kind" position="after">
+                <field name="floorplan_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="bf_planogram_fixture_view_search_floorplan" model="ir.ui.view">
+        <field name="name">bf.planogram.fixture.search.floorplan</field>
+        <field name="model">bf.planogram.fixture</field>
+        <field name="inherit_id" ref="bf_planogram.bf_planogram_fixture_view_search"/>
+        <field name="arch" type="xml">
+            <field name="aisle" position="after">
+                <field name="floorplan_id"/>
+            </field>
+            <filter name="group_kind" position="after">
+                <filter name="group_floorplan" string="Floor plan"
+                        context="{'group_by': 'floorplan_id'}"/>
+            </filter>
+        </field>
+    </record>
+</odoo>
