@@ -71,3 +71,67 @@ class TestRender(BaseCase):
         self.assertFalse(render.is_generated_svg(b"\x89PNG\r\n\x1a\n...."))
         # An upload that merely contains Odoo's header is not Odoo's avatar.
         self.assertFalse(render.is_generated_svg(odoo_svg.replace("</svg>", "<circle r='4'/></svg>")))
+
+
+class TestExclusions(BaseCase):
+    """L'interdiction ferme : ni tirée, ni gardée, ni offerte."""
+
+    INTERDIT = {"facialHair": None, "head": {"noHair1", "noHair2", "noHair3"}}
+
+    def test_sans_exclusions_rien_ne_bouge(self):
+        for style in render.CHARACTER_STYLES:
+            for i in range(60):
+                graine = "témoin %d" % i
+                self.assertEqual(render.seed_config(style, graine),
+                                 render.seed_config(style, graine, None))
+                self.assertEqual(render.seed_config(style, graine),
+                                 render.seed_config(style, graine, {}))
+
+    def test_une_piece_interdite_n_est_jamais_tiree(self):
+        for i in range(300):
+            config = render.seed_config("open_peeps", "élève %d" % i, self.INTERDIT)
+            self.assertIsNone(config["facialHair"])
+            self.assertNotIn(config["head"], self.INTERDIT["head"])
+
+    def test_interdire_une_piece_ne_decale_pas_la_suite_du_tirage(self):
+        """🔴 Le lancer d'un emplacement interdit est quand même consommé.
+
+        Sans cela, chaque tirage suivant glisse : interdire la barbe changerait
+        la coiffure, le visage et les couleurs. Une personne protégée doit
+        garder SON avatar, moins la pièce interdite.
+        """
+        for i in range(200):
+            graine = "élève %d" % i
+            libre = render.seed_config("open_peeps", graine)
+            borne = render.seed_config("open_peeps", graine, self.INTERDIT)
+            differents = {k for k in libre if libre[k] != borne[k]}
+            self.assertLessEqual(
+                differents, {"facialHair", "head"},
+                "le tirage a glissé sur %s (graine %s)" % (sorted(differents), graine))
+
+    def test_une_piece_interdite_deja_composee_est_refusee(self):
+        config = render.clean_config(
+            "open_peeps", {"head": "noHair2", "facialHair": "full3"}, "x", self.INTERDIT)
+        self.assertIsNone(config["facialHair"])
+        self.assertNotIn(config["head"], self.INTERDIT["head"])
+        # Sans l'interdiction, la même composition passe telle quelle.
+        libre = render.clean_config("open_peeps", {"head": "noHair2", "facialHair": "full3"}, "x")
+        self.assertEqual(libre["head"], "noHair2")
+        self.assertEqual(libre["facialHair"], "full3")
+
+    def test_allowed_est_une_interdiction_plus_ferme_que_seed_exclude(self):
+        # SEED_EXCLUDE garde le chapeau hors du tirage, mais le compositeur l'offre.
+        self.assertIn("hatBeanie", render.allowed("open_peeps", "head"))
+        self.assertNotIn("hatBeanie", render.seedable("open_peeps", "head"))
+        # Une pièce interdite sort des deux.
+        banni = {"head": {"hatBeanie"}}
+        self.assertNotIn("hatBeanie", render.allowed("open_peeps", "head", banni))
+        self.assertNotIn("hatBeanie", render.seedable("open_peeps", "head", banni))
+        # None interdit l'emplacement entier.
+        self.assertEqual(render.allowed("open_peeps", "facialHair", {"facialHair": None}), [])
+
+    def test_un_avatar_borne_se_dessine_quand_meme(self):
+        svg = render.render_character(
+            "open_peeps", render.clean_config("open_peeps", None, "élève", self.INTERDIT))
+        self.assertIn(render.MARKER, svg)
+        self.assertNotIn("@@", svg)

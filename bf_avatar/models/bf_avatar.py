@@ -101,6 +101,22 @@ class BfAvatar(models.AbstractModel):
     # --- Rendering -------------------------------------------------------------
 
     @api.model
+    def _seed_exclusions(self, record, style):
+        """{slot: {variants}} this person may never be handed NOR pick.
+
+        None as a value bars the whole slot. A bridge overrides this to keep a
+        part away from someone: `bf_avatar_school` bars beards and bald heads
+        from a student under 18.
+        """
+        return {}
+
+    @api.model
+    def _clean_for(self, record, style, config, seed=None):
+        """The config of `record`, with the parts this person may not have taken out."""
+        seed = self._seed_of(record) if seed is None else seed
+        return render.clean_config(style, config, seed, self._seed_exclusions(record, style))
+
+    @api.model
     def _render_for(self, record, style=None, config=None):
         style = style or self._style()
         seed = self._seed_of(record)
@@ -112,7 +128,7 @@ class BfAvatar(models.AbstractModel):
             if config and config.get("style") != style:
                 config = None
         colour = render.pick_colour(render.character_palette(self._base_colours()), seed)
-        return render.render_character(style, render.clean_config(style, config, seed), colour)
+        return render.render_character(style, self._clean_for(record, style, config, seed), colour)
 
     @api.model
     def _render_b64(self, record, **kwargs):
@@ -192,9 +208,14 @@ class BfAvatar(models.AbstractModel):
     def _slot_payload(self, person, style):
         data = render.load_style(style)
         locked = self._locked_parts(person, style)
+        exclusions = self._seed_exclusions(person, style)
         slots = []
         for slot in render.slot_order(style):
-            variants = list(data["slots"][slot])
+            # A part barred for this person is not offered at all: a composer that
+            # shows it would let somebody pick what the save then takes back.
+            variants = render.allowed(style, slot, exclusions)
+            if not variants and slot in data["probabilities"]:
+                continue
             if len(variants) < 2 and slot not in data["probabilities"]:
                 continue
             slots.append({

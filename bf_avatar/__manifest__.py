@@ -4,7 +4,14 @@
     # 18.0.1.0.1: first public release. Anyone without a picture gets an
     #   avatar drawn in the house style, and a person can compose their own
     #   character. Uploaded pictures are never replaced.
-    "version": "18.0.1.0.1",
+    # 18.0.1.1.0: `bf.avatar._seed_exclusions(record, style)` says what a given
+    #   person may never be handed NOR pick. Unlike the parts kept out of the
+    #   seeded draw but left in the builder, this is a hard ban: it reaches the
+    #   draw, the cleaning of a stored composition, and what the builder offers.
+    #   A barred slot still spends its roll and the draw is still made on
+    #   everybody's pool, so a barred person keeps THEIR avatar without the
+    #   barred part rather than getting a whole new one.
+    "version": "18.0.1.1.0",
     "category": "Hidden/Tools",
     "summary": "An avatar in your house style for anyone without a photo, and a builder to make your own",
     "author": "Les services de consultation Blue Fox, Inc.",

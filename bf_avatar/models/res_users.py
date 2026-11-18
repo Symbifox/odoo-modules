@@ -23,7 +23,8 @@ class ResUsers(models.Model):
         person = self.env.user
         seed = avatars._seed_of(person.partner_id)
         stored = avatars._stored_config(person)
-        config = render.clean_config(style, stored if stored and stored.get("style") == style else None, seed)
+        config = avatars._clean_for(
+            person.partner_id, style, stored if stored and stored.get("style") == style else None, seed)
         slots, colours = avatars._slot_payload(person, style)
         return dict(
             avatars._composer_extra(person, style),
@@ -46,14 +47,15 @@ class ResUsers(models.Model):
         style = avatars._check_character_style()
         person = self.env.user
         seed = avatars._seed_of(person.partner_id)
-        config = render.clean_config(style, config, seed)
+        config = avatars._clean_for(person.partner_id, style, config, seed)
         if not slot:
             return {"preview": avatars._render_for(person.partner_id, style=style, config=config)}
         data = render.load_style(style)
         if slot not in data["slots"]:
             raise UserError(self.env._("Unknown part: %s", slot))
         thumbnails = {}
-        for variant in data["slots"][slot]:
+        # Same reason as in _slot_payload: never draw a part this person may not take.
+        for variant in render.allowed(style, slot, avatars._seed_exclusions(person, style)):
             thumbnails[variant] = avatars._render_for(
                 person.partner_id, style=style, config=dict(config, **{slot: variant}))
         if slot in data["probabilities"]:
@@ -67,7 +69,7 @@ class ResUsers(models.Model):
         style = avatars._check_character_style()
         person = self.env.user
         seed = avatars._seed_of(person.partner_id)
-        config = render.clean_config(style, config, seed)
+        config = avatars._clean_for(person.partner_id, style, config, seed)
         locked = avatars._locked_parts(person, style)
         missing = sorted(part for part in render.parts_of(style, config) if part in locked)
         if missing:
@@ -84,5 +86,5 @@ class ResUsers(models.Model):
         style = avatars._check_character_style()
         person = self.env.user
         person.sudo().bf_avatar_config = False
-        avatars._write_avatar(person, style, render.clean_config(style, None, avatars._seed_of(person.partner_id)))
+        avatars._write_avatar(person, style, avatars._clean_for(person.partner_id, style, None))
         return self.bf_avatar_composer()

@@ -127,41 +127,92 @@ class _Draw:
         return (self.number() % 100) < percent
 
 
-def seedable(style, slot):
-    variants = list(load_style(style)["slots"][slot])
+def _banned(exclusions, slot):
+    """What a person may never be handed in `slot`: () for nothing, None for the whole slot."""
+    if not exclusions or slot not in exclusions:
+        return ()
+    return exclusions[slot]
+
+
+def allowed(style, slot, exclusions=None):
+    """The variants of `slot` a person may be handed OR pick.
+
+    A HARD ban, and that is what sets it apart from ``SEED_EXCLUDE``: the latter
+    only keeps a part out of the seeded draw while leaving it in the composer
+    (that is how the gamification bridge sells hats and sunglasses). A part named
+    here is out of both. ``bf_avatar_school`` bars beards and bald heads from a
+    child's avatar this way.
+    """
+    banned = _banned(exclusions, slot)
+    if banned is None:
+        return []
+    variants = load_style(style)["slots"][slot]
+    return [v for v in variants if v not in banned]
+
+
+def seedable(style, slot, exclusions=None):
     excluded = SEED_EXCLUDE.get(style, {}).get(slot, set())
     if excluded is None:
         return []
-    return [v for v in variants if v not in excluded]
+    return [v for v in allowed(style, slot, exclusions) if v not in excluded]
 
 
-def seed_config(style, seed):
+def _stand_in(seed, slot, drawn, choix):
+    """A stand-in for `drawn`, taken from the parts `choix` allows.
+
+    Hashed APART from the main draw, so it spends none of its numbers and the
+    rest of the avatar stays put. And a hash rather than the next part in the
+    pool: walking forward would herd everyone barred from the same part onto the
+    same stand-in, and that part would then show up far more often among the
+    people the ban touches than among everybody else. Measured on 2026-11-17:
+    walking forward sent every `grayBun` child to `hijab`.
+    """
+    digest = hashlib.sha256(("%s\x1f%s\x1f%s" % (seed, slot, drawn)).encode()).digest()
+    return choix[int.from_bytes(digest[:8], "big") % len(choix)]
+
+
+def seed_config(style, seed, exclusions=None):
     data = load_style(style)
     draw = _Draw(seed)
     config = {}
     probabilities = SEED_PROBABILITY.get(style, {})
     for slot in slot_order(style):
-        pool = seedable(style, slot)
+        # 🔴 The control flow follows the pool EVERYONE draws from, never the one
+        # left after this person's ban. The draw is a sequence: skipping a roll
+        # for a barred slot shifts every slot after it, and someone barred from
+        # one part would be handed a WHOLE new avatar instead of their own
+        # without that part. So the same numbers are spent either way; only the
+        # value picked changes.
+        libre = seedable(style, slot)
+        choix = seedable(style, slot, exclusions) or allowed(style, slot, exclusions)
         if slot in data["probabilities"]:
-            if not pool or not draw.chance(probabilities.get(slot, data["probabilities"][slot])):
+            if not libre or not draw.chance(probabilities.get(slot, data["probabilities"][slot])):
                 config[slot] = None
                 continue
-        config[slot] = draw.pick(pool) if pool else draw.pick(data["slots"][slot])
+        pool = libre or list(data["slots"][slot])
+        drawn = draw.pick(pool)
+        if choix and drawn not in choix:
+            # The draw landed on a part this person may not have, so they get a
+            # stand-in. Picking from the shortened pool instead would renumber
+            # it and change the part of EVERY barred person, even those the draw
+            # had already dressed properly.
+            drawn = _stand_in(seed, slot, drawn, choix)
+        config[slot] = drawn if choix else None
     config["colors"] = {name: draw.pick(values) for name, values in sorted(data["colors"].items())}
     return config
 
 
-def clean_config(style, config, seed=""):
-    """Keep only what the style knows; fill the rest from the seed."""
+def clean_config(style, config, seed="", exclusions=None):
+    """Keep what the style knows and what this person may have; fill the rest from the seed."""
     data = load_style(style)
-    base = seed_config(style, seed)
+    base = seed_config(style, seed, exclusions)
     config = config if isinstance(config, dict) else {}
     cleaned = {}
     for slot in slot_order(style):
         value = config.get(slot, base[slot]) if slot in config else base[slot]
         if value is None and slot in data["probabilities"]:
             cleaned[slot] = None
-        elif isinstance(value, str) and value in data["slots"][slot]:
+        elif isinstance(value, str) and value in allowed(style, slot, exclusions):
             cleaned[slot] = value
         else:
             cleaned[slot] = base[slot]
