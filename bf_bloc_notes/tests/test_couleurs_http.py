@@ -28,7 +28,12 @@ class TestNoteCouleursHttp(HttpCase):
         charge = self.url_open(f"{BASE}/ping").json()
         self.assertEqual(charge["api"], 2)  # pièces jointes
         # `gen_excluded` (« Hors Gen ») s'ajoute à la liste.
-        self.assertEqual(set(charge["features"]), {"color_hex", "tags", "prefs", "gen_excluded"})
+        # Le bureau en ajoute trois (notes partagées, sonde, ménage), plus le
+        # texte mis en forme.
+        self.assertEqual(
+            set(charge["features"]),
+            {"color_hex", "tags", "prefs", "gen_excluded", "rich_text",
+             "shared_notes", "stamp", "visible_ids"})
 
     def test_prefs_exige_un_jeton(self):
         self.assertEqual(self.url_open(f"{BASE}/prefs").status_code, 401)

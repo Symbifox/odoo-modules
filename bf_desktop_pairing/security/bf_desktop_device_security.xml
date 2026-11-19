@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+      A person sees and revokes THEIR devices, and nothing else.
+
+      ⚠️ Deux règles plutôt qu'une, lecture et écriture séparées. Odoo réunit
+      en OU les règles applicables aux groupes d'une personne, PAR OPÉRATION :
+      deux règles au même domaine ne changent donc rien aujourd'hui. Elles sont
+      séparées pour que la prochaine clause ajoutée à la lecture n'élargisse
+      pas l'écriture du même coup — c'est une précaution d'écriture, pas un
+      mécanisme.
+
+      ⚠️ Le domaine exclut volontairement les lignes sans propriétaire (une
+      demande d'appairage en vol) : `user_id = uid` ne vaut jamais pour NULL,
+      donc une demande non approuvée est invisible de tous sauf du système.
+      C'est ce qui empêche de la lire, de l'approuver ou de la révoquer
+      autrement que par la session du navigateur qui ouvre la page de
+      consentement en sudo.
+
+      ⚠️ Pas de `perm_unlink` pour `base.group_user` : supprimer sa ligne
+      effacerait la trace qu'un appareil a existé puis été révoqué. On révoque,
+      on ne supprime pas.
+    -->
+    <record id="bf_desktop_device_rule_own_read" model="ir.rule">
+        <field name="name">Desktop device: read mine</field>
+        <field name="model_id" ref="model_bf_desktop_device"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="bf_desktop_device_rule_own_write" model="ir.rule">
+        <field name="name">Desktop device: revoke mine</field>
+        <field name="model_id" ref="model_bf_desktop_device"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <!-- 🔴 False, et le commentaire ci-dessus le disait déjà : « on révoque,
+             on ne supprime pas ». La règle portait True, et seul l'ACL
+             (`perm_unlink=0`) fermait la porte — une porte à un seul verrou,
+             qu'une ouverture d'ACL rouvrirait sans qu'on y pense. Relevé en
+             relecture. -->
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="bf_desktop_device_rule_system" model="ir.rule">
+        <field name="name">Desktop device: system sees all</field>
+        <field name="model_id" ref="model_bf_desktop_device"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+</odoo>

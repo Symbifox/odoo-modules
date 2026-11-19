@@ -7,13 +7,13 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**102 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**103 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**319 modules are BUSL-1.1.** The source is published and auditable, and **you
+**320 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -122,7 +122,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_bi_hour_bank` | BF BI - Hour banks | 18.0.1.0.4 | BUSL-1.1 | Hour banks dashboard: balances computed by the hour bank module, adjustments |
 | `bf_bi_report` | BF BI Reports | 18.0.1.0.2 | BUSL-1.1 | Power BI style reports on named measures: slicers, cross-filtering, drill-through, rich visuals |
 | `bf_bi_timesheet` | BF BI - Professional services | 18.0.1.0.3 | BUSL-1.1 | Professional services dashboard: hours, revenue, labour cost and margin |
-| `bf_bloc_notes` | BF Bloc-notes | 18.0.4.3.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
+| `bf_bloc_notes` | BF Bloc-notes | 18.0.4.5.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_bookmarks` | Signets partagés | 18.0.1.5.4 | BUSL-1.1 | Company, team and personal bookmarks kept in Odoo and carried to the browser by the Symbifox extension |
 | `bf_budget` | Budgets opérationnels | 18.0.1.5.0 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_analytic` | Budgets opérationnels — second axe analytique | 18.0.1.0.0 | BUSL-1.1 | Unfolds a budget line into the analytic lines it reads, each viewer under their own rights, and shows the hours beside the dollars |
@@ -200,6 +200,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.6.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
 | `bf_dav_server` | Calendar and contacts sync (CalDAV, CardDAV) | 18.0.1.2.2 | BUSL-1.1 | Thunderbird, Apple Calendar and Contacts, and Android (DAVx5) read and write the Odoo agenda and contacts directly, reminders and their state included |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
+| `bf_desktop_pairing` | Symbifox Desktop Pairing | 18.0.1.0.0 | LGPL-3 | Device pairing for Blue Fox OS desktop widgets |
+| `bf_devices` | Symbifox Appareils | 18.0.1.3.0 | BUSL-1.1 | Every device paired to a person, across modules, on one portal page, and the gesture that revokes them all |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.2.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_export` | Policies & Procedures Export | 18.0.1.1.2 | BUSL-1.1 | Reproduce the policy and procedure registry as a folder tree: ZIP export with best-practice templates, classification plans, master list and manifest |
 | `bf_document_export_nextcloud` | Policies & Procedures Export - Nextcloud | 18.0.1.2.2 | BUSL-1.1 | Deposit the exported registry in a Nextcloud folder (only what changed, never overwriting, never deleting) and read the Nextcloud files behind external documents |
@@ -560,11 +562,11 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **319 modules: BUSL-1.1.** Production use for your own internal business
+- **320 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **102 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **103 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

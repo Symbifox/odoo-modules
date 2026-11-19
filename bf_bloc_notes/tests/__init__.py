@@ -10,3 +10,6 @@ from . import test_couleurs
 from . import test_couleurs_http
 from . import test_isolation_restes
 from . import test_hors_gen
+from . import test_bureau
+from . import test_fraicheur
+from . import test_riche

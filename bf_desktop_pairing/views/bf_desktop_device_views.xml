@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_desktop_device_view_list" model="ir.ui.view">
+        <field name="name">bf.desktop.device.list</field>
+        <field name="model">bf.desktop.device</field>
+        <field name="arch" type="xml">
+            <list string="Desktop devices" create="false">
+                <field name="name"/>
+                <field name="app_label" string="Application"/>
+                <field name="app_version" optional="show"/>
+                <field name="last_seen" widget="remaining_days"/>
+                <field name="user_id" groups="base.group_system"/>
+                <field name="active" column_invisible="True"/>
+                <button name="action_revoke" type="object" string="Revoke"
+                        icon="fa-ban" invisible="not active"
+                        confirm="This widget will stop seeing your notes until it is paired again."/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_desktop_device_view_form" model="ir.ui.view">
+        <field name="name">bf.desktop.device.form</field>
+        <field name="model">bf.desktop.device</field>
+        <field name="arch" type="xml">
+            <form string="Desktop device" create="false">
+                <header>
+                    <button name="action_revoke" type="object" string="Revoke"
+                            class="btn-primary" invisible="not active"
+                            confirm="This widget will stop seeing your notes until it is paired again."/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Revoked" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="app_label" string="Application"/>
+                            <field name="app_version" readonly="1"/>
+                            <field name="platform" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="last_seen" readonly="1"/>
+                            <field name="user_id" readonly="1" groups="base.group_system"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_desktop_device_action" model="ir.actions.act_window">
+        <field name="name">My desktop widgets</field>
+        <field name="res_model">bf.desktop.device</field>
+        <field name="view_mode">list,form</field>
+        <!-- Revoked devices stay listed, so that « I revoked it » is visible. -->
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiley_face">No widget paired yet</p>
+            <p>Pair one from the Sticky Notes widget on your Blue Fox OS desktop.</p>
+        </field>
+    </record>
+
+    <!--
+      ⚠️ Admin entry only, for looking at the fleet. A person reaches THEIR
+      widgets through « Mes appareils » (/my/appareils, module bf_devices),
+      which is the one place that already lists every paired device and
+      revokes them: a second door of our own would let someone revoke the
+      widget on one page and still see it listed on the other.
+    -->
+    <menuitem id="bf_desktop_device_menu"
+              name="Desktop widgets"
+              action="bf_desktop_device_action"
+              parent="base.menu_administration"
+              groups="base.group_system"
+              sequence="95"/>
+
+</odoo>

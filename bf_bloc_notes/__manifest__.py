@@ -41,7 +41,43 @@
     #   notes). Œil barré sur la carte, au kanban comme à /notes ; champ, gestes
     #   `gen_exclude`/`gen_include` et capacité `gen_excluded` au contrat mobile. Une
     #   règle des passes, pas un verrou.
-    "version": "18.0.4.3.0",
+    # 18.0.4.4.0 : le bloc-notes sur le bureau de Blue Fox OS. Les jetons
+    #   d'appareil de `bf_desktop_pairing` sont reconnus (sans en dépendre) ;
+    #   la liste accepte `shared` et ajoute alors les notes que des collègues
+    #   ont partagées, en lecture seule ; deux routes neuves tiennent la
+    #   synchronisation d'un widget : `notes/stamp` (empreinte légère, pour
+    #   n'appeler le delta que s'il a bougé) et `notes/ids` (le ménage de ce
+    #   qu'un delta ne peut pas annoncer : une note sortie de la portée).
+    #   Contrat mobile inchangé, numéro d'API inchangé, trois capacités de plus.
+    # 18.0.4.5.0 : une note accepte un sous-ensemble HTML — gras, italique,
+    #   souligné, barré, puces — par deux clés à la charge mobile, servies SUR
+    #   DEMANDE (en-tête `X-Symbifox-Rich`) : `html`, toujours assaini, et
+    #   `rich_editable`, qui dit si le client peut le renvoyer sans rien
+    #   perdre. `_mobile_update` et `_mobile_create` acceptent `html` à la
+    #   place de `text` (jamais les deux) et annoncent `flattened` quand le
+    #   HTML reçu portait plus que le sous-ensemble ; capacité `rich_text` au
+    #   ping.
+    #   L'assainisseur lit les effets dans les BALISES et dans le `style`,
+    #   parce qu'un éditeur Qt n'écrit le gras qu'en `font-weight:700`, et sait
+    #   qu'un style ANNULE celui du parent (`font-weight:normal`).
+    #   `text` et `editable` restent le contrat de l'application posée : le
+    #   téléphone n'écrit que du texte, et une note mise en forme y reste
+    #   affichée. Les deux clés neuves ne sortent que si on les demande.
+    #   ⚠️ Ce qui change pour TOUS les clients, demande ou pas : `text`. Une
+    #   note du sous-ensemble ne passe plus par `html2plaintext` (qui écrivait
+    #   `*gras*` et collait les puces) mais se rend en prose, puces comprises.
+    #   Le titre en dérive, donc il change avec lui.
+    #   La LECTURE d'un corps ne lève jamais (plafond séparé, `MAX_HTML_LECTURE`,
+    #   au-delà duquel on sert un corps vide et « non modifiable »).
+    #   🔴 `_mobile_browse` applique enfin `_mobile_scope` : `check_access`
+    #   seul laissait un compte `base.group_system` lire ET écrire n'importe
+    #   quelle note par son identifiant.
+    #   🔴 Le juge « modifiable » croise QUATRE instruments, dont un témoin
+    #   SANS analyseur, qui lit les noms de balise dans la chaîne brute :
+    #   libxml2 TRONQUE l'imbrication, et un élément caché sous 400 `<div>`
+    #   n'est alors dans AUCUN arbre. Ce nom se lit jusqu'au bord — un
+    #   `<div-onclick>` n'est pas un `div`.
+    "version": "18.0.4.5.0",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',

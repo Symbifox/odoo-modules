@@ -28,6 +28,10 @@ class BfNoteTag(models.Model):
         ("name_uniq", "unique(name, user_id)", "This tag already exists."),
     ]
 
+    #: Ce qu'une étiquette expose dans la charge mobile d'une note. Changer
+    #: l'un de ces champs change ce que les cartes affichent.
+    _MOBILE_VISIBLE = ("name", "color", "active")
+
     def write(self, vals):
         """Le propriétaire d'une étiquette ne
         change pas hors superutilisateur et administration. Odoo ne relit pas
@@ -38,4 +42,12 @@ class BfNoteTag(models.Model):
             nouveau = nouveau.id if hasattr(nouveau, "id") else nouveau
             if any(tag.user_id.id != (nouveau or False) for tag in self):
                 raise AccessError(_("The owner of a tag cannot be changed."))
-        return super().write(vals)
+        resultat = super().write(vals)
+        # 🔴 Renommer une étiquette ne touchait AUCUNE note, donc les
+        # clients qui suivent `since` gardaient l'ancien nom sur leurs cartes
+        # indéfiniment. L'étiquette est lue par la note, mais la note n'a pas
+        # changé — c'est au champ modifié de le dire.
+        if set(vals) & set(self._MOBILE_VISIBLE):
+            self.env["bf.note"].sudo().search(
+                [("tag_ids", "in", self.ids)])._mobile_touch()
+        return resultat

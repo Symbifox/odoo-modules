@@ -2,7 +2,13 @@ from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
 
-@tagged("bf_bloc_notes")
+# 🔴 `post_install` : en `at_install` (le défaut) le registre n'est que
+# PARTIEL, et la création d'un `res.users` ou d'un
+# `project.project` tombait sur les contraintes NOT NULL de colonnes dont
+# le module n'est pas encore chargé (`bf_gen_company_mode`,
+# `billing_type`). Deux erreurs de `setUpClass` à chaque passe, sans
+# rapport avec ce que ces essais éprouvent.
+@tagged("post_install", "-at_install", "bf_bloc_notes")
 class TestBfNoteReroute(TransactionCase):
 
     @classmethod

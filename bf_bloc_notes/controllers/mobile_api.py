@@ -1,6 +1,6 @@
 """API à jeton du bloc-notes, pour Symbifox Mobile.
 
-Même patron que ``bf_capture`` et ``bf_speech`` : jeton porteur de l'appareil,
+Même patron que les autres API à jeton de la maison : jeton porteur de l'appareil,
 ``/ping`` public qui annonce la capacité, tout le reste en ``auth="public"``
 gardé par le jeton. Le travail est délégué à ``bf.note._mobile_*``, la couche
 que la page ``/notes`` emprunte aussi : l'application et la page ne peuvent pas
@@ -21,6 +21,7 @@ import logging
 from odoo import _, fields, http
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
+from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
 
 from ..models.bf_note_mobile import ACTIONS, MAX_ATTACHMENT
 
@@ -28,7 +29,12 @@ _logger = logging.getLogger(__name__)
 
 BASE = "/bf_bloc_notes/mobile/v1"
 
-_DEVICE_MODELS = ("sms.archive.mobile.device", "bf.email.mobile.device")
+# ⚠️ Un jeton d'appareil est reconnu sans dépendre du module qui l'a émis : la
+# boucle de `_device` saute les modèles absents du registre. `bf.desktop.device`
+# apparie les widgets de bureau de Blue Fox OS ; un locataire qui
+# n'a pas `bf_desktop_pairing` ne voit aucune différence.
+_DEVICE_MODELS = ("sms.archive.mobile.device", "bf.email.mobile.device",
+                  "bf.desktop.device")
 
 #: Corps JSON le plus gros accepté. Le texte d'une note est plafonné à 100 000
 #: caractères par le modèle ; ceci refuse avant d'analyser une charge hors sujet.
@@ -70,9 +76,37 @@ def _authed():
     device = _device()
     if not device:
         return None
-    if "last_seen" in device._fields:
+    # 🔴 Le battement n'écrit PAS dans la transaction de la requête. Un UPDATE
+    # de la ligne d'appareil à chaque appel authentifié, c'est l'incident
+    # Deux appels simultanés du même appareil écrivent la même
+    # ligne, et sous REPEATABLE READ le second échoue avec « could not
+    # serialize access due to concurrent update » — le geste de l'usager est
+    # alors annulé pour un horodatage. Le bureau rend cela quotidien : sa
+    # sonde, son delta et son ménage tombent dans la même seconde, toutes les
+    # trois secondes.
+    #
+    # Les registres qui portent `_touch_last_seen` (son curseur latéral, son
+    # SKIP LOCKED et son seuil d'une minute) s'en servent ; les autres gardent
+    # l'écriture directe, qui est ce qu'ils faisaient déjà.
+    if hasattr(device, "_touch_last_seen"):
+        device._touch_last_seen()
+    elif "last_seen" in device._fields:
         device.sudo().write({"last_seen": fields.Datetime.now()})
+    # La version que le widget annonce, quand le registre sait la ranger. Même
+    # prudence que le battement : rien dans la transaction de la requête, et
+    # seulement quand elle change. Sans dépendance dure — les autres registres
+    # d'appareils n'ont pas cette méthode.
+    if hasattr(device, "_note_app_version"):
+        device._note_app_version(
+            request.httprequest.headers.get("X-Symbifox-App-Version"))
     request.update_env(user=device.user_id.id)
+    # `html` et `rich_editable` ne sortent que si le client les
+    # demande. Un en-tête plutôt qu'un paramètre, parce qu'il vaut pour un GET
+    # comme pour un POST, et qu'ainsi la charge du TÉLÉPHONE ne change pas d'un
+    # octet : lui servir du HTML qu'il ne lit pas doublait sa part texte.
+    request.update_context(bf_note_rich=(
+        (request.httprequest.headers.get("X-Symbifox-Rich") or "").strip().lower()
+        in ("1", "true", "yes")))
     # La langue de l'usager, pour que les phrases rendues à l'application
     # (`message`, `detail`) soient dans la sienne et pas dans celle du serveur.
     lang = device.user_id.lang
@@ -107,6 +141,13 @@ def _guarded(fn):
     """
     try:
         return fn()
+    except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+        # ⚠️ Pas à nous. Sur un conflit d'écriture, Odoo rejoue la requête
+        # entière (`service.model.retrying`, jusqu'à cinq fois) — mais
+        # seulement si l'exception lui parvient. L'attraper plus bas en
+        # « erreur inattendue » changeait un conflit d'une milliseconde en 500
+        # définitif, et l'application annulait le geste.
+        raise
     except AccessError as exc:
         request.env.cr.rollback()
         return _json({"error": "forbidden", "detail": str(exc)}, 403)
@@ -140,7 +181,11 @@ class BfNoteMobileApi(http.Controller):
             # api 2 : pièces jointes (`/notes/<id>/files`) et leur
             # liste dans `files` sur chaque note.
             "api": 2,
-            "version": module.installed_version or "",
+            # 🔴 `latest_version` est la colonne de la BASE (la version
+            # réellement posée) et `installed_version` celle du manifeste sur
+            # DISQUE : les noms sont inversés dans Odoo. Entre une copie de
+            # fichiers et le `-u`, l'autre se croirait déjà sur la nouvelle.
+            "version": module.latest_version or "",
             "enabled": True,
             "actions": list(ACTIONS),
             "max_file_bytes": MAX_ATTACHMENT,
@@ -149,7 +194,13 @@ class BfNoteMobileApi(http.Controller):
             # elle les voit ici.
             # `gen_excluded` (« Hors Gen ») sur chaque note, gestes
             # `gen_exclude` et `gen_include`.
-            "features": ["color_hex", "tags", "prefs", "gen_excluded"],
+            # `shared_notes` (les notes partagées par des collègues
+            # s'ajoutent à la liste), `stamp` (sonde légère pour savoir si
+            # quelque chose a changé) et `visible_ids` (le ménage de ce qui a
+            # quitté la portée). Ajouts compatibles : un client qui ne les
+            # voit pas ici n'appelle pas les routes.
+            "features": ["color_hex", "tags", "prefs", "gen_excluded", "rich_text",
+                         "shared_notes", "stamp", "visible_ids"],
         })
 
     @http.route(f"{BASE}/notes", type="http", auth="public", methods=["GET", "POST"],
@@ -172,10 +223,43 @@ class BfNoteMobileApi(http.Controller):
                 archived=kw.get("archived") in ("1", "true", "True"),
                 query=kw.get("q"),
                 since=kw.get("since"),
+                # Le widget de bureau demande aussi les notes que
+                # des collègues ont partagées. Absent = comme avant.
+                shared=kw.get("shared") in ("1", "true", "True"),
             )
             return _json({"ok": True, **resultat})
 
         return _guarded(run)
+
+    @http.route(f"{BASE}/notes/stamp", type="http", auth="public",
+                methods=["GET"], csrf=False, save_session=False)
+    def stamp(self, **kw):
+        """L'empreinte de la portée : date du dernier changement et compte.
+
+        Faite pour être appelée souvent par un widget de bureau,
+        qui ne tire le delta que lorsqu'elle bouge.
+        """
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        Note = request.env["bf.note"]
+        return _guarded(lambda: _json({"ok": True, **Note._mobile_stamp(
+            shared=kw.get("shared") in ("1", "true", "True"),
+            since=kw.get("since"))}))
+
+    @http.route(f"{BASE}/notes/ids", type="http", auth="public",
+                methods=["GET"], csrf=False, save_session=False)
+    def ids(self, **kw):
+        """Tout ce que l'appelant peut voir, par identifiant.
+
+        🔴 Ce que `since` ne peut PAS dire : une note qui a quitté la portée
+        (départagée, retirée, supprimée) ne se lit plus, donc aucun delta ne
+        l'annonce. Le client compare cette liste à la sienne et oublie le reste.
+        """
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        Note = request.env["bf.note"]
+        return _guarded(lambda: _json({"ok": True, **Note._mobile_visible_ids(
+            shared=kw.get("shared") in ("1", "true", "True"))}))
 
     @http.route(f"{BASE}/notes/<int:note_id>", type="http", auth="public",
                 methods=["GET", "POST"], csrf=False, save_session=False)
@@ -193,7 +277,13 @@ class BfNoteMobileApi(http.Controller):
             resultat = note._mobile_update(_corps())
             if resultat["conflict"]:
                 return _json({"error": "conflict", "note": resultat["note"]}, 409)
-            return _json({"ok": True, "note": resultat["note"]})
+            # 🔴 `flattened` passe. La route ne rendait que `note`, donc
+            # l'annonce de perte (un lien collé, par exemple) mourait ici et le
+            # widget n'aurait jamais pu la dire. Trouvé en relisant la route
+            # après avoir écrit le modèle : l'essai de la perte ne portait que
+            # sur le modèle.
+            return _json({"ok": True, "flattened": resultat["flattened"],
+                          "note": resultat["note"]})
 
         return _guarded(run)
 

@@ -53,6 +53,39 @@ One activity is created per linked record (e.g. a note linked to 3 tasks → 3 a
   of pinning and sharing. Only the author can change it.
 - ⚠️ It is a rule those passes follow, not a lock: anyone who can read the note still reads it.
 
+### On the desktop (18.0.4.4.0)
+A note you have to open a browser tab for is a note you do not take.
+- **Desktop widget support**: the token API recognises the device tokens issued by `bf_desktop_pairing`,
+  without depending on it. A tenant that does not install it keeps the phone's tokens and nothing changes.
+- **Colleagues' notes, read only**: the list accepts `shared`, and then adds the notes colleagues shared
+  with you. Every note already carries `mine` and `shared`, so a client can show them apart.
+- **Two routes for a widget that polls**: `notes/stamp` returns a light fingerprint, so a client only asks
+  for the delta once it has moved; `notes/ids` returns the identifiers in scope, which is the only way to
+  learn that a note has LEFT the scope (a delta cannot announce what it can no longer see).
+- The mobile contract and the API number are unchanged; three capabilities are added to the ping.
+
+### Rich text from a toolbar (18.0.4.5.0)
+- A note accepts a **named HTML subset**: `p div br span font b strong i em u s del strike ul ol li`, plus a
+  `style` carrying only `font-weight`, `font-style` and `text-decoration`. Canonical output is `b i u s`.
+- **Two keys, served on demand** (`X-Symbifox-Rich` header): `html`, always sanitised, even for a body the
+  server declares it cannot take back, and `rich_editable`, which says whether the client can return that
+  body without losing anything. A client that does not ask is served neither key: nothing is added to its
+  payload.
+- ⚠️ **One thing does change for a client that asks for nothing**: `text`. A formatted note inside the
+  subset used to be flattened by `html2plaintext`, which spelled bold as `*bold*` and ran list items
+  together. It now reads as plain prose, with bullets shown as `• `. That text also feeds the note's
+  title, so a phone that used to display `Des *courses*` now displays `Des courses`. Notes that are
+  genuinely rich (outside the subset) still go through `html2plaintext`.
+- **Writing**: `_mobile_update` and `_mobile_create` accept `html` instead of `text`, never both, and
+  answer `flattened: true` when the HTML received carried more than the subset.
+- ⚠️ **`text` and `editable` are still the posted app's contract.** The phone writes plain text only, so a
+  formatted note stays displayed there rather than editable. A note saved WITHOUT formatting stays plain
+  text, and therefore stays editable on the phone.
+- The sanitiser reads effects from the TAGS and from the `style`, because a Qt editor writes bold as
+  `font-weight:700`, and it knows a style can CANCEL the parent's (`font-weight:normal`).
+- Reading never raises: a separate read ceiling (`MAX_HTML_LECTURE`) serves an empty body marked
+  "not editable" rather than failing the whole list for one oversized note.
+
 ### On the phone (18.0.3.0.0)
 A note taken on a phone has to be written in a second, or it ends up in another app, far from the records it belongs to.
 - **Installable `/notes` page**: opens straight on the text field, keyboard up. Works on Android and iPhone, installs to the home screen, and offers a **New** shortcut on a long press.
@@ -129,6 +162,30 @@ odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-af
 35 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), and the `target_ref` picker on the link row.
 
 ## Changelog
+
+### 18.0.4.5.0
+- **Rich text:** a named HTML subset on the note, with `html` (always sanitised) and `rich_editable`
+  served on demand through the `X-Symbifox-Rich` header, `html` accepted on create and update in place of
+  `text` (never both), `flattened` reported when the body received carried more than the subset, and
+  `rich_text` announced in the ping's `features`.
+- **Changed for every client**, including those that ask for nothing: `text` no longer carries the
+  `*bold*` markers `html2plaintext` produced for a note inside the subset, and list items now show as
+  `• `. The note's title is derived from that text, so it changes with it.
+- **Security:** `_mobile_browse` now applies `_mobile_scope`. `check_access` alone let a
+  `base.group_system` account read AND write any note by its identifier, and identifiers are sequential.
+- **Robustness:** reading a body never raises. The write ceiling used to be applied to reads, so a single
+  oversized note returned 400 for the whole list, on both doors.
+- The "editable" judgement crosses four instruments, one of them a witness with no parser: libxml2
+  truncates deep nesting, so an element hidden under hundreds of `<div>` is in no tree at all.
+
+### 18.0.4.4.0
+- **Desktop:** device tokens from `bf_desktop_pairing` are recognised (without depending on it), the list
+  accepts `shared` and then adds colleagues' shared notes read only, and two new routes hold a widget's
+  synchronisation: `notes/stamp` (a light fingerprint) and `notes/ids` (what a delta cannot announce,
+  namely a note that left the scope).
+- **Privacy:** a link whose record the reader cannot open now hides its model, id and URL as well as its
+  name. All the keys stay present but empty, plus `restricted: true`, so a posted app does not trip.
+- The mobile contract and the API number are unchanged.
 
 ### 18.0.4.3.0
 - **Not for Gen:** a `gen_excluded` flag on the note, with an eye button on the card (kanban and `/notes`),

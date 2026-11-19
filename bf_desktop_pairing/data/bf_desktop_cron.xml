@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Le ménage des demandes d'appairage que personne n'a approuvées.
+
+      ⚠️ Un cron, et pas seulement le ménage opportuniste du frein : chez un
+      locataire qui n'apparie plus rien, le frein ne tourne jamais, et les
+      demandes mortes garderaient indéfiniment leur empreinte d'appelant et
+      leur secret — contre ce que le module promet.
+    -->
+    <record id="cron_gc_pairings" model="ir.cron">
+        <field name="name">Desktop pairing: drop unapproved requests</field>
+        <field name="model_id" ref="model_bf_desktop_device"/>
+        <field name="state">code</field>
+        <field name="code">model._gc_pairings()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

@@ -1,6 +1,6 @@
 """« Hors Gen » : la case, sa bascule et le contrat mobile.
 
-Les passes de Gen qui la respectent sont éprouvées dans leur propre module. Ici : la
+Les passes de Gen qui la respectent sont éprouvées ailleurs. Ici : la
 case elle-même, qui peut la basculer, les deux portes du téléphone (page ``/notes`` et API
 à jeton) et ce que montrent les vues.
 
@@ -25,10 +25,10 @@ class TestHorsGen(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         groupes = "base.group_user,project.group_project_user"
-        cls.alice = new_test_user(cls.env, login="alice_26683", groups=groupes,
-                                  email="alice.26683@example.com")
-        cls.bruno = new_test_user(cls.env, login="bruno_26683", groups=groupes,
-                                  email="bruno.26683@example.com")
+        cls.alice = new_test_user(cls.env, login="alice_hors_gen", groups=groupes,
+                                  email="alice.hors.gen@example.com")
+        cls.bruno = new_test_user(cls.env, login="bruno_hors_gen", groups=groupes,
+                                  email="bruno.hors.gen@example.com")
         cls.Note = cls.env["bf.note"].with_user(cls.alice)
 
     def _creer_mobile(self, **vals):
@@ -174,10 +174,10 @@ class TestHorsGenHttp(HttpCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.alice = new_test_user(cls.env, login="alice_http_26683",
-                                  password="alice_http_26683",
+        cls.alice = new_test_user(cls.env, login="alice_http_hors_gen",
+                                  password="alice_http_hors_gen",
                                   groups="base.group_user,project.group_project_user",
-                                  email="alice.http.26683@example.com")
+                                  email="alice.http.hors.gen@example.com")
 
     def _rpc(self, route, **params):
         reponse = self.url_open(route, data=json.dumps({
@@ -227,7 +227,7 @@ class TestHorsGenHttp(HttpCase):
         self.assertIs(cree.json()["note"]["gen_excluded"], False)
 
     def test_la_page_notes_coche_par_son_geste_et_traduit_ses_mots(self):
-        self.authenticate("alice_http_26683", "alice_http_26683")
+        self.authenticate("alice_http_hors_gen", "alice_http_hors_gen")
         texte = self.url_open("/notes").text
         debut = texte.index('id="i18n">') + len('id="i18n">')
         mots = json.loads(texte[debut:texte.index("</script>", debut)])

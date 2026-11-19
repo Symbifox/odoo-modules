@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Entrée du portail. Priorités déjà prises sur                   -->
+    <!-- portal.portal_my_home : 1, 30, 35, 40, 45, 46, 47, 50.        -->
+    <!-- ============================================================ -->
+    <template id="portal_my_home_appareils"
+              name="Portail : Mes appareils"
+              inherit_id="portal.portal_my_home"
+              customize_show="True" priority="48">
+        <div id="portal_common_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mes appareils</t>
+                <t t-set="url" t-value="'/my/appareils'"/>
+                <t t-set="placeholder_count" t-value="'appareils_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <template id="portal_breadcrumb_appareils"
+              name="Portail : fil d'Ariane Mes appareils"
+              inherit_id="portal.portal_breadcrumbs" priority="48">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'appareils'" class="breadcrumb-item active">
+                Mes appareils
+            </li>
+        </xpath>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Styles : aucun script                                         -->
+    <!-- ============================================================ -->
+    <template id="portail_styles" name="Mes appareils : styles portail">
+        <style>
+            /* ⚠️ Le corps du site public de Blue Fox est SOMBRE et son texte
+               blanc. Un texte qui ne déclare pas sa couleur sur une surface
+               blanche hérite donc du blanc et disparaît. La couleur se pose
+               sur la SURFACE, pas enfant par enfant. */
+            .bfa-fiche { border:1px solid #e9ecef; border-radius:8px; padding:14px 18px; margin-bottom:12px; background:#fff; color:#2E3132; }
+            .bfa-entete { display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; }
+            .bfa-titre { font-size:16px; font-weight:600; margin:0; }
+            .bfa-badge { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:600; background:#E7F4FB; color:#12657f; }
+            .bfa-capacites { margin-top:6px; display:flex; flex-wrap:wrap; gap:4px; align-items:baseline; }
+            .bfa-cap { display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; background:#F1F3F4; color:#5f6669; }
+            .bfa-cap-titre { font-size:12px; color:#6c757d; margin-right:2px; }
+            .bfa-meta { font-size:13px; color:#6c757d; margin-top:4px; }
+            .bfa-note { font-size:13px; color:#6c757d; margin-top:16px; }
+            .bfa-actions { margin-top:10px; }
+        </style>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- La page                                                       -->
+    <!-- ============================================================ -->
+    <template id="portail_appareils" name="Mes appareils">
+        <t t-call="portal.portal_layout">
+            <t t-call="bf_devices.portail_styles"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mes appareils</t>
+            </t>
+
+            <div t-if="retires" class="alert alert-success" role="status">
+                <t t-if="retires == '0'">
+                    Rien n'a été retiré : cet appareil n'était plus là.
+                </t>
+                <t t-else="">
+                    C'est fait. L'appareil devra se reconnecter pour retrouver
+                    l'accès.
+                </t>
+            </div>
+
+            <div t-if="not appareils" class="alert alert-info" role="status">
+                Aucun appareil n'a d'accès en ce moment.
+            </div>
+
+            <div t-else="">
+                <div t-foreach="appareils" t-as="a" t-key="a['cle']" class="bfa-fiche">
+                    <div class="bfa-entete">
+                        <h5 class="bfa-titre"><t t-out="a['nom']"/></h5>
+                        <span class="bfa-badge" t-out="a['module']"/>
+                    </div>
+                    <!-- 🔴 Le module émetteur ne dit PAS ce que le jeton ouvre.
+                         Un téléphone apparié par Messages ouvre aussi le
+                         téléphone, l'assistant, l'agenda et le reste, parce que
+                         ces modules acceptent le même jeton porteur. Sans cette
+                         ligne, « retirer l'accès » se lisait comme « couper les
+                         messages ». -->
+                    <div t-if="a['capacites']" class="bfa-capacites">
+                        <span class="bfa-cap-titre">Ce jeton ouvre aussi</span>
+                        <span t-foreach="a['capacites']" t-as="c" t-key="c"
+                              class="bfa-cap" t-out="c"/>
+                    </div>
+                    <div class="bfa-meta">
+                        <t t-if="a['derniere_activite']">
+                            Vu la dernière fois le
+                            <t t-out="a['derniere_activite']"/>
+                        </t>
+                        <t t-else="">Jamais utilisé depuis l'appariement</t>
+                        <t t-if="a['version']"> · version <t t-out="a['version']"/></t>
+                    </div>
+                    <div class="bfa-actions">
+                        <!-- ⚠️ POST, et pas un lien : une révocation déclenchée
+                             par une image dans un courriel couperait les
+                             téléphones de la personne sans un clic. -->
+                        <form method="post" action="/my/appareils/retirer">
+                            <input type="hidden" name="csrf_token"
+                                   t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="cle" t-att-value="a['cle']"/>
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                Retirer l'accès
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <form method="post" action="/my/appareils/tout-retirer" class="mt-3">
+                    <input type="hidden" name="csrf_token"
+                           t-att-value="request.csrf_token()"/>
+                    <button type="submit" class="btn btn-danger">
+                        Tout retirer
+                    </button>
+                </form>
+            </div>
+
+            <p class="bfa-note">
+                Retirer l'accès ne vide pas le téléphone : l'application reste
+                installée et garde ses données déjà téléchargées, elle ne peut
+                simplement plus rien demander au serveur. C'est le même geste
+                que la déconnexion faite depuis l'appareil.
+            </p>
+        </t>
+    </template>
+
+</odoo>
