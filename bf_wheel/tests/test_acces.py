@@ -52,20 +52,20 @@ class TestAcces(TransactionCase):
             self.roue.with_user(self.portail).get_display_data()
 
     def test_le_groupe_responsable_a_un_membre_des_l_installation(self):
-        """🔴 #27359 : un groupe que RIEN ne peuple est un cul-de-sac.
+        """🔴 Un groupe que RIEN ne peuple est un cul-de-sac.
 
-        Mesuré en production BF le 2026-11-09 : le groupe n'avait aucun membre,
-        aucun groupe ne l'impliquait, et personne — l'administrateur compris — ne
-        pouvait créer de roue. Les autres essais de ce fichier ne le voyaient pas,
-        parce qu'ils mettent EUX-MÊMES leur usager dans le groupe : ils prouvent
-        que le groupe fonctionne quand quelqu'un y est, jamais que quelqu'un y est.
+        Vu sur une base livrée : le groupe n'avait aucun membre, aucun groupe ne
+        l'impliquait, et personne, l'administrateur compris, ne pouvait créer de
+        roue. Les autres essais de ce fichier ne le voyaient pas, parce qu'ils
+        mettent EUX-MÊMES leur usager dans le groupe : ils prouvent que le groupe
+        fonctionne quand quelqu'un y est, jamais que quelqu'un y est.
 
         ⚠️ Et cet essai ne peut PAS s'écrire `self.assertTrue(groupe.users)` : le
         `setUpClass` ci-dessus crée lui-même un usager dans le groupe, donc
         `groupe.users` n'est jamais vide dans cette classe et l'essai passerait
-        par construction. Mesuré le 2026-11-09 : écrit ainsi, il passait sur la
-        base d'avant le correctif. Il porte donc sur l'administrateur LIVRÉ, que
-        l'essai ne fabrique pas.
+        par construction. Écrit ainsi, il passait sur la base d'avant le
+        correctif. Il porte donc sur l'administrateur LIVRÉ, que l'essai ne
+        fabrique pas.
         """
         admin = self.env.ref("base.user_admin")
         self.assertTrue(
