@@ -10,3 +10,4 @@ from . import test_access_hardening
 from . import test_forwarded_host
 from . import test_machine_without_bind
 from . import test_seat
+from . import test_extension_conformance

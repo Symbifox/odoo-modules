@@ -4,16 +4,23 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 06:07+0000\n"
-"PO-Revision-Date: 2026-10-06 06:07+0000\n"
+"POT-Creation-Date: 2026-11-19 01:59+0000\n"
+"PO-Revision-Date: 2026-11-19 01:59+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_form
+msgid ""
+"\"Not reported\" means this browser said nothing about that extension — it is\n"
+"                not \"absent\", and it is not counted with it."
+msgstr ""
 
 #. module: bf_policy
 #. odoo-python
@@ -53,6 +60,20 @@ msgid "24 h"
 msgstr ""
 
 #. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/extension_conformance.py:0
+msgid ""
+"A browser profile key is 8 to 64 characters: letters, digits, hyphen and "
+"underscore."
+msgstr ""
+
+#. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/extension_conformance.py:0
+msgid "A conformance report is a {identifier: state} mapping."
+msgstr ""
+
+#. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
 msgid ""
 "A lent machine also opens to its borrower, written on the machine\n"
@@ -84,6 +105,11 @@ msgstr ""
 msgid ""
 "A shared seat needs the directory login (sssd): with local accounts the "
 "machine would only know the person who installed it."
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_extension_state__etat__absente
+msgid "Absent"
 msgstr ""
 
 #. module: bf_policy
@@ -284,6 +310,11 @@ msgid "Blue Fox Policy — Progressive Web App"
 msgstr ""
 
 #. module: bf_policy
+#: model:ir.model,name:bf_policy.model_bf_policy_browser_profile
+msgid "Blue Fox Policy — Reported browser profile"
+msgstr ""
+
+#. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_machine_reveal
 msgid "Blue Fox Policy — Révéler une phrase de passe"
 msgstr ""
@@ -291,6 +322,11 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_seat_profile
 msgid "Blue Fox Policy — Shared seat profile"
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model,name:bf_policy.model_bf_policy_extension_state
+msgid "Blue Fox Policy — State of an enforced extension on a profile"
 msgstr ""
 
 #. module: bf_policy
@@ -304,6 +340,9 @@ msgid "Brave, LibreOffice…"
 msgstr ""
 
 #. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__navigateur
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_form
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_search
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Browser"
 msgstr ""
@@ -324,6 +363,17 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__extension_remove_ids
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
 msgid "Browser extensions to skip"
+msgstr ""
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_form
+msgid "Browser profile"
+msgstr ""
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_list
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_search
+msgid "Browser profiles"
 msgstr ""
 
 #. module: bf_policy
@@ -432,6 +482,11 @@ msgid ""
 msgstr ""
 
 #. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_search
+msgid "Conformant"
+msgstr ""
+
+#. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__keymap
 msgid ""
 "Console keymap written to /etc/vconsole.conf (`localectl list-keymaps`). "
@@ -440,7 +495,9 @@ msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__create_uid
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__create_uid
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__create_uid
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension_state__create_uid
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__create_uid
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine_reveal__create_uid
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_mount__create_uid
@@ -453,7 +510,9 @@ msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__create_date
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__create_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__create_date
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension_state__create_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__create_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine_reveal__create_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_mount__create_date
@@ -533,7 +592,9 @@ msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__display_name
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__display_name
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__display_name
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension_state__display_name
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__display_name
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine_reveal__display_name
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_mount__display_name
@@ -557,6 +618,21 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__root_mode__enabled
 msgid "Enabled"
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_browser_profile__manquantes
+msgid "Enforced but absent or disabled."
+msgstr ""
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_form
+msgid "Enforced extensions"
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_browser_profile__inconnues
+msgid "Enforced extensions this browser said nothing about."
 msgstr ""
 
 #. module: bf_policy
@@ -594,8 +670,30 @@ msgid "Explicit users"
 msgstr ""
 
 #. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension_state__extension_id
+msgid "Extension"
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.actions.act_window,name:bf_policy.action_browser_profile
+#: model:ir.ui.menu,name:bf_policy.menu_bf_policy_conformance
+msgid "Extension Conformance"
+msgstr ""
+
+#. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__extension_id
 msgid "Extension ID"
+msgstr ""
+
+#. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/extension_conformance.py:0
+msgid "Extension conformance is for internal users only."
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__state_ids
+msgid "Extensions"
 msgstr ""
 
 #. module: bf_policy
@@ -695,6 +793,11 @@ msgid "Force on"
 msgstr ""
 
 #. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__login_groups
 msgid "Groups allowed to log in"
 msgstr ""
@@ -729,7 +832,9 @@ msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__id
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__id
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension_state__id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine_reveal__id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_mount__id
@@ -829,6 +934,12 @@ msgid "Installées en plus de la base bakée dans l'image."
 msgstr ""
 
 #. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/extension_conformance.py:0
+msgid "Invalid profile key."
+msgstr ""
+
+#. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_search
 msgid "Jamais synchronisée"
 msgstr ""
@@ -887,7 +998,9 @@ msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__write_uid
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__write_uid
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__write_uid
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension_state__write_uid
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__write_uid
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine_reveal__write_uid
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_mount__write_uid
@@ -900,7 +1013,9 @@ msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__write_date
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__write_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__write_date
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension_state__write_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__write_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine_reveal__write_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_mount__write_date
@@ -909,6 +1024,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__write_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__write_date
 msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__vu_le
+msgid "Last seen"
 msgstr ""
 
 #. module: bf_policy
@@ -1061,6 +1181,13 @@ msgid "Nextcloud URL"
 msgstr ""
 
 #. module: bf_policy
+#: model_terms:ir.actions.act_window,help:bf_policy.action_browser_profile
+msgid ""
+"No browser profile has reported its\n"
+"        conformance yet."
+msgstr ""
+
+#. module: bf_policy
 #: model_terms:ir.actions.act_window,help:bf_policy.action_bf_policy_seat_profile
 msgid "No shared seat profile"
 msgstr ""
@@ -1080,6 +1207,11 @@ msgstr ""
 msgid ""
 "Not applied by Blue Fox OS yet. Meant for labs: nothing a person leaves on "
 "the machine would survive their logout."
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_extension_state__etat__inconnu
+msgid "Not reported"
 msgstr ""
 
 #. module: bf_policy
@@ -1223,6 +1355,11 @@ msgid "Pass the instance address"
 msgstr ""
 
 #. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_search
+msgid "Person"
+msgstr ""
+
+#. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_machine__enrolled_by_id
 msgid "Person who authenticated at install time."
 msgstr ""
@@ -1259,6 +1396,11 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_pwa__pinned
 msgid "Pinned"
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__plateforme
+msgid "Platform"
 msgstr ""
 
 #. module: bf_policy
@@ -1307,8 +1449,24 @@ msgid ""
 msgstr ""
 
 #. module: bf_policy
+#: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_extension_state__etat__presente
+msgid "Present and enabled"
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_extension_state__etat__desactivee
+msgid "Present but disabled"
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension_state__profile_id
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
 msgid "Profile"
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__cle
+msgid "Profile key"
 msgstr ""
 
 #. module: bf_policy
@@ -1362,6 +1520,13 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_mount__remote_path
 msgid "Remote Path"
+msgstr ""
+
+#. module: bf_policy
+#: model_terms:ir.actions.act_window,help:bf_policy.action_browser_profile
+msgid ""
+"Reporting is turned on in the settings of the Symbifox Signets extension, by a\n"
+"        gesture: it is optional, and it only covers the extensions the policy enforces."
 msgstr ""
 
 #. module: bf_policy
@@ -1524,6 +1689,11 @@ msgid "Source"
 msgstr ""
 
 #. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension_state__etat
+msgid "State"
+msgstr ""
+
+#. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__summary
 msgid "Summary"
 msgstr ""
@@ -1602,8 +1772,26 @@ msgid "The shared seat profile belongs to another organisation."
 msgstr ""
 
 #. module: bf_policy
+#: model:ir.model.constraint,message:bf_policy.constraint_bf_policy_browser_profile_user_cle_uniq
+msgid "This browser profile is already reported for this person."
+msgstr ""
+
+#. module: bf_policy
 #: model:ir.model.constraint,message:bf_policy.constraint_bf_policy_seat_profile_code_org_uniq
 msgid "This code is already used by another profile of the same organisation."
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.constraint,message:bf_policy.constraint_bf_policy_extension_state_profile_extension_uniq
+msgid "This extension already has a state on this browser profile."
+msgstr ""
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_form
+msgid ""
+"This table only carries the extensions the policy enforces. Whatever else\n"
+"                is installed is never asked of the browser, and never reported: nothing is\n"
+"                blocked, and everyone installs what they want."
 msgstr ""
 
 #. module: bf_policy
@@ -1620,6 +1808,18 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__timezone
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__timezone
 msgid "Timezone"
+msgstr ""
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__manquantes
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_search
+msgid "To look at"
+msgstr ""
+
+#. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/extension_conformance.py:0
+msgid "Too many entries in a report: %(n)s, maximum %(max)s."
 msgstr ""
 
 #. module: bf_policy
@@ -1649,6 +1849,12 @@ msgid ""
 msgstr ""
 
 #. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__inconnues
+#: model_terms:ir.ui.view,arch_db:bf_policy.browser_profile_view_search
+msgid "Unreported"
+msgstr ""
+
+#. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_pwa__url
 msgid "Url"
 msgstr ""
@@ -1659,6 +1865,8 @@ msgid "Usager"
 msgstr ""
 
 #. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_browser_profile__user_id
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension_state__user_id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__user_id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_mount__user_id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_pwa__user_id
@@ -1723,7 +1931,11 @@ msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__keyboard_x
-msgid "X keyboard layouts for the installer (kickstart keyboard --xlayouts)."
+msgid ""
+"X keyboard layouts for the installer (kickstart keyboard --xlayouts): each "
+"layout in single quotes, separated by commas, with no spaces, e.g. "
+"'ca','us'. A variant goes in parentheses right after its layout, still "
+"without a space: 'ca(multix)','us'."
 msgstr ""
 
 #. module: bf_policy

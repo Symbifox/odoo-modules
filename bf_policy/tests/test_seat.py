@@ -34,6 +34,13 @@ _LDAP = {
 
 class SeatCase(TransactionCase):
     @classmethod
+    def _app(cls, flatpak_id):
+        """L'application du catalogue, reprise si elle y est deja."""
+        App = cls.env["bf.policy.app"].with_context(active_test=False)
+        return (App.search([("flatpak_id", "=", flatpak_id)], limit=1)
+                or App.create({"flatpak_id": flatpak_id}))
+
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.Machine = cls.env["bf.policy.machine"]
@@ -189,8 +196,12 @@ class TestSeatPolicy(SeatCase):
         cls.env["bf.policy.user"].create({
             "user_id": cls.installer.id, "company_id": cls.company.id,
             "accent_color": "#ff00ff", "locale": "en_NZ.UTF-8"})
-        cls.app_org = cls.env["bf.policy.app"].create({"flatpak_id": "org.gimp.GIMP"})
-        cls.app_seat = cls.env["bf.policy.app"].create({"flatpak_id": "org.kde.kturtle"})
+        # 🔴 Reprendre la ligne qui existe deja : `flatpak_id` est UNIQUE, et sur une
+        # base qui porte deja un catalogue ces deux creations seches levaient
+        # `bf_policy_app_flatpak_id_uniq`, donc toute la classe tombait en erreur.
+        # L'ecriture reste dans la transaction de l'essai.
+        cls.app_org = cls._app("org.gimp.GIMP")
+        cls.app_seat = cls._app("org.kde.kturtle")
         cls.org.app_ids = [(6, 0, cls.app_org.ids)]
         cls.lab.app_ids = [(6, 0, cls.app_seat.ids)]
         cls.machine, cls.token = cls.Machine._enrol(

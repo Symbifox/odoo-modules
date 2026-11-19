@@ -113,6 +113,15 @@ form.
 - **No RPC on service methods.** Service methods such as the authorisation
   check and the policy builder are private: they cannot be called through
   `/web/dataset/call_kw`.
+- **Conformance reports have no writers.** Nobody holds `create` or `write` on
+  `bf.policy.browser.profile` or `bf.policy.extension.state`: an internal user
+  may read their own rows and delete their own profile, nothing else. The two
+  report methods are the only writers, they write in `sudo` and they take the
+  owner from the session, never from the payload — so a forged RPC call cannot
+  file a profile under a colleague's name. Odoo checks a write rule against the
+  state BEFORE the write and never re-checks it after, so a write right here
+  would have let an employee move their own row onto someone else; removing the
+  right is what closes it.
 - **LDAP bind password** is only served to orgs whose sign-in mode is sssd/LDAP,
   and then to every authorised installer and enrolled machine of that org (the
   machine needs it for `sssd.conf`): give that directory service account
@@ -151,8 +160,63 @@ companion of `bf_otp`). They are Symbifox's own extensions, built from sources
 kept outside this repository. Brave only accepts forced off-store extensions on
 Linux, which is why this catalogue targets Blue Fox OS machines.
 
+`static/extensions/index.json` names the version of each package, and
+`/bf_policy/extensions/update.xml` is what a machine polls. A version served
+there must always go UP: Brave replaces an installed extension only when the
+catalogue announces a higher one, so republishing changed bytes under the same
+version reaches no machine at all. The catalogue currently serves *Symbifox
+Signets* 0.4.0 and *Symbifox Tokens* 1.3.0.
+
+⚠️ **The *Symbifox Signets* package in this catalogue does not report conformance
+yet.** Reporting ships in a later build of that extension, which also speaks to a
+newer `bf_bookmarks` than the one published here: shipping it against this one
+would break bookmark synchronisation on every machine that updates. The two go out
+together, in a release of their own. Until then, *Policy → Extension Conformance*
+exists and stays empty unless you build the extension yourself.
+
+## Extension conformance
+
+The policy installs what an organisation enforces; conformance is the other
+half, which says whether a workstation really carries it. It is **reporting
+only, and nothing is ever blocked**:
+
+- The server names the identifiers to check (`conformite_a_verifier`), so the
+  browser is never asked for the list of everything installed — that list is
+  very telling (passwords, VPN, health, politics) and on a client workstation
+  collecting it would be personal data, with notice and register.
+- The browser answers with one of four words per identifier: present and
+  enabled, present but disabled, absent, or not reported. "Not reported" is not
+  "absent": a truncated report, a catalogue that grew between question and
+  answer, or a browser that could not answer says nothing about an extension,
+  and it is counted on its own.
+- On the way back (`conformite_rapporter`) the server DROPS any identifier that
+  is not in the catalogue enforced for that person, so neither a modified
+  extension nor a forged call can file anything else.
+- Nothing is blocked, for anyone. The policy served to a machine carries
+  `ExtensionInstallForcelist` only — no blocklist, no allowlist — and an
+  administrator, like anybody else, installs whatever they want. A test holds
+  that property.
+- Reporting is opt-in: it is turned on by a gesture in the companion extension,
+  which is also where the browser permission is requested. Turning it off
+  deletes the profile and everything it carried, because a privacy feature that
+  stops reporting while leaving its last snapshot in the database for ever is
+  not off.
+
+*Policy → Extension Conformance* lists the reported profiles, with a facet for
+the ones to look at, one for the conformant ones and one for what was never
+reported.
+
 ## Changelog
 
+- **18.0.2.14.0** — Extension conformance: a browser profile can report the
+  state of the extensions the policy enforces, and only those. Reporting is
+  opt-in and nothing is ever blocked. Two new models, read-only for their owner,
+  written only by the two report methods. New screen *Policy → Extension
+  Conformance*. The three report methods work in `sudo`, so they refuse any
+  external (portal) account at the door; the per-user override is resolved on the
+  organisation's company, like the policy served to machines. The shipped
+  *Symbifox Signets* package is unchanged: the build that reports needs a newer
+  `bf_bookmarks` and goes out with it.
 - **18.0.2.13.0** — Interface languages: the French labels of the machine
   record, the escrow screens and the org settings are now properly accented
   ("Révoquer", "Machines enrôlées", "Séquestre du disque"…), and the module

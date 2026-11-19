@@ -17,4 +17,34 @@
     <field name="groups" eval="[(4, ref('bf_policy.group_disk_escrow_read'))]"/>
   </record>
 
+  <!-- Conformite des extensions. Deux regles par modele, OU-ees entre groupes :
+       chacun ne voit QUE ses propres profils de navigateur, et un administrateur voit
+       tout. 🔴 Un profil n'est jamais ecrit au nom de quelqu'un d'autre : la methode
+       prend toujours `self.env.user`, et cette regle le tient meme si un appel forge
+       essayait de poser `user_id`. -->
+  <record id="rule_browser_profile_own" model="ir.rule">
+    <field name="name">Profils de navigateur : les siens seulement</field>
+    <field name="model_id" ref="model_bf_policy_browser_profile"/>
+    <field name="domain_force">[('user_id', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_browser_profile_admin" model="ir.rule">
+    <field name="name">Profils de navigateur : tout, pour l'administration</field>
+    <field name="model_id" ref="model_bf_policy_browser_profile"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+    <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+  </record>
+  <record id="rule_extension_state_own" model="ir.rule">
+    <field name="name">Etats d'extensions : les siens seulement</field>
+    <field name="model_id" ref="model_bf_policy_extension_state"/>
+    <field name="domain_force">[('user_id', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+  <record id="rule_extension_state_admin" model="ir.rule">
+    <field name="name">Etats d'extensions : tout, pour l'administration</field>
+    <field name="model_id" ref="model_bf_policy_extension_state"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+    <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+  </record>
+
 </odoo>

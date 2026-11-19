@@ -1,6 +1,6 @@
 {
     "name": "Symbifox — Blue Fox OS Policy",
-    "version": "18.0.2.13.0",
+    "version": "18.0.2.14.0",
     "category": "Tools",
     "summary": "Group-policy plane for Blue Fox OS endpoints — single source of "
                "truth for zero-touch install + config + policies",
@@ -74,6 +74,21 @@ counted Reveal button, by the person who pressed it, for five minutes. Service
 methods are not callable over RPC. The LDAP bind password is only served to
 orgs in sssd login mode.
 
+Extension conformance (18.0.2.14.0): the policy already installs the browser
+extensions an organisation enforces, and nothing could say whether a workstation
+really carries them. A browser profile can now REPORT, and only that: the server
+names the identifiers to check, the browser answers with one of four words for
+each — present and enabled, present but disabled, absent, or not reported — and
+the server drops on the way back anything that is not in the catalogue enforced
+for that person. Whatever else is installed is never asked for and never stored.
+Nothing is ever blocked, for anyone: the policy served to a workstation carries
+ExtensionInstallForcelist only, no blocklist and no allowlist, and an
+administrator installs whatever they want. Reporting is opt-in, turned on by a
+gesture in the companion browser extension, and turning it off deletes the
+profile and everything it carried. The two report methods are the only writers:
+nobody holds create or write on either model, so a forged call cannot file a
+profile under a colleague's name.
+
 Shared seats (18.0.2.12.0): a machine can belong to a seat profile instead of a
 person — a lab where many people log in, or a machine lent to one borrower at a
 time. The installer authenticates as usual and passes the profile code; the
@@ -94,6 +109,7 @@ Archiving the profile stops serving its machines at their next sync.
         "security/bf_policy_rules.xml",
         "data/bf_policy_extension_data.xml",
         "views/bf_policy_views.xml",
+        "views/bf_policy_conformance_views.xml",
         "views/bf_policy_menus.xml",
     ],
     "auto_install": False,

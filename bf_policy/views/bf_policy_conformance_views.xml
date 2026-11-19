@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="browser_profile_view_list" model="ir.ui.view">
+    <field name="name">bf.policy.browser.profile.list</field>
+    <field name="model">bf.policy.browser.profile</field>
+    <field name="arch" type="xml">
+      <list string="Browser profiles">
+        <field name="user_id"/>
+        <field name="navigateur"/>
+        <field name="plateforme"/>
+        <field name="manquantes"/>
+        <field name="inconnues"/>
+        <field name="vu_le"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="browser_profile_view_form" model="ir.ui.view">
+    <field name="name">bf.policy.browser.profile.form</field>
+    <field name="model">bf.policy.browser.profile</field>
+    <field name="arch" type="xml">
+      <!-- 🔴 Ni creation ni edition : personne ne detient `write` sur ce modele
+           (les deux methodes de rapport sont les seuls ecrivains), donc une frappe
+           dans un champ libre finissait en AccessError. C'est un rapport. -->
+      <form string="Browser profile" create="false" edit="false">
+        <sheet>
+          <div class="oe_title">
+            <h1><field name="navigateur" placeholder="Browser"/></h1>
+          </div>
+          <group>
+            <group>
+              <field name="user_id"/>
+              <field name="plateforme"/>
+            </group>
+            <group>
+              <field name="vu_le"/>
+              <field name="manquantes"/>
+              <field name="inconnues"/>
+              <field name="cle" groups="base.group_no_one"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Enforced extensions">
+              <field name="state_ids" readonly="1">
+                <list>
+                  <field name="extension_id"/>
+                  <field name="etat" widget="badge"
+                         decoration-success="etat == 'presente'"
+                         decoration-warning="etat == 'desactivee'"
+                         decoration-danger="etat == 'absente'"/>
+                </list>
+              </field>
+              <p class="text-muted">
+                This table only carries the extensions the policy enforces. Whatever else
+                is installed is never asked of the browser, and never reported: nothing is
+                blocked, and everyone installs what they want.
+              </p>
+              <p class="text-muted">
+                "Not reported" means this browser said nothing about that extension — it is
+                not "absent", and it is not counted with it.
+              </p>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="browser_profile_view_search" model="ir.ui.view">
+    <field name="name">bf.policy.browser.profile.search</field>
+    <field name="model">bf.policy.browser.profile</field>
+    <field name="arch" type="xml">
+      <search string="Browser profiles">
+        <field name="user_id"/>
+        <field name="navigateur"/>
+        <!-- 🔴 Sur les COMPTES stockes, pas sur l'etat des lignes : Odoo traduit
+             `[('state_ids.etat', 'not in', [...])]` par « AU MOINS UNE ligne qui n'est
+             ni absente ni desactivee », donc un profil a qui il manque une extension
+             sortait sous « Conformes » autant que sous « A regarder ». -->
+        <filter name="a_regarder" string="To look at" domain="[('manquantes', '>', 0)]"/>
+        <filter name="conformes" string="Conformant"
+                domain="[('manquantes', '=', 0), ('inconnues', '=', 0)]"/>
+        <filter name="pas_rapportees" string="Unreported"
+                domain="[('inconnues', '>', 0)]"/>
+        <group expand="0" string="Group by">
+          <filter name="par_personne" string="Person" context="{'group_by': 'user_id'}"/>
+          <filter name="par_navigateur" string="Browser"
+                  context="{'group_by': 'navigateur'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_browser_profile" model="ir.actions.act_window">
+    <field name="name">Extension Conformance</field>
+    <field name="res_model">bf.policy.browser.profile</field>
+    <field name="view_mode">list,form</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">No browser profile has reported its
+        conformance yet.</p>
+      <p>Reporting is turned on in the settings of the Symbifox Signets extension, by a
+        gesture: it is optional, and it only covers the extensions the policy enforces.</p>
+    </field>
+  </record>
+
+</odoo>

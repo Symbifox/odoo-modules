@@ -1833,9 +1833,8 @@ msgstr "Dispositions X"
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__keyboard_x
-msgid "X keyboard layouts for the installer (kickstart keyboard --xlayouts)."
-msgstr ""
-"Dispositions de clavier X de l'installateur (kickstart keyboard --xlayouts)."
+msgid "X keyboard layouts for the installer (kickstart keyboard --xlayouts): each layout in single quotes, separated by commas, with no spaces, e.g. 'ca','us'. A variant goes in parentheses right after its layout, still without a space: 'ca(multix)','us'."
+msgstr "Dispositions de clavier X de l'installateur (kickstart keyboard --xlayouts) : chaque disposition entre apostrophes simples, séparées par des virgules, sans espace, p. ex. 'ca','us'. Une variante se met entre parenthèses juste après sa disposition, toujours sans espace : 'ca(multix)','us'."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__x_layout
@@ -1991,3 +1990,141 @@ msgstr ""
 msgid ""
 "« %s » n'est pas un identifiant d'extension Chromium (32 lettres de a à p)."
 msgstr ""
+
+# Conformité des extensions (18.0.2.14.0).
+
+#. module: bf_policy
+msgid "A browser profile key is 8 to 64 characters: letters, digits, hyphen and underscore."
+msgstr "La clé d'un profil de navigateur fait de 8 à 64 caractères : lettres, chiffres, tiret et soulignement."
+
+#. module: bf_policy
+msgid "A conformance report is a {identifier: state} mapping."
+msgstr "Un rapport de conformité est un dictionnaire {identifiant: état}."
+
+#. module: bf_policy
+msgid "Absent"
+msgstr "Absente"
+
+#. module: bf_policy
+msgid "Blue Fox Policy — Reported browser profile"
+msgstr "Blue Fox Policy — Profil de navigateur signalé"
+
+#. module: bf_policy
+msgid "Blue Fox Policy — State of an enforced extension on a profile"
+msgstr "Blue Fox Policy — État d'une extension imposée sur un profil"
+
+#. module: bf_policy
+msgid "Browser profile"
+msgstr "Profil de navigateur"
+
+#. module: bf_policy
+msgid "Browser profiles"
+msgstr "Profils de navigateur"
+
+#. module: bf_policy
+msgid "Conformant"
+msgstr "Conformes"
+
+#. module: bf_policy
+msgid "Enforced but absent or disabled."
+msgstr "Imposées mais absentes ou désactivées."
+
+#. module: bf_policy
+msgid "Enforced extensions"
+msgstr "Extensions imposées"
+
+#. module: bf_policy
+msgid "Enforced extensions this browser said nothing about."
+msgstr "Imposées dont ce navigateur n'a rien dit."
+
+#. module: bf_policy
+msgid "Extension"
+msgstr "Extension"
+
+#. module: bf_policy
+msgid "Extension Conformance"
+msgstr "Conformité des extensions"
+
+#. module: bf_policy
+msgid "Extension conformance is for internal users only."
+msgstr "La conformité des extensions ne concerne que les usagers internes."
+
+#. module: bf_policy
+msgid "Extensions"
+msgstr "Extensions"
+
+#. module: bf_policy
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_policy
+msgid "Invalid profile key."
+msgstr "Clé de profil invalide."
+
+#. module: bf_policy
+msgid "Last seen"
+msgstr "Vu le"
+
+#. module: bf_policy
+msgid "No browser profile has reported its\n        conformance yet."
+msgstr "Aucun profil de navigateur n'a encore signalé sa conformité."
+
+#. module: bf_policy
+msgid "Not reported"
+msgstr "Pas rapportée"
+
+#. module: bf_policy
+msgid "Person"
+msgstr "Personne"
+
+#. module: bf_policy
+msgid "Platform"
+msgstr "Plateforme"
+
+#. module: bf_policy
+msgid "Present and enabled"
+msgstr "Présente et active"
+
+#. module: bf_policy
+msgid "Present but disabled"
+msgstr "Présente mais désactivée"
+
+#. module: bf_policy
+msgid "Profile key"
+msgstr "Clé du profil"
+
+#. module: bf_policy
+msgid "Reporting is turned on in the settings of the Symbifox Signets extension, by a\n        gesture: it is optional, and it only covers the extensions the policy enforces."
+msgstr "Le signalement s'allume dans les réglages de l'extension Symbifox Signets, par un geste : il est optionnel, et il ne porte que sur les extensions imposées par la politique."
+
+#. module: bf_policy
+msgid "State"
+msgstr "État"
+
+#. module: bf_policy
+msgid "This browser profile is already reported for this person."
+msgstr "Ce profil de navigateur est déjà signalé pour cette personne."
+
+#. module: bf_policy
+msgid "This extension already has a state on this browser profile."
+msgstr "Cette extension a déjà un état sur ce profil de navigateur."
+
+#. module: bf_policy
+msgid "This table only carries the extensions the policy enforces. Whatever else\n                is installed is never asked of the browser, and never reported: nothing is\n                blocked, and everyone installs what they want."
+msgstr "Ce tableau ne porte que les extensions imposées par la politique. Ce qui est installé en plus n'est jamais demandé au navigateur, ni rapporté : rien n'est bloqué, et chacun installe ce qu'il veut."
+
+#. module: bf_policy
+msgid "To look at"
+msgstr "À regarder"
+
+#. module: bf_policy
+msgid "Too many entries in a report: %(n)s, maximum %(max)s."
+msgstr "Trop d'entrées dans un rapport : %(n)s, maximum %(max)s."
+
+#. module: bf_policy
+msgid "Unreported"
+msgstr "Pas rapportées"
+
+#. module: bf_policy
+msgid "\"Not reported\" means this browser said nothing about that extension — it is\n                not \"absent\", and it is not counted with it."
+msgstr "« Pas rapportée » veut dire que ce navigateur n'a rien dit de cette extension — ce n'est pas « absente », et ça ne se compte pas avec."

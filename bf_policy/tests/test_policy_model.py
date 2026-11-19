@@ -153,6 +153,16 @@ class TestPolicyModel(TransactionCase):
         return self.org.get_policy_json(self.user)["apps"]
 
     def _app(self, fid, **kw):
+        # 🔴 Reprendre la ligne qui existe deja, au lieu d'en creer une deuxieme.
+        # `flatpak_id` est UNIQUE : sur une base qui porte deja un catalogue, une
+        # creation seche leve la contrainte et toute la classe tombe. L'ecriture reste
+        # dans la transaction de l'essai, donc elle est defaite a la fin.
+        existante = self.env["bf.policy.app"].with_context(active_test=False).search(
+            [("flatpak_id", "=", fid)], limit=1)
+        if existante:
+            if kw:
+                existante.write(kw)
+            return existante
         return self.env["bf.policy.app"].create({"flatpak_id": fid, **kw})
 
     def test_apps_block_is_empty_by_default(self):
@@ -206,8 +216,11 @@ class TestPolicyModel(TransactionCase):
         app = self._app("com.brave.Browser", name="Brave")
         self.assertEqual(app.display_name, "Brave (com.brave.Browser)")
         # Sans nom (creation rapide en tapant l'ID), l'ID sert d'etiquette.
-        self.assertEqual(self._app("com.spotify.Client").display_name,
-                         "com.spotify.Client")
+        # ⚠️ Un identifiant que personne n'a au catalogue : avec une application connue,
+        # une base qui la porte deja AVEC son nom faisait mesurer a l'essai le contraire
+        # de ce qu'il affirme.
+        self.assertEqual(self._app("com.exemple.AppSansNom").display_name,
+                         "com.exemple.AppSansNom")
 
     def test_appstream_parsing(self):
         """Lecture du catalogue Flathub, sans reseau."""
