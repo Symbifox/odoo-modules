@@ -143,7 +143,7 @@
     #   config donnée par le contexte l'emporte sur le routage. Limite : la
     #   corbeille et les plages retenues appellent encore Google sans regarder
     #   `active`.
-        # 18.0.2.31.0 : le secret OAuth Google ne repart plus vers le navigateur,
+    # 18.0.2.28.1 : le secret OAuth Google ne repart plus vers le navigateur,
     #   et son masque s'affiche. La page Paramètres se bâtit par `onchange`, et
     #   la couche web sème à `False` tout champ de la vue que `default_get` ne
     #   rend pas : le `compute` ne tournait jamais à l'affichage, donc le champ
