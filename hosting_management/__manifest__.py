@@ -50,7 +50,13 @@
     #   `hosting.service.user_id` ferme le générateur : la route publique de
     #   provisionnement tourne en `env(user=1)` et créait des services dont le responsable
     #   était l'uid 1.
-    "version": "18.0.2.68.4",
+    # 18.0.2.68.5: le constat d'une sonde de conteneur porte le DÉTAIL déposé par
+    #   l'agent. L'alerte poussée coupe le constat à quatre-vingts caractères : un compte
+    #   de messages en attente placé après la phrase ne sortait jamais du téléphone, et
+    #   l'opérateur apprenait qu'il faut regarder sans apprendre quoi. Et le vert de
+    #   vivacité seule n'affirme plus que « rien n'est connu de ce qu'il sert » : l'agent
+    #   lit la file des relais de courrier et dépose son compte dans ce même détail.
+    "version": "18.0.2.68.5",
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -2219,18 +2219,32 @@ class HostingService(models.Model):
                 container=self.docker_container,
                 detail=self.agent_detail or ops._("no detail")))
         if self.agent_container_health == "unhealthy":
+            # 🔴 Le DÉTAIL d'abord, et ce n'est pas une question de style :
+            # l'alerte ntfy coupe le constat à quatre-vingts caractères
+            # (`error[:80]` dans `_send_ntfy_alert`), et c'est la seule alerte
+            # qu'on lit sur un téléphone. Un compte placé après la phrase
+            # n'arrivait jamais : l'opérateur apprenait qu'il faut regarder,
+            # jamais quoi. depuis l'agent dépose un compte de différés
+            # là-dedans pour les relais de courrier.
             return ("degraded", None, None, ops._(
-                "Container %(container)s is running but its own probe says "
-                "unhealthy.", container=self.docker_container))
+                "%(detail)s. Container %(container)s is running but the "
+                "agent's reading says unhealthy.",
+                detail=self.agent_detail or ops._("no detail"),
+                container=self.docker_container))
         if self.agent_container_health == "starting":
             return ("degraded", None, None, ops._(
                 "Container %(container)s is starting.",
                 container=self.docker_container))
         if self.agent_container_health == "none":
+            # ⚠️ Ce constat affirmait « rien n'est connu de ce qu'il sert ».
+            # C'est faux depuis pour un relais de courrier : l'agent y
+            # lit la file et écrit son compte dans le détail. Un vert faible
+            # doit dire sa faiblesse sans décréter une ignorance qu'il n'a plus.
             return ("up", None, None, ops._(
                 "Container %(container)s is running. Its image declares no "
-                "probe: liveness only, nothing is known about what it serves.",
-                container=self.docker_container))
+                "probe, so its reading says only this: %(detail)s",
+                container=self.docker_container,
+                detail=self.agent_detail or ops._("no detail")))
         return ("up", None, None, False)
 
     @api.model

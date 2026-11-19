@@ -13833,16 +13833,18 @@ msgstr "Le conteneur %(container)s ne tourne pas : %(detail)s"
 #. module: hosting_management
 #. odoo-python
 #: code:addons/hosting_management/models/hosting_service.py:0
-msgid "Container %(container)s is running but its own probe says unhealthy."
-msgstr "Le conteneur %(container)s tourne, mais sa propre sonde le dit en défaut."
+msgid ""
+"%(detail)s. Container %(container)s is running but the agent's reading says "
+"unhealthy."
+msgstr "%(detail)s. Le conteneur %(container)s tourne, mais le relevé de l'agent le dit en défaut."
 
 #. module: hosting_management
 #. odoo-python
 #: code:addons/hosting_management/models/hosting_service.py:0
 msgid ""
-"Container %(container)s is running. Its image declares no probe: liveness "
-"only, nothing is known about what it serves."
-msgstr "Le conteneur %(container)s tourne. Son image ne déclare aucune sonde : vivacité seulement, rien n'est connu de ce qu'il sert."
+"Container %(container)s is running. Its image declares no probe, so its "
+"reading says only this: %(detail)s"
+msgstr "Le conteneur %(container)s tourne. Son image ne déclare aucune sonde, son relevé ne dit donc que ceci : %(detail)s"
 
 #. module: hosting_management
 #. odoo-python

@@ -100,6 +100,18 @@ walks to a live internal account, and the default owner of a service is no longe
 chance — the public provisioning route runs as the superuser, and services created through it
 had the superuser as their owner.
 
+### What a Reading Says (18.0.2.68.5)
+
+The verdict of a container probe now quotes the **detail the agent deposited**, and quotes
+it first. A push alert truncates the message at eighty characters, and that is the alert
+read on a phone: a figure placed after the sentence never arrived, so the operator learned
+that something needed looking at and never what. An agent that reports a queue length, a
+backlog or a stuck job now has that figure reach the alert itself.
+
+For the same reason, the liveness-only green no longer asserts that "nothing is known about
+what it serves". The image declares no probe of its own, so the reading is whatever the
+agent said, and it is now quoted rather than dismissed.
+
 ### Storage Monitoring
 - **Quota Tracking**: Set storage quotas and monitor usage for each service
 - **Storage Alerts**: Automatic alerts when usage exceeds configurable thresholds
@@ -783,6 +795,9 @@ Labels and messages are written in English in the source; the French ships in `i
 
 ## Changelog
 
+### Version 18.0.2.68.5
+- Change: a container probe's verdict quotes the detail the agent deposited, first in the message, so a figure survives the eighty-character truncation of a push alert. The liveness-only green no longer claims that nothing is known about what the container serves. See the "What a Reading Says" section.
+
 ### Version 18.0.2.68.4
 - Fix: the assignee fallback for activities and notices never lands on an archived, portal or service account any more, and `hosting.service.user_id` no longer defaults to whoever the route runs as. See the "Addressing the Assignee" section.
 
@@ -1113,7 +1128,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-11-17, this version converts automatically to
+- **Change Date**: on 2030-11-18, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Support

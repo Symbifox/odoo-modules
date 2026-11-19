@@ -211,6 +211,40 @@ class TestSondesConteneurs(TransactionCase):
         statut, _ms, _code, _msg = dock._do_docker_check()
         self.assertEqual(statut, "degraded")
 
+    def test_le_compte_de_l_agent_tient_dans_les_80_premiers_caracteres(self):
+        """🔴 L'alerte poussée coupe le constat à 80 caractères.
+
+        `_send_ntfy_alert` écrit `error[:80]`, et c'est la seule alerte qu'on lit
+        sur un téléphone. Le constat d'avant plaçait le détail de l'agent nulle
+        part : l'opérateur apprenait qu'il faut regarder, jamais quoi. Avec un
+        relais de courrier engorgé, ce qui compte est le COMPTE, et il doit
+        survivre à la coupure.
+        """
+        dock = self._dock(
+            agent_report_at=fields.Datetime.now(),
+            agent_container_running=True,
+            agent_container_health="unhealthy",
+            agent_detail="file: differes=11323, plus vieux 70 h (seuil 10), etat=running",
+        )
+        statut, _ms, _code, msg = dock._do_docker_check()
+        self.assertEqual(statut, "degraded")
+        self.assertIn("differes=11323", msg[:80],
+                      "le compte doit survivre à la coupure de ntfy")
+        self.assertIn("essai-temoin", msg,
+                      "le constat nomme quand même le conteneur")
+
+    def test_un_unhealthy_sans_detail_reste_lisible(self):
+        """⚠️ Le détail est facultatif : l'agent n'en dépose pas toujours."""
+        dock = self._dock(
+            agent_report_at=fields.Datetime.now(),
+            agent_container_running=True,
+            agent_container_health="unhealthy",
+            agent_detail=False,
+        )
+        _statut, _ms, _code, msg = dock._do_docker_check()
+        self.assertTrue(msg.strip(), "un constat vide ne dit rien à personne")
+        self.assertNotIn("False", msg, "un champ nul ne s'écrit pas dans un constat")
+
     def test_sans_sonde_interne_le_vert_dit_sa_faiblesse(self):
         dock = self._dock(
             agent_report_at=fields.Datetime.now(),
@@ -221,6 +255,28 @@ class TestSondesConteneurs(TransactionCase):
         self.assertEqual(statut, "up")
         self.assertTrue(msg, "un vert de vivacité seule doit porter son constat")
         self.assertIn("essai-temoin", msg)
+        self.assertNotIn("False", msg, "un champ nul ne s'écrit pas dans un constat")
+
+    def test_le_vert_de_vivacite_porte_ce_que_l_agent_a_mesure(self):
+        """⚠️ Ce constat affirmait « rien n'est connu de ce qu'il sert ».
+
+        Faux depuis : pour un relais de courrier, l'agent lit la file et
+        dépose son compte dans le détail. Le vert reste faible, mais il porte la
+        mesure au lieu de décréter une ignorance qu'il n'a plus.
+        """
+        dock = self._dock(
+            agent_report_at=fields.Datetime.now(),
+            agent_container_running=True,
+            agent_container_health="none",
+            agent_detail="file: differes=0, etat=running",
+        )
+        statut, _ms, _code, msg = dock._do_docker_check()
+        self.assertEqual(statut, "up")
+        # ⚠️ L'assertion porte sur le détail INTERPOLÉ, pas sur une phrase
+        # anglaise : le constat s'écrit dans la langue de la société, et un
+        # `assertNotIn` sur la vieille tournure passerait pour rien dès que la
+        # base d'essai est en français.
+        self.assertIn("differes=0", msg)
 
     def test_depot_perime_rend_on_ne_sait_pas_pas_une_panne(self):
         dock = self._dock(
