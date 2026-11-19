@@ -224,7 +224,7 @@ class TestPlanifierDepuisOdj(TransactionCase):
             'Agenda - Exploratory Meeting - 2026-09-10':
                 'Exploratory Meeting',
             'Delta — OdJ Touchpoint de suivi': 'Delta — Touchpoint de suivi',
-            'Soudure-Bess Design': 'Soudure-Bess Design',
+            'Soudure Epsilon': 'Soudure Epsilon',
         }
         for nom, attendu in cas.items():
             self.assertEqual(self._agenda(name=nom)._bf_event_title(), attendu, nom)
