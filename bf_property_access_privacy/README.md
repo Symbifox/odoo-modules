@@ -32,6 +32,13 @@ register (`privacy_consent`), installed automatically when both are present.
   The records are `noupdate`, so a migration rewrites them, and only when the
   organisation has not edited the notice itself.
 
+- **The English notice says all of it (18.0.1.0.4).** The paragraph about the
+  parcel locker, added to the purpose's plain-language summary in 18.0.1.0.3,
+  had no entry in the English catalogue: an English reader was served four
+  English paragraphs and that one in French. The field is translated term by
+  term, so the catalogue posts the missing one on an upgrade without touching a
+  notice the organisation has adapted.
+
 ## Security
 
 The template is reserved to the property team (Consultation) on an
@@ -54,7 +61,7 @@ the organisation (the portal reads it). Two adversarial reviews.
 
 ## Licence
 
-Business Source License 1.1, see [`LICENSE`](LICENSE). Change Date 2030-11-01,
+Business Source License 1.1, see [`LICENSE`](LICENSE). Change Date 2030-11-20,
 then LGPL-3.0-or-later. Same grant as `bf_property_access`.
 
 ## Acknowledgements

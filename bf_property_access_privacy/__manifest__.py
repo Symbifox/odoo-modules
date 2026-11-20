@@ -6,7 +6,7 @@
     # 18.0.1.0.3 : l'avis, la finalité et les catégories nomment ce qu'une boîte
     #   à colis reliée reçoit en plus : un moyen de joindre le résident
     #   (bf_property_access_expedibox, lot 5).
-    "version": "18.0.1.0.3",
+    "version": "18.0.1.0.4",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
