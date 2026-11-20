@@ -81,7 +81,12 @@
         <field name="res_model">bf.property.parcel</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('state', '=', 'expected')]</field>
-        <field name="context">{'search_default_group_building': 1}</field>
+        <!-- ⚠️ Pas de regroupement par défaut : une liste de colis annoncés
+             s'ouvre repliée, et le bureau cherche d'abord CE QUI ARRIVE, pas
+             l'immeuble. Le regroupement reste à un clic.
+             🔴 Posé à VIDE, pas retiré : un champ absent d'un XML garde sa
+             valeur en base à la montée (le contexte groupé survivait). -->
+        <field name="context">{}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Aucun colis annoncé</p>
             <p>Les colis que vos résidents attendent, avec ce que le transporteur
