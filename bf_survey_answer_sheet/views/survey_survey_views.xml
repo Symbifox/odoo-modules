@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="survey_survey_view_form" model="ir.ui.view">
+        <field name="name">survey.survey.form.bf.answer.sheet</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='options']/group[@name='options']" position="after">
+                <group string="Answer sheet" name="bf_sheet">
+                    <field name="bf_sheet_enabled"/>
+                    <field name="bf_sheet_config_id"
+                           invisible="not bf_sheet_enabled"
+                           required="bf_sheet_enabled"
+                           options="{'no_create': True}"/>
+                    <field name="bf_sheet_root"
+                           invisible="not bf_sheet_enabled"
+                           required="bf_sheet_enabled"
+                           placeholder="/Clients/Programme"/>
+                    <field name="bf_sheet_folders"
+                           invisible="not bf_sheet_enabled"
+                           placeholder="02 Questionnaire"/>
+                    <field name="bf_sheet_template"
+                           invisible="not bf_sheet_enabled"
+                           placeholder="00 Template client"/>
+                    <field name="bf_sheet_noise_words"
+                           invisible="not bf_sheet_enabled"/>
+                    <field name="bf_sheet_filename" invisible="not bf_sheet_enabled"/>
+                    <!-- Not masked on purpose: this password is made to be
+                         copied out of Odoo and handed over in a one-time
+                         secret. A field nobody can read is a password nobody
+                         can deliver. It is fenced to the settings group. -->
+                    <field name="bf_sheet_password"
+                           invisible="not bf_sheet_enabled"
+                           groups="base.group_system"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

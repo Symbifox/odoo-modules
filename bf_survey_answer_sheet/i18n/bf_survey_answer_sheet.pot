@@ -1,0 +1,403 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_survey_answer_sheet
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-20 05:34+0000\n"
+"PO-Revision-Date: 2026-11-20 05:34+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid ""
+"\"%(declared)s\" is the name of the folder template itself: a sheet is not "
+"filed there."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid ""
+"\"%(declared)s\" matches several folders under %(root)s: %(folders)s. Filed "
+"nowhere until one of them is named on the response."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "\"%s\" does not file answer sheets."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid ""
+"%(path)s and the %(count)s names beside it are all taken by other answer "
+"sheets."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid ""
+"%(path)s holds more entries than a listing can carry (%(max)s): the folder "
+"of a company could be missed."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid ""
+"%s changed on Nextcloud since this response wrote it: nothing was "
+"overwritten."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "%s is not the file this deposit expected."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.survey_survey_view_form
+msgid "/Clients/Programme"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.survey_survey_view_form
+msgid "00 Template client"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.survey_survey_view_form
+msgid "02 Questionnaire"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.report_answer_sheet
+msgid "<span style=\"color:#6B7280;\">Completed on </span>"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.report_answer_sheet
+msgid "<span style=\"color:#9CA3AF;\"> · </span>"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.report_answer_sheet
+msgid ""
+"<span style=\"color:#9CA3AF;\"> · </span>\n"
+"                                <span>Confidential</span>"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.report_answer_sheet
+msgid "<span style=\"color:#9CA3AF;font-style:italic;\">No answer</span>"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.report_answer_sheet
+msgid ""
+"<span>Confidential</span>\n"
+"                                <span> · </span>"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_survey.py:0
+msgid "A destination subfolder cannot climb out of the company's folder: %s"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid ""
+"A file is already at %s and it is not an answer sheet this module wrote: "
+"nothing was overwritten."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "A test entry is never filed."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.actions.report,name:bf_survey_answer_sheet.action_report_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_state
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.survey_survey_view_form
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.survey_user_input_view_form
+msgid "Answer sheet"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_etags
+msgid "Answer sheet etags"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_attachment_id
+msgid "Answer sheet file"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_message
+msgid "Answer sheet log"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_password
+msgid "Answer sheet password"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.actions.server,name:bf_survey_answer_sheet.ir_cron_bf_sheet_ir_actions_server
+msgid "Answer sheets: file what a submission left to file"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_root
+msgid "Client folders root"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_folders
+msgid "Destination subfolders"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields.selection,name:bf_survey_answer_sheet.selection__survey_user_input__bf_sheet_state__error
+msgid "Failed"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_enabled
+msgid "File an answer sheet"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.survey_user_input_view_form
+msgid "File it now"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_filename
+msgid "File name"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields.selection,name:bf_survey_answer_sheet.selection__survey_user_input__bf_sheet_state__done
+msgid "Filed"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_tries
+msgid "Filing attempts"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_survey.py:0
+msgid "Filing the answer sheets of \"%s\" needs a Nextcloud."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_survey.py:0
+msgid "Filing the answer sheets of \"%s\" needs the root of the client folders."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_template
+msgid "Folder template"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_filename
+msgid ""
+"Name of the deposited file. %(date)s is the completion day (2026_11_19), "
+"%(company)s the declared company, %(survey)s the survey's title, %(token)s "
+"the response's own token."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_template
+msgid ""
+"Name of the folder, under the same root, copied to make the folder of a "
+"company that has none yet. Empty creates an empty folder instead."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_config_id
+msgid "Nextcloud"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "Nextcloud copy failed: %s"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "Nextcloud copy of %(source)s failed: HTTP %(code)s"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model,name:bf_survey_answer_sheet.model_nextcloud_document_config
+msgid "Nextcloud document sync configuration"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_root
+msgid ""
+"Nextcloud path holding one folder per company, e.g. /Clients/Programme. The "
+"declared company name is matched against the folders directly under it."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "Nextcloud upload failed: %s"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "Nextcloud upload of %(path)s failed: HTTP %(code)s"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "No Nextcloud is set on \"%s\"."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_folders
+msgid ""
+"One per line, relative to the company's folder, e.g. 02 Questionnaire. The "
+"sheet is deposited in each of them, and a missing one is created. Empty "
+"files in the company's folder itself."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.report_answer_sheet
+msgid "Page <span class=\"page\"/> / <span class=\"topage\"/>"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_noise_words
+msgid ""
+"Space-separated words that say nothing about which company a folder belongs "
+"to, e.g. the programme name the folders carry. The legal forms (inc, ltd, "
+"ltée...) are always ignored."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model,name:bf_survey_answer_sheet.model_survey_survey
+msgid "Survey"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model,name:bf_survey_answer_sheet.model_survey_user_input
+msgid "Survey User Input"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_config_id
+msgid ""
+"The Nextcloud the sheets are filed in. Its service account is the one that "
+"writes, whoever answered."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_survey.py:0
+msgid "The answer sheet file name must end with .pdf: %s"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "The answer sheet file name of \"%(survey)s\" cannot be built: %(error)s"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_survey.py:0
+msgid "The client folders root must start with a slash: %s"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "The declared company name \"%s\" cannot be a folder name."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid ""
+"The declared company name \"%s\" says nothing that can be matched to a "
+"folder."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_password
+msgid ""
+"The password that opens the filed PDFs. Left empty, one is drawn at random "
+"when the first sheet is filed. It is never emailed by this module: hand it "
+"over out of band."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "This response is not complete."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields.selection,name:bf_survey_answer_sheet.selection__survey_user_input__bf_sheet_state__pending
+msgid "To file"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+#: code:addons/bf_survey_answer_sheet/tests/test_answer_sheet.py:0
+msgid "Unknown company"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_enabled
+msgid ""
+"When a respondent completes this survey, file a password-protected PDF of "
+"their own answers in the Nextcloud folder of the company they declared. Test"
+" entries are never filed."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_message
+msgid "Where the sheet landed, or what stopped it."
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_noise_words
+msgid "Words ignored when matching"
+msgstr ""
+
+#. module: bf_survey_answer_sheet
+#: model:ir.actions.report,print_report_name:bf_survey_answer_sheet.action_report_answer_sheet
+msgid "object._bf_sheet_basename()"
+msgstr ""

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- One respondent's own answers, in the company's brand.
+         Written for wkhtmltopdf 0.12.6: literal colours (var() is ignored),
+         tables rather than grid or flex, one table per question so that
+         page-break-inside holds - the rule is honoured on a table, not on a
+         row - and the logo inlined as a data URI, because a remote fetch
+         blocks the render.
+         The header and the footer are drawn here rather than taken from
+         `web.external_layout`: a tenant's own layout is as tall as its
+         address and tax numbers make it, and a body that starts above it is
+         printed over it, on every page. The page numbers come from the
+         `page`/`topage` spans that `web.html_container` fills. -->
+    <template id="report_answer_sheet">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="vals" t-value="doc.sudo()._bf_sheet_values()"/>
+
+                <div class="header"
+                     t-attf-style="font-family:'#{vals['font']}','Lexend',Arial,sans-serif;">
+                    <table style="width:100%;border-collapse:separate;border-spacing:0;">
+                        <tr>
+                            <td style="vertical-align:middle;">
+                                <img t-if="vals['company'].logo"
+                                     t-att-src="image_data_uri(vals['company'].logo)"
+                                     style="max-height:26px;max-width:150px;"/>
+                                <span t-else="" t-attf-style="font-size:12px;font-weight:600;color:#{vals['dark']};"
+                                      t-out="vals['company_name']"/>
+                            </td>
+                            <td style="text-align:right;vertical-align:middle;font-size:9px;color:#9CA3AF;"
+                                t-out="vals['survey_title']"/>
+                        </tr>
+                    </table>
+                    <div t-attf-style="height:2px;background:#{vals['primary']};margin-top:5px;"/>
+                </div>
+
+                <div class="article" t-att-data-oe-model="doc._name" t-att-data-oe-id="doc.id"
+                     t-attf-style="font-family:'#{vals['font']}','Lexend',Arial,sans-serif;color:#{vals['dark']};">
+
+                    <table style="width:100%;border-collapse:separate;border-spacing:0;">
+                        <tr>
+                            <td t-attf-style="border-left:4px solid #{vals['primary']};padding:2px 0 2px 10px;">
+                                <div t-attf-style="font-size:19px;font-weight:600;color:#{vals['dark']};"
+                                     t-out="vals['declared']"/>
+                                <div style="font-size:11.5px;color:#6B7280;margin-top:2px;"
+                                     t-out="vals['survey_title']"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table style="width:100%;border-collapse:separate;border-spacing:0;margin:10px 0 16px 0;">
+                        <tr>
+                            <td style="padding:7px 10px;background:#F3F4F6;font-size:11px;color:#374151;">
+                                <span style="color:#6B7280;">Completed on </span>
+                                <span style="font-weight:600;" t-out="vals['completed_on']"/>
+                                <t t-if="vals['email']">
+                                    <span style="color:#9CA3AF;"> · </span>
+                                    <span t-out="vals['email']"/>
+                                </t>
+                                <span style="color:#9CA3AF;"> · </span>
+                                <span>Confidential</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <t t-foreach="vals['sections']" t-as="section">
+                        <t t-foreach="section['questions']" t-as="question">
+                            <!-- The section's title travels INSIDE the table of
+                                 its first question: page-break-inside then
+                                 keeps them together, where page-break-after on
+                                 a title of its own left it alone at the foot of
+                                 a sheet (wkhtmltopdf honours "inside", not
+                                 "after"). -->
+                            <table style="width:100%;border-collapse:separate;border-spacing:0;page-break-inside:avoid;">
+                                <tr t-if="question_index == 0 and section['title']">
+                                    <td colspan="2" style="padding:16px 0 6px 0;">
+                                        <div t-attf-style="padding:5px 0 5px 9px;border-left:3px solid #{vals['primary']};font-size:13px;font-weight:600;color:#{vals['primary']};"
+                                             t-out="section['title']"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:42%;padding:7px 12px 7px 0;border-bottom:1px solid #E5E7EB;font-size:11px;color:#4B5563;vertical-align:top;"
+                                        t-out="question['title']"/>
+                                    <td t-attf-style="padding:7px 0;border-bottom:1px solid #E5E7EB;font-size:11px;color:#{vals['dark']};vertical-align:top;">
+                                        <t t-set="answer" t-value="question['answer']"/>
+                                        <t t-if="answer['kind'] == 'text'">
+                                            <div style="white-space:pre-line;" t-out="answer['text']"/>
+                                        </t>
+                                        <t t-elif="answer['kind'] == 'list'">
+                                            <t t-foreach="answer['items']" t-as="item">
+                                                <div style="padding-left:12px;text-indent:-12px;">
+                                                    <span t-attf-style="color:#{vals['primary']};">•</span>
+                                                    <span t-out="item"/>
+                                                </div>
+                                            </t>
+                                        </t>
+                                        <t t-elif="answer['kind'] == 'pairs'">
+                                            <table style="width:100%;border-collapse:separate;border-spacing:0;">
+                                                <t t-foreach="answer['pairs']" t-as="pair">
+                                                    <tr>
+                                                        <td style="padding:1px 10px 1px 0;color:#6B7280;vertical-align:top;"
+                                                            t-out="pair[0]"/>
+                                                        <td t-attf-style="padding:1px 0;color:#{vals['dark']};vertical-align:top;"
+                                                            t-out="pair[1]"/>
+                                                    </tr>
+                                                </t>
+                                            </table>
+                                        </t>
+                                        <t t-else="">
+                                            <span style="color:#9CA3AF;font-style:italic;">No answer</span>
+                                        </t>
+                                        <div t-if="answer['comment']"
+                                             style="margin-top:3px;color:#6B7280;font-style:italic;white-space:pre-line;"
+                                             t-out="answer['comment']"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+                    </t>
+                </div>
+
+                <div class="footer"
+                     t-attf-style="font-family:'#{vals['font']}','Lexend',Arial,sans-serif;">
+                    <table style="width:100%;border-collapse:separate;border-spacing:0;">
+                        <tr>
+                            <td style="font-size:9px;color:#9CA3AF;">
+                                <span>Confidential</span>
+                                <span> · </span>
+                                <span t-out="vals['company_name']"/>
+                            </td>
+                            <td style="text-align:right;font-size:9px;color:#9CA3AF;">
+                                Page <span class="page"/> / <span class="topage"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

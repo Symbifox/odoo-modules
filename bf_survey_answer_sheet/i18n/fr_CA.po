@@ -1,0 +1,328 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_survey_answer_sheet
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-20 05:34+0000\n"
+"PO-Revision-Date: 2026-11-20 05:34+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "\"%(declared)s\" is the name of the folder template itself: a sheet is not filed there."
+msgstr "« %(declared)s » est le nom du gabarit de dossier lui-même : une feuille ne s'y classe pas."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "\"%(declared)s\" matches several folders under %(root)s: %(folders)s. Filed nowhere until one of them is named on the response."
+msgstr "« %(declared)s » correspond à plusieurs dossiers sous %(root)s : %(folders)s. Rien n'est classé tant que l'un d'eux n'est pas nommé sur la réponse."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "\"%s\" does not file answer sheets."
+msgstr "« %s » ne classe pas de feuilles de réponses."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "%(path)s and the %(count)s names beside it are all taken by other answer sheets."
+msgstr "%(path)s et les %(count)s noms à côté sont tous pris par d'autres feuilles de réponses."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "%(path)s holds more entries than a listing can carry (%(max)s): the folder of a company could be missed."
+msgstr "%(path)s porte plus d'entrées qu'un relevé n'en transporte (%(max)s) : le dossier d'une entreprise pourrait être manqué."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "%s changed on Nextcloud since this response wrote it: nothing was overwritten."
+msgstr "%s a changé sur Nextcloud depuis que cette réponse l'a écrit : rien n'a été écrasé."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "%s is not the file this deposit expected."
+msgstr "%s n'est pas le fichier que ce dépôt attendait."
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.survey_survey_view_form
+msgid "00 Template client"
+msgstr "00 Gabarit client"
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.report_answer_sheet
+msgid "<span style=\"color:#6B7280;\">Completed on </span>"
+msgstr "<span style=\"color:#6B7280;\">Rempli le </span>"
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.report_answer_sheet
+msgid ""
+"<span style=\"color:#9CA3AF;\"> · </span>\n"
+"                                <span>Confidential</span>"
+msgstr ""
+"<span style=\"color:#9CA3AF;\"> · </span>\n"
+"                                <span>Confidentiel</span>"
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.report_answer_sheet
+msgid "<span style=\"color:#9CA3AF;font-style:italic;\">No answer</span>"
+msgstr "<span style=\"color:#9CA3AF;font-style:italic;\">Sans réponse</span>"
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.report_answer_sheet
+msgid ""
+"<span>Confidential</span>\n"
+"                                <span> · </span>"
+msgstr ""
+"<span>Confidentiel</span>\n"
+"                                <span> · </span>"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_survey.py:0
+msgid "A destination subfolder cannot climb out of the company's folder: %s"
+msgstr "Un sous-dossier de destination ne peut pas sortir du dossier de l'entreprise : %s"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "A file is already at %s and it is not an answer sheet this module wrote: nothing was overwritten."
+msgstr "Un fichier est déjà à %s et ce n'est pas une feuille de réponses écrite par ce module : rien n'a été écrasé."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "A test entry is never filed."
+msgstr "Une réponse d'essai n'est jamais classée."
+
+#. module: bf_survey_answer_sheet
+#: model:ir.actions.report,name:bf_survey_answer_sheet.action_report_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_state
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.survey_survey_view_form
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.survey_user_input_view_form
+msgid "Answer sheet"
+msgstr "Feuille de réponses"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_etags
+msgid "Answer sheet etags"
+msgstr "Etags de la feuille de réponses"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_attachment_id
+msgid "Answer sheet file"
+msgstr "Fichier de la feuille de réponses"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_message
+msgid "Answer sheet log"
+msgstr "Journal de la feuille de réponses"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_password
+msgid "Answer sheet password"
+msgstr "Mot de passe des feuilles de réponses"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.actions.server,name:bf_survey_answer_sheet.ir_cron_bf_sheet_ir_actions_server
+msgid "Answer sheets: file what a submission left to file"
+msgstr "Feuilles de réponses : classer ce qu'une soumission a laissé à classer"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_root
+msgid "Client folders root"
+msgstr "Racine des dossiers clients"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_folders
+msgid "Destination subfolders"
+msgstr "Sous-dossiers de destination"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields.selection,name:bf_survey_answer_sheet.selection__survey_user_input__bf_sheet_state__error
+msgid "Failed"
+msgstr "Échouée"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_enabled
+msgid "File an answer sheet"
+msgstr "Classer une feuille de réponses"
+
+#. module: bf_survey_answer_sheet
+#: model_terms:ir.ui.view,arch_db:bf_survey_answer_sheet.survey_user_input_view_form
+msgid "File it now"
+msgstr "Classer maintenant"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_filename
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields.selection,name:bf_survey_answer_sheet.selection__survey_user_input__bf_sheet_state__done
+msgid "Filed"
+msgstr "Classée"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_tries
+msgid "Filing attempts"
+msgstr "Tentatives de classement"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_survey.py:0
+msgid "Filing the answer sheets of \"%s\" needs a Nextcloud."
+msgstr "Classer les feuilles de réponses de « %s » exige un Nextcloud."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_survey.py:0
+msgid "Filing the answer sheets of \"%s\" needs the root of the client folders."
+msgstr "Classer les feuilles de réponses de « %s » exige la racine des dossiers clients."
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_template
+msgid "Folder template"
+msgstr "Gabarit de dossier"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_filename
+msgid "Name of the deposited file. %(date)s is the completion day (2026_11_19), %(company)s the declared company, %(survey)s the survey's title, %(token)s the response's own token."
+msgstr "Nom du fichier déposé. %(date)s est le jour de la complétion (2026_11_19), %(company)s l'entreprise déclarée, %(survey)s le titre du sondage, %(token)s le jeton de la réponse."
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_template
+msgid "Name of the folder, under the same root, copied to make the folder of a company that has none yet. Empty creates an empty folder instead."
+msgstr "Nom du dossier, sous la même racine, copié pour faire le dossier d'une entreprise qui n'en a pas encore. Vide, un dossier vide est créé à la place."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "Nextcloud copy failed: %s"
+msgstr "La copie Nextcloud a échoué : %s"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "Nextcloud copy of %(source)s failed: HTTP %(code)s"
+msgstr "La copie Nextcloud de %(source)s a échoué : HTTP %(code)s"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_root
+msgid "Nextcloud path holding one folder per company, e.g. /Clients/Programme. The declared company name is matched against the folders directly under it."
+msgstr "Chemin Nextcloud qui porte un dossier par entreprise, p. ex. /Clients/Programme. Le nom d'entreprise déclaré est rapproché des dossiers qui s'y trouvent directement."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "Nextcloud upload failed: %s"
+msgstr "Le dépôt Nextcloud a échoué : %s"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/nextcloud_document_config.py:0
+msgid "Nextcloud upload of %(path)s failed: HTTP %(code)s"
+msgstr "Le dépôt Nextcloud de %(path)s a échoué : HTTP %(code)s"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "No Nextcloud is set on \"%s\"."
+msgstr "Aucun Nextcloud n'est réglé sur « %s »."
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_folders
+msgid "One per line, relative to the company's folder, e.g. 02 Questionnaire. The sheet is deposited in each of them, and a missing one is created. Empty files in the company's folder itself."
+msgstr "Un par ligne, relatif au dossier de l'entreprise, p. ex. 02 Questionnaire. La feuille est déposée dans chacun, et celui qui manque est créé. Vide, elle est déposée dans le dossier de l'entreprise lui-même."
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_noise_words
+msgid "Space-separated words that say nothing about which company a folder belongs to, e.g. the programme name the folders carry. The legal forms (inc, ltd, ltée...) are always ignored."
+msgstr "Mots séparés par des espaces qui ne disent rien de l'entreprise à qui un dossier appartient, p. ex. le nom du programme que les dossiers portent. Les formes juridiques (inc, ltd, ltée…) sont toujours ignorées."
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_config_id
+msgid "The Nextcloud the sheets are filed in. Its service account is the one that writes, whoever answered."
+msgstr "Le Nextcloud où les feuilles sont classées. C'est son compte de service qui écrit, quelle que soit la personne qui a répondu."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_survey.py:0
+msgid "The answer sheet file name must end with .pdf: %s"
+msgstr "Le nom du fichier de la feuille de réponses doit se terminer par .pdf : %s"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "The answer sheet file name of \"%(survey)s\" cannot be built: %(error)s"
+msgstr "Le nom du fichier de la feuille de réponses de « %(survey)s » ne peut pas être construit : %(error)s"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_survey.py:0
+msgid "The client folders root must start with a slash: %s"
+msgstr "La racine des dossiers clients doit commencer par une barre oblique : %s"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "The declared company name \"%s\" cannot be a folder name."
+msgstr "Le nom d'entreprise déclaré « %s » ne peut pas servir de nom de dossier."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "The declared company name \"%s\" says nothing that can be matched to a folder."
+msgstr "Le nom d'entreprise déclaré « %s » ne dit rien qui puisse être rapproché d'un dossier."
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_password
+msgid "The password that opens the filed PDFs. Left empty, one is drawn at random when the first sheet is filed. It is never emailed by this module: hand it over out of band."
+msgstr "Le mot de passe qui ouvre les PDF classés. Laissé vide, il est tiré au hasard au premier classement. Ce module ne l'envoie jamais par courriel : il se remet par un autre canal."
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+msgid "This response is not complete."
+msgstr "Cette réponse n'est pas terminée."
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields.selection,name:bf_survey_answer_sheet.selection__survey_user_input__bf_sheet_state__pending
+msgid "To file"
+msgstr "À classer"
+
+#. module: bf_survey_answer_sheet
+#. odoo-python
+#: code:addons/bf_survey_answer_sheet/models/survey_user_input.py:0
+#: code:addons/bf_survey_answer_sheet/tests/test_answer_sheet.py:0
+msgid "Unknown company"
+msgstr "Entreprise inconnue"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_survey__bf_sheet_enabled
+msgid "When a respondent completes this survey, file a password-protected PDF of their own answers in the Nextcloud folder of the company they declared. Test entries are never filed."
+msgstr "Quand une personne termine ce sondage, classer un PDF protégé par mot de passe de ses propres réponses dans le dossier Nextcloud de l'entreprise qu'elle a déclarée. Les réponses d'essai ne sont jamais classées."
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_user_input__bf_sheet_message
+msgid "Where the sheet landed, or what stopped it."
+msgstr "Où la feuille a été déposée, ou ce qui l'a arrêtée."
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_noise_words
+msgid "Words ignored when matching"
+msgstr "Mots ignorés au rapprochement"

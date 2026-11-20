@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**103 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**104 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -461,6 +461,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.1.0 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
 | `bf_subscription_expense` | Abonnements — notes de frais | 18.0.1.0.1 | BUSL-1.1 | A subscription paid through an expense report counts in the subscription's costs |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
+| `bf_survey_answer_sheet` | Survey Answer Sheet | 18.0.1.0.2 | LGPL-3 | Each completed response filed by itself: a branded PDF of the answers, password-protected, in the respondent's own folder |
 | `bf_survey_certificate` | Branded Course Certificates | 18.0.1.1.1 | BUSL-1.1 | Certification documents in the company's own brand: a branded PDF, a verifiable certificate number with its public page, and a branded success email |
 | `bf_survey_live` | Séance en direct : la trame et les écrans | 18.0.1.5.0 | BUSL-1.1 | A presentation deck between the questions, word cloud, teams, podium and the join code on every screen, for a live survey session |
 | `bf_survey_print` | BF Survey Print | 18.0.1.0.0 | LGPL-3 | Printing a survey breaks at the right places: a section starts a new sheet and a question is kept in one piece |
@@ -568,7 +569,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **103 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **104 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising
