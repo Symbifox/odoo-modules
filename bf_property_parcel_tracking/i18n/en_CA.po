@@ -1,0 +1,857 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_parcel_tracking
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-20 00:50+0000\n"
+"PO-Revision-Date: 2026-11-20 00:50+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "%(carrier)s a refusé : %(why)s"
+msgstr "%(carrier)s refused: %(why)s"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/hooks.py:0
+msgid ""
+"%(voisin)s est en %(pose)s, et le suivi des colis exige %(exige)s : sans "
+"elle, un texto « votre colis est arrivé » partirait dès qu'un résident "
+"ANNONCE un colis encore en route. Montez %(voisin)s dans la même fenêtre, "
+"puis reprenez cette installation."
+msgstr ""
+"%(voisin)s is at %(pose)s, and parcel tracking requires %(exige)s: without "
+"it, a \"your parcel has arrived\" text message would go out the moment a "
+"resident ANNOUNCES a parcel still in transit. Upgrade %(voisin)s in the "
+"same window, then run this installation again."
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid ""
+"<small class=\"text-muted d-block mt-1\">\n"
+"                    Le numéro sert à demander au transporteur où en est ce colis, et à\n"
+"                    rien d'autre. Il disparaît avec la fiche du colis.\n"
+"                </small>"
+msgstr ""
+"<small class=\"text-muted d-block mt-1\">\n                    The number "
+"is used to ask the carrier where this parcel is, and for\n                 "
+"nothing else. It disappears with the parcel record.\n                "
+"</small>"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__active
+msgid "Active"
+msgstr "Active"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Annoncer"
+msgstr "Announce"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__state__expected
+msgid "Annoncé"
+msgstr "Announced"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid ""
+"Annoncé il y a plus de %s jours sans être livré : l'interrogation s'arrête. "
+"Le colis reste à suivre à la main."
+msgstr ""
+"Announced more than %s days ago without being delivered: tracking stops. "
+"The parcel is still to be followed by hand."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_since
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Annoncé le"
+msgstr "Announced on"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_property_parcel_search_tracking
+msgid "Annoncés"
+msgstr "Announced"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_carrier_account_form
+msgid "Archivé"
+msgstr "Archived"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_property_parcel_form_tracking
+msgid "Arrivé"
+msgstr "Arrived"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.actions.act_window,help:bf_property_parcel_tracking.action_property_parcel_expected
+msgid "Aucun colis annoncé"
+msgstr "No announced parcel"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid ""
+"Aucun compte %s n'est configuré pour cette société : le suivi ne peut pas "
+"être interrogé."
+msgstr ""
+"No %s account is configured for this company: tracking cannot be queried."
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.actions.act_window,help:bf_property_parcel_tracking.action_carrier_account
+msgid "Aucun compte de transporteur"
+msgstr "No carrier account"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/controllers/portal.py:0
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_carrier__other
+msgid "Autre transporteur"
+msgstr "Other carrier"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.actions.act_window,help:bf_property_parcel_tracking.action_carrier_account
+msgid ""
+"Avec les clés d'UPS ou de DHL, un colis annoncé par un résident se suit\n"
+"               tout seul jusqu'à sa livraison, et le résident est prévenu à ce\n"
+"               moment-là."
+msgstr ""
+"With UPS or DHL keys, a parcel a resident announces follows itself\n       "
+"until it is delivered, and the resident is notified at that\n              "
+"moment."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_notified
+msgid "Avis d'arrivée tenté"
+msgstr "Arrival notice attempted"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid ""
+"Ce colis est déjà annoncé. Il paraît dans la liste ci-dessous dès que\n"
+"                le transporteur répond."
+msgstr ""
+"This parcel is already announced. It appears in the list below as soon "
+"as\n                the carrier answers."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.constraint,message:bf_property_parcel_tracking.constraint_bf_property_parcel_uniq_tracking_number
+msgid "Ce numéro de suivi est déjà annoncé pour ce transporteur."
+msgstr "This tracking number is already announced for this carrier."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_label
+msgid "Ce que dit le transporteur"
+msgstr "What the carrier says"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid ""
+"Ce transporteur n'a pas d'appel qui vérifie une clé sans interroger un "
+"colis. La clé se vérifiera au premier suivi, et le colis dira ce qui s'est "
+"passé."
+msgstr ""
+"This carrier has no call that checks a key without querying a parcel. The "
+"key will be checked at the first tracking attempt, and the parcel will say "
+"what happened."
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Celui de votre courriel de confirmation"
+msgstr "The one from your confirmation email"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.constraint,message:bf_property_parcel_tracking.constraint_bf_property_carrier_account_uniq_carrier_company
+msgid ""
+"Cette société a déjà un compte pour ce transporteur et cet environnement."
+msgstr ""
+"This company already has an account for this carrier and this environment."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_raw_code
+msgid "Code du transporteur"
+msgstr "Carrier code"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.actions.server,name:bf_property_parcel_tracking.cron_parcel_tracking_ir_actions_server
+msgid "Colis : interroger les transporteurs"
+msgstr "Parcels: query the carriers"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.actions.server,name:bf_property_parcel_tracking.cron_parcel_purge_announcements_ir_actions_server
+msgid "Colis : purger les annonces sans suite"
+msgstr "Parcels: purge announcements with no outcome"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.actions.act_window,name:bf_property_parcel_tracking.action_property_parcel_expected
+#: model:ir.ui.menu,name:bf_property_parcel_tracking.menu_property_parcel_expected
+msgid "Colis annoncés"
+msgstr "Announced parcels"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "Colis arrivé, constaté au comptoir."
+msgstr "Parcel arrived, recorded at the counter."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__hourly_limit
+msgid "Colis interrogés par heure"
+msgstr "Parcels queried per hour"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model,name:bf_property_parcel_tracking.model_bf_property_parcel
+msgid "Colis reçu pour un occupant"
+msgstr "Parcel received for an occupant"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid "Compte UPS joignable"
+msgstr "UPS account reachable"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model,name:bf_property_parcel_tracking.model_bf_property_carrier_account
+msgid "Compte chez un transporteur"
+msgstr "Carrier account"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_carrier_account_form
+msgid "Compte de transporteur"
+msgstr "Carrier account"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.actions.act_window,name:bf_property_parcel_tracking.action_carrier_account
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_carrier_account_list
+msgid "Comptes de transporteur"
+msgstr "Carrier accounts"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "Consigner l'arrivée d'un colis"
+msgstr "Recording a parcel's arrival"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_carrier_account__carrier__dhl
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_carrier__dhl
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_carrier_account_form
+msgid "DHL"
+msgstr "DHL"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__dhl_api_key
+msgid "DHL : clé d'API"
+msgstr "DHL: API key"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_message
+msgid "Dernier refus du transporteur"
+msgstr "Carrier's last refusal"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_event_at
+msgid "Dernier événement"
+msgstr "Last event"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__state__held
+msgid "En dépôt"
+msgstr "Held"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_state__out_for_delivery
+msgid "En livraison"
+msgstr "Out for delivery"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_state__in_transit
+msgid "En route"
+msgstr "In transit"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__environment
+msgid "Environnement"
+msgstr "Environment"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_carrier_account__environment__test
+msgid "Essai"
+msgstr "Test"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_carrier_account_form
+msgid "Essayer les clés"
+msgstr "Try the keys"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid "Essayer un compte de transporteur relève du syndicat."
+msgstr "Trying a carrier account is for the syndicate to do."
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Fraction"
+msgstr "Fraction"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_carrier_account__ups_token
+msgid ""
+"Gardé jusqu'à son expiration pour ne pas redemander un jeton à chaque colis."
+" Il ne vaut que quelques heures."
+msgstr ""
+"Kept until it expires, so a token is not requested for every parcel. It is "
+"only good for a few hours."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Il faut un transporteur et un numéro de suivi."
+msgstr "A carrier and a tracking number are needed."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_attempts
+msgid "Interrogations"
+msgstr "Queries"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_property_parcel_form_tracking
+msgid "Interroger le transporteur"
+msgstr "Query the carrier"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "Interroger un transporteur"
+msgstr "Querying a carrier"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_checked_at
+msgid "Interrogé le"
+msgstr "Queried on"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_carrier_account__dhl_api_key
+msgid "L'en-tête DHL-API-Key, délivrée au portail développeur de DHL."
+msgstr "The DHL-API-Key header, issued by DHL's developer portal."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_carrier_account__locale
+msgid ""
+"La langue dans laquelle le transporteur rend ses libellés d'état. UPS attend"
+" « fr_CA » ou « en_CA » ; DHL attend « fr » ou « en »."
+msgstr ""
+"The language the carrier returns its status labels in. UPS expects "
+"\"fr_CA\" or \"en_CA\"; DHL expects \"fr\" or \"en\"."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid "La langue des libellés s'écrit « fr_CA », « en_CA », « fr » ou « en »."
+msgstr ""
+"The label language is written \"fr_CA\", \"en_CA\", \"fr\" or \"en\"."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__locale
+msgid "Langue des libellés"
+msgstr "Label language"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_parcel__tracking_raw_code
+msgid "Le code brut, gardé pour qui doit appeler le transporteur."
+msgstr "The raw code, kept for whoever has to call the carrier."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid ""
+"Le compte DHL n'a pas de clé d'API (en-tête DHL-API-Key, délivrée au portail"
+" développeur de DHL)."
+msgstr ""
+"The DHL account has no API key (the DHL-API-Key header, issued by DHL's "
+"developer portal)."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid ""
+"Le compte UPS n'a pas d'identifiant client ni de secret : ils se créent au "
+"portail développeur d'UPS, pour une application liée au compte UPS."
+msgstr ""
+"The UPS account has no client id or secret: they are created in UPS's "
+"developer portal, for an application linked to the UPS account."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_parcel__tracking_label
+msgid ""
+"Le libellé rendu par le transporteur, dans ses mots. Il n'est pas traduit : "
+"c'est sa parole, pas la nôtre."
+msgstr ""
+"The label the carrier returns, in its own words. It is not translated: it "
+"is their word, not ours."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_parcel__tracking_since
+msgid ""
+"Le moment où ce numéro de suivi est entré en file. L'arrêt au bout de trente"
+" jours se compte depuis là, pas depuis la création de la fiche."
+msgstr ""
+"When this tracking number entered the queue. The thirty-day stop counts "
+"from there, not from when the record was created."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_parcel__tracking_number
+msgid ""
+"Le numéro que le transporteur a donné au colis. C'est le résident qui le "
+"connaît : personne n'a à le devenir."
+msgstr ""
+"The number the carrier gave the parcel. The resident is the one who knows "
+"it: nobody has to guess it."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid "Le suivi Purolator n'est pas branché. %s"
+msgstr "Purolator tracking is not connected. %s"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "Le transporteur déclare ce colis livré (%s)."
+msgstr "The carrier declares this parcel delivered (%s)."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid ""
+"Le transporteur déclare ce colis livré : il passe en dépôt, et le "
+"destinataire sera avisé."
+msgstr ""
+"The carrier declares this parcel delivered: it becomes held, and the "
+"recipient will be notified."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid ""
+"Le transporteur ne connaît pas ce numéro, après %s interrogations : il est "
+"probablement mal saisi."
+msgstr ""
+"The carrier does not know this number, after %s queries: it is probably "
+"mistyped."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_state__unknown
+msgid "Le transporteur ne se prononce pas"
+msgstr "The carrier does not say"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.actions.act_window,help:bf_property_parcel_tracking.action_property_parcel_expected
+msgid ""
+"Les colis que vos résidents attendent, avec ce que le transporteur\n"
+"               en dit. Le bouton « Arrivé » consigne celui qui est déjà au comptoir."
+msgstr ""
+"The parcels your residents are waiting for, with what the carrier\n        "
+"says about them. The \"Arrived\" button records the one already on the "
+"counter."
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Les colis que vous attendez"
+msgstr "The parcels you are waiting for"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_parcel__tracking_carrier
+msgid ""
+"Les trois transporteurs branchés s'interrogent tout seuls. « Autre » garde "
+"le numéro sans rien interroger."
+msgstr ""
+"The three connected carriers are queried automatically. \"Other\" keeps "
+"the number without querying anything."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_state__delivered
+msgid "Livré, selon le transporteur"
+msgstr "Delivered, according to the carrier"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Nature"
+msgstr "Type"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__note
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_carrier_account_form
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Numéro"
+msgstr "Number"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_number
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Numéro de suivi"
+msgstr "Tracking number"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_state__not_found
+msgid "Numéro inconnu du transporteur"
+msgstr "Number unknown to the carrier"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_carrier_account__hourly_limit
+msgid ""
+"Plafond que ce logiciel s'impose, pour ne pas épuiser un quota ni faire une "
+"facture surprise. Il compte les COLIS interrogés dans la dernière heure : un"
+" même colis regardé deux fois compte une fois. Au-delà, les interrogations "
+"sont repoussées d'un quart d'heure, jamais abandonnées. À zéro, aucun "
+"plafond : à n'utiliser qu'avec un contrat qui le permet."
+msgstr ""
+"A ceiling this software sets on itself, so it does not exhaust a quota or "
+"run up a surprise bill. It counts the PARCELS queried in the last hour: "
+"the same parcel looked at twice counts once. Beyond it, queries are "
+"postponed by fifteen minutes, never dropped. At zero, no ceiling: to be "
+"used only under a contract that allows it."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_parcel__tracking_notified
+msgid ""
+"Posé AVANT l'avis au résident. Un texto parti ne se rappelle pas : sans "
+"cette marque, un retour en arrière après l'envoi faisait repartir l'avis au "
+"passage suivant."
+msgstr ""
+"Set BEFORE the resident is notified. A text message that has left cannot "
+"be recalled: without this mark, a rollback after the send had the notice "
+"go out again on the next pass."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_state__exception
+msgid "Problème signalé par le transporteur"
+msgstr "Problem reported by the carrier"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_next_check
+msgid "Prochaine interrogation"
+msgstr "Next query"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_carrier_account__environment__production
+msgid "Production"
+msgstr "Production"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_carrier_account__carrier__purolator
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_carrier__purolator
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_carrier_account_form
+msgid "Purolator"
+msgstr "Purolator"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__purolator_key
+msgid "Purolator : clé"
+msgstr "Purolator: key"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__purolator_password
+msgid "Purolator : mot de passe"
+msgstr "Purolator: password"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__purolator_account_number
+msgid "Purolator : numéro de compte"
+msgstr "Purolator: account number"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_carrier_account_form
+msgid ""
+"Purolator ne publie ni sa WSDL ni sa documentation sans compte :\n"
+"                            le suivi n'est pas branché, et un numéro Purolator se suit à la\n"
+"                            main. La clé de développement s'obtient au portail\n"
+"                            ship.purolator.com/developer ; la clé de production exige un\n"
+"                            numéro de compte d'affaires, la certification de l'intégration\n"
+"                            et trois contacts de l'entreprise."
+msgstr ""
+"Purolator publishes neither its WSDL nor its documentation without an "
+"account:\n                            tracking is not connected, and a "
+"Purolator number is followed by\n                            hand. The "
+"development key is obtained from the\n                            "
+"ship.purolator.com/developer portal; the production key requires a\n       "
+"business account number, certification of the integration\n                "
+"and three contacts from the business."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__state__collected
+msgid "Remis"
+msgstr "Handed over"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Retirer"
+msgstr "Remove"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Retirer cette annonce"
+msgstr "Remove this announcement"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__state__returned
+msgid "Retourné à l'expéditeur"
+msgstr "Returned to sender"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_carrier_account__ups_account_number
+msgid ""
+"Six chiffres. Facultatif : il voyage dans l'en-tête x-merchant-id de la "
+"demande de jeton."
+msgstr ""
+"Six digits. Optional: it travels in the x-merchant-id header of the token "
+"request."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__company_id
+msgid "Société"
+msgstr "Company"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_state
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Suivi"
+msgstr "Tracking"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "Suivi arrêté : %s"
+msgstr "Tracking stopped: %s"
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_property_parcel_search_tracking
+msgid "Suivi à faire à la main"
+msgstr "To be followed by hand"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__carrier
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid "Transporteur"
+msgstr "Carrier"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid "Transporteur inconnu : %s"
+msgstr "Unknown carrier: %s"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__tracking_carrier
+msgid "Transporteur suivi"
+msgstr "Carrier tracked"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.ui.menu,name:bf_property_parcel_tracking.menu_carrier_account
+msgid "Transporteurs"
+msgstr "Carriers"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_carrier_account__carrier__ups
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_carrier__ups
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.view_carrier_account_form
+msgid "UPS"
+msgstr "UPS"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__ups_client_id
+msgid "UPS : identifiant client"
+msgstr "UPS: client id"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__ups_token
+msgid "UPS : jeton en cours"
+msgstr "UPS: current token"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__ups_token_expires_at
+msgid "UPS : jeton valide jusqu'à"
+msgstr "UPS: token valid until"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__ups_account_number
+msgid "UPS : numéro de compte"
+msgstr "UPS: account number"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_carrier_account__ups_client_secret
+msgid "UPS : secret"
+msgstr "UPS: secret"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,help:bf_property_parcel_tracking.field_bf_property_carrier_account__environment
+msgid ""
+"UPS a deux hôtes et deux jeux de clés. Une clé d'essai sur l'hôte de "
+"production est refusée, et l'inverse rend des suivis qui n'existent pas."
+msgstr ""
+"UPS has two hosts and two sets of keys. A test key on the production host "
+"is refused, and the other way round returns tracking for parcels that do "
+"not exist."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid "UPS a délivré un jeton pour ce compte."
+msgstr "UPS issued a token for this account."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid "UPS a refusé : %s"
+msgstr "UPS refused: %s"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid ""
+"Votre compte n'est rattaché à aucun logement : il n'y a pas de registre où "
+"annoncer ce colis."
+msgstr ""
+"Your account is not attached to any unit: there is no register to announce "
+"this parcel in."
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid ""
+"Vous avez annoncé beaucoup de colis dans la dernière heure. Reprenez\n"
+"                tout à l'heure, ou parlez-en au bureau."
+msgstr ""
+"You have announced a lot of parcels in the last hour. Try again\n          "
+"later, or talk to the office."
+
+#. module: bf_property_parcel_tracking
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_tracking.portal_property_deliveries_tracking
+msgid ""
+"Vous n'avez annoncé aucun colis. En annonçant son numéro de suivi,\n"
+"                    vous serez prévenu dès que le transporteur l'aura livré."
+msgstr ""
+"You have not announced any parcel. By announcing its tracking number,\n    "
+"you will be told as soon as the carrier has delivered it."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid ""
+"Vous ne pouvez annoncer un colis que pour un logement qui est le vôtre."
+msgstr "You can only announce a parcel for a unit that is yours."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid "essai"
+msgstr "test"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "le colis est annoncé, l'avis partira à la livraison"
+msgstr "the parcel is announced, the notice will go out on delivery"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_carrier_account.py:0
+msgid "production"
+msgstr "production"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/hooks.py:0
+msgid "version inconnue"
+msgstr "unknown version"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "« %s » n'a pas de numéro de suivi chez un transporteur branché."
+msgstr "\"%s\" has no tracking number with a connected carrier."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "« %s » n'est pas un colis annoncé."
+msgstr "\"%s\" is not an announced parcel."
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "« %s » n'est plus une simple annonce."
+msgstr "\"%s\" is no longer just an announcement."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_state__pending
+msgid "À interroger"
+msgstr "To query"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_state__blocked
+msgid "À suivre à la main"
+msgstr "To be followed by hand"
+
+#. module: bf_property_parcel_tracking
+#. odoo-python
+#: code:addons/bf_property_parcel_tracking/models/bf_property_parcel.py:0
+msgid "Échec inattendu du suivi (%s). Le détail est au journal du serveur."
+msgstr ""
+"Unexpected tracking failure (%s). The detail is in the server log."
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields,field_description:bf_property_parcel_tracking.field_bf_property_parcel__state
+msgid "État"
+msgstr "Status"
+
+#. module: bf_property_parcel_tracking
+#: model:ir.model.fields.selection,name:bf_property_parcel_tracking.selection__bf_property_parcel__tracking_state__pre_transit
+msgid "Étiquette créée"
+msgstr "Label created"

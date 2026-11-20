@@ -20,7 +20,13 @@
     #   personnel, entrée au logement (art. 1930-1933 : préavis de 24 h, heures,
     #   urgence motivée) ; un droit porte un résident OU un accès temporaire ;
     #   retrait à la fin de la plage par un cron du quart d'heure.
-    "version": "18.0.1.1.2",
+    # 18.0.1.1.3 : 🔴 une installation NEUVE échouait. Le menu « Accès
+    #   temporaires » déclarait son parent `menu_access_root` depuis un fichier
+    #   chargé AVANT celui qui le définit : sur une base neuve, « External ID
+    #   not found », code 255. Le menuitem rejoint les autres menus ; son
+    #   identifiant XML ne change pas, donc une montée chez un client existant
+    #   ne recrée rien.
+    "version": "18.0.1.1.3",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

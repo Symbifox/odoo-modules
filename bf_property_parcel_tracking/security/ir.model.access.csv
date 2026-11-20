@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_carrier_account_user,bf.property.carrier.account.user,model_bf_property_carrier_account,bf_property_core.group_bf_property_user,1,0,0,0
+access_carrier_account_manager,bf.property.carrier.account.manager,model_bf_property_carrier_account,bf_property_core.group_bf_property_manager,1,1,1,1
+access_parcel_portal_announce,bf.property.parcel.portal.announce,bf_property_portal.model_bf_property_parcel,base.group_portal,1,0,1,1

@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**320 modules are BUSL-1.1.** The source is published and auditable, and **you
+**322 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -361,11 +361,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_process` | Cartographie de processus | 18.0.5.2.0 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.1.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_project_number` | BF Project Number | 18.0.1.1.0 | LGPL-3 | A project number assigned on its own, taking the smallest free number, editable by hand |
-| `bf_property_access` | Immeubles : accès des résidents | 18.0.1.1.2 | BUSL-1.1 | Who may open which door: a resident's access is added on move-in and removed once a person confirms the move-out, through orders to the devices or the caretaker; temporary access for visitors, contractors and entries into a dwelling |
+| `bf_property_access` | Immeubles : accès des résidents | 18.0.1.1.3 | BUSL-1.1 | Who may open which door: a resident's access is added on move-in and removed once a person confirms the move-out, through orders to the devices or the caretaker; temporary access for visitors, contractors and entries into a dwelling |
 | `bf_property_access_expedibox` | Immeubles : boîte à colis Expedibox | 18.0.1.0.1 | BUSL-1.1 | A resident is signed up with the Expedibox parcel locker on arrival and taken off it once their departure is confirmed, with nothing retyped |
 | `bf_property_access_portal` | Immeubles : mes accès au portail | 18.0.1.1.3 | BUSL-1.1 | Residents see on the portal the doors they can open, with which credential, and can give a visitor temporary access to the common doors |
 | `bf_property_access_privacy` | Immeubles : accès et vie privée (Loi 25) | 18.0.1.0.4 | BUSL-1.1 | Access control in the Québec Act 25 processing register, declared versus applied retention, and a prefilled privacy impact assessment template |
-| `bf_property_core` | Immeubles : socle | 18.0.2.10.1 | BUSL-1.1 | The neutral foundation: organisations, buildings, dwellings and occupants, for divided co-ownership and residential rental alike |
+| `bf_property_core` | Immeubles : socle | 18.0.2.10.2 | BUSL-1.1 | The neutral foundation: organisations, buildings, dwellings and occupants, for divided co-ownership and residential rental alike |
 | `bf_property_cx` | Copropriété : satisfaction des occupants | 18.0.1.4.0 | BUSL-1.1 | Ask the occupant how their maintenance request went, once it is closed |
 | `bf_property_finance` | Copropriété : charges et appels de fonds | 18.0.4.7.2 | BUSL-1.1 | Annual budget, allocation of common expenses and calls for contributions |
 | `bf_property_governance` | Copropriété : assemblées | 18.0.2.5.0 | BUSL-1.1 | Co-owners' meetings: notice, quorum, weighted voting and majorities under the Civil Code of Québec |
@@ -374,12 +374,14 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_property_operations_portal` | Immeubles : de la demande au travail | 18.0.2.1.1 | BUSL-1.1 | Route an occupant's request to their building's team, and turn it into the work to be done |
 | `bf_property_operations_privacy` | Exploitation : pont vie privée (Loi 25) | 18.0.1.3.0 | BUSL-1.1 | Record in the Law 25 register what a work shift says about employees |
 | `bf_property_operations_records` | Copropriété : le carnet et l'exploitation | 18.0.3.3.0 | BUSL-1.1 | The maintenance logbook cites the equipment operations keeps, and flags when the two disagree |
-| `bf_property_portal` | Copropriété : portail de l'occupant | 18.0.6.11.2 | BUSL-1.1 | Occupant portal: notices, documents, contact details, maintenance requests, common-area bookings, parcels and visitors |
+| `bf_property_parcel_expedibox` | Immeubles : avis de colis du casier Expedibox | 18.0.1.0.0 | BUSL-1.1 | A parcel dropped in a connected Expedibox locker records itself in the parcel journal, at the drop-off time and in the right locker; its pickup is recorded the same way, and an unsigned locker notice never decides anything on its own |
+| `bf_property_parcel_tracking` | Immeubles : suivi des colis chez le transporteur | 18.0.1.0.0 | BUSL-1.1 | Residents announce the parcel they are waiting for on the portal; UPS and DHL are queried on their own schedule, and the day the carrier says delivered, the parcel enters the journal and the resident is notified once |
+| `bf_property_portal` | Copropriété : portail de l'occupant | 18.0.6.11.3 | BUSL-1.1 | Occupant portal: notices, documents, contact details, maintenance requests, common-area bookings, parcels and visitors |
 | `bf_property_privacy` | Copropriété : pont vie privée (Loi 25) | 18.0.2.1.1 | BUSL-1.1 | Record in the Law 25 register what the co-ownership suite collects, and link the art. 1070 consent to the Law 25 file |
 | `bf_property_records` | Copropriété : carnet, étude et attestations | 18.0.4.7.2 | BUSL-1.1 | Maintenance logbook, contingency fund study, syndicate certificate and the calendar of due dates |
 | `bf_property_securetransfer` | Copropriété : remise sécurisée des documents | 18.0.2.4.0 | BUSL-1.1 | Hand the certificate, the statement of charges and documents to a buyer by secure transfer, and know whether they were read |
 | `bf_property_sign` | Copropriété : signature électronique | 18.0.1.2.0 | BUSL-1.1 | E-signature for the logbook declaration, the art. 1068.1 certificate and meeting minutes |
-| `bf_property_sms` | Copropriété : avis par texto | 18.0.2.2.0 | BUSL-1.1 | Text an occupant about a parcel or an urgent notice, with their express consent |
+| `bf_property_sms` | Copropriété : avis par texto | 18.0.2.3.0 | BUSL-1.1 | Text an occupant about a parcel or an urgent notice, with their express consent |
 | `bf_qr_manager` | Codes QR gérés | 18.0.1.0.2 | BUSL-1.1 | Sheets of QR labels printed ahead of time, linked on first scan, re-linked without reprinting; extends Symbifox Pastilles |
 | `bf_receipt_ca` | Reçus de dons — Canada (ARC + Revenu Québec) | 18.0.1.0.6 | AGPL-3 | CRA + Revenu Québec compliant official donation receipts, in French — eligible amount, advantage, in-kind gifts, void/reissue |
 | `bf_record_privacy` | Record Privacy Guard | 18.0.1.0.0 | LGPL-3 | Access errors stop naming the records you cannot read, and follower lines follow the access of the record they follow |
@@ -562,7 +564,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **320 modules: BUSL-1.1.** Production use for your own internal business
+- **322 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

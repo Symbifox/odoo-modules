@@ -5,6 +5,8 @@
               action="action_access_departure_pending" sequence="10"/>
     <menuitem id="menu_access_order" name="Ordres à faire" parent="menu_access_root"
               action="action_access_order" sequence="20"/>
+    <menuitem id="menu_access_pass" name="Accès temporaires" parent="menu_access_root"
+              action="action_access_pass" sequence="25"/>
     <menuitem id="menu_access_resident" name="Résidents" parent="menu_access_root"
               action="action_access_resident" sequence="30"/>
     <menuitem id="menu_access_grant" name="Droits" parent="menu_access_root"

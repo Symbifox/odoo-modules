@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Un quart d'heure : c'est le passage qui regarde CE QUI EST DÛ, et
+             chaque colis porte sa propre échéance (trente minutes quand il
+             est en livraison, quatre heures quand une étiquette vient d'être
+             créée). Le plafond horaire du compte protège le quota. -->
+        <record id="cron_parcel_tracking" model="ir.cron">
+            <field name="name">Colis : interroger les transporteurs</field>
+            <field name="model_id" ref="model_bf_property_parcel"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_track()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+        <!-- Une annonce que le suivi a abandonnée n'a pas de date de
+             fermeture : la purge du journal ne la verrait jamais, et la page
+             du portail promet pourtant au résident que son numéro disparaît
+             avec la fiche. -->
+        <record id="cron_parcel_purge_announcements" model="ir.cron">
+            <field name="name">Colis : purger les annonces sans suite</field>
+            <field name="model_id" ref="bf_property_portal.model_bf_property_parcel"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_purge_announcements()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.utcnow() - timedelta(hours=5, minutes=30) + relativedelta(days=1)).strftime('%Y-%m-%d 05:30:00')"/>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+    </data>
+</odoo>

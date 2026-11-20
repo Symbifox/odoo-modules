@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_parcel_form_tracking" model="ir.ui.view">
+        <field name="name">bf.property.parcel.form.tracking</field>
+        <field name="model">bf.property.parcel</field>
+        <field name="inherit_id" ref="bf_property_portal.view_property_parcel_form"/>
+        <field name="arch" type="xml">
+            <button name="action_collected" position="before">
+                <button name="action_arrived" type="object" string="Arrivé"
+                        class="btn-primary" invisible="state != 'expected'"/>
+                <button name="action_track_now" type="object"
+                        string="Interroger le transporteur"
+                        invisible="not tracking_number or tracking_carrier in ['other', False]"/>
+            </button>
+            <!-- Les boutons du journal ne valent que pour un colis qui est là. -->
+            <button name="action_collected" position="attributes">
+                <attribute name="invisible">state != 'held'</attribute>
+            </button>
+            <field name="reference" position="after">
+                <field name="tracking_carrier"/>
+                <field name="tracking_number"/>
+            </field>
+            <field name="date_closed" position="after">
+                <field name="tracking_state" readonly="1"
+                       invisible="not tracking_state"/>
+                <field name="tracking_label" readonly="1"
+                       invisible="not tracking_label"/>
+                <field name="tracking_event_at" readonly="1"
+                       invisible="not tracking_event_at"
+                       options="{'show_seconds': false}"/>
+                <field name="tracking_checked_at" readonly="1" groups="base.group_no_one"/>
+                <field name="tracking_next_check" readonly="1" groups="base.group_no_one"/>
+                <field name="tracking_raw_code" readonly="1" groups="base.group_no_one"/>
+                <field name="tracking_attempts" readonly="1" groups="base.group_no_one"/>
+                <field name="tracking_message" readonly="1"
+                       invisible="not tracking_message"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_property_parcel_list_tracking" model="ir.ui.view">
+        <field name="name">bf.property.parcel.list.tracking</field>
+        <field name="model">bf.property.parcel</field>
+        <field name="inherit_id" ref="bf_property_portal.view_property_parcel_list"/>
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <field name="tracking_state" optional="show"/>
+            </field>
+            <!-- Le gris du journal dit « c'est fini ». Un colis annoncé, lui,
+                 est le seul d'où part le bouton « Arrivé ». -->
+            <list position="attributes">
+                <attribute name="decoration-muted">state in ('collected', 'returned')</attribute>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_parcel_search_tracking" model="ir.ui.view">
+        <field name="name">bf.property.parcel.search.tracking</field>
+        <field name="model">bf.property.parcel</field>
+        <field name="inherit_id" ref="bf_property_portal.view_property_parcel_search"/>
+        <field name="arch" type="xml">
+            <!-- 🔴 Dans le MÊME groupe que « En dépôt », pas après le groupe
+                 « Regrouper par ». Un séparateur fait un groupe : deux filtres
+                 de part et d'autre se combinent en ET, et « Annoncés » cliqué
+                 par-dessus la facette « En dépôt » posée par défaut rendait
+                 une liste VIDE. Dans le même groupe, ils s'additionnent. -->
+            <filter name="held" position="after">
+                <filter name="expected" string="Annoncés"
+                        domain="[('state', '=', 'expected')]"/>
+            </filter>
+            <search position="inside">
+                <field name="tracking_number"/>
+                <separator/>
+                <filter name="tracking_blocked" string="Suivi à faire à la main"
+                        domain="[('tracking_state', '=', 'blocked')]"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_property_parcel_expected" model="ir.actions.act_window">
+        <field name="name">Colis annoncés</field>
+        <field name="res_model">bf.property.parcel</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'expected')]</field>
+        <field name="context">{'search_default_group_building': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun colis annoncé</p>
+            <p>Les colis que vos résidents attendent, avec ce que le transporteur
+               en dit. Le bouton « Arrivé » consigne celui qui est déjà au comptoir.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_property_parcel_expected" name="Colis annoncés"
+              parent="bf_property_portal.menu_property_portal"
+              action="action_property_parcel_expected" sequence="12"/>
+</odoo>

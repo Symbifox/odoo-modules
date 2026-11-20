@@ -1,7 +1,11 @@
 {
     "name": "Copropriété : portail de l'occupant",
     "summary": "Annonces, documents, coordonnées, demandes d'entretien, réservation des espaces communs, colis et visiteurs",
-    "version": "18.0.6.11.2",
+    # 18.0.6.11.3 : l'essai des trois pages du portail datait son annonce dans
+    #   le fuseau du compte système, pas dans celui de la lectrice : il tombait
+    #   tous les soirs passé 18 h à Montréal. Essai seul, aucun changement de
+    #   comportement.
+    "version": "18.0.6.11.3",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

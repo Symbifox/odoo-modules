@@ -1,0 +1,907 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_parcel_expedibox
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-20 00:50+0000\n"
+"PO-Revision-Date: 2026-11-20 00:50+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/hooks.py:0
+msgid ""
+"%(voisin)s est en %(pose)s, et les avis de colis exigent %(exige)s : sans "
+"elle, le casier avise le résident ET un texto part, pour le même colis. "
+"Montez %(voisin)s dans la même fenêtre, puis reprenez cette installation."
+msgstr ""
+"%(voisin)s is at %(pose)s, and parcel notices require %(exige)s: without "
+"it, the locker notifies the resident AND a text message goes out, for the "
+"same parcel. Upgrade %(voisin)s in the same window, then run this "
+"installation again."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"%s (personne à qui le remettre : le responsable des avis du connecteur est "
+"absent ou archivé)"
+msgstr ""
+"%s (nobody to hand it to: the connector's notices owner is missing or "
+"archived)"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_needaction
+msgid "Action Needed"
+msgstr "Action Needed"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_ids
+msgid "Activities"
+msgstr "Activities"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Activity Exception Decoration"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_state
+msgid "Activity State"
+msgstr "Activity State"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Activity Type Icon"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_access_connector__expedibox_notice_url
+msgid "Adresse à donner à Expedibox"
+msgstr "Address to give to Expedibox"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_attachment_count
+msgid "Attachment Count"
+msgstr "Attachment Count"
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.actions.act_window,help:bf_property_parcel_expedibox.action_parcel_expedibox_event
+msgid "Aucun avis de casier"
+msgstr "No locker notice"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Aucun effet pour cet événement."
+msgstr "No effect for this event."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__event__other
+msgid "Autre"
+msgstr "Other"
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_form
+msgid "Avis d'un casier"
+msgstr "Locker notice"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model,name:bf_property_parcel_expedibox.model_bf_property_parcel_expedibox_event
+msgid "Avis d'un casier Expedibox"
+msgstr "Expedibox locker notice"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Avis d'un casier Expedibox à regarder"
+msgstr "An Expedibox locker notice to look at"
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_access_connector_form_parcel_notice
+msgid "Avis de colis du casier"
+msgstr "Parcel notices from the locker"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.ui.menu,name:bf_property_parcel_expedibox.menu_parcel_expedibox_event
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_list
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_search
+msgid "Avis des casiers"
+msgstr "Locker notices"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.actions.act_window,name:bf_property_parcel_expedibox.action_parcel_expedibox_event
+msgid "Avis des casiers Expedibox"
+msgstr "Expedibox locker notices"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__locker_ref
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_search
+msgid "Casier"
+msgstr "Locker"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Casier %(locker)s, porte %(door)s"
+msgstr "Locker %(locker)s, door %(door)s"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Ce dépôt est déjà consigné (%s)."
+msgstr "This deposit is already recorded (%s)."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__event_label
+msgid ""
+"Ce qu'Expedibox a nommé, quand ce n'est pas un des événements que ce module "
+"connaît. Un vocabulaire qui s'enrichit chez eux se lit ici au lieu de se "
+"perdre."
+msgstr ""
+"What Expedibox named, when it is not one of the events this module knows. "
+"A vocabulary that grows on their side is read here instead of being lost."
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_form
+msgid "Ce qui en a été fait"
+msgstr "What was done about it"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message
+msgid "Ce qui s'est passé"
+msgstr "What happened"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.constraint,message:bf_property_parcel_expedibox.constraint_bf_property_parcel_expedibox_event_uniq_notice
+msgid "Cet avis d'Expedibox est déjà enregistré."
+msgstr "This Expedibox notice is already recorded."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_access_connector.py:0
+msgid "Changer le jeton d'écoute d'un casier relève du syndicat."
+msgstr "Changing a locker's listening token is for the syndicate to do."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__parcel_id
+msgid "Colis"
+msgstr "Parcel"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Colis %s consigné."
+msgstr "Parcel %s recorded."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel.py:0
+msgid "Colis %s remis (retrait constaté par le casier)."
+msgstr "Parcel %s handed over (pickup recorded by the locker)."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.actions.server,name:bf_property_parcel_expedibox.cron_parcel_expedibox_purge_ir_actions_server
+msgid "Colis : purger le journal des avis Expedibox"
+msgstr "Parcels: purge the Expedibox notice journal"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.actions.server,name:bf_property_parcel_expedibox.cron_parcel_expedibox_notices_ir_actions_server
+msgid "Colis : traiter les avis des casiers Expedibox"
+msgstr "Parcels: process Expedibox locker notices"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Colis annoncé %s retrouvé au casier."
+msgstr "Announced parcel %s found in the locker."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Colis consigné depuis l'avis de dépôt du casier Expedibox."
+msgstr "Parcel recorded from the Expedibox locker's deposit notice."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__event__deposit
+msgid "Colis déposé"
+msgstr "Parcel deposited"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__event__pickup
+msgid "Colis retiré"
+msgstr "Parcel picked up"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel.py:0
+msgid "Colis retiré du casier Expedibox par le destinataire."
+msgstr "Parcel picked up from the Expedibox locker by its recipient."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model,name:bf_property_parcel_expedibox.model_bf_property_parcel
+msgid "Colis reçu pour un occupant"
+msgstr "Parcel received for an occupant"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__connector_id
+msgid "Connecteur"
+msgstr "Connector"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model,name:bf_property_parcel_expedibox.model_bf_property_access_connector
+msgid "Connecteur d'accès"
+msgstr "Access connector"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__partner_id
+msgid "Destinataire"
+msgstr "Recipient"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.actions.act_window,help:bf_property_parcel_expedibox.action_parcel_expedibox_event
+msgid ""
+"Dès qu'un colis est déposé dans un casier relié, Expedibox prévient\n"
+"               Symbifox et le colis se consigne tout seul. Les avis passent ici."
+msgstr ""
+"As soon as a parcel is dropped in a connected locker, Expedibox tells\n    "
+"Symbifox and the parcel records itself. The notices pass through here."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__event__deposit_expired
+msgid "Dépôt échu"
+msgstr "Deposit expired"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Dépôt échu : remis au responsable du point."
+msgstr "Deposit expired: handed to the access point's owner."
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_search
+msgid "Dépôts"
+msgstr "Deposits"
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_form
+msgid "Détail"
+msgstr "Detail"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__attempts
+msgid "Essais"
+msgstr "Attempts"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Expedibox a refusé la relecture de la réservation (code %s)."
+msgstr "Expedibox refused to re-read the reservation (code %s)."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Expedibox déclare ce dépôt terminé ou échu : le casier le remet au livreur. "
+"L'état du colis n'est pas changé ici — c'est le concierge qui constate ce "
+"qui en est fait."
+msgstr ""
+"Expedibox declares this deposit ended or expired: the locker hands it back "
+"to the courier. The parcel's status is not changed here — the caretaker is "
+"the one who records what became of it."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Expedibox n'a pas confirmé cet avis après %(n)s essais : %(why)s"
+msgstr ""
+"Expedibox did not confirm this notice after %(n)s attempts: %(why)s"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Expedibox ne confirme ni dépôt, ni retrait, ni fin pour cette réservation : "
+"aucun effet."
+msgstr ""
+"Expedibox confirms no drop-off, no pickup and no end for this reservation: "
+"no effect."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Expedibox ne connaît plus cette réservation (%s) : aucun colis n'est "
+"consigné."
+msgstr ""
+"Expedibox no longer knows this reservation (%s): no parcel is recorded."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_follower_ids
+msgid "Followers"
+msgstr "Followers"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Followers (Partners)"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome icon e.g. fa-tasks"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__has_message
+msgid "Has Message"
+msgstr "Has Message"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_exception_icon
+msgid "Icon"
+msgstr "Icon"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icon to indicate an exception activity."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "If checked, new messages require your attention."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_has_error
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "If checked, some messages have a delivery error."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_is_follower
+msgid "Is Follower"
+msgstr "Is Follower"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_access_connector__expedibox_notice_token
+msgid "Jeton d'écoute des avis"
+msgstr "Notice listening token"
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_access_connector_form_parcel_notice
+msgid ""
+"L'adresse actuelle cessera de répondre à l'instant. Il faudra recopier la "
+"nouvelle au portail développeur d'Expedibox, sinon les avis de dépôt "
+"n'arriveront plus."
+msgstr ""
+"The current address will stop answering at once. The new one must be "
+"copied into Expedibox's developer portal, otherwise deposit notices will "
+"no longer arrive."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__occurred_at
+msgid "L'heure qu'Expedibox donne à l'événement (UTC)."
+msgstr "The time Expedibox gives the event (UTC)."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__reservation_ref
+msgid "La référence que porte la réservation chez Expedibox."
+msgstr "The reference the reservation carries at Expedibox."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel__expedibox_reservation_ref
+msgid ""
+"La réservation du casier d'où ce colis vient. Un colis consigné à la main "
+"n'en a pas."
+msgstr ""
+"The locker reservation this parcel came from. A parcel recorded by hand "
+"has none."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_access_connector__expedibox_locker_notifies
+msgid "Le casier avise lui-même le résident"
+msgstr "The locker notifies the resident itself"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Le colis %(parcel)s n'a pas été retiré du casier %(locker)s : Expedibox "
+"déclare le dépôt terminé. À constater (remis, retourné à l'expéditeur)."
+msgstr ""
+"Parcel %(parcel)s was not picked up from locker %(locker)s: Expedibox "
+"declares the deposit ended. To be recorded (handed over, returned to "
+"sender)."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel.py:0
+msgid ""
+"Le colis %(parcel)s n'était plus en dépôt (%(state)s) : rien n'a été changé."
+msgstr ""
+"Parcel %(parcel)s was no longer held (%(state)s): nothing was changed."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Le colis annoncé par le destinataire a été déposé au casier Expedibox : "
+"c'est la même fiche, elle passe en dépôt."
+msgstr ""
+"The parcel the recipient announced was dropped in the Expedibox locker: it "
+"is the same record, and it becomes held."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Le connecteur « %s » n'a pas de jeton d'application : l'avis ne peut pas "
+"être confirmé chez Expedibox."
+msgstr ""
+"Connector \"%s\" has no application token: the notice cannot be confirmed "
+"with Expedibox."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Le point d'accès « %s » est archivé : son casier envoie encore des avis. À "
+"consigner à la main, ou à débrancher au portail d'Expedibox."
+msgstr ""
+"Access point \"%s\" is archived, and its locker is still sending notices. "
+"Record them by hand, or disconnect it in Expedibox's portal."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_access_connector__expedibox_notice_token
+msgid ""
+"Le secret que porte l'adresse donnée à Expedibox. Il tient lieu de signature"
+" : leurs avis n'en ont pas. Le bouton « Nouveau jeton d'écoute » le "
+"remplace, et coupe l'ancienne adresse."
+msgstr ""
+"The secret carried by the address given to Expedibox. It stands in for a "
+"signature: their notices have none. The \"New listening token\" button "
+"replaces it, and cuts off the old address."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_has_error
+msgid "Message Delivery error"
+msgstr "Message Delivery error"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "My Activity Deadline"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Next Activity Calendar Event"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Next Activity Deadline"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_summary
+msgid "Next Activity Summary"
+msgstr "Next Activity Summary"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_type_id
+msgid "Next Activity Type"
+msgstr "Next Activity Type"
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_access_connector_form_parcel_notice
+msgid "Nouveau jeton d'écoute"
+msgstr "New listening token"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_access_connector.py:0
+msgid "Nouvelle adresse d'écoute"
+msgstr "New listening address"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Number of Actions"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_has_error_counter
+msgid "Number of errors"
+msgstr "Number of errors"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Number of messages requiring action"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Number of messages with delivery error"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__point_id
+msgid "Point d'accès"
+msgstr "Access point"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__event__reminder
+msgid "Rappel"
+msgstr "Reminder"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__rating_ids
+msgid "Ratings"
+msgstr "Ratings"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Recopiez l'adresse au portail développeur d'Expedibox (« Reservation Webhook"
+" URL »). L'ancienne ne répond plus : tant que la nouvelle n'y est pas, aucun"
+" dépôt ne sera consigné."
+msgstr ""
+"Copy the address into Expedibox's developer portal (\"Reservation Webhook "
+"URL\"). The old one no longer answers: until the new one is there, no "
+"deposit will be recorded."
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_search
+msgid "Regrouper par"
+msgstr "Group by"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__state__handed
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_search
+msgid "Remis au responsable"
+msgstr "Handed to the person responsible"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_access_connector__expedibox_notice_user_id
+msgid "Responsable des avis"
+msgstr "Notices owner"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_user_id
+msgid "Responsible User"
+msgstr "Responsible User"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Retrait confirmé pour une réservation dont aucun colis n'a été consigné ici."
+msgstr ""
+"A pickup was confirmed for a reservation whose parcel was never recorded "
+"here."
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_search
+msgid "Retraits"
+msgstr "Pickups"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_access_connector__expedibox_notice_user_id
+msgid ""
+"Reçoit les avis qu'aucun point d'accès ne réclame : un dépôt dans un casier "
+"que ce logiciel ne gère pas, un avis qu'Expedibox refuse de confirmer."
+msgstr ""
+"Receives the notices no access point claims: a deposit in a locker this "
+"software does not manage, a notice Expedibox refuses to confirm."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__state__received
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_form
+msgid "Reçu"
+msgstr "Received"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__received_at
+msgid "Reçu le"
+msgstr "Received on"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "Rien en dépôt pour cette réservation."
+msgstr "Nothing held for this reservation."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__reservation_ref
+msgid "Réservation"
+msgstr "Reservation"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel__expedibox_reservation_ref
+msgid "Réservation Expedibox"
+msgstr "Expedibox reservation"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__event__cancelled
+msgid "Réservation annulée"
+msgstr "Reservation cancelled"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__event__new_reservation
+msgid "Réservation créée"
+msgstr "Reservation created"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Réservation d'un destinataire que ce logiciel n'a pas inscrit : aucun effet."
+msgstr ""
+"A reservation for a recipient this software did not register: no effect."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__event__deleted
+msgid "Réservation supprimée"
+msgstr "Reservation deleted"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__event__reservation_ended
+msgid "Réservation terminée"
+msgstr "Reservation ended"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS Delivery error"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__state__ignored
+msgid "Sans effet"
+msgstr "No effect"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"Seul un connecteur Expedibox écoute des avis de casier : retirez le jeton "
+"d'écoute de « %s »."
+msgstr ""
+"Only an Expedibox connector listens to locker notices: remove the "
+"listening token from \"%s\"."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__company_id
+msgid "Société"
+msgstr "Company"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status based on activities\nOverdue: Due date is already passed\nToday: "
+"Activity date is today\nPlanned: Future activities."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__occurred_at
+msgid "Survenu le"
+msgstr "Occurred on"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields.selection,name:bf_property_parcel_expedibox.selection__bf_property_parcel_expedibox_event__state__done
+msgid "Traité"
+msgstr "Processed"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type of the exception activity on record."
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_form
+msgid ""
+"Un avis d'Expedibox n'est pas signé : ce qu'il annonce est\n"
+"                        confirmé par une relecture de la réservation chez eux avant\n"
+"                        qu'un colis soit consigné. Cette fiche dit ce qui a été reçu\n"
+"                        et ce qui en a été fait."
+msgstr ""
+"An Expedibox notice is not signed: what it announces is\n                  "
+"confirmed by re-reading the reservation on their side before\n             "
+"a parcel is recorded. This record says what was received\n                 "
+"and what was done about it."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Un casier qu'aucun point d'accès ne réclame (%s) a envoyé un avis. Soit le "
+"point a été archivé, soit ce casier est géré ailleurs."
+msgstr ""
+"A locker no access point claims (%s) sent a notice. Either the point was "
+"archived, or that locker is managed elsewhere."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.constraint,message:bf_property_parcel_expedibox.constraint_bf_property_parcel_uniq_expedibox_reservation
+msgid "Un colis est déjà consigné pour cette réservation Expedibox."
+msgstr "A parcel is already recorded for this Expedibox reservation."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Un dépôt au casier %(locker)s (porte %(door)s) ne correspond à aucun "
+"résident inscrit par ce logiciel. Il a été inscrit à la main, ou par un "
+"autre logiciel : le colis est à consigner à la main si l'organisation le "
+"veut."
+msgstr ""
+"A deposit in locker %(locker)s (door %(door)s) matches no resident "
+"registered by this software. It was registered by hand, or by other "
+"software: record the parcel by hand if the organisation wants it recorded."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_access_connector__expedibox_locker_notifies
+msgid ""
+"Vrai par défaut : Expedibox écrit au destinataire dès le dépôt (champ « "
+"notify_receiver » de la réservation, vrai par défaut chez eux). Symbifox "
+"consigne alors le colis sans envoyer un second avis. Décochez-le seulement "
+"si le casier est réglé pour ne rien envoyer."
+msgstr ""
+"True by default: Expedibox writes to the recipient as soon as a parcel is "
+"deposited (the reservation's \"notify_receiver\" field, true by default on "
+"their side). Symbifox then records the parcel without sending a second "
+"notice. Uncheck it only if the locker is set to send nothing."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__website_message_ids
+msgid "Website Messages"
+msgstr "Website Messages"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__website_message_ids
+msgid "Website communication history"
+msgstr "Website communication history"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "inconnu"
+msgstr "unknown"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "inconnue"
+msgstr "unknown"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "le casier Expedibox avise lui-même le destinataire"
+msgstr "the Expedibox locker notifies the recipient itself"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid "sans identifiant"
+msgstr "with no identifier"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/hooks.py:0
+msgid "version inconnue"
+msgstr "unknown version"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_access_connector.py:0
+msgid "« %s » n'est pas un connecteur Expedibox."
+msgstr "\"%s\" is not an Expedibox connector."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"« %s » écoute les avis d'Expedibox : il lui faut l'identifiant "
+"d'organisation, qu'Expedibox envoie dans l'en-tête de chaque avis. C'est le "
+"seul moyen de vérifier qu'un avis parle bien de cette organisation."
+msgstr ""
+"\"%s\" listens to Expedibox notices: it needs the organisation id "
+"Expedibox sends in each notice's header. That is the only way to check "
+"that a notice really speaks of this organisation."
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_access_connector.py:0
+msgid ""
+"« %s » écoute les avis d'Expedibox : il lui faut un responsable, qui reçoit "
+"les avis qu'aucun point ne réclame."
+msgstr ""
+"\"%s\" listens to Expedibox notices: it needs an owner, who receives the "
+"notices no point claims."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,help:bf_property_parcel_expedibox.field_bf_property_access_connector__expedibox_notice_url
+msgid ""
+"À coller dans « Reservation Webhook URL » au portail développeur "
+"d'Expedibox, pour cette application."
+msgstr ""
+"To be pasted into \"Reservation Webhook URL\" in Expedibox's developer "
+"portal, for this application."
+
+#. module: bf_property_parcel_expedibox
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_search
+msgid "À traiter"
+msgstr "To process"
+
+#. module: bf_property_parcel_expedibox
+#. odoo-python
+#: code:addons/bf_property_parcel_expedibox/models/bf_property_parcel_expedibox_event.py:0
+msgid ""
+"Échec inattendu du traitement (%s). Le détail est au journal du serveur."
+msgstr ""
+"Unexpected failure while processing (%s). The detail is in the server log."
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__state
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_search
+msgid "État"
+msgstr "Status"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__event
+#: model_terms:ir.ui.view,arch_db:bf_property_parcel_expedibox.view_parcel_expedibox_event_search
+msgid "Événement"
+msgstr "Event"
+
+#. module: bf_property_parcel_expedibox
+#: model:ir.model.fields,field_description:bf_property_parcel_expedibox.field_bf_property_parcel_expedibox_event__event_label
+msgid "Événement reçu"
+msgstr "Event received"

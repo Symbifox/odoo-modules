@@ -26,6 +26,10 @@ NOT_A_SENTENCE = {
         "« art. 1945 » s'écrit de même en anglais, et c'est la forme que le "
         "catalogue retient partout ailleurs (« Permanent admission to "
         "residential care (art. 1974) »)",
+    ("bf.property.access.grant", "holder_label"):
+        "le NOM du titulaire, au plus suivi de son entreprise entre "
+        "parenthèses (`_bf_holder_label`) : aucun mot de langue, et il est "
+        "stocké pour que la liste des droits se trie et se cherche dessus",
     ("bf.property.attestation", "works_planned_10y"):
         "une proposition MODIFIABLE (readonly=False) tirée du carnet : c'est "
         "le texte de la pièce que le syndicat remet, il appartient à qui la "

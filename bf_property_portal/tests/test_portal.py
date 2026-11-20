@@ -463,7 +463,14 @@ class TestPropertyPortalPages(HttpCase):
                 "organisation_id": cls.syndicat.id,
                 "audience": "all",
                 "body": "<p>Les laveurs passent de 8 h à midi.</p>",
-                "date_start": fields.Date.context_today(cls.env.user),
+                # 🔴 Hier, pas aujourd'hui. `context_today(cls.env.user)` date
+                # l'annonce dans le fuseau du COMPTE SYSTÈME (Europe/Bruxelles
+                # sur une base Odoo neuve), alors que la visibilité se calcule
+                # dans celui de la LECTRICE : passé 18 h à Montréal, Bruxelles
+                # est au lendemain, l'annonce n'était pas encore visible et
+                # l'essai tombait — tous les soirs, sans qu'aucun code n'ait
+                # changé.
+                "date_start": fields.Date.context_today(cls.env.user) - timedelta(days=1),
             }
         )
         cls.announcement.action_publish()

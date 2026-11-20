@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Un avis nomme un casier, une réservation et, une fois rapproché,
+             un résident : des renseignements personnels, cloisonnés comme le
+             reste de la suite. -->
+        <record id="rule_parcel_expedibox_event_company" model="ir.rule">
+            <field name="name">Avis des casiers Expedibox : multi-société</field>
+            <field name="model_id" ref="model_bf_property_parcel_expedibox_event"/>
+            <!-- Pas de branche « sans société » : un avis porte celle de son
+                 connecteur, et une ligne sans société serait lisible par
+                 toutes les sociétés. -->
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+    </data>
+</odoo>

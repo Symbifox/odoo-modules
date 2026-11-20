@@ -1,7 +1,11 @@
 {
     "name": "Immeubles : socle",
     "summary": "Le socle neutre : organisations, immeubles, logements et occupants, pour la copropriété comme pour le locatif",
-    "version": "18.0.2.10.1",
+    # 18.0.2.10.2 : la garde de classe « aucune phrase calculée stockée » nomme
+    #   l'exception `bf.property.access.grant.holder_label` (un NOM, pas une
+    #   phrase), relevée en montant toute la famille sur un même banc. Essai
+    #   seul, aucun changement de comportement.
+    "version": "18.0.2.10.2",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

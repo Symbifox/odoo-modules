@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_parcel_form_expedibox" model="ir.ui.view">
+        <field name="name">bf.property.parcel.form.expedibox</field>
+        <field name="model">bf.property.parcel</field>
+        <field name="inherit_id" ref="bf_property_portal.view_property_parcel_form"/>
+        <field name="arch" type="xml">
+            <field name="reference" position="after">
+                <field name="expedibox_reservation_ref"
+                       invisible="not expedibox_reservation_ref"/>
+            </field>
+        </field>
+    </record>
+</odoo>

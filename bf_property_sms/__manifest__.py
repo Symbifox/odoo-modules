@@ -1,7 +1,11 @@
 {
     "name": "Copropriété : avis par texto",
     "summary": "Prévenir l'occupant d'un colis ou d'un avis urgent, avec son consentement exprès",
-    "version": "18.0.2.2.0",
+    # 18.0.2.3.0 : l'avis ne part que pour un colis EN DÉPÔT (un colis annoncé
+    #   d'avance, ou consigné déjà remis, n'avise plus personne à sa création),
+    #   et un canal qui a déjà prévenu la personne coupe le texto (contexte
+    #   `bf_parcel_notice_elsewhere`) ; la raison est consignée au fil.
+    "version": "18.0.2.3.0",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

@@ -28,6 +28,22 @@ class BfPropertyParcel(models.Model):
         au fil, où elle sert à quelqu'un.
         """
         self.ensure_one()
+        # ⚠️ Un autre canal a déjà prévenu la personne (une boîte à colis
+        # reliée écrit elle-même au destinataire dès le dépôt). Deux avis pour
+        # un colis, ce n'est pas deux fois mieux : la raison va au fil, et rien
+        # ne part.
+        instead = self.env.context.get("bf_parcel_notice_elsewhere")
+        if instead:
+            self._message_log(body=_("Aucun avis par texto : %s.") % instead)
+            return False
+        # ⚠️ L'avis dit « un colis est arrivé » : il n'a de sens que si le
+        # colis EST là. Un colis annoncé d'avance (numéro de suivi) ou consigné
+        # déjà remis n'avise personne ici ; le suivi rappellera cette méthode à
+        # la livraison.
+        if self.state != "held":
+            self._message_log(body=_(
+                "Aucun avis par texto : le colis n'est pas en dépôt."))
+            return False
         body = PARCEL_TEMPLATE % {"syndicat": self.organisation_id.name}
         sent, reason = self.organisation_id.sudo()._send_property_sms(
             self.partner_id, "parcel", body

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_property_deliveries_tracking"
+              inherit_id="bf_property_portal.portal_property_deliveries"
+              name="Colis annoncés par le résident">
+        <!-- Ancré sur le titre de la section des colis : un repère de texte
+             stable, et la section des colis attendus se lit juste avant ce
+             qui est déjà à la réception. -->
+        <xpath expr="//h5[1]" position="before">
+            <div t-if="request.params.get('error') == 'parcel'"
+                 class="alert alert-warning">
+                Il faut un transporteur et un numéro de suivi.
+            </div>
+            <div t-if="request.params.get('error') == 'double'"
+                 class="alert alert-warning">
+                Ce colis est déjà annoncé. Il paraît dans la liste ci-dessous dès que
+                le transporteur répond.
+            </div>
+            <div t-if="request.params.get('error') == 'trop'"
+                 class="alert alert-warning">
+                Vous avez annoncé beaucoup de colis dans la dernière heure. Reprenez
+                tout à l'heure, ou parlez-en au bureau.
+            </div>
+
+            <h5>Les colis que vous attendez</h5>
+            <t t-if="not expected_parcels">
+                <div class="alert alert-info" role="status">
+                    Vous n'avez annoncé aucun colis. En annonçant son numéro de suivi,
+                    vous serez prévenu dès que le transporteur l'aura livré.
+                </div>
+            </t>
+            <table t-if="expected_parcels" class="table table-sm mb-3">
+                <thead>
+                    <tr>
+                        <th>Annoncé le</th>
+                        <th>Nature</th>
+                        <th>Transporteur</th>
+                        <th>Numéro</th>
+                        <th>Suivi</th>
+                        <th/>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="expected_parcels" t-as="parcel">
+                        <td><span t-field="parcel.create_date" t-options="{'widget': 'date'}"/></td>
+                        <td><span t-field="parcel.parcel_type"/></td>
+                        <td><span t-field="parcel.tracking_carrier"/></td>
+                        <td><span t-field="parcel.tracking_number"/></td>
+                        <td>
+                            <span t-field="parcel.tracking_state"/>
+                            <!-- Les mots du transporteur, tels quels. -->
+                            <small t-if="parcel.tracking_label" class="text-muted d-block">
+                                <span t-field="parcel.tracking_label"/>
+                            </small>
+                        </td>
+                        <td class="text-end">
+                            <form t-attf-action="/my/property/parcels/#{parcel.id}/cancel"
+                                  method="post" class="d-inline">
+                                <input type="hidden" name="csrf_token"
+                                       t-att-value="request.csrf_token()"/>
+                                <button type="submit" class="btn btn-sm btn-link text-muted"
+                                        title="Retirer cette annonce">Retirer</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form action="/my/property/parcels/announce" method="post" class="mb-4">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div class="row g-2 align-items-end">
+                    <div class="col-12 col-md-3" t-if="len(units) &gt; 1">
+                        <label class="form-label" for="parcel_unit_id">Fraction</label>
+                        <select class="form-select" id="parcel_unit_id" name="unit_id">
+                            <option t-foreach="units" t-as="unit"
+                                    t-att-value="unit.id" t-out="unit.display_name"/>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label class="form-label" for="parcel_tracking_carrier">Transporteur</label>
+                        <select class="form-select" id="parcel_tracking_carrier"
+                                name="tracking_carrier" required="required">
+                            <option t-foreach="parcel_carriers" t-as="choice"
+                                    t-att-value="choice[0]" t-out="choice[1]"/>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="parcel_tracking_number">Numéro de suivi</label>
+                        <input type="text" class="form-control" id="parcel_tracking_number"
+                               name="tracking_number" maxlength="64" required="required"
+                               placeholder="Celui de votre courriel de confirmation"/>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Annoncer</button>
+                    </div>
+                </div>
+                <small class="text-muted d-block mt-1">
+                    Le numéro sert à demander au transporteur où en est ce colis, et à
+                    rien d'autre. Il disparaît avec la fiche du colis.
+                </small>
+            </form>
+        </xpath>
+
+    </template>
+</odoo>

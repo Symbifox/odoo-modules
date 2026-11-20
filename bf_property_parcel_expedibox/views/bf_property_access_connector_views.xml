@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_access_connector_form_parcel_notice" model="ir.ui.view">
+        <field name="name">bf.property.access.connector.form.parcel.notice</field>
+        <field name="model">bf.property.access.connector</field>
+        <field name="inherit_id" ref="bf_property_access_expedibox.view_access_connector_form_expedibox"/>
+        <field name="arch" type="xml">
+            <!-- Ancré sur « note », comme le groupe de l'inscription l'est :
+                 un `string` n'est pas un sélecteur d'héritage, et ce repère-ci
+                 ne bouge pas. Le groupe de l'inscription ayant été inséré
+                 avant « note » lui aussi, écouter se lit juste après parler. -->
+            <field name="note" position="before">
+                <group string="Avis de colis du casier" invisible="kind != 'expedibox'">
+                    <field name="expedibox_locker_notifies"/>
+                    <field name="expedibox_notice_user_id"
+                           invisible="not expedibox_notice_token"
+                           required="expedibox_notice_token != False"/>
+                    <field name="expedibox_notice_url" widget="CopyClipboardChar"
+                           invisible="not expedibox_notice_token"/>
+                    <field name="expedibox_notice_token" invisible="1"/>
+                    <button name="action_expedibox_new_notice_token" type="object"
+                            string="Nouveau jeton d'écoute" class="btn-secondary"
+                            icon="fa-key"
+                            confirm="L'adresse actuelle cessera de répondre à l'instant. Il faudra recopier la nouvelle au portail développeur d'Expedibox, sinon les avis de dépôt n'arriveront plus."
+                            groups="bf_property_core.group_bf_property_manager"/>
+                </group>
+            </field>
+        </field>
+    </record>
+</odoo>

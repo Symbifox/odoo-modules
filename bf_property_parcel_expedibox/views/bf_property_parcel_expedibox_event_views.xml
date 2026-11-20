@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_parcel_expedibox_event_list" model="ir.ui.view">
+        <field name="name">bf.property.parcel.expedibox.event.list</field>
+        <field name="model">bf.property.parcel.expedibox.event</field>
+        <field name="arch" type="xml">
+            <list string="Avis des casiers" create="false" edit="false"
+                  decoration-muted="state == 'ignored'"
+                  decoration-warning="state == 'handed'">
+                <field name="received_at"/>
+                <field name="occurred_at" optional="hide"/>
+                <field name="event"/>
+                <field name="event_label" optional="hide"/>
+                <field name="locker_ref"/>
+                <field name="point_id" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="parcel_id"/>
+                <field name="state"/>
+                <field name="attempts" optional="hide"/>
+                <field name="message" optional="hide"/>
+                <field name="company_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_parcel_expedibox_event_form" model="ir.ui.view">
+        <field name="name">bf.property.parcel.expedibox.event.form</field>
+        <field name="model">bf.property.parcel.expedibox.event</field>
+        <field name="arch" type="xml">
+            <form string="Avis d'un casier" create="false" edit="false">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Un avis d'Expedibox n'est pas signé : ce qu'il annonce est
+                        confirmé par une relecture de la réservation chez eux avant
+                        qu'un colis soit consigné. Cette fiche dit ce qui a été reçu
+                        et ce qui en a été fait.
+                    </div>
+                    <group>
+                        <group string="Reçu">
+                            <field name="connector_id"/>
+                            <field name="event"/>
+                            <field name="event_label" invisible="not event_label"/>
+                            <field name="reservation_ref"/>
+                            <field name="locker_ref"/>
+                            <field name="occurred_at"/>
+                            <field name="received_at"/>
+                        </group>
+                        <group string="Ce qui en a été fait">
+                            <field name="state"/>
+                            <field name="point_id"/>
+                            <field name="partner_id"/>
+                            <field name="parcel_id"/>
+                            <field name="attempts"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Détail">
+                        <field name="message" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_parcel_expedibox_event_search" model="ir.ui.view">
+        <field name="name">bf.property.parcel.expedibox.event.search</field>
+        <field name="model">bf.property.parcel.expedibox.event</field>
+        <field name="arch" type="xml">
+            <search string="Avis des casiers">
+                <field name="reservation_ref"/>
+                <field name="locker_ref"/>
+                <field name="partner_id"/>
+                <field name="point_id"/>
+                <filter name="to_process" string="À traiter" domain="[('state', '=', 'received')]"/>
+                <filter name="handed" string="Remis au responsable" domain="[('state', '=', 'handed')]"/>
+                <separator/>
+                <filter name="deposits" string="Dépôts" domain="[('event', '=', 'deposit')]"/>
+                <filter name="pickups" string="Retraits" domain="[('event', '=', 'pickup')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_event" string="Événement" context="{'group_by': 'event'}"/>
+                    <filter name="group_locker" string="Casier" context="{'group_by': 'locker_ref'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_parcel_expedibox_event" model="ir.actions.act_window">
+        <field name="name">Avis des casiers Expedibox</field>
+        <field name="res_model">bf.property.parcel.expedibox.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_to_process': 1, 'search_default_handed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun avis de casier</p>
+            <p>Dès qu'un colis est déposé dans un casier relié, Expedibox prévient
+               Symbifox et le colis se consigne tout seul. Les avis passent ici.</p>
+        </field>
+    </record>
+
+    <!-- ⚠️ Sous « Portail », pas sous « Colis » : un menu qui porte une action
+         ET des enfants n'ouvre plus son action, et la liste des colis
+         disparaîtrait derrière ce sous-menu. -->
+    <menuitem id="menu_parcel_expedibox_event" name="Avis des casiers"
+              parent="bf_property_portal.menu_property_portal"
+              action="action_parcel_expedibox_event" sequence="13"
+              groups="bf_property_core.group_bf_property_manager"/>
+</odoo>
