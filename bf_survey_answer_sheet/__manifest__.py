@@ -15,7 +15,11 @@
     # 18.0.1.1.0: quand bf_survey_numbering numérote le sondage, la feuille
     #   reprend les mêmes numéros (« 2. Votre entreprise », « 2.1 … »), lus
     #   seulement si le champ existe, sans dépendance.
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1: les tableaux de la feuille se soustraient au style de tableau
+    #   de la mise en page du rapport (`o_ignore_layout_styling`) : la mise en
+    #   page standard leur ajoutait des bordures de cellule sans marge, et le
+    #   premier caractère de chaque ligne collait au trait.
+    "version": "18.0.1.1.1",
     "category": "Marketing/Surveys",
     "summary": "Each completed response filed by itself: a branded PDF of the "
                "answers, password-protected, in the respondent's own folder",

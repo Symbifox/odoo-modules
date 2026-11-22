@@ -1,4 +1,5 @@
 import io
+import re
 from unittest.mock import patch
 
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -182,6 +183,16 @@ class TestAnswerSheet(TransactionCase):
                          ["1. Section one", "2. Section two"])
         self.assertEqual([question["title"] for question in sections[1]["questions"]],
                          ["2.1 Your size", "2.2 Your markets", "2.3 Never answered"])
+
+    def test_the_report_layout_does_not_restyle_the_sheet_s_tables(self):
+        """Odoo's report layouts draw cell borders on every table that does not opt
+        out, with no inner margin: the first character of each row touched the line."""
+        html = self.env["ir.actions.report"]._render_qweb_html(
+            "bf_survey_answer_sheet.report_answer_sheet", self._answer().ids)[0].decode()
+        tables = re.findall(r"<table\b[^>]*>", html)
+        self.assertTrue(tables)
+        for table in tables:
+            self.assertIn("o_ignore_layout_styling", table)
 
     def test_every_kind_of_answer_is_printed(self):
         sections = self._answer()._bf_sheet_sections()
