@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The number is printed before the title, never written into it: the
+         title stays what its author typed, in every language. A section reads
+         "2. Your company", a question "2.1 Founding year". `bf_number` is empty
+         on a survey that does not number its questions, so nothing changes
+         there.
+
+         A section heading carries its title as a `t-field` on the heading
+         itself, which leaves no room for a second element inside it: the
+         `t-field` moves to an inner span — still a field, still editable in
+         place — and the number goes before it. -->
+
+    <!-- Form the respondent fills in: sections (one page, and one page per
+         section) and questions. -->
+    <template id="survey_fill_form_in_progress_numbering" inherit_id="survey.survey_fill_form_in_progress">
+        <xpath expr="(//h2[@t-field='page.title'])[1]" position="attributes">
+            <attribute name="t-field"/>
+        </xpath>
+        <xpath expr="(//h2[hasclass('o_survey_title')])[1]" position="inside">
+            <span t-if="page.bf_number" class="o_bf_survey_number" t-out="page.bf_number + '.'"/>
+            <span t-field="page.title"/>
+        </xpath>
+        <xpath expr="(//h2[@t-field='page.title'])[1]" position="attributes">
+            <attribute name="t-field"/>
+        </xpath>
+        <xpath expr="(//h2[hasclass('o_survey_title')])[2]" position="inside">
+            <span t-if="page.bf_number" class="o_bf_survey_number" t-out="page.bf_number + '.'"/>
+            <span t-field="page.title"/>
+        </xpath>
+    </template>
+
+    <template id="question_container_numbering" inherit_id="survey.question_container">
+        <xpath expr="//h3/span[@t-field='question.title']" position="before">
+            <span t-if="question.bf_number" class="o_bf_survey_number" t-out="question.bf_number"/>
+        </xpath>
+    </template>
+
+    <!-- Printable page: section headers and questions. -->
+    <template id="survey_page_print_numbering" inherit_id="survey.survey_page_print">
+        <xpath expr="//h1[@t-field='question.title']" position="attributes">
+            <attribute name="t-field"/>
+        </xpath>
+        <xpath expr="//div[hasclass('o_page_header')]/h1" position="inside">
+            <span t-if="question.bf_number" class="o_bf_survey_number" t-out="question.bf_number + '.'"/>
+            <span t-field="question.title"/>
+        </xpath>
+        <xpath expr="//h2/span[@t-field='question.title']" position="before">
+            <span t-if="question.bf_number" class="o_bf_survey_number" t-out="question.bf_number"/>
+        </xpath>
+    </template>
+
+    <!-- Results page: section headers and questions. -->
+    <template id="survey_page_statistics_inner_numbering" inherit_id="survey.survey_page_statistics_inner">
+        <xpath expr="//h3[@t-field='question.title']" position="attributes">
+            <attribute name="t-field"/>
+        </xpath>
+        <xpath expr="//div[hasclass('o_survey_question_page')]/h3" position="inside">
+            <span t-if="question.bf_number" class="o_bf_survey_number" t-out="question.bf_number + '.'"/>
+            <span t-field="question.title"/>
+        </xpath>
+    </template>
+
+    <template id="survey_page_statistics_question_numbering" inherit_id="survey.survey_page_statistics_question">
+        <xpath expr="//h5[@t-field='question.title']" position="attributes">
+            <attribute name="t-field"/>
+        </xpath>
+        <xpath expr="//div[hasclass('o_survey_results_question_header')]//h5" position="inside">
+            <span t-if="question.bf_number" class="o_bf_survey_number" t-out="question.bf_number"/>
+            <span t-field="question.title"/>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_survey_question_move_view_form" model="ir.ui.view">
+        <field name="name">bf.survey.question.move.form</field>
+        <field name="model">bf.survey.question.move</field>
+        <field name="arch" type="xml">
+            <form string="Move questions">
+                <field name="moves_section" invisible="1"/>
+                <field name="answers_in_progress" invisible="1"/>
+                <div class="alert alert-warning" role="alert" invisible="not answers_in_progress">
+                    <field name="answers_in_progress" class="fw-bold" nolabel="1"/>
+                    response(s) to this survey are in progress. The new order applies to them
+                    at once: a question moved into a section they have already passed will
+                    not be shown to them.
+                </div>
+                <group>
+                    <field name="survey_id" readonly="1"/>
+                    <field name="question_ids" widget="many2many_tags"
+                           options="{'no_create': True}"/>
+                    <field name="target_page_id" options="{'no_create': True}"/>
+                    <field name="placement" widget="radio"/>
+                    <field name="after_question_id" options="{'no_create': True}"
+                           invisible="placement != 'after'"
+                           required="placement == 'after'"/>
+                </group>
+                <div class="text-muted" invisible="not moves_section">
+                    A section moves with all of its questions.
+                </div>
+                <footer>
+                    <button name="action_move" type="object" string="Move" class="btn-primary"/>
+                    <button special="cancel" string="Cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- From the list of questions (Surveys > Questions), on several at once. -->
+    <record id="bf_survey_question_move_action" model="ir.actions.act_window">
+        <field name="name">Move to another section</field>
+        <field name="res_model">bf.survey.question.move</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="survey.model_survey_question"/>
+        <field name="binding_view_types">list</field>
+    </record>
+</odoo>

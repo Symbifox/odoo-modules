@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A transient model is a real table, and Odoo 18 does not restrict it to
+         its creator by itself: without this rule any survey officer could read
+         a colleague's half-filled move form. Global on purpose (no groups), so
+         that no other rule can reopen it. The form is only ever created by the
+         user who opens it, never in sudo. -->
+    <record id="bf_survey_question_move_rule_owner" model="ir.rule">
+        <field name="name">Move questions: own forms only</field>
+        <field name="model_id" ref="model_bf_survey_question_move"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

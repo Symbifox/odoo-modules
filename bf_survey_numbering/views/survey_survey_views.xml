@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="survey_survey_view_form_numbering" model="ir.ui.view">
+        <field name="name">survey.survey.view.form.bf_numbering</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_bf_move_questions" string="Move questions" type="object"
+                        invisible="not question_and_page_ids"/>
+            </xpath>
+            <xpath expr="//notebook" position="before">
+                <field name="bf_typed_number_count" invisible="1"/>
+                <div class="alert alert-warning d-flex align-items-center gap-3" role="alert"
+                     invisible="not bf_numbering or not bf_typed_number_count">
+                    <span class="flex-grow-1">
+                        Titles that already start with a number typed by hand:
+                        <field name="bf_typed_number_count" class="fw-bold" nolabel="1"/>.
+                        With numbering on, the respondent would see it twice
+                        ("2.1 2.1 Founding year"). Only the typed numbers that repeat
+                        the line's own number are removed; the others are named, to be
+                        fixed by hand.
+                    </span>
+                    <button name="action_bf_strip_typed_numbers" type="object"
+                            string="Remove the typed numbers" class="btn-secondary"
+                            confirm="Remove the typed numbers that repeat each line's own number, in every language? This cannot be undone; the rest of each title is kept."/>
+                </div>
+            </xpath>
+            <!-- The core list keeps the default pager of 40 lines: on a longer
+                 questionnaire, a question can only be dragged within the lines
+                 on screen, never into a section further down. -->
+            <xpath expr="//field[@name='question_and_page_ids']/list" position="attributes">
+                <attribute name="limit">1000</attribute>
+            </xpath>
+            <xpath expr="//field[@name='question_and_page_ids']/list/field[@name='title']" position="before">
+                <field name="bf_number" string="#" width="60px"
+                       column_invisible="not parent.bf_numbering"/>
+            </xpath>
+            <xpath expr="//field[@name='question_and_page_ids']/list/button[@name='copy']" position="before">
+                <button name="action_bf_move" type="object" icon="fa-arrows"
+                        title="Move to another section"/>
+            </xpath>
+            <xpath expr="//group[@name='options']//field[@name='questions_layout']" position="before">
+                <field name="bf_numbering"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="survey_question_tree_numbering" model="ir.ui.view">
+        <field name="name">survey.question.list.bf_numbering</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_tree"/>
+        <field name="arch" type="xml">
+            <field name="title" position="before">
+                <field name="bf_number" string="#"/>
+            </field>
+        </field>
+    </record>
+</odoo>

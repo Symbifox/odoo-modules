@@ -1,0 +1,8 @@
+// The number reads as part of the title, a shade lighter, and never wraps
+// away from it.
+.o_bf_survey_number {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.75;
+    margin-inline-end: 0.35em;
+}

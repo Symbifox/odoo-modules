@@ -1,0 +1,306 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_survey_numbering
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: Blue Fox Inc.\n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_survey_numbering
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.survey_survey_view_form_numbering
+msgid ""
+".\n"
+"                        With numbering on, the respondent would see it twice\n"
+"                        (\"2.1 2.1 Founding year\"). Only the typed numbers that repeat\n"
+"                        the line's own number are removed; the others are named, to be\n"
+"                        fixed by hand."
+msgstr ". Avec la numérotation, le répondant le verrait deux fois (« 2.1 2.1 Année de fondation »). Seuls les numéros tapés qui répètent le numéro de la ligne sont retirés; les autres sont nommés, à corriger à la main."
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid "A section cannot be moved into itself."
+msgstr "Une section ne se déplace pas dans elle-même."
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid "A section is placed before or after another section, not after a question: it would cut that section in two."
+msgstr "Une section se place avant ou après une autre section, pas après une question : elle couperait cette section en deux."
+
+#. module: bf_survey_numbering
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.bf_survey_question_move_view_form
+msgid "A section moves with all of its questions."
+msgstr "Une section se déplace avec toutes ses questions."
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__after_question_id
+msgid "After"
+msgstr "Après"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields.selection,name:bf_survey_numbering.selection__bf_survey_question_move__placement__after
+msgid "After a question"
+msgstr "Après une question"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__answers_in_progress
+msgid "Answers In Progress"
+msgstr "Réponses en cours"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields.selection,name:bf_survey_numbering.selection__bf_survey_question_move__placement__end
+msgid "At the end of the section"
+msgstr "À la fin de la section"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields.selection,name:bf_survey_numbering.selection__bf_survey_question_move__placement__start
+msgid "At the start of the section"
+msgstr "Au début de la section"
+
+#. module: bf_survey_numbering
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.bf_survey_question_move_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid "Choose at least one question or section to move."
+msgstr "Choisissez au moins une question ou une section à déplacer."
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid "Choose the destination section."
+msgstr "Choisissez la section de destination."
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid "Choose the question to place them after."
+msgstr "Choisissez la question après laquelle les placer."
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__target_page_id
+msgid "Destination section"
+msgstr "Section de destination"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid "Every question to move must belong to the survey."
+msgstr "Chaque question à déplacer doit appartenir au questionnaire."
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,help:bf_survey_numbering.field_bf_survey_question_move__placement
+msgid "For a section being moved, \"start\" places it just before the destination section and \"end\" just after the destination's last question."
+msgstr "Pour une section déplacée, « au début » la place juste avant la section de destination, et « à la fin » juste après la dernière question de celle-ci."
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_survey_numbering
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.bf_survey_question_move_view_form
+msgid "Move"
+msgstr "Déplacer"
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid "Move a section on its own, or questions on their own: a section moves with its own questions, and the others would land in the wrong section."
+msgstr "Déplacez une section seule, ou des questions seules : une section part avec ses propres questions, et les autres tomberaient dans la mauvaise section."
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.bf_survey_question_move_view_form
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.survey_survey_view_form_numbering
+msgid "Move questions"
+msgstr "Déplacer des questions"
+
+#. module: bf_survey_numbering
+#: model:ir.model,name:bf_survey_numbering.model_bf_survey_question_move
+msgid "Move survey questions to another section"
+msgstr "Déplacer des questions d'un questionnaire vers une autre section"
+
+#. module: bf_survey_numbering
+#: model:ir.actions.act_window,name:bf_survey_numbering.bf_survey_question_move_action
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.survey_survey_view_form_numbering
+msgid "Move to another section"
+msgstr "Déplacer vers une autre section"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__moves_section
+msgid "Moves Section"
+msgstr "Déplace une section"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_survey_question__bf_number
+msgid "Number"
+msgstr "Numéro"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_survey_survey__bf_numbering
+msgid "Number sections and questions"
+msgstr "Numéroter les sections et les questions"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__placement
+msgid "Place"
+msgstr "Placer"
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid "Questions can only be moved within one survey at a time."
+msgstr "On ne déplace les questions que d'un seul questionnaire à la fois."
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,help:bf_survey_numbering.field_bf_survey_question_move__question_ids
+msgid "Questions or sections to move. A section moves with all of its questions; the questions keep their order."
+msgstr "Questions ou sections à déplacer. Une section se déplace avec toutes ses questions; les questions gardent leur ordre."
+
+#. module: bf_survey_numbering
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.survey_survey_view_form_numbering
+msgid "Remove the typed numbers"
+msgstr "Retirer les numéros tapés"
+
+#. module: bf_survey_numbering
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.survey_survey_view_form_numbering
+msgid "Remove the typed numbers that repeat each line's own number, in every language? This cannot be undone; the rest of each title is kept."
+msgstr "Retirer les numéros tapés qui répètent le numéro de chaque ligne, dans toutes les langues? C'est irréversible; le reste de chaque titre est gardé."
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,help:bf_survey_numbering.field_survey_survey__bf_typed_number_count
+msgid "Sections and questions whose title already starts with a number typed by hand, which numbering would show twice."
+msgstr "Sections et questions dont le titre commence déjà par un numéro tapé à la main, que la numérotation afficherait deux fois."
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,help:bf_survey_numbering.field_survey_survey__bf_numbering
+msgid "Show a number before every section (1, 2, 3...) and every question (2.1, 2.2...), in the editor, the form the respondent fills in, the printed page and the results. A conditional question shown by an earlier question of the same section is numbered under it (2.12.1). Numbers follow the order of the questions: move one and the others renumber. The titles themselves are not changed."
+msgstr "Affiche un numéro devant chaque section (1, 2, 3…) et chaque question (2.1, 2.2…), dans l'éditeur, le formulaire du répondant, la page imprimable et les résultats. Une question conditionnelle affichée par une question précédente de la même section est numérotée sous elle (2.12.1). Les numéros suivent l'ordre des questions : on en déplace une, les autres se renumérotent. Les titres eux-mêmes ne changent pas."
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/models/survey_survey.py:0
+msgid "Some typed numbers were kept"
+msgstr "Des numéros tapés ont été gardés"
+
+#. module: bf_survey_numbering
+#: model:ir.model,name:bf_survey_numbering.model_survey_survey
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__survey_id
+msgid "Survey"
+msgstr "Questionnaire"
+
+#. module: bf_survey_numbering
+#: model:ir.model,name:bf_survey_numbering.model_survey_question
+msgid "Survey Question"
+msgstr "Question du questionnaire"
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid "That question is not in the destination section."
+msgstr "Cette question n'est pas dans la section de destination."
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,help:bf_survey_numbering.field_survey_question__bf_number
+msgid "The section's or question's number, when the survey numbers its questions: 2 for a section, 2.1 for its first question, 2.1.1 for a conditional question shown by 2.1."
+msgstr "Le numéro de la section ou de la question, quand le questionnaire numérote ses questions : 2 pour une section, 2.1 pour sa première question, 2.1.1 pour une question conditionnelle affichée par la 2.1."
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/models/survey_survey.py:0
+msgid ""
+"These titles start with a number that is not their place in the survey, so it was left as typed. Correct them by hand:\n"
+"%s"
+msgstr ""
+"Ces titres commencent par un numéro qui ne correspond pas à leur place dans le questionnaire : il a été laissé tel quel. Corrigez-les à la main :\n"
+"%s"
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid ""
+"This move would place a conditional question before the question that shows it, and the respondent would never see it:\n"
+"%s"
+msgstr ""
+"Ce déplacement placerait une question conditionnelle avant la question qui l'affiche, et le répondant ne la verrait jamais :\n"
+"%s"
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/models/survey_survey.py:0
+msgid "Tick “Number sections and questions” first: only the typed numbers that repeat the survey's own numbers are removed."
+msgstr "Cochez d'abord « Numéroter les sections et les questions » : seuls les numéros tapés qui répètent ceux du questionnaire sont retirés."
+
+#. module: bf_survey_numbering
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.survey_survey_view_form_numbering
+msgid "Titles that already start with a number typed by hand:"
+msgstr "Titres qui commencent déjà par un numéro tapé à la main :"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_survey_survey__bf_typed_number_count
+msgid "Titles with a typed number"
+msgstr "Titres avec un numéro tapé"
+
+#. module: bf_survey_numbering
+#: model:ir.model.fields,field_description:bf_survey_numbering.field_bf_survey_question_move__question_ids
+msgid "To move"
+msgstr "À déplacer"
+
+#. module: bf_survey_numbering
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.bf_survey_question_move_view_form
+msgid ""
+"response(s) to this survey are in progress. The new order applies to them\n"
+"                    at once: a question moved into a section they have already passed will\n"
+"                    not be shown to them."
+msgstr "réponse(s) à ce questionnaire en cours. Le nouvel ordre s'applique à elles tout de suite : une question déplacée dans une section déjà passée ne leur sera pas montrée."
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/wizard/survey_question_move.py:0
+msgid "• “%(question)s” would come before “%(trigger)s”, which shows it."
+msgstr "• « %(question)s » viendrait avant « %(trigger)s », qui l'affiche."
+
+#. module: bf_survey_numbering
+#. odoo-python
+#: code:addons/bf_survey_numbering/models/survey_survey.py:0
+msgid "… and %s more."
+msgstr "… et %s autres."
