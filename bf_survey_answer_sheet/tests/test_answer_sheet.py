@@ -194,6 +194,16 @@ class TestAnswerSheet(TransactionCase):
         for table in tables:
             self.assertIn("o_ignore_layout_styling", table)
 
+    def test_no_cell_of_the_sheet_draws_a_frame(self):
+        """wkhtmltopdf draws a cell's borders as soon as their style is solid, which
+        Bootstrap sets on every cell, even at zero width: each cell turns it off."""
+        html = self.env["ir.actions.report"]._render_qweb_html(
+            "bf_survey_answer_sheet.report_answer_sheet", self._answer().ids)[0].decode()
+        cells = re.findall(r"<td\b[^>]*>", html)
+        self.assertTrue(cells)
+        for cell in cells:
+            self.assertIn('style="border-style:none;', cell)
+
     def test_every_kind_of_answer_is_printed(self):
         sections = self._answer()._bf_sheet_sections()
         answers = {question["title"]: question["answer"]

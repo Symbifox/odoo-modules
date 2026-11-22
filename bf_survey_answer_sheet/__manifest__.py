@@ -19,7 +19,12 @@
     #   de la mise en page du rapport (`o_ignore_layout_styling`) : la mise en
     #   page standard leur ajoutait des bordures de cellule sans marge, et le
     #   premier caractère de chaque ligne collait au trait.
-    "version": "18.0.1.1.1",
+    # 18.0.1.1.2: la 1.1.1 ne suffisait pas, mesuré au rendu : le trait venait
+    #   de wkhtmltopdf, qui dessine les bordures des cellules dès que leur style
+    #   est « solid » (Bootstrap le pose sur toute cellule), même à largeur
+    #   nulle. Chaque cellule pose `border-style:none` ; le filet gris du bas,
+    #   écrit après, reste.
+    "version": "18.0.1.1.2",
     "category": "Marketing/Surveys",
     "summary": "Each completed response filed by itself: a branded PDF of the "
                "answers, password-protected, in the respondent's own folder",
