@@ -12,7 +12,10 @@
     #   d'etags d'une réponse est fermée pour la même raison, le bouton de
     #   classement manuel demande le groupe des propriétaires du sondage, et
     #   une panne de Nextcloud ne se lit plus comme « le fichier d'un autre ».
-    "version": "18.0.1.0.2",
+    # 18.0.1.1.0: quand bf_survey_numbering numérote le sondage, la feuille
+    #   reprend les mêmes numéros (« 2. Votre entreprise », « 2.1 … »), lus
+    #   seulement si le champ existe, sans dépendance.
+    "version": "18.0.1.1.0",
     "category": "Marketing/Surveys",
     "summary": "Each completed response filed by itself: a branded PDF of the "
                "answers, password-protected, in the respondent's own folder",

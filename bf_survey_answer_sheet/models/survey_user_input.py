@@ -442,17 +442,32 @@ class SurveyUserInput(models.Model):
             if question.is_page:
                 if current and current["questions"]:
                     sections.append(current)
-                current = {"title": question.title or "", "questions": []}
+                current = {"title": self._bf_sheet_title(question), "questions": []}
                 continue
             if current is None:
                 current = {"title": "", "questions": []}
             current["questions"].append({
-                "title": question.title or "",
+                "title": self._bf_sheet_title(question),
                 "answer": self._bf_sheet_answer(question, by_question.get(question.id, [])),
             })
         if current and current["questions"]:
             sections.append(current)
         return sections
+
+    @staticmethod
+    def _bf_sheet_title(question):
+        """A section's or question's title, numbered as the survey numbers it.
+
+        `bf_survey_numbering` numbers a survey's sections and questions; the
+        sheet then carries the same numbers as the form, so "question 2.5" means
+        the same line to the respondent and to the advisor reading the sheet.
+        Read only when that module is installed: this one does not need it.
+        """
+        title = question.title or ""
+        number = question["bf_number"] if "bf_number" in question._fields else False
+        if not number:
+            return title
+        return f"{number}. {title}" if question.is_page else f"{number} {title}"
 
     def _bf_sheet_answer(self, question, lines):
         """One question's answer, in a shape a dumb template can print.

@@ -172,6 +172,17 @@ class TestAnswerSheet(TransactionCase):
         self.assertEqual([question["title"] for question in sections[0]["questions"]],
                          ["Company name", "In your words", "How many sites"])
 
+    def test_the_sheet_carries_the_survey_s_numbers(self):
+        """With bf_survey_numbering, the sheet says 2.1 where the form said 2.1."""
+        if "bf_numbering" not in self.survey._fields:
+            self.skipTest("bf_survey_numbering is not installed")
+        self.survey.bf_numbering = True
+        sections = self._answer()._bf_sheet_sections()
+        self.assertEqual([section["title"] for section in sections],
+                         ["1. Section one", "2. Section two"])
+        self.assertEqual([question["title"] for question in sections[1]["questions"]],
+                         ["2.1 Your size", "2.2 Your markets", "2.3 Never answered"])
+
     def test_every_kind_of_answer_is_printed(self):
         sections = self._answer()._bf_sheet_sections()
         answers = {question["title"]: question["answer"]

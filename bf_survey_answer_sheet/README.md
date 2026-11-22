@@ -32,6 +32,11 @@ request:
   matrices and percentage allocations row by row, and *No answer* where there
   is none. The company's colours, font and logo, the completion date in the
   header, *Confidential* beside it.
+- **Numbered like the form (18.0.1.1.0).** When the survey numbers its
+  sections and questions with `bf_survey_numbering`, the sheet carries the same
+  numbers — "2. Your company", "2.1 Founding year" — so "question 2.1" points
+  at the same line on the form and on the sheet. The number is read only when
+  that module is installed; this one does not depend on it.
 - **Encrypted, AES-256.** The user password is the survey's own, common to the
   cohort of people who will read the sheets, so that a file that strays is
   useless to whoever finds it. The owner password is drawn at random and kept

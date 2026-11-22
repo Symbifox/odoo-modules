@@ -461,7 +461,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.1.0 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
 | `bf_subscription_expense` | Abonnements — notes de frais | 18.0.1.0.1 | BUSL-1.1 | A subscription paid through an expense report counts in the subscription's costs |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
-| `bf_survey_answer_sheet` | Survey Answer Sheet | 18.0.1.0.2 | LGPL-3 | Each completed response filed by itself: a branded PDF of the answers, password-protected, in the respondent's own folder |
+| `bf_survey_answer_sheet` | Survey Answer Sheet | 18.0.1.1.0 | LGPL-3 | Each completed response filed by itself: a branded PDF of the answers, password-protected, in the respondent's own folder |
 | `bf_survey_certificate` | Branded Course Certificates | 18.0.1.1.1 | BUSL-1.1 | Certification documents in the company's own brand: a branded PDF, a verifiable certificate number with its public page, and a branded success email |
 | `bf_survey_live` | Séance en direct : la trame et les écrans | 18.0.1.5.0 | BUSL-1.1 | A presentation deck between the questions, word cloud, teams, podium and the join code on every screen, for a live survey session |
 | `bf_survey_print` | BF Survey Print | 18.0.1.0.0 | LGPL-3 | Printing a survey breaks at the right places: a section starts a new sheet and a question is kept in one piece |
