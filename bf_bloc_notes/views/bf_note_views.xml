@@ -27,6 +27,14 @@
                     <button name="action_open_activity_wizard"
                             type="object"
                             string="Customise…"/>
+                    <!-- Le partage nomme se trouve ici, et non
+                         plus seulement dans l'onglet sous les champs. Meme
+                         condition que l'onglet : l'auteur seul. -->
+                    <button name="action_open_share_dialog"
+                            type="object"
+                            string="Share…"
+                            class="btn-secondary"
+                            invisible="user_id != uid or not active"/>
                     <button name="action_open_task_wizard"
                             type="object"
                             string="Convert to task"
@@ -82,30 +90,50 @@
                     <widget name="web_ribbon" title="Archived"
                             bg_color="text-bg-danger"
                             invisible="active"/>
-                    <widget name="web_ribbon" title="Pinned"
-                            bg_color="text-bg-warning"
-                            invisible="not pinned or not active"/>
+                    <!-- Les bandeaux se superposent, donc un seul s'affiche.
+                         Le partage passe devant l'épingle : l'épingle se lit déjà dans
+                         l'entête (le bouton devient « Unpin »), tandis que « quelqu'un
+                         d'autre peut lire cette note » ne se lit nulle part ailleurs. -->
                     <widget name="web_ribbon" title="Shared"
                             bg_color="text-bg-info"
-                            invisible="not is_shared or not active or pinned"/>
+                            invisible="not is_shared or not active"/>
+                    <widget name="web_ribbon" title="Pinned"
+                            bg_color="text-bg-warning"
+                            invisible="not pinned or not active or is_shared"/>
                     <field name="active" invisible="1"/>
                     <field name="color" invisible="1"/>
+                    <!-- « ranger la note » reste à l'auteur et à
+                         l'administration. Les champs qui ne regardent que lui
+                         sont en lecture seule sur la note d'autrui : la garde de
+                         `bf.note.write` les refuse, donc un champ éditable ne
+                         pouvait QUE produire une erreur. Même raisonnement que
+                         `user_id`, et que les contrôles de la carte kanban. -->
+                    <field name="peut_gerer" invisible="1"/>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1><field name="name" placeholder="Title (automatic if empty)"/></h1>
                     </div>
                     <group>
                         <group>
-                            <field name="user_id" options="{'no_create': True}"/>
+                            <!-- En lecture seule. `write()` refuse tout
+                                 changement d'auteur hors superutilisateur, et
+                                 la règle de création exige `user_id = user.id` : le
+                                 champ éditable ne pouvait QUE produire une erreur,
+                                 même pour un administrateur. -->
+                            <field name="user_id" options="{'no_create': True}" readonly="1"/>
                             <field name="tag_ids" widget="many2many_tags"
+                                   readonly="not peut_gerer"
                                    options="{'color_field': 'color', 'no_create_edit': True, 'bf_color': True}"/>
-                            <field name="color_hex" widget="bf_color" string="Color"/>
-                            <field name="deadline_date"/>
+                            <field name="color_hex" widget="bf_color" string="Color"
+                                   readonly="not peut_gerer"/>
+                            <field name="deadline_date" readonly="not peut_gerer"/>
                         </group>
                         <group>
-                            <field name="is_shared"/>
-                            <field name="pinned"/>
-                            <field name="gen_excluded"/>
+                            <!-- Repartager est à l'auteur : la règle d'écriture de
+                                 `bf.note.share` ne juge que lui. -->
+                            <field name="is_shared" readonly="not peut_gerer"/>
+                            <field name="pinned" readonly="not peut_gerer"/>
+                            <field name="gen_excluded" readonly="not peut_gerer"/>
                         </group>
                     </group>
                     <notebook>
@@ -114,6 +142,30 @@
                                    widget="html"
                                    options="{'collaborative': false}"
                                    placeholder="Write your note here…"/>
+                        </page>
+                        <page string="Sharing" name="sharing"
+                              invisible="user_id != uid">
+                            <field name="share_ids">
+                                <list editable="bottom">
+                                    <field name="kind"/>
+                                    <field name="user_id"
+                                           invisible="kind != 'user'"
+                                           options="{'no_create': True}"/>
+                                    <field name="group_id"
+                                           invisible="kind != 'group'"
+                                           options="{'no_create': True}"/>
+                                    <field name="channel_id"
+                                           invisible="kind != 'channel'"
+                                           options="{'no_create': True}"/>
+                                    <field name="can_write" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                            <!-- Une seule LIGNE, et courte. Un texte de vue
+                                 ecrit sur cinq lignes entre dans le catalogue avec ses
+                                 retours et son indentation dans le msgid : il devient
+                                 penible a traduire, et le moindre reformatage du XML en
+                                 fait une chaine neuve, donc non traduite. -->
+                            <p class="text-muted small">A recipient reads the note. With "Can edit" they can also change its title and content, and attach files; the rest stays with you. A recipient also reads the note's whole message thread, internal notes and their files included, and can post in it. Sharing itself notifies nobody and subscribes nobody, and a recipient subscribes nobody to this note, themselves included, and schedules no activity on it.</p>
                         </page>
                         <page string="Links" name="links">
                             <field name="link_ids">
@@ -150,13 +202,19 @@
             <list string="Notes" decoration-warning="pinned"
                   decoration-danger="deadline_date and deadline_date &lt; current_date"
                   multi_edit="1">
-                <field name="pinned" widget="boolean_toggle"/>
-                <field name="is_shared" widget="boolean_toggle" optional="hide"/>
-                <field name="gen_excluded" widget="boolean_toggle" optional="hide"/>
+                <!-- Mêmes champs qu'au formulaire, même raison. ⚠️ La liste
+                     porte `multi_edit`, donc une cellule s'édite sur une sélection :
+                     le `readonly` par champ n'est évalué que par l'écran, et c'est
+                     le serveur qui tient le lot (`bf.note.write` lève sur un lot
+                     MIXTE et n'écrit rien, pas même la note de l'usager). Mesuré. -->
+                <field name="peut_gerer" column_invisible="1"/>
+                <field name="pinned" widget="boolean_toggle" readonly="not peut_gerer"/>
+                <field name="is_shared" widget="boolean_toggle" optional="hide" readonly="not peut_gerer"/>
+                <field name="gen_excluded" widget="boolean_toggle" optional="hide" readonly="not peut_gerer"/>
                 <field name="name"/>
-                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'bf_color': True}"/>
+                <field name="tag_ids" widget="many2many_tags" readonly="not peut_gerer" options="{'color_field': 'color', 'bf_color': True}"/>
                 <field name="res_name" string="Linked to"/>
-                <field name="deadline_date" optional="show"/>
+                <field name="deadline_date" optional="show" readonly="not peut_gerer"/>
                 <field name="user_id" widget="many2one_avatar_user"/>
                 <field name="write_date" string="Modified"/>
             </list>
@@ -177,6 +235,14 @@
                 <field name="is_shared"/>
                 <field name="gen_excluded"/>
                 <field name="active"/>
+                <!-- « ranger la note » (archiver,
+                     epingler, colorer, Hors Gen) reste a l'auteur et a
+                     l'administration. Les quatre controles qui le font ne
+                     pouvaient QUE lever sur la note d'autrui, alors qu'Edit et
+                     Delete y respectent deja `widget.editable` et
+                     `widget.deletable`. Meme raisonnement que `user_id` passe en
+                     lecture seule au formulaire dans ce lot. -->
+                <field name="peut_gerer"/>
                 <templates>
                     <t t-name="kanban-box">
                         <!-- la couleur résolue passe en variables CSS ; la mise en
@@ -194,14 +260,21 @@
                                     <a role="menuitem" type="edit" class="dropdown-item"
                                        t-if="widget.editable">Edit</a>
                                     <a role="menuitem" type="object" name="toggle_active"
-                                       class="dropdown-item">
+                                       class="dropdown-item"
+                                       t-if="record.peut_gerer.raw_value">
                                         <t t-if="record.active.raw_value">Archive</t>
                                         <t t-else="">Unarchive</t>
                                     </a>
                                     <a role="menuitem" type="delete" class="dropdown-item"
                                        t-if="widget.deletable">Delete</a>
                                     <div role="separator" class="dropdown-divider"/>
-                                    <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                    <!-- ⚠️ Le `t-if` va sur l'enveloppe : le compilateur
+                                         REMPLACE le `<ul>` par un appel de gabarit
+                                         (`kanban_color_picker_legacy.js`), donc un
+                                         attribut pose sur lui serait jete en silence. -->
+                                    <t t-if="record.peut_gerer.raw_value">
+                                        <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                    </t>
                                 </div>
                             </div>
                             <div class="o_bf_note_card_color_strip"/>
@@ -212,12 +285,14 @@
                                 <!-- « Hors Gen », même aspect que l'épingle (pâle
                                      décoché, plein coché), mais chaque bouton POSE sa valeur :
                                      un écran périmé ne décoche jamais en voulant cocher. -->
+                                <t t-if="record.peut_gerer.raw_value">
                                 <button t-if="!record.gen_excluded.raw_value"
                                         class="btn btn-link p-0 ms-1 o_bf_note_gen_btn"
                                         type="object"
                                         name="action_gen_exclude"
                                         title="Not for Gen: Gen's passes over your notes leave it alone"
                                         aria-label="Not for Gen"
+                                        aria-pressed="false"
                                         t-attf-style="opacity: 0.35;">
                                     <i class="fa fa-eye-slash"/>
                                 </button>
@@ -226,20 +301,25 @@
                                         type="object"
                                         name="action_gen_include"
                                         title="Not for Gen: click to give it back to Gen"
-                                        aria-label="Back to Gen"
+                                        aria-label="Not for Gen"
+                                        aria-pressed="true"
                                         t-attf-style="opacity: 1;">
                                     <i class="fa fa-eye-slash"/>
                                 </button>
-                                <button class="btn btn-link p-0 ms-1 o_bf_note_pin_btn"
+                                </t>
+                                <button t-if="record.peut_gerer.raw_value"
+                                        class="btn btn-link p-0 ms-1 o_bf_note_pin_btn"
                                         type="object"
                                         name="action_toggle_pinned"
                                         title="Pin / unpin"
+                                        aria-label="Pin / unpin"
+                                        t-att-aria-pressed="record.pinned.raw_value ? 'true' : 'false'"
                                         t-attf-style="opacity: #{record.pinned.raw_value ? 1 : 0.35};">
                                     <i class="fa fa-thumb-tack"/>
                                 </button>
                                 <i t-if="record.is_shared.raw_value"
                                    class="fa fa-users ms-1 text-info"
-                                   title="Shared"/>
+                                   title="Shared with all internal users"/>
                             </div>
                             <div class="o_bf_note_card_body">
                                 <field name="body" widget="html_text" class="text-muted"/>
@@ -281,6 +361,7 @@
                                     <i class="fa fa-link"/>
                                 </button>
                                 <button type="object" name="action_archive"
+                                        t-if="record.peut_gerer.raw_value"
                                         class="btn btn-sm btn-light" title="Archive">
                                     <i class="fa fa-archive"/>
                                 </button>
@@ -318,9 +399,24 @@
                 <field name="body"/>
                 <field name="tag_ids"/>
                 <field name="res_name"/>
+                <!-- DEUX groupes, et c'est le `<separator/>` qui les sépare.
+                     Odoo assemble en OU dans un groupe, en ET entre les groupes
+                     (`search_arch_parser.js`, `search_model.js`). Les cinq filtres
+                     étaient dans le même groupe : « Épinglées » cliqué par-dessus la
+                     facette « Mes notes » que pose l'action ÉLARGISSAIT à « les
+                     miennes OU les épinglées de tout le monde » au lieu de
+                     restreindre. Invisible tant que personne ne partage ; ça mord le jour où le partage sert. -->
                 <filter name="my_notes" string="My notes" domain="[('user_id', '=', uid)]"/>
+                <!-- 🔴 Ce filtre ne cherchait que l'ANCIEN
+                     partage (`is_shared`, tout l'interne), donc il rendait zero sur un
+                     partage NOMME, celui que le lot vient d'ajouter. Les deux branches
+                     y sont : `partage_pour_moi` est le champ cherchable prevu pour
+                     ca, et il nomme les trois sortes de destinataires. -->
+                <filter name="shared_with_me" string="Shared with me"
+                        domain="['|', ('partage_pour_moi', '=', True), ('is_shared', '=', True), ('user_id', '!=', uid)]"/>
+                <separator/>
                 <filter name="pinned" string="Pinned" domain="[('pinned', '=', True)]"/>
-                <filter name="shared" string="Shared" domain="[('is_shared', '=', True)]"/>
+                <filter name="shared" string="Shared with all internal users" domain="[('is_shared', '=', True)]"/>
                 <filter name="gen_excluded" string="Not for Gen" domain="[('gen_excluded', '=', True)]"/>
                 <filter name="linked" string="Linked to a record" domain="[('link_ids', '!=', False)]"/>
                 <separator/>
@@ -346,6 +442,29 @@
         </field>
     </record>
 
+    <!-- La boite de « Partager… ». Une ligne de partage, et la
+         phrase qui dit ce que recoit le destinataire. -->
+    <record id="bf_note_share_view_form_dialog" model="ir.ui.view">
+        <field name="name">bf.note.share.form.dialog</field>
+        <field name="model">bf.note.share</field>
+        <field name="arch" type="xml">
+            <form string="Share the note">
+                <field name="note_id" invisible="1"/>
+                <group>
+                    <field name="kind" widget="radio" options="{'horizontal': true}"/>
+                    <field name="user_id" options="{'no_create': True}"
+                           invisible="kind != 'user'" required="kind == 'user'"/>
+                    <field name="group_id" options="{'no_create': True}"
+                           invisible="kind != 'group'" required="kind == 'group'"/>
+                    <field name="channel_id" options="{'no_create': True}"
+                           invisible="kind != 'channel'" required="kind == 'channel'"/>
+                    <field name="can_write" widget="boolean_toggle"/>
+                </group>
+                <p class="text-muted small">A recipient reads the note. With "Can edit" they can also change its title and content. Nobody is notified.</p>
+            </form>
+        </field>
+    </record>
+
     <record id="bf_note_action" model="ir.actions.act_window">
         <field name="name">Notepad</field>
         <field name="res_model">bf.note</field>
@@ -366,7 +485,10 @@
         <field name="name">Pinned notes</field>
         <field name="res_model">bf.note</field>
         <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[('pinned', '=', True), '|', ('user_id', '=', uid), ('is_shared', '=', True)]</field>
+        <!-- La meme troisieme branche qu'au filtre.
+             Sans elle, une note epinglee qu'on m'a NOMMEMENT partagee n'entrait
+             pas dans cet ecran, alors que la portee la rend lisible. -->
+        <field name="domain">[('pinned', '=', True), '|', '|', ('user_id', '=', uid), ('is_shared', '=', True), ('partage_pour_moi', '=', True)]</field>
         <field name="context">{'search_default_pinned': 1}</field>
     </record>
 

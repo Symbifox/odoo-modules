@@ -124,8 +124,27 @@ class BfNoteTaskWizard(models.TransientModel):
         # les fichiers de la note (photo, PDF partagés depuis le
         # téléphone) suivent la tâche. Copiés, pas déplacés : la note garde
         # les siens, archivée ou non, et peut encore servir ailleurs.
-        for piece in self.note_id._mobile_attachments():
-            piece.copy({"res_model": "project.task", "res_id": task.id})
+        #
+        # 🔴 Seulement quand le geste est de
+        # l'AUTEUR. Sinon, un destinataire en écriture emportait les fichiers de
+        # l'auteur, et ceux des messages du fil (voir `_mobile_attachments`),
+        # dans un projet qu'il choisit. Le droit de LIRE ne change pas : c'est
+        # le déplacement qu'on ferme. La tâche garde le lien retour, le titre et
+        # le contenu, et les fichiers restent sur la note.
+        #
+        # ⚠️ La lecture est « l'auteur, ou `env.su` », et PAS `peut_gerer` :
+        # conséquence assumée de l'arbitrage, un compte `base.group_system` qui
+        # fait une tâche depuis la note d'un collègue n'emporte plus les
+        # fichiers non plus. Le code en superutilisateur (passes de Gen, action
+        # serveur) les emporte, lui, parce qu'il agit POUR l'auteur.
+        #
+        # ⚠️ C'est le SEUL chemin du module qui copie une pièce d'une note :
+        # mesuré, un seul `.copy(` dans tout le module. « En faire
+        # une activité » et le re-routage ne touchent aucune pièce, et le geste
+        # du téléphone passe par CET assistant (`_mobile_make_task`).
+        if self.env.su or self.note_id.user_id.id == self.env.uid:
+            for piece in self.note_id._mobile_attachments():
+                piece.copy({"res_model": "project.task", "res_id": task.id})
 
         if self.link_back:
             existing = self.note_id.link_ids.filtered(

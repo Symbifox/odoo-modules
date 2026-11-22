@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le partage nomme ses destinataires.
+
+         🔴 Les regles d'origine ne sont PAS touchees, et ce n'est pas un choix
+         de style : MESURE a l'essai. Les regles de
+         `bf_note_security.xml` sont nees dans un fichier `noupdate="1"`, donc
+         leur ligne d'`ir_model_data` porte `noupdate = true`. Les redefinir
+         sous le MEME identifiant, depuis un fichier SANS `noupdate`, ne change
+         RIEN : le drapeau vit sur l'enregistrement, pas sur le fichier qui le
+         declare. Mesure : apres la montee, `bf_note_rule_read` portait encore
+         son ancien domaine, et les dix essais de portee rougissaient.
+
+         La parade est celle que le mecanisme offre : les regles d'un MEME
+         groupe se combinent en OU. Une regle de PLUS, avec son propre
+         identifiant, elargit donc la portee sans toucher l'ancienne.
+         Et comme elle ne porte que `perm_read` ou que `perm_write`, creer et
+         supprimer restent ou ils etaient, chez l'auteur. -->
+    <data>
+
+        <record id="bf_note_rule_read_partage" model="ir.rule">
+            <field name="name">Notes : lecture d'une note partagee a moi</field>
+            <field name="model_id" ref="model_bf_note"/>
+            <field name="domain_force">[('partage_pour_moi', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="bf_note_rule_write_partage" model="ir.rule">
+            <field name="name">Notes : modification d'une note partagee en ecriture</field>
+            <field name="model_id" ref="model_bf_note"/>
+            <field name="domain_force">[('partage_ecriture_pour_moi', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Les liens suivent la note : un destinataire lit les fiches liees. -->
+        <record id="bf_note_link_rule_read_partage" model="ir.rule">
+            <field name="name">Liens de notes : lecture d'une note partagee a moi</field>
+            <field name="model_id" ref="model_bf_note_link"/>
+            <field name="domain_force">[('note_id.partage_pour_moi', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- 🔴 « En faire une tache » rendait un 403.
+             L'assistant pose un LIEN RETOUR (`bf.note.task.wizard.link_back`,
+             force a vrai par `_mobile_make_task`), donc le geste cree un
+             `bf.note.link` sur la note d'un autre, et la regle d'ecriture de ce
+             modele etait restee `[('note_id.user_id','=',user.id)]` : l'entree
+             `tracked_task_ids` de la liste blanche des champs n'autorisait donc
+             rien d'atteignable.
+             Mesure : le geste exige `perm_create` (l'assistant
+             cree le lien) ; `perm_write` suit, parce que les commandes x2many de
+             `link_ids` ecrivent la ligne. ⚠️ `perm_unlink` reste a l'auteur, et
+             ca se voit : le re-routage en mode « remplacer » retire les liens
+             existants, donc un destinataire ne re-route une note partagee que
+             si elle n'a aucun lien (mode « ajouter » passe). C'est dit au
+             journal de version.
+             ⚠️ Ce que ca ouvre d'autre : un destinataire en ecriture peut lier
+             la note a une fiche de son choix, et l'auteur le verra sur sa note.
+             Le nom de la fiche reste calcule sous les droits de QUI LIT
+            , donc l'auteur ne lit pas le nom d'une fiche qu'il n'a pas
+             le droit d'ouvrir. -->
+        <record id="bf_note_link_rule_write_partage" model="ir.rule">
+            <field name="name">Liens de notes : un destinataire en écriture lie la note</field>
+            <field name="model_id" ref="model_bf_note_link"/>
+            <field name="domain_force">[('note_id.partage_ecriture_pour_moi', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Les lignes de partage : l'auteur les tient, le destinataire ne voit
+             que la sienne.
+             ⚠️ Un destinataire ne lit PAS les autres destinataires d'une note
+             qu'on lui a partagee : savoir qui d'autre lit la note d'un collegue
+             n'est pas necessaire pour s'en servir. -->
+        <record id="bf_note_share_rule_read" model="ir.rule">
+            <field name="name">Partages de notes : les miens ou ceux de mes notes</field>
+            <field name="model_id" ref="model_bf_note_share"/>
+            <field name="domain_force">['|', ('note_id.user_id', '=', user.id), ('est_pour_moi', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="bf_note_share_rule_write" model="ir.rule">
+            <field name="name">Partages de notes : l'auteur de la note decide</field>
+            <field name="model_id" ref="model_bf_note_share"/>
+            <field name="domain_force">[('note_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="bf_note_share_rule_admin" model="ir.rule">
+            <field name="name">Partages de notes : administration</field>
+            <field name="model_id" ref="model_bf_note_share"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+
+    </data>
+</odoo>

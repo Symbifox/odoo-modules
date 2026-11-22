@@ -77,7 +77,104 @@
     #   libxml2 TRONQUE l'imbrication, et un élément caché sous 400 `<div>`
     #   n'est alors dans AUCUN arbre. Ce nom se lit jusqu'au bord — un
     #   `<div-onclick>` n'est pas un `div`.
-    "version": "18.0.4.5.0",
+    # 18.0.4.6.0 : le partage NOMME ses destinataires. `bf.note.share`,
+    #   une ligne par destinataire (personne, groupe de securite, canal Discuss),
+    #   et le droit d'ecrire par ligne. `is_shared` reste et garde son sens.
+    #   🔴 Les regles d'origine ne sont PAS touchees : leur `ir_model_data`
+    #   porte `noupdate = true`, donc les redefinir sous le meme identifiant ne
+    #   change RIEN, meme depuis un fichier sans `noupdate` (mesuré à l'essai :
+    #   l'ancien domaine restait en place et dix essais de portee rougissaient).
+    #   Le partage ajoute donc DEUX regles de plus, qui se combinent en OU avec
+    #   les anciennes, et qui ne portent que `perm_read` ou que `perm_write` :
+    #   creer et supprimer restent chez l'auteur, sans rien scinder.
+    #   Un destinataire en ecriture change le titre et le contenu, rien d'autre
+    #   (les etiquettes ont un proprietaire ; la couleur et l'epingle rangent le
+    #   tableau de l'auteur).
+    #   Contrat mobile : deux cles de plus (`can_write`, `shared_with`), numero
+    #   d'API inchange, et `shared=False` rend toujours les seules notes de
+    #   l'appelant.
+    #   Les departements RH demanderaient `hr` : ils partent dans un pont.
+    #   Premier tour de relecture, quatre bloquants, quatre decisions
+    #   tranchees :
+    #   🔴 un destinataire en ECRITURE joint un fichier et ne retire que les
+    #   SIENS (`create_uid`). Les pieces de l'auteur restent a l'auteur, et
+    #   celles des MESSAGES du fil ne se retirent par personne d'autre que lui,
+    #   meme par qui a poste le message : elles vivent avec le message, et rien
+    #   dans `ir.attachment` ne les separe de celles de la note.
+    #   🔴 `base.group_system` est exempte de la garde des champs, sur le patron
+    #   de `bf.note.tag.write` : un administrateur archive, epingle, colore et
+    #   date la note d'un collegue comme avant le lot (il pouvait deja la
+    #   supprimer et la renommer). L'auteur, lui, ne change pour personne hors
+    #   superutilisateur.
+    #   Le filtre « Partagees avec moi » et l'action « Epinglees » cherchent le
+    #   partage NOMME autant que l'ancien : ils rendaient zero sur un partage
+    #   nomme.
+    #   L'ecriture de `bf.note.link` s'ouvre au partage en ecriture (regle de
+    #   plus, `perm_create` + `perm_write`), sinon « En faire une tache » rendait
+    #   un 403 : l'assistant pose un lien retour. ⚠️ `perm_unlink` reste a
+    #   l'auteur, donc un destinataire ne re-route une note partagee qu'en mode
+    #   « ajouter » ; « remplacer » retire des liens et refuse.
+    #   Le refus d'un destinataire en lecture seule porte une phrase lisible sur
+    #   le chemin de l'API, au lieu du mur generique d'Odoo.
+    #   Le fil n'est pas arbitre, et c'est une decision : un destinataire lit
+    #   TOUT le fil, notes internes et pieces de ces messages comprises ;
+    #   personne n'est abonne d'office ; aucune notification ne part. Dit a
+    #   l'onglet Partage, pour qu'on le sache avant de cocher.
+    #   Un destinataire ne retire pas son propre acces : supprimer une ligne de
+    #   partage reste a l'auteur de la note, comme la creer.
+    #   🔴 « En faire une tache » depuis la note d'un AUTRE n'emporte plus ses
+    #   fichiers vers la tache (la conversion les copiait sans regarder qui joue le
+    #   geste) : la tache garde le lien retour, le titre et le contenu, les
+    #   fichiers restent sur la note. Le droit de lire ne change pas, c'est le
+    #   deplacement qui se ferme. ⚠️ La lecture est « l'auteur, ou `env.su` », et
+    #   non `peut_gerer` : un compte `base.group_system` qui fait une tache
+    #   depuis la note d'un collegue n'emporte plus les fichiers non plus.
+    #   La liste et le formulaire passent en lecture seule, champ par champ
+    #   (etiquettes, couleur, echeance, epingle, « Hors Gen », « Partagee »), sur
+    #   la note d'autrui, comme la carte kanban. ⚠️ La liste porte `multi_edit` :
+    #   le `readonly` est evalue par l'ecran, et c'est le serveur qui tient le
+    #   lot (une ecriture sur un lot MIXTE leve et n'ecrit rien, pas meme la note
+    #   de l'usager ; mesure).
+    #   La carte kanban ne propose plus les quatre gestes qui ne pouvaient QUE
+    #   lever sur la note d'autrui (archiver, nuancier, « Hors Gen », epingle) :
+    #   ils suivent `peut_gerer`, comme Edit et Delete suivent deja
+    #   `widget.editable` et `widget.deletable`.
+    #   Second tour de relecture, quatre bloquants de plus, quatre
+    #   decisions tranchees :
+    #   🔴 la garde des pieces se pose a `ir.attachment` (suppression, et
+    #   ecriture qui deplace ou renomme), et non au seul chemin du telephone :
+    #   le bouton X du chatter, `unlink()` et `write()` passaient tous les
+    #   trois, `ir.attachment.check()` ne jugeant que la fiche PARENTE. Elargir
+    #   l'ecriture d'un modele ouvre ses pieces jointes.
+    #   🔴 un compte non humain ne recoit pas de note partagee : une case sur sa
+    #   fiche (`res.users.bf_note_no_shared_notes`), une CONTRAINTE qui refuse
+    #   la ligne nommee (un `domain=` de champ n'est jamais applique par l'ORM
+    #   au `create`) et l'exclusion de la PORTEE, qui ferme aussi les sortes
+    #   « groupe » et « canal » — un partage a `base.group_user` donnait la note
+    #   aux comptes de service, en ecriture. Le parametre
+    #   `bf_bloc_notes.comptes_exclus` reste honore, et la migration 4.6.0 en
+    #   fait des cases (elle ne devine RIEN d'elle-meme : aucun discriminant de
+    #   la base ne separe les comptes de service des humains sans faux positif).
+    #   🔴 un destinataire n'abonne personne au fil et n'y pose aucune activite,
+    #   lui-meme compris, et il peut toujours POSTER (`mail.activity` juge aussi
+    #   la fiche parente, et `message_subscribe` n'exige que la lecture pour
+    #   s'abonner soi-meme). La phrase de l'onglet Partage dit maintenant ce que
+    #   le code tient, mot par mot, et un essai mesure chaque mot.
+    #   🔴 le nombre de destinataires ne franchit plus la regle de lecture : les
+    #   calculs de portee lisaient `note.sudo().share_ids`, un One2many nu dont
+    #   le creneau de cache n'est pas cle par l'usager, et `share_count` rendait
+    #   4 la ou la regle n'en laissait voir que 2. Un non-auteur compte ZERO
+    #   destinataire, et la regle vit a un seul endroit (le calcul du champ, plus
+    #   la charge mobile).
+    # 18.0.4.6.1 : le partage nomme se TROUVE. Premier usage reel :
+    #   le geste de partager une note avec une seule personne ne se trouvait pas,
+    #   que la seule chose marquee « Partagee » a l'ecran etait l'ancien
+    #   interrupteur (`is_shared`, TOUS les internes), et que le vrai geste
+    #   vivait dans un onglet sous les champs. Un bouton « Partager… » dans la
+    #   barre ouvre une boite qui cree la ligne de partage, l'interrupteur
+    #   s'appelle « Partagee avec tous les internes ». Aucune regle, aucun
+    #   champ stocke, aucune migration.
+    "version": "18.0.4.6.1",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',
@@ -87,6 +184,7 @@
     "data": [
         "security/ir.model.access.csv",
         "security/bf_note_security.xml",
+        "security/bf_note_share_security.xml",
         "data/bf_note_tag_data.xml",
         "data/bf_onboarding.xml",
         "views/bf_note_views.xml",

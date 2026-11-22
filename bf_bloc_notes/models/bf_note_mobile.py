@@ -951,6 +951,17 @@ class BfNote(models.Model):
             "active": bool(self.active),
             "shared": bool(self.is_shared),
             "mine": self.user_id == self.env.user,
+            # Le droit d'ecrire, pour que la surface sache griser.
+            # ⚠️ Servie sans condition d'en-tete, contrairement a `html` et
+            # `rich_editable` : ce n'est pas de la mise en forme, et un client
+            # qui l'ignore ne paie que deux octets.
+            "can_write": bool(self.peut_ecrire),
+            # Plus de garde ici. `share_count` rend deja zero a
+            # qui n'est pas l'auteur, et la regle vit a UN endroit
+            # (`_compute_share_count`) : deux ecritures de la meme regle, c'est
+            # deux verites qui divergent au premier changement — et c'est le
+            # champ, pas la charge, que l'ORM servait par-dessus la regle.
+            "shared_with": self.share_count,
             "links": links,
             # Le nombre, pour les apps d'avant les pièces jointes ; la liste, pour les
             # suivantes.
@@ -990,7 +1001,12 @@ class BfNote(models.Model):
         mien = ("user_id", "=", self.env.uid)
         if not shared:
             return [mien]
-        return ["|", mien, ("is_shared", "=", True)]
+        # Trois branches NOMMEES, et la troisieme est le partage
+        # nomme. `shared=False` ne bouge pas : c'est le contrat de
+        # l'application posee, et un telephone deja installe ne doit pas voir
+        # sa liste changer sous lui.
+        return ["|", "|", mien, ("is_shared", "=", True),
+                ("partage_pour_moi", "=", True)]
 
     @api.model
     def _mobile_list(self, limit=50, offset=0, archived=False, query=None,
@@ -1343,9 +1359,14 @@ class BfNote(models.Model):
     def _mobile_attachments(self):
         """Les pièces de la note, sous les droits de l'appelant.
 
-        ⚠️ Seulement celles rattachées à la NOTE, pas les pièces des messages
-        de son fil : ces dernières portent aussi ``res_model = bf.note``, mais
-        elles vivent avec le message, et le chatter les montre déjà là.
+        🔴 Les pièces des MESSAGES du fil en font partie, et le contraire était
+        écrit ici (corrigé en relecture).
+        Elles portent le même ``res_model``/``res_id`` que la note et
+        ``res_field`` vide dans les deux cas : rien dans la table ne les sépare,
+        donc la recherche de ``_mobile_attachments_map`` les ramène. C'est
+        voulu — une photo envoyée au chatter s'ouvre au téléphone — mais ça se
+        sait : voir ``_mobile_exige_de_retirer``, qui refuse à un destinataire
+        d'amputer le fil de l'auteur, et ``ir_attachment._bf_note_touch``.
         """
         self.ensure_one()
         return self._mobile_attachments_map()[self.id]
@@ -1385,6 +1406,67 @@ class BfNote(models.Model):
             "image": (attachment.mimetype or "").startswith("image/"),
         }
 
+    def _mobile_exige_ecriture(self):
+        """Le droit d'écrire sur la note, avec une phrase qui se lit au téléphone.
+
+        🔴 ``check_access("write")`` lève le mur
+        générique d'Odoo (« vous êtes tombé sur des enregistrements top
+        secrets… »), et les deux contrôleurs le servent tel quel à l'écran d'un
+        téléphone, sur le refus le plus banal du partage : une note partagée en
+        LECTURE qu'on essaie de modifier. La phrase se pose ici, une fois, pour
+        les quatre gestes qui écrivent (modifier, geste rapide, joindre,
+        retirer).
+
+        ⚠️ Le droit se vérifie AVANT la forme, et ça doit rester vrai : sans
+        cela, le refus parlait de mise en forme là où il s'agissait de droits
+        (correctif de relecture du 11-09, essai
+        ``test_le_droit_se_verifie_avant_la_forme``).
+        """
+        self.ensure_one()
+        try:
+            self.check_access("write")
+        except AccessError:
+            raise AccessError(_(
+                "This note is shared with you for reading. Only its author can "
+                "change it.")) from None
+
+    def _mobile_exige_de_retirer(self, piece):
+        """🔴 Un destinataire retire les pièces qu'il a posées, pas celles des autres.
+
+        Mesuré en relecture : ``check_access("write")``
+        suffisait, et la règle d'écriture neuve donne ce droit au destinataire.
+        Un collègue a donc supprimé une pièce jointe de l'auteur, par un chemin
+        public (``POST /api/v1/notes/<id>/files/<fid>/delete``). Décision
+        retenue : joindre, et ne retirer que les siennes.
+
+        Le propriétaire se lit sur ``create_uid``. ⚠️ Et une pièce qui vient
+        d'un MESSAGE du fil n'est à personne au sens du partage : elle vit avec
+        le message, ``_mobile_attachments()`` la sert parce que rien dans la
+        table ne la sépare de celles de la note, et la retirer amputerait le
+        fil. Elle ne se retire donc que par l'auteur de la note, même par qui a
+        posté le message.
+
+        ⚠️ L'auteur de la note et l'ADMINISTRATION retirent tout, et le second
+        n'est pas un luxe : avant ce lot, un compte `base.group_system` retirait
+        n'importe quelle pièce par ce chemin (``bf_note_rule_admin`` lui donne
+        l'écriture). Une garde posée sur le seul auteur lui aurait repris ce
+        que l'exemption de la garde des champs vient de lui rendre, dans la même
+        passe. `peut_gerer` dit « l'auteur, ou l'administration », en un seul
+        endroit.
+        """
+        self.ensure_one()
+        if self.env.su or self.peut_gerer:
+            return
+        if piece.sudo().create_uid.id != self.env.uid:
+            raise AccessError(_(
+                "On a note shared with you, you can only remove the files you "
+                "attached yourself."))
+        if self.env["mail.message"].sudo().search_count(
+                [("attachment_ids", "in", piece.ids)], limit=1):
+            raise AccessError(_(
+                "This file belongs to a message in the note's thread, not to the "
+                "note itself: only the note's author can remove it."))
+
     def _mobile_attach(self, filename, content, mimetype=None):
         """Joint un fichier à la note ; rend la note.
 
@@ -1395,9 +1477,12 @@ class BfNote(models.Model):
         ⚠️ Écrire exige le droit d'écriture sur la note : une note partagée en
         lecture seule ne reçoit pas les fichiers d'un collègue. C'est l'ORM qui
         tranche, à la création de la pièce, sous l'usager réel.
+
+        Un destinataire en ÉCRITURE joint, lui, et ne retire que ce
+        qu'il a joint (``_mobile_exige_de_retirer``).
         """
         self.ensure_one()
-        self.check_access("write")
+        self._mobile_exige_ecriture()
         if not content:
             raise UserError(_("The file is empty."))
         if len(content) > MAX_ATTACHMENT:
@@ -1436,10 +1521,14 @@ class BfNote(models.Model):
 
     def _mobile_detach(self, attachment_id):
         self.ensure_one()
-        self.check_access("write")
+        self._mobile_exige_ecriture()
         piece = self._mobile_attachment(attachment_id)
         if not piece:
             raise UserError(_("This file is no longer on the note."))
+        # 🔴 La garde n'est plus appelée ici. Elle est posée à
+        # `ir.attachment.unlink()`, dans la surcharge du module, pour que le
+        # bouton X du chatter et l'ORM nu l'entendent aussi — un appelant
+        # unique, c'était une garde qui ne tenait qu'au téléphone.
         piece.unlink()
         return {"note": self._mobile_payload()}
 
@@ -1453,7 +1542,7 @@ class BfNote(models.Model):
         # a une mise en forme que la barre ne sait pas garder, modifiez-la
         # dans Symbifox » : le mauvais motif, et un conseil qui ne mène nulle
         # part. Trouvé en relecture.
-        self.check_access("write")
+        self._mobile_exige_ecriture()
         seen = vals.get("write_date")
         if seen and self._mobile_datetime(self.write_date) != self._mobile_datetime(
                 self._mobile_parse_datetime(seen)):
@@ -1524,7 +1613,7 @@ class BfNote(models.Model):
         # liens) : la règle d'écriture du module s'applique à tous. La
         # vérifier ici plutôt qu'au milieu d'un geste évite une activité posée
         # sur la fiche d'un autre au nom d'une note qu'on ne peut pas toucher.
-        self.check_access("write")
+        self._mobile_exige_ecriture()
         result = {"url": None}
         if action == "archive":
             self.active = False

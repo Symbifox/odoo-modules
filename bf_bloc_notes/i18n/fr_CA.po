@@ -2,6 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-21 22:05+0000\n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,9 +30,24 @@ msgstr "%s activité(s)."
 
 #. module: bf_bloc_notes
 #. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_share.py:0
+msgid ""
+"%s does not receive shared notes: it is a service account, not a person."
+msgstr ""
+"%s ne reçoit pas de notes partagées : c'est un compte de service, pas une "
+"personne."
+
+#. module: bf_bloc_notes
+#. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 msgid "%s is not a hex color."
 msgstr "%s n'est pas une couleur hexadécimale."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_share.py:0
+msgid "(nobody)"
+msgstr "(personne)"
 
 #. module: bf_bloc_notes
 #. odoo-javascript
@@ -100,6 +117,12 @@ msgid "A link cannot be moved to another note."
 msgstr "Un lien ne peut pas être déplacé vers une autre note."
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_share.py:0
+msgid "A note is already readable by its author."
+msgstr "Une note est déjà lisible par son auteur."
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
 msgid ""
 "A number (<code>22299</code>), a shortcut (<code>task:22299</code>), a "
@@ -109,6 +132,44 @@ msgstr ""
 "Un numéro (<code>22299</code>), un raccourci (<code>task:22299</code>), une "
 "référence technique (<code>bf.email:17</code>) ou une URL Odoo collée se "
 "résolvent en fiche exacte, remontée en tête de liste."
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid ""
+"A recipient reads the note. With \"Can edit\" they can also change its title "
+"and content, and attach files; the rest stays with you. A recipient also "
+"reads the note's whole message thread, internal notes and their files "
+"included, and can post in it. Sharing itself notifies nobody and subscribes "
+"nobody, and a recipient subscribes nobody to this note, themselves included, "
+"and schedules no activity on it."
+msgstr ""
+"Un destinataire lit la note. Avec « Peut modifier », il peut aussi en "
+"changer le titre et le contenu, et y joindre des fichiers ; le reste reste à "
+"toi. Un destinataire lit aussi tout le fil de la note, notes internes et "
+"fichiers de ces messages compris, et il peut y écrire. Le partage lui-même "
+"n'avertit personne et n'abonne personne, et un destinataire n'abonne "
+"personne à cette note, lui-même compris, et n'y pose aucune activité."
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_share_view_form_dialog
+msgid ""
+"A recipient reads the note. With \"Can edit\" they can also change its title "
+"and content. Nobody is notified."
+msgstr ""
+"Un destinataire lit la note. Avec « Peut modifier », le titre et le contenu "
+"lui sont aussi ouverts. Personne n'est averti."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_share.py:0
+msgid "A share line cannot be moved to another note."
+msgstr "Une ligne de partage ne se déplace pas vers une autre note."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_share.py:0
+msgid "A share line names one recipient, not several."
+msgstr "Une ligne de partage nomme un seul destinataire, pas plusieurs."
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -152,6 +213,11 @@ msgstr "Activité(s) créée(s)"
 #: code:addons/bf_bloc_notes/models/bf_note.py:0
 msgid "Activities created from the note"
 msgstr "Activités créées depuis la note"
+
+#. module: bf_bloc_notes
+#: model:ir.model,name:bf_bloc_notes.model_mail_activity
+msgid "Activity"
+msgstr ""
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_exception_decoration
@@ -200,6 +266,12 @@ msgid "All notes"
 msgstr "Toutes les notes"
 
 #. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+msgid "Alt+L"
+msgstr ""
+
+#. module: bf_bloc_notes
 #. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 msgid "An empty note is not saved."
@@ -244,14 +316,18 @@ msgid ""
 "Archives the note once the task is created (recommended if it is no longer "
 "needed)."
 msgstr ""
-"Archive la note après création de la tâche (recommandé si elle ne sert "
-"plus)."
+"Archive la note après création de la tâche (recommandé si elle ne sert plus)."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__user_id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__user_ids
 msgid "Assigned to"
 msgstr "Assignée à"
+
+#. module: bf_bloc_notes
+#: model:ir.model,name:bf_bloc_notes.model_ir_attachment
+msgid "Attachment"
+msgstr ""
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_attachment_count
@@ -263,6 +339,12 @@ msgstr "Nombre de pièces jointes"
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "Author"
 msgstr "Auteur"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Back to Gen"
+msgstr "Rendre à Gen"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_color_style__fill
@@ -278,6 +360,11 @@ msgstr "Fond"
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_res_users__bf_note_count
 msgid "Bf Note Count"
 msgstr "Nombre de notes"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__can_write
+msgid "Can edit"
+msgstr "Peut modifier"
 
 #. module: bf_bloc_notes
 #. odoo-javascript
@@ -302,12 +389,18 @@ msgstr "Cartes"
 #. module: bf_bloc_notes
 #: model:ir.model.fields,help:bf_bloc_notes.field_res_users__bf_note_layout
 msgid ""
-"Cards: masonry grid with the color as background, like Google Keep. Minimal:"
-" one line per note, the color as a stripe. List: detailed rows."
+"Cards: masonry grid with the color as background, like Google Keep. Minimal: "
+"one line per note, the color as a stripe. List: detailed rows."
 msgstr ""
 "Cartes : grille en maçonnerie, la couleur en fond, comme Google Keep. "
 "Minimale : une ligne par note, la couleur en liseré. Liste : lignes "
 "détaillées."
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__channel_id
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_share__kind__channel
+msgid "Channel"
+msgstr "Canal"
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -320,6 +413,12 @@ msgstr "Choisissez un projet pour la tâche."
 #: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 msgid "Choose the project"
 msgstr "Choisir le projet"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_share.py:0
+msgid "Choose who this note is shared with."
+msgstr "Choisis avec qui cette note est partagée."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__partner_id
@@ -372,8 +471,7 @@ msgstr "Couleur de l'enregistrement pour tout le monde (hex)."
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__color_resolved
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_tag__color_resolved
 msgid ""
-"Color shown to the current user, after personal, company and automatic "
-"rules."
+"Color shown to the current user, after personal, company and automatic rules."
 msgstr ""
 "Couleur montrée à l'usager courant, après sa couleur, celle du locataire et "
 "les règles automatiques."
@@ -394,6 +492,11 @@ msgstr "Aérée"
 #: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_density__compact
 msgid "Compact"
 msgstr "Compacte"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__est_pour_moi
+msgid "Concerns me"
+msgstr "Me concerne"
 
 #. module: bf_bloc_notes
 #: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_config
@@ -478,6 +581,7 @@ msgstr "Crée ta première note rapide"
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__create_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__create_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__create_uid
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__create_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__create_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__create_uid
 msgid "Created by"
@@ -488,6 +592,7 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__create_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__create_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__create_date
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__create_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__create_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__create_date
 msgid "Created on"
@@ -551,6 +656,7 @@ msgstr "Affichage"
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__display_name
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__display_name
 msgid "Display Name"
@@ -567,6 +673,11 @@ msgstr "Couleur affichée"
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__color_resolved_index
 msgid "Displayed color (Odoo palette)"
 msgstr "Couleur affichée (palette d'Odoo)"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_res_users__bf_note_no_shared_notes
+msgid "Does not receive shared notes"
+msgstr "Ne reçoit pas de notes partagées"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_reroute__state__done
@@ -597,10 +708,20 @@ msgid "Edit"
 msgstr "Modifier"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_tag__user_id
+msgid "Empty: shared with the whole instance."
+msgstr "Vide : commune à toute l'instance."
+
+#. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
 msgid "Enter a title or content to create the task."
 msgstr "Saisis un titre ou un contenu pour créer la tâche."
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -635,6 +756,28 @@ msgid "Form"
 msgstr "Fiche"
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Gen's passes over your notes can process it again."
+msgstr "Les passes de Gen sur vos notes peuvent de nouveau la traiter."
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__gen_excluded
+msgid ""
+"Gen's passes over your notes leave this note alone. It is a rule those "
+"passes follow, not a lock: whoever can read the note still can."
+msgstr ""
+"Les passes de Gen sur vos notes laissent cette note de côté. C'est une règle "
+"que ces passes respectent, pas un verrou : qui peut lire la note la lit "
+"toujours."
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__group_id
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_share__kind__group
+msgid "Group"
+msgstr "Groupe"
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "Group by"
 msgstr "Regrouper par"
@@ -650,11 +793,22 @@ msgid "Has Message"
 msgstr "A un message"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__peut_ecrire
+msgid "I can edit this note"
+msgstr "Je peux modifier cette note"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__peut_gerer
+msgid "I can tidy this note"
+msgstr "Je peux ranger cette note"
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__res_id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__id
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__id
 msgid "ID"
@@ -685,14 +839,18 @@ msgstr ""
 "serveur rend la même note à chaque nouvel envoi."
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__is_shared
+msgid ""
+"If checked, every internal user can read this note. To share it with some "
+"people only, use Share… or the Sharing tab."
+msgstr ""
+"Si cochée, tous les internes peuvent lire cette note. Pour la partager avec "
+"certaines personnes seulement, utilise « Partager… » ou l'onglet Partage."
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr "Si coché, de nouveaux messages demandent votre attention."
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__is_shared
-msgid "If checked, other internal users can see this note."
-msgstr "Si cochée, les autres utilisateurs internes peuvent voir cette note."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_has_error
@@ -734,6 +892,7 @@ msgstr "Gardée sur cet appareil. Elle partira au retour du réseau."
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__write_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__write_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__write_uid
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__write_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__write_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__write_uid
 msgid "Last Updated by"
@@ -744,6 +903,7 @@ msgstr "Dernière mise à jour par"
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__write_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__write_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__write_date
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__write_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__write_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__write_date
 msgid "Last Updated on"
@@ -780,6 +940,12 @@ msgid "Link to a record"
 msgstr "Rattacher à une fiche"
 
 #. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+msgid "Link to:"
+msgstr "Lier à :"
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "Linked model"
 msgstr "Modèle lié"
@@ -796,12 +962,6 @@ msgstr "Lié à"
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "Linked to a record"
 msgstr "Liées à une fiche"
-
-#. module: bf_bloc_notes
-#. odoo-javascript
-#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
-msgid "Link to:"
-msgstr "Lier à :"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__link_ids
@@ -826,9 +986,29 @@ msgid "Make it a task"
 msgstr "En faire une tâche"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_has_error
 msgid "Message Delivery error"
 msgstr "Erreur d'envoi du message"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_ids
@@ -1016,9 +1196,37 @@ msgid "None"
 msgstr "Aucun"
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__gen_excluded
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Not for Gen"
+msgstr "Hors Gen"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Not for Gen: Gen's passes over your notes leave it alone"
+msgstr "Hors Gen : les passes de Gen sur vos notes la laissent de côté"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Not for Gen: Gen's passes over your notes will leave it alone."
+msgstr "Hors Gen : les passes de Gen sur vos notes la laisseront de côté."
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Not for Gen: click to give it back to Gen"
+msgstr "Hors Gen : cliquer pour la rendre à Gen"
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__note_id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__note_id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__sample_name
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__note_id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__note_id
 msgid "Note"
 msgstr "Note"
@@ -1065,6 +1273,11 @@ msgid "Note saved"
 msgstr "Note enregistrée"
 
 #. module: bf_bloc_notes
+#: model:ir.model,name:bf_bloc_notes.model_bf_note_share
+msgid "Note share"
+msgstr "Partage de note"
+
+#. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_bf_note_tag
 msgid "Note tag"
 msgstr "Étiquette de note"
@@ -1076,9 +1289,16 @@ msgid "Note unpinned."
 msgstr "Note désépinglée."
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid "Note:"
+msgstr "Note :"
+
+#. module: bf_bloc_notes
 #: model:ir.actions.act_window,name:bf_bloc_notes.bf_note_action
 #: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_root
 #: model:onboarding.onboarding,name:bf_bloc_notes.bf_onboarding_panel
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_user_share_view_form
 msgid "Notepad"
 msgstr "Bloc-notes"
 
@@ -1145,6 +1365,16 @@ msgid "Offline: your notes stay on this device."
 msgstr "Hors ligne : vos notes restent sur cet appareil."
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid ""
+"On a note shared with you, you can only remove the files you attached "
+"yourself."
+msgstr ""
+"Sur une note qu'on t'a partagée, tu ne retires que les fichiers que tu as "
+"joints toi-même."
+
+#. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_onboarding_onboarding
 msgid "Onboarding"
 msgstr "Parcours d'intégration"
@@ -1154,6 +1384,12 @@ msgstr "Parcours d'intégration"
 #: model:onboarding.onboarding.step,step_image_alt:bf_bloc_notes.bf_onb_step_settings
 msgid "Onboarding Step Image"
 msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid "Only the author of this note can share it."
+msgstr "Seule la personne qui a écrit cette note peut la partager."
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
@@ -1193,9 +1429,20 @@ msgid "Own color"
 msgstr "Couleur propre"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__user_id
+msgid "Owner"
+msgstr "Propriétaire"
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__parent_id
 msgid "Parent task"
 msgstr "Tâche parente"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__user_id
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_share__kind__user
+msgid "Person"
+msgstr "Personne"
 
 #. module: bf_bloc_notes
 #. odoo-javascript
@@ -1258,6 +1505,11 @@ msgstr "Évaluations"
 #: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_reroute__state__draft
 msgid "Ready"
 msgstr "Prêt"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__share_count
+msgid "Recipients"
+msgstr "Destinataires"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__res_name
@@ -1432,6 +1684,12 @@ msgid "Selected note(s)"
 msgstr "Note(s) sélectionnée(s)"
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Send either text or html, not both."
+msgstr "Envoyez du texte ou du html, pas les deux."
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__sequence
 msgid "Sequence"
 msgstr "Séquence"
@@ -1442,10 +1700,14 @@ msgid "Set autosave, sharing options and chatter integration."
 msgstr "Réglez l'autosave, les options de partage et l'intégration chatter."
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__is_shared
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_share_view_form_dialog
+msgid "Share the note"
+msgstr "Partager la note"
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "Shared"
 msgstr "Partagée"
 
@@ -1456,9 +1718,42 @@ msgid "Shared file"
 msgstr "Fichier partagé"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__share_ids
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__kind
+msgid "Shared with"
+msgstr "Partagée avec"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__is_shared
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Shared with all internal users"
+msgstr "Partagée avec tous les internes"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__partage_pour_moi
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Shared with me"
+msgstr "Partagées avec moi"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__partage_ecriture_pour_moi
+msgid "Shared with me for editing"
+msgstr "Partagée avec moi en écriture"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Share…"
+msgstr "Partager…"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Sharing"
+msgstr "Partage"
+
+#. module: bf_bloc_notes
 #: model_terms:ir.actions.act_window,help:bf_bloc_notes.bf_note_action
-msgid ""
-"Shortcut: <b>Alt+N</b> for a new note, <b>Alt+Shift+N</b> for the list."
+msgid "Shortcut: <b>Alt+N</b> for a new note, <b>Alt+Shift+N</b> for the list."
 msgstr ""
 "Raccourci : <b>Alt+N</b> pour une nouvelle note, <b>Alt+Shift+N</b> pour la "
 "liste."
@@ -1607,6 +1902,22 @@ msgstr "La note est vide."
 
 #. module: bf_bloc_notes
 #. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_tag.py:0
+msgid "The owner of a tag cannot be changed."
+msgstr "Le propriétaire d'une étiquette ne se change pas."
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_share__can_write
+msgid ""
+"The recipient may change the title and the content. Pinning, colour, tags, "
+"sharing, archiving and the Gen flag stay with the author."
+msgstr ""
+"Le destinataire peut changer le titre et le contenu. L'épingle, la couleur, "
+"les étiquettes, le partage, l'archivage et le drapeau « Hors Gen » restent à "
+"l'auteur."
+
+#. module: bf_bloc_notes
+#. odoo-python
 #: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 msgid "The server could not complete the request."
 msgstr "Le serveur n'a pas pu terminer la demande."
@@ -1621,6 +1932,16 @@ msgstr "Le serveur a refusé :"
 #: model:ir.model.constraint,message:bf_bloc_notes.constraint_bf_note_client_uuid_user_unique
 msgid "This device identifier is already used by another note."
 msgstr "Cet identifiant d'appareil est déjà pris par une autre note."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid ""
+"This file belongs to a message in the note's thread, not to the note itself: "
+"only the note's author can remove it."
+msgstr ""
+"Ce fichier appartient à un message du fil de la note, et non à la note : "
+"seul l'auteur de la note peut le retirer."
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -1642,36 +1963,39 @@ msgstr "Cette note a déjà %s fichiers."
 
 #. module: bf_bloc_notes
 #. odoo-python
-#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
-msgid "Send either text or html, not both."
-msgstr "Envoyez du texte ou du html, pas les deux."
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid ""
+"This note belongs to someone else. A share for editing opens its title and "
+"its content, never the rest (%s)."
+msgstr ""
+"Cette note est à quelqu'un d'autre. Un partage en écriture ouvre son titre "
+"et son contenu, jamais le reste (%s)."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid ""
+"This note belongs to someone else. You read its thread and you can post in "
+"it; scheduling an activity on it stays with its author."
+msgstr ""
+"Cette note est à quelqu'un d'autre. Tu lis son fil et tu peux y écrire ; y "
+"poser une activité reste à son auteur."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid ""
+"This note belongs to someone else. You read its thread and you can post in "
+"it; subscribing anyone to it stays with its author."
+msgstr ""
+"Cette note est à quelqu'un d'autre. Tu lis son fil et tu peux y écrire ; y "
+"abonner quelqu'un reste à son auteur."
 
 #. module: bf_bloc_notes
 #. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 msgid "This note cannot be read."
 msgstr "Cette note est illisible."
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
-msgid ""
-"This note has formatting that the toolbar cannot keep. Edit it in Symbifox."
-msgstr ""
-"Cette note porte une mise en forme que la barre ne sait pas garder. "
-"Modifiez-la dans Symbifox."
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
-msgid "This note is too long (%s characters of HTML at most)."
-msgstr "Cette note est trop longue (%s caractères de HTML au plus)."
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
-msgid "“html” must be a string."
-msgstr "« html » doit être une chaîne de caractères."
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -1693,9 +2017,38 @@ msgstr ""
 "Lisez-la ici, modifiez-la dans Symbifox."
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid ""
+"This note has formatting that the toolbar cannot keep. Edit it in Symbifox."
+msgstr ""
+"Cette note porte une mise en forme que la barre ne sait pas garder. Modifiez-"
+"la dans Symbifox."
+
+#. module: bf_bloc_notes
 #: model:ir.model.constraint,message:bf_bloc_notes.constraint_bf_note_link_uniq_note_target
 msgid "This note is already linked to this record."
 msgstr "Cette note est déjà liée à cette fiche."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_share.py:0
+msgid "This note is already shared with %s."
+msgstr "Cette note est déjà partagée avec %s."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid ""
+"This note is shared with you for reading. Only its author can change it."
+msgstr ""
+"Cette note t'est partagée en lecture. Seul son auteur peut la modifier."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "This note is too long (%s characters of HTML at most)."
+msgstr "Cette note est trop longue (%s caractères de HTML au plus)."
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -1725,11 +2078,13 @@ msgstr "Cette fiche n'existe plus, ou vous n'y avez pas accès."
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_user_pref_view_form
 msgid ""
 "This reminder will be preselected in the quick creation dialog\n"
-"                        (systray icon or <kbd>Alt+N</kbd>). You can still change it\n"
+"                        (systray icon or <kbd>Alt+N</kbd>). You can still "
+"change it\n"
 "                        when creating."
 msgstr ""
 "Ce rappel sera pré-sélectionné dans le dialogue de création rapide\n"
-"                        (icône systray ou <kbd>Alt+N</kbd>). Tu peux toujours le changer au\n"
+"                        (icône systray ou <kbd>Alt+N</kbd>). Tu peux "
+"toujours le changer au\n"
 "                        moment de la création."
 
 #. module: bf_bloc_notes
@@ -1743,15 +2098,30 @@ msgid "This week"
 msgstr "Cette semaine"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_res_users__bf_note_no_shared_notes
+msgid ""
+"Tick this for a service account (API, automation, Gen): the notepad never "
+"names it as a person to share a note with, and a note shared with a group or "
+"a channel never reaches it either."
+msgstr ""
+"À cocher pour un compte de service (API, automatisation, Gen) : le bloc-"
+"notes ne le propose jamais comme personne à qui partager une note, et une "
+"note partagée à un groupe ou à un canal ne l'atteint pas non plus."
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid ""
 "Tip: \"Reroute…\" in the header moves the note to another record\n"
-"                                (or adds it to a second one). Everywhere here, a record is found by its name,\n"
-"                                its number, a shortcut (<code>task:22299</code>) or a pasted Odoo URL."
+"                                (or adds it to a second one). Everywhere "
+"here, a record is found by its name,\n"
+"                                its number, a shortcut (<code>task:22299</"
+"code>) or a pasted Odoo URL."
 msgstr ""
 "Astuce : « Re-router… » dans l'entête déplace la note vers une autre fiche\n"
-"                                (ou l'ajoute à une seconde). Partout ici, la fiche se cherche par son nom,\n"
-"                                son numéro, un raccourci (<code>task:22299</code>) ou une URL Odoo collée."
+"                                (ou l'ajoute à une seconde). Partout ici, la "
+"fiche se cherche par son nom,\n"
+"                                son numéro, un raccourci (<code>task:22299</"
+"code>) ou une URL Odoo collée."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__name
@@ -1877,6 +2247,14 @@ msgstr "Délai de rappel non offert."
 
 #. module: bf_bloc_notes
 #. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+#: code:addons/bf_bloc_notes/models/bf_note_share.py:0
+msgid "Unsupported search on a sharing flag."
+msgstr "Recherche non prise en charge sur un indicateur de partage."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
 #: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 msgid "Untitled note"
 msgstr "Note sans titre"
@@ -1917,8 +2295,7 @@ msgstr "Écris ta note ici…"
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 msgid "You can paste or drag an image straight into the text area."
-msgstr ""
-"Tu peux coller ou glisser une image directement dans la zone de texte."
+msgstr "Tu peux coller ou glisser une image directement dans la zone de texte."
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -1941,86 +2318,20 @@ msgid "to save"
 msgstr "pour enregistrer"
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "“Not for Gen” must be true or false."
+msgstr "« Hors Gen » doit valoir vrai ou faux."
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "“html” must be a string."
+msgstr "« html » doit être une chaîne de caractères."
+
+#. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "🗓️ Today"
 msgstr "🗓️ Aujourd'hui"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_tag__user_id
-msgid "Empty: shared with the whole instance."
-msgstr "Vide : commune à toute l'instance."
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/models/bf_note.py:0
-msgid "Note:"
-msgstr "Note :"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__user_id
-msgid "Owner"
-msgstr "Propriétaire"
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/models/bf_note_tag.py:0
-msgid "The owner of a tag cannot be changed."
-msgstr "Le propriétaire d'une étiquette ne se change pas."
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__gen_excluded
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Not for Gen"
-msgstr "Hors Gen"
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
-msgid "Back to Gen"
-msgstr "Rendre à Gen"
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
-msgid "Gen's passes over your notes can process it again."
-msgstr "Les passes de Gen sur vos notes peuvent de nouveau la traiter."
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__gen_excluded
-msgid ""
-"Gen's passes over your notes leave this note alone. It is a rule those "
-"passes follow, not a lock: whoever can read the note still can."
-msgstr ""
-"Les passes de Gen sur vos notes laissent cette note de côté. C'est une règle"
-" que ces passes respectent, pas un verrou : qui peut lire la note la lit "
-"toujours."
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
-msgid "Not for Gen: Gen's passes over your notes leave it alone"
-msgstr "Hors Gen : les passes de Gen sur vos notes la laissent de côté"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
-msgid "Not for Gen: click to give it back to Gen"
-msgstr "Hors Gen : cliquer pour la rendre à Gen"
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
-msgid "Not for Gen: Gen's passes over your notes will leave it alone."
-msgstr "Hors Gen : les passes de Gen sur vos notes la laisseront de côté."
-
-#. module: bf_bloc_notes
-#. odoo-python
-#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
-msgid "“Not for Gen” must be true or false."
-msgstr "« Hors Gen » doit valoir vrai ou faux."

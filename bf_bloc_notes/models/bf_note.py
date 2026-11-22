@@ -4,7 +4,7 @@ from datetime import timedelta
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, UserError
 from odoo.osv import expression
 
 # Modèles remontés en tête du sélecteur : ce sont ceux qu'on route au
@@ -21,6 +21,14 @@ ALLOWED_QUICK_CREATE_KEYS = {
     "res_id",
     "link_ids",
 }
+
+#: Les seuls champs qu'un destinataire d'un partage en ecriture
+#: peut toucher. Les deux listes de suivi y sont parce que convertir en tache ou
+#: en activite une note qu'on nous a partagee est un geste legitime, et qu'il
+#: ecrit sur la note.
+_CHAMPS_DU_DESTINATAIRE = frozenset({
+    "name", "body", "tracked_activity_ids", "tracked_task_ids",
+})
 
 REMINDER_OFFSETS = {
     "today": 0,
@@ -46,10 +54,15 @@ class BfNote(models.Model):
     active = fields.Boolean(default=True)
     pinned = fields.Boolean(default=False)
     color = fields.Integer(default=0)
+    # Premier usage reel : le geste ne se trouvait pas pour partager
+    # partager avec UNE personne. La seule chose marquee « Partagee » a l'ecran
+    # etait cet interrupteur, qui ouvre la note a TOUS les internes. Le libelle
+    # le dit maintenant, et l'aide renvoie au partage nomme.
     is_shared = fields.Boolean(
-        string="Shared",
+        string="Shared with all internal users",
         default=False,
-        help="If checked, other internal users can see this note.",
+        help="If checked, every internal user can read this note. To share it "
+             "with some people only, use Share… or the Sharing tab.",
     )
     # « Hors Gen ». Les passes de Gen sur les notes (toute routine d'assistant
     # qui lit les notes) la
@@ -63,6 +76,29 @@ class BfNote(models.Model):
     )
     deadline_date = fields.Date(string="Due date")
     tag_ids = fields.Many2many("bf.note.tag", string="Tags")
+
+    # Le partage NOMME ses destinataires, une ligne par
+    # destinataire, et le droit d'ecrire se porte par ligne. `is_shared` reste
+    # et garde son sens : tout l'interne, en lecture.
+    share_ids = fields.One2many("bf.note.share", "note_id", string="Shared with")
+    share_count = fields.Integer(string="Recipients", compute="_compute_share_count")
+    # 🔴 Ces deux champs SONT la portee du partage, et les regles
+    # d'enregistrement s'appuient sur leur methode de recherche. Un seul
+    # endroit, voir `_domaine_de_recherche_partage`.
+    partage_pour_moi = fields.Boolean(
+        string="Shared with me", compute="_compute_partages_pour_moi",
+        search="_search_partage_pour_moi", compute_sudo=False)
+    partage_ecriture_pour_moi = fields.Boolean(
+        string="Shared with me for editing", compute="_compute_partages_pour_moi",
+        search="_search_partage_ecriture_pour_moi", compute_sudo=False)
+    peut_ecrire = fields.Boolean(
+        string="I can edit this note", compute="_compute_peut_ecrire",
+        compute_sudo=False)
+    # 🔴 Ranger n'est pas ecrire, et la carte kanban doit savoir les distinguer :
+    # voir `_compute_peut_gerer`.
+    peut_gerer = fields.Boolean(
+        string="I can tidy this note", compute="_compute_peut_gerer",
+        compute_sudo=False)
 
     user_id = fields.Many2one(
         "res.users",
@@ -157,6 +193,40 @@ class BfNote(models.Model):
         cette garde, une note pouvait changer d'auteur, et le nom des fiches
         liées, calculé sous les droits de l'auteur, se serait recalculé sous
         ceux du nouvel auteur."""
+        # Sur une note qu'on nous a partagee en ecriture, on change
+        # le TITRE et le CONTENU, rien d'autre.
+        #
+        # 🔴 Les etiquettes n'y sont pas, et ce n'est pas de la prudence : une
+        # `bf.note.tag` a un proprietaire, et sa regle de lecture ne
+        # rend que les communes et les siennes. Un destinataire qui poserait SA
+        # propre etiquette sur la note d'un collegue y mettrait un
+        # enregistrement que l'auteur ne peut pas lire.
+        #
+        # La couleur et l'epingle n'y sont pas non plus : elles rangent le
+        # tableau de l'AUTEUR, pas le contenu de la note. Le drapeau « Hors
+        # Gen », l'archivage, la suppression et le partage lui-meme restent a
+        # l'auteur par la meme logique.
+        #
+        # 🔴 `base.group_system` N'EST PAS `env.su`.
+        # La garde refusait donc a un compte administrateur d'archiver,
+        # d'epingler, de colorer ou de dater la note d'un collegue, alors que
+        # `bf_note_rule_admin` lui laissait encore la SUPPRIMER et la renommer.
+        # L'exemption est celle du voisin, `bf.note.tag.write` : l'administration
+        # garde ce qu'elle avait avant ce lot.
+        # ⚠️ Elle ne couvre PAS le changement d'auteur, plus bas : une garde plus ancienne le
+        # refuse a tout le monde hors superutilisateur, administrateur compris.
+        if vals and not self.env.su and not self.env.user.has_group("base.group_system"):
+            interdits = sorted(set(vals) - _CHAMPS_DU_DESTINATAIRE)
+            if interdits:
+                etrangeres = self.filtered(lambda n: n.user_id.id != self.env.uid)
+                if etrangeres:
+                    # ⚠️ La phrase ne suppose plus un partage : elle etait servie
+                    # telle quelle a qui n'avait rien recu (« Sur une note qu'on
+                    # t'a partagee… »), administrateur compris avant l'exemption.
+                    raise AccessError(_(
+                        "This note belongs to someone else. A share for editing opens "
+                        "its title and its content, never the rest (%s).",
+                        ", ".join(interdits)))
         if "user_id" in vals and not self.env.su:
             cible = vals["user_id"]
             cible = cible.id if hasattr(cible, "id") else cible
@@ -209,6 +279,208 @@ class BfNote(models.Model):
         domaine = expression.OR(branches)
         return domaine if positif else ["!"] + domaine
 
+    # ------------------------------------------------------------------
+    # La portee du partage nomme
+    # ------------------------------------------------------------------
+    def _lignes_pour_moi(self, en_ecriture=False):
+        """Les lignes de partage qui me designent, toutes notes confondues.
+
+        ⚠️ En sudo, et borne : le domaine vient de `bf.note.share`, qui ne
+        nomme que l'usager connecte, ses groupes et ses canaux. Sans sudo, la
+        regle d'enregistrement des lignes s'appliquerait, et elle depend a son
+        tour de la visibilite de la note : la resolution tournerait en rond.
+        """
+        Partage = self.env["bf.note.share"]
+        return Partage.sudo().search(Partage._domaine_pour_moi(en_ecriture=en_ecriture))
+
+    def _notes_partagees_avec_moi(self, en_ecriture=False):
+        """Parmi CES notes, celles dont une ligne de partage me designe.
+
+        🔴 Ces calculs lisaient
+        `note.sudo().share_ids`, et c'est par la que la regle de lecture des
+        lignes tombait : `share_ids` est un One2many NU, son creneau de cache
+        n'est pas cle par l'usager (aucun `depends_context`), donc la valeur
+        deposee par la lecture en sudo etait resservie telle quelle a la lecture
+        suivante. Mesure, un seul usager, une seule transaction, cache vide au
+        depart : la recherche directe rendait 2 lignes, `read(['share_count'])`
+        rendait 4, et `note.share_ids` servait les quatre identifiants. Le
+        `@api.depends_context("uid")` du calcul protege le champ CALCULE, pas le
+        `share_ids` qu'il lisait.
+
+        Une RECHERCHE en sudo sur `bf.note.share` ne depose rien dans ce
+        creneau, et `_read_group` ne met aucune fiche en cache : il rend des
+        identifiants de notes, et c'est tout ce dont ces calculs ont besoin.
+        """
+        Partage = self.env["bf.note.share"]
+        if not self.ids:
+            return set()
+        domaine = expression.AND([
+            [("note_id", "in", self.ids)],
+            Partage._domaine_pour_moi(en_ecriture=en_ecriture),
+        ])
+        return {note.id for (note,) in Partage.sudo()._read_group(domaine, ["note_id"])}
+
+    @api.depends("share_ids", "share_ids.can_write")
+    @api.depends_context("uid")
+    def _compute_partages_pour_moi(self):
+        lecture = self._notes_partagees_avec_moi()
+        ecriture = self._notes_partagees_avec_moi(en_ecriture=True)
+        for note in self:
+            note.partage_pour_moi = note.id in lecture
+            note.partage_ecriture_pour_moi = note.id in ecriture
+
+    @api.depends("user_id", "share_ids", "share_ids.can_write")
+    @api.depends_context("uid")
+    def _compute_peut_ecrire(self):
+        ecriture = self._notes_partagees_avec_moi(en_ecriture=True)
+        for note in self:
+            note.peut_ecrire = (
+                note.user_id.id == self.env.uid
+                or note.id in ecriture)
+
+    @api.depends("user_id")
+    @api.depends_context("uid")
+    def _compute_peut_gerer(self):
+        """Ranger la note : archiver, epingler, colorer, « Hors Gen ».
+
+        🔴 La carte kanban offrait ces quatre gestes
+        sur la note d'autrui, ou ils ne pouvaient QUE lever (voir la garde de
+        `write`), alors qu'Edit et Delete y respectent deja `widget.editable` et
+        `widget.deletable`. Meme raisonnement que `user_id` passe en lecture
+        seule au formulaire dans ce lot : un controle qui ne peut que refuser
+        n'est pas un controle.
+
+        ⚠️ Ce n'est PAS `peut_ecrire` : un destinataire en ecriture change le
+        titre et le contenu, et ne range rien. Deux droits distincts, donc deux
+        champs distincts. Et l'administration range comme avant, parce que la
+        garde de `write` l'exempte.
+        """
+        administration = self.env.user.has_group("base.group_system")
+        for note in self:
+            note.peut_gerer = administration or note.user_id.id == self.env.uid
+
+    @api.depends("share_ids")
+    @api.depends_context("uid")
+    def _compute_share_count(self):
+        """Le nombre de destinataires ne sort que pour l'auteur.
+
+        🔴 Ce calcul recopiait la valeur
+        empoisonnee par la lecture en sudo du calcul voisin, et `share_count`
+        rendait 4 la ou la regle de lecture n'en laissait voir que 2 — par un
+        `read()` RPC nu, le `web_read` du client refiltrant. Decision : un
+        NON-AUTEUR voit ZERO destinataire, comme la charge du telephone le
+        faisait deja de son cote (`shared_with`). La regle vit ici, a un seul
+        endroit, et plus dans la charge mobile.
+
+        ⚠️ `note.share_ids` est lu sous l'usager REEL : pour l'auteur, la regle
+        de lecture des lignes rend les siennes, toutes, sans aucun `sudo()`.
+        """
+        for note in self:
+            if self.env.su or note.user_id.id == self.env.uid:
+                note.share_count = len(note.share_ids)
+            else:
+                note.share_count = 0
+
+    def _search_partage_pour_moi(self, operator, value):
+        return self._domaine_de_recherche_partage(operator, value)
+
+    def _search_partage_ecriture_pour_moi(self, operator, value):
+        return self._domaine_de_recherche_partage(operator, value, en_ecriture=True)
+
+    @api.model
+    def _domaine_de_recherche_partage(self, operator, value, en_ecriture=False):
+        """🔴 La portee du partage nomme, rendue en identifiants de lignes.
+
+        Pas en sous-requete sur un champ calcule : une regle d'enregistrement
+        s'evalue a chaque lecture, et une sous-requete qui retraverserait
+        `bf.note.share` reviendrait sur les regles de ce modele, qui dependent
+        de la visibilite de la note. Des identifiants coupent la boucle, et
+        leur nombre est borne par ce qu'on m'a partage.
+        """
+        if operator not in ("=", "!=") or not isinstance(value, bool):
+            raise UserError(_("Unsupported search on a sharing flag."))
+        positif = (operator == "=") == bool(value)
+        lignes = self._lignes_pour_moi(en_ecriture=en_ecriture)
+        if not lignes:
+            # Rien ne m'est partage : la recherche positive ne rend rien, et la
+            # negative rend tout. Le dire explicitement, parce qu'un domaine
+            # `in []` est un piege a zero ligne silencieux.
+            return [("id", "=", 0)] if positif else [(1, "=", 1)]
+        return [("share_ids", "in" if positif else "not in", lignes.ids)]
+
+    # ------------------------------------------------------------------
+    # Le fil se lit, se poste, et ne s'organise pas
+    # ------------------------------------------------------------------
+    def _exige_de_gerer_le_fil(self, geste="abonnement"):
+        """🔴 Un destinataire n'abonne personne et ne pose aucune activite.
+
+        Mesuré en relecture : l'ecriture sur
+        `bf.note` ouvre TOUTE la surface `mail.thread`. Un destinataire en
+        ecriture a abonne Gen au fil de la note d'une collegue et y a pose une
+        activite assignee a Gen ; un destinataire en LECTURE s'abonnait
+        lui-meme, le chemin `adding_current` d'Odoo ne demandant que la lecture.
+        L'onglet Partage promet a l'auteur que personne n'est abonne : la
+        promesse se tient ici.
+
+        ⚠️ `peut_gerer`, et non `peut_ecrire` : l'auteur, ou l'administration.
+        Meme droit que ranger la note, meme exemption, un seul champ.
+
+        🔴 DEUX phrases, une par geste, et ce n'est pas de la cosmetique : creer
+        une `mail.activity` abonne son assigne a la fiche, donc le geste traverse
+        DEJA la garde de l'abonnement. Avec une seule phrase, la garde des
+        activites etait masquee : ses deux mutants survivaient en se
+        faisant passer pour une mesure, parce que l'essai attendait « ca leve »
+        sans regarder QUI avait leve. Le refus nomme maintenant le geste refuse,
+        et chaque garde se mesure pour elle-meme.
+        """
+        if self.env.su:
+            return
+        if self.filtered(lambda n: not n.peut_gerer):
+            if geste == "activite":
+                raise AccessError(_(
+                    "This note belongs to someone else. You read its thread and "
+                    "you can post in it; scheduling an activity on it stays with "
+                    "its author."))
+            raise AccessError(_(
+                "This note belongs to someone else. You read its thread and you "
+                "can post in it; subscribing anyone to it stays with its author."))
+
+    def message_subscribe(self, partner_ids=None, subtype_ids=None):
+        """La garde qui LEVE : l'API publique de l'abonnement.
+
+        🔴 C'est ici que ca se juge, parce que c'est ici qu'on appelle :
+        `mail.followers` n'est pas ecrivable par `base.group_user` (lecture
+        seule a l'ACL de `mail`), et une methode privee ne s'appelle pas par
+        RPC. Un crochet ne bloque qu'en LEVANT.
+        """
+        if partner_ids:
+            self._exige_de_gerer_le_fil()
+        return super().message_subscribe(partner_ids=partner_ids, subtype_ids=subtype_ids)
+
+    def _message_subscribe(self, partner_ids=None, subtype_ids=None, customer_ids=None):
+        """⚠️ Le chemin BAS, celui de `message_post`, ne leve pas : il ne fait rien.
+
+        `message_post` abonne l'auteur du message juste apres l'avoir cree
+        (`_message_subscribe(partner_ids=[real_author_id])`). Lever ici aurait
+        ferme le FIL a un destinataire en ecriture, alors que la decision le
+        laisse POSTER : c'est le propos du partage en ecriture. Il poste donc, et
+        ne devient pas abonne — sans quoi « personne n'est abonne » serait faux
+        des son premier message, et c'est mesure.
+
+        🔴 Ce n'est pas la garde, c'est le comportement : la garde qui refuse
+        est `message_subscribe`, au-dessus.
+        """
+        if not self.env.su:
+            gerables = self.filtered(lambda n: n.peut_gerer)
+            if gerables != self:
+                if not gerables:
+                    return True
+                return super(BfNote, gerables)._message_subscribe(
+                    partner_ids=partner_ids, subtype_ids=subtype_ids,
+                    customer_ids=customer_ids)
+        return super()._message_subscribe(
+            partner_ids=partner_ids, subtype_ids=subtype_ids, customer_ids=customer_ids)
+
     @api.depends("tracked_activity_ids")
     def _compute_tracked_activity_count(self):
         for note in self:
@@ -225,10 +497,10 @@ class BfNote(models.Model):
             if note.name:
                 continue
             if not note.body:
-                note.name = "Note sans titre"
+                note.name = _("Untitled note")
                 continue
             text = self._html_to_text(note.body)
-            note.name = (text[:80] or "Note sans titre").strip()
+            note.name = (text[:80] or _("Untitled note")).strip()
 
     @staticmethod
     def _html_to_text(html):
@@ -320,6 +592,28 @@ class BfNote(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_note_id": self.id},
+        }
+
+    def action_open_share_dialog(self):
+        """« Partager… » : ajoute un destinataire nomme, dans une boite.
+
+        Le partage nomme vivait dans un onglet sous les champs,
+        et ne se trouvait pas. La boite cree une ligne `bf.note.share` comme
+        l'onglet, sous les memes regles : seul l'auteur partage sa note
+        (`bf_note_share_rule_write`), et l'administration (`..._rule_admin`).
+        Le refus est dit ici en clair plutot que par le mur generique d'Odoo.
+        """
+        self.ensure_one()
+        if self.user_id != self.env.user and not self.env.user.has_group("base.group_system"):
+            raise UserError(_("Only the author of this note can share it."))
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Share the note"),
+            "res_model": "bf.note.share",
+            "view_mode": "form",
+            "views": [(self.env.ref("bf_bloc_notes.bf_note_share_view_form_dialog").id, "form")],
+            "target": "new",
+            "context": {"default_note_id": self.id, "default_kind": "user"},
         }
 
     def action_open_reroute_wizard(self):

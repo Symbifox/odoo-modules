@@ -40,7 +40,29 @@ One activity is created per linked record (e.g. a note linked to 3 tasks → 3 a
 
 ### Hybrid visibility
 - Private by default (`is_shared=False`): only the author sees it.
-- Toggling "Shared" makes it readable by all internal users; only the author can still edit.
+- Toggling "Shared with all internal users" makes it readable by every internal user; only the
+  author can still edit. To share with some people only, use **Share…** (below).
+
+### Sharing with named people (18.0.4.6.0, 18.0.4.6.1)
+- **Share…** in the form header, or the **Sharing** tab, both for the author only: one line per
+  recipient (`bf.note.share`), who is a person, a security group or a Discuss channel, read-only or with
+  **Can edit** per line. Sharing notifies nobody and subscribes nobody.
+- A recipient reads the note and its whole message thread (internal notes and their files included), and
+  can post in it. With **Can edit** they also change the title and the content and attach files; they
+  remove only the files they attached themselves. Pinning, color, tags, deadline, "Not for Gen",
+  archiving, deleting and sharing stay with the author (and with administrators, who keep what they had).
+  Changing the author stays refused to everyone but the superuser.
+- A recipient subscribes nobody to the note's thread, themselves included, and schedules no activity on
+  it. "Convert to task" from a shared note keeps the back link, the title and the content; the note's
+  files go to the task only when the author converts it.
+- **Service accounts**: tick *Does not receive shared notes* on the user's form (Preferences). The account
+  is then never offered as a named recipient, and a note shared with a group or a channel never reaches
+  it. Nothing is ticked automatically: no field of a user record tells a service account from a person
+  without false positives.
+- The "Shared with me" filter and the "Pinned" action include named shares. On someone else's note the
+  list and the form keep the author's own fields read-only.
+- Phone API: two more keys per note (`can_write`, `shared_with`), same API number; `shared=False` still
+  returns only the caller's notes.
 
 ### Not for Gen (18.0.4.3.0)
 - **Not for Gen** (`gen_excluded`): any AI pass over notes (an assistant routine that reads
@@ -107,7 +129,7 @@ A note taken on a phone has to be written in a second, or it ends up in another 
 
 ### Views
 - **Kanban**: colored cards (color picker), built-in pin button, body snippet, tags, primary link, deadline.
-- **List**: direct pin toggle, filters "My notes / Pinned / Shared / Linked / Overdue".
+- **List**: direct pin toggle, filters "My notes / Pinned / Shared with all internal users / Shared with me / Linked / Overdue".
 - **Calendar**: if you set a `deadline_date`, the note appears in your calendar (not conflated with an activity).
 - **Form**: HTML editor, "Links" tab with a sequence handle for reordering.
 
@@ -118,7 +140,8 @@ A note taken on a phone has to be written in a second, or it ends up in another 
 | Model enumeration via `Reference` | `_selection_target_model` only offers non-transient models carrying `mail.thread`, and skips orphan `ir.model` rows (uninstalled module). The `ir.config_parameter` `bf_bloc_notes.reference_models` remains available as an allowlist to narrow it further. The picker grants no access: the target record's ACLs and `ir.rule` fully apply on read (`_browse_if_allowed`, `_compute_res_name`). |
 | Unreachable reroute target | `bf.note.reroute._browse_if_allowed` requires the record to exist, to be in the selection **and** to pass `check_access("read")` — otherwise the quick link returns `None` rather than confirming a record exists. |
 | AccessError on the target record | `bf.note.link._compute_res_name` runs `check_access_rights("read")` + `check_access_rule("read")` as the calling user — no `sudo()` — and falls back to `False` on AccessError. `action_open` / `action_open_record` validate access before returning the `act_window`. |
-| Note visibility | Two separate `ir.rule` records: read (author OR `is_shared`), write/unlink (author only). |
+| Note visibility | `ir.rule` records combined in OR: read (author OR `is_shared`), read of a named share, write/create/unlink (author only), write of a named share (title, content, the two follow-up lists — guarded field by field in `write`), administration. The original rules were born `noupdate`, so named sharing ADDS two rules (read only, write only) instead of redefining them. |
+| Shares of a note | `bf.note.share` lines are read by the note's author and by their own recipient only; a recipient does not learn who else reads the note, and the recipient count never crosses the read rule. |
 | Smart-button N+1 | `bf.note.link.mixin` uses batched `read_group` — 1 query for 200 records. |
 
 ### Performance
@@ -159,9 +182,32 @@ bf.note.link.mixin (AbstractModel)
 odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-after-init --http-port=0
 ```
 
-35 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), and the `target_ref` picker on the link row.
+About 300 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), the `target_ref` picker on the link row, and, since 18.0.4.6.0, named sharing (the three kinds of recipient, write per line, scope under a `base.group_system` account, attachments of a shared note, the screen's domains, files carried by a task, read-only list and form, the thread, service accounts, the Share… button).
 
 ## Changelog
+
+### 18.0.4.6.1
+- **Share…** button in the form header (author only): a dialog that names a recipient and creates the
+  same share line as the Sharing tab, with a readable refusal for anyone else.
+- The old switch is now labelled **Shared with all internal users**, and its help points to Share…; the
+  search filter and the card's tooltip follow.
+- End migration: an upgrade never overwrites an existing translation, so the French label and help of
+  `is_shared` are refreshed only when they still carry the previous text, word for word.
+
+### 18.0.4.6.0
+- **Named sharing**: `bf.note.share`, one line per recipient (person, security group, Discuss channel),
+  read-only or with write per line. See "Sharing with named people" above.
+- **Service accounts**: `res.users.bf_note_no_shared_notes` ("Does not receive shared notes"). The
+  migration copies the legacy `bf_bloc_notes.comptes_exclus` parameter when a database had set it, and
+  ticks nothing otherwise.
+- **Attachments**: the owner guard applies on every path (`ir.attachment` unlink and write, the chatter's
+  delete button included), not only on the phone.
+- **Thread and activities**: a recipient cannot subscribe others, or schedule or move an activity, on
+  someone else's note. Consequence: "Convert to activity" on someone else's note without a link now
+  refuses, since the activity would land on the note itself.
+- **Screen**: "Shared with me" filter, a separator in the search view, author read-only on the form,
+  "Shared" ribbon in front of "Pinned", `aria-pressed` on the card's two toggles, and the author's own
+  fields read-only on someone else's note in the card, the list and the form.
 
 ### 18.0.4.5.0
 - **Rich text:** a named HTML subset on the note, with `html` (always sanitised) and `rich_editable`

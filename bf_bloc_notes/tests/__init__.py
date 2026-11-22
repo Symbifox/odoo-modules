@@ -13,3 +13,4 @@ from . import test_hors_gen
 from . import test_bureau
 from . import test_fraicheur
 from . import test_riche
+from . import test_partage

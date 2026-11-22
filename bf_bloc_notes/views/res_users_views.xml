@@ -33,6 +33,25 @@
         </field>
     </record>
 
+    <!-- 🔴 La case qui nomme un compte
+         non humain. Sur la fiche d'usager, et non dans les preferences du
+         bloc-notes : ce n'est pas une preference de l'usager, c'est une
+         decision d'administration sur un compte, et un compte de service ne va
+         pas cocher sa propre case. L'ecran des usagers est deja reserve a
+         l'administration. -->
+    <record id="bf_note_user_share_view_form" model="ir.ui.view">
+        <field name="name">res.users.form.bf.note.share</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences']" position="inside">
+                <group string="Notepad" name="bf_bloc_notes">
+                    <field name="bf_note_no_shared_notes"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
     <record id="bf_note_user_pref_action" model="ir.actions.server">
         <field name="name">My preferences</field>
         <field name="model_id" ref="base.model_res_users"/>
