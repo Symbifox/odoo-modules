@@ -61,6 +61,11 @@ One activity is created per linked record (e.g. a note linked to 3 tasks → 3 a
   without false positives.
 - The "Shared with me" filter and the "Pinned" action include named shares. On someone else's note the
   list and the form keep the author's own fields read-only.
+- A note shared with you says so (18.0.4.6.2): a banner on the form ("Shared with you by …", then
+  "Read-only" or "You can edit its title and its content") and the same mention on the card. Pin,
+  archive and delete are not offered on it, since only the author can use them. The Sharing tab shows one
+  column per recipient (type, recipient, can edit) and edits through the Share… dialog, which the card's
+  menu also offers to the author.
 - Phone API: two more keys per note (`can_write`, `shared_with`), same API number; `shared=False` still
   returns only the caller's notes.
 
@@ -182,9 +187,23 @@ bf.note.link.mixin (AbstractModel)
 odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-after-init --http-port=0
 ```
 
-About 300 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), the `target_ref` picker on the link row, and, since 18.0.4.6.0, named sharing (the three kinds of recipient, write per line, scope under a `base.group_system` account, attachments of a shared note, the screen's domains, files carried by a task, read-only list and form, the thread, service accounts, the Share… button).
+More than 300 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), the `target_ref` picker on the link row, and, since 18.0.4.6.0, named sharing (the three kinds of recipient, write per line, scope under a `base.group_system` account, attachments of a shared note, the screen's domains, files carried by a task, read-only list and form, the thread, service accounts, the Share… button, the received-note banner and card mention, the Sharing tab, the reroute refusal, the creation message and the formal French catalogue).
 
 ## Changelog
+
+### 18.0.4.6.2
+- **Received notes**: a banner on the form and a mention on the card say who shared the note and
+  whether you can edit it. Pin, unpin, archive, unarchive (form) and delete (card) are no longer offered
+  to a recipient, who could only be refused.
+- **Sharing tab**: one column per recipient (type, recipient, can edit), edited through the Share…
+  dialog; **Share…** is also in the card's menu, for the author only.
+- **Reroute**: "Replace existing links" on someone else's note now refuses with a readable message
+  instead of Odoo's generic access error; "Add to existing links" works as before.
+- The note's thread says "Note created" instead of Odoo's generic creation message, whose French form
+  was grammatically wrong.
+- The French catalogue addresses the user formally everywhere (seven strings did not); an end
+  migration refreshes the French help of the "Shared with all internal users" switch when it still
+  carries the 18.0.4.6.1 wording.
 
 ### 18.0.4.6.1
 - **Share…** button in the form header (author only): a dialog that names a recipient and creates the

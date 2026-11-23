@@ -459,7 +459,7 @@ class TestPartageCorrectif(TransactionCase):
         self._chez(self.bruno)._mobile_detach(piece_bruno)
         self.assertFalse(self._existe(piece_bruno))
         # Retirer celle de l'auteur : refuse, et la phrase le dit.
-        with self.assertRaisesRegex(AccessError, "(?i)(retires|remove)"):
+        with self.assertRaisesRegex(AccessError, "(?i)(retirez|retires|remove)"):
             with self.env.cr.savepoint():
                 self._chez(self.bruno)._mobile_detach(piece_alice)
         self.assertTrue(self._existe(piece_alice), "la piece de l'auteur est intacte")
@@ -937,7 +937,7 @@ class TestPartageTour2(TransactionCase):
         ):
             with self.subTest(chemin=libelle):
                 self.env.invalidate_all()
-                with self.assertRaisesRegex(AccessError, "(?i)(retires|remove)"):
+                with self.assertRaisesRegex(AccessError, "(?i)(retirez|retires|remove)"):
                     with self.env.cr.savepoint():
                         geste(chez_bruno)
                 self.assertTrue(self._existe(piece_id), "la piece de l'auteur est intacte")
@@ -1470,3 +1470,184 @@ class TestPartageBouton(TransactionCase):
         if libelle is not None:  # une base sans fr_CA n'a rien a remettre
             self.assertEqual(libelle, "Partagée avec tous les internes")
             self.assertIn("Partager…", aide)
+
+
+@tagged("post_install", "-at_install", "partage_nomme")
+class TestPartageEcran(TransactionCase):
+    """4.6.2 : l'ecran du bureau.
+
+    Une note recue se reconnait (bandeau au formulaire, marqueur sur la carte),
+    l'onglet Partage montre une colonne par destinataire, « Partager… » est
+    aussi au menu de la carte, le re-routage « remplacer » refuse en clair sur
+    la note d'autrui, le fil dit « Note creee », et le catalogue vouvoie.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.alice = new_test_user(cls.env, login="pe_alice", groups=G)
+        cls.bruno = new_test_user(cls.env, login="pe_bruno", groups=G)
+        cls.carla = new_test_user(cls.env, login="pe_carla", groups=G)
+        P = cls.env["res.partner"].sudo()
+        cls.fiche_a = P.create({"name": "Fiche A ecran"})
+        cls.fiche_b = P.create({"name": "Fiche B ecran"})
+        cls.note = cls.env["bf.note"].with_user(cls.alice).create({
+            "name": "NOTE-ECRAN-ESSAI", "body": "<p>corps</p>",
+            "link_ids": [(0, 0, {"res_model": "res.partner", "res_id": cls.fiche_a.id})]})
+        Share = cls.env["bf.note.share"].with_user(cls.alice)
+        Share.create({"note_id": cls.note.id, "kind": "user", "user_id": cls.bruno.id,
+                      "can_write": True})
+        Share.create({"note_id": cls.note.id, "kind": "user", "user_id": cls.carla.id})
+
+    def _arch(self, xmlid):
+        # ⚠️ En anglais : un essai qui lit l'arch d'une vue la lit traduite.
+        return etree.fromstring(self.env.ref(xmlid).with_context(lang="en_US").arch_db)
+
+    def _vue(self, usager):
+        self.env.invalidate_all()
+        return self.env["bf.note"].with_user(usager).browse(self.note.id)
+
+    # -- ce que l'ecran sait de la note ------------------------------------
+    def test_les_trois_drapeaux_disent_qui_lit(self):
+        for usager, a_moi, gerer, ecrire in (
+                (self.alice, True, True, True),
+                (self.bruno, False, False, True),
+                (self.carla, False, False, False)):
+            vue = self._vue(usager)
+            self.assertEqual((vue.est_a_moi, vue.peut_gerer, vue.peut_ecrire),
+                             (a_moi, gerer, ecrire), usager.login)
+
+    def test_le_formulaire_porte_les_deux_bandeaux(self):
+        arch = self._arch("bf_bloc_notes.bf_note_view_form")
+        bandeaux = arch.xpath("//div[contains(@class, 'o_bf_note_recue')]")
+        self.assertEqual(
+            [b.get("invisible") for b in bandeaux],
+            ["peut_gerer or not peut_ecrire", "peut_gerer or peut_ecrire"])
+        textes = [" ".join(b.itertext()) for b in bandeaux]
+        self.assertIn("You can edit its title and its content.", textes[0])
+        self.assertIn("Read-only", textes[1])
+
+    def test_la_carte_marque_la_note_recue(self):
+        arch = self._arch("bf_bloc_notes.bf_note_view_kanban")
+        marque = arch.xpath("//div[contains(@class, 'o_bf_note_recue')]")
+        self.assertEqual(len(marque), 1)
+        self.assertEqual(marque[0].get("t-if"), "!record.peut_gerer.raw_value")
+        badges = marque[0].xpath("./span")
+        self.assertEqual(badges[0].get("t-if"), "record.peut_ecrire.raw_value")
+        self.assertEqual([b.text for b in badges], ["Can edit", "Read-only"])
+        for champ in ("peut_gerer", "peut_ecrire", "est_a_moi"):
+            self.assertTrue(arch.xpath(f"/kanban/field[@name='{champ}']"),
+                            f"{champ} doit etre charge par la carte")
+
+    def test_partager_au_menu_de_la_carte_pour_l_auteur_seul(self):
+        arch = self._arch("bf_bloc_notes.bf_note_view_kanban")
+        entree = arch.xpath("//a[@name='action_open_share_dialog']")
+        self.assertEqual(len(entree), 1)
+        self.assertEqual(entree[0].get("type"), "object")
+        self.assertEqual(entree[0].get("t-if"), "record.est_a_moi.raw_value")
+
+    def test_l_onglet_montre_un_destinataire_par_ligne(self):
+        arch = self._arch("bf_bloc_notes.bf_note_view_form")
+        champ = arch.xpath("//page[@name='sharing']/field[@name='share_ids']")[0]
+        colonnes = [f.get("name") for f in champ.xpath("./list/field")]
+        self.assertEqual(colonnes, ["kind", "display_name", "can_write"])
+        self.assertIsNone(champ.find("list").get("editable"),
+                          "l'edition passe par la boite, pas par la ligne")
+        self.assertIn("bf_note_share_view_form_dialog", champ.get("context"))
+
+    def test_ranger_et_supprimer_ne_s_offrent_qu_a_qui_le_peut(self):
+        """Epingler, archiver, supprimer : la garde de `write` et la regle de
+        suppression les refusent au destinataire, donc l'ecran ne les offre pas."""
+        form = self._arch("bf_bloc_notes.bf_note_view_form")
+        for nom in ("action_toggle_pinned", "toggle_active"):
+            for bouton in form.xpath(f"//header/button[@name='{nom}']"):
+                self.assertIn("not peut_gerer", bouton.get("invisible"), nom)
+        carte = self._arch("bf_bloc_notes.bf_note_view_kanban")
+        supprimer = carte.xpath("//a[@type='delete']")[0]
+        self.assertIn("record.peut_gerer.raw_value", supprimer.get("t-if"))
+
+    # -- le re-routage ------------------------------------------------------
+    def _rerouter(self, usager, mode):
+        wiz = self.env["bf.note.reroute"].with_user(usager).create({
+            "note_ids": [(6, 0, self.note.ids)],
+            "target_reference": f"res.partner,{self.fiche_b.id}",
+            "mode": mode,
+        })
+        wiz.with_context(lang="en_US").action_confirm()
+        return wiz.result_text
+
+    def test_remplacer_sur_la_note_d_autrui_refuse_en_clair(self):
+        resultat = self._rerouter(self.bruno, "replace")
+        self.assertIn("ERR", resultat)
+        self.assertIn("Only the author of this note can replace its links", resultat)
+        self.assertNotIn("top secret", resultat.lower())
+        self.env.invalidate_all()
+        self.assertEqual(self.note.sudo().link_ids.mapped("res_id"), [self.fiche_a.id],
+                         "rien n'a bouge")
+
+    def test_ajouter_sur_la_note_d_autrui_passe_toujours(self):
+        resultat = self._rerouter(self.bruno, "add")
+        self.assertIn("OK", resultat)
+        self.env.invalidate_all()
+        self.assertEqual(set(self.note.sudo().link_ids.mapped("res_id")),
+                         {self.fiche_a.id, self.fiche_b.id})
+
+    def test_l_auteur_remplace_comme_avant(self):
+        resultat = self._rerouter(self.alice, "replace")
+        self.assertIn("OK", resultat)
+        self.env.invalidate_all()
+        self.assertEqual(self.note.sudo().link_ids.mapped("res_id"), [self.fiche_b.id])
+
+    # -- les textes -----------------------------------------------------------
+    def test_le_fil_dit_note_creee(self):
+        note = self.env["bf.note"].with_user(self.alice).with_context(lang="en_US").create(
+            {"name": "Fil anglais"})
+        corps = " ".join(note.sudo().message_ids.mapped("body"))
+        self.assertIn("Note created", corps)
+        if self.env["res.lang"]._lang_get("fr_CA"):
+            note = self.env["bf.note"].with_user(self.alice).with_context(lang="fr_CA").create(
+                {"name": "Fil francais"})
+            corps = " ".join(note.sudo().message_ids.mapped("body"))
+            self.assertIn("Note créée", corps)
+            self.assertNotIn("créé<", corps)
+
+    def test_le_catalogue_vouvoie(self):
+        import re
+        chemin = os.path.join(get_module_path("bf_bloc_notes"), "i18n", "fr_CA.po")
+        texte = open(chemin, encoding="utf-8").read()
+        traductions = re.findall(r'msgstr ((?:"[^\n]*"\n?)+)', texte)
+        fautes = [t for t in traductions
+                  if re.search(r"\b(tu|ton|ta|tes|toi)\b|\bt'a\b|\bt'es\b", t)]
+        self.assertEqual(fautes, [], "une traduction tutoie l'usager")
+        # 🔴 Un impératif au tutoiement ne porte aucun pronom (« utilise »,
+        # « Crée », « Écris ») : le balayage ci-dessus ne le voit pas, la
+        # batterie l'a montré. Les chaînes corrigées en 4.6.2 sont donc tenues
+        # une par une, par leur forme au vouvoiement.
+        attendus = {
+            "people only, use Share… or the Sharing tab.": "utilisez « Partager… »",
+            "Create your first quick note": "Créez votre première note rapide",
+            "Write your note here…": "Écrivez votre note ici…",
+            "and attach files; the rest stays with you.": "le reste vous revient",
+            "you can only remove the files you attached": "vous ne retirez que",
+            "it; scheduling an activity on it stays with its author.": "Vous lisez son fil",
+            "it; subscribing anyone to it stays with its author.": "Vous lisez son fil",
+        }
+        entrees = re.findall(r'msgid ((?:"[^\n]*"\n?)+)msgstr ((?:"[^\n]*"\n?)+)', texte)
+        def deplier(bloc):
+            return "".join(re.findall(r'"(.*)"', bloc)).replace('\\"', '"')
+        catalogue = {deplier(i): deplier(s) for i, s in entrees}
+        for bout, forme in attendus.items():
+            trouve = [s for i, s in catalogue.items() if bout in i]
+            self.assertTrue(trouve, f"msgid introuvable : {bout}")
+            self.assertIn(forme, trouve[0], bout)
+
+    def test_l_aide_de_la_case_vouvoie_en_base(self):
+        # 🔴 Le creneau BRUT : un -u n'ecrase pas une traduction de champ, c'est
+        # la migration 4.6.2 qui la remet au vouvoiement.
+        self.env.cr.execute(
+            "SELECT help->>'fr_CA' FROM ir_model_fields"
+            " WHERE model = 'bf.note' AND name = 'is_shared'")
+        aide = self.env.cr.fetchone()[0]
+        if aide is not None:
+            self.assertIn("utilisez « Partager… »", aide)
+            self.assertNotIn("utilise «", aide)

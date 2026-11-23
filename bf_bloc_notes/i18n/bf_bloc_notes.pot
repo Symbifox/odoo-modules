@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 22:05+0000\n"
-"PO-Revision-Date: 2026-11-21 22:05+0000\n"
+"POT-Creation-Date: 2026-11-23 00:41+0000\n"
+"PO-Revision-Date: 2026-11-23 00:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -350,6 +350,7 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__can_write
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
 msgid "Can edit"
 msgstr ""
 
@@ -1036,6 +1037,11 @@ msgid "My Activity Deadline"
 msgstr ""
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__est_a_moi
+msgid "My note"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "My notes"
 msgstr ""
@@ -1222,6 +1228,12 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid "Note created"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 msgid "Note linked to %s."
 msgstr ""
@@ -1357,6 +1369,14 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_reroute.py:0
+msgid ""
+"Only the author of this note can replace its links. Use \"Add to existing "
+"links\" to link it to this record as well."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note.py:0
 msgid "Only the author of this note can share it."
 msgstr ""
@@ -1472,8 +1492,23 @@ msgid "Ratings"
 msgstr ""
 
 #. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Read-only"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Read-only: you can read it and post in its thread."
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_reroute__state__draft
 msgid "Ready"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Recipient"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1709,6 +1744,12 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Shared with you by"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
 msgid "Share…"
 msgstr ""
 
@@ -2110,6 +2151,7 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__activity_type_id
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Type"
 msgstr ""
 
@@ -2217,6 +2259,11 @@ msgstr ""
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Write your note here…"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "You can edit its title and its content."
 msgstr ""
 
 #. module: bf_bloc_notes

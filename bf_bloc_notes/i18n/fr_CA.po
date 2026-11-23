@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 22:05+0000\n"
+"POT-Creation-Date: 2026-11-23 00:41+0000\n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -144,8 +144,8 @@ msgid ""
 "and schedules no activity on it."
 msgstr ""
 "Un destinataire lit la note. Avec « Peut modifier », il peut aussi en "
-"changer le titre et le contenu, et y joindre des fichiers ; le reste reste à "
-"toi. Un destinataire lit aussi tout le fil de la note, notes internes et "
+"changer le titre et le contenu, et y joindre des fichiers ; le reste vous "
+"revient. Un destinataire lit aussi tout le fil de la note, notes internes et "
 "fichiers de ces messages compris, et il peut y écrire. Le partage lui-même "
 "n'avertit personne et n'abonne personne, et un destinataire n'abonne "
 "personne à cette note, lui-même compris, et n'y pose aucune activité."
@@ -363,6 +363,7 @@ msgstr "Nombre de notes"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__can_write
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
 msgid "Can edit"
 msgstr "Peut modifier"
 
@@ -574,7 +575,7 @@ msgstr "Créer la tâche"
 #. module: bf_bloc_notes
 #: model_terms:ir.actions.act_window,help:bf_bloc_notes.bf_note_action
 msgid "Create your first quick note"
-msgstr "Crée ta première note rapide"
+msgstr "Créez votre première note rapide"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__create_uid
@@ -845,7 +846,7 @@ msgid ""
 "people only, use Share… or the Sharing tab."
 msgstr ""
 "Si cochée, tous les internes peuvent lire cette note. Pour la partager avec "
-"certaines personnes seulement, utilise « Partager… » ou l'onglet Partage."
+"certaines personnes seulement, utilisez « Partager… » ou l'onglet Partage."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_needaction
@@ -1064,6 +1065,11 @@ msgid "My Activity Deadline"
 msgstr "Échéance de mon activité"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__est_a_moi
+msgid "My note"
+msgstr "Ma note"
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "My notes"
 msgstr "Mes notes"
@@ -1250,6 +1256,12 @@ msgstr "Nb notes"
 
 #. module: bf_bloc_notes
 #. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid "Note created"
+msgstr "Note créée"
+
+#. module: bf_bloc_notes
+#. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 msgid "Note linked to %s."
 msgstr "Note rattachée à %s."
@@ -1371,8 +1383,8 @@ msgid ""
 "On a note shared with you, you can only remove the files you attached "
 "yourself."
 msgstr ""
-"Sur une note qu'on t'a partagée, tu ne retires que les fichiers que tu as "
-"joints toi-même."
+"Sur une note qu'on vous a partagée, vous ne retirez que les fichiers que "
+"vous avez joints vous-même."
 
 #. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_onboarding_onboarding
@@ -1384,6 +1396,16 @@ msgstr "Parcours d'intégration"
 #: model:onboarding.onboarding.step,step_image_alt:bf_bloc_notes.bf_onb_step_settings
 msgid "Onboarding Step Image"
 msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_reroute.py:0
+msgid ""
+"Only the author of this note can replace its links. Use \"Add to existing "
+"links\" to link it to this record as well."
+msgstr ""
+"Seule la personne qui a écrit cette note peut en remplacer les liens. "
+"Utilisez « Ajouter aux liens existants » pour la lier aussi à cette fiche."
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -1502,9 +1524,24 @@ msgid "Ratings"
 msgstr "Évaluations"
 
 #. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Read-only"
+msgstr "Lecture seule"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Read-only: you can read it and post in its thread."
+msgstr "Lecture seule : vous la lisez et pouvez écrire dans son fil."
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_reroute__state__draft
 msgid "Ready"
 msgstr "Prêt"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Recipient"
+msgstr "Destinataire"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__share_count
@@ -1743,6 +1780,12 @@ msgstr "Partagée avec moi en écriture"
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Shared with you by"
+msgstr "Partagée avec vous par"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
 msgid "Share…"
 msgstr "Partager…"
 
@@ -1978,8 +2021,8 @@ msgid ""
 "This note belongs to someone else. You read its thread and you can post in "
 "it; scheduling an activity on it stays with its author."
 msgstr ""
-"Cette note est à quelqu'un d'autre. Tu lis son fil et tu peux y écrire ; y "
-"poser une activité reste à son auteur."
+"Cette note est à quelqu'un d'autre. Vous lisez son fil et vous pouvez y "
+"écrire ; y poser une activité reste à son auteur."
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -1988,8 +2031,8 @@ msgid ""
 "This note belongs to someone else. You read its thread and you can post in "
 "it; subscribing anyone to it stays with its author."
 msgstr ""
-"Cette note est à quelqu'un d'autre. Tu lis son fil et tu peux y écrire ; y "
-"abonner quelqu'un reste à son auteur."
+"Cette note est à quelqu'un d'autre. Vous lisez son fil et vous pouvez y "
+"écrire ; y abonner quelqu'un reste à son auteur."
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -2182,6 +2225,7 @@ msgstr "Nombre de tâches suivies"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__activity_type_id
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Type"
 msgstr "Type"
 
@@ -2289,7 +2333,12 @@ msgstr "Écrire une note…"
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Write your note here…"
-msgstr "Écris ta note ici…"
+msgstr "Écrivez votre note ici…"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "You can edit its title and its content."
+msgstr "Vous pouvez en modifier le titre et le contenu."
 
 #. module: bf_bloc_notes
 #. odoo-javascript

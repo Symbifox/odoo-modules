@@ -99,6 +99,11 @@ class BfNote(models.Model):
     peut_gerer = fields.Boolean(
         string="I can tidy this note", compute="_compute_peut_gerer",
         compute_sudo=False)
+    # « Partager… » est a l'auteur seul, sur la carte comme au
+    # formulaire (`user_id != uid`). La carte n'a pas d'uid sur lequel compter :
+    # elle lit ce champ.
+    est_a_moi = fields.Boolean(
+        string="My note", compute="_compute_est_a_moi", compute_sudo=False)
 
     user_id = fields.Many2one(
         "res.users",
@@ -337,6 +342,12 @@ class BfNote(models.Model):
             note.peut_ecrire = (
                 note.user_id.id == self.env.uid
                 or note.id in ecriture)
+
+    @api.depends("user_id")
+    @api.depends_context("uid")
+    def _compute_est_a_moi(self):
+        for note in self:
+            note.est_a_moi = note.user_id.id == self.env.uid
 
     @api.depends("user_id")
     @api.depends_context("uid")
@@ -593,6 +604,14 @@ class BfNote(models.Model):
             "target": "new",
             "context": {"default_note_id": self.id},
         }
+
+    def _creation_message(self):
+        """Le message de creation du fil, au lieu du « %s créé » generique.
+
+        Odoo l'accorde au masculin quel que soit le modele,
+        d'ou « Note rapide créé » dans le fil de chaque note.
+        """
+        return _("Note created")
 
     def action_open_share_dialog(self):
         """« Partager… » : ajoute un destinataire nomme, dans une boite.

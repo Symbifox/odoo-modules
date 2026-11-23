@@ -123,8 +123,19 @@ class BfNoteReroute(models.TransientModel):
                         lambda link, m=target._name, r=target.id:
                         link.res_model == m and link.res_id == r
                     )
+                    a_retirer = note.link_ids - existing
+                    if self.mode == "replace" and a_retirer \
+                            and note.user_id != self.env.user \
+                            and not self.env.user.has_group("base.group_system"):
+                        # Un destinataire en ecriture ajoute un
+                        # lien, mais n'en RETIRE pas (`perm_unlink` reste a
+                        # l'auteur). Sans cette phrase, le refus sortait le mur
+                        # generique d'Odoo dans la ligne ERR.
+                        raise UserError(_(
+                            "Only the author of this note can replace its links. "
+                            "Use \"Add to existing links\" to link it to this record as well."))
                     if self.mode == "replace":
-                        (note.link_ids - existing).unlink()
+                        a_retirer.unlink()
                     if not existing:
                         Link.create({
                             "note_id": note.id,

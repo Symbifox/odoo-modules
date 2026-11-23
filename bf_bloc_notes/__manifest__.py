@@ -174,7 +174,14 @@
     #   barre ouvre une boite qui cree la ligne de partage, l'interrupteur
     #   s'appelle « Partagee avec tous les internes ». Aucune regle, aucun
     #   champ stocke, aucune migration.
-    "version": "18.0.4.6.1",
+    # 18.0.4.6.2 : l'ecran du bureau. Une note recue se
+    #   reconnait (bandeau au formulaire, « Lecture seule » ou « Peut modifier »
+    #   sur la carte), l'onglet Partage montre une colonne par destinataire et
+    #   s'edite par la boite, « Partager… » est aussi au menu de la carte, le
+    #   re-routage « remplacer » refuse en clair sur la note d'autrui, le fil dit
+    #   « Note creee », et trois aides francaises vouvoient. Migration `end` : le
+    #   francais de l'aide de `is_shared`, s'il porte encore le texte de 4.6.1.
+    "version": "18.0.4.6.2",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',

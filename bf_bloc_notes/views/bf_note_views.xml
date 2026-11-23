@@ -43,25 +43,28 @@
                             type="object"
                             string="Reroute…"
                             class="btn-secondary"/>
+                    <!-- Epingler et archiver rangent le tableau de
+                         l'AUTEUR ; sur la note d'autrui, la garde de `write` les
+                         refuse, donc le bouton ne pouvait QUE lever. -->
                     <button name="action_toggle_pinned"
                             type="object"
                             string="Pin"
-                            invisible="pinned"/>
+                            invisible="pinned or not peut_gerer"/>
                     <button name="action_toggle_pinned"
                             type="object"
                             string="Unpin"
-                            invisible="not pinned"/>
+                            invisible="not pinned or not peut_gerer"/>
                     <button name="toggle_active"
                             type="object"
                             string="Archive"
                             class="btn-secondary"
-                            invisible="not active"
+                            invisible="not active or not peut_gerer"
                             confirm="Archive this note?"/>
                     <button name="toggle_active"
                             type="object"
                             string="Unarchive"
                             class="btn-secondary"
-                            invisible="active"/>
+                            invisible="active or not peut_gerer"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -109,6 +112,20 @@
                          pouvait QUE produire une erreur. Même raisonnement que
                          `user_id`, et que les contrôles de la carte kanban. -->
                     <field name="peut_gerer" invisible="1"/>
+                    <field name="peut_ecrire" invisible="1"/>
+                    <!-- Une note recue se reconnait. `peut_gerer` n'est
+                         faux que pour qui n'est ni l'auteur ni l'administration, donc
+                         pour un destinataire : c'est lui que le bandeau renseigne. -->
+                    <div class="alert alert-info py-2 mb-2 o_bf_note_recue" role="status"
+                         invisible="peut_gerer or not peut_ecrire">
+                        <div>Shared with you by <field name="user_id" readonly="1" nolabel="1" class="d-inline fw-bold"/></div>
+                        <div>You can edit its title and its content.</div>
+                    </div>
+                    <div class="alert alert-secondary py-2 mb-2 o_bf_note_recue" role="status"
+                         invisible="peut_gerer or peut_ecrire">
+                        <div>Shared with you by <field name="user_id" readonly="1" nolabel="1" class="d-inline fw-bold"/></div>
+                        <div>Read-only: you can read it and post in its thread.</div>
+                    </div>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1><field name="name" placeholder="Title (automatic if empty)"/></h1>
@@ -145,18 +162,15 @@
                         </page>
                         <page string="Sharing" name="sharing"
                               invisible="user_id != uid">
-                            <field name="share_ids">
-                                <list editable="bottom">
-                                    <field name="kind"/>
-                                    <field name="user_id"
-                                           invisible="kind != 'user'"
-                                           options="{'no_create': True}"/>
-                                    <field name="group_id"
-                                           invisible="kind != 'group'"
-                                           options="{'no_create': True}"/>
-                                    <field name="channel_id"
-                                           invisible="kind != 'channel'"
-                                           options="{'no_create': True}"/>
+                            <!-- Une ligne n'a qu'UN destinataire, donc
+                                 une colonne pour lui, et non trois dont deux vides.
+                                 L'ajout et la retouche passent par la boite de
+                                 « Partager… » (`bf_note_share_view_form_dialog`). -->
+                            <field name="share_ids"
+                                   context="{'form_view_ref': 'bf_bloc_notes.bf_note_share_view_form_dialog', 'default_kind': 'user'}">
+                                <list>
+                                    <field name="kind" string="Type"/>
+                                    <field name="display_name" string="Recipient"/>
                                     <field name="can_write" widget="boolean_toggle"/>
                                 </list>
                             </field>
@@ -243,6 +257,8 @@
                      `widget.deletable`. Meme raisonnement que `user_id` passe en
                      lecture seule au formulaire dans ce lot. -->
                 <field name="peut_gerer"/>
+                <field name="peut_ecrire"/>
+                <field name="est_a_moi"/>
                 <templates>
                     <t t-name="kanban-box">
                         <!-- la couleur résolue passe en variables CSS ; la mise en
@@ -265,8 +281,16 @@
                                         <t t-if="record.active.raw_value">Archive</t>
                                         <t t-else="">Unarchive</t>
                                     </a>
+                                    <!-- `widget.deletable` ne lit que les
+                                         droits du MODELE ; la regle de suppression reste a
+                                         l'auteur, donc un destinataire n'obtenait qu'un refus. -->
                                     <a role="menuitem" type="delete" class="dropdown-item"
-                                       t-if="widget.deletable">Delete</a>
+                                       t-if="widget.deletable and record.peut_gerer.raw_value">Delete</a>
+                                    <!-- La meme condition que le bouton du
+                                         formulaire, l'auteur seul. -->
+                                    <a role="menuitem" type="object" name="action_open_share_dialog"
+                                       class="dropdown-item"
+                                       t-if="record.est_a_moi.raw_value">Share…</a>
                                     <div role="separator" class="dropdown-divider"/>
                                     <!-- ⚠️ Le `t-if` va sur l'enveloppe : le compilateur
                                          REMPLACE le `<ul>` par un appel de gabarit
@@ -320,6 +344,12 @@
                                 <i t-if="record.is_shared.raw_value"
                                    class="fa fa-users ms-1 text-info"
                                    title="Shared with all internal users"/>
+                            </div>
+                            <!-- Sur une note recue, ce qu'on peut en faire. -->
+                            <div t-if="!record.peut_gerer.raw_value" class="o_bf_note_recue small mb-1">
+                                <span t-if="record.peut_ecrire.raw_value"
+                                      class="badge text-bg-info">Can edit</span>
+                                <span t-else="" class="badge text-bg-secondary">Read-only</span>
                             </div>
                             <div class="o_bf_note_card_body">
                                 <field name="body" widget="html_text" class="text-muted"/>
