@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="survey_survey_view_form_bf_export" model="ir.ui.view">
+        <field name="name">survey.survey.view.form.bf_export</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_bf_export_questions_xlsx" type="object"
+                        string="Export questions (Excel)"
+                        invisible="not question_and_page_ids"
+                        help="A workbook of the questions and their possible answers, without any respondent's answers."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
