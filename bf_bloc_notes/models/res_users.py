@@ -38,6 +38,15 @@ class ResUsers(models.Model):
         default="fill",
     )
     bf_note_group_by_color = fields.Boolean(string="Group notes by color")
+    # Un reglage d'affichage, pas de partage. La note
+    # partagee reste lisible au bureau ; la page Notes et le telephone la
+    # rangent seulement hors de vue.
+    bf_note_hide_shared = fields.Boolean(
+        string="Hide notes shared with me",
+        help="On the Notes page and in Symbifox Mobile, notes colleagues shared "
+             "with you are listed in their own section. Tick this to hide that "
+             "section. The notes stay readable in Symbifox.",
+    )
 
     # 🔴 Un compte non humain est un
     # usager interne comme un autre pour l'ORM. Rien, dans une fiche d'usager,
@@ -77,6 +86,7 @@ class ResUsers(models.Model):
         "bf_note_density",
         "bf_note_color_style",
         "bf_note_group_by_color",
+        "bf_note_hide_shared",
     ]
 
     @property

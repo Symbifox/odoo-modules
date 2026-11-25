@@ -68,6 +68,15 @@ One activity is created per linked record (e.g. a note linked to 3 tasks → 3 a
   menu also offers to the author.
 - Phone API: two more keys per note (`can_write`, `shared_with`), same API number; `shared=False` still
   returns only the caller's notes.
+- The `/notes` page shows the notes shared with you (18.0.4.6.3), in their own "Shared with me" section
+  after yours, each with its author and "Read-only" or "Can edit". It only offers what the server
+  accepts: a recipient who can edit changes the title and the content, makes a task and adds a link;
+  pin, colour, "Not for Gen", reminders and archive stay with the author. A **Hide** button folds the
+  section away; the choice is a user preference (`hide_shared`) shared with Symbifox Mobile. The page
+  now drops from its offline copy the notes that left your reach (unshared or deleted elsewhere).
+- Phone API (18.0.4.6.3): each note also carries `can_manage` and `author_name`, `/prefs` knows
+  `hide_shared`, and `/ping` announces `named_shares`. A client relies on `can_write` only when it sees
+  that word, so an older server never opens editing by omission.
 
 ### Not for Gen (18.0.4.3.0)
 - **Not for Gen** (`gen_excluded`): any AI pass over notes (an assistant routine that reads
@@ -187,9 +196,23 @@ bf.note.link.mixin (AbstractModel)
 odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-after-init --http-port=0
 ```
 
-More than 300 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), the `target_ref` picker on the link row, and, since 18.0.4.6.0, named sharing (the three kinds of recipient, write per line, scope under a `base.group_system` account, attachments of a shared note, the screen's domains, files carried by a task, read-only list and form, the thread, service accounts, the Share… button, the received-note banner and card mention, the Sharing tab, the reroute refusal, the creation message and the formal French catalogue).
+More than 300 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), the `target_ref` picker on the link row, and, since 18.0.4.6.0, named sharing (the three kinds of recipient, write per line, scope under a `base.group_system` account, attachments of a shared note, the screen's domains, files carried by a task, read-only list and form, the thread, service accounts, the Share… button, the received-note banner and card mention, the Sharing tab, the reroute refusal, the creation message and the formal French catalogue, and the `/notes` page's received notes: the payload's rights and author, the shared preference, the scope of the page's routes under an administrator account and the cleanup of notes that left your reach).
 
 ## Changelog
+
+### 18.0.4.6.3
+- **The `/notes` page shows the notes shared with you**, in a "Shared with me" section after your own,
+  with their author and "Read-only" or "Can edit". Only the gestures the server accepts are offered; a
+  recipient who can edit adds a link rather than replacing the author's.
+- **Hide / Show** on that section, stored as a user preference (*Hide notes shared with me*) that
+  Symbifox Mobile reads too.
+- The page re-reads the whole list when it opens and when it comes back to the foreground, so a note
+  shared with you through a group or a channel shows up even though its date did not change. It then
+  removes from its offline copy a note that left your reach (unshared, or deleted on the desktop),
+  through a new `/notes/api/ids` route; before, such a note stayed on the page.
+- Each note's payload carries `can_manage` (pin, colour, "Not for Gen", archive) and `author_name`;
+  `/ping` announces `named_shares`.
+- Three French strings still addressed the user informally; they no longer do.
 
 ### 18.0.4.6.2
 - **Received notes**: a banner on the form and a mention on the card say who shared the note and

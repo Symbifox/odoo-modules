@@ -362,6 +362,8 @@ msgid "Bf Note Count"
 msgstr "Nombre de notes"
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_share__can_write
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
 msgid "Can edit"
@@ -1524,6 +1526,8 @@ msgid "Ratings"
 msgstr "Évaluations"
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
 msgid "Read-only"
 msgstr "Lecture seule"
@@ -1768,6 +1772,8 @@ msgid "Shared with all internal users"
 msgstr "Partagée avec tous les internes"
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__partage_pour_moi
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "Shared with me"
@@ -2081,11 +2087,12 @@ msgstr "Cette note est déjà partagée avec %s."
 
 #. module: bf_bloc_notes
 #. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 msgid ""
 "This note is shared with you for reading. Only its author can change it."
 msgstr ""
-"Cette note t'est partagée en lecture. Seul son auteur peut la modifier."
+"Cette note vous est partagée en lecture. Seul son auteur peut la modifier."
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -2126,7 +2133,7 @@ msgid ""
 "                        when creating."
 msgstr ""
 "Ce rappel sera pré-sélectionné dans le dialogue de création rapide\n"
-"                        (icône systray ou <kbd>Alt+N</kbd>). Tu peux "
+"                        (icône systray ou <kbd>Alt+N</kbd>). Vous pouvez "
 "toujours le changer au\n"
 "                        moment de la création."
 
@@ -2336,6 +2343,8 @@ msgid "Write your note here…"
 msgstr "Écrivez votre note ici…"
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "You can edit its title and its content."
 msgstr "Vous pouvez en modifier le titre et le contenu."
@@ -2344,7 +2353,7 @@ msgstr "Vous pouvez en modifier le titre et le contenu."
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 msgid "You can paste or drag an image straight into the text area."
-msgstr "Tu peux coller ou glisser une image directement dans la zone de texte."
+msgstr "Vous pouvez coller ou glisser une image directement dans la zone de texte."
 
 #. module: bf_bloc_notes
 #. odoo-python
@@ -2384,3 +2393,43 @@ msgstr "« html » doit être une chaîne de caractères."
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "🗓️ Today"
 msgstr "🗓️ Aujourd'hui"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Shared with you by {author}"
+msgstr "Partagée avec vous par {author}"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Hide"
+msgstr "Masquer"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Show ({count})"
+msgstr "Afficher ({count})"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Also link to a record"
+msgstr "Lier aussi à une fiche"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_res_users__bf_note_hide_shared
+msgid "Hide notes shared with me"
+msgstr "Masquer les notes partagées avec moi"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_res_users__bf_note_hide_shared
+msgid ""
+"On the Notes page and in Symbifox Mobile, notes colleagues shared with you "
+"are listed in their own section. Tick this to hide that section. The notes "
+"stay readable in Symbifox."
+msgstr ""
+"Sur la page Notes et dans Symbifox Mobile, les notes que vos collègues vous "
+"partagent sont rangées dans leur propre section. Cochez cette case pour "
+"masquer cette section. Les notes restent lisibles dans Symbifox."

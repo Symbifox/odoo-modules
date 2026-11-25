@@ -98,6 +98,18 @@
         plusRecent: null,   // plus grand write_date connu, pour `since`
     };
 
+    /* À qui est la note, et ce que j'ai le droit d'en faire.
+       ⚠️ Chaque repli lit `mine` : un serveur d'avant la 4.6.3 ne rend ni
+       `can_write` ni `can_manage`, et une note d'autrui n'y était jamais
+       modifiable. L'absence d'un champ ne doit jamais se lire « oui ». */
+    function aMoi(n) { return n.mine !== false; }
+    function peutGerer(n) { return n.can_manage !== undefined ? !!n.can_manage : aMoi(n); }
+    function peutEcrire(n) { return n.can_write !== undefined ? !!n.can_write : aMoi(n); }
+    function masquerRecues() { return !!(etat.prefs && etat.prefs.hide_shared); }
+    function provenance(n) {
+        return dire("shared_by").replace("{author}", n.author_name || "?");
+    }
+
     function cleFile() { return CLE_FILE + "." + etat.uid; }
     function cleCache() { return CLE_CACHE + "." + etat.uid; }
     function file() { return lire(cleFile(), []); }
@@ -177,9 +189,12 @@
                 }
                 retirerDeFile(element.cle);
                 // Une note refusée par le serveur ne doit pas disparaître : son
-                // texte revient dans le champ si le champ est libre, sinon il
-                // reste dans le brouillon et le message le dit.
-                if (element.op === "creer" && !$("texte").value.trim()) {
+                // texte revient dans le champ si le champ est libre. ⚠️ Sinon il
+                // est perdu à l'écran (le serveur n'a rien reçu) : seul le
+                // message d'erreur le dit.
+                // Une MODIFICATION refusée aussi (partage
+                // retiré ou ramené en lecture pendant qu'elle attendait).
+                if (element.text !== undefined && !$("texte").value.trim()) {
                     $("titre").value = element.title || "";
                     $("texte").value = element.text || "";
                     garderBrouillon();
@@ -237,19 +252,58 @@
             if (a.pinned !== b.pinned) { return a.pinned ? -1 : 1; }
             return a.write_date < b.write_date ? 1 : -1;
         });
-        if (!etat.recherche) {
-            ecrire(cleCache(), { notes: etat.notes.slice(0, 100), plusRecent: etat.plusRecent });
-        }
+        garderCache();
         rendre();
     }
 
+    function garderCache() {
+        if (!etat.recherche) {
+            ecrire(cleCache(), { notes: etat.notes.slice(0, 100), plusRecent: etat.plusRecent });
+        }
+    }
+
+    /* 🔴 Une note qui QUITTE la portée (partage retiré,
+       note supprimée au bureau) ne laisse aucun delta à lire : elle est
+       devenue illisible. Seule la liste des identifiants encore visibles dit
+       qu'elle est partie. Une liste tronquée ne purge rien : purger sur un
+       morceau effacerait tout ce qui est au-delà du plafond. */
+    function menage() {
+        if (etat.recherche) { return Promise.resolve(); }
+        // 🔴 L'instantané de ce qu'on connaissait À L'ENVOI : une note créée
+        // pendant que la requête était en vol n'est pas dans sa réponse (figée
+        // avant son commit), et la purger la ferait disparaître de la page.
+        var connues = {};
+        etat.notes.forEach(function (n) { connues[n.id] = true; });
+        return appeler("/notes/api/ids", { shared: true }).then(function (r) {
+            if (!r || r.truncated || !Array.isArray(r.ids)) { return; }
+            var visibles = {};
+            r.ids.forEach(function (id) { visibles[id] = true; });
+            var avant = etat.notes.length;
+            etat.notes = etat.notes.filter(function (n) { return visibles[n.id] || !connues[n.id]; });
+            if (etat.notes.length !== avant) {
+                garderCache();
+                rendre();
+            }
+        }, function () { /* hors ligne : on purgera à la prochaine passe */ });
+    }
+
     function charger(complet) {
-        var params = { limit: 100 };
+        // Toujours demander les notes reçues. Masquées, elles
+        // donnent encore leur nombre à l'en-tête de section.
+        var params = { limit: 100, shared: true };
         if (etat.recherche) {
             params.q = etat.recherche;
         } else if (!complet && etat.plusRecent) {
             params.since = etat.plusRecent;
         }
+        // 🔴 Relecture adverse, 2e tour : l'état à l'ENVOI. Une relecture
+        // entière remet la liste à zéro quand sa réponse arrive ; une note
+        // créée, recolorée ou modifiée pendant le vol vient d'une réponse plus
+        // récente que celle-ci, et la remise à zéro la faisait disparaître
+        // (et le delta suivant, strictement « plus récent que », ne la rendait
+        // jamais).
+        var aLEnvoi = {};
+        etat.notes.forEach(function (n) { aLEnvoi[n.id] = n.write_date; });
         return appeler("/notes/api/liste", params).then(function (resultat) {
             if (resultat.uid !== etat.uid) {
                 // Une autre personne est connectée sur cet appareil : passer à
@@ -262,8 +316,22 @@
                 etat.plusRecent = cache && cache.plusRecent || null;
                 return charger(true);
             }
-            if (etat.recherche || complet || !params.since) { etat.notes = []; }
+            var entiere = etat.recherche || complet || !params.since;
+            var arrivees = [];
+            if (entiere) {
+                // Ce qui est né ou a changé pendant le vol se réintègre APRÈS la
+                // réponse : sa version est la plus récente qu'on connaisse.
+                if (!etat.recherche) {
+                    arrivees = etat.notes.filter(function (n) { return aLEnvoi[n.id] !== n.write_date; });
+                }
+                etat.notes = [];
+            }
             integrer(resultat.notes || []);
+            if (arrivees.length) { integrer(arrivees); }
+            // Le ménage suit les relectures ENTIÈRES (ouverture, retour au
+            // premier plan) : pas à chaque delta de 30 s, où il tirerait jusqu'à
+            // 5 000 identifiants pour rien.
+            if (entiere && !etat.recherche) { return menage(); }
         }, function (err) {
             if (err instanceof SessionExpiree) { toast(dire("session_expired")); }
             rendre();
@@ -296,7 +364,7 @@
                 return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
             });
         }
-        notes.forEach(function (n) {
+        var poser = function (n) {
             var modif = modifsEnAttente[n.id];
             var vue = n;
             if (modif) {
@@ -306,10 +374,48 @@
                 if (modif.color_hex !== undefined) { vue.color_hex = modif.color_hex || null; vue.text_color = null; }
             }
             liste.appendChild(carte(vue));
-        });
+        };
+        // Les miennes d'abord, les reçues dans leur section,
+        // jamais mêlées (même règle qu'au widget de bureau).
+        var recues = notes.filter(function (n) { return !aMoi(n); });
+        notes.filter(aMoi).forEach(poser);
+        if (recues.length) {
+            liste.appendChild(enteteRecues(recues.length));
+            if (!masquerRecues()) { recues.forEach(poser); }
+        }
         var vide = !enAttente.length && !etat.notes.length;
         $("vide").textContent = dire("empty");
         $("vide").classList.toggle("hidden", !vide);
+    }
+
+    function enteteRecues(nombre) {
+        var li = document.createElement("li");
+        li.className = "section-recues";
+        var titre = document.createElement("h2");
+        titre.textContent = dire("shared_section");
+        li.appendChild(titre);
+        var masquee = masquerRecues();
+        var b = bouton(masquee ? dire("shared_show").replace("{count}", String(nombre)) : dire("shared_hide"),
+            "", basculerRecues);
+        b.setAttribute("aria-expanded", masquee ? "false" : "true");
+        li.appendChild(b);
+        return li;
+    }
+
+    /* Le réglage vit au SERVEUR (`hide_shared`) : le téléphone et la page le
+       partagent. L'écran bascule d'abord, l'écriture suit. */
+    function basculerRecues() {
+        var p = etat.prefs || {};
+        var masquer = !p.hide_shared;
+        etat.prefs = Object.assign({}, p, { hide_shared: masquer });
+        rendre();
+        appeler("/notes/api/preferences", { hide_shared: masquer }).then(function (prefs) {
+            if (prefs && !prefs.error) {
+                etat.prefs = prefs;
+                ecrire(CLE_CACHE + ".prefs." + etat.uid, prefs);
+                rendre();
+            }
+        }, function () { toast(dire("needs_network")); });
     }
 
     function carte(note) {
@@ -382,20 +488,37 @@
             });
             li.appendChild(liens);
         }
+        if (note.id && !aMoi(note)) {
+            // « Marie Tremblay · Lecture seule » : l'en-tête de section dit déjà
+            // « Partagées avec moi », et la phrase entière prenait quatre lignes
+            // dans une colonne de téléphone (mesuré à 390 px).
+            var origine = document.createElement("p");
+            origine.className = "provenance";
+            origine.textContent = (note.author_name || "?") + " · "
+                + (peutEcrire(note) ? dire("share_can_edit") : dire("share_read_only"));
+            li.appendChild(origine);
+        }
         if (note.id) {
-            var menu = document.createElement("button");
-            menu.type = "button";
-            menu.className = "menu";
-            menu.setAttribute("aria-label", dire("actions"));
-            menu.textContent = "⋮";
-            menu.addEventListener("click", function (ev) {
-                ev.stopPropagation();
-                ouvrirGestes(note);
-            });
-            li.appendChild(menu);
+            // ⚠️ Le menu ne s'offre que s'il a un geste que le serveur acceptera :
+            // sur une note reçue en lecture, chacun finirait en refus.
+            if (peutEcrire(note) || peutGerer(note)) {
+                var menu = document.createElement("button");
+                menu.type = "button";
+                menu.className = "menu";
+                menu.setAttribute("aria-label", dire("actions"));
+                menu.textContent = "⋮";
+                menu.addEventListener("click", function (ev) {
+                    ev.stopPropagation();
+                    ouvrirGestes(note);
+                });
+                li.appendChild(menu);
+            }
             // L'œil dans la gouttière, sous le menu (il ne prend rien au titre).
-            li.appendChild(boutonHorsGen(note));
-            li.classList.add("avec-oeil");
+            // « Hors Gen » range le bloc-notes de l'AUTEUR : à lui seul.
+            if (peutGerer(note)) {
+                li.appendChild(boutonHorsGen(note));
+                li.classList.add("avec-oeil");
+            }
             li.addEventListener("click", function () { ouvrirNote(note); });
         }
         return li;
@@ -499,24 +622,38 @@
         var texte = document.createElement("textarea");
         texte.value = note.text || "";
         texte.rows = 10;
+        // Sur une note reçue, dire d'abord de qui elle vient
+        // et ce qu'on peut en faire, comme le bandeau du formulaire du bureau.
+        if (!aMoi(note)) {
+            var origine = document.createElement("p");
+            origine.className = "avis-partage";
+            origine.textContent = provenance(note) + "\n"
+                + (peutEcrire(note) ? dire("shared_edit_hint") : dire("shared_read_hint"));
+            fiche.appendChild(origine);
+        }
         fiche.appendChild(titre);
         fiche.appendChild(texte);
-        if (!note.editable) {
+        // Le droit d'abord, la forme ensuite : la note d'autrui en lecture ne
+        // doit pas se faire dire qu'elle a « une mise en forme ».
+        var modifiable = !!note.editable && peutEcrire(note);
+        if (!modifiable) {
             titre.readOnly = true;
             texte.readOnly = true;
-            var avis = document.createElement("p");
-            avis.className = "avis";
-            avis.textContent = dire("read_only");
-            fiche.appendChild(avis);
+            if (peutEcrire(note)) {
+                var avis = document.createElement("p");
+                avis.className = "avis";
+                avis.textContent = dire("read_only");
+                fiche.appendChild(avis);
+            }
         }
-        if (note.mine !== false) {
+        if (peutGerer(note)) {
             fiche.appendChild(choixCouleur(note));
         }
         var pied = document.createElement("div");
         pied.className = "pied";
         pied.appendChild(lienSymbifox(note));
         pied.appendChild(bouton(dire("close"), "", function () {
-            if (note.editable && (texte.value !== (note.text || "") || titre.value !== (note.title || ""))) {
+            if (modifiable && (texte.value !== (note.text || "") || titre.value !== (note.title || ""))) {
                 var element = { op: "modifier", id: note.id, text: texte.value, write_date: note.write_date };
                 if (titre.value !== (note.title || "")) { element.title = titre.value; }
                 mettreEnFile(element);
@@ -692,21 +829,34 @@
         var fermerEt = function (faire) {
             return function () { fermerFiche(); faire(); };
         };
-        grille.appendChild(bouton(note.pinned ? dire("unpin") : dire("pin"), "", fermerEt(function () {
-            geste(note, note.pinned ? "unpin" : "pin").then(function (r) { toast(r.message); }, signalerErreur);
-        })));
-        grille.appendChild(bouton(note.gen_excluded ? dire("gen_include") : dire("gen_exclude"), "", fermerEt(function () {
-            geste(note, note.gen_excluded ? "gen_include" : "gen_exclude").then(function (r) { toast(r.message); }, signalerErreur);
-        })));
-        grille.appendChild(bouton(dire("today"), "", fermerEt(function () {
-            geste(note, "activity", { days: 0 }).then(function (r) { toast(r.message); }, signalerErreur);
-        })));
-        grille.appendChild(bouton(dire("tomorrow"), "", fermerEt(function () {
-            geste(note, "activity", { days: 1 }).then(function (r) { toast(r.message); }, signalerErreur);
-        })));
-        grille.appendChild(bouton(dire("task"), "", function () { choisirProjet(note); }));
-        grille.appendChild(bouton(dire("reroute"), "", function () { choisirFiche(note); }));
-        grille.appendChild(bouton(dire("archive"), "danger", fermerEt(function () {
+        // N'offrir que ce que le serveur accepte. Épingler,
+        // « Hors Gen », archiver et les RAPPELS restent à l'auteur (une activité
+        // sur la note d'autrui est refusée, mesuré en relecture) ; un partage
+        // en écriture ouvre la tâche et un lien de PLUS.
+        var gerer = peutGerer(note);
+        if (gerer) {
+            grille.appendChild(bouton(note.pinned ? dire("unpin") : dire("pin"), "", fermerEt(function () {
+                geste(note, note.pinned ? "unpin" : "pin").then(function (r) { toast(r.message); }, signalerErreur);
+            })));
+            grille.appendChild(bouton(note.gen_excluded ? dire("gen_include") : dire("gen_exclude"), "", fermerEt(function () {
+                geste(note, note.gen_excluded ? "gen_include" : "gen_exclude").then(function (r) { toast(r.message); }, signalerErreur);
+            })));
+            grille.appendChild(bouton(dire("today"), "", fermerEt(function () {
+                geste(note, "activity", { days: 0 }).then(function (r) { toast(r.message); }, signalerErreur);
+            })));
+            grille.appendChild(bouton(dire("tomorrow"), "", fermerEt(function () {
+                geste(note, "activity", { days: 1 }).then(function (r) { toast(r.message); }, signalerErreur);
+            })));
+        }
+        if (peutEcrire(note)) {
+            grille.appendChild(bouton(dire("task"), "", function () { choisirProjet(note); }));
+            // « Remplacer » les liens de la note d'autrui est refusé (4.6.2) :
+            // le destinataire AJOUTE un lien.
+            grille.appendChild(bouton(gerer ? dire("reroute") : dire("link_also"), "", function () {
+                choisirFiche(note, gerer ? "replace" : "add");
+            }));
+        }
+        if (gerer) grille.appendChild(bouton(dire("archive"), "danger", fermerEt(function () {
             geste(note, "archive").then(function () {
                 etat.notes = etat.notes.filter(function (n) { return n.id !== note.id; });
                 rendre();
@@ -781,7 +931,7 @@
         });
     }
 
-    function choisirFiche(note) {
+    function choisirFiche(note, mode) {
         selecteur(note, dire("choose_record"), function (q) {
             if ((q || "").trim().length < 2) { return Promise.resolve([]); }
             return appeler("/notes/api/cibles", { q: q }).then(function (r) {
@@ -798,7 +948,7 @@
             li.textContent = item.name + " · " + item.label + (item.detail ? " · " + item.detail : "");
             li.addEventListener("click", function () {
                 fermerFiche();
-                geste(note, "reroute", { model: item.model, id: item.id, mode: "replace" })
+                geste(note, "reroute", { model: item.model, id: item.id, mode: mode || "replace" })
                     .then(function (r) { toast(r.message); }, signalerErreur);
             });
             return li;
@@ -862,20 +1012,31 @@
         });
         $("fiche").addEventListener("cancel", function () { $("fiche").textContent = ""; });
 
-        window.addEventListener("online", function () { afficherReseau(); viderFile().then(function () { charger(); }); });
+        // 🔴 Relecture ENTIÈRE au retour du réseau et au premier plan, pas un
+        // delta : une note qui ENTRE dans la portée sans changer de date
+        // (partage créé, entrée dans un groupe ou un canal) n'est dans aucun
+        // delta, et une page qui gardait un cache ne l'aurait jamais vue.
+        window.addEventListener("online", function () { afficherReseau(); viderFile().then(function () { charger(true); }); });
         window.addEventListener("offline", afficherReseau);
         document.addEventListener("visibilitychange", function () {
             if (document.visibilityState === "visible") {
-                viderFile().then(function () { charger(); });
+                viderFile().then(function () { charger(true); });
             } else if ($("texte").value.trim()) {
                 garderBrouillon();
             }
         });
         // Tant que la page est au premier plan, relire ce qui a changé ailleurs
         // (bureau, autre appareil). Léger : `since` ne rend que les écarts.
+        // Un onglet de bureau peut rester visible des heures
+        // sans `visibilitychange`. Une relecture ENTIÈRE toutes les dix minutes
+        // (une passe sur vingt) y fait entrer les notes nouvellement partagées
+        // et sortir celles qu'on a départagées.
+        var passes = 0;
         setInterval(function () {
             if (document.visibilityState === "visible" && !etat.recherche) {
-                viderFile().then(function () { charger(); });
+                passes += 1;
+                var entiere = passes % 20 === 0;
+                viderFile().then(function () { charger(entiere); });
             }
         }, 30000);
 
@@ -883,7 +1044,7 @@
         $("texte").focus();
 
         // Apprendre QUI est connecté avant de vider la file (voir l'en-tête).
-        charger(!etat.plusRecent).then(function () {
+        charger(true).then(function () {
             chargerPreferences();
             return viderFile();
         }).then(function () { return charger(); });

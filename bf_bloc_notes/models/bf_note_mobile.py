@@ -84,6 +84,10 @@ PREFS = {
     "density": "bf_note_density",
     "color_style": "bf_note_color_style",
     "group_by_color": "bf_note_group_by_color",
+    # La section « Partagees avec moi » de la page et du
+    # telephone. Un reglage d'AFFICHAGE, distinct de
+    # `bf_note_no_shared_notes`, qui retire le compte du partage lui-meme.
+    "hide_shared": "bf_note_hide_shared",
 }
 
 
@@ -956,6 +960,17 @@ class BfNote(models.Model):
             # `rich_editable` : ce n'est pas de la mise en forme, et un client
             # qui l'ignore ne paie que deux octets.
             "can_write": bool(self.peut_ecrire),
+            # Ranger la note (epingle, couleur, « Hors Gen », archivage), ce qui
+            # reste a l'auteur et a l'administration. ⚠️ Pas `mine` : un compte
+            # administrateur qui lit la note d'un collegue la range aussi au
+            # bureau (`peut_gerer`), et les deux surfaces doivent offrir les
+            # memes gestes.
+            "can_manage": bool(self.peut_gerer),
+            # Qui a ecrit la note, pour dire « Partagee avec vous par … »
+            # comme le bandeau du bureau. En `sudo` : le nom de l'auteur d'une
+            # note qu'on LIT deja n'apprend rien, et une fiche d'usager d'une
+            # autre societe illisible ferait tomber la LISTE entiere.
+            "author_name": self.sudo().user_id.name or "",
             # Plus de garde ici. `share_count` rend deja zero a
             # qui n'est pas l'auteur, et la regle vit a UN endroit
             # (`_compute_share_count`) : deux ecritures de la meme regle, c'est
@@ -1285,6 +1300,7 @@ class BfNote(models.Model):
         user = self.env.user
         prefs = {key: user[field] for key, field in PREFS.items()}
         prefs["group_by_color"] = bool(prefs["group_by_color"])
+        prefs["hide_shared"] = bool(prefs["hide_shared"])
         prefs["swatches"] = self.env["bf.color.swatch"].bf_available()
         prefs["palette"] = self._bf_color_palette()
         return prefs

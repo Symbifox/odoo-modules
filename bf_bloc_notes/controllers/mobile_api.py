@@ -199,8 +199,13 @@ class BfNoteMobileApi(http.Controller):
             # quelque chose a changé) et `visible_ids` (le ménage de ce qui a
             # quitté la portée). Ajouts compatibles : un client qui ne les
             # voit pas ici n'appelle pas les routes.
+            # `named_shares` = chaque note porte `can_write`,
+            # `can_manage` et `author_name`, et `/prefs` connait
+            # `hide_shared`. Un client ne s'appuie sur `can_write` que s'il
+            # voit ce mot : avant la 4.6.0, une note d'autrui n'etait jamais
+            # modifiable, et l'absence du champ ne doit pas se lire « oui ».
             "features": ["color_hex", "tags", "prefs", "gen_excluded", "rich_text",
-                         "shared_notes", "stamp", "visible_ids"],
+                         "shared_notes", "stamp", "visible_ids", "named_shares"],
         })
 
     @http.route(f"{BASE}/notes", type="http", auth="public", methods=["GET", "POST"],

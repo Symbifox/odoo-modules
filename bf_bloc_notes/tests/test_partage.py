@@ -24,7 +24,7 @@ from lxml import etree
 from odoo.modules.module import get_module_path
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import new_test_user, tagged
-from odoo.tests.common import TransactionCase
+from odoo.tests.common import HttpCase, TransactionCase
 from odoo.tools.safe_eval import safe_eval
 
 G = "base.group_user,project.group_project_user"
@@ -1616,8 +1616,11 @@ class TestPartageEcran(TransactionCase):
         chemin = os.path.join(get_module_path("bf_bloc_notes"), "i18n", "fr_CA.po")
         texte = open(chemin, encoding="utf-8").read()
         traductions = re.findall(r'msgstr ((?:"[^\n]*"\n?)+)', texte)
+        # 🔴 4.6.3 : insensible a la CASSE, et toute elision « t' ». Le motif
+        # d'avant laissait passer « Tu peux » (majuscule) et « t'est », et le
+        # parcours de la page Notes les a montres a l'ecran.
         fautes = [t for t in traductions
-                  if re.search(r"\b(tu|ton|ta|tes|toi)\b|\bt'a\b|\bt'es\b", t)]
+                  if re.search(r"\b(tu|ton|ta|tes|toi|te)\b|\bt'\w", t, re.IGNORECASE)]
         self.assertEqual(fautes, [], "une traduction tutoie l'usager")
         # 🔴 Un impératif au tutoiement ne porte aucun pronom (« utilise »,
         # « Crée », « Écris ») : le balayage ci-dessus ne le voit pas, la
@@ -1631,6 +1634,10 @@ class TestPartageEcran(TransactionCase):
             "you can only remove the files you attached": "vous ne retirez que",
             "it; scheduling an activity on it stays with its author.": "Vous lisez son fil",
             "it; subscribing anyone to it stays with its author.": "Vous lisez son fil",
+            # 4.6.3 : trois de plus, que l'ancien motif ne voyait pas.
+            "This note is shared with you for reading.": "Cette note vous est partagée",
+            "You can paste or drag an image": "Vous pouvez coller",
+            "(systray icon or <kbd>Alt+N</kbd>). You can still": "Vous pouvez",
         }
         entrees = re.findall(r'msgid ((?:"[^\n]*"\n?)+)msgstr ((?:"[^\n]*"\n?)+)', texte)
         def deplier(bloc):
@@ -1651,3 +1658,218 @@ class TestPartageEcran(TransactionCase):
         if aide is not None:
             self.assertIn("utilisez « Partager… »", aide)
             self.assertNotIn("utilise «", aide)
+
+
+@tagged("post_install", "-at_install", "partage_nomme")
+class TestPartageTelephone(TransactionCase):
+    """4.6.3 : ce que la page Notes, le telephone et le widget lisent.
+
+    Chaque note dit QUI l'a ecrite (`author_name`) et si on peut la RANGER
+    (`can_manage`), en plus de `can_write` : les trois surfaces offrent les
+    memes gestes que le bureau, et c'est le serveur qui le dit, pas elles.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.alice = new_test_user(cls.env, login="pt_alice", groups=G,
+                                  name="Alice Telephone")
+        cls.bruno = new_test_user(cls.env, login="pt_bruno", groups=G)
+        cls.carla = new_test_user(cls.env, login="pt_carla", groups=G)
+        cls.patron = new_test_user(cls.env, login="pt_patron",
+                                   groups=G + ",base.group_system")
+        cls.note = cls.env["bf.note"].with_user(cls.alice).create({
+            "name": "NOTE-TEL-ESSAI", "body": "<p>corps</p>"})
+        Share = cls.env["bf.note.share"].with_user(cls.alice)
+        for usager, ecrire in ((cls.bruno, True), (cls.carla, False), (cls.patron, False)):
+            Share.create({"note_id": cls.note.id, "kind": "user", "user_id": usager.id,
+                          "can_write": ecrire})
+
+    def _charge(self, usager):
+        self.env.invalidate_all()
+        liste = self.env["bf.note"].with_user(usager)._mobile_list(shared=True)["notes"]
+        return {n["id"]: n for n in liste}.get(self.note.id)
+
+    def test_la_charge_dit_l_auteur_et_les_deux_droits(self):
+        for usager, mine, ecrire, ranger in (
+                (self.alice, True, True, True),
+                (self.bruno, False, True, False),
+                (self.carla, False, False, False),
+                # 🔴 L'administration range la note d'un collegue au bureau
+                # (`peut_gerer`) : `can_manage` ne se lit donc PAS sur `mine`.
+                # Partagee en LECTURE, elle n'en modifie pas le contenu a
+                # l'ecran : `peut_ecrire` lit l'auteur et les partages, comme
+                # le bandeau du formulaire.
+                (self.patron, False, False, True)):
+            charge = self._charge(usager)
+            self.assertTrue(charge, usager.login)
+            self.assertEqual(charge["mine"], mine, usager.login)
+            self.assertEqual(charge["can_write"], ecrire, usager.login)
+            self.assertEqual(charge["can_manage"], ranger, usager.login)
+            self.assertEqual(charge["author_name"], "Alice Telephone", usager.login)
+
+    def test_le_nom_de_l_auteur_ne_fait_pas_tomber_la_liste(self):
+        # Une fiche d'usager qu'on ne pourrait pas lire ne doit pas rendre une
+        # erreur a la LISTE entiere : le nom se lit en sudo.
+        self.alice.partner_id.sudo().write({"name": "Alice Renommee"})
+        self.assertEqual(self._charge(self.carla)["author_name"], "Alice Renommee")
+
+    def test_la_preference_masquer_les_recues(self):
+        Note = self.env["bf.note"]
+        self.assertFalse(Note.with_user(self.bruno)._mobile_prefs()["hide_shared"])
+        prefs = Note.with_user(self.bruno)._mobile_set_prefs({"hide_shared": True})
+        self.assertIs(prefs["hide_shared"], True)
+        self.assertTrue(self.bruno.bf_note_hide_shared)
+        # Un reglage de l'usager, pas du locataire.
+        self.assertFalse(Note.with_user(self.carla)._mobile_prefs()["hide_shared"])
+        # ⚠️ Un reglage d'AFFICHAGE : la note reste dans la portee.
+        self.assertTrue(self._charge(self.bruno))
+
+    def test_la_preference_est_dans_la_fiche_des_reglages(self):
+        arch = etree.fromstring(self.env.ref(
+            "bf_bloc_notes.bf_note_user_pref_view_form").arch_db)
+        self.assertTrue(arch.xpath("//field[@name='bf_note_hide_shared']"))
+        self.assertIn("bf_note_hide_shared", self.env["res.users"].SELF_WRITEABLE_FIELDS)
+
+    def test_le_catalogue_garde_les_jetons_de_la_page(self):
+        import re
+        chemin = os.path.join(get_module_path("bf_bloc_notes"), "i18n", "fr_CA.po")
+        texte = open(chemin, encoding="utf-8").read()
+        entrees = re.findall(r'msgid ((?:"[^\n]*"\n?)+)msgstr ((?:"[^\n]*"\n?)+)', texte)
+        def deplier(bloc):
+            return "".join(re.findall(r'"(.*)"', bloc)).replace('\\"', '"')
+        catalogue = {deplier(i): deplier(s) for i, s in entrees}
+        # 🔴 Un jeton traduit (« {auteur} ») ne se remplacerait plus : la page
+        # afficherait l'accolade.
+        for mid, jeton in (("Shared with you by {author}", "{author}"),
+                           ("Show ({count})", "{count}")):
+            self.assertIn(jeton, catalogue.get(mid, ""), mid)
+        for mid in ("Shared with me", "Can edit", "Read-only", "Hide",
+                    "Also link to a record", "You can edit its title and its content.",
+                    "Hide notes shared with me"):
+            self.assertTrue(catalogue.get(mid), mid)
+        # Les chaines du bureau servent AUSSI au script : sans `odoo-python`,
+        # la page les afficherait en anglais.
+        for mid in ("Shared with me", "Can edit", "Read-only",
+                    "You can edit its title and its content."):
+            bloc = texte[:texte.index('msgid "%s"' % mid)]
+            bloc = bloc[bloc.rindex("#. module: bf_bloc_notes"):]
+            self.assertIn("controllers/page_pwa.py", bloc, mid)
+            self.assertIn("#. odoo-python", bloc, mid)
+
+    def test_le_script_de_la_page_suit_le_serveur(self):
+        chemin = os.path.join(get_module_path("bf_bloc_notes"), "static", "src", "pwa", "notes.js")
+        js = open(chemin, encoding="utf-8").read()
+        # La portee : les notes recues sont demandees, et le menage a lieu.
+        self.assertIn("var params = { limit: 100, shared: true };", js)
+        self.assertIn('appeler("/notes/api/ids", { shared: true })', js)
+        # Une liste tronquee ne purge rien.
+        self.assertIn("r.truncated", js)
+        # Les droits se lisent sur le serveur, et leur absence ne dit pas oui.
+        self.assertIn("n.can_manage !== undefined ? !!n.can_manage : aMoi(n)", js)
+        self.assertIn("n.can_write !== undefined ? !!n.can_write : aMoi(n)", js)
+        # Le destinataire AJOUTE un lien, il ne remplace pas ceux de l'auteur.
+        self.assertIn('choisirFiche(note, gerer ? "replace" : "add")', js)
+        # 🔴 Relecture adverse : une page qui gardait un cache ne demandait que le
+        # DELTA, et une note recue plus ancienne (ou entree par un groupe, sans
+        # changer de date) n'arrivait jamais. Ouverture et premier plan relisent
+        # tout.
+        self.assertIn("charger(true).then(function () {", js)
+        # 🔴 DEUX occurrences, retour du reseau ET premier plan : l'essai d'avant
+        # ne cherchait que la presence, et la batterie a montre qu'une seule
+        # (celle du reseau) le faisait passer avec le premier plan en delta.
+        self.assertEqual(js.count('viderFile().then(function () { charger(true); });'), 2)
+        visible = js[js.index('if (document.visibilityState === "visible") {'):]
+        self.assertTrue(visible.split("\n")[1].strip().startswith(
+            "viderFile().then(function () { charger(true); });"))
+        self.assertNotIn("charger(!etat.plusRecent)", js)
+        # La purge epargne ce qui est arrive pendant que la requete etait en vol.
+        self.assertIn("visibles[n.id] || !connues[n.id]", js)
+        # 🔴 2e tour : la remise a zero d'une relecture entiere aussi. Ce qui est
+        # ne ou a change pendant le vol se reintegre APRES la reponse (mesure au
+        # harnais Node du lot : la note tapee pendant le vol disparaissait).
+        self.assertIn("return aLEnvoi[n.id] !== n.write_date;", js)
+        self.assertIn("integrer(resultat.notes || []);\n            if (arrivees.length) { integrer(arrivees); }", js)
+        # Un onglet qui reste visible relit tout toutes les dix minutes.
+        self.assertIn("var entiere = passes % 20 === 0;", js)
+        # Les rappels restent a l'auteur : le serveur refuse une activite sur la
+        # note d'autrui. Ils vivent donc dans le bloc `if (gerer)`.
+        bloc = js[js.index("var gerer = peutGerer(note);"):js.index("if (peutEcrire(note)) {\n            grille")]
+        self.assertIn('"activity"', bloc)
+        # ... et ce bloc ne s'ouvre que sur le droit de RANGER.
+        self.assertIn("        if (gerer) {\n            grille.appendChild(bouton(note.pinned", js)
+
+    def test_un_destinataire_ne_pose_pas_de_rappel(self):
+        # Ce que le script n'offre plus, mesure au serveur : une activite sur la
+        # note d'autrui est refusee, meme en ecriture.
+        self.env.invalidate_all()
+        note = self.env["bf.note"].with_user(self.bruno).browse(self.note.id)
+        with self.assertRaises(AccessError):
+            note._mobile_action("activity", {"days": 0})
+
+
+@tagged("post_install", "-at_install", "partage_nomme")
+class TestPartagePageHttp(HttpCase):
+    """4.6.3 : les deux routes de la page, par HTTP et sous session.
+
+    🔴 Rejoue sous un compte `base.group_system` : c'est la fuite du lot du bureau
+    (un domaine laisse a la regle rendait toute la base a l'administration),
+    et ces routes sont neuves.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.alice = new_test_user(cls.env, login="ph_alice", password="ph_alice",
+                                  groups=G)
+        cls.bruno = new_test_user(cls.env, login="ph_bruno", password="ph_bruno",
+                                  groups=G)
+        cls.patron = new_test_user(cls.env, login="ph_patron", password="ph_patron",
+                                   groups=G + ",base.group_system")
+        cls.note = cls.env["bf.note"].with_user(cls.alice).create({
+            "name": "NOTE-HTTP-ESSAI", "body": "<p>partagee</p>"})
+        cls.privee = cls.env["bf.note"].with_user(cls.alice).create({
+            "name": "PRIVEE-HTTP-ESSAI", "body": "<p>privee</p>"})
+        cls.partage = cls.env["bf.note.share"].with_user(cls.alice).create({
+            "note_id": cls.note.id, "kind": "user", "user_id": cls.bruno.id})
+
+    def _rpc(self, route, **params):
+        import json
+        reponse = self.url_open(route, data=json.dumps({
+            "jsonrpc": "2.0", "method": "call", "params": params,
+        }), headers={"Content-Type": "application/json"})
+        self.assertEqual(reponse.status_code, 200)
+        return reponse.json()["result"]
+
+    def _ids_liste(self, **params):
+        return {n["id"] for n in self._rpc("/notes/api/liste", **params)["notes"]}
+
+    def test_la_liste_ajoute_les_recues_sur_demande(self):
+        self.authenticate("ph_bruno", "ph_bruno")
+        self.assertNotIn(self.note.id, self._ids_liste())
+        self.assertIn(self.note.id, self._ids_liste(shared=True))
+        self.assertNotIn(self.privee.id, self._ids_liste(shared=True))
+        # ⚠️ Seul le booleen `true` ouvre la portee.
+        self.assertNotIn(self.note.id, self._ids_liste(shared="1"))
+
+    def test_les_identifiants_disent_qu_une_note_est_partie(self):
+        self.authenticate("ph_bruno", "ph_bruno")
+        self.assertIn(self.note.id, self._rpc("/notes/api/ids", shared=True)["ids"])
+        self.partage.with_user(self.alice).unlink()
+        resultat = self._rpc("/notes/api/ids", shared=True)
+        self.assertNotIn(self.note.id, resultat["ids"])
+        self.assertFalse(resultat["truncated"])
+
+    def test_l_administration_ne_recoit_pas_la_base(self):
+        self.authenticate("ph_patron", "ph_patron")
+        for route in ("/notes/api/liste", "/notes/api/ids"):
+            resultat = self._rpc(route, shared=True)
+            vus = set(resultat["ids"]) if "ids" in resultat else {
+                n["id"] for n in resultat["notes"]}
+            self.assertNotIn(self.note.id, vus, route)
+            self.assertNotIn(self.privee.id, vus, route)
+
+    def test_la_sonde_annonce_les_partages_nommes(self):
+        charge = self.url_open("/bf_bloc_notes/mobile/v1/ping").json()
+        self.assertIn("named_shares", charge["features"])
+

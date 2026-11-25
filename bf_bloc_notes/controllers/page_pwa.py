@@ -243,6 +243,18 @@ def _mots():
         "color": _("Color"),
         "no_color": _("No color"),
         "keep_color": _("Keep in my colors"),
+        # Les notes recues. `{author}` et `{count}` se
+        # remplacent dans le script ; les memes phrases qu'au bureau.
+        "shared_section": _("Shared with me"),
+        "shared_by": _("Shared with you by {author}"),
+        "share_can_edit": _("Can edit"),
+        "share_read_only": _("Read-only"),
+        "shared_edit_hint": _("You can edit its title and its content."),
+        "shared_read_hint": _("This note is shared with you for reading. Only its author can "
+                              "change it."),
+        "shared_hide": _("Hide"),
+        "shared_show": _("Show ({count})"),
+        "link_also": _("Also link to a record"),
     }
 
 
@@ -361,13 +373,30 @@ class BfNotePage(http.Controller):
     # ── Routes JSON de la page ─────────────────────────────────────────
 
     @http.route("/notes/api/liste", type="json", auth="user", methods=["POST"])
-    def api_liste(self, limit=50, offset=0, archived=False, q=None, since=None, **kw):
+    def api_liste(self, limit=50, offset=0, archived=False, q=None, since=None,
+                  shared=False, **kw):
+        # `shared` ajoute les notes recues, comme au widget.
+        # ⚠️ `is True`, et non `bool(...)` : seul le booleen JSON `true` ouvre
+        # la portee, jamais une chaine qu'un client aurait mise dans le champ
+        # (« 1 », « non » sont vrais pour `bool`).
         def run():
             resultat = request.env["bf.note"]._mobile_list(
-                limit=limit, offset=offset, archived=archived, query=q, since=since)
+                limit=limit, offset=offset, archived=archived, query=q, since=since,
+                shared=shared is True)
             resultat["uid"] = request.env.uid
             return resultat
         return _garde(run)
+
+    @http.route("/notes/api/ids", type="json", auth="user", methods=["POST"])
+    def api_ids(self, shared=False, **kw):
+        """Le menage : ce qui est encore dans la portee, archive compris.
+
+        🔴 Une note dont on retire le partage devient illisible, donc AUCUN
+        delta ne peut annoncer son depart, et le cache de la page la gardait
+        pour toujours. Une note SUPPRIMEE au bureau aussi, avant meme ce lot.
+        """
+        return _garde(lambda: request.env["bf.note"]._mobile_visible_ids(
+            shared=shared is True))
 
     @http.route("/notes/api/creer", type="json", auth="user", methods=["POST"])
     def api_creer(self, **kw):

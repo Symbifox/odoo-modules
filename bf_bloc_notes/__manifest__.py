@@ -181,7 +181,15 @@
     #   re-routage « remplacer » refuse en clair sur la note d'autrui, le fil dit
     #   « Note creee », et trois aides francaises vouvoient. Migration `end` : le
     #   francais de l'aide de `is_shared`, s'il porte encore le texte de 4.6.1.
-    "version": "18.0.4.6.2",
+    # 18.0.4.6.3 : la page Notes voit les notes recues. Elles
+    #   vivent dans leur section « Partagees avec moi », disent qui les a
+    #   partagees et si on peut les modifier, et n'offrent que les gestes que le
+    #   serveur accepte. La page purge son cache par `/notes/api/ids` (une note
+    #   departagee ou supprimee y restait pour toujours). Chaque note porte
+    #   `can_manage` et `author_name` ; la preference `hide_shared`
+    #   (`bf_note_hide_shared`) est commune a la page et au telephone ; la sonde
+    #   annonce `named_shares`. Colonne neuve sur `res_users`, aucune migration.
+    "version": "18.0.4.6.3",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',
