@@ -189,7 +189,15 @@
     #   `can_manage` et `author_name` ; la preference `hide_shared`
     #   (`bf_note_hide_shared`) est commune a la page et au telephone ; la sonde
     #   annonce `named_shares`. Colonne neuve sur `res_users`, aucune migration.
-    "version": "18.0.4.6.3",
+    # 18.0.4.6.4 : au bureau, les rappels rapides (formulaire et
+    #   carte) ne s'offrent au destinataire que sur une note liee qu'il peut
+    #   ecrire, et « Personnaliser… » qu'a qui peut ecrire la note : ailleurs le
+    #   serveur les refusait (`rappel_possible`, calcule, sans colonne).
+    #   Migration `end` : quatre termes francais (trois de vues, une aide
+    #   d'action) restes au tutoiement en base malgre les catalogues 4.6.2 et
+    #   4.6.3, remplaces s'ils portent encore l'ancien texte. Deux traductions
+    #   de code tutoyaient aussi (« Choisis… », « Saisis… »).
+    "version": "18.0.4.6.4",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',

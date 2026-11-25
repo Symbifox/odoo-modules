@@ -1638,6 +1638,9 @@ class TestPartageEcran(TransactionCase):
             "This note is shared with you for reading.": "Cette note vous est partagée",
             "You can paste or drag an image": "Vous pouvez coller",
             "(systray icon or <kbd>Alt+N</kbd>). You can still": "Vous pouvez",
+            # 4.6.4 : deux impératifs sans pronom, vus à la relecture.
+            "Choose who this note is shared with.": "Choisissez avec qui",
+            "Enter a title or content to create the task.": "Saisissez un titre",
         }
         entrees = re.findall(r'msgid ((?:"[^\n]*"\n?)+)msgstr ((?:"[^\n]*"\n?)+)', texte)
         def deplier(bloc):
@@ -1647,6 +1650,14 @@ class TestPartageEcran(TransactionCase):
             trouve = [s for i, s in catalogue.items() if bout in i]
             self.assertTrue(trouve, f"msgid introuvable : {bout}")
             self.assertIn(forme, trouve[0], bout)
+        # 🔴 4.6.4 : un impératif au tutoiement en TÊTE de phrase, quel qu'il
+        # soit. La liste ci-dessus ne tient que les chaînes connues.
+        imperatifs = [s for s in catalogue.values() if re.search(
+            r"(^|[.!?:]\s+|« )(Choisis|Saisis|Écris|Réessaie|Clique|Sélectionne|Coche|Tape|Colle)\b", s)]
+        # ⚠️ Seulement des formes qui ne peuvent être QUE du tutoiement :
+        # « Ajoute… », « Crée… », « Indique… » se lisent aussi à la troisième
+        # personne dans une aide (« [Cette case] ajoute la tâche… »).
+        self.assertEqual(imperatifs, [], "un impératif tutoie l'usager")
 
     def test_l_aide_de_la_case_vouvoie_en_base(self):
         # 🔴 Le creneau BRUT : un -u n'ecrase pas une traduction de champ, c'est
@@ -1873,3 +1884,259 @@ class TestPartagePageHttp(HttpCase):
         charge = self.url_open("/bf_bloc_notes/mobile/v1/ping").json()
         self.assertIn("named_shares", charge["features"])
 
+
+
+@tagged("post_install", "-at_install", "partage_nomme")
+class TestPartageRappels464(TransactionCase):
+    """4.6.4 : les rappels du bureau et quatre termes restes au tutoiement.
+
+    1. Les boutons de rappel RAPIDE (formulaire : Aujourd'hui, Demain,
+       +2 jours, +1 semaine ; carte : Aujourd'hui, Demain) ne s'offrent qu'a
+       qui peut en poser un : l'auteur, l'administration, ou le destinataire
+       EN ECRITURE d'une note LIEE. « Personnaliser… » suit le droit d'ecrire :
+       l'assistant demande une fiche cible a une note sans lien.
+    2. 🔴 Les catalogues 4.6.2 et 4.6.3 avaient corrige des traductions de vue
+       et d'aide d'action, et un `-u` les avait laissees au tutoiement en
+       base : `test_le_catalogue_vouvoie` ne lisait que le fichier. On lit ici
+       ce que la base SERT.
+    """
+
+    # ⚠️ Lue en anglais : une base d'essai peut donner le francais aux usagers neufs.
+    GARDE_NOTE = "scheduling an activity on it stays with its author"
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.alice = new_test_user(cls.env, login="r_alice", groups=G)
+        cls.bruno = new_test_user(cls.env, login="r_bruno", groups=G)
+        cls.carla = new_test_user(cls.env, login="r_carla", groups=G)
+        cls.patron = new_test_user(cls.env, login="r_patron",
+                                   groups=G + ",base.group_system")
+        # Une tache que Bruno ET Carla peuvent ecrire, dans un projet ouvert aux
+        # employes (un contact ne va pas : sans « creation de contacts », un
+        # simple interne ne l'ecrit pas, donc n'y pose aucune activite).
+        projet = cls.env["project.project"].create({"name": "Projet ouvert R",
+                                                    "privacy_visibility": "employees"})
+        cls.tache = cls.env["project.task"].create({
+            "name": "Tache R", "project_id": projet.id,
+            "user_ids": [(6, 0, [cls.bruno.id, cls.carla.id])]})
+        Note = cls.env["bf.note"].with_user(cls.alice)
+        cls.libre = Note.create({"name": "NOTE-LIBRE-R"})
+        cls.liee = Note.create({"name": "NOTE-LIEE-R"})
+        cls.env["bf.note.link"].create({"note_id": cls.liee.id, "res_model": "project.task",
+                                        "res_id": cls.tache.id})
+        Share = cls.env["bf.note.share"].with_user(cls.alice)
+        for note in (cls.libre, cls.liee):
+            Share.create({"note_id": note.id, "kind": "user", "user_id": cls.bruno.id,
+                          "can_write": True})
+            Share.create({"note_id": note.id, "kind": "user", "user_id": cls.carla.id,
+                          "can_write": False})
+
+    def _rappel(self, usager, note):
+        self.env.invalidate_all()
+        return note.with_user(usager).rappel_possible
+
+    def _activites_sur_la_tache(self):
+        return self.env["mail.activity"].search_count([
+            ("res_model", "=", "project.task"), ("res_id", "=", self.tache.id)])
+
+    def test_rappel_possible_suit_le_serveur(self):
+        for usager, libre, liee in (
+                (self.alice, True, True),
+                (self.patron, True, True),
+                (self.bruno, False, True),
+                # 🔴 En LECTURE, la note liee ne
+                # s'ecrit pas, et la trace de l'activite est une ecriture.
+                (self.carla, False, False)):
+            self.assertEqual(self._rappel(usager, self.libre), libre, (usager.login, "libre"))
+            self.assertEqual(self._rappel(usager, self.liee), liee, (usager.login, "liee"))
+
+    def test_le_champ_dit_vrai_face_au_serveur(self):
+        """Chaque case du tableau ci-dessus, jouee contre le serveur. La garde
+        de la note est nommee en positif ; les autres refus, en negatif (ce
+        n'est PAS elle), parce que leur texte est celui d'Odoo."""
+        # Bruno (ecriture) et Carla (lecture), note libre : la garde de la NOTE.
+        for usager in (self.bruno, self.carla):
+            with self.assertRaisesRegex(AccessError, self.GARDE_NOTE):
+                self.libre.with_user(usager).with_context(offset=1, lang="en_US").action_create_activity_quick()
+        # L'administration et l'auteure, note libre : l'activite va a la note.
+        for usager in (self.patron, self.alice):
+            self.libre.with_user(usager).with_context(offset=1, lang="en_US").action_create_activity_quick()
+        self.assertEqual(self.env["mail.activity"].search_count([
+            ("res_model", "=", "bf.note"), ("res_id", "=", self.libre.id)]), 2)
+        # Bruno, note liee : l'activite va a la tache.
+        avant = self._activites_sur_la_tache()
+        self.liee.with_user(self.bruno).with_context(offset=1, lang="en_US").action_create_activity_quick()
+        self.assertEqual(self._activites_sur_la_tache(), avant + 1)
+        # Carla, note liee, en lecture : refusee par l'ecriture de la trace.
+        with self.assertRaises(AccessError) as refus:
+            self.liee.with_user(self.carla).with_context(offset=1, lang="en_US").action_create_activity_quick()
+        self.assertNotIn(self.GARDE_NOTE, str(refus.exception))
+        # ⚠️ Lien vers une fiche que Bruno ne peut pas ecrire : bouton offert,
+        # refus du droit sur la FICHE (et non la garde de la note).
+        projet = self.env["project.project"].create({"name": "Projet R"})
+        lien = self.env["bf.note.link"].create({"note_id": self.libre.id,
+                                                "res_model": "project.project",
+                                                "res_id": projet.id})
+        self.assertTrue(self._rappel(self.bruno, self.libre))
+        with self.assertRaises(AccessError) as refus:
+            self.libre.with_user(self.bruno).with_context(offset=1, lang="en_US").action_create_activity_quick()
+        self.assertNotIn(self.GARDE_NOTE, str(refus.exception))
+        lien.unlink()
+
+    def test_personnaliser_aboutit_pour_qui_ecrit_la_note_libre(self):
+        """L'assistant demande une fiche cible a une note sans lien : Bruno
+        (ecriture) aboutit, Carla (lecture) est refusee."""
+        def assistant(usager):
+            return self.env["bf.note.activity.wizard"].with_user(usager).create({
+                "note_id": self.libre.id, "summary": "Rappel R",
+                "link_target_ref": "project.task,%d" % self.tache.id})
+        avant = self._activites_sur_la_tache()
+        assistant(self.bruno).action_create()
+        self.assertEqual(self._activites_sur_la_tache(), avant + 1)
+        with self.assertRaises(AccessError):
+            assistant(self.carla).action_create()
+
+    def test_les_boutons_de_rappel_lisent_le_bon_droit(self):
+        Note = self.env["bf.note"]
+        form = etree.fromstring(Note.get_view(
+            self.env.ref("bf_bloc_notes.bf_note_view_form").id, "form")["arch"])
+        rapides = form.xpath("//header/button[@name='action_create_activity_quick']")
+        self.assertEqual(len(rapides), 4)
+        for b in rapides:
+            self.assertEqual(b.get("invisible"), "not rappel_possible", b.get("string"))
+        (perso,) = form.xpath("//header/button[@name='action_open_activity_wizard']")
+        self.assertEqual(perso.get("invisible"), "not peut_gerer and not peut_ecrire")
+        kanban = etree.fromstring(Note.get_view(
+            self.env.ref("bf_bloc_notes.bf_note_view_kanban").id, "kanban")["arch"])
+        cartes = kanban.xpath("//button[@name='action_create_activity_quick']")
+        self.assertEqual(len(cartes), 2)
+        for b in cartes:
+            self.assertEqual(b.get("t-if"), "record.rappel_possible.raw_value")
+        self.assertTrue(kanban.xpath("//field[@name='rappel_possible']"))
+
+    def _migration(self):
+        chemin = os.path.join(get_module_path("bf_bloc_notes"),
+                              "migrations", "18.0.4.6.4", "end-migrate.py")
+        spec = importlib.util.spec_from_file_location("bf_note_migr_4_6_4", chemin)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def _termes(self, xmlid, champ):
+        fiche = self.env.ref(xmlid)
+        return fiche, {t["source"]: t["value"]
+                       for t in fiche.get_field_translations(champ, langs=["fr_CA"])[0]}
+
+    def _relire(self, migration, retouche):
+        self.env.invalidate_all()
+        for i, (xmlid, champ, source, _ancien, neuf) in enumerate(migration.TERMES):
+            _f, termes = self._termes(xmlid, champ)
+            self.assertEqual(termes.get(source), retouche if i == 0 else neuf, source[:40])
+
+    def test_la_migration_remet_les_termes_et_respecte_une_retouche(self):
+        if not self.env["res.lang"]._lang_get("fr_CA"):
+            self.skipTest("fr_CA absent de la base d'essai")
+        migration = self._migration()
+        self.assertEqual(len(migration.TERMES), 4)
+        self.assertEqual({c for _x, c, _s, _a, _n in migration.TERMES}, {"arch_db", "help"})
+        # l'etat d'une base montee depuis la 4.6.1 : les anciens textes
+        for xmlid, champ, source, ancien, _neuf in migration.TERMES:
+            fiche, _t = self._termes(xmlid, champ)
+            fiche.update_field_translations(champ, {"fr_CA": {source: ancien}})
+        # une retouche d'operateur sur le PREMIER : elle doit rester, et les
+        # trois autres (deux vues et une action) doivent etre remis
+        xmlid0, champ0, source0, _a, _n = migration.TERMES[0]
+        fiche0, _t = self._termes(xmlid0, champ0)
+        fiche0.update_field_translations(champ0, {"fr_CA": {source0: "RETOUCHE OPERATEUR"}})
+        self.env.flush_all()
+        migration.migrate(self.env.cr, "18.0.4.6.3")
+        self._relire(migration, "RETOUCHE OPERATEUR")
+        # idempotente, et muette sur une installation neuve : RELUE apres
+        migration.migrate(self.env.cr, "18.0.4.6.4")
+        self._relire(migration, "RETOUCHE OPERATEUR")
+        migration.migrate(self.env.cr, None)
+        self._relire(migration, "RETOUCHE OPERATEUR")
+
+    def test_une_erreur_sur_un_terme_laisse_passer_les_autres(self):
+        """Le point de sauvegarde PAR terme : une erreur SQL sur un terme ne
+        doit ni avorter la transaction ni sauter les suivants.
+
+        🔴 Une erreur PYTHON (champ inconnu) ne mesurait rien : elle leve avant
+        tout SQL, la transaction reste saine, et le mutant qui retirait le
+        point de sauvegarde survivait (batterie 464b). Il faut une erreur que
+        PostgreSQL rend, sur la premiere lecture et elle seule.
+        """
+        from unittest.mock import patch
+        if not self.env["res.lang"]._lang_get("fr_CA"):
+            self.skipTest("fr_CA absent de la base d'essai")
+        migration = self._migration()
+        for xmlid, champ, source, ancien, _neuf in migration.TERMES:
+            fiche, _t = self._termes(xmlid, champ)
+            fiche.update_field_translations(champ, {"fr_CA": {source: ancien}})
+        self.assertEqual(migration.TERMES[0][0], "bf_bloc_notes.bf_note_view_form")
+        Vue = type(self.env["ir.ui.view"])
+        vraie = Vue.get_field_translations
+        appels = []
+
+        def piege(fiche, champ, langs=None):
+            appels.append(champ)
+            if len(appels) == 1:
+                fiche.env.cr.execute("SELECT 1/0")
+            return vraie(fiche, champ, langs=langs)
+        self.env.flush_all()
+        with patch.object(Vue, "get_field_translations", piege):
+            migration.migrate(self.env.cr, "18.0.4.6.3")
+        self.assertGreaterEqual(len(appels), 3, "le piege n'a pas joue")
+        self.env.invalidate_all()
+        self.env.cr.execute("SELECT 1")   # la transaction est encore vivante
+        for xmlid, champ, source, _ancien, neuf in migration.TERMES[1:]:
+            _f, termes = self._termes(xmlid, champ)
+            self.assertEqual(termes.get(source), neuf, source[:40])
+
+    def test_les_nouveaux_textes_sont_ceux_du_catalogue(self):
+        """La migration et le catalogue disent la meme chose : sinon une base
+        migree et une base neuve divergeraient."""
+        import re
+        texte = open(os.path.join(get_module_path("bf_bloc_notes"), "i18n", "fr_CA.po"),
+                     encoding="utf-8").read()
+
+        def deplier(bloc):
+            return "".join(re.findall(r'"(.*)"', bloc)).encode().decode("unicode_escape") \
+                .encode("latin-1").decode("utf-8")
+        catalogue = {deplier(i): deplier(s) for i, s in
+                     re.findall(r'msgid ((?:"[^\n]*"\n?)+)msgstr ((?:"[^\n]*"\n?)+)', texte)}
+        for _x, _c, source, ancien, neuf in self._migration().TERMES:
+            self.assertEqual(catalogue.get(source), neuf, source[:40])
+            self.assertRegex(ancien, r"(?i)\b(tu|toi|ta)\b|\bÉcris\b|\bCrée\b")
+
+    def test_aucun_terme_du_module_ne_tutoie_en_base(self):
+        """🔴 Ce que la base SERT, pour toutes les vues et toutes les actions du
+        module, et pas seulement les quatre termes connus : c'est ainsi que le
+        quatrieme a ete trouve. Sur une base montee
+        depuis une version ancienne, c'est la mesure qui compte."""
+        import re
+        if not self.env["res.lang"]._lang_get("fr_CA"):
+            self.skipTest("fr_CA absent de la base d'essai")
+        motif = re.compile(
+            r"\b(tu|ton|ta|tes|toi|te)\b|\bt'\w"
+            r"|(^|[.!?:>]\s*|« )(Choisis|Saisis|Écris|Réessaie|Clique|Sélectionne|Coche|Tape|Colle)\b"
+            r"|\b(Crée|utilise)\b", re.IGNORECASE)
+        # Tout ce que le module possede et qui se traduit, pas seulement les
+        # vues : menus, nom et aide des actions, libelle et aide des champs.
+        champs = {"ir.ui.view": ("arch_db",), "ir.actions.act_window": ("name", "help"),
+                  "ir.ui.menu": ("name",), "ir.model.fields": ("field_description", "help")}
+        donnees = self.env["ir.model.data"].search([
+            ("module", "=", "bf_bloc_notes"), ("model", "in", tuple(champs))])
+        fautes, lus = [], 0
+        for d in donnees:
+            fiche = self.env[d.model].browse(d.res_id).exists()
+            for champ in champs[d.model]:
+                if not fiche or not fiche[champ]:
+                    continue
+                for t in fiche.get_field_translations(champ, langs=["fr_CA"])[0]:
+                    lus += 1
+                    if t["value"] and motif.search(t["value"]):
+                        fautes.append((d.name, champ, t["value"][:60]))
+        self.assertGreater(lus, 50, "la mesure n'a presque rien lu")
+        self.assertEqual(fautes, [])

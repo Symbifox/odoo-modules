@@ -421,7 +421,7 @@ msgstr "Choisir le projet"
 #. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_share.py:0
 msgid "Choose who this note is shared with."
-msgstr "Choisis avec qui cette note est partagée."
+msgstr "Choisissez avec qui cette note est partagée."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__partner_id
@@ -719,7 +719,7 @@ msgstr "Vide : commune à toute l'instance."
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
 msgid "Enter a title or content to create the task."
-msgstr "Saisis un titre ou un contenu pour créer la tâche."
+msgstr "Saisissez un titre ou un contenu pour créer la tâche."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__failed_message_ids
@@ -799,6 +799,11 @@ msgstr "A un message"
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__peut_ecrire
 msgid "I can edit this note"
 msgstr "Je peux modifier cette note"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__rappel_possible
+msgid "I can set a reminder"
+msgstr "Je peux poser un rappel"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__peut_gerer

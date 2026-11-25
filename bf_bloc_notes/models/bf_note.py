@@ -104,6 +104,11 @@ class BfNote(models.Model):
     # elle lit ce champ.
     est_a_moi = fields.Boolean(
         string="My note", compute="_compute_est_a_moi", compute_sudo=False)
+    # 4.6.4 : les boutons de rappel RAPIDE du bureau (formulaire et
+    # carte). Voir `_compute_rappel_possible`.
+    rappel_possible = fields.Boolean(
+        string="I can set a reminder", compute="_compute_rappel_possible",
+        compute_sudo=False)
 
     user_id = fields.Many2one(
         "res.users",
@@ -369,6 +374,34 @@ class BfNote(models.Model):
         administration = self.env.user.has_group("base.group_system")
         for note in self:
             note.peut_gerer = administration or note.user_id.id == self.env.uid
+
+    @api.depends("user_id", "link_ids", "share_ids", "share_ids.can_write")
+    @api.depends_context("uid")
+    def _compute_rappel_possible(self):
+        """Un rappel RAPIDE du bureau peut-il aboutir?
+
+        4.6.4 : un destinataire voyait Aujourd'hui, Demain, +2 jours et
+        +1 semaine sur la note d'autrui, et chaque bouton ne rendait qu'un
+        refus (`_exige_de_gerer_le_fil`, geste « activite »).
+
+        Deux conditions, et les deux sont mesurees :
+        - la note est LIEE : l'activite va aux fiches liees
+          (`_create_activities_for_links`), jamais a la note d'autrui ;
+        - 🔴 ET le destinataire peut ECRIRE la note : apres l'activite, la note
+          garde sa trace (`tracked_activity_ids`), ce qui est une ecriture.
+          Un destinataire en lecture se voyait offrir le bouton sur une note
+          liee, et chaque clic levait.
+
+        ⚠️ Restent offerts, et refuses en clair par le serveur : un lien vers
+        une fiche que le destinataire ne peut pas ecrire, ou vers un modele
+        sans activites (l'activite retombe alors sur la note). Le telephone
+        reste plus strict (rappels a `can_manage` seul).
+        ⚠️ « Personnaliser… » ne lit PAS ce champ : l'assistant demande une
+        fiche cible a une note sans lien, donc il aboutit aussi pour un
+        destinataire en ecriture d'une note libre.
+        """
+        for note in self:
+            note.rappel_possible = note.peut_gerer or (note.peut_ecrire and bool(note.link_ids))
 
     @api.depends("share_ids")
     @api.depends_context("uid")

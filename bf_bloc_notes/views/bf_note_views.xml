@@ -9,24 +9,29 @@
                 <header>
                     <button name="action_create_activity_quick"
                             type="object"
+                            invisible="not rappel_possible"
                             string="🗓️ Today"
                             class="btn-primary"
                             context="{'offset': 0}"/>
                     <button name="action_create_activity_quick"
                             type="object"
+                            invisible="not rappel_possible"
                             string="Tomorrow"
                             context="{'offset': 1}"/>
                     <button name="action_create_activity_quick"
                             type="object"
+                            invisible="not rappel_possible"
                             string="+2 days"
                             context="{'offset': 2}"/>
                     <button name="action_create_activity_quick"
                             type="object"
+                            invisible="not rappel_possible"
                             string="+1 week"
                             context="{'offset': 7}"/>
                     <button name="action_open_activity_wizard"
                             type="object"
-                            string="Customise…"/>
+                            string="Customise…"
+                            invisible="not peut_gerer and not peut_ecrire"/>
                     <!-- Le partage nomme se trouve ici, et non
                          plus seulement dans l'onglet sous les champs. Meme
                          condition que l'onglet : l'auteur seul. -->
@@ -113,6 +118,8 @@
                          `user_id`, et que les contrôles de la carte kanban. -->
                     <field name="peut_gerer" invisible="1"/>
                     <field name="peut_ecrire" invisible="1"/>
+                    <!-- Condition des boutons de rappel. -->
+                    <field name="rappel_possible" invisible="1"/>
                     <!-- Une note recue se reconnait. `peut_gerer` n'est
                          faux que pour qui n'est ni l'auteur ni l'administration, donc
                          pour un destinataire : c'est lui que le bandeau renseigne. -->
@@ -259,6 +266,7 @@
                 <field name="peut_gerer"/>
                 <field name="peut_ecrire"/>
                 <field name="est_a_moi"/>
+                <field name="rappel_possible"/>
                 <templates>
                     <t t-name="kanban-box">
                         <!-- la couleur résolue passe en variables CSS ; la mise en
@@ -374,11 +382,13 @@
                             <div t-if="record.active.raw_value" class="o_bf_note_quick d-flex flex-wrap gap-1 mt-2">
                                 <button type="object" name="action_create_activity_quick"
                                         context="{'offset': 0}"
+                                        t-if="record.rappel_possible.raw_value"
                                         class="btn btn-sm btn-light" title="Reminder today">
                                     <i class="fa fa-bell-o"/> Today
                                 </button>
                                 <button type="object" name="action_create_activity_quick"
                                         context="{'offset': 1}"
+                                        t-if="record.rappel_possible.raw_value"
                                         class="btn btn-sm btn-light" title="Reminder tomorrow">
                                     <i class="fa fa-bell-o"/> Tomorrow
                                 </button>

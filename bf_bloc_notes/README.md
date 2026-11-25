@@ -200,6 +200,20 @@ More than 300 tests cover: auto-title, multi-link, batch count, RPC whitelist, p
 
 ## Changelog
 
+### 18.0.4.6.4
+- **Reminders on the desktop follow the server.** On a note shared with you, *Today*, *Tomorrow*,
+  *+2 days* and *+1 week* (form) and *Today* / *Tomorrow* (card) are offered only when you can edit
+  the note and it is linked to a record: the reminder then lands on that record. *Customise…* is
+  offered whenever you can edit the note, since it asks for a target record. Scheduling an activity
+  on the note itself stays with its author, and the buttons no longer show just to be refused.
+- **French wording fixed in existing databases.** Four French texts (the help of the Sharing tab,
+  the default-reminder help, the note placeholder and the empty-list help) had been corrected in the
+  catalogue in 18.0.4.6.2 and 18.0.4.6.3, but an upgrade keeps the stored translation of a view or
+  action text whose English did not change. An `end` migration replaces each one, only if it still
+  carries the old wording.
+- Two more French messages (sharing without choosing a recipient, creating a task from an empty
+  note) addressed the user informally; they now read like the rest of the module.
+
 ### 18.0.4.6.3
 - **The `/notes` page shows the notes shared with you**, in a "Shared with me" section after your own,
   with their author and "Read-only" or "Can edit". Only the gestures the server accepts are offered; a
