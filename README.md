@@ -109,13 +109,13 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_avatar_gamification` | Symbifox Avatars pour Fox Quest | 18.0.1.0.1 | BUSL-1.1 | Unlock avatar parts with the XP earned in Fox Quest |
 | `bf_avatar_school` | Symbifox Avatars at School | 18.0.1.0.0 | BUSL-1.1 | A minor student's avatar, without a beard or a bald head |
 | `bf_babillard` | Babillard | 18.0.1.8.0 | BUSL-1.1 | Announcements with an audience, an expiry date and named read receipts, with a confidential reporting path |
-| `bf_babillard_appointment_poll` | Babillard : sondage de disponibilités | 18.0.1.0.1 | BUSL-1.1 | An editor announces on the feed that a date poll is looking for answers |
+| `bf_babillard_appointment_poll` | Noticeboard: availability poll | 18.0.1.0.2 | BUSL-1.1 | An editor announces on the feed that a date poll is looking for answers |
 | `bf_babillard_celebrations` | Babillard : célébrations | 18.0.1.1.0 | BUSL-1.1 | A delivered group greeting card appears on the noticeboard |
 | `bf_babillard_event` | Babillard : événements | 18.0.1.1.0 | BUSL-1.1 | Upcoming events appear on the noticeboard and follow their changes |
 | `bf_babillard_gamification` | Babillard : reconnaissance | 18.0.1.1.0 | BUSL-1.1 | A badge given by a colleague appears on the noticeboard |
 | `bf_babillard_home` | Babillard : accueil | 18.0.1.0.2 | BUSL-1.1 | What you still have to read, on the dashboard |
 | `bf_babillard_pulse` | Babillard : pulse | 18.0.1.0.3 | BUSL-1.1 | The displayable results of a closed pulse wave appear on the noticeboard |
-| `bf_babillard_survey` | Babillard : sondages Odoo | 18.0.1.1.0 | BUSL-1.1 | An editor announces an open Odoo survey on the feed, with its link — and an open live session, with its join code |
+| `bf_babillard_survey` | Noticeboard: Odoo surveys | 18.0.1.1.1 | BUSL-1.1 | An editor announces an open Odoo survey on the feed, with its link — and an open live session, with its join code |
 | `bf_bi` | BF BI | 18.0.1.9.0 | BUSL-1.1 | Design and edit dashboards on screen, straight from Odoo's views, with external sources: Excel, Nextcloud, OneDrive, Google Sheets, web APIs, PostgreSQL |
 | `bf_bi_cx` | BF BI - Customer experience | 18.0.1.0.3 | BUSL-1.1 | Customer experience dashboard: NPS, responses, complaints and resolution time |
 | `bf_bi_hosting` | BF BI - Hosting | 18.0.1.0.3 | BUSL-1.1 | Hosting dashboard: services, uptime, backups, storage, expiring domains |
@@ -463,7 +463,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
 | `bf_survey_answer_sheet` | Survey Answer Sheet | 18.0.1.1.2 | LGPL-3 | Each completed response filed by itself: a branded PDF of the answers, password-protected, in the respondent's own folder |
 | `bf_survey_certificate` | Branded Course Certificates | 18.0.1.1.1 | BUSL-1.1 | Certification documents in the company's own brand: a branded PDF, a verifiable certificate number with its public page, and a branded success email |
-| `bf_survey_export` | BF Survey Export | 18.0.1.0.0 | LGPL-3 | Export a survey's questions and possible answers to an Excel workbook, without any respondent's answers |
+| `bf_survey_export` | BF Survey Export | 18.0.1.1.0 | LGPL-3 | Export a survey's questions to an Excel workbook or a PDF, and one response to a PDF, in the colours of a theme chosen on the survey |
 | `bf_survey_live` | Séance en direct : la trame et les écrans | 18.0.1.5.0 | BUSL-1.1 | A presentation deck between the questions, word cloud, teams, podium and the join code on every screen, for a live survey session |
 | `bf_survey_numbering` | BF Survey Numbering | 18.0.1.0.0 | LGPL-3 | Number a survey's sections and questions by themselves (2, 2.1, 2.1.1), and move questions from one section to another |
 | `bf_survey_print` | BF Survey Print | 18.0.1.0.0 | LGPL-3 | Printing a survey breaks at the right places: a section starts a new sheet and a question is kept in one piece |

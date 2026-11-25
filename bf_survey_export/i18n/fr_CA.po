@@ -19,14 +19,88 @@ msgstr ""
 #. module: bf_survey_export
 #. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
+msgid "%(count)s question(s)"
+msgstr "%(count)s question(s)"
+
+#. module: bf_survey_export
+#. odoo-python
+#: code:addons/bf_survey_export/models/survey_survey.py:0
 msgid "%(count)s question(s) drawn at random from this section"
 msgstr "%(count)s question(s) tirée(s) au hasard dans cette section"
 
 #. module: bf_survey_export
 #. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
+msgid "%(count)s section(s)"
+msgstr "%(count)s section(s)"
+
+#. module: bf_survey_export
+#. odoo-python
+#: code:addons/bf_survey_export/models/bf_survey_pdf_theme.py:0
+msgid "%(field)s must be a colour code such as #1F3864."
+msgstr "%(field)s : indiquez un code de couleur comme #1F3864."
+
+#. module: bf_survey_export
+#. odoo-python
+#: code:addons/bf_survey_export/models/survey_survey.py:0
+#: code:addons/bf_survey_export/models/survey_user_input.py:0
 msgid "(image)"
 msgstr "(image)"
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.report_bf_survey_questions
+msgid "<span class=\"cell\"/> %"
+msgstr "<span class=\"cell\"/> %"
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.bf_survey_pdf_footer
+msgid ""
+"<span class=\"pages\">\n"
+"                    <span class=\"page\"/> / <span class=\"topage\"/>\n"
+"                </span>"
+msgstr ""
+"<span class=\"pages\">\n"
+"                    <span class=\"page\"/> / <span class=\"topage\"/>\n"
+"                </span>"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_bf_survey_pdf_theme__color_text
+msgid "A #RRGGBB code. Empty: a dark grey."
+msgstr "Un code #RRVVBB. Vide : un gris foncé."
+
+#. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_bf_survey_pdf_theme__font_regular
+msgid "A TrueType, OpenType or WOFF file, embedded in each PDF."
+msgstr "Un fichier TrueType, OpenType ou WOFF, intégré à chaque PDF."
+
+#. module: bf_survey_export
+#. odoo-python
+#: code:addons/bf_survey_export/models/bf_survey_pdf_theme.py:0
+msgid "A font file may weigh up to 1 MB."
+msgstr "Un fichier de police pèse au plus 1 Mo."
+
+#. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_bf_survey_pdf_theme__font_family
+msgid ""
+"A font installed on the server, such as Lexend or 'Liberation Sans', Arial. "
+"Ignored when a font file is given below."
+msgstr ""
+"Une police installée sur le serveur, comme Lexend ou 'Liberation Sans', "
+"Arial. Ignorée quand un fichier de police est fourni plus bas."
+
+#. module: bf_survey_export
+#. odoo-python
+#: code:addons/bf_survey_export/models/bf_survey_pdf_theme.py:0
+msgid ""
+"A font name holds letters, digits, spaces, commas, hyphens and quotes only."
+msgstr ""
+"Un nom de police ne contient que des lettres, des chiffres, des espaces, des"
+" virgules, des traits d'union et des apostrophes."
+
+#. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_bf_survey_pdf_theme__kicker
+msgid "A short line above the title, such as the name of a programme."
+msgstr "Une courte ligne au-dessus du titre, comme le nom d'un programme."
 
 #. module: bf_survey_export
 #: model_terms:ir.ui.view,arch_db:bf_survey_export.survey_survey_view_form_bf_export
@@ -38,10 +112,35 @@ msgstr ""
 "réponse de répondant."
 
 #. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__color_accent
+msgid "Accent colour"
+msgstr "Couleur d'accent"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_survey_export
 #. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
 msgid "Answer type"
 msgstr "Type de réponse"
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.report_bf_survey_answers
+msgid "Answers"
+msgstr "Réponses"
+
+#. module: bf_survey_export
+#: model:ir.actions.report,name:bf_survey_export.action_report_bf_survey_answers
+msgid "Answers (PDF)"
+msgstr "Réponses (PDF)"
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.bf_survey_pdf_theme_view_form
+msgid "Archived"
+msgstr "Archivé"
 
 #. module: bf_survey_export
 #. odoo-python
@@ -56,10 +155,59 @@ msgid "Choice"
 msgstr "Choix"
 
 #. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.bf_survey_pdf_theme_view_form
+msgid "Colours"
+msgstr "Couleurs"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_survey_survey__bf_pdf_theme_id
+msgid ""
+"Colours, logo and font of this survey's PDF exports. Empty: the company's "
+"colours and logo."
+msgstr ""
+"Couleurs, logo et police des exports PDF de ce sondage. Vide : les couleurs "
+"et le logo de la société."
+
+#. module: bf_survey_export
 #. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
 msgid "Column"
 msgstr "Colonne"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_survey_export
+#: model:ir.ui.menu,name:bf_survey_export.menu_bf_survey_configuration
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_survey_export
+#: model_terms:ir.actions.act_window,help:bf_survey_export.bf_survey_pdf_theme_action
+msgid "Create a PDF theme"
+msgstr "Créer un thème PDF"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.survey_user_input_view_form_bf_export
+msgid "Export answers (PDF)"
+msgstr "Exporter les réponses (PDF)"
 
 #. module: bf_survey_export
 #: model_terms:ir.ui.view,arch_db:bf_survey_export.survey_survey_view_form_bf_export
@@ -67,10 +215,56 @@ msgid "Export questions (Excel)"
 msgstr "Exporter les questions (Excel)"
 
 #. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.survey_survey_view_form_bf_export
+msgid "Export questions (PDF)"
+msgstr "Exporter les questions (PDF)"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__font_family
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.bf_survey_pdf_theme_view_form
+msgid "Font"
+msgstr "Police"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__font_bold_name
+msgid "Font Bold Name"
+msgstr "Nom du fichier de police (gras)"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__font_regular_name
+msgid "Font Regular Name"
+msgstr "Nom du fichier de police (normal)"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__font_bold
+msgid "Font file (bold)"
+msgstr "Fichier de police (gras)"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__font_regular
+msgid "Font file (regular)"
+msgstr "Fichier de police (normal)"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__signature
+msgid "Footer signature"
+msgstr "Signature du pied de page"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_bf_survey_pdf_theme__color_primary
+msgid "Header band, section titles and numbers. A #RRGGBB code."
+msgstr "Bande d'en-tête, titres de section et numéros. Un code #RRVVBB."
+
+#. module: bf_survey_export
 #. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
 msgid "Help text shown"
 msgstr "Consigne affichée"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__id
+msgid "ID"
+msgstr "ID"
 
 #. module: bf_survey_export
 #. odoo-python
@@ -81,8 +275,29 @@ msgstr "Si %(question)s = « %(answer)s »"
 #. module: bf_survey_export
 #. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
+#: code:addons/bf_survey_export/models/survey_user_input.py:0
 msgid "If other, please specify:"
 msgstr "Si autre, veuillez préciser :"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__kicker
+msgid "Kicker"
+msgstr "Surtitre"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_bf_survey_pdf_theme__company_id
+msgid "Leave empty to offer this theme to every company."
+msgstr "Laisser vide pour offrir ce thème à toutes les sociétés."
 
 #. module: bf_survey_export
 #. odoo-python
@@ -91,10 +306,26 @@ msgid "Left"
 msgstr "Gauche"
 
 #. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__logo
+msgid "Logo on the band"
+msgstr "Logo sur la bande"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__color_primary
+msgid "Main colour"
+msgstr "Couleur principale"
+
+#. module: bf_survey_export
 #. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.report_bf_survey_questions
 msgid "Mandatory"
 msgstr "Obligatoire"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__name
+msgid "Name"
+msgstr "Nom"
 
 #. module: bf_survey_export
 #. odoo-python
@@ -113,10 +344,44 @@ msgid "No"
 msgstr "Non"
 
 #. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.report_bf_survey_answers
+msgid "No answer"
+msgstr "Sans réponse"
+
+#. module: bf_survey_export
 #. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
 msgid "No."
 msgstr "N°"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_bf_survey_pdf_theme__font_bold
+msgid "Optional. Without it, bold text is drawn from the regular file."
+msgstr "Facultatif. Sans lui, le gras est tiré du fichier normal."
+
+#. module: bf_survey_export
+#. odoo-python
+#: code:addons/bf_survey_export/models/survey_user_input.py:0
+msgid "Organisation"
+msgstr "Organisation"
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.survey_survey_view_form_bf_export
+msgid "PDF exports"
+msgstr "Exports PDF"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_survey_survey__bf_pdf_theme_id
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.bf_survey_pdf_theme_view_form
+msgid "PDF theme"
+msgstr "Thème PDF"
+
+#. module: bf_survey_export
+#: model:ir.actions.act_window,name:bf_survey_export.bf_survey_pdf_theme_action
+#: model:ir.ui.menu,name:bf_survey_export.menu_bf_survey_pdf_theme
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.bf_survey_pdf_theme_view_list
+msgid "PDF themes"
+msgstr "Thèmes PDF"
 
 #. module: bf_survey_export
 #. odoo-python
@@ -143,10 +408,20 @@ msgid "Possible answers (or matrix columns)"
 msgstr "Réponses possibles (ou colonnes de la matrice)"
 
 #. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_bf_survey_pdf_theme__signature
+msgid "Printed at the foot of every page. Empty: the company's name."
+msgstr "Imprimée au pied de chaque page. Vide : le nom de la société."
+
+#. module: bf_survey_export
 #. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
 msgid "Question"
 msgstr "Question"
+
+#. module: bf_survey_export
+#: model:ir.actions.report,name:bf_survey_export.action_report_bf_survey_questions
+msgid "Questionnaire (PDF)"
+msgstr "Questionnaire (PDF)"
 
 #. module: bf_survey_export
 #. odoo-python
@@ -163,6 +438,18 @@ msgid ""
 msgstr ""
 "Questions et réponses possibles, sans aucune réponse de répondant. Exporté "
 "le %(date)s."
+
+#. module: bf_survey_export
+#. odoo-python
+#: code:addons/bf_survey_export/models/survey_user_input.py:0
+msgid "Respondent"
+msgstr "Répondant"
+
+#. module: bf_survey_export
+#. odoo-python
+#: code:addons/bf_survey_export/models/survey_user_input.py:0
+msgid "Response"
+msgstr "Réponse"
 
 #. module: bf_survey_export
 #. odoo-python
@@ -201,6 +488,20 @@ msgid "Section"
 msgstr "Section"
 
 #. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.report_bf_survey_answers
+msgid "Section not filled in."
+msgstr "Section non remplie."
+
+#. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_bf_survey_pdf_theme__logo
+msgid ""
+"Shown on the coloured band: a light or white version of the logo reads best."
+" Empty: the company's logo, on a white tile."
+msgstr ""
+"Affiché sur la bande de couleur : une version claire ou blanche du logo se "
+"lit mieux. Vide : le logo de la société, sur une tuile blanche."
+
+#. module: bf_survey_export
 #. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
 msgid "Shown when"
@@ -208,10 +509,97 @@ msgstr "Condition d'affichage"
 
 #. module: bf_survey_export
 #. odoo-python
+#: code:addons/bf_survey_export/models/survey_user_input.py:0
+msgid "Status"
+msgstr "État"
+
+#. module: bf_survey_export
+#. odoo-python
+#: code:addons/bf_survey_export/models/survey_user_input.py:0
+msgid "Submitted on"
+msgstr "Soumis le"
+
+#. module: bf_survey_export
+#. odoo-python
 #: code:addons/bf_survey_export/models/survey_survey.py:0
 #: model:ir.model,name:bf_survey_export.model_survey_survey
 msgid "Survey"
 msgstr "Sondage"
+
+#. module: bf_survey_export
+#: model:ir.model,name:bf_survey_export.model_bf_survey_pdf_theme
+msgid "Survey PDF theme"
+msgstr "Thème PDF de sondage"
+
+#. module: bf_survey_export
+#: model:ir.model,name:bf_survey_export.model_survey_user_input
+msgid "Survey User Input"
+msgstr "Réponse au sondage"
+
+#. module: bf_survey_export
+#: model:ir.model,name:bf_survey_export.model_report_bf_survey_export_report_bf_survey_questions
+msgid "Survey questionnaire PDF"
+msgstr "PDF du questionnaire"
+
+#. module: bf_survey_export
+#: model:ir.model,name:bf_survey_export.model_report_bf_survey_export_report_bf_survey_answers
+msgid "Survey response PDF"
+msgstr "PDF d'une réponse"
+
+#. module: bf_survey_export
+#: model:ir.model.fields,field_description:bf_survey_export.field_bf_survey_pdf_theme__color_text
+msgid "Text colour"
+msgstr "Couleur du texte"
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.survey_survey_view_form_bf_export
+msgid ""
+"The blank questionnaire, in the colours of its PDF theme, without any "
+"respondent's answers."
+msgstr ""
+"Le questionnaire vierge, aux couleurs de son thème PDF, sans aucune réponse."
+
+#. module: bf_survey_export
+#: model_terms:ir.actions.act_window,help:bf_survey_export.bf_survey_pdf_theme_action
+msgid ""
+"The colours, logo and font a survey's PDF exports are drawn with.\n"
+"               Pick one on a survey, under Options. A survey without a theme\n"
+"               takes its company's colours and logo."
+msgstr ""
+"Les couleurs, le logo et la police des exports PDF d'un sondage.\n"
+"               Choisissez-en un sur le sondage, sous Options. Un sondage sans thème\n"
+"               prend les couleurs et le logo de sa société."
+
+#. module: bf_survey_export
+#: model:ir.model.fields,help:bf_survey_export.field_bf_survey_pdf_theme__color_accent
+msgid "The rule under the header and the marks beside titles. A #RRGGBB code."
+msgstr ""
+"Le filet sous l'en-tête et les marques près des titres. Un code #RRVVBB."
+
+#. module: bf_survey_export
+#. odoo-python
+#: code:addons/bf_survey_export/models/bf_survey_pdf_theme.py:0
+msgid "This file is not a font: give a TrueType, OpenType or WOFF file."
+msgstr ""
+"Ce fichier n'est pas une police : fournissez un fichier TrueType, OpenType "
+"ou WOFF."
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.survey_user_input_view_form_bf_export
+msgid ""
+"This response on a few pages, in the colours of the survey's PDF theme."
+msgstr ""
+"Cette réponse en quelques pages, aux couleurs du thème PDF du sondage."
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.report_bf_survey_questions
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.bf_survey_pdf_theme_view_form
+msgid "Words"
+msgstr "Textes"
 
 #. module: bf_survey_export
 #. odoo-python
@@ -224,6 +612,17 @@ msgstr "Oui"
 #: code:addons/bf_survey_export/models/survey_survey.py:0
 msgid "[truncated]"
 msgstr "[tronqué]"
+
+#. module: bf_survey_export
+#: model_terms:ir.ui.view,arch_db:bf_survey_export.bf_survey_pdf_theme_view_form
+msgid "e.g. Programme partner"
+msgstr "p. ex. Partenaire du programme"
+
+#. module: bf_survey_export
+#: model:ir.actions.report,print_report_name:bf_survey_export.action_report_bf_survey_answers
+#: model:ir.actions.report,print_report_name:bf_survey_export.action_report_bf_survey_questions
+msgid "object._bf_pdf_filename()"
+msgstr ""
 
 #. module: bf_survey_export
 #. odoo-python

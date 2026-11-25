@@ -100,6 +100,66 @@ def _plain(value):
 class SurveySurvey(models.Model):
     _inherit = "survey.survey"
 
+    bf_pdf_theme_id = fields.Many2one(
+        "bf.survey.pdf.theme",
+        string="PDF theme",
+        help="Colours, logo and font of this survey's PDF exports. "
+        "Empty: the company's colours and logo.",
+    )
+
+    def action_bf_export_questions_pdf(self):
+        """Print the blank questionnaire of this survey."""
+        self.ensure_one()
+        return self.env.ref(
+            "bf_survey_export.action_report_bf_survey_questions"
+        ).report_action(self)
+
+    def _bf_pdf_filename(self):
+        """The PDF's name, without its extension (Odoo adds it)."""
+        self.ensure_one()
+        return self._bf_questions_filename().removesuffix(".xlsx")
+
+    def _bf_pdf_style(self):
+        self.ensure_one()
+        return self.env["bf.survey.pdf.theme"]._bf_resolve(self.bf_pdf_theme_id)
+
+    def _bf_pdf_counts(self, rows):
+        """ "2 sections · 14 questions", under the title of the blank PDF."""
+        sections = sum(1 for r in rows if r["section"])
+        questions = len(rows) - sections
+        parts = []
+        if sections:
+            parts.append(self.env._("%(count)s section(s)", count=sections))
+        parts.append(self.env._("%(count)s question(s)", count=questions))
+        return " · ".join(parts)
+
+    @staticmethod
+    def _bf_pdf_blocks(rows):
+        """The rows of the blank PDF in unbreakable blocks: a question alone,
+        or a section with its first question, so that no section title is
+        left alone at the foot of a page."""
+        blocks = []
+        for row in rows:
+            if row["section"]:
+                blocks.append({"section": row, "question": None})
+            elif blocks and blocks[-1]["question"] is None:
+                blocks[-1]["question"] = row
+            else:
+                blocks.append({"section": None, "question": row})
+        return blocks
+
+    def _bf_pdf_numbered_title(self, line):
+        """A section or question title with its number, when the survey
+        numbers its questions (bf_survey_numbering)."""
+        num = line.bf_number if "bf_number" in line._fields else ""
+        if not num:
+            return line.title or ""
+        return (
+            f"{num}. {line.title or ''}"
+            if line.is_page
+            else f"{num} {line.title or ''}"
+        )
+
     def action_bf_export_questions_xlsx(self):
         """Download the questions workbook of this survey."""
         self.ensure_one()
@@ -208,6 +268,9 @@ class SurveySurvey(models.Model):
             rows.append(
                 {
                     "section": False,
+                    "qtype": qtype,
+                    "multiple": qtype == "multiple_choice"
+                    or (qtype == "matrix" and line.matrix_subtype == "multiple"),
                     "page": section_title(line.page_id),
                     "number": number(line),
                     "title": line.title or "",

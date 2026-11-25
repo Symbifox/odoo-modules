@@ -10,6 +10,29 @@
                         string="Export questions (Excel)"
                         invisible="not question_and_page_ids"
                         help="A workbook of the questions and their possible answers, without any respondent's answers."/>
+                <button name="action_bf_export_questions_pdf" type="object"
+                        string="Export questions (PDF)"
+                        invisible="not question_and_page_ids"
+                        help="The blank questionnaire, in the colours of its PDF theme, without any respondent's answers."/>
+            </xpath>
+            <xpath expr="//page[@name='options']/group[@name='options']" position="inside">
+                <group string="PDF exports" name="bf_pdf_exports">
+                    <field name="bf_pdf_theme_id" options="{'no_quick_create': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="survey_user_input_view_form_bf_export" model="ir.ui.view">
+        <field name="name">survey.user_input.view.form.bf_export</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='state']" position="before">
+                <button name="action_bf_export_answers_pdf" type="object"
+                        string="Export answers (PDF)"
+                        invisible="state == 'new'"
+                        help="This response on a few pages, in the colours of the survey's PDF theme."/>
             </xpath>
         </field>
     </record>

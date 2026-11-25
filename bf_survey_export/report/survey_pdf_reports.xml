@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_bf_survey" model="report.paperformat">
+        <field name="name">Survey PDF (Letter)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">12</field>
+        <field name="margin_bottom">18</field>
+        <field name="margin_left">12</field>
+        <field name="margin_right">12</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_bf_survey_questions" model="ir.actions.report">
+        <field name="name">Questionnaire (PDF)</field>
+        <field name="model">survey.survey</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_survey_export.report_bf_survey_questions</field>
+        <field name="report_file">bf_survey_export.report_bf_survey_questions</field>
+        <field name="print_report_name">object._bf_pdf_filename()</field>
+        <field name="paperformat_id" ref="paperformat_bf_survey"/>
+        <field name="binding_model_id" ref="survey.model_survey_survey"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_bf_survey_answers" model="ir.actions.report">
+        <field name="name">Answers (PDF)</field>
+        <field name="model">survey.user_input</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_survey_export.report_bf_survey_answers</field>
+        <field name="report_file">bf_survey_export.report_bf_survey_answers</field>
+        <field name="print_report_name">object._bf_pdf_filename()</field>
+        <field name="paperformat_id" ref="paperformat_bf_survey"/>
+        <field name="binding_model_id" ref="survey.model_survey_user_input"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Shared pieces: the stylesheet, the band, the footer. -->
+    <template id="bf_survey_pdf_style">
+        <style t-out="env['bf.survey.pdf.theme']._bf_css(style)"/>
+    </template>
+
+    <template id="bf_survey_pdf_band">
+        <table class="band"><tr>
+            <td t-if="style['logo']" class="logo">
+                <div t-if="style['logo_boxed']" class="tile"><img t-att-src="image_data_uri(style['logo'])" alt=""/></div>
+                <img t-else="" t-att-src="image_data_uri(style['logo'])" alt=""/>
+            </td>
+            <td>
+                <div t-if="style['kicker']" class="kicker" t-out="style['kicker']"/>
+                <div class="title" t-out="band_title"/>
+                <div t-if="band_subtitle" class="subtitle" t-out="band_subtitle"/>
+            </td>
+        </tr></table>
+        <div class="rule"/>
+    </template>
+
+    <template id="bf_survey_pdf_footer">
+        <div class="footer">
+            <t t-call="bf_survey_export.bf_survey_pdf_style"/>
+            <div class="bfx-foot">
+                <span class="pages">
+                    <span class="page"/> / <span class="topage"/>
+                </span>
+                <t t-out="' · '.join(p for p in (style['signature'], survey.title) if p)"/>
+            </div>
+        </div>
+    </template>
+
+    <!-- The blank questionnaire -->
+    <template id="report_bf_survey_questions">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="survey">
+                <t t-set="style" t-value="survey._bf_pdf_style()"/>
+                <t t-set="rows" t-value="survey._bf_questions_rows()"/>
+                <t t-call="bf_survey_export.bf_survey_pdf_footer"/>
+                <div class="article" t-att-data-oe-model="survey._name" t-att-data-oe-id="survey.id">
+                    <t t-call="bf_survey_export.bf_survey_pdf_style"/>
+                    <div class="bfx">
+                        <t t-set="band_title" t-value="survey.title"/>
+                        <t t-set="band_subtitle" t-value="survey._bf_pdf_counts(rows)"/>
+                        <t t-call="bf_survey_export.bf_survey_pdf_band"/>
+                        <div t-if="not is_html_empty(survey.description)" class="intro" t-field="survey.description"/>
+                        <!-- A section title is kept on the page of its first
+                             question: wkhtmltopdf ignores page-break-after. -->
+                        <div t-foreach="survey._bf_pdf_blocks(rows)" t-as="block" class="block">
+                            <t t-set="head" t-value="block['section']"/>
+                            <t t-if="head">
+                                <h2 t-out="(head['number'] + '. ' + head['title']) if head['number'] else head['title']"/>
+                                <div t-if="head['description'] or head['note']" class="section-help" t-out="'\n'.join(t for t in (head['description'], head['note']) if t)" style="white-space: pre-wrap;"/>
+                            </t>
+                            <t t-set="row" t-value="block['question']"/>
+                            <div t-if="row" class="q">
+                                <table class="head"><tr>
+                                    <td t-if="row['number']" class="num" t-out="row['number']"/>
+                                    <td class="body">
+                                        <div class="qt" t-out="row['title']"/>
+                                        <div t-if="row['description']" class="help" t-out="row['description']"/>
+                                        <div>
+                                            <span class="tag" t-out="row['type']"/>
+                                            <span t-if="row['mandatory']" class="tag req">Mandatory</span>
+                                            <span t-if="row['condition']" class="tag cond" t-out="row['condition'].replace('\n', ' ')"/>
+                                        </div>
+                                        <div class="answers">
+                                            <t t-set="qtype" t-value="row['qtype']"/>
+                                            <t t-set="box" t-value="'box' if row['multiple'] else 'box round'"/>
+                                            <t t-if="qtype in ('simple_choice', 'multiple_choice')">
+                                                <div t-foreach="row['answers']" t-as="a" class="opt"><span t-att-class="box"/><t t-out="a"/></div>
+                                            </t>
+                                            <table t-elif="qtype == 'matrix'" class="bfx-grid">
+                                                <tr><th/><th t-foreach="row['answers']" t-as="a" t-out="a"/></tr>
+                                                <tr t-foreach="row['rows']" t-as="r">
+                                                    <td class="bfx-rl" t-out="r"/>
+                                                    <td t-foreach="row['answers']" t-as="a"><span t-att-class="box"/></td>
+                                                </tr>
+                                            </table>
+                                            <table t-elif="row['grid']" class="bfx-grid">
+                                                <tr t-foreach="row['rows']" t-as="r">
+                                                    <td class="bfx-rl" t-out="r"/>
+                                                    <td class="pct"><span class="cell"/> %</td>
+                                                </tr>
+                                                <tr class="total"><td class="bfx-rl">Total</td><td class="pct">100 %</td></tr>
+                                            </table>
+                                            <div t-elif="qtype == 'scale'" class="scale">
+                                                <span t-foreach="row['answers']" t-as="a" t-out="a"/>
+                                            </div>
+                                            <div t-elif="qtype == 'text_box'" class="field tall"/>
+                                            <div t-else="" class="field"/>
+                                            <div t-if="row['specify'] and qtype in ('simple_choice', 'multiple_choice', 'matrix')" class="specify">
+                                                <!-- Counted as an answer, the label is already a choice. -->
+                                                <t t-if="row['specify'] not in row['answers']" t-out="row['specify']"/>
+                                                <div class="field"/>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr></table>
+                            </div>
+                        </div>
+                        <div t-if="not is_html_empty(survey.description_done)" class="end" t-field="survey.description_done"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- One response -->
+    <template id="report_bf_survey_answers">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="answer">
+                <t t-set="survey" t-value="answer.survey_id"/>
+                <t t-set="style" t-value="survey._bf_pdf_style()"/>
+                <t t-call="bf_survey_export.bf_survey_pdf_footer"/>
+                <div class="article" t-att-data-oe-model="answer._name" t-att-data-oe-id="answer.id">
+                    <t t-call="bf_survey_export.bf_survey_pdf_style"/>
+                    <div class="bfx">
+                        <t t-set="band_title" t-value="survey.title"/>
+                        <t t-set="band_subtitle">Answers</t>
+                        <t t-call="bf_survey_export.bf_survey_pdf_band"/>
+                        <table class="meta"><tr>
+                            <td t-foreach="answer._bf_pdf_meta()" t-as="fact">
+                                <div class="label" t-out="fact[0]"/>
+                                <div class="value" t-out="fact[1]"/>
+                            </td>
+                        </tr></table>
+                        <t t-foreach="answer._bf_answer_sections()" t-as="section">
+                            <h2 t-if="section['title']" t-out="section['title']"/>
+                            <p t-if="not section['answered']" class="none">Section not filled in.</p>
+                            <table t-else="" class="qa">
+                                <tr t-foreach="section['items']" t-as="item">
+                                    <td t-if="item['kind'] == 'matrix'" colspan="2">
+                                        <div class="muted" t-out="item['title']"/>
+                                        <table class="mx">
+                                            <tr t-foreach="item['rows']" t-as="r">
+                                                <td class="mr" t-out="r[0]"/>
+                                                <td class="mv" t-out="r[1]"/>
+                                            </tr>
+                                        </table>
+                                        <div t-foreach="item['comments']" t-as="c" class="comment"><t t-out="c[0]"/> <t t-out="c[1]"/></div>
+                                    </td>
+                                    <t t-else="">
+                                        <td class="ql" t-out="item['title']"/>
+                                        <td class="qr">
+                                            <span t-if="item['kind'] == 'none'" class="none">No answer</span>
+                                            <t t-elif="item['kind'] == 'choices'">
+                                                <t t-if="len(item['values']) == 1" t-out="item['values'][0]"/>
+                                                <ul t-elif="item['values']"><li t-foreach="item['values']" t-as="v" t-out="v"/></ul>
+                                                <div t-foreach="item['comments']" t-as="c" class="comment"><t t-out="c[0]"/> <t t-out="c[1]"/></div>
+                                            </t>
+                                            <table t-elif="item['kind'] == 'bars'" class="mx">
+                                                <tr t-foreach="item['rows']" t-as="r">
+                                                    <td class="mr" t-out="r[0]"/>
+                                                    <td class="bar"><div class="rail"><div class="fill" t-attf-style="width: {{ r[2] }}%;"/></div></td>
+                                                    <td class="mv"><t t-out="r[1]"/> %</td>
+                                                </tr>
+                                            </table>
+                                            <div t-elif="item['kind'] == 'long'" class="long" t-out="item['value']"/>
+                                            <t t-else="" t-out="item['value']"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </table>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

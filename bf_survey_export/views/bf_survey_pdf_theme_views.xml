@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_survey_pdf_theme_view_form" model="ir.ui.view">
+        <field name="name">bf.survey.pdf.theme.form</field>
+        <field name="model">bf.survey.pdf.theme</field>
+        <field name="arch" type="xml">
+            <form string="PDF theme">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="logo" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Programme partner"/></h1>
+                    </div>
+                    <group>
+                        <group string="Words">
+                            <field name="kicker"/>
+                            <field name="signature"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Colours">
+                            <field name="color_primary" widget="color"/>
+                            <field name="color_accent" widget="color"/>
+                            <field name="color_text" widget="color"/>
+                        </group>
+                        <group string="Font">
+                            <field name="font_family"/>
+                            <field name="font_regular" filename="font_regular_name"/>
+                            <field name="font_regular_name" invisible="1"/>
+                            <field name="font_bold" filename="font_bold_name"/>
+                            <field name="font_bold_name" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_survey_pdf_theme_view_list" model="ir.ui.view">
+        <field name="name">bf.survey.pdf.theme.list</field>
+        <field name="model">bf.survey.pdf.theme</field>
+        <field name="arch" type="xml">
+            <list string="PDF themes">
+                <field name="name"/>
+                <field name="kicker"/>
+                <field name="color_primary" widget="color"/>
+                <field name="color_accent" widget="color"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_survey_pdf_theme_action" model="ir.actions.act_window">
+        <field name="name">PDF themes</field>
+        <field name="res_model">bf.survey.pdf.theme</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a PDF theme</p>
+            <p>The colours, logo and font a survey's PDF exports are drawn with.
+               Pick one on a survey, under Options. A survey without a theme
+               takes its company's colours and logo.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bf_survey_configuration"
+              name="Configuration"
+              parent="survey.menu_surveys"
+              sequence="100"
+              groups="survey.group_survey_manager"/>
+    <menuitem id="menu_bf_survey_pdf_theme"
+              action="bf_survey_pdf_theme_action"
+              parent="menu_bf_survey_configuration"
+              sequence="10"/>
+</odoo>
