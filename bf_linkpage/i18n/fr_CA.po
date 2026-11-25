@@ -2168,3 +2168,39 @@ msgstr "https://…/r/MaSalle"
 #: model_terms:ir.ui.view,arch_db:bf_linkpage.view_bf_linkpage_form
 msgid "jane-doe"
 msgstr "jane-doe"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage__font
+#: model:ir.model.fields,field_description:bf_linkpage.field_bf_linkpage_template__font
+msgid "Font"
+msgstr "Police"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__font__site
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__font__site
+msgid "Site font"
+msgstr "Police du site"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__font__lexend
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__font__lexend
+msgid "Lexend"
+msgstr "Lexend"
+
+#. module: bf_linkpage
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage__font__system
+#: model:ir.model.fields.selection,name:bf_linkpage.selection__bf_linkpage_template__font__system
+msgid "Device font"
+msgstr "Police de l'appareil"
+
+#. module: bf_linkpage
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage__font
+#: model:ir.model.fields,help:bf_linkpage.field_bf_linkpage_template__font
+msgid ""
+"\"Site font\" leaves the website's own fonts in place, headings included. "
+"The other two impose one font on ALL the text of the page; Lexend is shipped"
+" with the module and does not depend on the website."
+msgstr ""
+"« Police du site » laisse en place les polices du site web, titres compris. "
+"Les deux autres imposent une seule police à TOUT le texte de la page ; "
+"Lexend est livrée avec le module et ne dépend pas du site."

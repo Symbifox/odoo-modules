@@ -72,6 +72,20 @@ class BfLinkpageTemplate(models.Model):
         required=True,
     )
     accent_color = fields.Char(string="Accent color", default="#29ABE2")
+    font = fields.Selection(
+        [
+            ("site", "Site font"),
+            ("lexend", "Lexend"),
+            ("system", "Device font"),
+        ],
+        string="Font",
+        default="site",
+        required=True,
+        help="\"Site font\" leaves the website's own fonts in place, "
+             "headings included. The other two impose one font on ALL the "
+             "text of the page; Lexend is shipped with the module and does "
+             "not depend on the website.",
+    )
 
     line_ids = fields.One2many(
         "bf.linkpage.template.line", "template_id", string="Links",
@@ -91,6 +105,7 @@ class BfLinkpageTemplate(models.Model):
             "layout": self.layout,
             "theme": self.theme,
             "accent_color": self.accent_color or "#29ABE2",
+            "font": self.font or "site",
         }
 
     # La contrainte est PAR CIBLE et non globale : il faut bien un gabarit par

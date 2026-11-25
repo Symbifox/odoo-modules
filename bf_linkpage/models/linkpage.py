@@ -180,6 +180,20 @@ class BfLinkpage(models.Model):
              "the theme; the toggle is still offered but only persists on "
              "their side.",
     )
+    font = fields.Selection(
+        [
+            ("site", "Site font"),
+            ("lexend", "Lexend"),
+            ("system", "Device font"),
+        ],
+        string="Font",
+        default="site",
+        required=True,
+        help="\"Site font\" leaves the website's own fonts in place, "
+             "headings included. The other two impose one font on ALL the "
+             "text of the page; Lexend is shipped with the module and does "
+             "not depend on the website.",
+    )
     show_theme_toggle = fields.Boolean(
         string="Offer the light/dark toggle",
         default=True,

@@ -61,6 +61,55 @@
     --bf-linkpage-logo-opacity: 0.42;
 }
 
+// La page de liens n'affiche ni l'en-tête ni le pied du site : la place qu'un
+// thème réserve à son en-tête FIXE devient un bandeau vide au-dessus de la
+// photo (par exemple `#wrapwrap>main{padding-top:var(--tete,88px)}`). On
+// l'annule pour les seules pages qui portent une page de liens, sans toucher
+// au reste du site.
+#wrapwrap > main:has(.bf-linkpage) {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+// ── La police (réglage « Police » de la page) ──────────────────────────────
+// `site` laisse le site décider, titres compris : c'est le comportement
+// d'avant le réglage. Les deux autres imposent UNE police à tout le texte.
+// Il faut viser les éléments eux-mêmes : un thème qui pose `h1 { font-family }`
+// l'emporte sur toute police HÉRITÉE : sans cela, un nom en serif pouvait
+// coiffer des cartes en Lexend.
+// Lexend est livré ICI, sous un nom propre au module : un site peut définir
+// sa propre face « Lexend », allégée ou incomplète, et le module ne doit
+// dépendre ni d'elle ni d'un autre module. Licence OFL : static/fonts/Lexend.OFL.txt.
+@font-face {
+    font-family: "BF Linkpage Lexend";
+    src: url("/bf_linkpage/static/fonts/Lexend-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "BF Linkpage Lexend";
+    src: url("/bf_linkpage/static/fonts/Lexend-SemiBold.woff2") format("woff2");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+.bf-linkpage--f-lexend {
+    --bf-linkpage-font: "BF Linkpage Lexend", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.bf-linkpage--f-system {
+    --bf-linkpage-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+// Les icônes (<i class="fa …">) ne sont pas visées : elles gardent leur police.
+.bf-linkpage--f-lexend,
+.bf-linkpage--f-system {
+    &,
+    & :is(h1, h2, h3, h4, h5, h6, p, a, span, small, strong, em, b, button, div, nav, li, label, input) {
+        font-family: var(--bf-linkpage-font);
+    }
+}
+
 .bf-linkpage {
     // Palette de départ. Sans elle, une page dont le thème serait inconnu
     // n'aurait AUCUNE couleur définie et hériterait du corps sombre du site,

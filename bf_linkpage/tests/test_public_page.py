@@ -136,6 +136,26 @@ class TestPublicPage(HttpCase):
         link.invalidate_recordset()
         self.assertEqual(link.click_count, 1)
 
+    def test_clic_sur_une_icone_sociale_redirige(self):
+        """Une icône de la rangée sociale passe par la même route que les cartes.
+
+        La route cherchait le lien parmi les seules CARTES (`_public_links`),
+        qui excluent les réseaux : chaque icône sociale rendait 404, LinkedIn
+        compris, alors que la page l'affichait. Le lien doit être cherché parmi tout ce que la page
+        montre.
+        """
+        # GitHub plutôt que LinkedIn : `x_linkedin_url` est un champ propre à
+        # chaque locataire, absent d'une base neuve ; GitHub se lit sur la société.
+        self.page._company().social_github = "https://github.invalid/page"
+        social = self.env["bf.linkpage.link"].create({
+            "page_id": self.page.id, "name": "GitHub",
+            "source_code": "social_github",
+        })
+        self.assertTrue(social.is_social)
+        response = self._get("/l/page-publique/go/%s" % social.id)
+        self.assertIn(response.status_code, (302, 303))
+        self.assertEqual(response.headers.get("Location"), "https://github.invalid/page")
+
     def test_clic_sur_un_lien_d_une_autre_page_rend_404(self):
         """Le lien est cherché DANS la page, pas par son seul identifiant.
 
@@ -159,6 +179,34 @@ class TestPublicPage(HttpCase):
         link.active = False
         response = self._get("/l/page-publique/go/%s" % link.id)
         self.assertEqual(response.status_code, 404)
+
+    # ── la police ─────────────────────────────────────────────────────────────
+
+    def test_police_du_site_par_defaut(self):
+        """Sans réglage, la page garde le comportement d'avant : le site décide."""
+        response = self._get("/l/page-publique")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("bf-linkpage--f-site", response.text)
+
+    def test_police_lexend_imposee_et_servie(self):
+        """Le réglage se lit dans la classe de la page, et la police vient du
+        module lui-même : son fichier doit être servi, sinon le navigateur
+        retombe en silence sur une police système."""
+        self.page.font = "lexend"
+        response = self._get("/l/page-publique")
+        self.assertIn("bf-linkpage--f-lexend", response.text)
+        fichier = self._get("/bf_linkpage/static/fonts/Lexend-Regular.woff2")
+        self.assertEqual(fichier.status_code, 200)
+        self.assertGreater(len(fichier.content), 10000)
+
+    def test_le_gabarit_porte_la_police(self):
+        gabarit = self.env["bf.linkpage.template"].create({
+            "name": "Gabarit Lexend", "target": "person", "font": "lexend",
+        })
+        self.assertEqual(gabarit._visual_values()["font"], "lexend")
+        self.page.write({"template_id": gabarit.id})
+        self.page.action_apply_template()
+        self.assertEqual(self.page.font, "lexend")
 
     # ── le QR n'est pas public ───────────────────────────────────────────────
 

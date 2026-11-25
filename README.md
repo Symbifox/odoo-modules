@@ -37,24 +37,16 @@ We license individually and we are not difficult about it.
 
 ### Bundled typefaces
 
-Five modules self-host fonts rather than calling a font CDN, so no visitor IP ever reaches a third party. All are under the SIL Open Font License 1.1, which is **not** the licence covering the module around them — each carries a `THIRD-PARTY.md` and the full licence text beside the files:
+Six modules self-host fonts rather than calling a font CDN, so no visitor IP ever reaches a third party. All are under the SIL Open Font License 1.1, which is **not** the licence covering the module around them — each carries a `THIRD-PARTY.md` and the full licence text beside the files:
 
 | Module | Typefaces |
 |---|---|
-| `bf_multi_company_email` | Symbifox — Courriels multi-sociétés | 18.0.5.0.3 | LGPL-3 | Template-driven email signatures per company, quick footer links behind redirectable shortlinks, and a sender address per company |
-| `bf_preferred_name_partner_legal_name` | Symbifox Noms d'usage et pronoms — pont Partner Legal Name | 18.0.1.0.0 | BUSL-1.1 | One legal name on a person's contact: the protected one; the company legal name stays for companies |
-| `bf_preferred_name_signature` | Symbifox Noms d'usage et pronoms — pont Signatures | 18.0.1.0.0 | BUSL-1.1 | The email signature shows the pronouns from the person's contact |
-| `bf_property_access` | Immeubles : accès des résidents | 18.0.1.1.2 | BUSL-1.1 | Who may open which door: a resident's access is added on move-in and removed once a person confirms the move-out, through orders to the devices or the caretaker; temporary access for visitors, contractors and entries into a dwelling |
-| `bf_property_access_portal` | Immeubles : mes accès au portail | 18.0.1.1.3 | BUSL-1.1 | Residents see on the portal the doors they can open, with which credential, and can give a visitor temporary access to the common doors |
-| `bf_property_access_privacy` | Immeubles : accès et vie privée (Loi 25) | 18.0.1.0.2 | BUSL-1.1 | Access control in the Québec Act 25 processing register, declared versus applied retention, and a prefilled privacy impact assessment template |
-| `bf_property_lobby` | Immeubles : portier sur tablette | 18.0.1.0.3 | BUSL-1.1 | A tablet at the entrance: a directory of residents who agree to appear, a call that rings the resident through Symbifox telephony, deliveries announced to the caretaker |
-| `bf_rental_access` | Locatif : accès des locataires | 18.0.1.0.3 | BUSL-1.1 | Lease signatories receive their access when the lease starts; rent end, resiliation or abandonment put their move-out up for confirmation |
 | `bf_sign` | Caveat, Dancing Script, Great Vibes |
 | `bf_lexend` | Lexend |
 | `bf_process` | Lexend |
 | `bf_gantt` | Lexend |
 | `bf_sms_archive` | Noto Emoji |
-| `partner_legal_name` | Symbifox — Partner Legal Name | 18.0.1.0.2 | LGPL-3 | A company's registered legal name next to its trade name, printed in the document header |
+| `bf_linkpage` | Lexend |
 
 `bf_process` bundles Lexend for a stricter reason than rendering: its glyph
 advances are frozen into a width table the module measures text with, so the
@@ -296,7 +288,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |
 | `bf_letter_writer` | Letter Writer | 18.0.2.1.1 | BUSL-1.1 | Branded official-letter editor: 5 letterhead modes, field merge (`{{ }}`), reusable templates and quick-text blocks, email + PDF send |
 | `bf_lexend` | Lexend Typeface | 18.0.3.1.1 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
-| `bf_linkpage` | Pages de liens | 18.0.10.1.0 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
+| `bf_linkpage` | Pages de liens | 18.0.10.2.0 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
 | `bf_live_base` | Séance en direct : le socle | 18.0.1.1.0 | BUSL-1.1 | The projected palette, the contrast calculation and the brand ramp, shared by every live-session screen |
 | `bf_llm` | Symbifox — LLM Provider | 18.0.1.2.0 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
 | `bf_mail_company_voice` | Company Voice for Automatic Notices | 18.0.1.1.0 | LGPL-3 | Automatic notices speak for the company, never as « Public user » or a bot. |

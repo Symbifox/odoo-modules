@@ -203,7 +203,7 @@ defect is in the logo, not the code, and no decode check catches it.
 
 ## Templates, layouts and theme
 
-A **template** carries a set of links AND a look: layout, theme, accent colour.
+A **template** carries a set of links AND a look: layout, theme, accent colour, font.
 Seven are seeded, and five layouts exist (cards, raised cards, minimal, filled
 buttons, technical).
 
@@ -218,6 +218,32 @@ server: it is a display preference, not a tracker.
 > **The toggle is an asset file, not an inline script.** The site's policy is
 > `script-src 'self'` WITHOUT `unsafe-inline`: a `<script>` in the template
 > would be blocked by the browser, silently.
+
+### Font (18.0.10.2.0)
+
+A **Font** setting on the page and on the template:
+
+- **Site font** (default): the website's own fonts stay in place, headings
+  included. This is the behaviour of earlier versions.
+- **Lexend**: one font for ALL the text of the page. A theme that styles `h1`
+  directly beats any inherited font, so the module targets the elements
+  themselves. Lexend is **shipped with the module** (WOFF2, regular and
+  semibold, SIL Open Font License 1.1, `static/fonts/Lexend.OFL.txt`) under a
+  family name of its own: a website may define its own, possibly subsetted,
+  "Lexend", and the page depends neither on it nor on another module.
+- **Device font**: the visitor's system font, for the whole page.
+
+Icons keep their own font.
+
+### Page chrome (18.0.10.1.1)
+
+- **Social icons redirect.** The click route looked the link up among the
+  CARDS only, so every icon of the social row answered 404 while the page
+  displayed it. It now looks among everything the page shows.
+- **No empty band above the photo.** A theme with a fixed header often
+  reserves its height on `#wrapwrap > main`; the link page shows no header, so
+  the reservation became a blank band. The module cancels it on link pages
+  only.
 
 ## The automation, and what it deliberately does not do
 

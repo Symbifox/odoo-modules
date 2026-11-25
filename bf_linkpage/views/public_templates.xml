@@ -35,7 +35,7 @@
                       media="(prefers-color-scheme: dark)"/>
             </t>
 
-            <div t-attf-class="bf-linkpage bf-linkpage--#{page.theme} bf-linkpage--l-#{page.layout}"
+            <div t-attf-class="bf-linkpage bf-linkpage--#{page.theme} bf-linkpage--l-#{page.layout} bf-linkpage--f-#{page.font or 'site'}"
                  t-att-data-bf-linkpage="page.slug"
                  t-attf-style="--bf-linkpage-accent: #{page.accent_color or '#29ABE2'};">
 

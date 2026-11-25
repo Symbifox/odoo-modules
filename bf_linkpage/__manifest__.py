@@ -4,7 +4,13 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.10.1.0",
+    # 18.0.10.1.1: les icônes sociales redirigent (la route /go/ ne cherchait
+    #   que dans les cartes : 404), et la place qu'un thème réserve à son
+    #   en-tête fixe n'est plus un bandeau vide au-dessus de la photo.
+    # 18.0.10.2.0: réglage « Police » sur la page et le gabarit. Lexend est
+    #   livré avec le module (WOFF2, licence OFL dans static/fonts) et
+    #   s'impose à TOUT le texte de la page, titres compris.
+    "version": "18.0.10.2.0",
     "category": "Website",
     "summary": "Page publique de liens rattachée à une personne, à une organisation cliente ou ponctuelle, avec QR à la marque pour signature courriel",
     "description": """

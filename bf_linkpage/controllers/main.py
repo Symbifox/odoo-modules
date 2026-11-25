@@ -106,7 +106,10 @@ class BfLinkpageController(Controller):
         page = request.env["bf.linkpage"]._resolve_slug(slug)
         if not page:
             return request.not_found()
-        link = page._public_links().filtered(lambda item: item.id == link_id)
+        # Tout ce que la page MONTRE, cartes et icônes sociales : chercher dans
+        # les seules cartes (`_public_links`) rendait 404 sur chaque icône de
+        # réseau, LinkedIn compris, alors que la page l'affichait (18.0.10.1.1).
+        link = page._visible_links().filtered(lambda item: item.id == link_id)
         if not link:
             return request.not_found()
         link._register_click()
