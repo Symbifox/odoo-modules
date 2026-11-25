@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**322 modules are BUSL-1.1.** The source is published and auditable, and **you
+**323 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -230,6 +230,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_employee_experience_profile_privacy` | Expérience employé : types de profil, pont vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Express consent, profiling named, retention tied to the employment relationship, destruction on departure |
 | `bf_employee_experience_pulse` | Expérience employé : pulse | 18.0.1.2.3 | BUSL-1.1 | Anonymous mood pulse and eNPS: separate invitation and answer registers, shuffled batch hand-off, and display thresholds that hold because the answers are readable by no one |
 | `bf_employee_photo_age` | Symbifox Âge de la photo des employés | 18.0.1.0.1 | BUSL-1.1 | Know how old an employee's photo is, and remind them to update it |
+| `bf_expense_mileage` | Mileage Tiers | 18.0.1.0.1 | BUSL-1.1 | Kilometres at the full rate up to a yearly threshold per employee, then at the reduced rate, as the CRA and Revenu Québec allow |
 | `bf_expense_ocr` | Lecture des reçus | 18.0.2.2.0 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
 | `bf_expense_tip` | Pourboire | 18.0.1.1.0 | BUSL-1.1 | The tip on a meal receipt, entered on the expense that carries it and removed from the tax base, so input tax credits are not overstated |
 | `bf_federation` | Fédération | 18.0.1.5.4 | LGPL-3 | Federate two Odoo/Symbifox instances: share an object with the other side, messages and attachments following. The core carries tasks; satellites add deliverables, agendas, process maps and a Discuss channel |
@@ -567,7 +568,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **322 modules: BUSL-1.1.** Production use for your own internal business
+- **323 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
