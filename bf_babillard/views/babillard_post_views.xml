@@ -9,25 +9,25 @@
                  échéance, épingle, commentaires, société) sont les commandes de
                  la RÉDACTION, et ils rendaient la page d'une reconnaissance
                  impossible à distinguer d'une fiche d'administration. -->
-            <form string="Publication">
+            <form string="Post">
                 <header>
-                    <button name="action_publier" type="object" string="Publier"
+                    <button name="action_publier" type="object" string="Publish"
                             class="btn-primary" invisible="state == 'publie'"
                             groups="bf_babillard.group_babillard_redacteur"/>
-                    <button name="action_retirer" type="object" string="Retirer du fil"
+                    <button name="action_retirer" type="object" string="Take out of the feed"
                             invisible="state != 'publie'"
                             groups="bf_babillard.group_babillard_redacteur"/>
                     <button name="action_remettre_en_brouillon" type="object"
-                            string="Remettre en brouillon" invisible="state != 'echue'"
+                            string="Reset to draft" invisible="state != 'echue'"
                             groups="bf_babillard.group_babillard_redacteur"/>
-                    <button name="action_marquer_lu" type="object" string="J'ai lu"
+                    <button name="action_marquer_lu" type="object" string="I have read it"
                             class="btn-primary" invisible="not a_lire_pour_moi"/>
                     <button name="action_fermer_sondage" type="object"
-                            string="Fermer le sondage"
+                            string="Close the poll"
                             invisible="type_publication != 'sondage' or state != 'publie' or sondage_ferme"
                             groups="bf_babillard.group_babillard_redacteur"/>
                     <button name="action_rouvrir_sondage" type="object"
-                            string="Rouvrir le sondage"
+                            string="Reopen the poll"
                             invisible="type_publication != 'sondage' or not sondage_ferme"
                             groups="bf_babillard.group_babillard_redacteur"/>
                     <!-- 🔴 La barre d'état est un outil de rédaction. Affichée au
@@ -48,15 +48,15 @@
                                 class="oe_stat_button" icon="fa-user-times"
                                 invisible="not lecture_requise or state != 'publie'"
                                 groups="bf_babillard.group_babillard_redacteur">
-                            <field name="nb_lectures" widget="statinfo" string="ont lu"/>
+                            <field name="nb_lectures" widget="statinfo" string="have read it"/>
                         </button>
                         <!-- Le relais du gestionnaire : son équipe, personne d'autre. -->
                         <button name="action_voir_manquants_equipe" type="object"
                                 class="oe_stat_button" icon="fa-users"
-                                string="Mon équipe"
+                                string="My team"
                                 invisible="not peut_relancer_equipe"/>
                     </div>
-                    <widget name="web_ribbon" title="Lue" bg_color="text-bg-success"
+                    <widget name="web_ribbon" title="Read" bg_color="text-bg-success"
                             invisible="not lu_par_moi"/>
                     <!-- 🔴 Le dépouillement du fil de discussion ne peut pas se
                          décider en CSS : rien dans le DOM ne dit à quel groupe
@@ -91,7 +91,7 @@
                                readonly="1" options="{'zoom': false}"/>
                     </div>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Le titre que les gens liront"/></h1>
+                        <h1><field name="name" placeholder="The title people will read"/></h1>
                         <!-- 🔴 Le type décide de TOUT le reste de l'écran : c'est lui
                              qui fait apparaître le bloc du sondage. Enterré dans
                              « Diffusion », sous le corps du texte, il n'était pas
@@ -131,7 +131,7 @@
                                      dans la signature d'une annonce n'apprend rien. -->
                                 <field name="date_affichee" nolabel="1" readonly="1"
                                        invisible="state == 'brouillon'"/>
-                                <span invisible="not personne_nom">· par</span>
+                                <span invisible="not personne_nom">· by</span>
                                 <field name="auteur_nom" nolabel="1" readonly="1"
                                        invisible="not personne_nom"/>
                             </span>
@@ -140,13 +140,13 @@
                                nolabel="1" class="ms-2"
                                invisible="state != 'publie'"/>
                         <span class="badge text-bg-warning ms-2"
-                              invisible="not a_lire_pour_moi">À lire</span>
+                              invisible="not a_lire_pour_moi">To read</span>
                         <span class="text-muted small ms-2"
                               invisible="not lecture_requise or not date_echeance">
-                            d'ici le <field name="date_echeance" nolabel="1" readonly="1"/>
+                            by <field name="date_echeance" nolabel="1" readonly="1"/>
                         </span>
                     </div>
-                    <field name="corps_html" placeholder="Ce qu'il faut savoir, en clair."/>
+                    <field name="corps_html" placeholder="What people need to know, plainly."/>
                     <!-- Le bulletin, à la place où le lecteur le cherche : sous
                          le texte, avant les commentaires. Il n'est pas dans le
                          bloc Diffusion parce qu'il n'appartient pas à la
@@ -155,9 +155,9 @@
                            invisible="type_publication != 'sondage' or state == 'brouillon'"/>
                     <div class="alert alert-light border mt-2" role="status"
                          invisible="commentaires_ouverts">
-                        Les commentaires sont fermés sur cette publication.
+                        Comments are closed on this post.
                     </div>
-                    <group string="Diffusion" name="reglages"
+                    <group string="Posting" name="reglages"
                            groups="bf_babillard.group_babillard_redacteur">
                         <group>
                             <field name="auteur_user_id"/>
@@ -184,7 +184,7 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
-                    <group string="Sondage" name="sondage"
+                    <group string="Poll" name="sondage"
                            invisible="type_publication != 'sondage'"
                            groups="bf_babillard.group_babillard_redacteur">
                         <div class="alert alert-warning" role="alert" colspan="2"
@@ -204,13 +204,13 @@
                         <field name="option_ids" nolabel="1" colspan="2">
                             <list editable="bottom">
                                 <field name="sequence" widget="handle"/>
-                                <field name="name" string="Choix"/>
+                                <field name="name" string="Options"/>
                                 <field name="propose_par_id" optional="show"
                                        readonly="1"/>
                             </list>
                         </field>
                     </group>
-                    <group string="Suivi de lecture" invisible="not lecture_requise"
+                    <group string="Read tracking" invisible="not lecture_requise"
                            groups="bf_babillard.group_babillard_redacteur">
                         <field name="lecture_ids" nolabel="1" readonly="1">
                             <list>
@@ -221,7 +221,7 @@
                     </group>
                     <div class="mt-3 text-end">
                         <button name="%(action_babillard_signalement_nouveau)d" type="action"
-                                icon="fa-flag-o" title="Signaler ce contenu"
+                                icon="fa-flag-o" title="Report this content"
                                 class="btn btn-sm btn-link text-muted o_bf_bab_signaler"
                                 context="{'default_post_ref': id}"
                                 invisible="state != 'publie'"/>
@@ -236,7 +236,7 @@
         <field name="name">bf.babillard.post.list</field>
         <field name="model">bf.babillard.post</field>
         <field name="arch" type="xml">
-            <list string="Publications" decoration-muted="state == 'echue'"
+            <list string="Posts" decoration-muted="state == 'echue'"
                   decoration-bf="epingle">
                 <field name="epingle" widget="boolean_favorite" nolabel="1"/>
                 <field name="name"/>
@@ -244,12 +244,12 @@
                 <field name="audience"/>
                 <!-- ⚠️ Un en-tête long se fait rogner par la liste sans le dire :
                      « Lecture obligatoire » devenait « Lecture obli... ». -->
-                <field name="lecture_requise" string="À lire"/>
-                <field name="nb_lectures" string="Lu par"/>
-                <field name="nb_destinataires" string="Visés"/>
+                <field name="lecture_requise" string="To read"/>
+                <field name="nb_lectures" string="Read by"/>
+                <field name="nb_destinataires" string="Targeted"/>
                 <field name="date_publication"/>
                 <field name="date_echeance"/>
-                <field name="sondage_ferme" string="Fermé" optional="hide"/>
+                <field name="sondage_ferme" string="Closed" optional="hide"/>
                 <field name="state"/>
             </list>
         </field>
@@ -302,13 +302,13 @@
                                     <span>·</span>
                                     <field name="date_affichee"/>
                                     <span class="badge text-bg-primary ms-1"
-                                          t-if="record.est_nouveau.raw_value">Nouveau</span>
+                                          t-if="record.est_nouveau.raw_value">New</span>
                                     <span class="badge text-bg-warning ms-1"
-                                          t-if="record.lecture_requise.raw_value and !record.lu_par_moi.raw_value">À lire</span>
+                                          t-if="record.lecture_requise.raw_value and !record.lu_par_moi.raw_value">To read</span>
                                 </div>
                             </div>
                             <i class="fa fa-thumb-tack ms-2" t-if="record.epingle.raw_value"
-                               title="Épinglée"/>
+                               title="Pinned"/>
                         </div>
                         <!-- 🔴 Le corps entier tenait dans la carte : une politique
                              de trois pages noyait tout le reste du fil. -->
@@ -320,14 +320,14 @@
                                  il fallait ouvrir la publication pour le poser. -->
                             <button name="action_marquer_lu" type="object"
                                     class="btn btn-sm btn-primary"
-                                    t-if="record.a_lire_pour_moi.raw_value">J'ai lu</button>
+                                    t-if="record.a_lire_pour_moi.raw_value">I have read it</button>
                             <span class="badge text-bg-success"
-                                  t-if="record.lu_par_moi.raw_value">Lue</span>
+                                  t-if="record.lu_par_moi.raw_value">Read</span>
                             <field name="reactions" widget="bf_babillard_reactions"
                                    nolabel="1"/>
                             <span class="text-muted small ms-auto"
                                   t-if="record.nb_commentaires.raw_value">
-                                <i class="fa fa-comment-o me-1" title="Commentaires"/><field name="nb_commentaires"/>
+                                <i class="fa fa-comment-o me-1" title="Comments"/><field name="nb_commentaires"/>
                             </span>
                         </div>
                     </t>
@@ -340,31 +340,31 @@
         <field name="name">bf.babillard.post.search</field>
         <field name="model">bf.babillard.post</field>
         <field name="arch" type="xml">
-            <search string="Babillard">
+            <search string="Noticeboard">
                 <field name="name"/>
                 <field name="corps_html"/>
                 <field name="auteur_user_id"/>
-                <filter name="a_lire" string="À lire"
+                <filter name="a_lire" string="To read"
                         domain="[('lecture_requise', '=', True), ('lu_par_moi', '=', False)]"/>
-                <filter name="epinglees" string="Épinglées" domain="[('epingle', '=', True)]"/>
+                <filter name="epinglees" string="Pinned" domain="[('epingle', '=', True)]"/>
                 <separator/>
-                <filter name="au_fil" string="Au fil" domain="[('state', '=', 'publie')]"/>
-                <filter name="brouillons" string="Brouillons" domain="[('state', '=', 'brouillon')]"/>
-                <filter name="echues" string="Échues" domain="[('state', '=', 'echue')]"/>
+                <filter name="au_fil" string="In the feed" domain="[('state', '=', 'publie')]"/>
+                <filter name="brouillons" string="Drafts" domain="[('state', '=', 'brouillon')]"/>
+                <filter name="echues" string="Expired" domain="[('state', '=', 'echue')]"/>
                 <separator/>
-                <filter name="les_miennes" string="Mes publications"
+                <filter name="les_miennes" string="My posts"
                         domain="[('auteur_user_id', '=', uid)]"/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter name="par_type" string="Type" context="{'group_by': 'type_publication'}"/>
-                    <filter name="par_etat" string="État" context="{'group_by': 'state'}"/>
-                    <filter name="par_auteur" string="Auteur" context="{'group_by': 'auteur_user_id'}"/>
+                    <filter name="par_etat" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="par_auteur" string="Author" context="{'group_by': 'auteur_user_id'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_babillard_fil" model="ir.actions.act_window">
-        <field name="name">Le fil</field>
+        <field name="name">The feed</field>
         <field name="res_model">bf.babillard.post</field>
         <!-- 🔴 Le domaine vit sur l'ACTION, pas dans un `search_default` : la
              puce « Au fil ✕ » invitait à retirer le seul filtre qui définit le
@@ -378,8 +378,8 @@
         <field name="context">{}</field>
         <field name="limit">200</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Rien au babillard pour l'instant.</p>
-            <p>Les annonces adressées à votre équipe apparaîtront ici.</p>
+            <p class="o_view_nocontent_smiling_face">Nothing on the noticeboard yet.</p>
+            <p>Announcements addressed to your team will appear here.</p>
         </field>
     </record>
 
@@ -387,20 +387,20 @@
          Cette action est la porte d'entrée qui manquait : elle ne liste que les
          sondages, et un « Nouveau » y naît déjà du bon type. -->
     <record id="action_babillard_sondages" model="ir.actions.act_window">
-        <field name="name">Sondages</field>
+        <field name="name">Polls</field>
         <field name="res_model">bf.babillard.post</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="domain">[('type_publication', '=', 'sondage')]</field>
         <field name="context">{'default_type_publication': 'sondage'}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Poser une question à la maison</p>
-            <p>Le titre est la question, et la publication porte ses propres choix.
-               On vote d'un clic sur la carte du fil.</p>
+            <p class="o_view_nocontent_smiling_face">Ask the organisation a question</p>
+            <p>The title is the question, and the post carries its own options.
+               You vote with one click on the card in the feed.</p>
         </field>
     </record>
 
     <record id="action_babillard_publications" model="ir.actions.act_window">
-        <field name="name">Publications</field>
+        <field name="name">Posts</field>
         <field name="res_model">bf.babillard.post</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="context">{}</field>

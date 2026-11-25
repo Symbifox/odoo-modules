@@ -25,20 +25,20 @@ class BabillardSignalementAssistant(models.TransientModel):
     """
 
     _name = "bf.babillard.signalement.assistant"
-    _description = "Signaler un contenu du babillard"
+    _description = "Report a noticeboard content"
 
-    post_ref = fields.Integer("Publication visée", required=True)
-    message_ref = fields.Integer("Commentaire visé")
+    post_ref = fields.Integer("Post reported", required=True)
+    message_ref = fields.Integer("Comment reported")
     # Une valeur posée avec les défauts, pas un calcul : un calcul sans dépendance
     # n'est pas évalué sur l'enregistrement neuf du dialogue, et le titre restait
     # vide à l'écran. Vu sur la capture, pas par les essais.
-    post_titre = fields.Char("Publication", readonly=True)
+    post_titre = fields.Char("Post", readonly=True)
     # Une valeur par défaut, pas un champ calculé : un calcul sans dépendance
     # n'est pas évalué sur l'enregistrement neuf que le dialogue ouvre, et
     # « Signalé par » s'affichait vide. Vu sur la capture, pas par les essais.
     auteur_nom = fields.Char(
-        "Signalé par", readonly=True, default=lambda s: s.env.user.name)
-    motif = fields.Text("Motif", required=True)
+        "Reported by", readonly=True, default=lambda s: s.env.user.name)
+    motif = fields.Text("Reason", required=True)
 
     def _publication(self):
         """La publication visée, lue avec les droits de la personne qui signale."""
@@ -83,11 +83,11 @@ class BabillardSignalementAssistant(models.TransientModel):
         for assistant in self:
             post = assistant._publication()
             if not post:
-                raise AccessError(_("Cette publication n'existe plus."))
+                raise AccessError(_("This post no longer exists."))
             if assistant.message_ref and not self._message_de_la_publication(
                     assistant.message_ref, assistant.post_ref):
-                raise AccessError(_("Ce commentaire n'appartient pas à cette "
-                                    "publication."))
+                raise AccessError(_("This comment does not belong to this "
+                                    "post."))
 
     def action_envoyer(self):
         self.ensure_one()
@@ -104,12 +104,12 @@ class BabillardSignalementAssistant(models.TransientModel):
         if sans_destinataire:
             return self._fermer(
                 "warning",
-                _("Votre signalement est enregistré, mais personne d'autre que la "
-                  "personne visée ne peut le recevoir ici. Adressez-vous à la "
-                  "personne désignée par la politique de votre organisation, ou à "
-                  "la CNESST."))
+                _("Your report is recorded, but nobody other than the "
+                  "person reported can receive it here. Speak to the "
+                  "person designated by your organisation's policy, or to "
+                  "the CNESST."))
         return self._fermer(
-            "success", _("Votre signalement est parti vers la personne désignée."))
+            "success", _("Your report has gone to the designated person."))
 
     @api.model
     def _fermer(self, genre, message):

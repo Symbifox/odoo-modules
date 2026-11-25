@@ -50,8 +50,8 @@ class BfProcess(models.Model):
     _federation_verbs = ("card",)
 
     federation_is_mirror = fields.Boolean(
-        string="Cartographie reçue d'un pair", compute="_compute_federation_is_mirror", store=True,
-        help="Une carte reçue se lit : la version suivante la remplacera.")
+        string="Process map received from a peer", compute="_compute_federation_is_mirror", store=True,
+        help="A received map is read-only: the next version will replace it.")
 
     @api.depends("federation_peer_id")
     def _compute_federation_is_mirror(self):
@@ -84,10 +84,10 @@ class BfProcess(models.Model):
         return super()._check_federation_peer_allowed()
 
     def _federation_label_the(self):
-        return _("la cartographie")
+        return _("the process map")
 
     def _federation_label_this(self):
-        return _("cette cartographie")
+        return _("this process map")
 
     def _federation_watched(self):
         return ("name", "version", "pool_name", "state", "active", "federation_peer_id")
@@ -119,8 +119,9 @@ class BfProcess(models.Model):
         charge = json.dumps(niveaux, ensure_ascii=False, default=str)
         if len(charge.encode("utf-8")) > MAX_CARTE_OCTETS:
             raise UserError(
-                _("Cette cartographie dépasse le plafond d'échange (%s Mio). "
-                  "Elle peut être remise en PDF par un livrable fédéré.") % (MAX_CARTE_OCTETS // 1048576))
+                _("This process map exceeds the exchange ceiling (%s "
+                  "MiB). It can be delivered as a PDF through a federated "
+                  "deliverable.") % (MAX_CARTE_OCTETS // 1048576))
         return {
             "name": self.name or "",
             "version": self.version or "",
@@ -140,7 +141,7 @@ class BfProcess(models.Model):
         le suffixe, le partage se ferait refuser en 422 pour toujours, et la boîte de
         sortie insisterait deux semaines avant d'abandonner.
         """
-        base = transport.clean_text(card.get("name"), 240) or _("(sans titre)")
+        base = transport.clean_text(card.get("name"), 240) or _("(untitled)")
         peer_name = transport.clean_text(peer.name, 40)
         titre = _("%s (%s)") % (base, peer_name)
         version = transport.clean_text(card.get("version"), 40) or "1.0"
@@ -163,17 +164,20 @@ class BfProcess(models.Model):
         process = self.create({
             "name": self._federation_mirror_title(peer, card),
             "version": transport.clean_text(card.get("version"), 40) or "1.0",
-            "pool_name": transport.clean_text(card.get("pool"), 200) or _("Le pair"),
+            "pool_name": transport.clean_text(card.get("pool"), 200) or _("The "
+                                                                          "peer"),
             "partner_id": peer.partner_id.id,
             "project_id": peer._ensure_mirror_project().id,
             "federation_peer_id": peer.id,
-            "source": _("Reçue de %s par la fédération.") % peer.name,
+            "source": _("Received from %s through federation.") % peer.name,
         })
         process._federation_load_levels(card)
         process.message_post(
-            body=Markup(_("<p>Cartographie reçue de %s : <b>%s</b>, version %s, %s niveau(x), "
-                          "%s nœud(s). Elle se lit ici ; la version suivante la remplacera.</p>"))
-            % (peer.name, process.name, process.version or _("(aucune)"),
+            body=Markup(_("<p>Process map received from %s: <b>%s</b>, "
+                          "version %s, %s level(s), %s node(s). It is "
+                          "read-only here; the next version will replace "
+                          "it.</p>"))
+            % (peer.name, process.name, process.version or _("(none)"),
                len(process.diagram_ids), process.node_count),
             message_type="comment", subtype_xmlid="mail.mt_note")
         return process
@@ -211,9 +215,11 @@ class BfProcess(models.Model):
         self._federation_load_levels(card)
         nouvelle = self.version
         if (nouvelle or "") != (ancienne or ""):
-            note = link._note(Markup(_("<p>Chez %s, la cartographie est passée de la version <b>%s</b> "
-                                       "à la <b>%s</b> : le tracé d'ici a été remplacé.</p>"))
-                              % (link.peer_id.name, ancienne or _("(aucune)"), nouvelle or _("(aucune)")))
+            note = link._note(Markup(_("<p>At %s, the process map moved "
+                                       "from version <b>%s</b> to "
+                                       "<b>%s</b>: the drawing here has "
+                                       "been replaced.</p>"))
+                              % (link.peer_id.name, ancienne or _("(none)"), nouvelle or _("(none)")))
             link._inbox_notify(note)
         return True
 
@@ -248,8 +254,9 @@ class BfProcess(models.Model):
         for process in self:
             if process.federation_is_mirror:
                 raise UserError(
-                    _("Cette cartographie est reçue de %s : elle se lit ici. La version suivante "
-                      "la remplacerait, et le travail fait dessus serait perdu.")
+                    _("This process map is received from %s: it is "
+                      "read-only here. The next version would replace it, "
+                      "and any work done on it would be lost.")
                     % process.federation_peer_id.name)
 
     def _federation_before_write(self):
@@ -275,14 +282,16 @@ class BfProcess(models.Model):
         # tracé ne le demandait pas. La deuxième porte doit valoir la première, sinon
         # le rôle ne protège que le premier envoi.
         if not self.env.su and not self.env.user.has_group("project.group_project_manager"):
-            raise AccessError(_("Renvoyer un tracé à un pair demande le rôle de gestionnaire de projet."))
+            raise AccessError(_("Sending a map back to a peer requires "
+                                "the project manager role."))
         link = self._federation_link()
         if not link or link.origin != "local" or not link.active:
-            raise UserError(_("Cette cartographie n'est pas partagée avec un pair."))
+            raise UserError(_("This process map is not shared with a peer."))
         card = self._federation_card()
         link.fingerprint = self.env["federation.link"]._card_fingerprint(card)
         link.peer_id._enqueue("process.card", card, link)
-        self.message_post(body=_("Tracé renvoyé à %s : %s niveau(x), %s nœud(s).")
+        self.message_post(body=_("Drawing sent again to %s: %s level(s), "
+                                 "%s node(s).")
                           % (link.peer_id.name, len(self.diagram_ids), self.node_count),
                           message_type="comment", subtype_xmlid="mail.mt_note")
         return True
@@ -290,7 +299,8 @@ class BfProcess(models.Model):
     def _federation_share_note(self, peer):
         self.ensure_one()
         self.sudo().with_context(federation_inbound=True).message_post(
-            body=_("Cartographie fédérée avec %s : le tracé complet, ses niveaux, ses couloirs et "
-                   "ses nœuds. Ce qui reste ici : le registre de validation, la prose du livrable, "
-                   "les gels et les écarts.") % peer.name,
+            body=_("Process map federated with %s: the full drawing, its "
+                   "levels, lanes and nodes. What stays here: the "
+                   "validation register, the deliverable's prose, the "
+                   "freezes and the gaps.") % peer.name,
             message_type="comment", subtype_xmlid="mail.mt_note")

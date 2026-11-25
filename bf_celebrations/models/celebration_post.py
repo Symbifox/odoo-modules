@@ -42,56 +42,55 @@ ENCRE_MARGE = 14
 ENCRE_RENDU_LARGEUR = 420
 
 STYLES = [
-    ("typed", "Tapé"),
-    ("hand", "Manuscrit"),
+    ("typed", "Typed"),
+    ("hand", "Handwritten"),
 ]
 
 
 class CelebrationPost(models.Model):
     _name = "bf.celebration.post"
-    _description = "Message sur un tableau de vœux"
+    _description = "Message on a wishes board"
     _order = "sequence, id"
 
     board_id = fields.Many2one(
-        "bf.celebration.board", string="Tableau", required=True,
+        "bf.celebration.board", string="Board", required=True,
         ondelete="cascade", index=True)
     sequence = fields.Integer(default=10)
 
-    author_name = fields.Char(string="Signé", required=True)
+    author_name = fields.Char(string="Signed", required=True)
     author_partner_id = fields.Many2one(
         "res.partner", string="Contact", ondelete="set null")
     author_user_id = fields.Many2one(
-        "res.users", string="Usager", ondelete="set null",
-        help="Rempli seulement quand la personne était connectée.")
+        "res.users", string="User", ondelete="set null",
+        help="Filled in only when the person was signed in.")
 
     body = fields.Html(string="Message", sanitize=True, sanitize_style=True)
     style = fields.Selection(
         STYLES, string="Style", default="typed", required=True,
-        help="« Manuscrit » rend le mot dans une police d'écriture à la main.")
+        help="\"Handwritten\" renders the message in a handwriting font.")
     image = fields.Image(string="Image", max_width=1600, max_height=1600)
     # ⚠️ Odoo 18 garde les images d'un GIF animé au redimensionnement
     # (`ImageProcess.animated_frames`) : le GIF téléversé bouge encore.
 
     ink_strokes = fields.Text(
-        string="Encre",
-        help="Les traits dessinés à la main sur la page publique, en "
-             "coordonnées. Redessinés dans la couleur du thème.")
+        string="Ink",
+        help="The strokes drawn by hand on the public page, as "
+             "coordinates. Redrawn in the theme's colour.")
     has_ink = fields.Boolean(
-        string="Tracé à la main", compute="_compute_has_ink", store=True)
+        string="Drawn by hand", compute="_compute_has_ink", store=True)
 
     state = fields.Selection(
         [
-            ("pending", "En attente d'approbation"),
+            ("pending", "Awaiting approval"),
             ("published", "Visible"),
-            ("rejected", "Retiré"),
+            ("rejected", "Removed"),
         ],
-        string="État",
+        string="State",
         default="published", required=True, index=True)
 
     create_ip = fields.Char(
-        string="Adresse d'origine", readonly=True, groups="base.group_system",
-        help="Conservée pour retracer un abus sur un lien public. Effacée "
-             "avec le tableau.")
+        string="Originating address", readonly=True, groups="base.group_system",
+        help="Kept to trace abuse on a public link. Erased with the board.")
 
     # ------------------------------------------------------------------
     # Contrôles
@@ -102,7 +101,7 @@ class CelebrationPost(models.Model):
         for post in self:
             if len(post.author_name or "") > NOM_MAX:
                 raise ValidationError(_(
-                    "La signature dépasse %(n)s caractères.", n=NOM_MAX))
+                    "The signature is longer than %(n)s characters.", n=NOM_MAX))
 
     @api.constrains("body")
     def _check_corps(self):
@@ -110,7 +109,7 @@ class CelebrationPost(models.Model):
             texte = post._texte_brut()
             if len(texte) > LONGUEUR_MAX:
                 raise ValidationError(_(
-                    "Le message dépasse %(n)s caractères.", n=LONGUEUR_MAX))
+                    "The message is longer than %(n)s characters.", n=LONGUEUR_MAX))
 
     def _texte_brut(self):
         self.ensure_one()
@@ -127,8 +126,8 @@ class CelebrationPost(models.Model):
             if (not post._texte_brut() and not post.image
                     and not post._encre()):
                 raise ValidationError(_(
-                    "Un message vide ne signe rien : écrivez un mot, tracez "
-                    "quelque chose ou ajoutez une image."))
+                    "An empty message signs nothing: write something, "
+                    "draw something or add an image."))
 
     # ------------------------------------------------------------------
     # L'encre
@@ -250,7 +249,7 @@ class CelebrationPost(models.Model):
             'stroke-width="%.1f" stroke-linecap="round" '
             'stroke-linejoin="round"/></svg>'
         ) % (x0, y0, largeur, hauteur, px_largeur, px_hauteur,
-             _("Tracé à la main"), chemin, ENCRE_EPAISSEUR)
+             _("Drawn by hand"), chemin, ENCRE_EPAISSEUR)
 
     # ------------------------------------------------------------------
     # Modération

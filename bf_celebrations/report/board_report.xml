@@ -2,12 +2,12 @@
 <odoo>
 
     <record id="action_report_board" model="ir.actions.report">
-        <field name="name">Carte souvenir</field>
+        <field name="name">Keepsake card</field>
         <field name="model">bf.celebration.board</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_celebrations.report_board</field>
         <field name="report_file">bf_celebrations.report_board</field>
-        <field name="print_report_name">'Carte - %s' % (object.recipient_name or object.name)</field>
+        <field name="print_report_name">'Card - %s' % (object.recipient_name or object.name)</field>
         <field name="binding_model_id" ref="model_bf_celebration_board"/>
         <field name="binding_type">report</field>
     </record>
@@ -23,9 +23,9 @@
                             <t t-esc="doc.name"/>
                         </h1>
                         <p style="color:#6b7280; font-size:12px; margin:0 0 22px;">
-                            <t t-esc="doc.published_post_count"/> mot(s)
+                            <t t-esc="doc.published_post_count"/> message(s)
                             <t t-if="doc.delivered_date">
-                                — livrée le
+                                — delivered on
                                 <t t-esc="doc.delivered_date"
                                    t-options="{'widget': 'date'}"/>
                             </t>
@@ -61,7 +61,7 @@
 
                         <p t-if="not doc.published_post_count"
                            style="color:#6b7280; text-align:center; padding:30px 0;">
-                            Personne n'a encore signé cette carte.
+                            Nobody has signed this card yet.
                         </p>
                     </div>
                 </t>

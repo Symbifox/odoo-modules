@@ -13,6 +13,13 @@ class TestSansDate(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # 🔴 La langue est épinglée : la source du module est anglaise depuis la
+        # 18.0.2.2.1, et les assertions ci-dessous lisent des libellés rendus
+        # (un sujet de courriel, un nom d'occasion fabriqué depuis le type).
+        # Sans cet ancrage elles suivaient la langue d'OdooBot, donc l'état de
+        # la base. Le français a ses propres essais (test_deux_langues.py).
+        cls.env["res.lang"]._activate_lang("en_US")
+        cls.env = cls.env(context=dict(cls.env.context, lang="en_US"))
         # ⚠️ Les tests qui livrent rendent un PDF, et wkhtmltopdf va chercher
         # les feuilles de style à `report.url` ou `web.base.url`. Sur un banc
         # où cette adresse est le serveur de test lui-même, la requête attend
@@ -49,7 +56,7 @@ class TestSansDate(TransactionCase):
         occ = self._occasion_sans_date()
         self.assertFalse(occ.date)
         self.assertEqual(occ.state, "upcoming")
-        self.assertIn("Félicitations", occ.name)
+        self.assertIn("Congratulations", occ.name)
 
     def test_le_cron_ne_la_cloture_jamais(self):
         occ = self._occasion_sans_date()

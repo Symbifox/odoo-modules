@@ -295,7 +295,7 @@ def _demande_appariement(kw):
     redirect = kw.get("redirect") or ""
     if not _redirection_permise(redirect):
         return request.make_response(
-            "Redirection non autorisée.", status=400,
+            request.env._("Redirection not allowed."), status=400,
             headers=[("Content-Type", "text/plain; charset=utf-8")]), None
     demande = {
         "redirect": redirect,
@@ -470,7 +470,7 @@ class MobileNfc(http.Controller):
         charge = _corps()
         nom = charge.get("device_name") if isinstance(charge.get("device_name"), str) else ""
         try:
-            appareil, jeton = _emprunter("bf.nfc.device", mobile, nom.strip() or "Pastilles")
+            appareil, jeton = _emprunter("bf.nfc.device", mobile, nom.strip() or _("Tags"))
         except UserError as exc:
             return _json({"error": "too_many_devices", "message": str(exc)}, 409)
         if not appareil:
@@ -514,14 +514,14 @@ class MobileNfc(http.Controller):
         code = (charge.get("code") or kw.get("code") or "").strip()
         if not code:
             return _json({"error": "no_code",
-                          "message": _("Aucun code de pastille.")}, 400)
+                          "message": _("No tag code.")}, 400)
 
         tag = request.env["bf.nfc.tag"]._resoudre(code)
         if not tag:
             # 404 franc, comme au navigateur : l'application doit pouvoir dire
             # « cette pastille n'est pas chez nous » plutôt que « erreur ».
             return _json({"error": "unknown_tag",
-                          "message": _("Cette pastille n'est pas enregistrée ici.")}, 404)
+                          "message": _("This tag is not registered here.")}, 404)
 
         if hasattr(appareil, "_touch_last_seen"):
             appareil._touch_last_seen()
@@ -568,7 +568,7 @@ class MobileNfc(http.Controller):
         tag = request.env["bf.nfc.tag"]._resoudre(code or "")
         if not tag:
             return _json({"error": "unknown_tag",
-                          "message": _("Cette pastille n'est pas enregistrée ici.")}, 404)
+                          "message": _("This tag is not registered here.")}, 404)
         _agir_en_tant_que(appareil)
         # 🔴 RE-parcourir dans le nouvel environnement, pas `tag.sudo()`. La
         # pastille a été retrouvée AVANT la bascule, donc son environnement
@@ -681,12 +681,14 @@ class MobileNfc(http.Controller):
         _agir_en_tant_que(appareil)
         if not modele or modele not in _modeles_cibles():
             return _json({"error": "model_not_allowed",
-                          "message": _("On ne peut pas viser ce type de fiche.")}, 400)
+                          "message": _("This type of record cannot be "
+                                       "targeted.")}, 400)
         try:
             trouves = request.env[modele].name_search((q or "").strip(), limit=20)
         except AccessError:
             return _json({"error": "forbidden",
-                          "message": _("Votre compte ne peut pas lire ces fiches.")}, 403)
+                          "message": _("Your account cannot read these "
+                                       "records.")}, 403)
         return _json({"cibles": [{"id": i, "nom": n} for i, n in trouves]}, 200)
 
     @http.route(f"{BASE}/liens", type="http", auth="public", methods=["GET"],
@@ -807,17 +809,19 @@ class MobileNfc(http.Controller):
             [("code", "=", geste_code), ("kind", "!=", "menu")], limit=1)
         if not geste:
             return _json({"error": "unknown_gesture",
-                          "message": _("Ce geste n'existe pas ici.")}, 404)
+                          "message": _("This gesture does not exist here.")}, 404)
         # 🔴 Les filtres du catalogue se rejouent ICI. Sans eux, ils n'étaient que
         # décoratifs : le catalogue cachait les gestes réservés et bornait les types
         # de fiche, mais cette route acceptait n'importe lequel des deux.
         if geste.reserve_gestion and not request.env.user.has_group("bf_nfc.group_nfc_manager"):
             return _json({"error": "forbidden",
-                          "message": _("Ce geste est réservé à la gestion des pastilles.")}, 403)
+                          "message": _("This gesture is reserved for tag "
+                                       "managers.")}, 403)
         modele = (charge.get("modele") or "").strip()
         if modele and modele not in _modeles_cibles():
             return _json({"error": "model_not_allowed",
-                          "message": _("On ne peut pas viser ce type de fiche.")}, 400)
+                          "message": _("This type of record cannot be "
+                                       "targeted.")}, 400)
         params = charge.get("params")
         if params:
             try:
@@ -827,7 +831,8 @@ class MobileNfc(http.Controller):
                 # Une pastille dont les paramètres ne sont pas un objet JSON est morte
                 # au premier tapotement : elle lève au lieu de jouer son geste.
                 return _json({"error": "bad_params",
-                              "message": _("Les paramètres doivent être un objet JSON.")}, 400)
+                              "message": _("The parameters must be a JSON "
+                                           "object.")}, 400)
 
         valeurs = {
             "name": (charge.get("nom") or geste.name)[:120],
@@ -847,8 +852,7 @@ class MobileNfc(http.Controller):
             tag = request.env["bf.nfc.tag"].create(valeurs)
         except AccessError:
             return _json({"error": "forbidden",
-                          "message": _("Votre compte ne peut pas créer de "
-                                       "pastille.")}, 403)
+                          "message": _("Your account cannot create tags.")}, 403)
         except UserError as exc:
             return _json({"error": "refused", "message": str(exc)}, 400)
 
@@ -885,7 +889,7 @@ class MobileNfc(http.Controller):
         tag = request.env["bf.nfc.tag"]._resoudre((charge.get("code") or "").strip())
         if not tag:
             return _json({"error": "unknown_tag",
-                          "message": _("Cette pastille n'est pas enregistrée ici.")}, 404)
+                          "message": _("This tag is not registered here.")}, 404)
         try:
             gravure = request.env["bf.nfc.enrolement"]._ouvrir(
                 tag, charge.get("uid"), appareil=appareil)
@@ -919,7 +923,7 @@ class MobileNfc(http.Controller):
         # téléphone reprend une session en cours et fait poser NOS clés sur SA puce.
         if gravure.device_id and gravure.device_id != appareil:
             return _json({"error": "forbidden",
-                          "message": _("Cette gravure a été ouverte par un autre "
-                                       "appareil.")}, 403)
+                          "message": _("This engraving session was opened "
+                                       "by another device.")}, 403)
         suite = gravure.suivante((charge.get("reponse") or "").strip())
         return _json(dict(suite, session=gravure.name), 200)

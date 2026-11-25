@@ -111,3 +111,17 @@ class TestRecipientsAndRules(PersonaCase):
         composer = self.composer([self.eli, self.jul], body="<p>Texte.</p>")
         composer.action_apply_persona()
         self.assertNotIn("Bonjour Ada", str(composer.body))
+
+    def test_le_nom_d_une_regle_suit_la_langue(self):
+        """le nom affiché lisait la liste source, anglaise depuis la bascule."""
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_persona"], ["fr_CA"], overwrite=True)
+        regle = self.Rule.create({"persona_id": self.p_eli.id, "rule_type": "never",
+                                  "cc_partner_ids": [(6, 0, self.hm.ids)]})
+        for langue in ("fr_CA", "en_US"):
+            attendu = dict(self.Rule._fields["rule_type"]._description_selection(
+                self.env(context={"lang": langue})))["never"]
+            self.assertTrue(regle.with_context(lang=langue).display_name.startswith(attendu))
+        self.assertNotEqual(regle.with_context(lang="fr_CA").display_name,
+                            regle.with_context(lang="en_US").display_name,
+                            "catalogue non chargé : l'essai ne mesure rien")

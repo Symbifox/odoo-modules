@@ -6,9 +6,9 @@ class BfTrainingAssignment(models.Model):
     _inherit = "bf.training.assignment"
 
     document_id = fields.Many2one(
-        related="activity_id.document_id", string="Document à lire", store=True)
+        related="activity_id.document_id", string="Document to read", store=True)
     distribution_id = fields.Many2one(
-        "project.document.distribution", string="Remise", ondelete="set null")
+        "project.document.distribution", string="Distribution", ondelete="set null")
 
     def action_distribute_document(self):
         """Remettre la version en vigueur à la personne, et suivre son accusé."""
@@ -19,8 +19,8 @@ class BfTrainingAssignment(models.Model):
             version = rec.document_id.latest_version_id
             if not version:
                 raise UserError(_(
-                    "Le document « %s » n'a aucune version diffusée. Il n'y a "
-                    "rien à remettre.") % rec.document_id.name)
+                    "Document \"%s\" has no released version. There is "
+                    "nothing to distribute.") % rec.document_id.name)
             existante = Distribution.search([
                 ("version_id", "=", version.id),
                 ("partner_id", "=", rec.partner_id.id),

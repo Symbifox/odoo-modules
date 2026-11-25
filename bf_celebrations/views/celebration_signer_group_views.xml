@@ -5,7 +5,7 @@
         <field name="name">bf.celebration.signer.group.list</field>
         <field name="model">bf.celebration.signer.group</field>
         <field name="arch" type="xml">
-            <list string="Groupes de signataires">
+            <list string="Signatory groups">
                 <field name="name"/>
                 <field name="department_ids" widget="many2many_tags" optional="show"/>
                 <field name="member_count"/>
@@ -19,19 +19,19 @@
         <field name="name">bf.celebration.signer.group.form</field>
         <field name="model">bf.celebration.signer.group</field>
         <field name="arch" type="xml">
-            <form string="Groupe de signataires">
+            <form string="Signatory group">
                 <sheet>
-                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
                             invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Équipe de Montréal"/></h1>
+                        <h1><field name="name" placeholder="Montréal team"/></h1>
                     </div>
                     <p class="text-muted">
-                        À qui l'on tend une carte. Le groupe se résout au moment
-                        de l'envoi : une personne arrivée depuis dans le service
-                        reçoit le lien, une personne partie ne le reçoit pas. Il
-                        ne dit jamais qui a signé.
+                        Who a card is held out to. The group resolves at the moment
+                        of sending: somebody who joined the department since
+                        receives the link, somebody who left does not. It
+                        never says who signed.
                     </p>
                     <group>
                         <group>
@@ -49,21 +49,21 @@
                                    groups="base.group_multi_company"/>
                         </group>
                     </group>
-                    <field name="note" placeholder="Pourquoi ce groupe, pour qui."/>
+                    <field name="note" placeholder="Why this group, and for whom."/>
                 </sheet>
             </form>
         </field>
     </record>
 
     <record id="action_celebration_signer_group" model="ir.actions.act_window">
-        <field name="name">Groupes de signataires</field>
+        <field name="name">Signatory groups</field>
         <field name="res_model">bf.celebration.signer.group</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun groupe pour l'instant</p>
-            <p>Un groupe rassemble des personnes, des services ou des contacts
-               à qui l'on envoie le lien d'une carte, une seule fois chacun.
-               Il se réutilise d'une carte à l'autre.</p>
+            <p class="o_view_nocontent_smiling_face">No group yet</p>
+            <p>A group gathers people, departments or contacts
+               the link of a card is sent to, once each.
+               It is reused from one card to the next.</p>
         </field>
     </record>
 

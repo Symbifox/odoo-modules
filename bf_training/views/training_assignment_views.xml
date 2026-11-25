@@ -4,7 +4,7 @@
         <field name="name">bf.training.assignment.list</field>
         <field name="model">bf.training.assignment</field>
         <field name="arch" type="xml">
-            <list string="Assignations" decoration-danger="state in ('pending', 'in_progress') and due_date &lt; current_date">
+            <list string="Assignments" decoration-danger="state in ('pending', 'in_progress') and due_date &lt; current_date">
                 <field name="partner_id"/>
                 <field name="employee_id" optional="hide"/>
                 <field name="activity_id"/>
@@ -20,13 +20,13 @@
         <field name="name">bf.training.assignment.form</field>
         <field name="model">bf.training.assignment</field>
         <field name="arch" type="xml">
-            <form string="Assignation">
+            <form string="Assignment">
                 <header>
-                    <button name="action_remind" type="object" string="Relancer"
+                    <button name="action_remind" type="object" string="Send a reminder"
                             invisible="state in ('done', 'cancelled')"/>
-                    <button name="action_mark_done" type="object" string="Marquer faite"
+                    <button name="action_mark_done" type="object" string="Mark as done"
                             class="btn-primary" invisible="state in ('done', 'cancelled')"/>
-                    <button name="action_cancel" type="object" string="Annuler"
+                    <button name="action_cancel" type="object" string="Cancel"
                             invisible="state in ('done', 'cancelled')"/>
                     <field name="state" widget="statusbar" statusbar_visible="pending,in_progress,done"/>
                 </header>
@@ -57,14 +57,14 @@
         </field>
     </record>
     <record id="action_training_assignment" model="ir.actions.act_window">
-        <field name="name">Assignations</field>
+        <field name="name">Assignments</field>
         <field name="res_model">bf.training.assignment</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Demander, puis relancer</p>
-            <p>L'assignation est le geste ; l'obligation est la règle. On peut
-               assigner sans exigence, et remplir une exigence sans avoir rien
-               assigné.</p>
+            <p class="o_view_nocontent_smiling_face">Ask, then remind</p>
+            <p>The assignment is the act; the obligation is the rule. You can assign
+               with no requirement, and meet a requirement without having assigned
+               anything.</p>
         </field>
     </record>
 </odoo>

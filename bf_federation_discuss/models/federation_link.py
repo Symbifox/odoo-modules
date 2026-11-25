@@ -5,9 +5,9 @@ from odoo.exceptions import UserError
 class FederationLink(models.Model):
     _inherit = "federation.link"
 
-    channel_id = fields.Many2one("discuss.channel", string="Canal", compute="_compute_channel",
+    channel_id = fields.Many2one("discuss.channel", string="Channel", compute="_compute_channel",
                                  search="_search_channel")
-    has_channel = fields.Boolean(string="Canal ouvert", compute="_compute_channel")
+    has_channel = fields.Boolean(string="Channel open", compute="_compute_channel")
 
     def _compute_channel(self):
         canaux = {c.federation_link_id.id: c for c in self.env["discuss.channel"].sudo().search(
@@ -50,7 +50,8 @@ class FederationLink(models.Model):
         """Ouvrir (et créer au besoin) le canal de cet objet, puis y aller."""
         self.ensure_one()
         if not self.active:
-            raise UserError(_("Ce lien n'est plus actif : rien ne partirait du canal."))
+            raise UserError(_("This link is no longer active: nothing "
+                              "would leave the channel."))
         canal = self.env["discuss.channel"]._federation_open(self)
         return {"type": "ir.actions.act_window", "res_model": "discuss.channel",
                 "res_id": canal.id, "view_mode": "form", "target": "current",

@@ -18,26 +18,41 @@ DUREE_SANS_HORAIRE = timedelta(hours=3)
 
 class BfNfcRound(models.Model):
     _name = "bf.nfc.round"
-    _description = "Tournée de pastilles"
+    _description = "Tag round"
     _inherit = ["mail.thread", "mail.activity.mixin", "bf.nfc.target.mixin"]
     _order = "name"
 
-    name = fields.Char(string="Tournée", required=True, tracking=True)
+    name = fields.Char(string="Round", required=True, tracking=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company, required=True)
     responsible_id = fields.Many2one(
-        "res.users", string="Responsable", required=True, default=lambda self: self.env.user,
-        help="Reçoit les alertes, et donne le fuseau de l'horaire.")
-    checkpoint_ids = fields.One2many("bf.nfc.round.checkpoint", "round_id", string="Points", copy=True)
+        "res.users", string="Person in charge", required=True, default=lambda self: self.env.user,
+        help="Receives the alerts, and sets the schedule's time zone.")
+    checkpoint_ids = fields.One2many("bf.nfc.round.checkpoint", "round_id", string="Checkpoints", copy=True)
     checkpoint_count = fields.Integer(compute="_compute_checkpoint_count")
-    strict_order = fields.Boolean(string="Dans l'ordre", help="Un point tapé avant le précédent est marqué.")
+    strict_order = fields.Boolean(string="In order", help="A "
+                                                              "checkpoint "
+                                                              "tapped "
+                                                              "before the "
+                                                              "previous "
+                                                              "one is "
+                                                              "flagged.")
     schedule = fields.Selection(
-        [("none", "Sans horaire"), ("daily", "Chaque jour"), ("weekdays", "Du lundi au vendredi")],
-        string="Horaire", default="none", required=True)
-    start_hour = fields.Float(string="Commence à", default=22.0, help="Heure locale de la personne responsable.")
-    duration_minutes = fields.Integer(string="Durée maximale (min)", default=60)
-    last_missed_alert = fields.Date(string="Dernière alerte d'oubli", readonly=True, copy=False)
-    run_ids = fields.One2many("bf.nfc.round.run", "round_id", string="Passages de tournée")
+        [("none", "No schedule"), ("daily", "Every day"), ("weekdays", "Monday "
+                                                                          "to "
+                                                                          "Friday")],
+        string="Schedule", default="none", required=True)
+    start_hour = fields.Float(string="Starts at", default=22.0, help="Local "
+                                                                      "time "
+                                                                      "of "
+                                                                      "the "
+                                                                      "person "
+                                                                      "in "
+                                                                      "charge.")
+    duration_minutes = fields.Integer(string="Maximum duration (min)", default=60)
+    last_missed_alert = fields.Date(string="Last missed-round alert", readonly=True, copy=False)
+    run_ids = fields.One2many("bf.nfc.round.run", "round_id", string="Round "
+                                                                     "runs")
 
     def _nfc_domaine_pastilles(self):
         """Une tournée ne porte pas de pastille : ses POINTS en portent une chacun."""
@@ -105,8 +120,8 @@ class BfNfcRound(models.Model):
             passage.state = "incomplete"
             manques = passage._points_manques()
             tournee._alerter(
-                _("Tournée incomplète : %s", tournee.name),
-                _("%(qui)s a commencé à %(debut)s et n'a pas tapé : %(points)s.",
+                _("Incomplete round: %s", tournee.name),
+                _("%(qui)s started at %(debut)s and did not tap: %(points)s.",
                   qui=passage.user_id.name,
                   debut=fields.Datetime.context_timestamp(tournee, passage.date_start).strftime("%H:%M"),
                   points=", ".join(manques.mapped("name")) or "-"))
@@ -126,20 +141,20 @@ class BfNfcRound(models.Model):
             if faite:
                 continue
             tournee.last_missed_alert = jour
-            tournee._alerter(_("Tournée non faite : %s", tournee.name),
-                             _("Personne n'a commencé la tournée prévue à %s.",
+            tournee._alerter(_("Round not done: %s", tournee.name),
+                             _("Nobody started the round scheduled at %s.",
                                pytz.utc.localize(fenetre[0]).astimezone(tournee._fuseau()).strftime("%H:%M")))
 
 
 class BfNfcRoundCheckpoint(models.Model):
     _name = "bf.nfc.round.checkpoint"
-    _description = "Point de tournée"
+    _description = "Round checkpoint"
     _order = "round_id, sequence, id"
 
     round_id = fields.Many2one("bf.nfc.round", required=True, ondelete="cascade", index=True)
     sequence = fields.Integer(default=10)
-    name = fields.Char(string="Point", required=True)
-    place = fields.Char(string="Où")
+    name = fields.Char(string="Checkpoint", required=True)
+    place = fields.Char(string="Where")
 
     def _compute_display_name(self):
         for point in self:
@@ -148,18 +163,19 @@ class BfNfcRoundCheckpoint(models.Model):
 
 class BfNfcRoundRun(models.Model):
     _name = "bf.nfc.round.run"
-    _description = "Passage d'une tournée"
+    _description = "Round run"
     _order = "date_start desc, id desc"
 
     round_id = fields.Many2one("bf.nfc.round", required=True, ondelete="cascade", index=True)
-    user_id = fields.Many2one("res.users", string="Par", required=True, index=True)
-    date_start = fields.Datetime(string="Commencée", required=True)
-    date_end = fields.Datetime(string="Finie")
+    user_id = fields.Many2one("res.users", string="By", required=True, index=True)
+    date_start = fields.Datetime(string="Started", required=True)
+    date_end = fields.Datetime(string="Finished")
     state = fields.Selection(
-        [("running", "En cours"), ("done", "Complète"), ("incomplete", "Incomplète")],
+        [("running", "In progress"), ("done", "Complete"), ("incomplete", "Incomplete")],
         default="running", required=True, index=True)
-    passage_ids = fields.One2many("bf.nfc.round.passage", "run_id", string="Points tapés")
-    progress = fields.Char(string="Avancement", compute="_compute_progress")
+    passage_ids = fields.One2many("bf.nfc.round.passage", "run_id", string="Checkpoints "
+                                                                           "tapped")
+    progress = fields.Char(string="Progress", compute="_compute_progress")
 
     @api.depends("passage_ids", "round_id.checkpoint_ids")
     def _compute_progress(self):
@@ -173,12 +189,12 @@ class BfNfcRoundRun(models.Model):
 
 class BfNfcRoundPassage(models.Model):
     _name = "bf.nfc.round.passage"
-    _description = "Point tapé pendant une tournée"
+    _description = "Checkpoint tapped during a round"
     _order = "tapped_at, id"
 
     run_id = fields.Many2one("bf.nfc.round.run", required=True, ondelete="cascade", index=True)
     checkpoint_id = fields.Many2one("bf.nfc.round.checkpoint", required=True, ondelete="cascade")
-    user_id = fields.Many2one("res.users", string="Par", required=True)
-    tapped_at = fields.Datetime(string="Tapé à", required=True)
-    offline = fields.Boolean(string="Envoyé en différé")
-    out_of_order = fields.Boolean(string="Hors ordre")
+    user_id = fields.Many2one("res.users", string="By", required=True)
+    tapped_at = fields.Datetime(string="Tapped at", required=True)
+    offline = fields.Boolean(string="Sent later")
+    out_of_order = fields.Boolean(string="Out of order")

@@ -5,7 +5,7 @@
         <!-- Génère les occasions à partir des consentements. Ne lit jamais
              hr.employee.birthday. -->
         <record id="cron_generer" model="ir.cron">
-            <field name="name">Célébrations : poser les occasions à venir</field>
+            <field name="name">Celebrations: lay down the upcoming occasions</field>
             <field name="model_id" ref="model_bf_celebration_occasion"/>
             <field name="state">code</field>
             <field name="code">model._cron_generer()</field>
@@ -16,7 +16,7 @@
 
         <!-- Le rappel qui fait exister la fonction. -->
         <record id="cron_rappeler" model="ir.cron">
-            <field name="name">Célébrations : prévenir qui organise</field>
+            <field name="name">Celebrations: tell whoever is organising</field>
             <field name="model_id" ref="model_bf_celebration_occasion"/>
             <field name="state">code</field>
             <field name="code">model._cron_rappeler()</field>
@@ -28,7 +28,7 @@
         <!-- La livraison. Toutes les heures, parce que l'heure choisie
              compte : une carte qui arrive à 3 h du matin se lit le soir. -->
         <record id="cron_livrer" model="ir.cron">
-            <field name="name">Célébrations : livrer les tableaux dus</field>
+            <field name="name">Celebrations: deliver the boards that are due</field>
             <field name="model_id" ref="model_bf_celebration_board"/>
             <field name="state">code</field>
             <field name="code">model._cron_livrer()</field>
@@ -38,7 +38,7 @@
         </record>
 
         <record id="cron_relancer_minces" model="ir.cron">
-            <field name="name">Célébrations : relancer les tableaux minces</field>
+            <field name="name">Celebrations: chase up the thin boards</field>
             <field name="model_id" ref="model_bf_celebration_board"/>
             <field name="state">code</field>
             <field name="code">model._cron_relancer_tableaux_minces()</field>
@@ -50,7 +50,7 @@
         <!-- La purge de rétention. Inerte tant que le nombre de mois n'est
              pas réglé (0, l'état de l'absence, veut dire « on garde »). -->
         <record id="cron_purger" model="ir.cron">
-            <field name="name">Célébrations : effacer les cartes livrées échues</field>
+            <field name="name">Celebrations: erase delivered cards past retention</field>
             <field name="model_id" ref="model_bf_celebration_board"/>
             <field name="state">code</field>
             <field name="code">model._cron_purger_livres()</field>
@@ -64,7 +64,7 @@
              s'allume quand l'entreprise a décidé du texte et du moment, pas
              parce qu'un module vient d'être installé. -->
         <record id="cron_inviter" model="ir.cron">
-            <field name="name">Célébrations : inviter à répondre</field>
+            <field name="name">Celebrations: invite people to answer</field>
             <field name="model_id" ref="model_bf_celebration_profile"/>
             <field name="state">code</field>
             <field name="code">model._cron_inviter()</field>

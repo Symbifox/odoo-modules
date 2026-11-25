@@ -40,39 +40,40 @@ CHAMPS_DU_JETON = ("token_hash", "pending_code", "pending_code_expiry", "pkce_ch
 
 class BfNfcDevice(models.Model):
     _name = "bf.nfc.device"
-    _description = "Appareil apparié pour les pastilles NFC"
+    _description = "Device paired for NFC tags"
     _rec_name = "name"
     _order = "last_seen desc, id desc"
 
     user_id = fields.Many2one(
-        "res.users", string="Personne", required=True, ondelete="cascade",
+        "res.users", string="Person", required=True, ondelete="cascade",
         index=True)
-    name = fields.Char(string="Appareil", default="Appareil Android")
+    name = fields.Char(string="Device", default="Appareil Android")
     platform = fields.Char(default="android")
-    app_version = fields.Char(string="Version de l'application")
+    app_version = fields.Char(string="App version")
 
     # ⚠️ `groups` interdit la lecture par l'interface, y compris à son
     # propriétaire : rien dans l'application web n'a besoin de voir ça, et un
     # champ affiché finit par être copié quelque part.
-    token_hash = fields.Char(string="Empreinte du jeton", copy=False, index=True,
+    token_hash = fields.Char(string="Token fingerprint", copy=False, index=True,
                              groups="base.group_system")
-    pending_code = fields.Char(string="Code d'appariement", copy=False,
+    pending_code = fields.Char(string="Pairing code", copy=False,
                                index=True, groups="base.group_system")
-    pending_code_expiry = fields.Datetime(copy=False, groups="base.group_system")
+    pending_code_expiry = fields.Datetime(string="Code expiry", copy=False, groups="base.group_system")
     # 🔴 Le défi PKCE, et la raison d'être de tout ce mécanisme : un schéma
     # d'application personnalisé n'est PAS exclusif sur Android. Une autre
     # application peut déclarer le même et recevoir le code d'appariement à
     # notre place. Sans PKCE elle l'échangerait contre un jeton porteur. Avec,
     # le code intercepté ne vaut rien : l'échange exige un vérificateur que
     # seule l'application qui a lancé l'appariement possède.
-    pkce_challenge = fields.Char(string="Défi PKCE", copy=False,
+    pkce_challenge = fields.Char(string="PKCE challenge", copy=False,
                                  groups="base.group_system")
 
     active = fields.Boolean(default=True)
-    last_seen = fields.Datetime(string="Vu la dernière fois")
+    last_seen = fields.Datetime(string="Last seen")
 
     _sql_constraints = [
-        ("token_hash_uniq", "unique(token_hash)", "Cette empreinte existe déjà."),
+        ("token_hash_uniq", "unique(token_hash)", "This fingerprint "
+                                                  "already exists."),
     ]
 
     # ------------------------------------------------------------------
@@ -98,8 +99,8 @@ class BfNfcDevice(models.Model):
             nouvel = vals["user_id"]
             if any(appareil.user_id.id != nouvel for appareil in self):
                 raise AccessError(_(
-                    "La personne d'un appareil apparié ne se change pas. "
-                    "Retirez l'appareil et appariez-le de nouveau."))
+                    "The person of a paired device cannot be changed. "
+                    "Remove the device and pair it again."))
         resultat = super().write(vals)
         if "active" in vals and not vals["active"]:
             super(BfNfcDevice, self.sudo()).write(dict.fromkeys(CHAMPS_DU_JETON, False))
@@ -117,7 +118,7 @@ class BfNfcDevice(models.Model):
             ("token_hash", "!=", False)])
         if actifs >= PLAFOND_APPAREILS:
             raise UserError(_(
-                "Trop d'appareils appariés (%d). Retirez-en un depuis le site.",
+                "Too many paired devices (%d). Remove one from the website.",
                 actifs))
         code = secrets.token_urlsafe(24)
         # ⚠️ Né INACTIF : un appariement jamais terminé n'est pas un appareil.

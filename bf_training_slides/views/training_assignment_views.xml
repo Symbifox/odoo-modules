@@ -6,10 +6,10 @@
         <field name="inherit_id" ref="bf_training.view_training_assignment_form"/>
         <field name="arch" type="xml">
             <button name="action_remind" position="before">
-                <button name="action_enroll" type="object" string="Inscrire au cours"
+                <button name="action_enroll" type="object" string="Enrol in the course"
                         class="btn-primary"
                         invisible="not slide_channel_id or channel_partner_id"/>
-                <button name="action_open_course" type="object" string="Ouvrir le cours"
+                <button name="action_open_course" type="object" string="Open the course"
                         invisible="not slide_channel_id"/>
             </button>
             <field name="record_id" position="after">

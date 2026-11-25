@@ -11,12 +11,13 @@ class BfTrainingAssignment(models.Model):
     _inherit = "bf.training.assignment"
 
     slide_channel_id = fields.Many2one(
-        related="activity_id.slide_channel_id", string="Cours en ligne", store=True)
+        related="activity_id.slide_channel_id", string="Online course", store=True)
     channel_partner_id = fields.Many2one(
-        "slide.channel.partner", string="Inscription",
+        "slide.channel.partner", string="Enrolment",
         compute="_compute_channel_partner_id", store=True)
     member_status = fields.Selection(
-        related="channel_partner_id.member_status", string="Statut au cours")
+        related="channel_partner_id.member_status", string="Status in the "
+                                                           "course")
 
 
     def _compute_training_url(self):
@@ -56,9 +57,9 @@ class BfTrainingAssignment(models.Model):
         cours = self.slide_channel_id.sudo().with_context(prefetch_fields=False)
         if gabarit and cours and not cours.website_published:
             return _(
-                "Ce cours n'est pas publié : la personne recevrait un lien vers "
-                "une page qu'elle ne peut pas ouvrir. Publiez le cours, puis "
-                "relancez.")
+                "This course is not published: the person would get a "
+                "link to a page they cannot open. Publish the course, "
+                "then send the reminder again.")
         return False
 
     @api.depends("partner_id", "slide_channel_id")

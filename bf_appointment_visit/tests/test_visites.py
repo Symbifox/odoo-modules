@@ -7,7 +7,7 @@ qui avale les fins de semaine, la combinaison par courtier, la plage retirée
 sous une visite confirmée, et le registre qui se ferme.
 """
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 
 import pytz
 
@@ -56,8 +56,10 @@ class TestVisites(TransactionCase):
             "calendar_id": cls.cal_courtier.id,
             "tz": "America/Toronto",
         })
-        # Un samedi à venir, à deux semaines au moins : un samedi fixe (le
-        # 2026-09-12 du banc) passe, et un créneau passé n'est plus offert.
+        # ⚠️ Le samedi des essais se CALCULE. Ecrit en dur (2026-09-12), il tombe
+        # dans le passe des le mois suivant, et `_bf_create_booking` refuse alors
+        # chaque creneau : 13 des 22 essais de cette classe echouaient pour cette
+        # seule raison, un seul portant deja le contournement en local.
         jour = date.today() + timedelta(days=(5 - date.today().weekday()) % 7 + 14)
         cls.samedi = datetime(jour.year, jour.month, jour.day)
 
@@ -78,6 +80,17 @@ class TestVisites(TransactionCase):
         valeurs.update(extra)
         return self.env["bf.visit.listing"].create(valeurs)
 
+    def _utc(self, heure, minute=0):
+        """L'heure LOCALE du samedi d'essai, rendue en UTC naif comme l'attend
+        `_bf_create_booking`.
+
+        ⚠️ Un « 17 h UTC » ecrit en dur valait 13 h a l'heure avancee et 12 h a
+        l'heure normale : des l'automne, le creneau sortait de la plage 13 h - 16 h
+        sans que rien ne le dise.
+        """
+        local = self.tz.localize(self.samedi.replace(hour=heure, minute=minute))
+        return local.astimezone(pytz.utc).replace(tzinfo=None)
+
     def _plage(self, inscription, de=13.0, a=16.0, date=None):
         return self.env["bf.visit.window"].create({
             "listing_id": inscription.id,
@@ -88,20 +101,17 @@ class TestVisites(TransactionCase):
         })
 
     def _creneaux(self, inscription):
-        debut = self.tz.localize(self.samedi)
-        fin = self.tz.localize(self.samedi + timedelta(days=1))
+        # Les deux bornes se localisent separement : ajouter 24 h a une heure
+        # DEJA localisee traverse mal un changement d'heure.
+        debut = self.tz.localize(datetime.combine(self.samedi.date(), time(0, 0)))
+        fin = self.tz.localize(
+            datetime.combine(self.samedi.date() + timedelta(days=1), time(0, 0)))
         return [
             s.strftime("%H:%M")
             for s in inscription.booking_type_id._bf_candidate_slots(
                 debut, fin, tz="America/Toronto"
             )
         ]
-
-    def _utc(self, heure, minute=0):
-        """Le samedi d'essai à `heure` de Toronto, en UTC naïf : 13 h y vaut
-        17 h UTC l'été, 18 h l'hiver."""
-        local = self.tz.localize(self.samedi.replace(hour=heure, minute=minute))
-        return local.astimezone(pytz.utc).replace(tzinfo=None)
 
     def _demander_visite(self, inscription, heure_utc=None):
         heure_utc = heure_utc or self._utc(13)
@@ -452,6 +462,70 @@ class TestVisites(TransactionCase):
             "Une visite sans arrivée constatée n'est pas « faite ».",
         )
 
+    def test_la_demande_d_avis_suit_la_langue_de_la_societe(self):
+        """la demande d'avis part du cron de nuit, sans langue au contexte. Depuis la
+        bascule en anglais, elle partait en anglais à un visiteur francophone."""
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["res.lang"]._activate_lang("en_US")
+        self.env["ir.module.module"]._load_module_terms(
+            ["bf_appointment_visit"], ["fr_CA"], overwrite=True)
+        # Trois tours : visiteur sans langue (la société décide, française puis anglaise), puis
+        # visiteur anglophone chez une société française (le destinataire décide). Trois créneaux
+        # distincts : le courtier est le même d'un tour à l'autre.
+        for langue, visiteur, attendu, heure in (
+                ("fr_CA", False, "Votre visite du", None),
+                ("en_US", False, "Your showing of", self._utc(13, 30)),
+                ("fr_CA", "en_US", "Your showing of", self._utc(14))):
+            self.env.company.partner_id.lang = langue
+            self.visiteur.lang = visiteur
+            inscription = self._inscription(approval_mode="auto")
+            self._plage(inscription)
+            inscription.action_publish()
+            visite = self._demander_visite(inscription, **({"heure_utc": heure} if heure else {}))
+            visite.action_mark_arrived()
+            visite.write({"start": datetime.now() - timedelta(hours=4)})
+            avant = self.env["mail.mail"].search([]).ids
+            self.env(context={})["bf.visit"]._cron_close_visits()
+            neufs = self.env["mail.mail"].search([("id", "not in", avant),
+                                                  ("email_to", "ilike", visite.visitor_email)])
+            self.assertTrue(neufs, "aucune demande d'avis partie : l'essai ne mesure rien")
+            self.assertTrue(all((m.subject or "").startswith(attendu) for m in neufs),
+                            neufs.mapped("subject"))
+            # Le suivi de l'état écrit par la passe de nuit, dans la même langue. Odoo l'écrit au
+            # pré-commit : on le déclenche, sinon il n'y a encore rien à lire.
+            self.env.cr.precommit.run()
+            suivi = visite.message_ids.tracking_value_ids.filtered(
+                lambda t: t.field_id.name == "state")[:1]
+            # Le chatter, lui, suit la société : c'est l'équipe qui le lit.
+            etat = dict(self.env["bf.visit"]._fields["state"]._description_selection(
+                self.env(context={"lang": langue})))["done"]
+            self.assertEqual(suivi.new_value_char, etat)
+
+    def test_chaque_envoi_porte_une_langue(self):
+        """chaque `send_mail` du module passe par `with_context(lang=…)`, et l'état
+        affiché sur la page publique se lit dans la langue de la page, pas la liste source."""
+        import ast
+        from odoo.tools import file_open
+        with file_open("bf_appointment_visit/models/bf_visit.py") as f:
+            arbre = ast.parse(f.read())
+        envois = [n for n in ast.walk(arbre) if isinstance(n, ast.Call)
+                  and isinstance(n.func, ast.Attribute) and n.func.attr == "send_mail"]
+        self.assertGreaterEqual(len(envois), 3, "envois introuvables : l'essai ne mesure rien")
+        for envoi in envois:
+            recepteur = envoi.func.value
+            self.assertTrue(
+                isinstance(recepteur, ast.Call) and isinstance(recepteur.func, ast.Attribute)
+                and recepteur.func.attr == "with_context"
+                and any(k.arg == "lang" for k in recepteur.keywords),
+                "send_mail sans langue, ligne %s" % envoi.lineno)
+        with file_open("bf_appointment_visit/controllers/main.py") as f:
+            arbre = ast.parse(f.read())
+        etat = [n for n in ast.walk(arbre) if isinstance(n, ast.FunctionDef) and n.name == "_etat_libelle"]
+        self.assertEqual(len(etat), 1)
+        attributs = {n.attr for n in ast.walk(etat[0]) if isinstance(n, ast.Attribute)}
+        self.assertIn("_description_selection", attributs)
+        self.assertNotIn("selection", attributs, "la liste source se lit en anglais")
+
     # ------------------------------------------------------------------
     # Mise en page commune des courriels
     # ------------------------------------------------------------------
@@ -461,7 +535,9 @@ class TestVisites(TransactionCase):
         import importlib.util
         vue = self.env.ref("bf_appointment_visit.visit_email_layout")
         self.assertNotIn('width="600"', vue.arch_db)
-        self.assertIn(">Visite</p>", vue.arch_db)
+        # Vue `noupdate` : une base installée avant la bascule garde « Visite », une base neuve
+        # (CI publique) porte la source anglaise « Showing ».
+        self.assertTrue(">Visite</p>" in vue.arch_db or ">Showing</p>" in vue.arch_db)
         for xmlid in ("mail_visit_pending", "mail_visit_approved", "mail_visit_declined",
                       "mail_visit_seller_request", "mail_visit_tenant_notice",
                       "mail_visit_feedback_request"):
@@ -476,11 +552,11 @@ class TestVisites(TransactionCase):
         nouvelle, ok = migration.vue_sans_coquille(avant)
         self.assertTrue(ok)
         self.assertEqual(migration.vue_sans_coquille(nouvelle), (None, False))
-        jour = self.samedi.date()
+        # Le samedi de la classe est desormais calcule : plus de contournement ici.
         inscription = self._inscription()
-        self._plage(inscription, date=jour)
+        self._plage(inscription)
         inscription.action_publish()
-        visite = self._demander_visite(inscription, heure_utc=self._utc(13))
+        visite = self._demander_visite(inscription)
         with patch("odoo.addons.mail.models.mail_mail.MailMail.send", lambda s, *a, **k: None):
             avant_ids = self.env["mail.mail"].sudo().search([]).ids
             self.env.ref("bf_appointment_visit.mail_visit_approved").send_mail(visite.id, force_send=False)
@@ -488,4 +564,4 @@ class TestVisites(TransactionCase):
         self.assertEqual(len(courriel), 1)
         self.assertEqual(courriel.body_html.count("box-shadow:0 4px 24px"), 1, "une carte, la commune")
         self.assertNotIn("border-radius:12px 12px 0 0", courriel.body_html)
-        self.assertIn(">Visite</p>", courriel.body_html)
+        self.assertTrue(">Visite</p>" in courriel.body_html or ">Showing</p>" in courriel.body_html)

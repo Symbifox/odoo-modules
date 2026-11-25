@@ -8,12 +8,12 @@
          ⚠️ Pas de QR pour une pastille signée : son adresse change à chaque
          lecture, et un QR figé serait refusé dès le deuxième scan. -->
     <record id="action_report_tag_label" model="ir.actions.report">
-        <field name="name">Étiquette avec code QR</field>
+        <field name="name">Label with QR code</field>
         <field name="model">bf.nfc.tag</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_nfc.report_tag_label</field>
         <field name="report_file">bf_nfc.report_tag_label</field>
-        <field name="print_report_name">'Etiquette - %s' % object.code</field>
+        <field name="print_report_name">'Label - %s' % object.code</field>
         <field name="binding_model_id" ref="model_bf_nfc_tag"/>
         <field name="binding_type">report</field>
     </record>
@@ -30,12 +30,12 @@
                                     <img t-if="qr" t-att-src="'data:image/png;base64,%s' % qr"
                                          style="width: 42mm; height: 42mm;" alt="QR"/>
                                     <p t-if="not qr" class="text-muted small" style="height: 42mm; padding-top: 16mm;">
-                                        Pastille signée : pas de code QR
+                                        Signed tag: no QR code
                                     </p>
                                     <div style="font-weight: bold; font-size: 13px;"><t t-esc="o.name"/></div>
                                     <div t-if="o.place" class="text-muted" style="font-size: 11px;"><t t-esc="o.place"/></div>
                                     <div style="font-family: monospace; font-size: 11px; letter-spacing: 1px;"><t t-esc="o.code"/></div>
-                                    <div class="text-muted" style="font-size: 9px;">Approchez le téléphone ou scannez le code</div>
+                                    <div class="text-muted" style="font-size: 9px;">Hold your phone close or scan the code</div>
                                 </div>
                             </div>
                         </t>

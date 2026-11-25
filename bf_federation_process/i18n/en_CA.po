@@ -36,25 +36,30 @@ msgstr "(untitled)"
 
 #. module: bf_federation_process
 #: model_terms:ir.ui.view,arch_db:bf_federation_process.view_bf_process_form_federation
-msgid ".\n                    Elle se lit ici : la version suivante remplacera le tracé."
+msgid ""
+".\n"
+"                    Elle se lit ici : la version suivante remplacera le tracé."
 msgstr ". It is read-only here: the next version will replace the drawing."
 
 #. module: bf_federation_process
 #. odoo-python
 #: code:addons/bf_federation_process/models/bf_process.py:0
-msgid "<p>Cartographie reçue de %s : <b>%s</b>, version %s, %s niveau(x), %s nœud(s). Elle se lit ici ; la version suivante la remplacera.</p>"
-msgstr "<p>Process map received from %s: <b>%s</b>, version %s, %s level(s), %s node(s). It is read-only here; the next version will replace it.</p>"
+msgid ""
+"<p>Cartographie reçue de %s : <b>%s</b>, version %s, %s niveau(x), %s "
+"nœud(s). Elle se lit ici ; la version suivante la remplacera.</p>"
+msgstr ""
+"<p>Process map received from %s: <b>%s</b>, version %s, %s level(s), %s "
+"node(s). It is read-only here; the next version will replace it.</p>"
 
 #. module: bf_federation_process
 #. odoo-python
 #: code:addons/bf_federation_process/models/bf_process.py:0
-msgid "<p>Chez %s, la cartographie est passée de la version <b>%s</b> à la <b>%s</b> : le tracé d'ici a été remplacé.</p>"
-msgstr "<p>At %s, the process map moved from version <b>%s</b> to <b>%s</b>: the drawing here has been replaced.</p>"
-
-#. module: bf_federation_process
-#: model:ir.model,name:bf_federation_process.model_federation_outbox
-msgid "Boîte de sortie de la fédération"
-msgstr "Federation outbox"
+msgid ""
+"<p>Chez %s, la cartographie est passée de la version <b>%s</b> à la "
+"<b>%s</b> : le tracé d'ici a été remplacé.</p>"
+msgstr ""
+"<p>At %s, the process map moved from version <b>%s</b> to <b>%s</b>: the "
+"drawing here has been replaced.</p>"
 
 #. module: bf_federation_process
 #: model:ir.model,name:bf_federation_process.model_bf_process
@@ -64,8 +69,14 @@ msgstr "Process map"
 #. module: bf_federation_process
 #. odoo-python
 #: code:addons/bf_federation_process/models/bf_process.py:0
-msgid "Cartographie fédérée avec %s : le tracé complet, ses niveaux, ses couloirs et ses nœuds. Ce qui reste ici : le registre de validation, la prose du livrable, les gels et les écarts."
-msgstr "Process map federated with %s: the full drawing, its levels, lanes and nodes. What stays here: the validation register, the deliverable's prose, the freezes and the gaps."
+msgid ""
+"Cartographie fédérée avec %s : le tracé complet, ses niveaux, ses couloirs "
+"et ses nœuds. Ce qui reste ici : le registre de validation, la prose du "
+"livrable, les gels et les écarts."
+msgstr ""
+"Process map federated with %s: the full drawing, its levels, lanes and "
+"nodes. What stays here: the validation register, the deliverable's prose, "
+"the freezes and the gaps."
 
 #. module: bf_federation_process
 #: model:ir.model.fields.selection,name:bf_federation_process.selection__federation_outbox__kind__process_card
@@ -85,14 +96,22 @@ msgstr "Process map received from"
 #. module: bf_federation_process
 #. odoo-python
 #: code:addons/bf_federation_process/models/bf_process.py:0
-msgid "Cette cartographie dépasse le plafond d'échange (%s Mio). Elle peut être remise en PDF par un livrable fédéré."
-msgstr "This process map exceeds the exchange ceiling (%s MiB). It can be delivered as a PDF through a federated deliverable."
+msgid ""
+"Cette cartographie dépasse le plafond d'échange (%s Mio). Elle peut être "
+"remise en PDF par un livrable fédéré."
+msgstr ""
+"This process map exceeds the exchange ceiling (%s MiB). It can be delivered "
+"as a PDF through a federated deliverable."
 
 #. module: bf_federation_process
 #. odoo-python
 #: code:addons/bf_federation_process/models/bf_process.py:0
-msgid "Cette cartographie est reçue de %s : elle se lit ici. La version suivante la remplacerait, et le travail fait dessus serait perdu."
-msgstr "This process map is received from %s: it is read-only here. The next version would replace it, and any work done on it would be lost."
+msgid ""
+"Cette cartographie est reçue de %s : elle se lit ici. La version suivante la"
+" remplacerait, et le travail fait dessus serait perdu."
+msgstr ""
+"This process map is received from %s: it is read-only here. The next version"
+" would replace it, and any work done on it would be lost."
 
 #. module: bf_federation_process
 #. odoo-python
@@ -128,13 +147,21 @@ msgstr "The peer"
 
 #. module: bf_federation_process
 #: model:ir.model.fields,help:bf_federation_process.field_bf_process__federation_peer_id
-msgid "Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
-msgstr "The peer where this object has a mirror. Clearing the field archives the mirror."
+msgid ""
+"Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
+msgstr ""
+"The peer where this object has a mirror. Clearing the field archives the "
+"mirror."
 
 #. module: bf_federation_process
 #: model_terms:ir.ui.view,arch_db:bf_federation_process.view_bf_process_form_federation
-msgid "Les niveaux ne sont pas des champs surveillés : après avoir retouché                               le tracé, ce bouton envoie la carte telle qu'elle est."
-msgstr "Levels are not watched fields: after reworking the drawing, this button sends the map as it is."
+msgid ""
+"Les niveaux ne sont pas des champs surveillés : après avoir retouché"
+"                               le tracé, ce bouton envoie la carte telle "
+"qu'elle est."
+msgstr ""
+"Levels are not watched fields: after reworking the drawing, this button "
+"sends the map as it is."
 
 #. module: bf_federation_process
 #: model:ir.model.fields,field_description:bf_federation_process.field_bf_process__federation_link_id

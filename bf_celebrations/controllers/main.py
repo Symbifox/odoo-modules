@@ -200,7 +200,7 @@ class CelebrationController(Controller):
     def _indisponible(self, motif=None):
         return _entetes(request.render(
             "bf_celebrations.page_indisponible",
-            {"motif": motif or _("Ce lien n'est plus valide."),
+            {"motif": motif or _("This link is no longer valid."),
              "doctype": DOCTYPE}))
 
     # ------------------------------------------------------------------
@@ -236,8 +236,8 @@ class CelebrationController(Controller):
             return self._indisponible()
         if not _plafond("cel_sign", _SIGN_MAX, _SIGN_WINDOW):
             return self._indisponible(_(
-                "Beaucoup de messages sont partis d'ici en peu de temps. "
-                "Réessayez dans quelques minutes."))
+                "A lot of messages have gone out from here in a short "
+                "time. Try again in a few minutes."))
 
         nom = (post.get("author_name") or "").strip()[:80]
         corps = (post.get("body") or "").strip()
@@ -371,10 +371,10 @@ class CelebrationController(Controller):
         cle = (post.get("cle") or "").strip()
         if not self._cle_du_merci_valide(board, cle):
             return self._indisponible(_(
-                "Ce lien ne permet pas de remercier."))
+                "This link does not allow thanking."))
         if not _plafond("cel_sign", _SIGN_MAX, _SIGN_WINDOW):
             return self._indisponible(_(
-                "Réessayez dans quelques minutes."))
+                "Try again in a few minutes."))
         corps = (post.get("body") or "").strip()
         if not html2plaintext(corps).strip():
             return request.redirect(
@@ -456,7 +456,7 @@ class CelebrationController(Controller):
         board = self._tableau(token)
         if not board or board.state != "delivered":
             return self._indisponible(_(
-                "La carte n'est pas encore livrée."))
+                "The card is not delivered yet."))
         contenu = board._pdf_souvenir()
         nom = "Carte - %s.pdf" % (board.recipient_name or board.name)
         return _entetes(request.make_response(contenu, headers=[
@@ -471,7 +471,7 @@ class CelebrationController(Controller):
         board = self._tableau(token)
         if not board or board.state != "delivered":
             return self._indisponible(_(
-                "La carte n'est pas encore livrée."))
+                "The card is not delivered yet."))
         contenu = board._html_souvenir()
         nom = "Carte - %s.html" % (board.recipient_name or board.name)
         # ⚠️ En pièce à télécharger, jamais affichée depuis notre origine :

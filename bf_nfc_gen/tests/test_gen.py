@@ -177,3 +177,17 @@ class TestGenGardes(TransactionCase):
         self.assertEqual(self.env["bf.nfc.gen.request"]._cron_perimer(), 1)
         self.assertEqual(self.demande.state, "error")
         self.assertIn("Sans nouvelle", self.demande.message)
+
+    def test_les_travaux_planifies_fixent_une_langue(self):
+        """sans langue au contexte, le suivi des états écrit au chatter sortait en anglais."""
+        import ast
+        from odoo.tools import file_open
+        for fichier, methodes in {'bf_nfc_gen/models/bf_nfc_gen.py': ['_cron_perimer', 'set_state']}.items():
+            with file_open(fichier) as f:
+                arbre = ast.parse(f.read())
+            for methode in methodes:
+                fonction = [n for n in ast.walk(arbre) if isinstance(n, ast.FunctionDef) and n.name == methode]
+                self.assertEqual(len(fonction), 1, methode)
+                source = ast.unparse(fonction[0])
+                self.assertIn("if not self.env.lang:", source, methode)
+                self.assertIn("get_lang(self.env).code", source, methode)

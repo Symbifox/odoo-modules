@@ -60,43 +60,47 @@ def _libelle(record, champ):
 
 class FederationOutreachReport(models.Model):
     _name = "federation.outreach.report"
-    _description = "Suivi de démarchage fédéré"
+    _description = "Federated prospecting report"
     _inherit = ["mail.thread", "federation.federable"]
     _order = "write_date desc, id desc"
 
     _federation_kind = "outreach"
     _federation_verbs = ("card", "exclude")
 
-    name = fields.Char(string="Suivi", required=True, tracking=True)
+    name = fields.Char(string="Report", required=True, tracking=True)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one("res.company", string="Société", required=True,
+    company_id = fields.Many2one("res.company", string="Company", required=True,
                                  default=lambda self: self.env.company, index=True)
     campaign_ref = fields.Reference(
-        selection="_selection_campaign", string="Campagne", copy=False,
-        help="La campagne d'où ce suivi est tiré. Vide sur un suivi reçu d'un pair.")
+        selection="_selection_campaign", string="Campaign", copy=False,
+        help="The campaign this report is drawn from. Empty on a report "
+             "received from a peer.")
     client_partner_id = fields.Many2one(
-        "res.partner", string="Client mandant", tracking=True,
-        help="Le client pour qui la campagne est menée. C'est lui qui détermine le pair "
-             "qui peut recevoir le suivi : sans client mandant, aucun pair n'est proposé.")
+        "res.partner", string="Commissioning client", tracking=True,
+        help="The client the campaign is run for. That client determines "
+             "the peer that can receive the report: with no commissioning "
+             "client, no peer is offered.")
     include_contacts = fields.Boolean(
-        string="Inclure les personnes-ressources", tracking=True,
-        help="Par défaut, seule l'entreprise ciblée traverse, avec son étape et ses touches datées. "
-             "Cochez pour faire traverser aussi le nom de la personne-ressource, sa fonction, ses "
-             "coordonnées et le résumé des touches : à réserver à un mandat où le client est "
-             "responsable de ces renseignements.")
-    campaign_status = fields.Char(string="Code de l'état", readonly=True)
-    campaign_status_label = fields.Char(string="État de la campagne", readonly=True)
-    date_start = fields.Date(string="Début", readonly=True)
-    date_end = fields.Date(string="Fin prévue", readonly=True)
-    description = fields.Text(string="Argumentaire", readonly=True)
-    last_refresh = fields.Datetime(string="Rafraîchi le", readonly=True, copy=False)
-    line_ids = fields.One2many("federation.outreach.report.line", "report_id", string="Lignes du suivi")
-    target_count = fields.Integer(string="Cibles", compute="_compute_counts", store=True)
-    contacted_count = fields.Integer(string="Jointes", compute="_compute_counts", store=True)
-    replied_count = fields.Integer(string="Ont répondu", compute="_compute_counts", store=True)
-    excluded_count = fields.Integer(string="Écartées", compute="_compute_counts", store=True)
+        string="Include contact people", tracking=True,
+        help="By default, only the targeted company crosses over, with "
+             "its stage and dated touches. Tick to also send the contact "
+             "person's name, job title, contact details and touch "
+             "summaries: reserve this for a mandate where the client is "
+             "responsible for that information.")
+    campaign_status = fields.Char(string="Status code", readonly=True)
+    campaign_status_label = fields.Char(string="Campaign status", readonly=True)
+    date_start = fields.Date(string="Start", readonly=True)
+    date_end = fields.Date(string="Planned end", readonly=True)
+    description = fields.Text(string="Pitch", readonly=True)
+    last_refresh = fields.Datetime(string="Refreshed on", readonly=True, copy=False)
+    line_ids = fields.One2many("federation.outreach.report.line", "report_id", string="Report "
+                                                                                      "lines")
+    target_count = fields.Integer(string="Targets", compute="_compute_counts", store=True)
+    contacted_count = fields.Integer(string="Reached", compute="_compute_counts", store=True)
+    replied_count = fields.Integer(string="Has responded", compute="_compute_counts", store=True)
+    excluded_count = fields.Integer(string="Excluded", compute="_compute_counts", store=True)
     federation_is_mirror = fields.Boolean(
-        string="Suivi reçu d'un pair", compute="_compute_federation_is_mirror", store=True)
+        string="Report received from a peer", compute="_compute_federation_is_mirror", store=True)
 
     @api.model
     def _selection_campaign(self):
@@ -134,10 +138,10 @@ class FederationOutreachReport(models.Model):
         return super()._check_federation_peer_allowed()
 
     def _federation_label_the(self):
-        return _("le suivi de démarchage")
+        return _("the prospecting report")
 
     def _federation_label_this(self):
-        return _("ce suivi de démarchage")
+        return _("this prospecting report")
 
     def _federation_watched(self):
         return ("name", "include_contacts", "active", "federation_peer_id", "client_partner_id")
@@ -159,17 +163,20 @@ class FederationOutreachReport(models.Model):
 
     def _check_manager(self):
         if not self.env.su and not self.env.user.has_group("project.group_project_manager"):
-            raise AccessError(_("Rafraîchir ou écarter dans un suivi de démarchage demande le rôle "
-                                "de gestionnaire de projet."))
+            raise AccessError(_("Refreshing or setting aside in a "
+                                "prospecting report requires the project "
+                                "manager role."))
 
     def _refresh_from_campaign(self):
         self.ensure_one()
         if self.federation_is_mirror:
-            raise UserError(_("Ce suivi est reçu de %s : c'est l'agence qui le rafraîchit.")
+            raise UserError(_("This report is received from %s: the "
+                              "agency refreshes it.")
                             % self.federation_peer_id.name)
         campagne = self.campaign_ref
         if not campagne or campagne._name != CAMPAGNE or not campagne.exists():
-            raise UserError(_("Ce suivi n'est rattaché à aucune campagne de démarchage."))
+            raise UserError(_("This report is not linked to any "
+                              "prospecting campaign."))
         # Les écarts décidés par le client ne se perdent pas au rafraîchissement.
         ecarts = {l.key: (l.excluded_by_client, l.excluded_on, l.excluded_reason) for l in self.line_ids}
         lignes = []
@@ -203,7 +210,7 @@ class FederationOutreachReport(models.Model):
                 }) for t in touches],
             }))
         self.sudo().with_context(federation_inbound=True).write({
-            "name": self.name or _("Démarchage, %s") % campagne.name,
+            "name": self.name or _("Prospecting, %s") % campagne.name,
             "campaign_status": campagne.state,
             "campaign_status_label": _libelle(campagne, "state"),
             "date_start": campagne.date_start,
@@ -278,7 +285,7 @@ class FederationOutreachReport(models.Model):
         debut = transport.valid_day(card.get("date_start")) or False
         fin = transport.valid_day(card.get("date_end")) or False
         return {
-            "name": _("%s (%s)") % (transport.clean_text(card.get("name"), 240) or _("(sans titre)"),
+            "name": _("%s (%s)") % (transport.clean_text(card.get("name"), 240) or _("(untitled)"),
                                     transport.clean_text(peer.name, 40)),
             "campaign_status": transport.clean_text(card.get("status"), 40) or False,
             "campaign_status_label": transport.clean_text(card.get("status_label"), 80) or False,
@@ -347,8 +354,10 @@ class FederationOutreachReport(models.Model):
         })
         report = self.create(vals)
         report.message_post(
-            body=Markup(_("<p>Suivi de démarchage reçu de %s : <b>%s</b>, %s cible(s). Il se lit ici ; "
-                          "pour écarter une cible, ouvrez-la et utilisez <b>Écarter</b>.</p>"))
+            body=Markup(_("<p>Prospecting report received from %s: "
+                          "<b>%s</b>, %s target(s). It is read-only here; "
+                          "to set a target aside, open it and use <b>Set "
+                          "aside</b>.</p>"))
             % (peer.name, report.name, len(report.line_ids)),
             message_type="comment", subtype_xmlid="mail.mt_note")
         return report
@@ -374,7 +383,9 @@ class FederationOutreachReport(models.Model):
         ligne = self.line_ids.filtered(lambda l: l.key == key)[:1] if key else self.env["federation.outreach.report.line"]
         if not ligne:
             return False
-        motif = transport.clean_text(data.get("reason"), 200) or _("aucun motif donné")
+        motif = transport.clean_text(data.get("reason"), 200) or _("no "
+                                                                   "reason "
+                                                                   "given")
         maintenant = fields.Datetime.now()
         # La ligne passe « ne pas contacter » tout de suite : attendre le rafraîchissement du
         # lendemain la montrait écartée par le client ET encore à contacter, et la note
@@ -391,10 +402,14 @@ class FederationOutreachReport(models.Model):
                 if "do_not_contact_date" in cible._fields:
                     valeurs["do_not_contact_date"] = maintenant
                 if "do_not_contact_reason" in cible._fields:
-                    valeurs["do_not_contact_reason"] = _("Écartée par le client mandant : %s") % motif
+                    valeurs["do_not_contact_reason"] = _("Set aside by "
+                                                         "the "
+                                                         "commissioning "
+                                                         "client: %s") % motif
                 cible.sudo().with_context(tracking_disable=True).write(valeurs)
-        note = link._note(Markup(_("<p>Chez %s, la cible <b>%s</b> a été écartée : %s. Elle est passée à "
-                                   "« ne pas contacter ».</p>")) % (link.peer_id.name, ligne.name, motif))
+        note = link._note(Markup(_("<p>At %s, the target <b>%s</b> was "
+                                   "set aside: %s. It is now \"do not "
+                                   "contact\".</p>")) % (link.peer_id.name, ligne.name, motif))
         link._inbox_notify(note)
         return True
 
@@ -425,8 +440,9 @@ class FederationOutreachReport(models.Model):
             return
         for report in self:
             if report.federation_is_mirror:
-                raise UserError(_("Ce suivi est reçu de %s : il se lit ici. Pour écarter une cible, "
-                                  "ouvrez-la et utilisez Écarter.") % report.federation_peer_id.name)
+                raise UserError(_("This report is received from %s: it is "
+                                  "read-only here. To set a target aside, "
+                                  "open it and use Set aside.") % report.federation_peer_id.name)
 
     def _federation_after_write(self, vals, before, link):
         self.ensure_one()
@@ -448,42 +464,44 @@ class FederationOutreachReport(models.Model):
 
     def _federation_share_note(self, peer):
         self.ensure_one()
-        quoi = (_("les personnes-ressources, leurs coordonnées et le résumé des touches compris")
+        quoi = (_("including contact people, their contact details and "
+                  "touch summaries")
                 if self.include_contacts else
-                _("sans aucune personne-ressource ni coordonnée"))
+                _("with no contact person or contact details"))
         self.sudo().with_context(federation_inbound=True).message_post(
-            body=_("Suivi de démarchage fédéré avec %s : les cibles, leur étape et leurs touches datées, %s. "
-                   "Il se rafraîchit chaque jour.") % (peer.name, quoi),
+            body=_("Prospecting report federated with %s: the targets, "
+                   "their stage and dated touches, %s. It refreshes daily.") % (peer.name, quoi),
             message_type="comment", subtype_xmlid="mail.mt_note")
 
 
 class FederationOutreachReportLine(models.Model):
     _name = "federation.outreach.report.line"
-    _description = "Cible d'un suivi de démarchage fédéré"
+    _description = "Target of a federated prospecting report"
     _order = "name, id"
 
-    report_id = fields.Many2one("federation.outreach.report", string="Suivi", required=True,
+    report_id = fields.Many2one("federation.outreach.report", string="Report", required=True,
                                 ondelete="cascade", index=True)
     company_id = fields.Many2one(related="report_id.company_id", store=True, index=True)
     federation_is_mirror = fields.Boolean(related="report_id.federation_is_mirror")
-    key = fields.Char(string="Référence chez l'agence", required=True, index=True)
-    name = fields.Char(string="Cible", required=True)
-    contact_name = fields.Char(string="Personne-ressource")
-    function = fields.Char(string="Fonction")
-    email = fields.Char(string="Courriel")
-    phone = fields.Char(string="Téléphone")
-    stage = fields.Char(string="Étape")
-    stage_type = fields.Char(string="Type d'étape")
-    has_reply = fields.Boolean(string="A répondu")
-    next_action_date = fields.Date(string="Prochaine action")
-    next_action_kind = fields.Char(string="Type de prochaine action")
-    last_touch_date = fields.Datetime(string="Dernière touche")
-    closed_reason = fields.Char(string="Motif de clôture")
-    do_not_contact = fields.Boolean(string="Ne pas contacter")
-    excluded_by_client = fields.Boolean(string="Écartée par le client", readonly=True)
-    excluded_on = fields.Datetime(string="Écartée le", readonly=True)
-    excluded_reason = fields.Char(string="Motif de l'écart", readonly=True)
-    touch_ids = fields.One2many("federation.outreach.report.touch", "line_id", string="Historique des touches")
+    key = fields.Char(string="Reference at the agency", required=True, index=True)
+    name = fields.Char(string="Target", required=True)
+    contact_name = fields.Char(string="Contact person")
+    function = fields.Char(string="Job title")
+    email = fields.Char(string="Email")
+    phone = fields.Char(string="Phone")
+    stage = fields.Char(string="Stage")
+    stage_type = fields.Char(string="Stage type")
+    has_reply = fields.Boolean(string="Has responded")
+    next_action_date = fields.Date(string="Next action")
+    next_action_kind = fields.Char(string="Next action type")
+    last_touch_date = fields.Datetime(string="Last touch")
+    closed_reason = fields.Char(string="Closing reason")
+    do_not_contact = fields.Boolean(string="Do not contact")
+    excluded_by_client = fields.Boolean(string="Set aside by the client", readonly=True)
+    excluded_on = fields.Datetime(string="Set aside on", readonly=True)
+    excluded_reason = fields.Char(string="Reason for setting aside", readonly=True)
+    touch_ids = fields.One2many("federation.outreach.report.touch", "line_id", string="Touch "
+                                                                                      "history")
     touch_count = fields.Integer(string="Touches", compute="_compute_touch_count", store=True)
 
     @api.depends("touch_ids")
@@ -498,7 +516,8 @@ class FederationOutreachReportLine(models.Model):
             report = line.report_id
             link = report._federation_link()
             if not report.federation_is_mirror or not link or link.origin != "remote" or not link.active:
-                raise UserError(_("On n'écarte une cible que dans un suivi reçu d'une agence."))
+                raise UserError(_("A target can only be set aside in a "
+                                  "report received from an agency."))
             if line.excluded_by_client:
                 continue
             motif = transport.clean_text(reason, 200) or False
@@ -506,8 +525,8 @@ class FederationOutreachReportLine(models.Model):
                 "excluded_by_client": True, "excluded_on": fields.Datetime.now(), "excluded_reason": motif})
             link.peer_id._enqueue("outreach.exclude", {"key": line.key, "reason": motif or ""}, link)
             report.sudo().with_context(federation_inbound=True).message_post(
-                body=_("Cible « %s » écartée et signalée à %s%s.")
-                % (line.name, link.peer_id.name, (_(" : %s") % motif) if motif else ""),
+                body=_("Target \"%s\" set aside and reported to %s%s.")
+                % (line.name, link.peer_id.name, (_(": %s") % motif) if motif else ""),
                 author_id=self.env.user.partner_id.id,
                 message_type="comment", subtype_xmlid="mail.mt_note")
         return True
@@ -516,7 +535,8 @@ class FederationOutreachReportLine(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window", "res_model": "federation.outreach.exclude.wizard",
-            "view_mode": "form", "target": "new", "name": _("Écarter une cible"),
+            "view_mode": "form", "target": "new", "name": _("Set a target "
+                                                            "aside"),
             "context": {"default_line_id": self.id},
         }
 
@@ -524,31 +544,35 @@ class FederationOutreachReportLine(models.Model):
         """Une cible reçue se lit : seul l'écart passe, et il passe par son action."""
         if not self.env.context.get("federation_inbound") and not self.env.su:
             if any(l.federation_is_mirror for l in self):
-                raise UserError(_("Les cibles de ce suivi sont reçues de l'agence : elles se lisent ici."))
+                raise UserError(_("The targets of this report are "
+                                  "received from the agency: they are "
+                                  "read-only here."))
         return super().write(vals)
 
 
 class FederationOutreachReportTouch(models.Model):
     _name = "federation.outreach.report.touch"
-    _description = "Touche d'un suivi de démarchage fédéré"
+    _description = "Touch of a federated prospecting report"
     _order = "date desc, id desc"
 
-    line_id = fields.Many2one("federation.outreach.report.line", string="Cible", required=True,
+    line_id = fields.Many2one("federation.outreach.report.line", string="Target", required=True,
                               ondelete="cascade", index=True)
     company_id = fields.Many2one(related="line_id.company_id", store=True, index=True)
     date = fields.Datetime(string="Date")
     kind = fields.Char(string="Type")
-    direction = fields.Char(string="Sens")
-    outcome = fields.Char(string="Issue")
-    summary = fields.Char(string="Résumé")
+    direction = fields.Char(string="Direction")
+    outcome = fields.Char(string="Outcome")
+    summary = fields.Char(string="Summary")
 
 
 class FederationOutreachExcludeWizard(models.TransientModel):
     _name = "federation.outreach.exclude.wizard"
-    _description = "Écarter une cible d'un suivi de démarchage"
+    _description = "Set aside a target of a prospecting report"
 
-    line_id = fields.Many2one("federation.outreach.report.line", string="Cible", required=True)
-    reason = fields.Char(string="Motif", help="Ce qui partira chez l'agence. Par exemple : déjà notre client.")
+    line_id = fields.Many2one("federation.outreach.report.line", string="Target", required=True)
+    reason = fields.Char(string="Reason", help="What will go to the "
+                                              "agency. For example: "
+                                              "already our customer.")
 
     def action_confirm(self):
         self.ensure_one()

@@ -5,13 +5,13 @@
         <field name="name">bf.celebration.occasion.list</field>
         <field name="model">bf.celebration.occasion</field>
         <field name="arch" type="xml">
-            <list string="Célébrations" default_order="date">
+            <list string="Celebrations" default_order="date">
                 <field name="date"/>
                 <field name="person_name"/>
                 <field name="occasion_type"/>
                 <field name="years" optional="show"/>
                 <field name="organizer_id" optional="show"/>
-                <field name="board_count" string="Cartes"/>
+                <field name="board_count" string="Cards"/>
                 <field name="allow_board" optional="hide"/>
                 <field name="state" widget="badge"
                        decoration-success="state == 'upcoming'"
@@ -26,7 +26,7 @@
         <field name="name">bf.celebration.occasion.calendar</field>
         <field name="model">bf.celebration.occasion</field>
         <field name="arch" type="xml">
-            <calendar string="Calendrier des célébrations" date_start="date"
+            <calendar string="Celebrations calendar" date_start="date"
                       color="occasion_type" mode="month" quick_create="0">
                 <field name="person_name"/>
                 <field name="occasion_type"/>
@@ -41,12 +41,12 @@
             <form string="Occasion">
                 <header>
                     <button name="action_creer_tableau" type="object"
-                            string="Créer la carte" class="btn-primary"
+                            string="Create the card" class="btn-primary"
                             invisible="not allow_board or state != 'upcoming'"/>
                     <button name="action_cloturer" type="object"
-                            string="Marquer passée"
+                            string="Mark as past"
                             invisible="state != 'upcoming' or date"
-                            help="Une occasion sans date ne se ferme pas toute seule."/>
+                            help="An occasion with no date does not close on its own."/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="upcoming,done"/>
                 </header>
@@ -56,7 +56,7 @@
                                 class="oe_stat_button" icon="fa-envelope-open-o"
                                 invisible="board_count == 0">
                             <field name="board_count" widget="statinfo"
-                                   string="Cartes"/>
+                                   string="Cards"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -67,9 +67,9 @@
                             <field name="occasion_type"/>
                             <field name="date"/>
                             <div class="text-muted" colspan="2" invisible="date">
-                                Sans date : l'occasion reste « à venir » jusqu'à
-                                ce que sa carte soit livrée ou qu'on la marque
-                                passée. Ni rappel ni agenda, faute de jour.
+                                No date: the occasion stays "upcoming" until
+                                its card is delivered or somebody marks it
+                                past. No reminder and no calendar, for want of a day.
                             </div>
                             <field name="years"
                                    invisible="occasion_type != 'work_anniversary'"/>
@@ -85,8 +85,8 @@
                     <group>
                         <field name="allow_board" readonly="1"/>
                         <div class="text-muted" invisible="allow_board">
-                            Cette personne a demandé qu'on souligne la date
-                            sans monter de carte collective.
+                            This person has asked that the date be marked
+                            without a group card.
                         </div>
                     </group>
                     <field name="reminder_sent" invisible="1"/>
@@ -101,24 +101,24 @@
         <field name="name">bf.celebration.occasion.search</field>
         <field name="model">bf.celebration.occasion</field>
         <field name="arch" type="xml">
-            <search string="Célébrations">
+            <search string="Celebrations">
                 <field name="person_name"/>
                 <field name="organizer_id"/>
-                <filter name="a_venir" string="À venir"
+                <filter name="a_venir" string="Upcoming"
                         domain="[('state', '=', 'upcoming')]"/>
-                <filter name="sans_carte" string="Sans carte encore"
+                <filter name="sans_carte" string="Without a card yet"
                         domain="[('board_ids', '=', False), ('allow_board', '=', True), ('state', '=', 'upcoming')]"/>
-                <filter name="sans_date" string="Sans date"
+                <filter name="sans_date" string="No date"
                         domain="[('date', '=', False)]"/>
                 <separator/>
-                <filter name="mes_occasions" string="Que j'organise"
+                <filter name="mes_occasions" string="That I organise"
                         domain="[('organizer_id', '=', uid)]"/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter name="par_type" string="Type"
                             context="{'group_by': 'occasion_type'}"/>
-                    <filter name="par_mois" string="Mois"
+                    <filter name="par_mois" string="Month"
                             context="{'group_by': 'date:month'}"/>
-                    <filter name="par_organisateur" string="Qui organise"
+                    <filter name="par_organisateur" string="Who organises"
                             context="{'group_by': 'organizer_id'}"/>
                 </group>
             </search>
@@ -126,16 +126,16 @@
     </record>
 
     <record id="action_celebration_occasion" model="ir.actions.act_window">
-        <field name="name">Calendrier des célébrations</field>
+        <field name="name">Celebrations calendar</field>
         <field name="res_model">bf.celebration.occasion</field>
         <field name="view_mode">calendar,list,form</field>
         <field name="context">{'search_default_a_venir': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Rien au calendrier pour l'instant</p>
-            <p>Les occasions naissent des réponses que les gens donnent
-               eux-mêmes dans « Mes célébrations ». Aucune date n'est prise
-               dans le dossier RH. Une promotion, un rétablissement, un
-               départ se créent ici, avec ou sans date.</p>
+            <p class="o_view_nocontent_smiling_face">Nothing in the calendar yet</p>
+            <p>Occasions come from the answers people give
+               themselves in "My celebrations". No date is taken
+               from the HR record. A promotion, a recovery, a
+               departure are created here, with or without a date.</p>
         </field>
     </record>
 

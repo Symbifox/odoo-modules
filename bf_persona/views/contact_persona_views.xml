@@ -8,19 +8,19 @@
             <form>
                 <header>
                     <button name="action_refresh_facts"
-                            type="object" string="Mesurer maintenant"
-                            help="Relit les courriels échangés avec ce contact et recalcule la relation."/>
+                            type="object" string="Measure now"
+                            help="Re-reads the emails exchanged with this contact and recomputes the relationship."/>
                     <button name="action_launch_persona_skill"
-                            type="object" string="Lancer Claude /persona refresh"
+                            type="object" string="Launch Claude /persona refresh"
                             context="{'default_mode': 'refresh'}"
-                            help="Ouvre le panneau Claude avec /persona refresh pré-rempli."/>
+                            help="Opens the Claude panel with /persona refresh pre-filled."/>
                     <button name="action_link_knowledge_items"
-                            type="object" string="Lier les éléments de matrice"
-                            help="Cherche les éléments de matrice où ce contact apparaît (décideur, consulté, informé) et les ajoute aux connaissances partagées."/>
+                            type="object" string="Link the matrix items"
+                            help="Looks for the matrix items where this contact appears (decision maker, consulted, informed) and adds them to the shared knowledge."/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Relation dégradée" bg_color="text-bg-danger" invisible="relationship_health != 'degraded'"/>
-                    <widget name="web_ribbon" title="À surveiller" bg_color="text-bg-warning" invisible="relationship_health != 'watch'"/>
+                    <widget name="web_ribbon" title="Degraded relationship" bg_color="text-bg-danger" invisible="relationship_health != 'degraded'"/>
+                    <widget name="web_ribbon" title="To watch" bg_color="text-bg-warning" invisible="relationship_health != 'watch'"/>
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="1"/>
@@ -32,8 +32,8 @@
                     </div>
                     <div class="alert alert-info py-2" role="status" invisible="not suggested_rule_count">
                         <field name="suggested_rule_count" invisible="1"/>
-                        Des règles de copie ont été suggérées d'après les courriels envoyés :
-                        les confirmer ou les rejeter dans l'onglet « Copies ».
+                        Copy rules have been suggested from the emails sent:
+                        confirm or reject them in the "Copies" tab.
                     </div>
                     <group>
                         <group>
@@ -43,7 +43,7 @@
                             <field name="closing_formula"/>
                             <field name="preferred_language"/>
                         </group>
-                        <group string="Relation, mesurée sur les courriels">
+                        <group string="Relationship, measured on the emails">
                             <field name="relationship_health" readonly="1"/>
                             <field name="last_inbound_date"/>
                             <field name="last_outbound_date"/>
@@ -52,12 +52,12 @@
                             <field name="unanswered_count" decoration-warning="unanswered_count &gt;= 2"/>
                             <field name="unanswered_since" invisible="not unanswered_count"/>
                             <field name="our_words_median" decoration-warning="our_words_median &gt;= 120"/>
-                            <field name="facts_refreshed_at" string="Mesuré le"/>
+                            <field name="facts_refreshed_at" string="Measured on"/>
                             <field name="active" invisible="1"/>
                         </group>
                     </group>
                     <group>
-                        <field name="custom_appellations" placeholder="Ex. : écrire à info@ pour la documentation ; pièces jointes plutôt que liens ; tutoiement (ancien collègue)."/>
+                        <field name="custom_appellations" placeholder="E.g.: write to info@ for the documentation; attachments rather than links; informal address (former colleague)."/>
                     </group>
                     <notebook>
                         <page string="Copies" name="cc">
@@ -72,20 +72,20 @@
                                     <field name="evidence" optional="show"/>
                                     <field name="category_id" optional="hide"/>
                                     <field name="notes" optional="hide"/>
-                                    <button name="action_confirm" type="object" string="Confirmer"
+                                    <button name="action_confirm" type="object" string="Confirm"
                                             icon="fa-check" invisible="state != 'suggested'"/>
-                                    <button name="action_reject" type="object" string="Rejeter"
+                                    <button name="action_reject" type="object" string="Reject"
                                             icon="fa-times" invisible="state != 'suggested'"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Ton" name="tone">
+                        <page string="Tone" name="tone">
                             <group>
-                                <group string="Leur ton envers nous">
+                                <group string="Their tone towards us">
                                     <field name="tone_summary"/>
                                     <field name="tone_notes" nolabel="1" colspan="2"/>
                                 </group>
-                                <group string="Notre ton envers eux">
+                                <group string="Our tone towards them">
                                     <field name="our_tone_summary"/>
                                     <field name="our_tone_notes" nolabel="1" colspan="2"/>
                                 </group>
@@ -94,7 +94,7 @@
                                 <field name="tone_last_assessed"/>
                             </group>
                         </page>
-                        <page string="Payeur" name="payer" groups="bf_persona.group_persona_manager">
+                        <page string="Payer" name="payer" groups="bf_persona.group_persona_manager">
                             <group>
                                 <group>
                                     <field name="payer_quality"/>
@@ -104,10 +104,10 @@
                             <separator string="Notes"/>
                             <field name="payer_notes"/>
                         </page>
-                        <page string="Détails personnels" name="personal" groups="bf_persona.group_persona_manager">
+                        <page string="Personal details" name="personal" groups="bf_persona.group_persona_manager">
                             <field name="personal_details"/>
                         </page>
-                        <page string="Connaissances partagées" name="knowledge">
+                        <page string="Shared knowledge" name="knowledge">
                             <field name="shared_knowledge_item_ids" widget="many2many_tags"
                                    options="{'no_create': True}"/>
                         </page>
@@ -123,7 +123,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Ce que Gen reçoit" name="claude">
+                        <page string="What Gen receives" name="claude">
                             <field name="claude_context_summary" readonly="1"/>
                         </page>
                     </notebook>
@@ -163,43 +163,43 @@
                 <field name="partner_id"/>
                 <field name="preferred_salutation"/>
                 <separator/>
-                <filter string="Tutoiement" name="filter_tu"
+                <filter string="Informal (tu)" name="filter_tu"
                         domain="[('addressing_style','=','tu')]"/>
-                <filter string="Vouvoiement" name="filter_vous"
+                <filter string="Formal (vous)" name="filter_vous"
                         domain="[('addressing_style','=','vous')]"/>
                 <separator/>
-                <filter string="Relation dégradée" name="filter_health_degraded"
+                <filter string="Degraded relationship" name="filter_health_degraded"
                         domain="[('relationship_health','=','degraded')]"/>
-                <filter string="À surveiller" name="filter_health_watch"
+                <filter string="To watch" name="filter_health_watch"
                         domain="[('relationship_health','=','watch')]"/>
-                <filter string="Saine" name="filter_health_healthy"
+                <filter string="Healthy" name="filter_health_healthy"
                         domain="[('relationship_health','=','healthy')]"/>
                 <separator/>
-                <filter string="Courriels sans réponse" name="filter_unanswered"
+                <filter string="Unanswered emails" name="filter_unanswered"
                         domain="[('unanswered_count','&gt;=',2)]"/>
-                <filter string="Nos courriels trop longs" name="filter_long"
+                <filter string="Our overly long emails" name="filter_long"
                         domain="[('our_words_median','&gt;=',120)]"/>
-                <filter string="Règles de copie suggérées" name="filter_suggested_rules"
+                <filter string="Suggested copy rules" name="filter_suggested_rules"
                         domain="[('cc_rule_ids.state','=','suggested')]"/>
                 <separator/>
-                <filter string="Ton tendu" name="filter_tense"
+                <filter string="Tense tone" name="filter_tense"
                         domain="[('tone_summary','=','tense')]"/>
-                <filter string="Payeur lent ou mauvais" name="filter_slow_payer"
+                <filter string="Slow or poor payer" name="filter_slow_payer"
                         domain="[('payer_quality','in',('slow','poor'))]"
                         groups="bf_persona.group_persona_manager"/>
-                <filter string="Style à compléter (auto)" name="filter_addressing_auto"
+                <filter string="Form of address to fill in (auto)" name="filter_addressing_auto"
                         domain="[('addressing_style','=','auto')]"/>
                 <separator/>
-                <filter string="Archivés" name="filter_archived"
+                <filter string="Archived" name="filter_archived"
                         domain="[('active','=',False)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter string="Santé relationnelle"
+                <group expand="0" string="Group By">
+                    <filter string="Relationship health"
                             name="group_health" context="{'group_by': 'relationship_health'}"/>
                     <filter string="Style"
                             name="group_style" context="{'group_by': 'addressing_style'}"/>
-                    <filter string="Leur ton"
+                    <filter string="Their tone"
                             name="group_tone" context="{'group_by': 'tone_summary'}"/>
-                    <filter string="Payeur"
+                    <filter string="Payer"
                             name="group_payer" context="{'group_by': 'payer_quality'}"
                             groups="bf_persona.group_persona_manager"/>
                 </group>

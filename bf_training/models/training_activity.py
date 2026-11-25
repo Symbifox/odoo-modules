@@ -1,16 +1,16 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 #: Comment la formation se donne. Le mode décide seul de deux choses : si un plan
 #: de formation est exigé pour que la dépense soit admissible, et si un
 #: accompagnement doit être offert pendant l'apprentissage.
 MODES = [
-    ("classroom", "En salle"),
-    ("elearning", "En ligne"),
-    ("on_the_job", "Entraînement à la tâche"),
-    ("self_study", "Apprentissage individuel"),
-    ("external", "Externe"),
-    ("conference", "Colloque ou congrès"),
-    ("professional_order", "Ordre professionnel"),
+    ("classroom", "In class"),
+    ("elearning", "Online"),
+    ("on_the_job", "On-the-job training"),
+    ("self_study", "Self-directed learning"),
+    ("external", "External"),
+    ("conference", "Conference or convention"),
+    ("professional_order", "Professional order"),
 ]
 
 #: Les modes où l'apprentissage n'est pas encadré par un tiers : c'est la durée
@@ -19,12 +19,12 @@ MODES = [
 MODES_SOUS_PLAN = ("on_the_job", "self_study", "elearning")
 
 TYPES_FOURNISSEUR = [
-    ("internal", "L'employeur lui-même"),
-    ("recognized_school", "Établissement d'enseignement reconnu"),
-    ("certified_body", "Organisme ou formateur agréé"),
-    ("professional_order", "Ordre professionnel"),
-    ("association", "Association de perfectionnement"),
-    ("other", "Autre"),
+    ("internal", "The employer itself"),
+    ("recognized_school", "Recognized educational institution"),
+    ("certified_body", "Accredited body or trainer"),
+    ("professional_order", "Professional order"),
+    ("association", "Professional development association"),
+    ("other", "Other"),
 ]
 
 
@@ -37,68 +37,70 @@ class BfTrainingActivity(models.Model):
     """
 
     _name = "bf.training.activity"
-    _description = "Activité de formation"
+    _description = "Training activity"
     _inherit = ["mail.thread"]
     _order = "name"
 
-    name = fields.Char(string="Activité", required=True, translate=True, tracking=True)
+    name = fields.Char(string="Activity", required=True, translate=True, tracking=True)
     code = fields.Char(string="Code")
-    active = fields.Boolean(string="Actif", default=True)
+    active = fields.Boolean(string="Active", default=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company, index=True)
     category_id = fields.Many2one(
-        "bf.training.category", string="Catégorie", index=True, tracking=True)
+        "bf.training.category", string="Category", index=True, tracking=True)
     mode = fields.Selection(
         MODES, string="Mode", required=True, default="classroom", tracking=True)
     duration_hours = fields.Float(
-        string="Durée prévue (h)", digits=(6, 2), tracking=True,
-        help="Les heures inscrites au plan. Une réalisation peut en déclarer "
-             "d'autres : ce sont celles de la réalisation qui comptent.")
+        string="Planned duration (h)", digits=(6, 2), tracking=True,
+        help="The hours written in the plan. A completion may declare "
+             "different ones: the completion's hours are the ones that "
+             "count.")
     provider_type = fields.Selection(
-        TYPES_FOURNISSEUR, string="Type de formateur", default="internal", tracking=True)
+        TYPES_FOURNISSEUR, string="Trainer type", default="internal", tracking=True)
     provider_partner_id = fields.Many2one(
-        "res.partner", string="Formateur ou organisme")
+        "res.partner", string="Trainer or body")
     validity_months = fields.Integer(
-        string="Validité (mois)", tracking=True,
-        help="0 signifie que la formation ne périme pas. Sinon, la date "
-             "d'expiration d'une réalisation se calcule depuis sa date de "
-             "réalisation.")
+        string="Validity (months)", tracking=True,
+        help="0 means the training never expires. Otherwise a "
+             "completion's expiry date is computed from the date it was "
+             "completed.")
     requires_plan = fields.Boolean(
-        string="Exige un plan de formation", compute="_compute_requires_plan",
+        string="Requires a training plan", compute="_compute_requires_plan",
         store=True, readonly=False,
-        help="Pour l'entraînement à la tâche et l'apprentissage individuel, y "
-             "compris en ligne, la durée doit être établie dans un plan de "
-             "formation pour que la dépense soit admissible.")
+        help="For on-the-job training and self-directed learning, online "
+             "included, the duration must be set out in a training plan "
+             "for the expense to be eligible.")
     requires_support = fields.Boolean(
-        string="Accompagnement offert", compute="_compute_requires_plan",
+        string="Support provided", compute="_compute_requires_plan",
         store=True, readonly=False,
-        help="Un accompagnement pendant l'apprentissage, ou une interaction "
-             "possible avec l'organisateur, est exigé pour l'apprentissage "
-             "individuel par les technologies de l'information.")
+        help="Support during the learning, or the possibility of "
+             "interacting with the organiser, is required for "
+             "self-directed learning through information technology.")
     content_version = fields.Integer(
-        string="Version du contenu", default=1, required=True, tracking=True,
-        help="À monter quand le contenu change au point que ceux qui l'ont suivi "
-             "devraient le refaire.")
+        string="Content version", default=1, required=True, tracking=True,
+        help="To be bumped when the content changes enough that anyone "
+             "who took it should take it again.")
     reopen_on_change = fields.Boolean(
-        string="Rouvrir au changement de version", default=False, tracking=True,
-        help="Une réalisation obtenue sur une version antérieure ne couvre plus "
-             "l'exigence. Sans cela, tout l'effectif formé sur l'ancienne "
-             "version reste affiché à jour sur la nouvelle.")
+        string="Reopen when the version changes", default=False, tracking=True,
+        help="A completion obtained on an earlier version no longer "
+             "covers the requirement. Without this, everybody trained on "
+             "the old version keeps showing as up to date on the new one.")
     employer_issues_attestation = fields.Boolean(
-        string="Attestation délivrée par l'employeur", default=False,
-        help="À cocher quand personne d'autre n'en délivre. L'employeur doit "
-             "alors pouvoir en produire une, qui précise l'objet de l'activité.")
+        string="Certificate issued by the employer", default=False,
+        help="Tick this when nobody else issues one. The employer must "
+             "then be able to produce one, stating what the activity was "
+             "about.")
     description = fields.Html(string="Description", translate=True, sanitize_attributes=False)
-    record_ids = fields.One2many("bf.training.record", "activity_id", string="Réalisations")
+    record_ids = fields.One2many("bf.training.record", "activity_id", string="Completions")
     record_count = fields.Integer(
-        string="Nombre de réalisations", compute="_compute_record_count")
+        string="Number of completions", compute="_compute_record_count")
 
     _sql_constraints = [
         ("duration_positive", "check (duration_hours >= 0)",
-         "Une durée ne peut pas être négative."),
+         "A duration cannot be negative."),
         ("validity_positive", "check (validity_months >= 0)",
-         "Une validité ne peut pas être négative."),
+         "A validity cannot be negative."),
     ]
 
     @api.depends("mode")
@@ -128,7 +130,7 @@ class BfTrainingActivity(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Réalisations",
+            "name": _("Completions"),
             "res_model": "bf.training.record",
             "view_mode": "list,form",
             "domain": [("activity_id", "=", self.id)],

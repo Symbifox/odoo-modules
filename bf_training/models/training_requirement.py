@@ -21,85 +21,89 @@ class BfTrainingRequirement(models.Model):
     """
 
     _name = "bf.training.requirement"
-    _description = "Exigence de formation"
+    _description = "Training requirement"
     _inherit = ["mail.thread"]
     _order = "sequence, name"
 
-    name = fields.Char(string="Exigence", required=True, translate=True, tracking=True)
-    sequence = fields.Integer(string="Ordre", default=10)
-    active = fields.Boolean(string="Actif", default=True)
+    name = fields.Char(string="Requirement", required=True, translate=True, tracking=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company, index=True)
 
     requirement_type = fields.Selection(
-        [("activity", "Une activité précise"),
-         ("hours", "Un nombre d'heures par catégorie")],
-        string="Forme", required=True, default="activity", tracking=True)
+        [("activity", "One specific activity"),
+         ("hours", "A number of hours per category")],
+        string="Form", required=True, default="activity", tracking=True)
     activity_id = fields.Many2one(
-        "bf.training.activity", string="Activité exigée", tracking=True)
+        "bf.training.activity", string="Required activity", tracking=True)
     category_ids = fields.Many2many(
         "bf.training.category", "bf_training_req_cat_rel", "requirement_id", "category_id",
-        string="Catégories comptées",
-        help="Vide signifie toutes les catégories.")
+        string="Categories counted",
+        help="Empty means every category.")
     excluded_category_ids = fields.Many2many(
         "bf.training.category", "bf_training_req_cat_excl_rel", "requirement_id", "category_id",
-        string="Catégories exclues",
-        help="Des heures bien réelles qui ne comptent pas pour cette exigence.")
-    min_hours = fields.Float(string="Heures exigées", digits=(6, 2))
+        string="Categories excluded",
+        help="Hours that are real enough but do not count towards this "
+             "requirement.")
+    min_hours = fields.Float(string="Hours required", digits=(6, 2))
 
     period = fields.Selection(
-        [("once", "Une fois"),
-         ("annual", "Par année civile"),
-         ("rolling", "Sur une période glissante")],
-        string="Période", required=True, default="once", tracking=True)
-    rolling_months = fields.Integer(string="Mois glissants", default=12)
+        [("once", "Once"),
+         ("annual", "Per calendar year"),
+         ("rolling", "Over a rolling period")],
+        string="Period", required=True, default="once", tracking=True)
+    rolling_months = fields.Integer(string="Rolling months", default=12)
 
     scope = fields.Selection(
-        [("company", "Toute la société"),
-         ("department", "Un département"),
-         ("job", "Un poste"),
-         ("employees", "Des personnes nommées")],
-        string="Portée", required=True, default="company", tracking=True)
-    department_id = fields.Many2one("hr.department", string="Département")
-    job_id = fields.Many2one("hr.job", string="Poste")
-    employee_ids = fields.Many2many("hr.employee", string="Personnes visées")
+        [("company", "The whole company"),
+         ("department", "A department"),
+         ("job", "A job position"),
+         ("employees", "Named people")],
+        string="Scope", required=True, default="company", tracking=True)
+    department_id = fields.Many2one("hr.department", string="Department")
+    job_id = fields.Many2one("hr.job", string="Job position")
+    employee_ids = fields.Many2many("hr.employee", string="People covered")
 
     trigger = fields.Selection(
-        [("hire", "À partir de l'embauche"),
-         ("fixed", "À partir d'une date fixe"),
-         ("immediate", "Immédiatement")],
-        string="Déclencheur", required=True, default="immediate", tracking=True)
+        [("hire", "From the hire date"),
+         ("fixed", "From a fixed date"),
+         ("immediate", "Immediately")],
+        string="Trigger", required=True, default="immediate", tracking=True)
     delay_days = fields.Integer(
-        string="Délai (jours)",
-        help="Le temps accordé après le déclencheur. Une obligation qui doit "
-             "être remplie dans l'année de l'embauche se règle à 365.")
-    start_date = fields.Date(string="Date fixe")
+        string="Deadline (days)",
+        help="The time allowed after the trigger. An obligation that must "
+             "be met within the year of hiring is set to 365.")
+    start_date = fields.Date(string="Fixed date")
     renewal_months = fields.Integer(
-        string="Renouvellement (mois)",
-        help="0 prend la validité de l'activité. Sinon, cette valeur prime.")
-    warn_days = fields.Integer(string="Préavis (jours)", default=90)
+        string="Renewal (months)",
+        help="0 takes the activity's validity. Otherwise this value wins.")
+    warn_days = fields.Integer(string="Advance notice (days)", default=90)
 
     legal_basis = fields.Char(
-        string="Base réglementaire", tracking=True,
-        help="L'intitulé et l'article, au long.")
-    legal_reference = fields.Char(string="Référence", help="Le chapitre ou le numéro.")
-    legal_text = fields.Text(string="Texte cité", help="L'extrait, tel qu'il est écrit.")
+        string="Regulatory basis", tracking=True,
+        help="The title and the section, in full.")
+    legal_reference = fields.Char(string="Reference", help="The chapter "
+                                                           "or the number.")
+    legal_text = fields.Text(string="Quoted text", help="The excerpt, "
+                                                       "exactly as "
+                                                       "written.")
     note = fields.Html(string="Note", sanitize_attributes=False)
 
     obligation_ids = fields.One2many(
         "bf.training.obligation", "requirement_id", string="Obligations")
     obligation_count = fields.Integer(
-        string="Nombre de personnes visées", compute="_compute_couverture")
-    covered_count = fields.Integer(string="À jour", compute="_compute_couverture")
+        string="Number of people covered", compute="_compute_couverture")
+    covered_count = fields.Integer(string="Up to date", compute="_compute_couverture")
     coverage_rate = fields.Float(
-        string="Couverture (%)", compute="_compute_couverture", digits=(5, 1))
+        string="Coverage (%)", compute="_compute_couverture", digits=(5, 1))
 
     _sql_constraints = [
         ("rolling_positive", "check (rolling_months >= 0)",
-         "Un nombre de mois ne peut pas être négatif."),
+         "A number of months cannot be negative."),
         ("delay_positive", "check (delay_days >= 0)",
-         "Un délai ne peut pas être négatif."),
+         "A deadline cannot be negative."),
     ]
 
     @api.constrains("requirement_type", "activity_id", "min_hours")
@@ -107,28 +111,32 @@ class BfTrainingRequirement(models.Model):
         for rec in self:
             if rec.requirement_type == "activity" and not rec.activity_id:
                 raise ValidationError(_(
-                    "Une exigence portant sur une activité précise doit nommer "
-                    "cette activité."))
+                    "A requirement about one specific activity must name "
+                    "that activity."))
             if rec.requirement_type == "hours" and rec.min_hours <= 0:
                 raise ValidationError(_(
-                    "Une exigence en heures doit dire combien d'heures. Zéro "
-                    "heure n'est pas une exigence."))
+                    "A requirement in hours must say how many hours. Zero "
+                    "hours is not a requirement."))
 
     @api.constrains("scope", "department_id", "job_id", "employee_ids")
     def _check_portee(self):
         for rec in self:
             if rec.scope == "department" and not rec.department_id:
-                raise ValidationError(_("Une portée par département doit nommer le département."))
+                raise ValidationError(_("A scope by department must name "
+                                        "the department."))
             if rec.scope == "job" and not rec.job_id:
-                raise ValidationError(_("Une portée par poste doit nommer le poste."))
+                raise ValidationError(_("A scope by job position must "
+                                        "name the job position."))
             if rec.scope == "employees" and not rec.employee_ids:
-                raise ValidationError(_("Une portée par personnes doit nommer au moins une personne."))
+                raise ValidationError(_("A scope by people must name at "
+                                        "least one person."))
 
     @api.constrains("trigger", "start_date")
     def _check_declencheur(self):
         for rec in self:
             if rec.trigger == "fixed" and not rec.start_date:
-                raise ValidationError(_("Un déclencheur à date fixe doit porter cette date."))
+                raise ValidationError(_("A fixed-date trigger must carry "
+                                        "that date."))
 
     def _compute_couverture(self):
         groupes = self.env["bf.training.obligation"]._read_group(

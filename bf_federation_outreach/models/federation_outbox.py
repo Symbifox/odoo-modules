@@ -5,8 +5,8 @@ class FederationOutbox(models.Model):
     _inherit = "federation.outbox"
 
     kind = fields.Selection(
-        selection_add=[("outreach.share", "Partage d'un suivi de démarchage"),
-                       ("outreach.card", "Suivi de démarchage mis à jour"),
-                       ("outreach.exclude", "Cible écartée par le client")],
+        selection_add=[("outreach.share", "Prospecting report shared"),
+                       ("outreach.card", "Prospecting report updated"),
+                       ("outreach.exclude", "Target set aside by the client")],
         ondelete={"outreach.share": "cascade", "outreach.card": "cascade",
                   "outreach.exclude": "cascade"})

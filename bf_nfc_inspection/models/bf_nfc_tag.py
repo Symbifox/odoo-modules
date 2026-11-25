@@ -3,17 +3,20 @@
 🔴 La grille est un CHAMP de la pastille, jamais un paramètre : ce qu'une pastille
 fait se décide à sa création (cf. ``bf.nfc.tag._params`` du socle).
 """
-from odoo import _, api, fields, models
+from odoo import api, fields, models
+
+from .langue import langue_de
 
 
 class BfNfcTag(models.Model):
     _inherit = "bf.nfc.tag"
 
-    checklist_id = fields.Many2one("bf.nfc.checklist", string="Grille de relevé",
+    checklist_id = fields.Many2one("bf.nfc.checklist", string="Inspection "
+                                                              "checklist",
                                    ondelete="restrict", tracking=True)
-    reading_ids = fields.One2many("bf.nfc.reading", "tag_id", string="Relevés")
-    last_reading_date = fields.Datetime(string="Dernier relevé", compute="_compute_last_reading")
-    last_missed_alert = fields.Datetime(string="Dernière alerte de relevé manqué", readonly=True, copy=False)
+    reading_ids = fields.One2many("bf.nfc.reading", "tag_id", string="Readings")
+    last_reading_date = fields.Datetime(string="Last reading", compute="_compute_last_reading")
+    last_missed_alert = fields.Datetime(string="Last missed-reading alert", readonly=True, copy=False)
 
     @api.depends("reading_ids.tapped_at")
     def _compute_last_reading(self):
@@ -55,11 +58,15 @@ class BfNfcTag(models.Model):
                 continue
             responsable = grille.responsible_id or tag.create_uid
             tag.last_missed_alert = maintenant
+            # Toute la note dans la langue de la personne responsable : le travail planifié n'a
+            # pas de langue, et le nom de la grille comme le rythme se lisaient en anglais.
+            env = tag.with_context(lang=langue_de(self.env, responsable)).env
             tag.activity_schedule(
                 activity_type_id=todo.id if todo else False, user_id=responsable.id,
-                summary=_("Relevé manqué : %s", tag.place or tag.name),
-                note=_("La grille « %(grille)s » est à relever %(rythme)s, et le dernier relevé "
-                       "de cette pastille date du %(quand)s.",
-                       grille=grille.name,
-                       rythme=dict(grille._fields["periode"]._description_selection(self.env))[grille.periode].lower(),
-                       quand=fields.Datetime.context_timestamp(tag, reference).strftime("%Y-%m-%d")))
+                summary=env._("Missed reading: %s", tag.place or tag.name),
+                note=env._("The checklist “%(grille)s” must be read "
+                           "%(rythme)s, and this tag's last reading was on "
+                           "%(quand)s.",
+                           grille=grille.with_env(env).name,
+                           rythme=dict(grille._fields["periode"]._description_selection(env))[grille.periode].lower(),
+                           quand=fields.Datetime.context_timestamp(tag, reference).strftime("%Y-%m-%d")))

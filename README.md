@@ -101,14 +101,14 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_appointment_google_meet` | Symbifox Appointment — Google Meet | 18.0.1.1.0 | LGPL-3 | Adds Google Meet as a videoconference provider on appointment types. The Meet is attached to the host's own Google Calendar event; Nextcloud Talk is the fallback. |
 | `bf_appointment_meeting` | Symbifox Appointment Agenda | 18.0.1.2.0 | BUSL-1.1 | Creates the meeting agenda when an appointment is booked, and hands the booker its link |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.18.1 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
-| `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.2.0 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
+| `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.2.1 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_appointment_visit_property` | Visites de propriétés — pont Immeubles | 18.0.1.0.0 | LGPL-3 | Show a dwelling from your portfolio without retyping its address: address, occupant and the 24-hour notice for a rented unit come from the Immeubles socle |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.2.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons; on a phone, Odoo's own drawer gets the same search field |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.2.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
 | `bf_avatar` | Symbifox Avatars | 18.0.1.1.0 | BUSL-1.1 | An avatar in your house style for anyone without a photo, and a builder to make your own |
 | `bf_avatar_gamification` | Symbifox Avatars pour Fox Quest | 18.0.1.0.1 | BUSL-1.1 | Unlock avatar parts with the XP earned in Fox Quest |
 | `bf_avatar_school` | Symbifox Avatars at School | 18.0.1.0.0 | BUSL-1.1 | A minor student's avatar, without a beard or a bald head |
-| `bf_babillard` | Babillard | 18.0.1.8.0 | BUSL-1.1 | Announcements with an audience, an expiry date and named read receipts, with a confidential reporting path |
+| `bf_babillard` | Babillard | 18.0.1.8.1 | BUSL-1.1 | Announcements with an audience, an expiry date and named read receipts, with a confidential reporting path |
 | `bf_babillard_appointment_poll` | Noticeboard: availability poll | 18.0.1.0.2 | BUSL-1.1 | An editor announces on the feed that a date poll is looking for answers |
 | `bf_babillard_celebrations` | Babillard : célébrations | 18.0.1.1.0 | BUSL-1.1 | A delivered group greeting card appears on the noticeboard |
 | `bf_babillard_event` | Babillard : événements | 18.0.1.1.0 | BUSL-1.1 | Upcoming events appear on the noticeboard and follow their changes |
@@ -150,7 +150,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_calendar_subscribe_absence` | BF Calendar Subscriptions - Out of office | 18.0.1.0.0 | LGPL-3 | Repeated events of a subscribed calendar (public holidays) do not turn on the out-of-office replies. |
 | `bf_calendar_trash` | BF Calendar — trash | 18.0.1.0.2 | LGPL-3 | Deleted and archived meetings go to a trash, where they can be restored or deleted for good. A meeting moved to the trash leaves Nextcloud with it, and comes back there when restored. |
 | `bf_capture` | Captation audio | 18.0.1.4.3 | BUSL-1.1 | Record a meeting or a memo from a phone; the server names the file and drops it where the rest is already automatic |
-| `bf_celebrations` | Célébrations | 18.0.2.2.0 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
+| `bf_celebrations` | Célébrations | 18.0.2.2.1 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
 | `bf_celebrations_email` | Célébrations : groupes de destinataires | 18.0.1.0.0 | LGPL-3 | Tend une carte de fête aux groupes de destinataires du composeur de courriels |
 | `bf_charge` | Plan de charge | 18.0.1.2.0 | BUSL-1.1 | What is actually left to do, placed on weeks, against a declared capacity rather than a guessed one |
 | `bf_chatter_chronological` | BF Chatter Chronological View | 18.0.4.2.0 | LGPL-3 | Sort the chatter feed by the email's original Date header instead of insertion id (Python `_order` + `_message_fetch` + JS `Thread.fetch*` patch); cogwheel action to re-parse lost Date headers from quoted body content |
@@ -232,16 +232,16 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_employee_photo_age` | Symbifox Âge de la photo des employés | 18.0.1.0.1 | BUSL-1.1 | Know how old an employee's photo is, and remind them to update it |
 | `bf_expense_ocr` | Lecture des reçus | 18.0.2.2.0 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
 | `bf_expense_tip` | Pourboire | 18.0.1.1.0 | BUSL-1.1 | The tip on a meal receipt, entered on the expense that carries it and removed from the tax base, so input tax credits are not overstated |
-| `bf_federation` | Fédération | 18.0.1.5.3 | LGPL-3 | Federate two Odoo/Symbifox instances: share an object with the other side, messages and attachments following. The core carries tasks; satellites add deliverables, agendas, process maps and a Discuss channel |
-| `bf_federation_discuss` | Fédération : canal de discussion | 18.0.1.1.1 | BUSL-1.1 | Un canal Discuss par objet fédéré, adossé au chatter qui fait foi |
-| `bf_federation_document` | Fédération : livrables remis | 18.0.1.2.2 | BUSL-1.1 | Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu |
-| `bf_federation_gantt` | Fédération : échéanciers | 18.0.1.0.1 | BUSL-1.1 | L'échéancier d'un chantier commun vit chez les deux firmes, et une date déplacée l'est des deux côtés |
+| `bf_federation` | Fédération | 18.0.1.5.4 | LGPL-3 | Federate two Odoo/Symbifox instances: share an object with the other side, messages and attachments following. The core carries tasks; satellites add deliverables, agendas, process maps and a Discuss channel |
+| `bf_federation_discuss` | Fédération : canal de discussion | 18.0.1.1.2 | BUSL-1.1 | Un canal Discuss par objet fédéré, adossé au chatter qui fait foi |
+| `bf_federation_document` | Fédération : livrables remis | 18.0.1.2.3 | BUSL-1.1 | Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu |
+| `bf_federation_gantt` | Fédération : échéanciers | 18.0.1.0.2 | BUSL-1.1 | L'échéancier d'un chantier commun vit chez les deux firmes, et une date déplacée l'est des deux côtés |
 | `bf_federation_meeting` | Fédération : ordres du jour | 18.0.1.1.0 | BUSL-1.1 | L'ordre du jour d'une rencontre paraît chez le pair, qui peut y proposer un sujet |
-| `bf_federation_outreach` | Fédération : suivis de démarchage | 18.0.1.0.2 | BUSL-1.1 | L'agence qui démarche pour son client lui montre ses cibles et ses touches, et le client peut en écarter |
+| `bf_federation_outreach` | Fédération : suivis de démarchage | 18.0.1.0.3 | BUSL-1.1 | L'agence qui démarche pour son client lui montre ses cibles et ses touches, et le client peut en écarter |
 | `bf_federation_privacy` | Fédération : avis de violation | 18.0.1.0.0 | BUSL-1.1 | A provider's breach notice lands in the incident register of its paired client, and the acknowledgement comes back with the fingerprint of the version read |
 | `bf_federation_privacy_discuss` | Fédération : pas de canal pour un avis de violation | 18.0.1.0.0 | BUSL-1.1 | A federated breach notice has no discussion channel: its thread and the email are the record |
-| `bf_federation_process` | Fédération : cartographies | 18.0.1.2.1 | BUSL-1.1 | La cartographie du client vit chez lui, et la version qui suit y arrive toute seule |
-| `bf_federation_timesheet` | Fédération : relevés des heures | 18.0.1.0.1 | BUSL-1.1 | Le relevé des heures d'une période, remis au partenaire comme un livrable, avec son accusé de réception |
+| `bf_federation_process` | Fédération : cartographies | 18.0.1.2.2 | BUSL-1.1 | La cartographie du client vit chez lui, et la version qui suit y arrive toute seule |
+| `bf_federation_timesheet` | Fédération : relevés des heures | 18.0.1.0.2 | BUSL-1.1 | Le relevé des heures d'une période, remis au partenaire comme un livrable, avec son accusé de réception |
 | `bf_floorplan` | Plans d'étage | 18.0.1.1.3 | BUSL-1.1 | Floor plans drawn from records: rooms, desks, devices and cables, each shape backed by a form, with a built-in SVG editor, PDF and diagrams.net export |
 | `bf_floorplan_hosting` | Plans d'étage : hébergement | 18.0.1.1.1 | LGPL-3 | Hosting endpoints and servers placed on the floor plan, with attention colours and a jump from the device form to its spot |
 | `bf_flux` | Flux RSS | 18.0.1.2.3 | BUSL-1.1 | RSS and Atom feeds polled at their own pace, de-duplicated by stable id, sorted by rules per list, delivered by department, project or person in Discuss and a daily or weekly digest, with a card reader where opened items leave the to-read list, and watched topics (your company, brands, clients) searched in the news with namesakes set aside |
@@ -316,17 +316,17 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_multi_company_email` | Symbifox — Courriels multi-sociétés | 18.0.5.1.0 | LGPL-3 | Template-driven email signatures per company, quick footer links behind redirectable shortlinks, and a sender address per company |
 | `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.3.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.4.4.2 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on companies, contacts, projects and tasks, each person on their own Nextcloud account (Login Flow v2, SSO-friendly): client folders linked or created from a template, chatter attachments filed to the client folder, folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
-| `bf_nfc` | Gestes par pastille NFC | 18.0.2.6.4 | BUSL-1.1 | NFC tags that play a gesture in Odoo: three doors (app token, browser session, NTAG 424 signed tag), menus and questions, bounded offline taps, QR label twin, tag templates and a setup wizard. Signed chips are written from the app with the server driving, so the AES keys never leave Odoo |
-| `bf_nfc_event` | Pastilles NFC : la présence à une séance | 18.0.1.0.1 | BUSL-1.1 | Tap the room's tag to record attendance at the session in progress, registration created if missing |
-| `bf_nfc_gen` | Pastilles NFC : les skills de Gen | 18.0.1.0.2 | BUSL-1.1 | A tag that asks Gen to prepare a meeting's agenda or refine its minutes, from a list the administrator ticks |
-| `bf_nfc_helpdesk` | Pastilles NFC : signaler un problème | 18.0.1.1.0 | BUSL-1.1 | A tag on a customer's equipment opens a ticket already filled in: customer, place, reporter, time |
-| `bf_nfc_inspection` | Pastilles NFC : relevés et registres | 18.0.1.0.2 | BUSL-1.1 | A checklist filled in at every tap, non-conformities followed to their correction, and the register that comes out of it |
-| `bf_nfc_loan` | Pastilles NFC : le prêt d'équipement | 18.0.1.2.0 | BUSL-1.1 | Equipment loans by tag: free you take it, yours you return it, someone else's asks first; reminders past a delay |
+| `bf_nfc` | Gestes par pastille NFC | 18.0.2.6.5 | BUSL-1.1 | NFC tags that play a gesture in Odoo: three doors (app token, browser session, NTAG 424 signed tag), menus and questions, bounded offline taps, QR label twin, tag templates and a setup wizard. Signed chips are written from the app with the server driving, so the AES keys never leave Odoo |
+| `bf_nfc_event` | Pastilles NFC : la présence à une séance | 18.0.1.0.2 | BUSL-1.1 | Tap the room's tag to record attendance at the session in progress, registration created if missing |
+| `bf_nfc_gen` | Pastilles NFC : les skills de Gen | 18.0.1.0.3 | BUSL-1.1 | A tag that asks Gen to prepare a meeting's agenda or refine its minutes, from a list the administrator ticks |
+| `bf_nfc_helpdesk` | Pastilles NFC : signaler un problème | 18.0.1.1.1 | BUSL-1.1 | A tag on a customer's equipment opens a ticket already filled in: customer, place, reporter, time |
+| `bf_nfc_inspection` | Pastilles NFC : relevés et registres | 18.0.1.0.3 | BUSL-1.1 | A checklist filled in at every tap, non-conformities followed to their correction, and the register that comes out of it |
+| `bf_nfc_loan` | Pastilles NFC : le prêt d'équipement | 18.0.1.2.1 | BUSL-1.1 | Equipment loans by tag: free you take it, yours you return it, someone else's asks first; reminders past a delay |
 | `bf_nfc_meeting` | Pastilles NFC : la présence à une rencontre | 18.0.1.0.2 | BUSL-1.1 | Tap the meeting room's tag to be marked present at the meeting in progress you are invited to |
-| `bf_nfc_room` | Pastilles NFC : la salle de réunion | 18.0.1.1.0 | BUSL-1.1 | Meeting room door tag: free or taken, take 30 min or 1 h, confirm, release; unconfirmed bookings lose their room |
-| `bf_nfc_round` | Pastilles NFC : les tournées | 18.0.1.1.0 | BUSL-1.1 | Patrol and maintenance rounds: checkpoints tapped in order, offline time kept, one alert per missed round |
-| `bf_nfc_round_inspection` | Pastilles NFC : tournées avec relevé | 18.0.1.0.1 | BUSL-1.1 | A round checkpoint that carries a checklist: the pass and the reading in a single tap |
-| `bf_nfc_timer` | Pastilles NFC : le chronomètre | 18.0.1.0.1 | BUSL-1.1 | NFC tag gestures for the timesheet timer: start, stop, and stop that logs the timesheet in the same request |
+| `bf_nfc_room` | Pastilles NFC : la salle de réunion | 18.0.1.1.1 | BUSL-1.1 | Meeting room door tag: free or taken, take 30 min or 1 h, confirm, release; unconfirmed bookings lose their room |
+| `bf_nfc_round` | Pastilles NFC : les tournées | 18.0.1.1.1 | BUSL-1.1 | Patrol and maintenance rounds: checkpoints tapped in order, offline time kept, one alert per missed round |
+| `bf_nfc_round_inspection` | Pastilles NFC : tournées avec relevé | 18.0.1.0.2 | BUSL-1.1 | A round checkpoint that carries a checklist: the pass and the reading in a single tap |
+| `bf_nfc_timer` | Pastilles NFC : le chronomètre | 18.0.1.0.2 | BUSL-1.1 | NFC tag gestures for the timesheet timer: start, stop, and stop that logs the timesheet in the same request |
 | `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
 | `bf_oe2oc` | Reprise après migration Enterprise | 18.0.1.0.2 | LGPL-3 | Recover the data an Enterprise-to-Community migration left behind, and check what still needs settling |
 | `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.2.0 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
@@ -340,7 +340,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.1.1 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
 | `bf_outreach_privacy` | Démarchage — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Privacy bridge for outreach: prospecting purpose in the register, retention of prospects, a hashed opt-out list and verified destruction recorded in the register |
 | `bf_people_notebook` | People I've Met | 18.0.1.0.0 | LGPL-3 | A private notebook of the people you meet: where, what they like, the detail that lets you reconnect, without making them a contact |
-| `bf_persona` | Persona des contacts | 18.0.3.3.0 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
+| `bf_persona` | Persona des contacts | 18.0.3.3.1 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
 | `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.1.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
 | `bf_persona_privacy` | Persona des contacts — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Privacy bridge for contact personas: relationship-profile and payer-rating purpose in the register, retention from the end of the relationship, verified destruction recorded in the register, classifiable personas |
 | `bf_planogram` | Planograms | 18.0.1.0.2 | BUSL-1.1 | The shelf drawn from the records: fixtures, shelves, facings, capacity, and a version frozen for the round that counts it |
@@ -475,15 +475,15 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.14.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timesheet_timer_mobile` | Chronomètre : application Android | 18.0.1.3.2 | BUSL-1.1 | API for the Symbifox Chronomètre Android app: PKCE device pairing and timer gestures, stop and log in one request |
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.2.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
-| `bf_training` | Registre de formation | 18.0.1.4.2 | BUSL-1.1 | Qui doit quelle formation, pour quand, prouvé par quelle pièce, valide jusqu'à quand. Le registre nominatif que le lecteur eLearning ne tient pas |
-| `bf_training_budget` | Registre de formation : ce qu'elle coûte vraiment | 18.0.1.0.0 | BUSL-1.1 | Le coût des formations suivies porté au budget, et les heures dont le coût manque comptées comme manquantes plutôt que comme zéro |
+| `bf_training` | Registre de formation | 18.0.1.4.3 | BUSL-1.1 | Qui doit quelle formation, pour quand, prouvé par quelle pièce, valide jusqu'à quand. Le registre nominatif que le lecteur eLearning ne tient pas |
+| `bf_training_budget` | Registre de formation : ce qu'elle coûte vraiment | 18.0.1.0.1 | BUSL-1.1 | Le coût des formations suivies porté au budget, et les heures dont le coût manque comptées comme manquantes plutôt que comme zéro |
 | `bf_training_mobile` | Registre de formation : mes formations au téléphone | 18.0.1.0.0 | BUSL-1.1 | L'écran « mes formations » de Symbifox Mobile : ce que je dois, pour quand, et ce que j'ai déjà prouvé |
-| `bf_training_process` | Registre de formation : entraînement à la tâche | 18.0.1.0.0 | BUSL-1.1 | La formation accrochée à l'étape de processus qu'elle enseigne, et le couloir qui dit enfin qui joue le rôle |
-| `bf_training_qc` | Registre de formation : Québec | 18.0.1.0.1 | BUSL-1.1 | L'attestation que l'employeur doit pouvoir délivrer, la conservation de six ans, et le relevé de la participation au développement des compétences |
-| `bf_training_scorm` | Registre de formation : contenus SCORM | 18.0.1.0.2 | BUSL-1.1 | Jouer un paquet SCORM 1.2 ou 2004 dans l'eLearning d'Odoo, et porter sa complétion au registre |
-| `bf_training_session` | Registre de formation : la séance et sa feuille signée | 18.0.1.0.1 | BUSL-1.1 | La séance en salle tenue par Événements, et la feuille de présence signée qui en fait une preuve |
-| `bf_training_sign` | Registre de formation : accusé signé par module | 18.0.1.0.0 | BUSL-1.1 | Lire une politique et le confirmer par écrit devient une ligne du registre, datée et rattachée à la version lue |
-| `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.2 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
+| `bf_training_process` | Registre de formation : entraînement à la tâche | 18.0.1.0.1 | BUSL-1.1 | La formation accrochée à l'étape de processus qu'elle enseigne, et le couloir qui dit enfin qui joue le rôle |
+| `bf_training_qc` | Registre de formation : Québec | 18.0.1.0.2 | BUSL-1.1 | L'attestation que l'employeur doit pouvoir délivrer, la conservation de six ans, et le relevé de la participation au développement des compétences |
+| `bf_training_scorm` | Registre de formation : contenus SCORM | 18.0.1.0.3 | BUSL-1.1 | Jouer un paquet SCORM 1.2 ou 2004 dans l'eLearning d'Odoo, et porter sa complétion au registre |
+| `bf_training_session` | Registre de formation : la séance et sa feuille signée | 18.0.1.0.2 | BUSL-1.1 | La séance en salle tenue par Événements, et la feuille de présence signée qui en fait une preuve |
+| `bf_training_sign` | Registre de formation : accusé signé par module | 18.0.1.0.1 | BUSL-1.1 | Lire une politique et le confirmer par écrit devient une ligne du registre, datée et rattachée à la version lue |
+| `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.3 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.4.0 | LGPL-3 | Cross-module search through the command palette |
 | `bf_warm_start` | Warm Start | 18.0.1.0.0 | LGPL-3 | Load web client translations once, before the workers fork, so the first page after a restart is fast |
 | `bf_wheel` | Roue de fortune | 18.0.1.2.2 | BUSL-1.1 | A projected wheel that draws at random, and the register of what it drew |

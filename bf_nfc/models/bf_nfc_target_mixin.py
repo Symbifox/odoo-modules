@@ -13,9 +13,9 @@ from odoo import _, fields, models
 
 class BfNfcTargetMixin(models.AbstractModel):
     _name = "bf.nfc.target.mixin"
-    _description = "Fiche visée par des pastilles NFC"
+    _description = "Record targeted by NFC tags"
 
-    nfc_tag_count = fields.Integer(string="Pastilles", compute="_compute_nfc_tag_count")
+    nfc_tag_count = fields.Integer(string="Tags", compute="_compute_nfc_tag_count")
 
     def _nfc_domaine_pastilles(self):
         """Les pastilles qui visent ces fiches. Un satellite élargit (une tournée → ses points)."""
@@ -47,7 +47,7 @@ class BfNfcTargetMixin(models.AbstractModel):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Pastilles de « %s »", self.display_name),
+            "name": _("Tags of “%s”", self.display_name),
             "res_model": "bf.nfc.tag",
             "view_mode": "list,form",
             "domain": self._nfc_domaine_pastilles(),
@@ -62,7 +62,7 @@ class BfNfcTargetMixin(models.AbstractModel):
         fiches = self._nfc_fiches_a_etiqueter()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Créer des pastilles"),
+            "name": _("Create tags"),
             "res_model": "bf.nfc.tag.lot",
             "view_mode": "form",
             "target": "new",

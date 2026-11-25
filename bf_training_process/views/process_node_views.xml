@@ -6,12 +6,12 @@
         <field name="inherit_id" ref="bf_process.view_bf_process_node_form"/>
         <field name="arch" type="xml">
             <sheet position="inside">
-                <group string="Formation" groups="bf_training.group_training_officer">
+                <group string="Training" groups="bf_training.group_training_officer">
                     <field name="training_activity_ids" widget="many2many_tags"
                            options="{'no_create_edit': True}"/>
                     <div class="text-muted" colspan="2">
-                        Ce qu'il faut savoir pour tenir cette étape. De là, le registre
-                        dit qui est à jour et qui ne l'est pas.
+                        What you need to know to carry out this step. From there, the register
+                        says who is up to date and who is not.
                     </div>
                 </group>
             </sheet>

@@ -23,31 +23,35 @@ _logger = logging.getLogger(__name__)
 
 class FederationLink(models.Model):
     _name = "federation.link"
-    _description = "Lien fédéré"
+    _description = "Federated link"
     _order = "id desc"
 
-    peer_id = fields.Many2one("federation.peer", string="Pair", required=True, ondelete="cascade", index=True)
-    res_model = fields.Char(string="Modèle", required=True, index=True)
-    res_id = fields.Integer(string="Identifiant ici", required=True, index=True)
-    record_name = fields.Char(string="Objet", compute="_compute_record", store=False)
-    kind = fields.Char(string="Genre", compute="_compute_record", store=False)
-    remote_ref = fields.Char(string="Référence chez le pair", index=True)
-    remote_url = fields.Char(string="Adresse chez le pair")
-    origin = fields.Selection([("local", "Partagé d'ici"), ("remote", "Reçu du pair")],
-                              string="Origine", required=True, default="local")
-    active = fields.Boolean(string="Actif", default=True)
-    fingerprint = fields.Char(string="Empreinte de la carte")
-    last_state_sent = fields.Char(string="Dernier état envoyé")
-    last_day_sent = fields.Char(string="Dernière échéance envoyée")
+    peer_id = fields.Many2one("federation.peer", string="Peer", required=True, ondelete="cascade", index=True)
+    res_model = fields.Char(string="Model", required=True, index=True)
+    res_id = fields.Integer(string="Identifier here", required=True, index=True)
+    record_name = fields.Char(string="Object", compute="_compute_record", store=False)
+    kind = fields.Char(string="Kind", compute="_compute_record", store=False)
+    remote_ref = fields.Char(string="Reference on the peer", index=True)
+    remote_url = fields.Char(string="Address on the peer")
+    origin = fields.Selection([("local", "Shared from here"), ("remote", "Received "
+                                                                      "from "
+                                                                      "the "
+                                                                      "peer")],
+                              string="Origin", required=True, default="local")
+    active = fields.Boolean(string="Active", default=True)
+    fingerprint = fields.Char(string="Card fingerprint")
+    last_state_sent = fields.Char(string="Last state sent")
+    last_day_sent = fields.Char(string="Last deadline sent")
     remote_assignee = fields.Char(
-        string="Destinataire proposé par le pair", readonly=True,
-        help="Le dernier courriel que le pair a inscrit sur sa carte. Gardé pour ne "
-             "pas redire deux fois la même proposition à chaque carte qui passe.")
-    message_ids = fields.One2many("federation.link.message", "link_id", string="Messages passés")
-    company_id = fields.Many2one(related="peer_id.company_id", string="Société")
+        string="Addressee proposed by the peer", readonly=True,
+        help="The last email the peer wrote on its card. Kept so the same "
+             "proposal is not said twice on every card that passes.")
+    message_ids = fields.One2many("federation.link.message", "link_id", string="Messages "
+                                                                               "carried")
+    company_id = fields.Many2one(related="peer_id.company_id", string="Company")
 
     _sql_constraints = [("peer_record_unique", "unique(peer_id, res_model, res_id)",
-                         "Un objet n'a qu'un lien par pair.")]
+                         "An object has only one link per peer.")]
 
     # --- L'objet au bout du lien ---------------------------------------------------
     def _record(self, sudo=True):
@@ -67,14 +71,16 @@ class FederationLink(models.Model):
     def _compute_record(self):
         for link in self:
             record = link._record().exists()
-            link.record_name = record._federation_mirror_name() if record else _("(objet disparu)")
+            link.record_name = record._federation_mirror_name() if record else _("(object "
+                                                                                 "gone)")
             link.kind = getattr(self.env.registry.get(link.res_model), "_federation_kind", False) or ""
 
     @api.depends("res_model", "res_id", "peer_id.name")
     def _compute_display_name(self):
         for link in self:
             record = link._record().exists()
-            name = record._federation_mirror_name() if record else _("(objet disparu)")
+            name = record._federation_mirror_name() if record else _("(object "
+                                                                     "gone)")
             link.display_name = f"{name} ⇄ {link.peer_id.name}"
 
     @api.model
@@ -233,9 +239,10 @@ class FederationLink(models.Model):
         if not courriel:
             return False
         _the, this = self._labels()
-        note = self._note(Markup(_("<p>Chez %(pair)s, %(objet)s est maintenant adressé à "
-                                   "%(qui)s. Le miroir n'est pas réassigné : c'est à vous "
-                                   "de voir.</p>")) % {
+        note = self._note(Markup(_("<p>On %(pair)s's side, %(objet)s is "
+                                   "now addressed to %(qui)s. The mirror "
+                                   "is not reassigned: that is yours to "
+                                   "decide.</p>")) % {
             "pair": peer.name, "objet": this, "qui": nom or courriel})
         self._inbox_notify(note)
         return True
@@ -273,12 +280,12 @@ class FederationLink(models.Model):
                     att_ids.append(Attachment.create({"name": name, "raw": raw, "res_model": self.res_model,
                                                       "res_id": self.res_id}).id)
                     continue
-            mentions.append(_("[pièce jointe : %s (%.1f Mio, restée chez %s)]") % (name, size / 1048576, peer.name))
+            mentions.append(_("[attachment: %s (%.1f MiB, left with %s)]") % (name, size / 1048576, peer.name))
         if mentions:
             text += "\n" + "\n".join(mentions)
         body = Markup(transport.text_to_html(text))
         if not matched:
-            body = Markup("<p><b>%s</b> (%s) :</p>") % (transport.clean_text(author.get("name")) or _("inconnu"), peer.name) + body
+            body = Markup("<p><b>%s</b> (%s) :</p>") % (transport.clean_text(author.get("name")) or _("unknown"), peer.name) + body
         subtype = self.env.ref("mail.mt_note" if data.get("subtype") == "note" else "mail.mt_comment")
         vals = {"model": self.res_model, "res_id": self.res_id, "body": body, "message_type": "comment",
                 "subtype_id": subtype.id, "author_id": partner.id}
@@ -306,10 +313,11 @@ class FederationLink(models.Model):
     def _apply_archive(self, reason=None):
         """L'émetteur a retiré, archivé ou supprimé son objet : le miroir est archivé."""
         self.ensure_one()
-        reason = transport.clean_text(reason, 80) or _("retrait du partage")
+        reason = transport.clean_text(reason, 80) or _("removal from sharing")
         the, _this = self._labels()
         record = self._record().exists()
-        self._note(Markup(_("<p>Chez %s, %s ne fait plus partie du partage (%s) ; le miroir est archivé.</p>"))
+        self._note(Markup(_("<p>On %s's side, %s is no longer part of the "
+                            "sharing (%s); the mirror is archived.</p>"))
                    % (self.peer_id.name, the, reason))
         if record and "active" in record._fields:
             self._silent_record().write({"active": False})
@@ -323,7 +331,8 @@ class FederationLink(models.Model):
             self._silent_record().write({"active": True})
         self.active = True
         the, _this = self._labels()
-        self._note(Markup(_("<p>Chez %s, %s revient dans le partage ; le miroir est réactivé.</p>"))
+        self._note(Markup(_("<p>On %s's side, %s is back in the sharing; "
+                            "the mirror is reactivated.</p>"))
                    % (self.peer_id.name, the))
         return True
 
@@ -331,10 +340,11 @@ class FederationLink(models.Model):
         """Le receveur a archivé, supprimé ou détaché son miroir : l'objet d'origine reste
         intact, le lien se ferme et une note le dit."""
         self.ensure_one()
-        reason = transport.clean_text(reason, 80) or _("retrait")
+        reason = transport.clean_text(reason, 80) or _("removal")
         _the, this = self._labels()
-        note = self._note(Markup(_("<p>Chez %s, le miroir de %s a disparu (%s) : plus rien ne lui parviendra "
-                                   "tant que le partage n'est pas refait.</p>")) % (self.peer_id.name, this, reason))
+        note = self._note(Markup(_("<p>On %s's side, the mirror of %s is "
+                                   "gone (%s): nothing more will reach it "
+                                   "until the sharing is done again.</p>")) % (self.peer_id.name, this, reason))
         self._inbox_notify(note)
         self.active = False
         record = self._record().exists()
@@ -345,9 +355,9 @@ class FederationLink(models.Model):
 
 class FederationLinkMessage(models.Model):
     _name = "federation.link.message"
-    _description = "Message passé par un lien fédéré"
+    _description = "Message carried by a federated link"
 
-    link_id = fields.Many2one("federation.link", string="Lien", required=True, ondelete="cascade", index=True)
-    local_message_id = fields.Many2one("mail.message", string="Message ici", required=True, ondelete="cascade", index=True)
-    remote_ref = fields.Char(string="Référence chez le pair")
-    direction = fields.Selection([("in", "Reçu"), ("out", "Envoyé")], string="Sens", required=True)
+    link_id = fields.Many2one("federation.link", string="Link", required=True, ondelete="cascade", index=True)
+    local_message_id = fields.Many2one("mail.message", string="Message here", required=True, ondelete="cascade", index=True)
+    remote_ref = fields.Char(string="Reference on the peer")
+    direction = fields.Selection([("in", "Received"), ("out", "Sent")], string="Direction", required=True)

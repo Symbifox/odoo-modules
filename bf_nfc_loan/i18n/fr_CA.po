@@ -1,34 +1,44 @@
-#
+# Translation of Pastilles NFC : le prêt d'équipement - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: bf_nfc_loan 18.0.1.2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 04:55+0000\n"
-"PO-Revision-Date: 2026-09-14 04:55+0000\n"
+"POT-Creation-Date: 2026-11-20 04:09+0000\n"
+"PO-Revision-Date: 2026-11-20 04:09+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "%(moi)s a repris l'équipement à %(autre)s."
+msgid "%(moi)s took the equipment back from %(autre)s."
 msgstr "%(moi)s a repris l'équipement à %(autre)s."
 
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "%(qui)s l'a depuis le %(quand)s."
+msgid "%(qui)s has had it since %(quand)s."
 msgstr "%(qui)s l'a depuis le %(quand)s."
 
 #. module: bf_nfc_loan
 #: model:ir.actions.report,print_report_name:bf_nfc_loan.action_report_registre_cadenas
-msgid "'Registre des remises'"
+msgid "'Hand-out register'"
 msgstr "'Registre des remises'"
+
+#. module: bf_nfc_loan
+#: model_terms:ir.actions.act_window,help:bf_nfc_loan.action_bf_nfc_equipment
+msgid ""
+"A laptop, a projector, a key: a tag on it, and you always know who has it."
+msgstr ""
+"Un portable, un projecteur, une clé : une pastille dessus, et on sait "
+"toujours qui l'a."
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__message_needaction
@@ -62,7 +72,7 @@ msgstr "Icône de type d'activité"
 
 #. module: bf_nfc_loan
 #: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
-msgid "Archivé"
+msgid "Archived"
 msgstr "Archivé"
 
 #. module: bf_nfc_loan
@@ -73,63 +83,31 @@ msgstr "Nombre de pièces jointes"
 #. module: bf_nfc_loan
 #: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__max_days
 msgid ""
-"Au-delà, la personne qui le garde reçoit une activité « à rendre ». Zéro : "
-"jamais de rappel."
+"Beyond this, the person keeping it gets a “to return” activity. Zero: never "
+"a reminder."
 msgstr ""
 "Au-delà, la personne qui le garde reçoit une activité « à rendre ». Zéro : "
 "jamais de rappel."
 
 #. module: bf_nfc_loan
-#: model:bf.nfc.template,exemple:bf_nfc_loan.gabarit_cadenas
-msgid ""
-"Cadenas 01 ; armoire de cadenassage\n"
-"Cadenas 02 ; armoire de cadenassage\n"
-"Cadenas 03 ; armoire de cadenassage"
-msgstr ""
-"Cadenas 01 ; armoire de cadenassage\n"
-"Cadenas 02 ; armoire de cadenassage\n"
-"Cadenas 03 ; armoire de cadenassage"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_template__recette
-msgid "Ce qu'il crée"
-msgstr "Ce qu'il crée"
-
-#. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
-msgid "Ce que c'est"
-msgstr "Ce que c'est"
-
-#. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Cette pastille ne désigne pas un équipement."
-msgstr "Cette pastille ne désigne pas un équipement."
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__registre_externe
-msgid ""
-"Chaque remise demande le nom, le téléphone et l'employeur de la personne qui"
-" reçoit : c'est le registre des cadenas à cléage unique sans nom (RSST, art."
-" 205)."
-msgstr ""
-"Chaque remise demande le nom, le téléphone et l'employeur de la personne qui"
-" reçoit : c'est le registre des cadenas à cléage unique sans nom (RSST, art."
-" 205)."
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_template__registre_externe
-msgid ""
-"Chaque remise demande le nom, le téléphone et l'employeur de qui reçoit "
-"(registre des cadenas, RSST art. 205)."
-msgstr ""
-"Chaque remise demande le nom, le téléphone et l'employeur de qui reçoit "
-"(registre des cadenas, RSST art. 205)."
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__closed_by_id
+msgid "Closed by"
+msgstr "Fermé par"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__company_id
 msgid "Company"
 msgstr "Société"
+
+#. module: bf_nfc_loan
+#: model:ir.actions.server,name:bf_nfc_loan.action_equipment_creer_pastilles
+msgid "Create tags"
+msgstr "Créer des pastilles"
+
+#. module: bf_nfc_loan
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
+msgid "Create the tag"
+msgstr "Créer la pastille"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__create_uid
@@ -144,29 +122,9 @@ msgid "Created on"
 msgstr "Créé le"
 
 #. module: bf_nfc_loan
-#: model:ir.actions.server,name:bf_nfc_loan.action_equipment_creer_pastilles
-msgid "Créer des pastilles"
-msgstr "Créer des pastilles"
-
-#. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
-msgid "Créer la pastille"
-msgstr "Créer la pastille"
-
-#. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_search
-msgid "Date de remise"
-msgstr "Date de remise"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__since
-msgid "Depuis"
-msgstr "Depuis"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields.selection,name:bf_nfc_loan.selection__bf_nfc_template__recette__equipements
-msgid "Des équipements et leur pastille"
-msgstr "Des équipements et leur pastille"
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__current_loan_id
+msgid "Current loan"
+msgstr "Prêt en cours"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__display_name
@@ -176,42 +134,72 @@ msgstr "Nom d'affichage"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__duration_hours
-msgid "Durée (h)"
+msgid "Duration (h)"
 msgstr "Durée (h)"
 
 #. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__holder_id
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__user_id
-msgid "Détenteur"
-msgstr "Détenteur"
+#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__registre_externe
+msgid ""
+"Each hand-out asks for the name, phone number and employer of the person "
+"receiving it: this is the register of unnamed single-key padlocks (RSST, s. "
+"205)."
+msgstr ""
+"Chaque remise demande le nom, le téléphone et l'employeur de la personne qui"
+" reçoit : c'est le registre des cadenas à cléage unique sans nom (RSST, art."
+" 205)."
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_template__registre_externe
+msgid ""
+"Each hand-out asks for the name, phone number and employer of the recipient "
+"(padlock register, RSST s. 205)."
+msgstr ""
+"Chaque remise demande le nom, le téléphone et l'employeur de qui reçoit "
+"(registre des cadenas, RSST art. 205)."
 
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__borrower_employer
 #: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
-msgid "Employeur"
+msgid "Employer"
 msgstr "Employeur"
 
 #. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_search
-msgid "En cours"
-msgstr "En cours"
-
-#. module: bf_nfc_loan
-#: model_terms:ir.actions.act_window,help:bf_nfc_loan.action_bf_nfc_equipment
-msgid "Enregistrer un premier équipement"
-msgstr "Enregistrer un premier équipement"
-
-#. module: bf_nfc_loan
+#: model:ir.actions.act_window,name:bf_nfc_loan.action_bf_nfc_equipment
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__equipment_id
+#: model:ir.ui.menu,name:bf_nfc_loan.menu_nfc_equipment
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_list
 msgid "Equipment"
+msgstr "Équipements"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields.selection,name:bf_nfc_loan.selection__bf_nfc_template__recette__equipements
+msgid "Equipment items and their tags"
+msgstr "Des équipements et leur pastille"
+
+#. module: bf_nfc_loan
+#: model:bf.nfc.template,name:bf_nfc_loan.gabarit_pret_materiel
+#: model:ir.model,name:bf_nfc_loan.model_bf_nfc_equipment_loan
+msgid "Equipment loan"
+msgstr "Prêt d'équipement"
+
+#. module: bf_nfc_loan
+#: model:ir.model,name:bf_nfc_loan.model_bf_nfc_equipment
+msgid "Equipment loaned by tag"
+msgstr "Équipement prêté par pastille"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__name
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_search
+msgid "Equipment name"
 msgstr "Équipement"
 
 #. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__closed_by_id
-msgid "Fermé par"
-msgstr "Fermé par"
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__failed_message_ids
+msgid "Failed Messages"
+msgstr "Failed Messages"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__message_follower_ids
@@ -229,19 +217,116 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr "Icône Font Awesome, par exemple fa-tasks"
 
 #. module: bf_nfc_loan
-#: model:ir.model,name:bf_nfc_loan.model_bf_nfc_template
-msgid "Gabarit de pastilles"
-msgstr "Gabarit de pastilles"
+#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment_loan__user_id
+msgid ""
+"For a hand-out to a person without an account: the person who handed it out."
+msgstr "Pour une remise à une personne sans compte : la personne qui a remis."
 
 #. module: bf_nfc_loan
-#: model:ir.model,name:bf_nfc_loan.model_bf_nfc_gesture
-msgid "Geste déclenché par une pastille NFC"
-msgstr "Geste déclenché par une pastille NFC"
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_search
+msgid "Free"
+msgstr "Libres"
+
+#. module: bf_nfc_loan
+#: model:bf.nfc.gesture,description:bf_nfc_loan.gesture_loan
+msgid ""
+"Free, you take it; yours, you return it. If someone else has it, the screen "
+"names them and offers to take it back. In a menu, the parameter {\"sens\": "
+"\"prendre\"} or {\"sens\": \"rendre\"} sets the direction."
+msgstr ""
+"Libre, vous le prenez ; à vous, vous le rendez. Si quelqu'un d'autre l'a, "
+"l'écran le nomme et propose de le reprendre. Dans un menu, le paramètre "
+"{\"sens\": \"prendre\"} ou {\"sens\": \"rendre\"} fixe le sens."
+
+#. module: bf_nfc_loan
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_nfc_loan
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+msgid "Hand out"
+msgstr "Remettre"
+
+#. module: bf_nfc_loan
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_search
+msgid "Hand-out date"
+msgstr "Date de remise"
+
+#. module: bf_nfc_loan
+#: model:ir.actions.report,name:bf_nfc_loan.action_report_registre_cadenas
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
+msgid "Hand-out register"
+msgstr "Registre des remises"
+
+#. module: bf_nfc_loan
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
+msgid "Handed out by"
+msgstr "Remis par"
+
+#. module: bf_nfc_loan
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_list
+msgid "Handed out by / holder"
+msgstr "Remis par / détenteur"
+
+#. module: bf_nfc_loan
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
+msgid "Handed out on"
+msgstr "Remis le"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__borrower_name
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
+msgid "Handed out to"
+msgstr "Remis à"
+
+#. module: bf_nfc_loan
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+msgid "Handed out to %(qui)s on %(quand)s."
+msgstr "Remis à %(qui)s le %(quand)s."
+
+#. module: bf_nfc_loan
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+msgid "Handed out to %s: recorded in the register."
+msgstr "Remis à %s : noté au registre."
+
+#. module: bf_nfc_loan
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+msgid "Handed out to (name)"
+msgstr "Remis à (nom)"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__registre_externe
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_template__registre_externe
+msgid "Handed out to people without an account"
+msgstr "Remis à des personnes sans compte"
+
+#. module: bf_nfc_loan
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_search
+msgid "Handed out without an account"
+msgstr "Remis sans compte"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__has_message
 msgid "Has Message"
 msgstr "A un message"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__holder_id
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__user_id
+msgid "Holder"
+msgstr "Détenteur"
+
+#. module: bf_nfc_loan
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+msgid "I'll take it anyway"
+msgstr "Je le prends quand même"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__id
@@ -278,14 +363,13 @@ msgstr "Si coché, certains messages ont une erreur d'envoi."
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Il est rendu"
-msgstr "Il est rendu"
+msgid "If they work for another company."
+msgstr "S'il travaille pour une autre entreprise."
 
 #. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Il est à vous. Approchez de nouveau le téléphone pour le rendre."
-msgstr "Il est à vous. Approchez de nouveau le téléphone pour le rendre."
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_search
+msgid "In progress"
+msgstr "En cours"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__message_is_follower
@@ -295,15 +379,19 @@ msgstr "Est abonné"
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Je le prends quand même"
-msgstr "Je le prends quand même"
+msgid "It has been returned"
+msgstr "Il est rendu"
 
 #. module: bf_nfc_loan
-#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment_loan__closed_by_id
-msgid ""
-"La personne qui a rendu l'équipement, ou qui l'a repris à quelqu'un d'autre."
-msgstr ""
-"La personne qui a rendu l'équipement, ou qui l'a repris à quelqu'un d'autre."
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+msgid "It's yours. Bring the phone close again to return it."
+msgstr "Il est à vous. Approchez de nouveau le téléphone pour le rendre."
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_gesture__kind
+msgid "Kind"
+msgstr "Nature"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__write_uid
@@ -318,25 +406,45 @@ msgid "Last Updated on"
 msgstr "Dernière modification le"
 
 #. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_search
-msgid "Les miens"
-msgstr "Les miens"
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
+msgid "Loaner laptop #2, room A projector…"
+msgstr "Portable de prêt nº 2, projecteur de la salle A…"
 
 #. module: bf_nfc_loan
-#: model:bf.nfc.gesture,description:bf_nfc_loan.gesture_loan
+#: model:bf.nfc.template,exemple:bf_nfc_loan.gabarit_pret_materiel
 msgid ""
-"Libre, vous le prenez ; à vous, vous le rendez. Si quelqu'un d'autre l'a, "
-"l'écran le nomme et propose de le reprendre. Dans un menu, le paramètre "
-"{\"sens\": \"prendre\"} ou {\"sens\": \"rendre\"} fixe le sens."
+"Loaner laptop 1 ; reception cabinet\n"
+"Projector ; room A\n"
+"Shed key ; reception"
 msgstr ""
-"Libre, vous le prenez ; à vous, vous le rendez. Si quelqu'un d'autre l'a, "
-"l'écran le nomme et propose de le reprendre. Dans un menu, le paramètre "
-"{\"sens\": \"prendre\"} ou {\"sens\": \"rendre\"} fixe le sens."
+"Portable de prêt 1 ; armoire de l'accueil\n"
+"Projecteur ; salle A\n"
+"Clé de la remise ; accueil"
 
 #. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_search
-msgid "Libres"
-msgstr "Libres"
+#: model:bf.nfc.template,description:bf_nfc_loan.gabarit_pret_materiel
+msgid ""
+"Loaner laptops, projectors, cameras, keys. If it is free, you take it with a"
+" tap; if it is yours, you return it. After seven days, the person keeping it"
+" gets a reminder."
+msgstr ""
+"Portables de prêt, projecteurs, caméras, clés. Libre, on le prend d'un "
+"tapotement ; à soi, on le rend. Au-delà de sept jours, la personne qui le "
+"garde reçoit un rappel."
+
+#. module: bf_nfc_loan
+#: model:ir.actions.act_window,name:bf_nfc_loan.action_bf_nfc_equipment_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__loan_ids
+#: model:ir.ui.menu,name:bf_nfc_loan.menu_nfc_loans
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_list
+msgid "Loans"
+msgstr "Prêts"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__message_content
+msgid "Message Content"
+msgstr "Message Content"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__message_has_error
@@ -344,19 +452,34 @@ msgid "Message Delivery error"
 msgstr "Erreur d'envoi du message"
 
 #. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__message_search
+msgid "Message Search"
+msgstr "Message Search"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Message content, to be used only in searches"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Message search, to be used only in searches"
+
+#. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__message_ids
 msgid "Messages"
 msgstr "Messages"
 
 #. module: bf_nfc_loan
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_search
+msgid "Mine"
+msgstr "Les miens"
+
+#. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__my_activity_date_deadline
 msgid "My Activity Deadline"
 msgstr "Échéance de mon activité"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_gesture__kind
-msgid "Nature"
-msgstr "Nature"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__activity_calendar_event_id
@@ -409,125 +532,46 @@ msgid "Number of messages with delivery error"
 msgstr "Nombre de messages en erreur d'envoi"
 
 #. module: bf_nfc_loan
-#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__reference
-msgid "Numéro de série, étiquette d'inventaire."
-msgstr "Numéro de série, étiquette d'inventaire."
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__place
-msgid "Où il revient quand on le rend."
-msgstr "Où il revient quand on le rend."
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__nfc_tag_count
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
-msgid "Pastilles"
-msgstr "Pastilles"
-
-#. module: bf_nfc_loan
-#: model:ir.actions.server,name:bf_nfc_loan.cron_loan_reminders_ir_actions_server
-msgid "Pastilles : rappels des équipements à rendre"
-msgstr "Pastilles : rappels des équipements à rendre"
-
-#. module: bf_nfc_loan
-#: model:bf.nfc.template,exemple:bf_nfc_loan.gabarit_pret_materiel
-msgid ""
-"Portable de prêt 1 ; armoire de l'accueil\n"
-"Projecteur ; salle A\n"
-"Clé de la remise ; accueil"
-msgstr ""
-"Portable de prêt 1 ; armoire de l'accueil\n"
-"Projecteur ; salle A\n"
-"Clé de la remise ; accueil"
-
-#. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
-msgid "Portable de prêt nº 2, projecteur de la salle A…"
-msgstr "Portable de prêt nº 2, projecteur de la salle A…"
-
-#. module: bf_nfc_loan
-#: model:bf.nfc.template,description:bf_nfc_loan.gabarit_pret_materiel
-msgid ""
-"Portables de prêt, projecteurs, caméras, clés. Libre, on le prend d'un "
-"tapotement ; à soi, on le rend. Au-delà de sept jours, la personne qui le "
-"garde reçoit un rappel."
-msgstr ""
-"Portables de prêt, projecteurs, caméras, clés. Libre, on le prend d'un "
-"tapotement ; à soi, on le rend. Au-delà de sept jours, la personne qui le "
-"garde reçoit un rappel."
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment_loan__user_id
-msgid "Pour une remise à une personne sans compte : la personne qui a remis."
-msgstr "Pour une remise à une personne sans compte : la personne qui a remis."
-
-#. module: bf_nfc_loan
-#: model:bf.nfc.gesture,name:bf_nfc_loan.gesture_loan
-#: model:ir.model.fields.selection,name:bf_nfc_loan.selection__bf_nfc_gesture__kind__loan
-msgid "Prendre ou rendre un équipement"
-msgstr "Prendre ou rendre un équipement"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__offline
-msgid "Pris en différé"
-msgstr "Pris en différé"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__date_start
-msgid "Pris le"
-msgstr "Pris le"
-
-#. module: bf_nfc_loan
-#: model:ir.model,name:bf_nfc_loan.model_bf_nfc_equipment_loan
-msgid "Prêt d'équipement"
-msgstr "Prêt d'équipement"
-
-#. module: bf_nfc_loan
-#: model:bf.nfc.template,name:bf_nfc_loan.gabarit_pret_materiel
-msgid "Prêt de matériel"
-msgstr "Prêt de matériel"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__current_loan_id
-msgid "Prêt en cours"
-msgstr "Prêt en cours"
-
-#. module: bf_nfc_loan
-#: model:ir.actions.act_window,name:bf_nfc_loan.action_bf_nfc_equipment_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__loan_ids
-#: model:ir.ui.menu,name:bf_nfc_loan.menu_nfc_loans
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_list
-msgid "Prêts"
-msgstr "Prêts"
-
-#. module: bf_nfc_loan
 #: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_search
-msgid "Prêtés"
+msgid "On loan"
 msgstr "Prêtés"
 
 #. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__holder_label
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__holder_label
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
-msgid "Qui l'a"
-msgstr "Qui l'a"
+#: model:bf.nfc.template,description:bf_nfc_loan.gabarit_cadenas
+msgid ""
+"One tag per unnamed single-key padlock. The person handing out the padlock "
+"taps its tag and names who receives it (name, phone, employer); the return "
+"is confirmed with a second tap. The hand-out register is printed from the "
+"equipment list and carries the columns the regulation requires."
+msgstr ""
+"Une pastille par cadenas à cléage unique sans nom. La personne qui remet le "
+"cadenas tape sa pastille et nomme qui le reçoit (nom, téléphone, employeur) "
+"; le retour se confirme d'un second tapotement. Le registre des remises "
+"s'imprime depuis les équipements et porte les colonnes du règlement."
 
 #. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__place
-msgid "Rangé à"
-msgstr "Rangé à"
+#: model:bf.nfc.template,exemple:bf_nfc_loan.gabarit_cadenas
+msgid ""
+"Padlock 01 ; lockout cabinet\n"
+"Padlock 02 ; lockout cabinet\n"
+"Padlock 03 ; lockout cabinet"
+msgstr ""
+"Cadenas 01 ; armoire de cadenassage\n"
+"Cadenas 02 ; armoire de cadenassage\n"
+"Cadenas 03 ; armoire de cadenassage"
 
 #. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__max_days
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_template__max_days
-msgid "Rappel après (jours)"
-msgstr "Rappel après (jours)"
+#: model:bf.nfc.template,name:bf_nfc_loan.gabarit_cadenas
+msgid "Padlock register"
+msgstr "Registre des cadenas"
 
 #. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__reminded
-msgid "Rappel envoyé"
-msgstr "Rappel envoyé"
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__borrower_phone
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
+msgid "Phone"
+msgstr "Téléphone"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__rating_ids
@@ -535,95 +579,32 @@ msgid "Ratings"
 msgstr "Évaluations"
 
 #. module: bf_nfc_loan
-#: model:bf.nfc.template,name:bf_nfc_loan.gabarit_cadenas
-msgid "Registre des cadenas"
-msgstr "Registre des cadenas"
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__reference
+msgid "Reference"
+msgstr "Référence"
 
 #. module: bf_nfc_loan
-#: model:ir.actions.report,name:bf_nfc_loan.action_report_registre_cadenas
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
-msgid "Registre des remises"
-msgstr "Registre des remises"
+#: model_terms:ir.actions.act_window,help:bf_nfc_loan.action_bf_nfc_equipment
+msgid "Register a first piece of equipment"
+msgstr "Enregistrer un premier équipement"
 
 #. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_search
-msgid "Regrouper par"
-msgstr "Regrouper par"
+#: model:bf.nfc.template,reference:bf_nfc_loan.gabarit_cadenas
+msgid ""
+"Regulation respecting occupational health and safety (S-2.1, r. 13, s. 205)"
+msgstr ""
+"Règlement sur la santé et la sécurité du travail (S-2.1, r. 13, art. 205)"
 
 #. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Remettre"
-msgstr "Remettre"
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__max_days
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_template__max_days
+msgid "Reminder after (days)"
+msgstr "Rappel après (jours)"
 
 #. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
-msgid "Remis le"
-msgstr "Remis le"
-
-#. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
-msgid "Remis par"
-msgstr "Remis par"
-
-#. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_list
-msgid "Remis par / détenteur"
-msgstr "Remis par / détenteur"
-
-#. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_search
-msgid "Remis sans compte"
-msgstr "Remis sans compte"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__borrower_name
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
-msgid "Remis à"
-msgstr "Remis à"
-
-#. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Remis à %(qui)s le %(quand)s."
-msgstr "Remis à %(qui)s le %(quand)s."
-
-#. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Remis à %s : noté au registre."
-msgstr "Remis à %s : noté au registre."
-
-#. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Remis à (nom)"
-msgstr "Remis à (nom)"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__registre_externe
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_template__registre_externe
-msgid "Remis à des personnes sans compte"
-msgstr "Remis à des personnes sans compte"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__date_end
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
-msgid "Rendu le"
-msgstr "Rendu le"
-
-#. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Rendu."
-msgstr "Rendu."
-
-#. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Rendu. Merci de le ranger : %s."
-msgstr "Rendu. Merci de le ranger : %s."
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__reminded
+msgid "Reminder sent"
+msgstr "Rappel envoyé"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__activity_user_id
@@ -633,31 +614,41 @@ msgstr "Utilisateur responsable"
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Retour noté au registre : %s."
+msgid "Return recorded in the register: %s."
 msgstr "Retour noté au registre : %s."
 
 #. module: bf_nfc_loan
-#: model:bf.nfc.template,reference:bf_nfc_loan.gabarit_cadenas
-msgid ""
-"Règlement sur la santé et la sécurité du travail (S-2.1, r. 13, art. 205)"
-msgstr ""
-"Règlement sur la santé et la sécurité du travail (S-2.1, r. 13, art. 205)"
-
-#. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__reference
-msgid "Référence"
-msgstr "Référence"
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__date_end
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
+msgid "Returned on"
+msgstr "Rendu le"
 
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "S'il travaille pour une autre entreprise."
-msgstr "S'il travaille pour une autre entreprise."
+msgid "Returned."
+msgstr "Rendu."
+
+#. module: bf_nfc_loan
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+msgid "Returned. Please put it back: %s."
+msgstr "Rendu. Merci de le ranger : %s."
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__message_has_sms_error
 msgid "SMS Delivery error"
 msgstr "Erreur d'envoi du SMS"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__reference
+msgid "Serial number, inventory label."
+msgstr "Numéro de série, étiquette d'inventaire."
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__since
+msgid "Since"
+msgstr "Depuis"
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__activity_state
@@ -673,67 +664,60 @@ msgstr ""
 "Planifiée : activités à venir."
 
 #. module: bf_nfc_loan
-#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__activity_exception_decoration
-msgid "Type of the exception activity on record."
-msgstr "Type de l'activité d'exception sur la fiche."
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__place
+msgid "Stored at"
+msgstr "Rangé à"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__nfc_tag_count
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
+msgid "Tags"
+msgstr "Pastilles"
+
+#. module: bf_nfc_loan
+#: model:ir.actions.server,name:bf_nfc_loan.cron_loan_reminders_ir_actions_server
+msgid "Tags: reminders for equipment to return"
+msgstr "Pastilles : rappels des équipements à rendre"
+
+#. module: bf_nfc_loan
+#: model:bf.nfc.gesture,name:bf_nfc_loan.gesture_loan
+#: model:ir.model.fields.selection,name:bf_nfc_loan.selection__bf_nfc_gesture__kind__loan
+msgid "Take or return equipment"
+msgstr "Prendre ou rendre un équipement"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__offline
+msgid "Taken later (offline)"
+msgstr "Pris en différé"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__date_start
+msgid "Taken on"
+msgstr "Pris le"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment_loan__closed_by_id
+msgid ""
+"The person who returned the equipment, or took it back from someone else."
+msgstr ""
+"La personne qui a rendu l'équipement, ou qui l'a repris à quelqu'un d'autre."
 
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__borrower_phone
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
-msgid "Téléphone"
-msgstr "Téléphone"
-
-#. module: bf_nfc_loan
-#: model_terms:ir.actions.act_window,help:bf_nfc_loan.action_bf_nfc_equipment
-msgid ""
-"Un portable, un projecteur, une clé : une pastille dessus, et on sait "
-"toujours qui l'a."
-msgstr ""
-"Un portable, un projecteur, une clé : une pastille dessus, et on sait "
-"toujours qui l'a."
-
-#. module: bf_nfc_loan
-#: model:bf.nfc.template,description:bf_nfc_loan.gabarit_cadenas
-msgid ""
-"Une pastille par cadenas à cléage unique sans nom. La personne qui remet le "
-"cadenas tape sa pastille et nomme qui le reçoit (nom, téléphone, employeur) "
-"; le retour se confirme d'un second tapotement. Le registre des remises "
-"s'imprime depuis les équipements et porte les colonnes du règlement."
-msgstr ""
-"Une pastille par cadenas à cléage unique sans nom. La personne qui remet le "
-"cadenas tape sa pastille et nomme qui le reçoit (nom, téléphone, employeur) "
-"; le retour se confirme d'un second tapotement. Le registre des remises "
-"s'imprime depuis les équipements et porte les colonnes du règlement."
+msgid "This tag does not point to a piece of equipment."
+msgstr "Cette pastille ne désigne pas un équipement."
 
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_equipment.py:0
-msgid ""
-"Vous l'avez depuis plus de %s jours. Rapportez-le et approchez le téléphone "
-"de sa pastille."
-msgstr ""
-"Vous l'avez depuis plus de %s jours. Rapportez-le et approchez le téléphone "
-"de sa pastille."
+msgid "To return: %s"
+msgstr "À rendre : %s"
 
 #. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Vous l'avez déjà depuis le %s."
-msgstr "Vous l'avez déjà depuis le %s."
-
-#. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Vous l'avez repris à %s."
-msgstr "Vous l'avez repris à %s."
-
-#. module: bf_nfc_loan
-#. odoo-python
-#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "Vous n'avez pas « %s » : rien à rendre."
-msgstr "Vous n'avez pas « %s » : rien à rendre."
+#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité d'exception sur la fiche."
 
 #. module: bf_nfc_loan
 #: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__website_message_ids
@@ -746,37 +730,62 @@ msgid "Website communication history"
 msgstr "Historique des échanges sur le site web"
 
 #. module: bf_nfc_loan
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
-msgid "· imprimé le"
-msgstr "· imprimé le"
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_template__recette
+msgid "What it creates"
+msgstr "Ce qu'il crée"
+
+#. module: bf_nfc_loan
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
+msgid "What it is"
+msgstr "Ce que c'est"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,help:bf_nfc_loan.field_bf_nfc_equipment__place
+msgid "Where it goes back when returned."
+msgstr "Où il revient quand on le rend."
 
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
-msgid "À qui le remettez-vous ?"
+msgid "Who are you handing it to?"
 msgstr "À qui le remettez-vous ?"
+
+#. module: bf_nfc_loan
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__holder_label
+#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment_loan__holder_label
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
+msgid "Who has it"
+msgstr "Qui l'a"
+
+#. module: bf_nfc_loan
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+msgid "You don't have “%s”: nothing to return."
+msgstr "Vous n'avez pas « %s » : rien à rendre."
 
 #. module: bf_nfc_loan
 #. odoo-python
 #: code:addons/bf_nfc_loan/models/bf_nfc_equipment.py:0
-msgid "À rendre : %s"
-msgstr "À rendre : %s"
+msgid ""
+"You have had it for more than %s days. Bring it back and tap its tag with "
+"your phone."
+msgstr ""
+"Vous l'avez depuis plus de %s jours. Rapportez-le et approchez le téléphone "
+"de sa pastille."
 
 #. module: bf_nfc_loan
-#: model:ir.model.fields,field_description:bf_nfc_loan.field_bf_nfc_equipment__name
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_form
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_loan_search
-msgid "Équipement"
-msgstr "Équipement"
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+msgid "You have had it since %s already."
+msgstr "Vous l'avez déjà depuis le %s."
 
 #. module: bf_nfc_loan
-#: model:ir.model,name:bf_nfc_loan.model_bf_nfc_equipment
-msgid "Équipement prêté par pastille"
-msgstr "Équipement prêté par pastille"
+#. odoo-python
+#: code:addons/bf_nfc_loan/models/bf_nfc_gesture.py:0
+msgid "You took it back from %s."
+msgstr "Vous l'avez repris à %s."
 
 #. module: bf_nfc_loan
-#: model:ir.actions.act_window,name:bf_nfc_loan.action_bf_nfc_equipment
-#: model:ir.ui.menu,name:bf_nfc_loan.menu_nfc_equipment
-#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.view_bf_nfc_equipment_list
-msgid "Équipements"
-msgstr "Équipements"
+#: model_terms:ir.ui.view,arch_db:bf_nfc_loan.report_registre_cadenas
+msgid "· printed on"
+msgstr "· imprimé le"

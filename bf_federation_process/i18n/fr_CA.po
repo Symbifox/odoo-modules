@@ -1,0 +1,224 @@
+# Translation of Fédération : cartographies - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_federation_process 18.0.1.2.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-20 23:09+0000\n"
+"PO-Revision-Date: 2026-11-20 23:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid "(none)"
+msgstr "(aucune)"
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid "(untitled)"
+msgstr "(sans titre)"
+
+#. module: bf_federation_process
+#: model_terms:ir.ui.view,arch_db:bf_federation_process.view_bf_process_form_federation
+msgid ". It is read-only here: the next version will replace the drawing."
+msgstr ""
+".\n"
+"                    Elle se lit ici : la version suivante remplacera le tracé."
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid ""
+"<p>At %s, the process map moved from version <b>%s</b> to <b>%s</b>: the "
+"drawing here has been replaced.</p>"
+msgstr ""
+"<p>Chez %s, la cartographie est passée de la version <b>%s</b> à la "
+"<b>%s</b> : le tracé d'ici a été remplacé.</p>"
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid ""
+"<p>Process map received from %s: <b>%s</b>, version %s, %s level(s), %s "
+"node(s). It is read-only here; the next version will replace it.</p>"
+msgstr ""
+"<p>Cartographie reçue de %s : <b>%s</b>, version %s, %s niveau(x), %s "
+"nœud(s). Elle se lit ici ; la version suivante la remplacera.</p>"
+
+#. module: bf_federation_process
+#: model:ir.model.fields,help:bf_federation_process.field_bf_process__federation_is_mirror
+msgid "A received map is read-only: the next version will replace it."
+msgstr "Une carte reçue se lit : la version suivante la remplacera."
+
+#. module: bf_federation_process
+#: model:ir.model.fields,field_description:bf_federation_process.field_bf_process__federation_allowed_peer_ids
+msgid "Allowed peers"
+msgstr "Pairs permis"
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid "Drawing sent again to %s: %s level(s), %s node(s)."
+msgstr "Tracé renvoyé à %s : %s niveau(x), %s nœud(s)."
+
+#. module: bf_federation_process
+#: model:ir.model.fields,field_description:bf_federation_process.field_bf_process__federation_link_id
+msgid "Federated link"
+msgstr "Lien fédéré"
+
+#. module: bf_federation_process
+#: model:ir.model.fields,field_description:bf_federation_process.field_bf_process__federation_peer_id
+msgid "Federated with"
+msgstr "Fédéré avec"
+
+#. module: bf_federation_process
+#: model:ir.model.fields,field_description:bf_federation_process.field_bf_process__federation_possible
+msgid "Federation possible"
+msgstr "Fédération possible"
+
+#. module: bf_federation_process
+#: model:ir.model.fields,field_description:bf_federation_process.field_federation_outbox__kind
+msgid "Kind"
+msgstr "Genre"
+
+#. module: bf_federation_process
+#: model_terms:ir.ui.view,arch_db:bf_federation_process.view_bf_process_form_federation
+msgid ""
+"Levels are not watched fields: after reworking the drawing, this button "
+"sends the map as it is."
+msgstr ""
+"Les niveaux ne sont pas des champs surveillés : après avoir retouché"
+"                               le tracé, ce bouton envoie la carte telle "
+"qu'elle est."
+
+#. module: bf_federation_process
+#: model:ir.model.fields,field_description:bf_federation_process.field_bf_process__federation_remote_url
+msgid "On the peer"
+msgstr "Chez le pair"
+
+#. module: bf_federation_process
+#: model:ir.model.fields,field_description:bf_federation_process.field_bf_process__federation_origin
+msgid "Origin"
+msgstr "Origine"
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid ""
+"Process map federated with %s: the full drawing, its levels, lanes and "
+"nodes. What stays here: the validation register, the deliverable's prose, "
+"the freezes and the gaps."
+msgstr ""
+"Cartographie fédérée avec %s : le tracé complet, ses niveaux, ses couloirs "
+"et ses nœuds. Ce qui reste ici : le registre de validation, la prose du "
+"livrable, les gels et les écarts."
+
+#. module: bf_federation_process
+#: model_terms:ir.ui.view,arch_db:bf_federation_process.view_bf_process_form_federation
+msgid "Process map received from"
+msgstr "Cartographie reçue de"
+
+#. module: bf_federation_process
+#: model:ir.model.fields,field_description:bf_federation_process.field_bf_process__federation_is_mirror
+msgid "Process map received from a peer"
+msgstr "Cartographie reçue d'un pair"
+
+#. module: bf_federation_process
+#: model:ir.model.fields.selection,name:bf_federation_process.selection__federation_outbox__kind__process_share
+msgid "Process map shared"
+msgstr "Partage d'une cartographie"
+
+#. module: bf_federation_process
+#: model:ir.model.fields.selection,name:bf_federation_process.selection__federation_outbox__kind__process_card
+msgid "Process map updated"
+msgstr "Cartographie mise à jour"
+
+#. module: bf_federation_process
+#: model:ir.model,name:bf_federation_process.model_bf_process
+msgid "Process mapping"
+msgstr "Process mapping"
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid "Received from %s through federation."
+msgstr "Reçue de %s par la fédération."
+
+#. module: bf_federation_process
+#: model_terms:ir.ui.view,arch_db:bf_federation_process.view_bf_process_form_federation
+msgid "Send the drawing to the peer again"
+msgstr "Renvoyer le tracé au pair"
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid "Sending a map back to a peer requires the project manager role."
+msgstr ""
+"Renvoyer un tracé à un pair demande le rôle de gestionnaire de projet."
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid "The peer"
+msgstr "Le pair"
+
+#. module: bf_federation_process
+#: model:ir.model.fields,help:bf_federation_process.field_bf_process__federation_peer_id
+msgid ""
+"The peer where this object has a mirror. Clearing the field archives the "
+"mirror."
+msgstr ""
+"Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid ""
+"This process map exceeds the exchange ceiling (%s MiB). It can be delivered "
+"as a PDF through a federated deliverable."
+msgstr ""
+"Cette cartographie dépasse le plafond d'échange (%s Mio). Elle peut être "
+"remise en PDF par un livrable fédéré."
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid "This process map is not shared with a peer."
+msgstr "Cette cartographie n'est pas partagée avec un pair."
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid ""
+"This process map is received from %s: it is read-only here. The next version"
+" would replace it, and any work done on it would be lost."
+msgstr ""
+"Cette cartographie est reçue de %s : elle se lit ici. La version suivante la"
+" remplacerait, et le travail fait dessus serait perdu."
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid "the process map"
+msgstr "la cartographie"
+
+#. module: bf_federation_process
+#. odoo-python
+#: code:addons/bf_federation_process/models/bf_process.py:0
+msgid "this process map"
+msgstr "cette cartographie"

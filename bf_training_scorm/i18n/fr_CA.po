@@ -1,40 +1,30 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_training_scorm
-#
+# Translation of Registre de formation : contenus SCORM - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: bf_training_scorm 18.0.1.0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 23:34+0000\n"
-"PO-Revision-Date: 2026-09-13 23:34+0000\n"
+"POT-Creation-Date: 2026-11-19 11:56+0000\n"
+"PO-Revision-Date: 2026-11-19 11:56+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Language: fr_CA\n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__partner_id
-msgid "Apprenant"
-msgstr "Apprenant"
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__attempt_ids
+#: model_terms:ir.ui.view,arch_db:bf_training_scorm.view_scorm_package_form
+msgid "Attempts"
+msgstr "Tentatives"
 
 #. module: bf_training_scorm
-#. odoo-python
-#: code:addons/_t25660/bf_training_scorm/models/scorm_package.py:0
-#: code:addons/bf_training_scorm/models/scorm_package.py:0
-msgid "Aucun paquet déposé."
-msgstr "Aucun paquet déposé."
-
-#. module: bf_training_scorm
-#. odoo-python
-#: code:addons/_t25660/bf_training_scorm/models/scorm_package.py:0
-#: code:addons/bf_training_scorm/models/scorm_package.py:0
-msgid ""
-"Aucune ressource jouable dans ce manifeste : il ne déclare aucun « href »."
-msgstr ""
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__cmi_data
+msgid "CMI data"
+msgstr "Données CMI"
 
 #. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_slide_slide__slide_category
@@ -42,48 +32,10 @@ msgid "Category"
 msgstr "Category"
 
 #. module: bf_training_scorm
-#. odoo-python
-#: code:addons/_t25660/bf_training_scorm/models/scorm_package.py:0
-#: code:addons/bf_training_scorm/models/scorm_package.py:0
-msgid "Ce fichier n'est pas une archive lisible : %s"
-msgstr "Ce fichier n'est pas une archive lisible : %s"
-
-#. module: bf_training_scorm
-#: model_terms:ir.ui.view,arch_db:bf_training_scorm.scorm_player
-msgid ""
-"Ce paquet déclare des règles de séquencement SCORM 2004.\n"
-"                    Elles ne sont pas appliquées : le contenu jouera son premier\n"
-"                    SCO. Le module l'annonce plutôt que de faire semblant."
-msgstr ""
-
-#. module: bf_training_scorm
-#: model_terms:ir.ui.view,arch_db:bf_training_scorm.view_scorm_package_form
-msgid ""
-"Ce paquet déclare du séquencement SCORM 2004, qui n'est\n"
-"                        pas appliqué. Un lecteur qui prétend séquencer et se\n"
-"                        trompe est pire qu'un lecteur qui annonce qu'il ne\n"
-"                        séquence pas."
-msgstr ""
-
-#. module: bf_training_scorm
-#. odoo-python
-#: code:addons/_t25660/bf_training_scorm/models/scorm_package.py:0
-#: code:addons/bf_training_scorm/models/scorm_package.py:0
-msgid ""
-"Ce paquet n'a pas d'« imsmanifest.xml » à sa racine : ce n'est pas un paquet"
-" SCORM, ou il a été rezippé avec son dossier parent."
-msgstr ""
-
-#. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__slide_id
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__slide_id
-msgid "Contenu"
+msgid "Content"
 msgstr "Contenu"
-
-#. module: bf_training_scorm
-#: model:ir.model,name:bf_training_scorm.model_slide_channel
-msgid "Course"
-msgstr "Course"
 
 #. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__create_uid
@@ -98,32 +50,42 @@ msgid "Created on"
 msgstr "Created on"
 
 #. module: bf_training_scorm
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__uses_sequencing
+#: model:ir.model.fields,field_description:bf_training_scorm.field_slide_slide__scorm_uses_sequencing
+msgid "Declares sequencing"
+msgstr "Déclare du séquencement"
+
+#. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__display_name
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__display_name
 msgid "Display Name"
 msgstr "Display Name"
 
 #. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__cmi_data
-msgid "Données CMI"
-msgstr "Données CMI"
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__completed
+msgid "Ended"
+msgstr "Terminé"
 
 #. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__uses_sequencing
-#: model:ir.model.fields,field_description:bf_training_scorm.field_slide_slide__scorm_uses_sequencing
-msgid "Déclare du séquencement"
-msgstr "Déclare du séquencement"
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__date_completed
+msgid "Ended on"
+msgstr "Terminé le"
+
+#. module: bf_training_scorm
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__launch_href
+msgid "Entry point"
+msgstr "Point d'entrée"
+
+#. module: bf_training_scorm
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__archive_filename
+msgid "File name"
+msgstr "Nom du fichier"
 
 #. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__id
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__id
 msgid "ID"
 msgstr "ID"
-
-#. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__identifier
-msgid "Identifiant du manifeste"
-msgstr "Identifiant du manifeste"
 
 #. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__write_uid
@@ -138,79 +100,73 @@ msgid "Last Updated on"
 msgstr "Last Updated on"
 
 #. module: bf_training_scorm
-#. odoo-python
-#: code:addons/_t25660/bf_training_scorm/models/scorm_package.py:0
-#: code:addons/bf_training_scorm/models/scorm_package.py:0
-msgid "Le manifeste de ce paquet est illisible : %s"
-msgstr "Le manifeste de ce paquet est illisible : %s"
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__partner_id
+msgid "Learner"
+msgstr "Apprenant"
 
 #. module: bf_training_scorm
-#: model:ir.model.fields,help:bf_training_scorm.field_bf_scorm_package__uses_sequencing
-#: model:ir.model.fields,help:bf_training_scorm.field_slide_slide__scorm_uses_sequencing
-msgid ""
-"Le manifeste porte des règles de séquencement SCORM 2004. Elles ne sont PAS "
-"appliquées : le contenu jouera son premier SCO."
-msgstr ""
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__identifier
+msgid "Manifest identifier"
+msgstr "Identifiant du manifeste"
 
 #. module: bf_training_scorm
-#: model:ir.model.fields,help:bf_training_scorm.field_bf_scorm_attempt__cmi_data
-msgid "Le modèle de données CMI tel que le contenu l'a écrit, en JSON."
-msgstr "Le modèle de données CMI tel que le contenu l'a écrit, en JSON."
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__score_max
+msgid "Maximum score"
+msgstr "Score maximal"
 
 #. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__name
-msgid "Nom"
+msgid "Name"
 msgstr "Nom"
 
 #. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__archive_filename
-msgid "Nom du fichier"
-msgstr "Nom du fichier"
+#. odoo-python
+#: code:addons/bf_training_scorm/models/scorm_package.py:0
+msgid "No package uploaded."
+msgstr "Aucun paquet déposé."
 
 #. module: bf_training_scorm
-#: model_terms:ir.ui.view,arch_db:bf_training_scorm.view_scorm_package_form
-msgid "Nom du paquet"
-msgstr "Nom du paquet"
-
-#. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__sco_count
-msgid "Nombre de SCO"
-msgstr "Nombre de SCO"
+#. odoo-python
+#: code:addons/bf_training_scorm/models/scorm_package.py:0
+msgid "No playable resource in this manifest: it declares no \"href\"."
+msgstr ""
+"Aucune ressource jouable dans ce manifeste : il ne déclare aucun « href »."
 
 #. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_slide_channel__nbr_scorm
-msgid "Nombre de paquets SCORM"
+#: model:ir.model.fields,field_description:bf_training_scorm.field_slide_slide__nbr_scorm
+msgid "Number of SCORM packages"
 msgstr "Nombre de paquets SCORM"
 
 #. module: bf_training_scorm
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__sco_count
+msgid "Number of SCOs"
+msgstr "Nombre de SCO"
+
+#. module: bf_training_scorm
+#: model:ir.model.constraint,message:bf_training_scorm.constraint_bf_scorm_attempt_unique_par_apprenant
+msgid "Only one attempt per package and per learner."
+msgstr "Une seule tentative par paquet et par apprenant."
+
+#. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__package_id
-msgid "Paquet"
+msgid "Package"
 msgstr "Paquet"
 
 #. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__archive
-msgid "Paquet (.zip)"
+msgid "Package (.zip)"
 msgstr "Paquet (.zip)"
 
 #. module: bf_training_scorm
-#: model:ir.model,name:bf_training_scorm.model_bf_scorm_package
-#: model:ir.model.fields,field_description:bf_training_scorm.field_slide_slide__scorm_package_id
-#: model:ir.model.fields.selection,name:bf_training_scorm.selection__slide_slide__slide_category__scorm
 #: model_terms:ir.ui.view,arch_db:bf_training_scorm.view_scorm_package_form
-msgid "Paquet SCORM"
-msgstr "Paquet SCORM"
+msgid "Package name"
+msgstr "Nom du paquet"
 
 #. module: bf_training_scorm
-#: model:ir.actions.act_window,name:bf_training_scorm.action_scorm_package
-#: model:ir.ui.menu,name:bf_training_scorm.menu_scorm_package
-#: model_terms:ir.ui.view,arch_db:bf_training_scorm.view_scorm_package_list
-msgid "Paquets SCORM"
-msgstr "Paquets SCORM"
-
-#. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__launch_href
-msgid "Point d'entrée"
-msgstr "Point d'entrée"
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__lesson_status
+msgid "Reported status"
+msgstr "État rapporté"
 
 #. module: bf_training_scorm
 #: model:ir.model.fields.selection,name:bf_training_scorm.selection__bf_scorm_package__version__1_2
@@ -223,57 +179,106 @@ msgid "SCORM 2004"
 msgstr "SCORM 2004"
 
 #. module: bf_training_scorm
+#: model:ir.model,name:bf_training_scorm.model_bf_scorm_attempt
+msgid "SCORM attempt"
+msgstr "Tentative SCORM"
+
+#. module: bf_training_scorm
+#. odoo-python
+#: code:addons/bf_training_scorm/models/slide_slide.py:0
+msgid "SCORM content must carry a package."
+msgstr "Un contenu SCORM doit porter un paquet."
+
+#. module: bf_training_scorm
+#: model:ir.model,name:bf_training_scorm.model_bf_scorm_package
+#: model:ir.model.fields,field_description:bf_training_scorm.field_slide_slide__scorm_package_id
+#: model:ir.model.fields.selection,name:bf_training_scorm.selection__slide_slide__slide_category__scorm
+#: model_terms:ir.ui.view,arch_db:bf_training_scorm.view_scorm_package_form
+msgid "SCORM package"
+msgstr "Paquet SCORM"
+
+#. module: bf_training_scorm
+#: model:ir.actions.act_window,name:bf_training_scorm.action_scorm_package
+#: model:ir.ui.menu,name:bf_training_scorm.menu_scorm_package
+#: model_terms:ir.ui.view,arch_db:bf_training_scorm.view_scorm_package_list
+msgid "SCORM packages"
+msgstr "Paquets SCORM"
+
+#. module: bf_training_scorm
+#: model:ir.model.fields,field_description:bf_training_scorm.field_slide_slide__scorm_version
+msgid "SCORM version"
+msgstr "Version SCORM"
+
+#. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__score_raw
 msgid "Score"
 msgstr "Score"
 
 #. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__score_max
-msgid "Score maximal"
-msgstr "Score maximal"
+#: model:ir.model.fields,help:bf_training_scorm.field_bf_scorm_attempt__cmi_data
+msgid "The CMI data model as the content wrote it, in JSON."
+msgstr "Le modèle de données CMI tel que le contenu l'a écrit, en JSON."
 
 #. module: bf_training_scorm
-#: model:ir.model,name:bf_training_scorm.model_slide_slide
-msgid "Slides"
-msgstr "Slides"
-
-#. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__total_time
-msgid "Temps passé"
-msgstr "Temps passé"
-
-#. module: bf_training_scorm
-#: model:ir.model,name:bf_training_scorm.model_bf_scorm_attempt
-msgid "Tentative SCORM"
-msgstr "Tentative SCORM"
-
-#. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__attempt_ids
-#: model_terms:ir.ui.view,arch_db:bf_training_scorm.view_scorm_package_form
-msgid "Tentatives"
-msgstr "Tentatives"
-
-#. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__completed
-msgid "Terminé"
-msgstr "Terminé"
-
-#. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__date_completed
-msgid "Terminé le"
-msgstr "Terminé le"
+#: model:ir.model.fields,help:bf_training_scorm.field_bf_scorm_package__uses_sequencing
+#: model:ir.model.fields,help:bf_training_scorm.field_slide_slide__scorm_uses_sequencing
+msgid ""
+"The manifest carries SCORM 2004 sequencing rules. They are NOT applied: the "
+"content will play its first SCO."
+msgstr ""
+"Le manifeste porte des règles de séquencement SCORM 2004. Elles ne sont PAS "
+"appliquées : le contenu jouera son premier SCO."
 
 #. module: bf_training_scorm
 #. odoo-python
-#: code:addons/_t25660/bf_training_scorm/models/slide_slide.py:0
-#: code:addons/bf_training_scorm/models/slide_slide.py:0
-msgid "Un contenu SCORM doit porter un paquet."
-msgstr "Un contenu SCORM doit porter un paquet."
+#: code:addons/bf_training_scorm/models/scorm_package.py:0
+msgid "This file is not a readable archive: %s"
+msgstr "Ce fichier n'est pas une archive lisible : %s"
 
 #. module: bf_training_scorm
-#: model:ir.model.constraint,message:bf_training_scorm.constraint_bf_scorm_attempt_unique_par_apprenant
-msgid "Une seule tentative par paquet et par apprenant."
-msgstr "Une seule tentative par paquet et par apprenant."
+#: model_terms:ir.ui.view,arch_db:bf_training_scorm.scorm_player
+msgid ""
+"This package declares SCORM 2004 sequencing rules.\n"
+"                    They are not applied: the content will play its first\n"
+"                    SCO. The module says so rather than pretending otherwise."
+msgstr ""
+"Ce paquet déclare des règles de séquencement SCORM 2004.\n"
+"                    Elles ne sont pas appliquées : le contenu jouera son premier\n"
+"                    SCO. Le module l'annonce plutôt que de faire semblant."
+
+#. module: bf_training_scorm
+#: model_terms:ir.ui.view,arch_db:bf_training_scorm.view_scorm_package_form
+msgid ""
+"This package declares SCORM 2004 sequencing, which is\n"
+"                        not applied. A player that claims to sequence and gets\n"
+"                        it wrong is worse than a player that says it does\n"
+"                        not sequence."
+msgstr ""
+"Ce paquet déclare du séquencement SCORM 2004, qui n'est\n"
+"                        pas appliqué. Un lecteur qui prétend séquencer et se\n"
+"                        trompe est pire qu'un lecteur qui annonce qu'il ne\n"
+"                        séquence pas."
+
+#. module: bf_training_scorm
+#. odoo-python
+#: code:addons/bf_training_scorm/models/scorm_package.py:0
+msgid ""
+"This package has no \"imsmanifest.xml\" at its root: it is not a SCORM "
+"package, or it was rezipped with its parent folder."
+msgstr ""
+"Ce paquet n'a pas d'« imsmanifest.xml » à sa racine : ce n'est pas un paquet"
+" SCORM, ou il a été rezippé avec son dossier parent."
+
+#. module: bf_training_scorm
+#. odoo-python
+#: code:addons/bf_training_scorm/models/scorm_package.py:0
+msgid "This package's manifest cannot be read: %s"
+msgstr "Le manifeste de ce paquet est illisible : %s"
+
+#. module: bf_training_scorm
+#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__total_time
+msgid "Time spent"
+msgstr "Temps passé"
 
 #. module: bf_training_scorm
 #: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_package__version
@@ -281,19 +286,11 @@ msgid "Version"
 msgstr "Version"
 
 #. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_slide_slide__scorm_version
-msgid "Version SCORM"
-msgstr "Version SCORM"
-
-#. module: bf_training_scorm
 #: model:ir.model.fields,help:bf_training_scorm.field_bf_scorm_attempt__date_completed
 msgid ""
+"Written at the moment the content reported its terminal state. This is not a"
+" computation: a date that depends on an event is set when the event happens."
+msgstr ""
 "Écrit au moment où le contenu a rapporté son état terminal. Ce n'est pas un "
 "calcul : une date qui dépend d'un événement se pose quand l'événement "
 "arrive."
-msgstr ""
-
-#. module: bf_training_scorm
-#: model:ir.model.fields,field_description:bf_training_scorm.field_bf_scorm_attempt__lesson_status
-msgid "État rapporté"
-msgstr "État rapporté"

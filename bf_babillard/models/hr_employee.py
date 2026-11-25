@@ -53,10 +53,10 @@ class HrEmployee(models.Model):
             # langue au contexte retombe sur `en_US`, et la carte arrive en
             # anglais sur un babillard français.
             maison = Post.with_context(lang=langue)
-            titre = (maison.env._("Bienvenue à %(nom)s, qui rejoint %(equipe)s",
+            titre = (maison.env._("Welcome to %(nom)s, joining %(equipe)s",
                                   nom=fiche.name, equipe=departement)
                      if departement
-                     else maison.env._("Bienvenue à %(nom)s", nom=fiche.name))
+                     else maison.env._("Welcome to %(nom)s", nom=fiche.name))
             Post._depuis_source("hr.employee", employe.id, {
                 "name": titre,
                 "type_publication": "celebration",

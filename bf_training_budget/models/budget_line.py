@@ -6,23 +6,24 @@ class BudgetLine(models.Model):
 
     training_category_ids = fields.Many2many(
         "bf.training.category", "bf_budget_line_training_category_rel",
-        "line_id", "category_id", string="Catégories de formation",
-        help="Les catégories du registre dont le coût nourrit cette ligne. "
-             "Vide, la ligne ignore le registre.")
+        "line_id", "category_id", string="Training categories",
+        help="The register categories whose cost feeds this line. Empty, "
+             "the line ignores the register.")
     training_record_count = fields.Integer(
-        string="Formations comptées", compute="_compute_training_amounts")
+        string="Training records counted", compute="_compute_training_amounts")
     training_incomplete_count = fields.Integer(
-        string="Formations incomplètes", compute="_compute_training_amounts")
+        string="Incomplete training records", compute="_compute_training_amounts")
     training_actual = fields.Monetary(
-        string="Réalisé de formation", compute="_compute_training_amounts",
+        string="Training actual", compute="_compute_training_amounts",
         currency_field="currency_id")
     training_uncosted_count = fields.Integer(
-        string="Obligations non chiffrables", compute="_compute_training_engagements",
-        help="Obligations à venir dont le coût ne peut pas être établi : activité "
-             "sans durée, ou personne sans taux horaire. Elles ne sont pas dans "
-             "l'engagé, et ce compteur est la seule chose qui le dit.")
+        string="Uncosted obligations", compute="_compute_training_engagements",
+        help="Upcoming obligations whose cost cannot be established: an "
+             "activity with no duration, or a person with no hourly rate. "
+             "They are not in the committed amount, and this counter is "
+             "the only thing that says so.")
     training_committed = fields.Monetary(
-        string="Engagé de formation", compute="_compute_training_engagements",
+        string="Training committed", compute="_compute_training_engagements",
         currency_field="currency_id")
 
     # ------------------------------------------------------------------

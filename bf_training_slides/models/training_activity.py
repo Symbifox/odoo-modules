@@ -7,30 +7,30 @@ class BfTrainingActivity(models.Model):
     _inherit = "bf.training.activity"
 
     slide_channel_id = fields.Many2one(
-        "slide.channel", string="Cours en ligne", index=True, tracking=True,
-        help="Le cours qui porte le contenu. La complétion du cours écrit une "
-             "réalisation au registre.")
+        "slide.channel", string="Online course", index=True, tracking=True,
+        help="The course that carries the content. Completing the course "
+             "writes a completion to the register.")
     slide_content_count = fields.Integer(
-        string="Contenus publiés", compute="_compute_slide_content_count", store=True)
+        string="Published contents", compute="_compute_slide_content_count", store=True)
     slide_content_count_at_version = fields.Integer(
-        string="Contenus à la dernière version", default=0, readonly=True)
+        string="Contents at the latest version", default=0, readonly=True)
     support_default = fields.Boolean(
-        string="Accompagnement offert d'office", default=False,
-        help="Repris sur les réalisations écrites automatiquement à la "
-             "complétion. À ne cocher que si un accompagnement est réellement "
-             "offert pendant l'apprentissage.")
+        string="Support provided by default", default=False,
+        help="Carried over to the completions written automatically when "
+             "the course is completed. Tick this only if support is "
+             "really provided during the learning.")
     default_plan_id = fields.Many2one(
-        "bf.training.plan", string="Plan par défaut",
-        help="Le plan sous lequel la durée de ce cours est établie. Repris sur "
-             "les réalisations écrites automatiquement.")
+        "bf.training.plan", string="Default plan",
+        help="The plan under which the duration of this course is set "
+             "out. Carried over to the completions written automatically.")
     content_drifted = fields.Boolean(
-        string="Contenu dérivé", compute="_compute_content_drifted", store=True,
-        help="Le cours n'a plus le même nombre de contenus publiés qu'au moment "
-             "où la version a été fixée.")
+        string="Content drifted", compute="_compute_content_drifted", store=True,
+        help="The course no longer has the same number of published "
+             "contents as it had when the version was set.")
 
     _sql_constraints = [
         ("canal_unique", "unique (slide_channel_id)",
-         "Ce cours est déjà adossé à une activité."),
+         "This course is already linked to an activity."),
     ]
 
     @api.depends("slide_channel_id",
@@ -78,7 +78,7 @@ class BfTrainingActivity(models.Model):
         if existante:
             return existante
         base = {
-            "name": canal.name or _("Cours en ligne"),
+            "name": canal.name or _("Online course"),
             "slide_channel_id": canal.id,
             "mode": "elearning",
             "duration_hours": canal.total_time or 0.0,

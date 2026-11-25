@@ -7,9 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="before">
                 <div class="alert alert-info" role="status" invisible="not federation_is_mirror">
-                    Échéancier reçu de <field name="federation_peer_id" readonly="1" class="oe_inline"/>.
-                    Il se lit ici : le prochain changement de l'émetteur le remplacera, et il ne se
-                    publie pas au portail.
+                    Schedule received from <field name="federation_peer_id" readonly="1" class="oe_inline"/>. It is read-only here: the sender's next change will replace it, and it is not published to the portal.
                 </div>
             </xpath>
             <xpath expr="//header" position="inside">
@@ -17,11 +15,10 @@
                 <field name="federation_origin" invisible="1"/>
                 <field name="federation_possible" invisible="1"/>
                 <field name="federation_allowed_peer_ids" invisible="1"/>
-                <button name="action_federation_push" type="object" string="Renvoyer au pair"
+                <button name="action_federation_push" type="object" string="Send to the peer again"
                         invisible="federation_origin != 'local' or not federation_peer_id"
                         groups="project.group_project_manager"
-                        help="L'échéancier repart de lui-même quand une ligne bouge. Ce bouton
-                              le renvoie tel qu'il est, même s'il n'a pas changé."/>
+                        help="The schedule is sent again on its own when a line moves. This button sends it as it is, even if it has not changed."/>
             </xpath>
             <!-- Un échéancier reçu ne se publie pas : le bouton qui échouerait toujours n'a pas à s'afficher. -->
             <xpath expr="//button[@name='action_bf_gantt_publier']" position="attributes">

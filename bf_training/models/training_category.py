@@ -13,24 +13,25 @@ class BfTrainingCategory(models.Model):
     """
 
     _name = "bf.training.category"
-    _description = "Catégorie de formation"
+    _description = "Training category"
     _order = "sequence, name"
 
-    name = fields.Char(string="Catégorie", required=True, translate=True)
+    name = fields.Char(string="Category", required=True, translate=True)
     code = fields.Char(
         string="Code", required=True,
-        help="Court, stable, et utilisé par les exigences. Il ne se traduit pas.")
-    sequence = fields.Integer(string="Ordre", default=10)
-    color = fields.Integer(string="Couleur")
-    active = fields.Boolean(string="Actif", default=True)
+        help="Short, stable, and used by the requirements. It is not "
+             "translated.")
+    sequence = fields.Integer(string="Sequence", default=10)
+    color = fields.Integer(string="Colour")
+    active = fields.Boolean(string="Active", default=True)
     description = fields.Text(string="Description", translate=True)
     activity_ids = fields.One2many(
-        "bf.training.activity", "category_id", string="Activités")
+        "bf.training.activity", "category_id", string="Activities")
     activity_count = fields.Integer(
-        string="Nombre d'activités", compute="_compute_activity_count")
+        string="Number of activities", compute="_compute_activity_count")
 
     _sql_constraints = [
-        ("code_uniq", "unique (code)", "Ce code de catégorie est déjà pris."),
+        ("code_uniq", "unique (code)", "This category code is already taken."),
     ]
 
     def _compute_activity_count(self):

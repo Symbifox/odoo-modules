@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='privacy_visibility_warning']/parent::span" position="after">
                 <field name="federation_peer_ids" widget="many2many_tags" groups="project.group_project_manager"
-                       placeholder="Aucun pair : les tâches de ce projet ne se fédèrent pas"/>
+                       placeholder="No peer: this project's tasks do not federate"/>
             </xpath>
         </field>
     </record>

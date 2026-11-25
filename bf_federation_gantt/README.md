@@ -43,3 +43,7 @@ le projet cité. Jamais « tous les pairs actifs ».
 ## Dépendances
 
 `bf_federation`, `bf_gantt`.
+
+## Languages (v18.0.1.0.2)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.

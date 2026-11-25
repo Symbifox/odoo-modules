@@ -4,13 +4,13 @@
         <field name="name">bf.nfc.template.list</field>
         <field name="model">bf.nfc.template</field>
         <field name="arch" type="xml">
-            <list string="Gabarits">
+            <list string="Templates">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="secteur"/>
                 <field name="recette"/>
                 <field name="reference" optional="show"/>
-                <button name="action_utiliser" type="object" string="Poser" class="btn-link"
+                <button name="action_utiliser" type="object" string="Apply" class="btn-link"
                         icon="fa-magic"/>
             </list>
         </field>
@@ -20,23 +20,23 @@
         <field name="name">bf.nfc.template.form</field>
         <field name="model">bf.nfc.template</field>
         <field name="arch" type="xml">
-            <form string="Gabarit">
+            <form string="Template">
                 <header>
-                    <button name="action_utiliser" type="object" string="Poser ce gabarit" class="btn-primary"/>
+                    <button name="action_utiliser" type="object" string="Apply this template" class="btn-primary"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Retiré" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Withdrawn" bg_color="text-bg-danger" invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1><field name="name"/></h1>
                     </div>
                     <group>
-                        <group string="Ce qu'il est">
+                        <group string="What this template is">
                             <field name="secteur"/>
                             <field name="reference"/>
                             <field name="active" invisible="1"/>
                         </group>
-                        <group string="Ce qu'il crée" name="cree">
+                        <group string="What it creates" name="cree">
                             <field name="recette"/>
                             <field name="gesture_id"/>
                             <field name="gesture_kind" invisible="1"/>
@@ -50,8 +50,8 @@
                         <page string="Description" name="description">
                             <field name="description"/>
                         </page>
-                        <page string="Exemple de lignes" name="exemple">
-                            <field name="exemple" placeholder="Extincteur 1 ; Hall d'entrée"/>
+                        <page string="Example lines" name="exemple">
+                            <field name="exemple" placeholder="Extinguisher 1 ; Front lobby"/>
                         </page>
                         <page string="Menu" name="menu">
                             <field name="choice_ids">
@@ -77,22 +77,21 @@
             <search>
                 <field name="name"/>
                 <field name="reference"/>
-                <group expand="1" string="Regrouper par">
-                    <filter name="par_secteur" string="Secteur" context="{'group_by': 'secteur'}"/>
+                <group expand="1" string="Group by">
+                    <filter name="par_secteur" string="Sector" context="{'group_by': 'secteur'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_bf_nfc_template" model="ir.actions.act_window">
-        <field name="name">Gabarits</field>
+        <field name="name">Templates</field>
         <field name="res_model">bf.nfc.template</field>
         <field name="view_mode">list,form</field>
         <field name="context">{'search_default_par_secteur': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun gabarit</p>
-            <p>Un gabarit crée d'un coup ce qu'on pose d'habitude : une ronde et ses points, des
-            équipements et leur pastille, une pastille par ligne.</p>
+            <p class="o_view_nocontent_smiling_face">No template</p>
+            <p>A template creates in one go what you usually set up by hand: a round and its checkpoints, equipment items and their tags, one tag per line.</p>
         </field>
     </record>
 
@@ -100,7 +99,7 @@
         <field name="name">bf.nfc.template.apply.form</field>
         <field name="model">bf.nfc.template.apply</field>
         <field name="arch" type="xml">
-            <form string="Poser un gabarit">
+            <form string="Apply a template">
                 <field name="template_id" invisible="1"/>
                 <field name="recette" invisible="1"/>
                 <field name="cible_requise" invisible="1"/>
@@ -108,15 +107,13 @@
                 <field name="demande_adresse" invisible="1"/>
                 <div class="text-muted mb-2"><field name="description" readonly="1"/></div>
                 <div class="small text-muted mb-2" invisible="not reference">
-                    Référence : <field name="reference" readonly="1" class="oe_inline"/>
+                    Reference: <field name="reference" readonly="1" class="oe_inline"/>
                 </div>
                 <div class="alert alert-info" role="status" invisible="not signee_recommandee">
-                    Les personnes qui taperont ces pastilles n'ont pas de compte : gravez-les sur des
-                    puces NTAG 424 DNA, posez les clés dans Réglages, puis saisissez l'identifiant de
-                    chaque puce sur sa pastille.
+                    The people who will tap these tags have no account: engrave them on NTAG 424 DNA chips, set the keys in Settings, then enter each chip's identifier on its tag.
                 </div>
                 <group>
-                    <field name="lignes" placeholder="Extincteur 1 ; Hall d'entrée&#10;Extincteur 2 ; Sous-sol"/>
+                    <field name="lignes" placeholder="Extinguisher 1 ; Front lobby&#10;Extinguisher 2 ; Basement"/>
                     <field name="prefixe"/>
                     <field name="cible" invisible="not cible_requise" required="cible_requise"
                            options="{'no_create': True}"/>
@@ -125,13 +122,13 @@
                            invisible="recette == 'pastilles'"/>
                 </group>
                 <footer>
-                    <button name="action_appliquer" type="object" string="Créer" class="btn-primary"/>
-                    <button special="cancel" string="Annuler"/>
+                    <button name="action_appliquer" type="object" string="Create" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
-    <menuitem id="menu_nfc_templates" name="Gabarits" parent="menu_nfc_root"
+    <menuitem id="menu_nfc_templates" name="Templates" parent="menu_nfc_root"
               action="action_bf_nfc_template" sequence="15" groups="bf_nfc.group_nfc_manager"/>
 </odoo>

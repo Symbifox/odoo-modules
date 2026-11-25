@@ -3,102 +3,102 @@
     <data noupdate="1">
 
         <!-- ==========================================================
-             L'invitation. Elle demande, elle n'informe pas d'un fait
-             accompli : c'est la différence entre un consentement et un
-             avis. Elle dit aussi comment dire non, dans le même écran.
+             The invitation. It asks, it does not inform of a done
+             deal: that is the difference between a consent and a
+             notice. It also says how to say no, on the same screen.
              ========================================================== -->
         <record id="mail_template_invitation" model="mail.template">
-            <field name="name">Célébrations : invitation à répondre</field>
+            <field name="name">Celebrations: invitation to answer</field>
             <field name="model_id" ref="model_bf_celebration_profile"/>
-            <field name="subject">Souhaitez-vous qu'on souligne votre fête ?</field>
+            <field name="subject">Would you like your celebration marked?</field>
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="email_to">{{ object.employee_id.work_email }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
 <div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
-    <p>Bonjour <t t-out="object.employee_id.name or ''"/>,</p>
-    <p>On aimerait pouvoir souligner les fêtes au bureau, et pour ça il faut
-       vous demander ce que vous en pensez. Vous décidez, et vous pouvez
-       changer d'idée quand vous voulez.</p>
-    <p>Quatre réponses possibles :</p>
+    <p>Hello <t t-out="object.employee_id.name or ''"/>,</p>
+    <p>We would like to be able to mark celebrations at the office, and for that
+       we have to ask you what you think. You decide, and you can change
+       your mind whenever you want.</p>
+    <p>Four possible answers:</p>
     <ul style="padding-left:18px">
-        <li><strong>Oui, avec une carte</strong> signée par les collègues</li>
-        <li><strong>Oui, mais sans carte</strong> : la date paraît, personne
-            n'organise rien</li>
-        <li><strong>Non merci</strong> : on vous retire de tout, et on ne
-            vous le redemande plus</li>
-        <li>Ne rien faire, et il ne se passe rien</li>
+        <li><strong>Yes, with a card</strong> signed by your colleagues</li>
+        <li><strong>Yes, but no card</strong>: the date appears, nobody
+            organises anything</li>
+        <li><strong>No thanks</strong>: we take you out of everything, and we
+            will not ask you again</li>
+        <li>Do nothing, and nothing happens</li>
     </ul>
-    <p>On vous demande le <strong>jour et le mois</strong> seulement. Votre
-       date de naissance dans le dossier RH n'est pas lue, pas copiée, pas
-       affichée.</p>
+    <p>We ask you for the <strong>day and the month</strong> only. Your
+       date of birth in the HR record is not read, not copied, not
+       shown.</p>
     <p style="margin:24px 0">
         <a t-att-href="'%s/odoo/action-bf_celebrations.action_mon_profil' % (object.env['ir.config_parameter'].sudo().get_param('web.base.url') or '')"
            style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
-            Répondre</a>
+            Answer</a>
     </p>
-    <p style="color:#6b7280;font-size:12px">Personne d'autre que vous ne voit
-       votre réponse, pas même les ressources humaines.</p>
+    <p style="color:#6b7280;font-size:12px">Nobody but you sees
+       your answer, not even human resources.</p>
 </div>
             </field>
         </record>
 
         <!-- ==========================================================
-             Le rappel à qui organise. Il porte le lien, parce qu'un
-             rappel sans bouton ne produit rien.
+             The reminder to whoever organises. It carries the link,
+             because a reminder with no button produces nothing.
              ========================================================== -->
         <record id="mail_template_rappel_organisateur" model="mail.template">
-            <field name="name">Célébrations : rappel à qui organise</field>
+            <field name="name">Celebrations: reminder to whoever is organising</field>
             <field name="model_id" ref="model_bf_celebration_occasion"/>
-            <field name="subject">{{ object.person_name }} : une carte à ouvrir avant le {{ object.date }}</field>
+            <field name="subject">{{ object.person_name }}: a card to open before {{ object.date }}</field>
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
 <div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
-    <p>Bonjour,</p>
+    <p>Hello,</p>
     <p><t t-out="object.name or ''"/>, le
        <strong t-out="object.date and object.date.strftime('%d/%m/%Y') or ''"/>.</p>
-    <p>Rien n'est encore ouvert. Un tableau de vœux se crée en un clic, et le
-       lien se partage ensuite comme vous voulez : courriel, canal d'équipe,
-       ou un code QR imprimé.</p>
+    <p>Nothing is open yet. A wishes board is created in one click, and the
+       link is then shared however you like: email, a team channel,
+       or a printed QR code.</p>
     <p style="margin:24px 0">
         <a t-att-href="'%s/odoo/bf.celebration.occasion/%s' % (object.env['ir.config_parameter'].sudo().get_param('web.base.url') or '', object.id)"
            style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
-            Ouvrir la carte</a>
+            Open the card</a>
     </p>
-    <p style="color:#6b7280;font-size:12px">Cette personne a accepté qu'on
-       souligne sa fête. Elle ne verra rien avant la livraison.</p>
+    <p style="color:#6b7280;font-size:12px">This person has agreed to have
+       their celebration marked. They will see nothing before delivery.</p>
 </div>
             </field>
         </record>
 
         <!-- ========================================================== -->
         <record id="mail_template_tableau_mince" model="mail.template">
-            <field name="name">Célébrations : le tableau est mince</field>
+            <field name="name">Celebrations: the board is thin</field>
             <field name="model_id" ref="model_bf_celebration_board"/>
-            <field name="subject">La carte de {{ object.recipient_name }} est encore bien vide</field>
+            <field name="subject">{{ object.recipient_name }}'s card is still quite empty</field>
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
 <div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
-    <p>Bonjour,</p>
-    <p>La carte de <strong t-out="object.recipient_name or ''"/> part bientôt
-       et elle porte
+    <p>Hello,</p>
+    <p><strong t-out="object.recipient_name or ''"/>'s card goes out soon
+       and it carries
        <strong t-out="object.published_post_count"/> message(s).</p>
-    <p>Le lien à repartager :</p>
+    <p>The link to share again:</p>
     <p><a t-att-href="object.contribution_url" t-out="object.contribution_url"/></p>
-    <p style="color:#6b7280;font-size:12px">Une carte vide n'est pas livrée :
-       elle est retenue et vous êtes prévenu.</p>
+    <p style="color:#6b7280;font-size:12px">An empty card is not delivered:
+       it is held and you are told.</p>
 </div>
             </field>
         </record>
 
         <!-- ==========================================================
-             La livraison. Elle part à la personne fêtée, et c'est le
-             seul courriel du module qui lui soit adressé.
+             The delivery. It goes to the person celebrated, and it is
+             the only email in the module addressed to them.
              ========================================================== -->
         <record id="mail_template_livraison" model="mail.template">
-            <field name="name">Célébrations : livraison du tableau</field>
+            <field name="name">Celebrations: board delivery</field>
             <field name="model_id" ref="model_bf_celebration_board"/>
             <field name="subject">{{ object.name }}</field>
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
@@ -106,81 +106,81 @@
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
 <div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
-    <p>Bonjour <t t-out="object.recipient_name or ''"/>,</p>
-    <p>Vos collègues vous ont écrit.
-       <strong t-out="object.published_post_count"/> message(s) vous
-       attendent. Ouvrez l'enveloppe.</p>
+    <p>Hello <t t-out="object.recipient_name or ''"/>,</p>
+    <p>Your colleagues have written to you.
+       <strong t-out="object.published_post_count"/> message(s) are
+       waiting for you. Open the envelope.</p>
     <p style="margin:24px 0">
         <a t-att-href="object.recipient_url"
            style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
-            Ouvrir la carte</a>
+            Open the card</a>
     </p>
-    <p style="color:#6b7280;font-size:12px">En pièces jointes, la carte à
-       garder : en PDF, et en page complète où les images animées bougent
-       encore. Le lien, lui, ne durera pas toujours ; ces deux fichiers
-       sont à vous. Depuis la carte, vous pouvez dire merci à celles et ceux
-       qui ont signé : ce lien est le vôtre, ne le transférez pas.</p>
+    <p style="color:#6b7280;font-size:12px">Attached, the card to
+       keep: as a PDF, and as a complete page where animated images still
+       move. The link will not last forever; those two files
+       are yours. From the card you can thank those
+       who signed: that link is yours, do not forward it.</p>
 </div>
             </field>
         </record>
 
         <!-- ==========================================================
-             Le merci. Il part une fois, aux gens invités par courriel et à
-             ceux qui ont signé connectés, quand la personne fêtée l'a écrit
-             depuis sa carte.
+             The thank-you. It goes out once, to the people invited by email
+             and to those who signed while signed in, when the person celebrated
+             has written it from their card.
              ========================================================== -->
         <record id="mail_template_merci" model="mail.template">
-            <field name="name">Célébrations : le merci de la personne fêtée</field>
+            <field name="name">Celebrations: the thank-you from the person celebrated</field>
             <field name="model_id" ref="model_bf_celebration_board"/>
-            <field name="subject">{{ object.recipient_name }} vous remercie</field>
+            <field name="subject">{{ object.recipient_name }} thanks you</field>
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
 <div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
-    <p>Bonjour,</p>
-    <p><strong t-out="object.recipient_name or ''"/> a reçu sa carte,
-       <t t-out="object.name or ''"/>, et a écrit un mot pour celles et ceux
-       qui l'ont signée :</p>
+    <p>Hello,</p>
+    <p><strong t-out="object.recipient_name or ''"/> has received their card,
+       <t t-out="object.name or ''"/>, and has written a message for those
+       who signed it:</p>
     <blockquote style="margin:16px 0;padding:12px 16px;border-left:4px solid #177AA3;background:#F4F6F8" t-out="object.thanks_html"/>
     <p style="margin:24px 0">
         <a t-att-href="object.board_url"
            style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
-            Revoir la carte</a>
+            See the card again</a>
     </p>
 </div>
             </field>
         </record>
 
         <!-- ==========================================================
-             L'invitation à signer. Elle part aux groupes de signataires,
-             une fois par adresse, jamais à la personne fêtée. Le prénom
-             vient du contexte (`cel_invite_nom`), posé par le tableau au
-             moment de l'envoi.
+             The invitation to sign. It goes to the signatory groups,
+             once per address, never to the person celebrated. The first name
+             comes from the context (`cel_invite_nom`), placed by the board at
+             the moment of sending.
              ========================================================== -->
         <record id="mail_template_invitation_signataire" model="mail.template">
-            <field name="name">Célébrations : invitation à signer</field>
+            <field name="name">Celebrations: invitation to sign</field>
             <field name="model_id" ref="model_bf_celebration_board"/>
-            <field name="subject">Une carte à signer pour {{ object.recipient_name }}</field>
+            <field name="subject">A card to sign for {{ object.recipient_name }}</field>
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
 <div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
-    <p>Bonjour <t t-out="ctx.get('cel_invite_nom') or ''"/>,</p>
-    <p>Une carte collective est ouverte pour
-       <strong t-out="object.recipient_name or ''"/> :
+    <p>Hello <t t-out="ctx.get('cel_invite_nom') or ''"/>,</p>
+    <p>A group card is open for
+       <strong t-out="object.recipient_name or ''"/>:
        <t t-out="object.name or ''"/>.</p>
-    <p>Un mot, une photo, un tracé à la main : ce que vous auriez écrit
-       dans la carte de papier. Aucun compte n'est demandé.</p>
+    <p>A message, a photo, something drawn by hand: what you would have written
+       in the paper card. No account is needed.</p>
     <p style="margin:24px 0">
         <a t-att-href="object.contribution_url"
            style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
-            Signer la carte</a>
+            Sign the card</a>
     </p>
-    <p t-if="object.delivery_date">La carte part le
+    <p t-if="object.delivery_date">The card goes out on
        <strong t-out="format_datetime(object.delivery_date, tz=user.tz or 'UTC', dt_format='long')"/>.</p>
-    <p style="color:#6b7280;font-size:12px">La personne fêtée ne voit rien
-       avant la livraison : gardez-lui la surprise, et ne lui transférez pas
-       ce message.</p>
+    <p style="color:#6b7280;font-size:12px">The person celebrated sees nothing
+       before delivery: keep the surprise for them, and do not forward
+       this message to them.</p>
 </div>
             </field>
         </record>

@@ -5,7 +5,8 @@ from odoo import fields, models
 class BfNfcTemplate(models.Model):
     _inherit = "bf.nfc.template"
 
-    recette = fields.Selection(selection_add=[("salles", "Des salles et la pastille de leur porte")],
+    recette = fields.Selection(selection_add=[("salles", "Rooms and their "
+                                                         "door tags")],
                                ondelete={"salles": "set default"})
 
     def _recette_salles(self, pose, lignes):

@@ -876,11 +876,11 @@ class TestFilVivant(TransactionCase):
         """🔴 `fr_CA` formate en %Y-%m-%d : « 2026-09-15 » sur chaque carte est
         le signal « fiche de base de données » le plus fort de l'écran."""
         post = self._publiee()
-        self.assertEqual(post.with_user(self.lecteur).date_affichee, "aujourd'hui")
+        self.assertEqual(post.with_user(self.lecteur).date_affichee, "today")
         self._reculer(post, 1)
-        self.assertEqual(post.with_user(self.lecteur).date_affichee, "hier")
+        self.assertEqual(post.with_user(self.lecteur).date_affichee, "yesterday")
         self._reculer(post, 3)
-        self.assertEqual(post.with_user(self.lecteur).date_affichee, "il y a 3 jours")
+        self.assertEqual(post.with_user(self.lecteur).date_affichee, "3 days ago")
 
     def test_au_dela_d_une_semaine_la_date_se_pose(self):
         post = self._publiee()
@@ -1033,7 +1033,7 @@ class TestFilVivant(TransactionCase):
             self.env["bf.babillard.geste"].with_user(self.lecteur).create({
                 "post_id": post.id, "user_id": self.voisin.id,
                 "reaction_id": self._neuve("\N{ROSETTE}", "Usurpée").id})
-        self.assertIn("au nom de quelqu'un d'autre", str(pris.exception))
+        self.assertIn("on somebody else's behalf", str(pris.exception))
 
     def test_on_ne_pose_pas_deux_fois_la_meme(self):
         post = self._publiee()
@@ -1531,12 +1531,30 @@ class TestCatalogueFrancais(TransactionCase):
                 yield m.group(1).strip(), m.group(2).strip()
 
     def test_aucune_chaine_doublee(self):
+        """🔴 Cet essai affirmait que le msgstr RECOPIE le msgid, ce qui gardait
+        un catalogue d'identité : vrai quand la source était française, faux
+        depuis la 18.0.1.8.1, où le catalogue porte de vraies traductions.
+        L'intention d'origine reste la bonne — un script de génération avait
+        doublé les chaînes MULTILIGNES, et l'avis de confidentialité du
+        dialogue de signalement s'affichait deux fois — et c'est elle qui est
+        mesurée ici : un texte qui se répète immédiatement, et une traduction
+        anormalement plus longue que sa source.
+        """
         for msgid, msgstr in self._entrees():
-            if msgid == '""':
+            if msgid == '""' or not msgstr.strip('"'):
                 continue
-            self.assertEqual(
-                msgid, msgstr,
-                "la traduction française doit recopier la source, une seule fois")
+            valeur = msgstr
+            moitie = len(valeur) // 2
+            if len(valeur) > 60:
+                self.assertNotEqual(
+                    valeur[:moitie], valeur[moitie:moitie * 2],
+                    "cette traduction se répète mot pour mot : %s" % valeur[:70])
+            # Une traduction française dépasse rarement 1,6 fois sa source
+            # anglaise. Au-delà de 1,9, c'est un doublage, pas du français.
+            if len(msgid) > 40:
+                self.assertLess(
+                    len(valeur), len(msgid) * 1.9,
+                    "traduction deux fois trop longue, donc doublée : %s" % valeur[:70])
 
     def test_le_catalogue_n_est_pas_vide(self):
         self.assertGreater(len(list(self._entrees())), 100)
@@ -1821,3 +1839,18 @@ class TestEnvois(TransactionCase):
         self.assertTrue(sig.sans_destinataire)
         self.assertFalse(self._mails(sig))
         self.assertEqual(action["params"]["type"], "warning")
+
+
+    def test_les_travaux_planifies_fixent_une_langue(self):
+        """sans langue au contexte, le suivi des états écrit au chatter sortait en anglais."""
+        import ast
+        from odoo.tools import file_open
+        for fichier, methodes in {'bf_babillard/models/babillard_post.py': ['_cron_echoir']}.items():
+            with file_open(fichier) as f:
+                arbre = ast.parse(f.read())
+            for methode in methodes:
+                fonction = [n for n in ast.walk(arbre) if isinstance(n, ast.FunctionDef) and n.name == methode]
+                self.assertEqual(len(fonction), 1, methode)
+                source = ast.unparse(fonction[0])
+                self.assertIn("if not self.env.lang:", source, methode)
+                self.assertIn("get_lang(self.env).code", source, methode)

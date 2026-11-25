@@ -1,6 +1,10 @@
 {
     "name": "Gestes par pastille NFC",
-    "version": "18.0.2.6.4",
+    # 18.0.2.6.5: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.2.6.5",
     "category": "Productivity",
     "summary": "Une pastille, un geste, et le nom de la personne qui a tape",
     "description": """

@@ -16,7 +16,7 @@ class BfNfcGesture(models.Model):
     _inherit = "bf.nfc.gesture"
 
     kind = fields.Selection(
-        selection_add=[("round_checkpoint", "Point de tournée")],
+        selection_add=[("round_checkpoint", "Round checkpoint")],
         ondelete={"round_checkpoint": "cascade"},
     )
 
@@ -25,7 +25,7 @@ class BfNfcGesture(models.Model):
         self._exiger_une_personne(params)
         point = tag._cible()
         if not point or point._name != "bf.nfc.round.checkpoint":
-            raise UserError(_("Cette pastille ne désigne pas un point de tournée."))
+            raise UserError(_("This tag does not point to a round checkpoint."))
         point = point.sudo()
         tournee = point.round_id
         moment = self._moment(params)
@@ -41,7 +41,7 @@ class BfNfcGesture(models.Model):
         deja = ouverte.passage_ids.filtered(lambda p: p.checkpoint_id == point)
         if deja:
             return {"titre": tournee.name, "url": None,
-                    "message": _("« %(point)s » était déjà tapé à %(heure)s.",
+                    "message": _("“%(point)s” was already tapped at %(heure)s.",
                                  point=point.name, heure=self._heure(deja[0].tapped_at))}
 
         precedents = tournee.checkpoint_ids.filtered(
@@ -57,10 +57,11 @@ class BfNfcGesture(models.Model):
             ouverte.write({"state": "done", "date_end": moment})
             minutes = int((moment - ouverte.date_start).total_seconds() // 60)
             return {"titre": tournee.name, "url": None,
-                    "message": _("Tournée complète : %(n)s points en %(min)s min.", n=total, min=minutes)}
+                    "message": _("Round complete: %(n)s checkpoints in "
+                                 "%(min)s min.", n=total, min=minutes)}
         suivant = (tournee.checkpoint_ids - faits)[:1]
-        message = _("Point %(n)s sur %(total)s. Prochain : %(suivant)s.",
+        message = _("Checkpoint %(n)s of %(total)s. Next: %(suivant)s.",
                     n=len(faits), total=total, suivant=suivant.name)
         if hors_ordre:
-            message = _("Hors ordre : un point précédent n'a pas été tapé. ") + message
+            message = _("Out of order: a previous checkpoint was not tapped. ") + message
         return {"titre": tournee.name, "url": None, "message": message}

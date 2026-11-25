@@ -42,7 +42,7 @@ export class BabillardReactions extends Component {
     }
 
     get etiquetteAjouter() {
-        return _t("Réagir");
+        return _t("React");
     }
 
     /**
@@ -75,7 +75,7 @@ export class BabillardReactions extends Component {
 
 export const babillardReactions = {
     component: BabillardReactions,
-    displayName: _t("Réactions du babillard"),
+    displayName: _t("Noticeboard reactions"),
     supportedTypes: ["json"],
 };
 

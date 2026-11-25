@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="module_category_nfc" model="ir.module.category">
-        <field name="name">Pastilles NFC</field>
+        <field name="name">NFC tags</field>
         <field name="sequence">55</field>
     </record>
 
     <record id="group_nfc_user" model="res.groups">
-        <field name="name">Utilisation</field>
+        <field name="name">Use</field>
         <field name="category_id" ref="module_category_nfc"/>
-        <field name="comment">Tape des pastilles et lit ses propres tapotements.</field>
+        <field name="comment">Taps tags and reads their own taps.</field>
     </record>
 
     <record id="group_nfc_manager" model="res.groups">
-        <field name="name">Gestion</field>
+        <field name="name">Management</field>
         <field name="category_id" ref="module_category_nfc"/>
         <field name="implied_ids" eval="[(4, ref('group_nfc_user'))]"/>
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
-        <field name="comment">Crée les pastilles, choisit les gestes, lit tout le journal.</field>
+        <field name="comment">Creates tags, chooses gestures, reads the whole log.</field>
     </record>
 
     <!-- Tout interne tape des pastilles : c'est le geste, pas un privilège.
@@ -27,13 +27,13 @@
     </record>
 
     <record id="regle_pastille_societe" model="ir.rule">
-        <field name="name">Pastilles : cloison des sociétés</field>
+        <field name="name">Tags: company isolation</field>
         <field name="model_id" ref="model_bf_nfc_tag"/>
         <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
 
     <record id="regle_cles_societe" model="ir.rule">
-        <field name="name">Clés des pastilles signées : cloison des sociétés</field>
+        <field name="name">Signed tag keys: company isolation</field>
         <field name="model_id" ref="model_bf_nfc_sdm_key"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
@@ -42,34 +42,34 @@
          pastille a été supprimée reste lisible : elle ne porte plus rien de la
          société, et on veut encore savoir ce qu'une pastille retirée a fait. -->
     <record id="regle_journal_societe" model="ir.rule">
-        <field name="name">Journal : cloison des sociétés</field>
+        <field name="name">Log: company isolation</field>
         <field name="model_id" ref="model_bf_nfc_tap"/>
         <field name="domain_force">['|', ('tag_id', '=', False), ('tag_id.company_id', 'in', company_ids)]</field>
     </record>
 
     <record id="regle_journal_les_miens" model="ir.rule">
-        <field name="name">Journal : mes tapotements</field>
+        <field name="name">Log: my own taps</field>
         <field name="model_id" ref="model_bf_nfc_tap"/>
         <field name="domain_force">[('user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_nfc_user'))]"/>
     </record>
 
     <record id="regle_journal_gestion" model="ir.rule">
-        <field name="name">Journal : tout, pour la gestion</field>
+        <field name="name">Log: everything, for managers</field>
         <field name="model_id" ref="model_bf_nfc_tap"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_nfc_manager'))]"/>
     </record>
 
     <record id="regle_appareil_le_mien" model="ir.rule">
-        <field name="name">Appareils : les miens</field>
+        <field name="name">Devices: my own</field>
         <field name="model_id" ref="model_bf_nfc_device"/>
         <field name="domain_force">[('user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_nfc_user'))]"/>
     </record>
 
     <record id="regle_appareil_gestion" model="ir.rule">
-        <field name="name">Appareils : tous, pour la gestion</field>
+        <field name="name">Devices: all, for managers</field>
         <field name="model_id" ref="model_bf_nfc_device"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_nfc_manager'))]"/>

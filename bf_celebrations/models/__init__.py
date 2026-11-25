@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from . import langue
 from . import celebration_profile
 from . import celebration_occasion
 from . import celebration_signer_group

@@ -20,36 +20,37 @@ PARAM_SCHEMAS = "bf_nfc.schemas_appariement"
 SCHEMAS_DEFAUT = "com.bluefoxconsultant.pastilles://"
 
 ORIGINES = [
-    ("environnement", "Hors de la base (variable d'environnement)"),
-    ("configuration", "Hors de la base (fichier de configuration)"),
-    ("base", "Dans la base"),
-    ("absente", "Pas encore tirée"),
+    ("environnement", "Outside the database (environment variable)"),
+    ("configuration", "Outside the database (configuration file)"),
+    ("base", "In the database"),
+    ("absente", "Not generated yet"),
 ]
 
 
 def _exiger_la_gestion(env):
     if not env.user.has_group("bf_nfc.group_nfc_manager"):
-        raise AccessError(_("Les réglages des pastilles sont réservés à la gestion."))
+        raise AccessError(_("Tag settings are reserved for managers."))
 
 
 class BfNfcConfig(models.TransientModel):
     _name = "bf.nfc.config"
-    _description = "Réglages des pastilles NFC"
+    _description = "NFC tag settings"
 
     fenetre_doublon = fields.Integer(
-        string="Fenêtre anti-doublon (s)",
-        help="Deux tapotements identiques de la même personne dans cette fenêtre ne font "
-             "le geste qu'une fois. Zéro : aucune garde.")
+        string="Duplicate window (s)",
+        help="Two identical taps by the same person within this window "
+             "run the gesture only once. Zero: no safeguard.")
     differe_max_heures = fields.Integer(
-        string="Différé accepté jusqu'à (h)",
-        help="Un tapotement fait sans réseau est accepté s'il arrive dans ce délai.")
+        string="Offline taps accepted up to (h)",
+        help="A tap made without a network is accepted if it arrives "
+             "within this delay.")
     schemas_appariement = fields.Char(
-        string="Schémas d'appariement", groups="base.group_system",
-        help="Adresses d'application autorisées à recevoir un code d'appariement, "
-             "séparées par des virgules.")
-    origine_cle = fields.Selection(ORIGINES, string="Clé de chiffrement", readonly=True)
-    avertissement_cle = fields.Char(readonly=True)
-    cles_ids = fields.Many2many("bf.nfc.sdm.key", string="Clés des pastilles signées",
+        string="Pairing schemes", groups="base.group_system",
+        help="App addresses allowed to receive a pairing code, separated "
+             "by commas.")
+    origine_cle = fields.Selection(ORIGINES, string="Encryption key", readonly=True)
+    avertissement_cle = fields.Char(string="Key warning", readonly=True)
+    cles_ids = fields.Many2many("bf.nfc.sdm.key", string="Signed tag keys",
                                 compute="_compute_cles")
     type_count = fields.Integer(compute="_compute_cles")
 
@@ -64,9 +65,11 @@ class BfNfcConfig(models.TransientModel):
             "differe_max_heures": int(icp.get_param(PARAM_DIFFERE_HEURES, DIFFERE_DEFAUT_HEURES)),
             "origine_cle": origine,
             "avertissement_cle": _(
-                "La clé qui chiffre les clés des puces est rangée dans la base : le chiffrement "
-                "protège contre la lecture à l'écran et par l'API, pas contre une copie de la "
-                "base. Posez BF_NFC_FERNET_KEY dans l'environnement du serveur pour la sortir."
+                "The key that encrypts the chip keys is stored in the "
+                "database: encryption protects against reading on screen "
+                "and through the API, not against a copy of the database. "
+                "Set BF_NFC_FERNET_KEY in the server environment to move "
+                "it out."
             ) if origine in ("base", "absente") else False,
         })
         if self.env.user.has_group("base.group_system"):
@@ -92,21 +95,21 @@ class BfNfcConfig(models.TransientModel):
         self.ensure_one()
         _exiger_la_gestion(self.env)
         if self.fenetre_doublon < 0 or self.differe_max_heures < 0:
-            raise UserError(_("Les durées ne peuvent pas être négatives."))
+            raise UserError(_("Durations cannot be negative."))
         icp = self.env["ir.config_parameter"].sudo()
         icp.set_param(PARAM_FENETRE, str(self.fenetre_doublon))
         icp.set_param(PARAM_DIFFERE_HEURES, str(self.differe_max_heures))
         if self.env.user.has_group("base.group_system"):
             icp.set_param(PARAM_SCHEMAS, (self.schemas_appariement or "").strip() or SCHEMAS_DEFAUT)
         return {"type": "ir.actions.client", "tag": "display_notification", "params": {
-            "type": "success", "message": _("Réglages enregistrés."),
+            "type": "success", "message": _("Settings saved."),
             "next": {"type": "ir.actions.act_window_close"}}}
 
     def action_poser_cles(self):
         _exiger_la_gestion(self.env)
         return {
             "type": "ir.actions.act_window",
-            "name": _("Poser les clés des pastilles signées"),
+            "name": _("Set the signed tag keys"),
             "res_model": "bf.nfc.sdm.key.wizard",
             "view_mode": "form",
             "target": "new",
@@ -125,9 +128,9 @@ class BfNfcSdmKeyWizard(models.TransientModel):
     l'assistant.
     """
     _name = "bf.nfc.sdm.key.wizard"
-    _description = "Pose des clés des pastilles signées"
+    _description = "Setting signed tag keys"
 
-    company_id = fields.Many2one("res.company", string="Société", required=True,
+    company_id = fields.Many2one("res.company", string="Company", required=True,
                                  default=lambda self: self.env.company)
     # 🔴 Les deux champs saisis ne sont PAS stockés : leur inverse chiffre tout de
     # suite, et seule l'empreinte chiffrée se range dans la table de l'assistant.
@@ -136,13 +139,13 @@ class BfNfcSdmKeyWizard(models.TransientModel):
     # séjournaient en clair entre les deux, et y restaient pour de bon dès que la
     # seconde transaction échouait, jusqu'au ménage des transients. Une sauvegarde
     # prise dans cette fenêtre emportait la clé des puces.
-    meta_key = fields.Char(string="Clé de métadonnées (SDMMetaRead)", store=False,
+    meta_key = fields.Char(string="Metadata key (SDMMetaRead)", store=False,
                            compute="_compute_saisie", inverse="_inverse_meta_key")
-    file_key = fields.Char(string="Clé de fichier (SDMFileRead)", store=False,
+    file_key = fields.Char(string="File key (SDMFileRead)", store=False,
                            compute="_compute_saisie", inverse="_inverse_file_key")
     meta_key_enc = fields.Char(groups="base.group_system")
     file_key_enc = fields.Char(groups="base.group_system")
-    remplace = fields.Boolean(compute="_compute_remplace")
+    remplace = fields.Boolean(string="Replaces", compute="_compute_remplace")
 
     def _compute_saisie(self):
         """Rien ne se relit : un champ de clé est un champ d'écriture."""
@@ -153,12 +156,12 @@ class BfNfcSdmKeyWizard(models.TransientModel):
     def _inverse_meta_key(self):
         for assistant in self:
             assistant.sudo().meta_key_enc = self.env["bf.nfc.sdm.key"]._chiffrer_une_cle(
-                assistant.meta_key, _("de métadonnées"))
+                assistant.meta_key, _("metadata"))
 
     def _inverse_file_key(self):
         for assistant in self:
             assistant.sudo().file_key_enc = self.env["bf.nfc.sdm.key"]._chiffrer_une_cle(
-                assistant.file_key, _("de fichier"))
+                assistant.file_key, _("file"))
 
     @api.depends("company_id")
     def _compute_remplace(self):
@@ -172,10 +175,10 @@ class BfNfcSdmKeyWizard(models.TransientModel):
         societe = self.company_id
         moi = self.sudo()
         if not (moi.meta_key_enc and moi.file_key_enc):
-            raise UserError(_("Saisissez les deux clés."))
+            raise UserError(_("Enter both keys."))
         self.env["bf.nfc.sdm.key"]._poser_chiffre(societe, moi.meta_key_enc, moi.file_key_enc)
         self.unlink()
         return {"type": "ir.actions.client", "tag": "display_notification", "params": {
             "type": "success",
-            "message": _("Clés posées pour %s. Elles ne se réafficheront pas.", societe.name),
+            "message": _("Keys set for %s. They will not be shown again.", societe.name),
             "next": {"type": "ir.actions.act_window_close"}}}

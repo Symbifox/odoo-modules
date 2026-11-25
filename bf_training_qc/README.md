@@ -96,6 +96,10 @@ la société de qui imprime.
 odoo -d <base> -u bf_training_qc --test-enable --test-tags bf_training_qc
 ```
 
+## Languages (v18.0.1.0.2)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The stored eligibility reason follows the language of the call (the user's, or the company's), never the raw source list.
+
 ## Licence
 
-Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-09-13.
+Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-11-25.

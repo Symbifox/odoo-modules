@@ -214,11 +214,18 @@ class TestEtiquette(TransactionCase):
         })
         self.assertTrue(tag.url.endswith("/nfc/%s" % tag.code))
         self.assertFalse(signee.url)
-        html = self.env["ir.actions.report"]._render_qweb_html(
-            "bf_nfc.action_report_tag_label", (tag | signee).ids)[0].decode()
+        # L'étiquette se lit dans les deux langues : la source est
+        # anglaise, le français vient du catalogue livré.
+        self.env["res.lang"]._activate_lang("fr_CA")
+        rendus = {}
+        for langue in ("en_US", "fr_CA"):
+            rendus[langue] = self.env["ir.actions.report"].with_context(lang=langue)._render_qweb_html(
+                "bf_nfc.action_report_tag_label", (tag | signee).ids)[0].decode()
+        html = rendus["en_US"]
         self.assertIn("data:image/png;base64,", html)
         self.assertIn(tag.code, html)
-        self.assertIn("Pastille signée : pas de code QR", html)
+        self.assertIn("Signed tag: no QR code", html)
+        self.assertIn("Pastille signée : pas de code QR", rendus["fr_CA"])
 
 
 @tagged("post_install", "-at_install")

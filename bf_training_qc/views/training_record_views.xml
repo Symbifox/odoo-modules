@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <button name="action_cancel" position="after">
                 <button name="action_print_attestation" type="object"
-                        string="Attestation" invisible="state != 'confirmed'"/>
+                        string="Certificate" invisible="state != 'confirmed'"/>
             </button>
             <field name="expiry_state" position="after">
                 <field name="retention_until" readonly="1"/>

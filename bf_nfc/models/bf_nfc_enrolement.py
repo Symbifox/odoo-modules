@@ -43,33 +43,33 @@ ETAPES = [
 
 class BfNfcEnrolement(models.Model):
     _name = "bf.nfc.enrolement"
-    _description = "Gravure d'une pastille signée"
+    _description = "Signed tag engraving"
     _order = "id desc"
 
-    name = fields.Char(string="Jeton de session", required=True, index=True, copy=False,
+    name = fields.Char(string="Session token", required=True, index=True, copy=False,
                        default=lambda self: secrets.token_urlsafe(24))
-    tag_id = fields.Many2one("bf.nfc.tag", string="Pastille", required=True,
+    tag_id = fields.Many2one("bf.nfc.tag", string="Tag", required=True,
                              ondelete="cascade", index=True)
-    device_id = fields.Many2one("bf.nfc.device", string="Appareil", ondelete="set null")
-    user_id = fields.Many2one("res.users", string="Par", required=True,
+    device_id = fields.Many2one("bf.nfc.device", string="Device", ondelete="set null")
+    user_id = fields.Many2one("res.users", string="By", required=True,
                               default=lambda self: self.env.user)
-    company_id = fields.Many2one("res.company", string="Société", required=True)
-    uid = fields.Char(string="UID de la puce", required=True)
-    etape = fields.Char(string="Prochaine étape", default="selection")
+    company_id = fields.Many2one("res.company", string="Company", required=True)
+    uid = fields.Char(string="Chip UID", required=True)
+    etape = fields.Char(string="Next step", default="selection")
     state = fields.Selection(
-        [("encours", "En cours"), ("termine", "Terminée"),
-         ("echouee", "Échouée"), ("expiree", "Expirée")],
-        string="État", default="encours", index=True)
-    date_expiration = fields.Datetime(string="Expire le", required=True)
-    journal = fields.Text(string="Journal", default="")
+        [("encours", "In progress"), ("termine", "Completed"),
+         ("echouee", "Failed"), ("expiree", "Expired")],
+        string="Status", default="encours", index=True)
+    date_expiration = fields.Datetime(string="Expires on", required=True)
+    journal = fields.Text(string="Log", default="")
 
     # Les secrets de session, chiffrés comme les clés des puces : ils ne valent
     # que dix minutes, mais ils valent la clé pendant ces dix minutes.
-    rnda_enc = fields.Char(groups="base.group_system", copy=False)
-    session_enc = fields.Char(groups="base.group_system", copy=False)
+    rnda_enc = fields.Char(string="Encrypted RndA challenge", groups="base.group_system", copy=False)
+    session_enc = fields.Char(string="Encrypted session", groups="base.group_system", copy=False)
 
     _sql_constraints = [
-        ("jeton_unique", "unique(name)", "Ce jeton de session existe déjà."),
+        ("jeton_unique", "unique(name)", "This session token already exists."),
     ]
 
     # ------------------------------------------------------------------
@@ -80,21 +80,24 @@ class BfNfcEnrolement(models.Model):
     def _ouvrir(self, tag, uid, appareil=None):
         """Ouvre une gravure pour cette pastille, ou explique pourquoi c'est non."""
         if not self.env.user.has_group("bf_nfc.group_nfc_manager"):
-            raise AccessError(_("Graver une pastille signée est réservé à la gestion."))
+            raise AccessError(_("Engraving a signed tag is reserved for "
+                                "managers."))
         uid = (uid or "").strip().upper().replace(" ", "")
         if len(uid) != 14 or any(c not in "0123456789ABCDEF" for c in uid):
-            raise UserError(_("L'UID d'une puce fait 7 octets, soit 14 caractères."))
+            raise UserError(_("A chip UID is 7 bytes, that is 14 characters."))
         if tag.sdm_enabled or tag.sdm_counter:
             # 🔴 Regraver une pastille en service remettrait son compteur à zéro,
             # et toutes les adresses captées avant redeviendraient valables.
-            raise UserError(_("Cette pastille a déjà été gravée. Créez-en une neuve "
-                              "plutôt que de remettre son compteur à zéro."))
+            raise UserError(_("This tag has already been engraved. Create "
+                              "a new one rather than resetting its "
+                              "counter."))
         if self.sudo().search_count([("uid", "=", uid), ("state", "=", "termine")]):
-            raise UserError(_("Une puce portant cet UID a déjà été gravée ici."))
+            raise UserError(_("A chip with this UID has already been "
+                              "engraved here."))
         meta, fichier = self.env["bf.nfc.sdm.key"]._cles_de(tag.company_id)
         if not (meta and fichier):
-            raise UserError(_("Cette société n'a pas de clés de pastille signée. "
-                              "Posez-les avant de graver."))
+            raise UserError(_("This company has no signed tag keys. Set "
+                              "them before engraving."))
         self.sudo().search([("tag_id", "=", tag.id), ("state", "=", "encours")]).write(
             {"state": "expiree"})
         return self.sudo().create({
@@ -126,7 +129,8 @@ class BfNfcEnrolement(models.Model):
     def _aleas(self):
         brut = chiffrement.dechiffrer(self.env, self.sudo().rnda_enc) or ""
         if ":" not in brut:
-            raise ev2.Ev2Invalide(_("Le défi de la puce a été perdu, recommencez."))
+            raise ev2.Ev2Invalide(_("The chip's challenge was lost, start "
+                                    "again."))
         rnda, rndb = brut.split(":")
         return bytes.fromhex(rnda), bytes.fromhex(rndb)
 
@@ -147,16 +151,19 @@ class BfNfcEnrolement(models.Model):
         self.ensure_one()
         if self.state != "encours":
             return {"fini": True, "ok": self.state == "termine",
-                    "message": _("Cette gravure est close.")}
+                    "message": _("This engraving session is closed.")}
         if self.date_expiration < fields.Datetime.now():
             self.state = "expiree"
             return {"fini": True, "ok": False,
-                    "message": _("Cette gravure a expiré. Recommencez, la puce n'a rien "
-                                 "perdu.")}
+                    "message": _("This engraving session has expired. "
+                                 "Start again, the chip has lost nothing.")}
         try:
             return self._jouer(reponse)
         except ev2.Ev2Invalide as exc:
-            return self._echouer(str(exc))
+            # Les motifs de ``ev2`` sont différés (``_lt``) : traduits ici, dans
+            # la langue de la personne de l'appareil.
+            motif = exc.args[0] if exc.args else ""
+            return self._echouer(motif if isinstance(motif, str) else self.env._(motif))
 
     def _jouer(self, reponse):
         cle_zero = bytes(16)  # la clé d'usine, celle par laquelle on entre
@@ -170,7 +177,7 @@ class BfNfcEnrolement(models.Model):
             # ⚠️ La sélection ISO rend 9000, pas 9100 : c'est la seule réponse du
             # lot qui ne vienne pas de la couche « commande native ».
             if ev2.statut(reponse) not in ("9000", "9100"):
-                return self._echouer(_("La puce n'a pas d'application NDEF (%s).",
+                return self._echouer(_("The chip has no NDEF application (%s).",
                                        ev2.statut(reponse)))
             self.etape = "reponse"
             return {"apdu": ev2.apdu_authentification(0), "fini": False}
@@ -192,7 +199,8 @@ class BfNfcEnrolement(models.Model):
 
         if etape == "sdm":
             if ev2.statut(reponse) != ev2.STATUT_OK:
-                return self._echouer(_("La puce a refusé l'écriture de l'adresse (%s).",
+                return self._echouer(_("The chip refused to write the "
+                                       "address (%s).",
                                        ev2.statut(reponse)))
             self._noter("adresse écrite")
             session = self._session()
@@ -207,12 +215,12 @@ class BfNfcEnrolement(models.Model):
 
         if etape == "fini":
             if ev2.statut(reponse) != ev2.STATUT_OK:
-                return self._echouer(_("La puce a refusé la dernière clé (%s).",
+                return self._echouer(_("The chip refused the last key (%s).",
                                        ev2.statut(reponse)))
             self._noter("clé maîtresse posée")
             return self._terminer()
 
-        return self._echouer(_("Étape inconnue : %s", etape))
+        return self._echouer(_("Unknown step: %s", etape))
 
     def _porte_signee(self):
         """L'adresse que la puce portera, sans ses paramètres."""
@@ -220,7 +228,7 @@ class BfNfcEnrolement(models.Model):
 
     def _poser_les_cles(self, etape, reponse):
         if ev2.statut(reponse) != ev2.STATUT_OK:
-            return self._echouer(_("La puce a refusé l'étape précédente (%s).",
+            return self._echouer(_("The chip refused the previous step (%s).",
                                    ev2.statut(reponse)))
         meta, fichier = self.env["bf.nfc.sdm.key"]._cles_de(self.company_id)
         maitresse = self.env["bf.nfc.sdm.key"]._cle_maitresse_de(self.company_id)
@@ -241,8 +249,9 @@ class BfNfcEnrolement(models.Model):
                 # ⚠️ Sans clé maîtresse, la puce garde sa clé 0 d'usine : personne ne
                 # peut forger sa signature, mais n'importe qui peut la regraver.
                 return self._terminer(avertissement=_(
-                    "La puce est gravée, mais sa clé d'usine n'a pas été remplacée : "
-                    "n'importe qui peut la regraver. Posez une clé maîtresse."))
+                    "The chip is engraved, but its factory key was not "
+                    "replaced: anyone can engrave it again. Set a master "
+                    "key."))
             commande = ev2.apdu_changer_cle(session, 0, bytes.fromhex(maitresse))
 
         self._ranger_session(session)
@@ -260,7 +269,7 @@ class BfNfcEnrolement(models.Model):
         self.sudo().write({"rnda_enc": False, "session_enc": False})
         self._noter("gravure terminée")
         return {"fini": True, "ok": True, "avertissement": avertissement,
-                "message": _("Pastille gravée."), "pastille": self.tag_id.id}
+                "message": _("Tag engraved."), "pastille": self.tag_id.id}
 
     @api.autovacuum
     def _gc_sessions(self):

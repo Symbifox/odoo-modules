@@ -51,8 +51,9 @@ class VisitPublic(http.Controller):
         return local.strftime("%d/%m/%Y, %H:%M")
 
     def _etat_libelle(self, visite):
+        # Libellé dans la langue de la page, pas la liste source (anglaise depuis la bascule de la source).
         return dict(
-            visite._fields["state"].selection
+            visite._fields["state"]._description_selection(request.env)
         ).get(visite.state, visite.state)
 
     # ------------------------------------------------------------------
@@ -68,7 +69,7 @@ class VisitPublic(http.Controller):
             return request.render(
                 "bf_appointment_visit.visit_seller_page",
                 {"visit": request.env["bf.visit"], "token": token,
-                 "message": _("Trop de tentatives. Reprenez dans une heure."),
+                 "message": _("Too many attempts. Try again in an hour."),
                  "message_kind": "warning", "quand": "", "etat_libelle": ""},
             )
         visite = self._visit_by_token("seller_token", token)
@@ -95,7 +96,7 @@ class VisitPublic(http.Controller):
         """Poser la décision du vendeur, et dire ce qui vient de se passer."""
         if visite.state != "requested":
             return (
-                _("Cette demande a déjà été tranchée."),
+                _("This request has already been decided."),
                 "info",
             )
         decision = kwargs.get("decision")
@@ -116,30 +117,30 @@ class VisitPublic(http.Controller):
                     tz.localize(naif).astimezone(pytz.utc).replace(tzinfo=None)
                 )
             except (ValueError, TypeError):
-                return (_("L'heure proposée n'a pas été comprise."), "warning")
+                return (_("The proposed time was not understood."), "warning")
         if valeurs:
             visite.write(valeurs)
 
         if decision == "approve" and not propose:
             visite.action_approve()
             return (
-                _("C'est accepté. Le visiteur vient d'en être informé."),
+                _("Accepted. The visitor has just been told."),
                 "success",
             )
         if decision == "decline" or propose:
             visite.action_decline()
             if propose:
                 return (
-                    _("Votre proposition est partie au visiteur, et le créneau "
-                      "demandé est rendu disponible."),
+                    _("Your proposal has gone to the visitor, and the "
+                      "slot requested is available again."),
                     "success",
                 )
             return (
-                _("C'est refusé. Le visiteur vient d'en être informé, et le "
-                  "créneau est rendu disponible."),
+                _("Declined. The visitor has just been told, and the slot "
+                  "is available again."),
                 "success",
             )
-        return (_("Aucune décision n'a été lue."), "warning")
+        return (_("No decision could be read."), "warning")
 
     # ------------------------------------------------------------------
     # 2. La feuille d'inscription sur place
@@ -163,13 +164,14 @@ class VisitPublic(http.Controller):
         if request.httprequest.method == "POST":
             nom = (kwargs.get("visitor_name") or "").strip()
             if not nom or not kwargs.get("consent"):
-                message = _("Il manque votre nom, ou votre accord pour le registre.")
+                message = _("Your name is missing, or your consent for "
+                            "the register.")
                 message_kind = "warning"
             else:
                 self._inscrire_sur_place(inscription, kwargs, nom)
                 message = _(
-                    "Merci, votre inscription est faite. Un courtier vous "
-                    "accueille dans un instant."
+                    "Thank you, you are signed in. A broker will be with "
+                    "you in a moment."
                 )
                 message_kind = "success"
                 termine = True
@@ -242,11 +244,11 @@ class VisitPublic(http.Controller):
                 "feedback_comment": (kwargs.get("feedback_comment") or "").strip(),
                 "feedback_received_at": fields.Datetime.now(),
             })
-            message = _("Merci, c'est noté.")
+            message = _("Thank you, it is noted.")
             message_kind = "success"
             termine = True
         elif termine:
-            message = _("Votre impression est déjà enregistrée. Merci.")
+            message = _("Your impression is already recorded. Thank you.")
             message_kind = "info"
 
         return request.render(

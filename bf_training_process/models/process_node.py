@@ -8,9 +8,9 @@ class BfProcessNode(models.Model):
 
     training_activity_ids = fields.Many2many(
         "bf.training.activity", "bf_training_activity_node_rel", "node_id", "activity_id",
-        string="Formations exigées par cette étape")
+        string="Training required by this step")
     training_activity_count = fields.Integer(
-        string="Nombre de formations", compute="_compute_training_activity_count")
+        string="Number of training activities", compute="_compute_training_activity_count")
 
     @api.depends("training_activity_ids")
     def _compute_training_activity_count(self):
@@ -21,7 +21,7 @@ class BfProcessNode(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Formations de l'étape",
+            "name": self.env._("Training activities for the step"),
             "res_model": "bf.training.activity",
             "view_mode": "list,form",
             "domain": [("id", "in", self.training_activity_ids.ids)],

@@ -14,17 +14,17 @@ class BfTrainingRecord(models.Model):
     _inherit = "bf.training.record"
 
     process_node_id = fields.Many2one(
-        "bf.process.node", string="Étape travaillée",
-        help="Le geste sur lequel l'entraînement a porté.")
+        "bf.process.node", string="Step worked on",
+        help="The task the training covered.")
     process_id = fields.Many2one(
-        related="process_node_id.process_id", string="Processus", store=True)
+        related="process_node_id.process_id", string="Process", store=True)
 
-    trainee_confirmed = fields.Boolean(string="L'apprenant confirme", tracking=True)
-    trainee_confirm_date = fields.Datetime(string="Confirmé par l'apprenant le", readonly=True)
-    trainer_confirmed = fields.Boolean(string="Le formateur confirme", tracking=True)
-    trainer_confirm_date = fields.Datetime(string="Confirmé par le formateur le", readonly=True)
+    trainee_confirmed = fields.Boolean(string="The learner confirms", tracking=True)
+    trainee_confirm_date = fields.Datetime(string="Confirmed by the learner on", readonly=True)
+    trainer_confirmed = fields.Boolean(string="The trainer confirms", tracking=True)
+    trainer_confirm_date = fields.Datetime(string="Confirmed by the trainer on", readonly=True)
     both_confirmed = fields.Boolean(
-        string="Confirmée des deux côtés", compute="_compute_both_confirmed", store=True)
+        string="Confirmed on both sides", compute="_compute_both_confirmed", store=True)
 
     @api.depends("trainee_confirmed", "trainer_confirmed")
     def _compute_both_confirmed(self):
@@ -42,11 +42,11 @@ class BfTrainingRecord(models.Model):
                 continue
             manques = [rec.missing_info] if rec.missing_info else []
             if not (rec.trainer_employee_id or rec.trainer_partner_id):
-                manques.append(_("le formateur"))
+                manques.append(_("the trainer"))
             if not rec.trainee_confirmed:
-                manques.append(_("la confirmation de l'apprenant"))
+                manques.append(_("the learner's confirmation"))
             if not rec.trainer_confirmed:
-                manques.append(_("la confirmation du formateur"))
+                manques.append(_("the trainer's confirmation"))
             if manques:
                 rec.is_complete = False
                 rec.missing_info = ", ".join(manques)

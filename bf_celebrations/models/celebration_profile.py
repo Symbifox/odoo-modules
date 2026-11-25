@@ -15,16 +15,19 @@ sudo et ne rendent jamais le champ `consent` à un autre usager.
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
+from odoo.tools.misc import get_lang
 from odoo.exceptions import ValidationError
+
+from .langue import langue_de
 
 # Les mois portent leur numéro comme valeur pour que le tri et le calcul de
 # prochaine occurrence restent arithmétiques. Un `Selection` de chaînes évite
 # la question du fuseau : un anniversaire n'a pas d'heure.
 MOIS = [
-    ("1", "Janvier"), ("2", "Février"), ("3", "Mars"), ("4", "Avril"),
-    ("5", "Mai"), ("6", "Juin"), ("7", "Juillet"), ("8", "Août"),
-    ("9", "Septembre"), ("10", "Octobre"), ("11", "Novembre"),
-    ("12", "Décembre"),
+    ("1", "January"), ("2", "February"), ("3", "March"), ("4", "April"),
+    ("5", "May"), ("6", "June"), ("7", "July"), ("8", "August"),
+    ("9", "September"), ("10", "October"), ("11", "November"),
+    ("12", "December"),
 ]
 
 # Le 29 février existe une année sur quatre. On le laisse saisir et on le
@@ -38,7 +41,7 @@ JOURS_PAR_MOIS = {
 
 class CelebrationProfile(models.Model):
     _name = "bf.celebration.profile"
-    _description = "Profil de célébration"
+    _description = "Celebration profile"
     # 🔴 `mail.thread` n'est pas décoratif ici : sans lui, le `tracking=True`
     # posé sur `consent` ne trace RIEN et Odoo se contente d'un avertissement
     # au chargement, que personne ne lit. Un registre de consentement qui ne
@@ -54,7 +57,7 @@ class CelebrationProfile(models.Model):
 
     employee_id = fields.Many2one(
         "hr.employee",
-        string="Personne",
+        string="Person",
         required=True,
         ondelete="cascade",
         index=True,
@@ -64,40 +67,40 @@ class CelebrationProfile(models.Model):
     )
     user_id = fields.Many2one(
         related="employee_id.user_id", store=True, index=True,
-        string="Compte usager",
+        string="User account",
     )
 
     consent = fields.Selection(
         [
-            ("pending", "En attente de réponse"),
-            ("full", "Oui, avec un tableau de vœux"),
-            ("quiet", "Oui, mais sans tableau"),
-            ("none", "Non merci"),
+            ("pending", "Awaiting an answer"),
+            ("full", "Yes, with a wishes board"),
+            ("quiet", "Yes, but no board"),
+            ("none", "No thanks"),
         ],
-        string="Ce que je souhaite",
+        string="What I would like",
         default="pending",
         required=True,
         tracking=True,
-        help="Tant que la réponse est « en attente », rien n'est affiché et "
-             "personne n'est sollicité. « Non merci » retire la personne de "
-             "tout et met fin aux invitations.",
+        help="As long as the answer is \"pending\", nothing is shown and "
+             "nobody is asked. \"No thanks\" takes the person out of "
+             "everything and ends the invitations.",
     )
-    consent_date = fields.Datetime(string="Répondu le", readonly=True)
+    consent_date = fields.Datetime(string="Answered on", readonly=True)
 
-    celebration_day = fields.Integer(string="Jour")
-    celebration_month = fields.Selection(MOIS, string="Mois")
+    celebration_day = fields.Integer(string="Day")
+    celebration_month = fields.Selection(MOIS, string="Month")
     # ⚠️ Aucun champ d'année, nulle part. C'est le point du module.
 
     share_work_anniversary = fields.Boolean(
-        string="Souligner aussi mon anniversaire d'embauche",
+        string="Mark my work anniversary too",
         default=False,
-        help="La date d'entrée en poste, sans l'âge ni la date de naissance.",
+        help="The start date, with no age and no date of birth.",
     )
 
     invitation_date = fields.Datetime(
-        string="Invitation envoyée le", readonly=True,
-        help="Sert à ne demander qu'une fois. Une personne qui a répondu "
-             "« Non merci » n'est jamais relancée.",
+        string="Invitation sent on", readonly=True,
+        help="Used to ask once only. A person who answered \"No thanks\" "
+             "is never chased up.",
     )
 
     # Une carte de départ arrive le jour où l'adresse de travail se ferme,
@@ -107,18 +110,18 @@ class CelebrationProfile(models.Model):
     # au profil, donc à la personne : la règle globale la cache à tout le
     # monde d'autre, et la livraison la lit en sudo sans jamais l'afficher.
     keepsake_email = fields.Char(
-        string="Adresse personnelle où garder mes cartes",
-        help="Facultative. Les cartes livrées y sont aussi envoyées, en PDF "
-             "et en page à conserver, pour qu'elles vous restent après votre "
-             "départ ou après la purge prévue par la politique de "
-             "conservation. Personne d'autre ne voit cette adresse.",
+        string="Personal address to keep my cards at",
+        help="Optional. Delivered cards are also sent there, as a PDF and "
+             "as a page to keep, so they stay with you after you leave or "
+             "after the purge set by the retention policy. Nobody else "
+             "sees this address.",
     )
 
     _sql_constraints = [
         (
             "employee_uniq",
             "unique(employee_id)",
-            "Une personne n'a qu'un seul profil de célébration.",
+            "A person has one celebration profile only.",
         ),
     ]
 
@@ -135,7 +138,7 @@ class CelebrationProfile(models.Model):
             maxi = JOURS_PAR_MOIS[mois]
             if not (1 <= profil.celebration_day <= maxi):
                 raise ValidationError(_(
-                    "Le mois choisi compte %(maxi)s jours.", maxi=maxi,
+                    "The month chosen has %(maxi)s days.", maxi=maxi,
                 ))
 
     @api.constrains("consent", "celebration_day", "celebration_month")
@@ -149,8 +152,8 @@ class CelebrationProfile(models.Model):
             if profil.consent in ("full", "quiet") and not (
                     profil.celebration_day and profil.celebration_month):
                 raise ValidationError(_(
-                    "Indiquez le jour et le mois à souligner, ou choisissez "
-                    "« Non merci »."
+                    "State the day and the month to mark, or choose \"No "
+                    "thanks\"."
                 ))
 
     # ------------------------------------------------------------------
@@ -246,8 +249,8 @@ class CelebrationProfile(models.Model):
                 "params": {
                     "type": "warning",
                     "message": _(
-                        "Votre compte n'est rattaché à aucune fiche employé. "
-                        "Demandez-le aux ressources humaines."),
+                        "Your account is not attached to any employee "
+                        "record. Ask human resources about it."),
                 },
             }
         return {
@@ -259,7 +262,7 @@ class CelebrationProfile(models.Model):
                 "bf_celebrations.view_celebration_profile_self_form").id,
                 "form")],
             "target": "current",
-            "name": _("Mes célébrations"),
+            "name": _("My celebrations"),
         }
 
     # ------------------------------------------------------------------
@@ -274,6 +277,10 @@ class CelebrationProfile(models.Model):
         personne qui a répondu « en attente » après coup (ce qui n'arrive que
         par une correction manuelle) ne doit pas être re-sollicitée en boucle.
         """
+        # Sans langue au contexte (travail planifié, XML-RPC), les libellés écrits au chatter
+        # (suivi des états, message de création) sortaient en anglais depuis la bascule.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         gabarit = self.env.ref(
             "bf_celebrations.mail_template_invitation",
             raise_if_not_found=False)
@@ -289,7 +296,9 @@ class CelebrationProfile(models.Model):
             ("employee_id.work_email", "!=", False),
         ], limit=limite)
         for profil in a_inviter:
-            gabarit.send_mail(
+            gabarit.with_context(lang=langue_de(
+                self.env, profil.user_id, profil.employee_id.work_contact_id,
+                societe=profil.employee_id.company_id)).send_mail(
                 profil.id,
                 email_layout_xmlid=self.env["bf.celebration.board"]._mise_en_page())
         a_inviter.write({"invitation_date": fields.Datetime.now()})

@@ -54,8 +54,9 @@ class BfGanttPlan(models.Model):
     _federation_verbs = ("card",)
 
     federation_is_mirror = fields.Boolean(
-        string="Échéancier reçu d'un pair", compute="_compute_federation_is_mirror", store=True,
-        help="Un échéancier reçu se lit : la prochaine version de l'émetteur le remplacera.")
+        string="Schedule received from a peer", compute="_compute_federation_is_mirror", store=True,
+        help="A received schedule is read-only: the sender's next version "
+             "will replace it.")
 
     @api.depends("federation_peer_id")
     def _compute_federation_is_mirror(self):
@@ -84,10 +85,10 @@ class BfGanttPlan(models.Model):
         return super()._compute_federation_allowed()
 
     def _federation_label_the(self):
-        return _("l'échéancier")
+        return _("the schedule")
 
     def _federation_label_this(self):
-        return _("cet échéancier")
+        return _("this schedule")
 
     def _federation_watched(self):
         return ("name", "state", "date_start", "date_end", "note", "active",
@@ -139,7 +140,7 @@ class BfGanttPlan(models.Model):
         fin = transport.valid_day(card.get("date_end")) or False
         if debut and fin and fin < debut:
             fin = debut
-        base = transport.clean_text(card.get("name"), 240) or _("(sans titre)")
+        base = transport.clean_text(card.get("name"), 240) or _("(untitled)")
         return {
             "name": _("%s (%s)") % (base, transport.clean_text(peer.name, 40)),
             "state": statut if statut in ETATS_PLAN else "draft",
@@ -161,8 +162,9 @@ class BfGanttPlan(models.Model):
         plan = self.create(vals)
         plan._federation_load_items(card)
         plan.message_post(
-            body=Markup(_("<p>Échéancier reçu de %s : <b>%s</b>, %s ligne(s). Il se lit ici ; "
-                          "chaque changement de l'émetteur le remplacera.</p>"))
+            body=Markup(_("<p>Schedule received from %s: <b>%s</b>, %s "
+                          "line(s). It is read-only here; each change by "
+                          "the sender will replace it.</p>"))
             % (peer.name, plan.name, len(plan.item_ids)),
             message_type="comment", subtype_xmlid="mail.mt_note")
         return plan
@@ -274,7 +276,8 @@ class BfGanttPlan(models.Model):
         self._federation_load_items(card)
         nouveau = (self.date_start, self.date_end, self.state)
         if nouveau != ancien:
-            note = link._note(Markup(_("<p>Chez %s, l'échéancier a changé : du %s au %s, statut %s.</p>"))
+            note = link._note(Markup(_("<p>At %s, the schedule changed: "
+                                       "from %s to %s, status %s.</p>"))
                               % (link.peer_id.name, self.date_start or "?", self.date_end or "?",
                                  dict(self._fields["state"].selection).get(self.state, self.state)))
             link._inbox_notify(note)
@@ -313,11 +316,13 @@ class BfGanttPlan(models.Model):
                 continue
             if publie:
                 raise UserError(
-                    _("Cet échéancier est reçu de %s : il a été partagé avec votre entreprise, "
-                      "pas avec vos clients. Il ne se publie pas au portail.") % plan.federation_peer_id.name)
+                    _("This schedule is received from %s: it was shared "
+                      "with your company, not with your customers. It is "
+                      "not published to the portal.") % plan.federation_peer_id.name)
             raise UserError(
-                _("Cet échéancier est reçu de %s : il se lit ici. Le prochain changement de "
-                  "l'émetteur le remplacerait, et le travail fait dessus serait perdu.")
+                _("This schedule is received from %s: it is read-only "
+                  "here. The sender's next change would replace it, and "
+                  "any work done on it would be lost.")
                 % plan.federation_peer_id.name)
 
     def _federation_after_write(self, vals, before, link):
@@ -354,22 +359,24 @@ class BfGanttPlan(models.Model):
         """Renvoyer l'échéancier tel qu'il est, même s'il n'a pas changé."""
         self.ensure_one()
         if not self.env.su and not self.env.user.has_group("project.group_project_manager"):
-            raise AccessError(_("Renvoyer un échéancier à un pair demande le rôle de gestionnaire de projet."))
+            raise AccessError(_("Sending a schedule to a peer again "
+                                "requires the project manager role."))
         link = self._federation_link()
         if not link or link.origin != "local" or not link.active:
-            raise UserError(_("Cet échéancier n'est pas partagé avec un pair."))
+            raise UserError(_("This schedule is not shared with a peer."))
         card = self._federation_card()
         link.fingerprint = self.env["federation.link"]._card_fingerprint(card)
         link.peer_id._enqueue("gantt.card", card, link)
-        self.message_post(body=_("Échéancier renvoyé à %s : %s ligne(s).") % (link.peer_id.name, len(self.item_ids)),
+        self.message_post(body=_("Schedule sent again to %s: %s line(s).") % (link.peer_id.name, len(self.item_ids)),
                           message_type="comment", subtype_xmlid="mail.mt_note")
         return True
 
     def _federation_share_note(self, peer):
         self.ensure_one()
         self.sudo().with_context(federation_inbound=True).message_post(
-            body=_("Échéancier fédéré avec %s : ses lignes, ses couloirs, ses jalons, ses dépendances et "
-                   "leur avancement. Ce qui reste ici : les heures prévues de chaque ligne.") % peer.name,
+            body=_("Schedule federated with %s: its lines, lanes, "
+                   "milestones, dependencies and their progress. What "
+                   "stays here: the planned hours of each line.") % peer.name,
             message_type="comment", subtype_xmlid="mail.mt_note")
 
 
@@ -404,7 +411,8 @@ class BfGanttItem(models.Model):
         for plan in plans:
             if plan.federation_is_mirror:
                 raise UserError(
-                    _("Les lignes de cet échéancier sont reçues de %s : elles se lisent ici.")
+                    _("The lines of this schedule are received from %s: "
+                      "they are read-only here.")
                     % plan.federation_peer_id.name)
 
     def _federation_push_plans(self):

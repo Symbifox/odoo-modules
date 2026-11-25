@@ -13,6 +13,12 @@ class TestTrainingQc(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # 🔴 La langue est épinglée : la source du module est anglaise depuis la
+        # 18.0.1.0.2, et les assertions ci-dessous lisent des libellés rendus.
+        # Sans cet ancrage elles suivaient la langue d'OdooBot, donc l'état de
+        # la base. Le français a ses propres essais (test_deux_langues.py).
+        cls.env["res.lang"]._activate_lang("en_US")
+        cls.env = cls.env(context=dict(cls.env.context, lang="en_US"))
         cls.aujourdhui = fields.Date.context_today(cls.env["bf.training.record"])
         cls.annee = cls.aujourdhui.year
         cls.employe = cls.env["hr.employee"].create(
@@ -52,23 +58,23 @@ class TestTrainingQc(TransactionCase):
     # ------------------------------------------------------------------
     def test_activite_sans_base_n_est_pas_admissible(self):
         self.assertFalse(self.activite_muette.qc_eligible)
-        self.assertIn("non établie", self.activite_muette.qc_reason)
+        self.assertIn("not established", self.activite_muette.qc_reason)
         self.assertTrue(self.activite.qc_eligible)
 
     def test_realisation_sur_activite_muette_ne_compte_pas(self):
         realisation = self._realisation(activite=self.activite_muette)
         self.assertFalse(realisation.qc_countable)
-        self.assertIn("non établie", realisation.qc_excluded_reason)
+        self.assertIn("not established", realisation.qc_excluded_reason)
 
     def test_realisation_incomplete_ne_compte_pas(self):
         realisation = self._realisation(heures=0.0)
         self.assertFalse(realisation.qc_countable)
-        self.assertIn("les heures", realisation.qc_excluded_reason)
+        self.assertIn("the hours", realisation.qc_excluded_reason)
 
     def test_realisation_non_confirmee_ne_compte_pas(self):
         realisation = self._realisation(state="draft")
         self.assertFalse(realisation.qc_countable)
-        self.assertIn("confirmée", realisation.qc_excluded_reason)
+        self.assertIn("not confirmed", realisation.qc_excluded_reason)
 
     # ------------------------------------------------------------------
     # La conservation
@@ -248,7 +254,7 @@ class TestTrainingQc(TransactionCase):
                               date_format="d MMMM yyyy")
         self.assertIn(attendu, texte)
         veille = format_date(self.env, self.aujourdhui, date_format="d MMMM yyyy")
-        self.assertNotIn(">%s<" % veille, texte.split("Délivrée le")[0],
+        self.assertNotIn(">%s<" % veille, texte.split("Issued on")[0],
                          "La date de la formation ne doit pas être celle du jour.")
 
     def test_attestation_dit_quand_la_duree_manque(self):
@@ -256,7 +262,7 @@ class TestTrainingQc(TransactionCase):
         rendu = self.env["ir.actions.report"]._render_qweb_html(
             "bf_training_qc.report_training_attestation", realisation.ids)[0]
         texte = rendu.decode() if isinstance(rendu, bytes) else rendu
-        self.assertIn("durée non consignée", texte)
+        self.assertIn("duration not recorded", texte)
 
     # ------------------------------------------------------------------
     # Les références réglementaires
@@ -281,3 +287,19 @@ class TestTrainingQc(TransactionCase):
             float(self.env["ir.config_parameter"].sudo().get_param(
                 "bf_training_qc.payroll_threshold")), 2000000.0,
             "Le seuil du paramètre et celui du texte cité doivent concorder.")
+
+    def test_le_motif_stocke_suit_la_langue_de_l_appel(self):
+        """le motif stocké lisait la liste source, anglaise depuis la bascule."""
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_training_qc"], ["fr_CA"], overwrite=True)
+        libelles = dict(self.env["bf.training.activity"]._fields["qc_basis"]._description_selection(
+            self.env(context={"lang": "fr_CA"})))
+        self.assertNotEqual(libelles["etablissement"],
+                            "Training at a recognized educational institution",
+                            "catalogue non chargé : l'essai ne mesure rien")
+        activite = self.activite.with_context(lang="fr_CA")
+        activite.qc_basis = "etablissement"
+        self.assertEqual(activite.qc_reason, libelles["etablissement"])
+        self.activite.with_context(lang="en_US").qc_basis = "colloque"
+        self.assertEqual(self.activite.qc_reason,
+                         "Training activity at a conference, a convention or a seminar")

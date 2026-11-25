@@ -38,15 +38,15 @@ export class BabillardSondage extends Component {
 
     get etiquetteVotants() {
         const nb = this.donnees.nb_votants || 0;
-        return nb === 1 ? _t("1 personne a répondu") : _t("%s personnes ont répondu", nb);
+        return nb === 1 ? _t("1 person has answered") : _t("%s people have answered", nb);
     }
 
     get etiquetteFerme() {
-        return _t("Sondage fermé");
+        return _t("Poll closed");
     }
 
     get etiquetteAjouter() {
-        return _t("Ajouter un choix");
+        return _t("Add an option");
     }
 
     survol(option) {
@@ -95,7 +95,7 @@ export class BabillardSondage extends Component {
 
 export const babillardSondage = {
     component: BabillardSondage,
-    displayName: _t("Sondage du babillard"),
+    displayName: _t("Noticeboard poll"),
     supportedTypes: ["json"],
 };
 

@@ -1,6 +1,10 @@
 {
     "name": "Pastilles NFC : le chronomètre",
-    "version": "18.0.1.0.1",
+    # 18.0.1.0.2: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.0.2",
     "category": "Services/Timesheets",
     "summary": "Approcher le téléphone d'une pastille démarre ou arrête le chrono de la tâche",
     "description": """

@@ -26,24 +26,24 @@ class BabillardVote(models.Model):
     """
 
     _name = "bf.babillard.vote"
-    _description = "Voix posée sur un sondage du babillard"
+    _description = "Vote placed on a noticeboard poll"
     _rec_name = "option_id"
 
     post_id = fields.Many2one(
-        "bf.babillard.post", string="Publication", required=True,
+        "bf.babillard.post", string="Post", required=True,
         ondelete="cascade", index=True)
     option_id = fields.Many2one(
-        "bf.babillard.option", string="Choix", required=True,
+        "bf.babillard.option", string="Options", required=True,
         ondelete="cascade", index=True)
     user_id = fields.Many2one(
-        "res.users", string="Personne", required=True, ondelete="cascade",
+        "res.users", string="Person", required=True, ondelete="cascade",
         index=True, default=lambda s: s.env.user)
     company_id = fields.Many2one(
-        related="post_id.company_id", store=True, string="Société")
+        related="post_id.company_id", store=True, string="Company")
 
     _sql_constraints = [
         ("vote_unique", "UNIQUE(post_id, user_id, option_id)",
-         "On ne vote pas deux fois pour le même choix."),
+         "You do not vote twice for the same option."),
     ]
 
     @api.model_create_multi
@@ -53,7 +53,8 @@ class BabillardVote(models.Model):
         # que le choix appartient bien à cette publication.
         for vals in vals_list:
             if not self.env.su and vals.get("user_id", self.env.uid) != self.env.uid:
-                raise AccessError(self.env._("On ne vote pas au nom de quelqu'un d'autre."))
+                raise AccessError(self.env._("You do not vote on somebody "
+                                             "else's behalf."))
         return super().create(vals_list)
 
     @api.constrains("post_id", "option_id")
@@ -64,4 +65,4 @@ class BabillardVote(models.Model):
         for vote in self:
             if vote.option_id.post_id != vote.post_id:
                 raise AccessError(self.env._(
-                    "Ce choix n'appartient pas à cette publication."))
+                    "This option does not belong to this post."))

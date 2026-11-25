@@ -5,21 +5,23 @@ class EventEvent(models.Model):
     _inherit = "event.event"
 
     training_activity_id = fields.Many2one(
-        "bf.training.activity", string="Activité de formation", index=True,
-        help="L'activité du registre que cette séance fait suivre. Sans elle, "
-             "l'événement reste un événement : rien n'est écrit au registre.")
+        "bf.training.activity", string="Training activity", index=True,
+        help="The register activity that this session has people "
+             "complete. Without it, the event stays an event: nothing is "
+             "written to the register.")
     training_hours = fields.Float(
-        string="Heures créditées", digits=(6, 2),
+        string="Hours credited", digits=(6, 2),
         compute="_compute_training_hours", store=True, readonly=False,
-        help="Les heures portées au registre pour qui assiste. Proposées depuis "
-             "la durée de la séance, ou à défaut depuis l'activité. Laisser à "
-             "zéro consigne une réalisation incomplète, jamais zéro heure.")
+        help="The hours written to the register for whoever attends. "
+             "Suggested from the duration of the session, or failing that "
+             "from the activity. Leaving it at zero records an incomplete "
+             "completion, never zero hours.")
     training_requires_signature = fields.Boolean(
-        string="Feuille de présence signée", default=True,
-        help="La présence doit être signée par la personne. Tant qu'elle ne "
-             "l'est pas, la réalisation est écrite mais marquée incomplète.")
+        string="Signed attendance sheet", default=True,
+        help="Attendance must be signed by the person. Until it is, the "
+             "completion is written but marked incomplete.")
     training_record_count = fields.Integer(
-        string="Réalisations écrites", compute="_compute_training_record_count")
+        string="Completions written", compute="_compute_training_record_count")
 
     @api.depends("date_begin", "date_end", "training_activity_id")
     def _compute_training_hours(self):
@@ -62,7 +64,7 @@ class EventEvent(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Réalisations de la séance"),
+            "name": _("Completions for the session"),
             "res_model": "bf.training.record",
             "views": [(False, "list"), (False, "form")],
             "domain": [("event_id", "=", self.id)],

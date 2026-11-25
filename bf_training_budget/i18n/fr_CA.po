@@ -1,76 +1,94 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_training_budget
-#
+# Translation of Registre de formation : ce qu'elle coûte vraiment - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: bf_training_budget 18.0.1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 23:33+0000\n"
-"PO-Revision-Date: 2026-09-13 23:33+0000\n"
+"POT-Creation-Date: 2026-11-19 11:56+0000\n"
+"PO-Revision-Date: 2026-11-19 11:56+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Language: fr_CA\n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_training_budget
-#: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_category_ids
-msgid "Catégories de formation"
-msgstr "Catégories de formation"
+#: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_incomplete_count
+msgid "Incomplete training records"
+msgstr "Formations incomplètes"
 
 #. module: bf_training_budget
 #: model_terms:ir.ui.view,arch_db:bf_training_budget.view_budget_line_form_training
 msgid ""
+"Some training records in these categories are incomplete and so are\n"
+"                    not counted in the actual. Their hours show up in the\n"
+"                    uncosted hours. Training that is missing its hours or its\n"
+"                    hourly cost is not worth zero."
+msgstr ""
 "Des formations de ces catégories sont incomplètes et ne sont\n"
 "                    donc pas comptées dans le réalisé. Leurs heures apparaissent\n"
 "                    dans les heures non valorisées. Une formation à laquelle il\n"
 "                    manque ses heures ou son coût horaire ne vaut pas zéro."
+
+#. module: bf_training_budget
+#: model_terms:ir.ui.view,arch_db:bf_training_budget.view_budget_line_form_training
+msgid ""
+"Some upcoming training obligations cannot be\n"
+"                    costed — an activity with no planned duration, or a person with\n"
+"                    no hourly rate. They are not in the committed amount. A\n"
+"                    commitment that is understated is worse than no commitment at\n"
+"                    all, because it looks filled in."
 msgstr ""
-
-#. module: bf_training_budget
-#: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_committed
-msgid "Engagé de formation"
-msgstr "Engagé de formation"
-
-#. module: bf_training_budget
-#: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_record_count
-msgid "Formations comptées"
-msgstr "Formations comptées"
-
-#. module: bf_training_budget
-#: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_incomplete_count
-msgid "Formations incomplètes"
-msgstr "Formations incomplètes"
+"Des obligations de formation à venir ne peuvent pas être\n"
+"                    chiffrées — activité sans durée prévue, ou personne sans taux\n"
+"                    horaire. Elles ne sont pas dans l'engagé. Un engagement\n"
+"                    sous-évalué est pire qu'un engagement absent, parce qu'il a\n"
+"                    l'air renseigné."
 
 #. module: bf_training_budget
 #: model:ir.model.fields,help:bf_training_budget.field_bf_budget_line__training_category_ids
 msgid ""
+"The register categories whose cost feeds this line. Empty, the line ignores "
+"the register."
+msgstr ""
 "Les catégories du registre dont le coût nourrit cette ligne. Vide, la ligne "
 "ignore le registre."
-msgstr ""
 
 #. module: bf_training_budget
-#: model:ir.model,name:bf_training_budget.model_bf_budget_line
-msgid "Ligne budgétaire"
-msgstr "Ligne budgétaire"
+#: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_actual
+msgid "Training actual"
+msgstr "Réalisé de formation"
+
+#. module: bf_training_budget
+#: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_category_ids
+msgid "Training categories"
+msgstr "Catégories de formation"
+
+#. module: bf_training_budget
+#: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_committed
+msgid "Training committed"
+msgstr "Engagé de formation"
+
+#. module: bf_training_budget
+#: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_record_count
+msgid "Training records counted"
+msgstr "Formations comptées"
 
 #. module: bf_training_budget
 #: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_uncosted_count
-msgid "Obligations non chiffrables"
+msgid "Uncosted obligations"
 msgstr "Obligations non chiffrables"
 
 #. module: bf_training_budget
 #: model:ir.model.fields,help:bf_training_budget.field_bf_budget_line__training_uncosted_count
 msgid ""
+"Upcoming obligations whose cost cannot be established: an activity with no "
+"duration, or a person with no hourly rate. They are not in the committed "
+"amount, and this counter is the only thing that says so."
+msgstr ""
 "Obligations à venir dont le coût ne peut pas être établi : activité sans "
 "durée, ou personne sans taux horaire. Elles ne sont pas dans l'engagé, et ce"
 " compteur est la seule chose qui le dit."
-msgstr ""
-
-#. module: bf_training_budget
-#: model:ir.model.fields,field_description:bf_training_budget.field_bf_budget_line__training_actual
-msgid "Réalisé de formation"
-msgstr "Réalisé de formation"

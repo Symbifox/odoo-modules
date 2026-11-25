@@ -34,7 +34,7 @@
                 <span t-if="donnees.masque" t-esc="donnees.message"/>
                 <span t-if="!donnees.masque" t-esc="etiquetteVotants"/>
                 <span t-if="donnees.anonyme" class="badge text-bg-light">
-                    <i class="fa fa-user-secret me-1"/>Anonyme
+                    <i class="fa fa-user-secret me-1"/>Anonymous
                 </span>
                 <span t-if="!donnees.ouvert" class="badge text-bg-secondary"
                       t-esc="etiquetteFerme"/>

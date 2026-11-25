@@ -14,3 +14,4 @@ from . import test_ev2
 from . import test_gravure
 from . import test_accord_appariement
 from . import test_suivi_et_reglages
+from . import test_deux_langues

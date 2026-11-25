@@ -10,7 +10,7 @@
                         class="oe_stat_button" icon="fa-graduation-cap"
                         invisible="not training_record_count">
                     <field name="training_record_count" widget="statinfo"
-                           string="Au registre"/>
+                           string="In the register"/>
                 </button>
             </div>
             <xpath expr="//field[@name='user_id']" position="after">
@@ -22,9 +22,9 @@
             </xpath>
             <xpath expr="//sheet" position="inside">
                 <div class="text-muted mt-2" invisible="not training_activity_id">
-                    Les heures sont proposées depuis la durée prévue de l'activité,
-                    ou à défaut depuis la durée de la séance. La durée d'une séance
-                    est du temps d'horloge : pauses et repas compris.
+                    The hours are suggested from the planned duration of the activity,
+                    or failing that from the duration of the session. A session's duration
+                    is clock time: breaks and meals included.
                 </div>
             </xpath>
         </field>

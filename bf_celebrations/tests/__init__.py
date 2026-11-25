@@ -10,3 +10,5 @@ from . import test_signataires
 from . import test_merci
 from . import test_securite_routes
 from . import test_mise_en_page
+from . import test_deux_langues
+from . import test_langue_des_envois

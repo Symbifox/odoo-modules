@@ -4,9 +4,9 @@
         <field name="name">bf.nfc.gen.skill.list</field>
         <field name="model">bf.nfc.gen.skill</field>
         <field name="arch" type="xml">
-            <list string="Skills de Gen" create="false" editable="bottom">
+            <list string="Gen skills" create="false" editable="bottom">
                 <header>
-                    <button name="action_actualiser" type="object" string="Actualiser depuis Gen"
+                    <button name="action_actualiser" type="object" string="Refresh from Gen"
                             class="btn-secondary" display="always"/>
                 </header>
                 <field name="name"/>
@@ -21,14 +21,13 @@
     </record>
 
     <record id="action_bf_nfc_gen_skill" model="ir.actions.act_window">
-        <field name="name">Skills de Gen</field>
+        <field name="name">Gen skills</field>
         <field name="res_model">bf.nfc.gen.skill</field>
         <field name="view_mode">list</field>
         <field name="context">{'active_test': False}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun skill</p>
-            <p>« Actualiser depuis Gen » relit les skills que le pont accepte de lancer par
-            pastille pour cette instance. Cochez ensuite ceux que vous permettez.</p>
+            <p class="o_view_nocontent_smiling_face">No skill</p>
+            <p>“Refresh from Gen” reloads the skills the bridge agrees to run by tag for this instance. Then check the ones you allow.</p>
         </field>
     </record>
 
@@ -36,9 +35,9 @@
         <field name="name">bf.nfc.gen.request.list</field>
         <field name="model">bf.nfc.gen.request</field>
         <field name="arch" type="xml">
-            <list string="Demandes à Gen" create="false" decoration-danger="state == 'error'"
+            <list string="Gen requests" create="false" decoration-danger="state == 'error'"
                   decoration-success="state == 'done'" decoration-info="state in ('queued', 'running')">
-                <field name="create_date" string="Demandée le"/>
+                <field name="create_date" string="Requested on"/>
                 <field name="skill_id"/>
                 <field name="target_name"/>
                 <field name="user_id"/>
@@ -50,7 +49,7 @@
     </record>
 
     <record id="action_bf_nfc_gen_request" model="ir.actions.act_window">
-        <field name="name">Demandes à Gen</field>
+        <field name="name">Gen requests</field>
         <field name="res_model">bf.nfc.gen.request</field>
         <field name="view_mode">list</field>
     </record>
@@ -67,8 +66,8 @@
         </field>
     </record>
 
-    <menuitem id="menu_nfc_gen_skills" name="Skills de Gen" parent="bf_nfc.menu_nfc_config"
+    <menuitem id="menu_nfc_gen_skills" name="Gen skills" parent="bf_nfc.menu_nfc_config"
               action="action_bf_nfc_gen_skill" sequence="30"/>
-    <menuitem id="menu_nfc_gen_requests" name="Demandes à Gen" parent="bf_nfc.menu_nfc_config"
+    <menuitem id="menu_nfc_gen_requests" name="Gen requests" parent="bf_nfc.menu_nfc_config"
               action="action_bf_nfc_gen_request" sequence="35"/>
 </odoo>

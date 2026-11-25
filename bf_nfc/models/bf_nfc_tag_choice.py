@@ -18,18 +18,19 @@ from odoo.exceptions import UserError, ValidationError
 
 class BfNfcTagChoice(models.Model):
     _name = "bf.nfc.tag.choice"
-    _description = "Choix d'une pastille à menu"
+    _description = "Menu tag choice"
     _order = "sequence, id"
 
-    tag_id = fields.Many2one("bf.nfc.tag", string="Pastille", required=True,
+    tag_id = fields.Many2one("bf.nfc.tag", string="Tag", required=True,
                              ondelete="cascade", index=True)
     sequence = fields.Integer(default=10)
-    name = fields.Char(string="Libellé du bouton", required=True)
-    gesture_id = fields.Many2one("bf.nfc.gesture", string="Geste", required=True,
+    name = fields.Char(string="Button label", required=True)
+    gesture_id = fields.Many2one("bf.nfc.gesture", string="Gesture", required=True,
                                  ondelete="restrict", domain=[("kind", "!=", "menu")])
-    params = fields.Char(string="Paramètres", help="JSON facultatif ajouté à ceux de la pastille.")
+    params = fields.Char(string="Parameters", help="Optional JSON added "
+                                                   "to the tag's own.")
     style = fields.Selection(
-        [("principal", "Principal"), ("secondaire", "Secondaire"), ("danger", "Attention")],
+        [("principal", "Primary"), ("secondaire", "Secondary"), ("danger", "Warning")],
         default="secondaire", required=True,
     )
 
@@ -37,7 +38,7 @@ class BfNfcTagChoice(models.Model):
     def _check_pas_de_menu(self):
         for choix in self:
             if choix.gesture_id.kind == "menu":
-                raise ValidationError(_("Un choix ne peut pas ouvrir un autre menu."))
+                raise ValidationError(_("A choice cannot open another menu."))
 
     def _params(self):
         self.ensure_one()
@@ -46,7 +47,8 @@ class BfNfcTagChoice(models.Model):
         try:
             charge = json.loads(self.params)
         except ValueError:
-            raise UserError(_("Les paramètres du choix « %s » ne sont pas du JSON valide.", self.name))
+            raise UserError(_("The parameters of the choice “%s” are not "
+                              "valid JSON.", self.name))
         if not isinstance(charge, dict):
-            raise UserError(_("Les paramètres d'un choix doivent être un objet JSON."))
+            raise UserError(_("A choice's parameters must be a JSON object."))
         return charge

@@ -7,18 +7,18 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_approve" type="object" string="Accepter"
+                    <button name="action_approve" type="object" string="Accept"
                             class="btn-primary" invisible="state != 'requested'"/>
-                    <button name="action_decline" type="object" string="Refuser"
+                    <button name="action_decline" type="object" string="Refuse"
                             invisible="state not in ('requested', 'approved')"/>
-                    <button name="action_mark_arrived" type="object" string="Constater l'arrivée"
+                    <button name="action_mark_arrived" type="object" string="Record arrival"
                             class="btn-primary"
                             invisible="arrived_at or state not in ('requested', 'approved')"/>
-                    <button name="action_mark_departed" type="object" string="Constater le départ"
+                    <button name="action_mark_departed" type="object" string="Record departure"
                             invisible="not arrived_at or departed_at"/>
-                    <button name="action_mark_no_show" type="object" string="Personne ne s'est présenté"
+                    <button name="action_mark_no_show" type="object" string="Nobody showed up"
                             invisible="arrived_at or state != 'approved'"/>
-                    <button name="action_cancel" type="object" string="Annuler"
+                    <button name="action_cancel" type="object" string="Cancel"
                             invisible="state in ('done', 'cancelled', 'no_show')"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="requested,approved,done"/>
@@ -29,18 +29,18 @@
                         <h2><field name="listing_id" options="{'no_create': True}"/></h2>
                     </div>
                     <div class="alert alert-info" role="status" invisible="not arrived_at">
-                        Le registre est fermé depuis l'arrivée. Une correction reste possible
-                        pour un gestionnaire, et elle laisse une trace au dossier.
+                        The register has been closed since arrival. A correction is still possible
+                        for a manager, and it leaves a trace on the record.
                     </div>
                     <group>
-                        <group string="Le rendez-vous">
+                        <group string="The appointment">
                             <field name="start"/>
                             <field name="duration" widget="float_time"/>
                             <field name="booking_id" readonly="1"/>
                             <field name="is_walkin" readonly="1"/>
                             <field name="accompanied_by_id"/>
                         </group>
-                        <group string="Le visiteur">
+                        <group string="The visitor">
                             <field name="visitor_name"/>
                             <field name="visitor_email" widget="email"/>
                             <field name="visitor_phone" widget="phone"/>
@@ -48,7 +48,7 @@
                             <field name="visitor_partner_id" options="{'no_create': True}"/>
                         </group>
                     </group>
-                    <group string="Représentation (à poser à la première occasion)">
+                    <group string="Representation (to ask at the first opportunity)">
                         <group>
                             <field name="representation"/>
                             <field name="representation_asked_at" readonly="1"/>
@@ -60,12 +60,12 @@
                             <field name="buyer_broker_phone" widget="phone"/>
                         </group>
                     </group>
-                    <group string="Identité et présence">
+                    <group string="Identity and presence">
                         <group>
                             <field name="identity_method"/>
                             <field name="identity_doc_kind"/>
                             <button name="action_confirm_identity" type="object"
-                                    string="Consigner la vérification" class="btn-secondary"
+                                    string="Record the verification" class="btn-secondary"
                                     invisible="identity_checked"/>
                             <field name="identity_checked" readonly="1"/>
                             <field name="identity_checked_by" readonly="1"
@@ -81,7 +81,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Décision du vendeur" name="seller">
+                        <page string="Seller's decision" name="seller">
                             <group>
                                 <field name="seller_decision_at" readonly="1"/>
                                 <field name="proposed_start"/>
@@ -90,7 +90,7 @@
                                        groups="bf_appointment_visit.group_bf_visit_manager"/>
                             </group>
                         </page>
-                        <page string="Après la visite" name="feedback">
+                        <page string="After the showing" name="feedback">
                             <group>
                                 <group>
                                     <field name="feedback_interest"/>
@@ -154,33 +154,33 @@
                 <field name="visitor_name"/>
                 <field name="listing_id"/>
                 <field name="buyer_broker_name"/>
-                <filter name="upcoming" string="À venir"
+                <filter name="upcoming" string="Upcoming"
                         domain="[('start', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter name="to_decide" string="En attente de décision"
+                <filter name="to_decide" string="Awaiting a decision"
                         domain="[('state', '=', 'requested')]"/>
-                <filter name="unverified" string="Identité non vérifiée"
+                <filter name="unverified" string="Identity not verified"
                         domain="[('identity_checked', '=', False), ('state', 'in', ('approved', 'done'))]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_listing" string="Inscription"
+                <group expand="0" string="Group By">
+                    <filter name="group_listing" string="Listing"
                             context="{'group_by': 'listing_id'}"/>
-                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
-                    <filter name="group_month" string="Mois" context="{'group_by': 'start:month'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_month" string="Month" context="{'group_by': 'start:month'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_bf_visit" model="ir.actions.act_window">
-        <field name="name">Registre des visites</field>
+        <field name="name">Visit register</field>
         <field name="res_model">bf.visit</field>
         <field name="view_mode">list,calendar,form</field>
         <field name="path">visits</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucune visite au registre</p>
+            <p class="o_view_nocontent_smiling_face">No showing in the register</p>
             <p>
-                Qui est venu, quand, l'identité vérifiée et la question de la
-                représentation par un courtier. Une fois l'arrivée constatée, le
-                registre ne se réécrit plus.
+                Who came, when, the identity verified and the question of
+                representation by a broker. Once arrival is recorded, the
+                register can no longer be rewritten.
             </p>
         </field>
     </record>

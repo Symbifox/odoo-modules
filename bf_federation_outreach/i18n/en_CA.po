@@ -39,22 +39,36 @@ msgstr "(untitled)"
 
 #. module: bf_federation_outreach
 #: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_form
-msgid ".\n                    Il se lit ici et se rafraîchit chaque jour. Pour qu'une cible ne soit pas contactée,\n                    ouvrez-la et utilisez <strong>Écarter</strong> : l'agence le recevra."
-msgstr ". It is read-only here and refreshes daily. To keep a target from being contacted, open it and use <strong>Set aside</strong>: the agency will receive it."
+msgid ""
+".\n"
+"                    Il se lit ici et se rafraîchit chaque jour. Pour qu'une cible ne soit pas contactée,\n"
+"                    ouvrez-la et utilisez <strong>Écarter</strong> : l'agence le recevra."
+msgstr ""
+". It is read-only here and refreshes daily. To keep a target from being "
+"contacted, open it and use <strong>Set aside</strong>: the agency will "
+"receive it."
 
 #. module: bf_federation_outreach
 #. odoo-python
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
-msgid "<p>Chez %s, la cible <b>%s</b> a été écartée : %s. Elle est passée à « ne pas contacter ».</p>"
-msgstr "<p>At %s, the target <b>%s</b> was set aside: %s. It is now \"do not contact\".</p>"
+msgid ""
+"<p>Chez %s, la cible <b>%s</b> a été écartée : %s. Elle est passée à « ne "
+"pas contacter ».</p>"
+msgstr ""
+"<p>At %s, the target <b>%s</b> was set aside: %s. It is now \"do not "
+"contact\".</p>"
 
 #. module: bf_federation_outreach
 #. odoo-python
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
-msgid "<p>Suivi de démarchage reçu de %s : <b>%s</b>, %s cible(s). Il se lit ici ; pour écarter une cible, ouvrez-la et utilisez <b>Écarter</b>.</p>"
-msgstr "<p>Prospecting report received from %s: <b>%s</b>, %s target(s). It is read-only here; to set a target aside, open it and use <b>Set aside</b>.</p>"
+msgid ""
+"<p>Suivi de démarchage reçu de %s : <b>%s</b>, %s cible(s). Il se lit ici ; "
+"pour écarter une cible, ouvrez-la et utilisez <b>Écarter</b>.</p>"
+msgstr ""
+"<p>Prospecting report received from %s: <b>%s</b>, %s target(s). It is read-"
+"only here; to set a target aside, open it and use <b>Set aside</b>.</p>"
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__has_reply
@@ -88,11 +102,6 @@ msgid "Attachment Count"
 msgstr ""
 
 #. module: bf_federation_outreach
-#: model:ir.model,name:bf_federation_outreach.model_federation_outbox
-msgid "Boîte de sortie de la fédération"
-msgstr "Federation outbox"
-
-#. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__campaign_ref
 msgid "Campagne"
 msgstr "Campaign"
@@ -113,8 +122,12 @@ msgstr "This report is received from %s: the agency refreshes it."
 #. odoo-python
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
-msgid "Ce suivi est reçu de %s : il se lit ici. Pour écarter une cible, ouvrez-la et utilisez Écarter."
-msgstr "This report is received from %s: it is read-only here. To set a target aside, open it and use Set aside."
+msgid ""
+"Ce suivi est reçu de %s : il se lit ici. Pour écarter une cible, ouvrez-la "
+"et utilisez Écarter."
+msgstr ""
+"This report is received from %s: it is read-only here. To set a target "
+"aside, open it and use Set aside."
 
 #. module: bf_federation_outreach
 #. odoo-python
@@ -322,12 +335,15 @@ msgstr "Reached"
 #. module: bf_federation_outreach
 #: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__campaign_ref
 msgid "La campagne d'où ce suivi est tiré. Vide sur un suivi reçu d'un pair."
-msgstr "The campaign this report is drawn from. Empty on a report received from a peer."
+msgstr ""
+"The campaign this report is drawn from. Empty on a report received from a "
+"peer."
 
 #. module: bf_federation_outreach
 #: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_exclude_wizard_form
 msgid "La cible deviendra « ne pas contacter » chez l'agence, avec ce motif."
-msgstr "The target will become \"do not contact\" at the agency, with this reason."
+msgstr ""
+"The target will become \"do not contact\" at the agency, with this reason."
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__write_uid
@@ -347,20 +363,29 @@ msgstr ""
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__client_partner_id
-msgid "Le client pour qui la campagne est menée. C'est lui qui détermine le pair qui peut recevoir le suivi : sans client mandant, aucun pair n'est proposé."
-msgstr "The client the campaign is run for. That client determines the peer that can receive the report: with no commissioning client, no peer is offered."
+msgid ""
+"Le client pour qui la campagne est menée. C'est lui qui détermine le pair "
+"qui peut recevoir le suivi : sans client mandant, aucun pair n'est proposé."
+msgstr ""
+"The client the campaign is run for. That client determines the peer that can"
+" receive the report: with no commissioning client, no peer is offered."
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__federation_peer_id
-msgid "Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
-msgstr "The peer where this object has a mirror. Clearing the field archives the mirror."
+msgid ""
+"Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
+msgstr ""
+"The peer where this object has a mirror. Clearing the field archives the "
+"mirror."
 
 #. module: bf_federation_outreach
 #. odoo-python
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
 msgid "Les cibles de ce suivi sont reçues de l'agence : elles se lisent ici."
-msgstr "The targets of this report are received from the agency: they are read-only here."
+msgstr ""
+"The targets of this report are received from the agency: they are read-only "
+"here."
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__federation_link_id
@@ -446,8 +471,16 @@ msgstr "Allowed peers"
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__include_contacts
-msgid "Par défaut, seule l'entreprise ciblée traverse, avec son étape et ses touches datées. Cochez pour faire traverser aussi le nom de la personne-ressource, sa fonction, ses coordonnées et le résumé des touches : à réserver à un mandat où le client est responsable de ces renseignements."
-msgstr "By default, only the targeted company crosses over, with its stage and dated touches. Tick to also send the contact person's name, job title, contact details and touch summaries: reserve this for a mandate where the client is responsible for that information."
+msgid ""
+"Par défaut, seule l'entreprise ciblée traverse, avec son étape et ses "
+"touches datées. Cochez pour faire traverser aussi le nom de la personne-"
+"ressource, sa fonction, ses coordonnées et le résumé des touches : à "
+"réserver à un mandat où le client est responsable de ces renseignements."
+msgstr ""
+"By default, only the targeted company crosses over, with its stage and dated"
+" touches. Tick to also send the contact person's name, job title, contact "
+"details and touch summaries: reserve this for a mandate where the client is "
+"responsible for that information."
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields.selection,name:bf_federation_outreach.selection__federation_outbox__kind__outreach_share
@@ -473,8 +506,12 @@ msgstr "Refreshed on"
 #. odoo-python
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
-msgid "Rafraîchir ou écarter dans un suivi de démarchage demande le rôle de gestionnaire de projet."
-msgstr "Refreshing or setting aside in a prospecting report requires the project manager role."
+msgid ""
+"Rafraîchir ou écarter dans un suivi de démarchage demande le rôle de "
+"gestionnaire de projet."
+msgstr ""
+"Refreshing or setting aside in a prospecting report requires the project "
+"manager role."
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__rating_ids
@@ -533,8 +570,12 @@ msgstr "Federated prospecting report"
 #. odoo-python
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
-msgid "Suivi de démarchage fédéré avec %s : les cibles, leur étape et leurs touches datées, %s. Il se rafraîchit chaque jour."
-msgstr "Prospecting report federated with %s: the targets, their stage and dated touches, %s. It refreshes daily."
+msgid ""
+"Suivi de démarchage fédéré avec %s : les cibles, leur étape et leurs touches"
+" datées, %s. Il se rafraîchit chaque jour."
+msgstr ""
+"Prospecting report federated with %s: the targets, their stage and dated "
+"touches, %s. It refreshes daily."
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields.selection,name:bf_federation_outreach.selection__federation_outbox__kind__outreach_card
@@ -624,7 +665,8 @@ msgstr "the prospecting report"
 #. odoo-python
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
 #: code:addons/bf_federation_outreach/models/outreach_report.py:0
-msgid "les personnes-ressources, leurs coordonnées et le résumé des touches compris"
+msgid ""
+"les personnes-ressources, leurs coordonnées et le résumé des touches compris"
 msgstr "including contact people, their contact details and touch summaries"
 
 #. module: bf_federation_outreach

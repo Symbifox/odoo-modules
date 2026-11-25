@@ -4,11 +4,9 @@
         <field name="name">federation.timesheet.statement.form</field>
         <field name="model">federation.timesheet.statement</field>
         <field name="arch" type="xml">
-            <form string="Remettre un relevé des heures">
+            <form string="Deliver a timesheet statement">
                 <p class="text-muted">
-                    Le relevé est déposé comme un livrable : il porte une version, et le partenaire en
-                    accuse réception. Refaire le relevé d'une période déjà remise en publie une nouvelle
-                    version, et l'accusé de la précédente tombe. Aucun montant ne sort.
+                    The statement is filed as a deliverable: it carries a version, and the partner acknowledges receipt. Producing the statement again for a period already delivered publishes a new version, and the previous receipt drops. No amount leaves.
                 </p>
                 <group>
                     <group>
@@ -29,22 +27,22 @@
                     <field name="total_hours" widget="float_time"/>
                 </group>
                 <footer>
-                    <button name="action_produce" type="object" string="Produire le relevé" class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button name="action_produce" type="object" string="Produce the statement" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_federation_timesheet_statement" model="ir.actions.act_window">
-        <field name="name">Remettre un relevé des heures</field>
+        <field name="name">Deliver a timesheet statement</field>
         <field name="res_model">federation.timesheet.statement</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
 
     <menuitem id="menu_federation_timesheet_statement"
-              name="Relevé des heures"
+              name="Timesheet statement"
               parent="bf_federation.menu_federation_root"
               action="action_federation_timesheet_statement"
               groups="project.group_project_manager"

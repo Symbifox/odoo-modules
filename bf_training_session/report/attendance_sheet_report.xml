@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="action_report_attendance_sheet" model="ir.actions.report">
-        <field name="name">Feuille de présence</field>
+        <field name="name">Attendance sheet</field>
         <field name="model">event.event</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_training_session.report_attendance_sheet</field>
         <field name="report_file">bf_training_session.report_attendance_sheet</field>
         <field name="binding_model_id" ref="event.model_event_event"/>
         <field name="binding_type">report</field>
-        <field name="print_report_name">'Feuille de presence - %s' % (object.name or '')</field>
+        <field name="print_report_name">'Attendance sheet - %s' % (object.name or '')</field>
     </record>
 
     <template id="report_attendance_sheet_document">
@@ -18,7 +18,7 @@
              qui imprime plutôt que celle de la séance. -->
         <t t-call="web.external_layout">
             <div class="page">
-                <h2 class="mt16 mb8">Feuille de présence</h2>
+                <h2 class="mt16 mb8">Attendance sheet</h2>
                 <h4 class="text-muted mb16"><span t-field="doc.name"/></h4>
 
                 <!-- 🔴 Un TABLEAU, pas `row` / `col-6`. wkhtmltopdf ne lit pas la grille
@@ -27,13 +27,13 @@
                 <table style="width: 100%; margin-bottom: 18px;">
                     <tr>
                         <td style="width: 50%; vertical-align: top; padding: 4px 0;">
-                            <strong>Formation</strong><br/>
+                            <strong>Training</strong><br/>
                             <span t-field="doc.training_activity_id.name"/>
                         </td>
                         <td style="width: 50%; vertical-align: top; padding: 4px 0;">
-                            <strong>Heures créditées</strong><br/>
+                            <strong>Hours credited</strong><br/>
                             <t t-out="('%g' % doc.training_hours).replace('.', ',')"/>
-                            <t t-if="doc.training_hours &lt;= 1">heure</t><t t-else="">heures</t>
+                            <t t-if="doc.training_hours &lt;= 1">hour</t><t t-else="">hours</t>
                         </td>
                     </tr>
                     <tr>
@@ -44,11 +44,11 @@
                                   t-options="{'widget': 'datetime', 'format': 'd MMMM yyyy, HH:mm', 'tz_name': doc.date_tz}"/>
                         </td>
                         <td style="vertical-align: top; padding: 4px 0;">
-                            <strong>Lieu</strong><br/>
+                            <strong>Location</strong><br/>
                             <!-- 🔴 `address_inline`, pas `address_id.display_name` : le nom
                                  du partenaire seul affichait « YourCompany » comme lieu. -->
                             <span t-if="doc.address_inline" t-field="doc.address_inline"/>
-                            <span t-else="" class="text-muted">À préciser</span>
+                            <span t-else="" class="text-muted">To be determined</span>
                         </td>
                     </tr>
                 </table>
@@ -59,8 +59,8 @@
                 <table class="table table-sm o_main_table" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th style="width: 40%;">Personne</th>
-                            <th class="text-center" style="width: 15%;">Présence</th>
+                            <th style="width: 40%;">Person</th>
+                            <th class="text-center" style="width: 15%;">Attendance</th>
                             <th class="text-center" style="width: 45%;">Signature</th>
                         </tr>
                     </thead>
@@ -74,7 +74,7 @@
                                  annulée GARDE sa date de présence, son calcul étant gardé
                                  par `if not date_closed`. -->
                             <td class="text-center" style="vertical-align: middle;">
-                                <span t-if="ligne.state == 'done'">Présent</span>
+                                <span t-if="ligne.state == 'done'">Present</span>
                                 <span t-else="" class="text-muted">—</span>
                             </td>
                             <td class="text-center" style="vertical-align: middle;">
@@ -87,10 +87,10 @@
                 </table>
 
                 <p class="text-muted mt16" style="font-size: 9pt;">
-                    La signature atteste la présence de la personne à la séance
-                    nommée ci-dessus. Une présence non signée est consignée au
-                    registre et marquée incomplète : elle n'est jamais comptée
-                    pour zéro.
+                    The signature attests that the person attended the session
+                    named above. Unsigned attendance is recorded in the
+                    register and marked incomplete: it is never counted
+                    as zero.
                 </p>
             </div>
         </t>

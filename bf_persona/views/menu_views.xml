@@ -8,7 +8,7 @@
               groups="bf_persona.group_persona_user"/>
 
     <menuitem id="menu_personas_dashboard"
-              name="Tableau de bord"
+              name="Dashboard"
               parent="menu_personas_root"
               action="action_contact_persona_dashboard"
               sequence="5"/>
@@ -20,13 +20,13 @@
               sequence="10"/>
 
     <menuitem id="menu_personas_cc_rules"
-              name="Règles de copie"
+              name="Copy rules"
               parent="menu_personas_root"
               action="action_contact_cc_rule"
               sequence="15"/>
 
     <menuitem id="menu_personas_categories"
-              name="Catégories"
+              name="Categories"
               parent="menu_personas_root"
               action="action_contact_persona_category"
               sequence="20"

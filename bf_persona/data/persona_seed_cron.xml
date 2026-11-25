@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="cron_seed_personas" model="ir.cron">
-        <field name="name">Persona : seed automatique des contacts actifs</field>
+        <field name="name">Persona: automatic seeding of the active contacts</field>
         <field name="model_id" ref="model_contact_persona"/>
         <field name="state">code</field>
         <field name="code">model.cron_seed_personas()</field>

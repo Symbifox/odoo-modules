@@ -1,0 +1,2626 @@
+# Translation of Celebrations - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_celebrations 18.0.2.2.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-19 06:26+0000\n"
+"PO-Revision-Date: 2026-11-19 06:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_post__style
+msgid "\"Handwritten\" renders the message in a handwriting font."
+msgstr "« Manuscrit » rend le mot dans une police d'écriture à la main."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__thin_notified
+msgid "\"Thin board\" reminder sent"
+msgstr "Relance « tableau mince » envoyée"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_occasion.py:0
+msgid "%(n)s years with us"
+msgstr "%(n)s ans chez nous"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid ""
+"%(nb)s people to invite, past the ceiling of %(max)s. Split the group, or "
+"raise the ceiling in the configuration."
+msgstr ""
+"%(nb)s personnes à inviter, au-delà du plafond de %(max)s. Découpez le "
+"groupe, ou relevez le plafond dans la configuration."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid "%(nom)s has received their card and thanks you:"
+msgstr "%(nom)s a reçu sa carte et vous remercie :"
+
+#. module: bf_celebrations
+#: model:ir.actions.report,print_report_name:bf_celebrations.action_report_board
+msgid "'Card - %s' % (object.recipient_name or object.name)"
+msgstr "'Carte - %s' % (object.recipient_name or object.name)"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_souvenir
+msgid ", delivered on"
+msgstr ", livrés le"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_souvenir
+msgid ""
+".\n"
+"                           This page is self-contained: it needs nothing\n"
+"                           else to open."
+msgstr ""
+".\n"
+"                           Cette page est complète : elle n'a besoin de rien\n"
+"                           d'autre pour s'ouvrir."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid ""
+"0: keep everything. Otherwise, a card delivered more than N months ago is "
+"erased with its messages, its images and its attachments. The person "
+"celebrated received theirs as a PDF and as a keepsake page at delivery."
+msgstr ""
+"0 : on garde tout. Sinon, une carte livrée depuis plus de N mois est effacée"
+" avec ses mots, ses images et ses pièces jointes. La personne fêtée a reçu "
+"la sienne en PDF et en page souvenir à la livraison."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_res_config_settings__celebration_retention_months
+msgid ""
+"0: keep everything. Otherwise, a card delivered more than N months ago is "
+"erased with its messages, its images and its attachments. The person "
+"celebrated received theirs as a PDF and as a keepsake page at delivery: what"
+" is erased here is the system's copy, not theirs."
+msgstr ""
+"0 : on garde tout. Sinon, une carte livrée depuis plus de N mois est effacée"
+" avec ses mots, ses images et ses pièces jointes. La personne fêtée a reçu "
+"la sienne en PDF et en page souvenir à la livraison : ce qui s'efface ici "
+"est la copie du système, pas la sienne."
+
+#. module: bf_celebrations
+#: model:mail.template,body_html:bf_celebrations.mail_template_invitation_signataire
+msgid ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Hello <t t-out=\"ctx.get('cel_invite_nom') or ''\"/>,</p>\n"
+"    <p>A group card is open for\n"
+"       <strong t-out=\"object.recipient_name or ''\"/>:\n"
+"       <t t-out=\"object.name or ''\"/>.</p>\n"
+"    <p>A message, a photo, something drawn by hand: what you would have written\n"
+"       in the paper card. No account is needed.</p>\n"
+"    <p style=\"margin:24px 0\">\n"
+"        <a t-att-href=\"object.contribution_url\" style=\"background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block\">\n"
+"            Sign the card</a>\n"
+"    </p>\n"
+"    <p t-if=\"object.delivery_date\">The card goes out on\n"
+"       <strong t-out=\"format_datetime(object.delivery_date, tz=user.tz or 'UTC', dt_format='long')\"/>.</p>\n"
+"    <p style=\"color:#6b7280;font-size:12px\">The person celebrated sees nothing\n"
+"       before delivery: keep the surprise for them, and do not forward\n"
+"       this message to them.</p>\n"
+"</div>"
+msgstr ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Bonjour <t t-out=\"ctx.get('cel_invite_nom') or ''\"/>,</p>\n"
+"    <p>Une carte collective est ouverte pour\n"
+"       <strong t-out=\"object.recipient_name or ''\"/> :\n"
+"       <t t-out=\"object.name or ''\"/>.</p>\n"
+"    <p>Un mot, une photo, un tracé à la main : ce que vous auriez écrit\n"
+"       dans la carte de papier. Aucun compte n'est demandé.</p>\n"
+"    <p style=\"margin:24px 0\">\n"
+"        <a t-att-href=\"object.contribution_url\" style=\"background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block\">\n"
+"            Signer la carte</a>\n"
+"    </p>\n"
+"    <p t-if=\"object.delivery_date\">La carte part le\n"
+"       <strong t-out=\"format_datetime(object.delivery_date, tz=user.tz or 'UTC', dt_format='long')\"/>.</p>\n"
+"    <p style=\"color:#6b7280;font-size:12px\">La personne fêtée ne voit rien\n"
+"       avant la livraison : gardez-lui la surprise, et ne lui transférez pas\n"
+"       ce message.</p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_celebrations
+#: model:mail.template,body_html:bf_celebrations.mail_template_invitation
+msgid ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Hello <t t-out=\"object.employee_id.name or ''\"/>,</p>\n"
+"    <p>We would like to be able to mark celebrations at the office, and for that\n"
+"       we have to ask you what you think. You decide, and you can change\n"
+"       your mind whenever you want.</p>\n"
+"    <p>Four possible answers:</p>\n"
+"    <ul style=\"padding-left:18px\">\n"
+"        <li><strong>Yes, with a card</strong> signed by your colleagues</li>\n"
+"        <li><strong>Yes, but no card</strong>: the date appears, nobody\n"
+"            organises anything</li>\n"
+"        <li><strong>No thanks</strong>: we take you out of everything, and we\n"
+"            will not ask you again</li>\n"
+"        <li>Do nothing, and nothing happens</li>\n"
+"    </ul>\n"
+"    <p>We ask you for the <strong>day and the month</strong> only. Your\n"
+"       date of birth in the HR record is not read, not copied, not\n"
+"       shown.</p>\n"
+"    <p style=\"margin:24px 0\">\n"
+"        <a t-att-href=\"'%s/odoo/action-bf_celebrations.action_mon_profil' % (object.env['ir.config_parameter'].sudo().get_param('web.base.url') or '')\" style=\"background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block\">\n"
+"            Answer</a>\n"
+"    </p>\n"
+"    <p style=\"color:#6b7280;font-size:12px\">Nobody but you sees\n"
+"       your answer, not even human resources.</p>\n"
+"</div>"
+msgstr ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Bonjour <t t-out=\"object.employee_id.name or ''\"/>,</p>\n"
+"    <p>On aimerait pouvoir souligner les fêtes au bureau, et pour ça il faut\n"
+"       vous demander ce que vous en pensez. Vous décidez, et vous pouvez\n"
+"       changer d'idée quand vous voulez.</p>\n"
+"    <p>Quatre réponses possibles :</p>\n"
+"    <ul style=\"padding-left:18px\">\n"
+"        <li><strong>Oui, avec une carte</strong> signée par les collègues</li>\n"
+"        <li><strong>Oui, mais sans carte</strong> : la date paraît, personne\n"
+"            n'organise rien</li>\n"
+"        <li><strong>Non merci</strong> : on vous retire de tout, et on ne\n"
+"            vous le redemande plus</li>\n"
+"        <li>Ne rien faire, et il ne se passe rien</li>\n"
+"    </ul>\n"
+"    <p>On vous demande le <strong>jour et le mois</strong> seulement. Votre\n"
+"       date de naissance dans le dossier RH n'est pas lue, pas copiée, pas\n"
+"       affichée.</p>\n"
+"    <p style=\"margin:24px 0\">\n"
+"        <a t-att-href=\"'%s/odoo/action-bf_celebrations.action_mon_profil' % (object.env['ir.config_parameter'].sudo().get_param('web.base.url') or '')\" style=\"background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block\">\n"
+"            Répondre</a>\n"
+"    </p>\n"
+"    <p style=\"color:#6b7280;font-size:12px\">Personne d'autre que vous ne voit\n"
+"       votre réponse, pas même les ressources humaines.</p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_celebrations
+#: model:mail.template,body_html:bf_celebrations.mail_template_livraison
+msgid ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Hello <t t-out=\"object.recipient_name or ''\"/>,</p>\n"
+"    <p>Your colleagues have written to you.\n"
+"       <strong t-out=\"object.published_post_count\"/> message(s) are\n"
+"       waiting for you. Open the envelope.</p>\n"
+"    <p style=\"margin:24px 0\">\n"
+"        <a t-att-href=\"object.recipient_url\" style=\"background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block\">\n"
+"            Open the card</a>\n"
+"    </p>\n"
+"    <p style=\"color:#6b7280;font-size:12px\">Attached, the card to\n"
+"       keep: as a PDF, and as a complete page where animated images still\n"
+"       move. The link will not last forever; those two files\n"
+"       are yours. From the card you can thank those\n"
+"       who signed: that link is yours, do not forward it.</p>\n"
+"</div>"
+msgstr ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Bonjour <t t-out=\"object.recipient_name or ''\"/>,</p>\n"
+"    <p>Vos collègues vous ont écrit.\n"
+"       <strong t-out=\"object.published_post_count\"/> message(s) vous\n"
+"       attendent sur une page qui restera à vous.</p>\n"
+"    <p style=\"margin:24px 0\">\n"
+"        <a t-att-href=\"object.recipient_url\" style=\"background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block\">\n"
+"            Ouvrir la carte</a>\n"
+"    </p>\n"
+"    <p style=\"color:#6b7280;font-size:12px\">Le lien reste valide : revenez-y\n"
+"       quand vous voulez.</p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_celebrations
+#: model:mail.template,body_html:bf_celebrations.mail_template_merci
+msgid ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Hello,</p>\n"
+"    <p><strong t-out=\"object.recipient_name or ''\"/> has received their card,\n"
+"       <t t-out=\"object.name or ''\"/>, and has written a message for those\n"
+"       who signed it:</p>\n"
+"    <blockquote style=\"margin:16px 0;padding:12px 16px;border-left:4px solid #177AA3;background:#F4F6F8\" t-out=\"object.thanks_html\" data-o-mail-quote-node=\"1\" data-o-mail-quote=\"1\"/>\n"
+"    <p style=\"margin:24px 0\">\n"
+"        <a t-att-href=\"object.board_url\" style=\"background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block\">\n"
+"            See the card again</a>\n"
+"    </p>\n"
+"</div>"
+msgstr ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Bonjour,</p>\n"
+"    <p><strong t-out=\"object.recipient_name or ''\"/> a reçu sa carte,\n"
+"       <t t-out=\"object.name or ''\"/>, et a écrit un mot pour celles et ceux\n"
+"       qui l'ont signée :</p>\n"
+"    <blockquote style=\"margin:16px 0;padding:12px 16px;border-left:4px solid #177AA3;background:#F4F6F8\" t-out=\"object.thanks_html\" data-o-mail-quote-node=\"1\" data-o-mail-quote=\"1\"/>\n"
+"    <p style=\"margin:24px 0\">\n"
+"        <a t-att-href=\"object.board_url\" style=\"background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block\">\n"
+"            Revoir la carte</a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_celebrations
+#: model:mail.template,body_html:bf_celebrations.mail_template_tableau_mince
+msgid ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Hello,</p>\n"
+"    <p><strong t-out=\"object.recipient_name or ''\"/>'s card goes out soon\n"
+"       and it carries\n"
+"       <strong t-out=\"object.published_post_count\"/> message(s).</p>\n"
+"    <p>The link to share again:</p>\n"
+"    <p><a t-att-href=\"object.contribution_url\" t-out=\"object.contribution_url\"/></p>\n"
+"    <p style=\"color:#6b7280;font-size:12px\">An empty card is not delivered:\n"
+"       it is held and you are told.</p>\n"
+"</div>"
+msgstr ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Bonjour,</p>\n"
+"    <p>La carte de <strong t-out=\"object.recipient_name or ''\"/> part bientôt\n"
+"       et elle porte\n"
+"       <strong t-out=\"object.published_post_count\"/> message(s).</p>\n"
+"    <p>Le lien à repartager :</p>\n"
+"    <p><a t-att-href=\"object.contribution_url\" t-out=\"object.contribution_url\"/></p>\n"
+"    <p style=\"color:#6b7280;font-size:12px\">Une carte vide n'est pas livrée :\n"
+"       elle est retenue et vous êtes prévenu.</p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_celebrations
+#: model:mail.template,body_html:bf_celebrations.mail_template_rappel_organisateur
+msgid ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Hello,</p>\n"
+"    <p><t t-out=\"object.name or ''\"/>, le\n"
+"       <strong t-out=\"object.date and object.date.strftime('%d/%m/%Y') or ''\"/>.</p>\n"
+"    <p>Nothing is open yet. A wishes board is created in one click, and the\n"
+"       link is then shared however you like: email, a team channel,\n"
+"       or a printed QR code.</p>\n"
+"    <p style=\"margin:24px 0\">\n"
+"        <a t-att-href=\"'%s/odoo/bf.celebration.occasion/%s' % (object.env['ir.config_parameter'].sudo().get_param('web.base.url') or '', object.id)\" style=\"background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block\">\n"
+"            Open the card</a>\n"
+"    </p>\n"
+"    <p style=\"color:#6b7280;font-size:12px\">This person has agreed to have\n"
+"       their celebration marked. They will see nothing before delivery.</p>\n"
+"</div>"
+msgstr ""
+"<div style=\"font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6\">\n"
+"    <p>Bonjour,</p>\n"
+"    <p><t t-out=\"object.name or ''\"/>, le\n"
+"       <strong t-out=\"object.date and object.date.strftime('%d/%m/%Y') or ''\"/>.</p>\n"
+"    <p>Rien n'est encore ouvert. Un tableau de vœux se crée en un clic, et le\n"
+"       lien se partage ensuite comme vous voulez : courriel, canal d'équipe,\n"
+"       ou un code QR imprimé.</p>\n"
+"    <p style=\"margin:24px 0\">\n"
+"        <a t-att-href=\"'%s/odoo/bf.celebration.occasion/%s' % (object.env['ir.config_parameter'].sudo().get_param('web.base.url') or '', object.id)\" style=\"background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block\">\n"
+"            Ouvrir la carte</a>\n"
+"    </p>\n"
+"    <p style=\"color:#6b7280;font-size:12px\">Cette personne a accepté qu'on\n"
+"       souligne sa fête. Elle ne verra rien avant la livraison.</p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_kanban
+msgid ""
+"<i class=\"fa fa-clock-o me-1\" title=\"Delivery planned\" role=\"img\" "
+"aria-label=\"Delivery planned\"/>"
+msgstr ""
+"<i class=\"fa fa-clock-o me-1\" title=\"Livraison prévue\" role=\"img\" "
+"aria-label=\"Livraison prévue\"/>"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_kanban
+msgid ""
+"<i class=\"fa fa-pencil me-1\" title=\"Signatures\" role=\"img\" aria-"
+"label=\"Signatures\"/>"
+msgstr ""
+"<i class=\"fa fa-pencil me-1\" title=\"Signatures\" role=\"img\" aria-"
+"label=\"Signatures\"/>"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "<span class=\"cel-enveloppe-pour\">For</span>"
+msgstr "<span class=\"cel-enveloppe-pour\">Pour</span>"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid ""
+"<strong>Thank-you from the person celebrated</strong>,\n"
+"                           received on"
+msgstr ""
+"<strong>Merci de la personne fêtée</strong>,\n"
+"                           reçu le"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "<strong>The card delivered:</strong>"
+msgstr "<strong>La carte livrée :</strong>"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "<strong>The link to share</strong>"
+msgstr "<strong>Le lien à partager</strong>"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_res_config_settings__celebration_thin_threshold
+msgid "A board is thin below (messages)"
+msgstr "Un tableau est mince en deçà de (messages)"
+
+#. module: bf_celebrations
+#: model_terms:ir.actions.act_window,help:bf_celebrations.action_celebration_board
+msgid ""
+"A card opens from an occasion in the calendar, or here\n"
+"               for an event that has no date on file."
+msgstr ""
+"Une carte s'ouvre depuis une occasion du calendrier, ou ici\n"
+"               pour un événement qui n'a pas de date au dossier."
+
+#. module: bf_celebrations
+#: model:mail.template,subject:bf_celebrations.mail_template_invitation_signataire
+msgid "A card to sign for {{ object.recipient_name }}"
+msgstr "Une carte à signer pour {{ object.recipient_name }}"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid "A group card is open for %(nom)s."
+msgstr "Une carte collective est ouverte pour %(nom)s."
+
+#. module: bf_celebrations
+#: model_terms:ir.actions.act_window,help:bf_celebrations.action_celebration_signer_group
+msgid ""
+"A group gathers people, departments or contacts\n"
+"               the link of a card is sent to, once each.\n"
+"               It is reused from one card to the next."
+msgstr ""
+"Un groupe rassemble des personnes, des services ou des contacts\n"
+"               à qui l'on envoie le lien d'une carte, une seule fois chacun.\n"
+"               Il se réutilise d'une carte à l'autre."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "A link asleep in an email collects no signatures."
+msgstr "Un lien qui dort dans un courriel ne récolte pas de signatures."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/controllers/main.py:0
+msgid ""
+"A lot of messages have gone out from here in a short time. Try again in a "
+"few minutes."
+msgstr ""
+"Beaucoup de messages sont partis d'ici en peu de temps. Réessayez dans "
+"quelques minutes."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid ""
+"A message for those who signed. It will appear\n"
+"                           here, and it will be sent to them once."
+msgstr ""
+"Un mot pour celles et ceux qui ont signé. Il paraîtra\n"
+"                           ici, et il leur sera envoyé une fois."
+
+#. module: bf_celebrations
+#: model:ir.model.constraint,message:bf_celebrations.constraint_bf_celebration_profile_employee_uniq
+msgid "A person has one celebration profile only."
+msgstr "Une personne n'a qu'un seul profil de célébration."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__moderation
+msgid ""
+"A public link stays a public link. Ticked, every message waits for your go-"
+"ahead before appearing."
+msgstr ""
+"Un lien public reste un lien public. Coché, chaque message attend votre feu "
+"vert avant de paraître."
+
+#. module: bf_celebrations
+#: model:ir.model.constraint,message:bf_celebrations.constraint_bf_celebration_signer_group_name_company_uniq
+msgid "A signatory group already has that name."
+msgstr "Un groupe de signataires porte déjà ce nom."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__allow_images
+msgid "Accept images"
+msgstr "Accepter les images"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__recipient_user_id
+msgid "Account of the person celebrated"
+msgstr "Compte de la personne fêtée"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_needaction
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_needaction
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_needaction
+msgid "Action Needed"
+msgstr "Action Needed"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__active
+msgid "Active"
+msgstr "Active"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__activity_ids
+msgid "Activities"
+msgstr "Activities"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Activity Exception Decoration"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__activity_state
+msgid "Activity State"
+msgstr "Activity State"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Activity Type Icon"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Add a message. No account is needed, and"
+msgstr "Ajoutez un mot. Aucun compte n'est demandé, et"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Add to the card"
+msgstr "Ajouter à la carte"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__member_count
+msgid "Addresses"
+msgstr "Adresses"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__invited_keys
+msgid "Addresses already invited"
+msgstr "Adresses déjà invitées"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Already on the card"
+msgstr "Déjà sur la carte"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid ""
+"An empty card is never delivered: it is held and whoever organises is told."
+msgstr ""
+"Une carte vide n'est jamais livrée : elle est retenue et la personne qui "
+"organise est prévenue."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_post.py:0
+msgid ""
+"An empty message signs nothing: write something, draw something or add an "
+"image."
+msgstr ""
+"Un message vide ne signe rien : écrivez un mot, tracez quelque chose ou "
+"ajoutez une image."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "An image or a GIF, if you feel like it"
+msgstr "Une image ou un GIF, si le cœur vous en dit"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_form
+msgid "An occasion with no date does not close on its own."
+msgstr "Une occasion sans date ne se ferme pas toute seule."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__consent_date
+msgid "Answered on"
+msgstr "Répondu le"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__moderation
+msgid "Approve the messages"
+msgstr "Approuver les messages"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__4
+msgid "April"
+msgstr "Avril"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_signer_group_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Area to write by hand"
+msgstr "Zone pour écrire à la main"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__consent
+msgid ""
+"As long as the answer is \"pending\", nothing is shown and nobody is asked. "
+"\"No thanks\" takes the person out of everything and ends the invitations."
+msgstr ""
+"Tant que la réponse est « en attente », rien n'est affiché et personne n'est"
+" sollicité. « Non merci » retire la personne de tout et met fin aux "
+"invitations."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_attachment_count
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_attachment_count
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_attachment_count
+msgid "Attachment Count"
+msgstr "Attachment Count"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__8
+msgid "August"
+msgstr "Août"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__consent__pending
+msgid "Awaiting an answer"
+msgstr "En attente de réponse"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_post__state__pending
+msgid "Awaiting approval"
+msgstr "En attente d'approbation"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__background_image
+msgid "Background image"
+msgstr "Image de fond"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__occasion_type__birthday
+msgid "Birthday"
+msgstr "Anniversaire"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__board_id
+msgid "Board"
+msgstr "Tableau"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__board_count
+msgid "Board Count"
+msgstr "Board Count"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__allow_board
+msgid "Board allowed"
+msgstr "Tableau permis"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__board_url
+msgid "Board link"
+msgstr "Lien du tableau"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "By hand"
+msgstr "À la main"
+
+#. module: bf_celebrations
+#: model:ir.ui.menu,name:bf_celebrations.menu_celebrations_calendrier
+msgid "Calendar"
+msgstr "Calendrier"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_res_config_settings__celebration_calendar_mirror
+msgid ""
+"Calendar entries sync to phones and to CalDAV. Only the people who accepted "
+"a board appear there, never those who asked for discretion."
+msgstr ""
+"Les entrées d'agenda se synchronisent vers les téléphones et le CalDAV. "
+"Seules les personnes qui ont accepté un tableau y paraissent, jamais celles "
+"qui ont demandé la discrétion."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__calendar_event_id
+msgid "Calendar entry"
+msgstr "Entrée d'agenda"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "Calendar horizon"
+msgstr "Horizon du calendrier"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_res_config_settings__celebration_horizon_days
+msgid "Calendar horizon (days)"
+msgstr "Horizon du calendrier (jours)"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_board__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_souvenir
+msgid "Card kept since"
+msgstr "Carte gardée depuis"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_list
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_form
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_list
+msgid "Cards"
+msgstr "Cartes"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_res_config_settings__celebration_invite_cap
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "Ceiling of invitations per send"
+msgstr "Plafond d'invitations par envoi"
+
+#. module: bf_celebrations
+#: model:ir.model,name:bf_celebrations.model_bf_celebration_profile
+#: model:ir.model.fields,field_description:bf_celebrations.field_hr_employee__celebration_profile_id
+msgid "Celebration profile"
+msgstr "Profil de célébration"
+
+#. module: bf_celebrations
+#: model:ir.actions.act_window,name:bf_celebrations.action_celebration_profile_admin
+msgid "Celebration profiles"
+msgstr "Profils de célébration"
+
+#. module: bf_celebrations
+#: model:ir.module.category,name:bf_celebrations.module_category_celebrations
+#: model:ir.ui.menu,name:bf_celebrations.menu_celebrations_root
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_list
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_search
+msgid "Celebrations"
+msgstr "Célébrations"
+
+#. module: bf_celebrations
+#: model:ir.actions.act_window,name:bf_celebrations.action_celebration_occasion
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_calendar
+msgid "Celebrations calendar"
+msgstr "Calendrier des célébrations"
+
+#. module: bf_celebrations
+#: model:mail.template,name:bf_celebrations.mail_template_livraison
+msgid "Celebrations: board delivery"
+msgstr "Célébrations : livraison du tableau"
+
+#. module: bf_celebrations
+#: model:ir.actions.server,name:bf_celebrations.cron_relancer_minces_ir_actions_server
+msgid "Celebrations: chase up the thin boards"
+msgstr "Célébrations : relancer les tableaux minces"
+
+#. module: bf_celebrations
+#: model:ir.actions.server,name:bf_celebrations.cron_livrer_ir_actions_server
+msgid "Celebrations: deliver the boards that are due"
+msgstr "Célébrations : livrer les tableaux dus"
+
+#. module: bf_celebrations
+#: model:ir.actions.server,name:bf_celebrations.cron_purger_ir_actions_server
+msgid "Celebrations: erase delivered cards past retention"
+msgstr "Célébrations : effacer les cartes livrées échues"
+
+#. module: bf_celebrations
+#: model:mail.template,name:bf_celebrations.mail_template_invitation
+msgid "Celebrations: invitation to answer"
+msgstr "Célébrations : invitation à répondre"
+
+#. module: bf_celebrations
+#: model:mail.template,name:bf_celebrations.mail_template_invitation_signataire
+msgid "Celebrations: invitation to sign"
+msgstr "Célébrations : invitation à signer"
+
+#. module: bf_celebrations
+#: model:ir.actions.server,name:bf_celebrations.cron_inviter_ir_actions_server
+msgid "Celebrations: invite people to answer"
+msgstr "Célébrations : inviter à répondre"
+
+#. module: bf_celebrations
+#: model:ir.actions.server,name:bf_celebrations.cron_generer_ir_actions_server
+msgid "Celebrations: lay down the upcoming occasions"
+msgstr "Célébrations : poser les occasions à venir"
+
+#. module: bf_celebrations
+#: model:mail.template,name:bf_celebrations.mail_template_rappel_organisateur
+msgid "Celebrations: reminder to whoever is organising"
+msgstr "Célébrations : rappel à qui organise"
+
+#. module: bf_celebrations
+#: model:ir.actions.server,name:bf_celebrations.cron_rappeler_ir_actions_server
+msgid "Celebrations: tell whoever is organising"
+msgstr "Célébrations : prévenir qui organise"
+
+#. module: bf_celebrations
+#: model:mail.template,name:bf_celebrations.mail_template_tableau_mince
+msgid "Celebrations: the board is thin"
+msgstr "Célébrations : le tableau est mince"
+
+#. module: bf_celebrations
+#: model:mail.template,name:bf_celebrations.mail_template_merci
+msgid "Celebrations: the thank-you from the person celebrated"
+msgstr "Célébrations : le merci de la personne fêtée"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_res_config_settings__celebration_discuss_channel_id
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "Channel to announce the cards in"
+msgstr "Canal où annoncer les cartes"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "Chase up a card that is too thin"
+msgstr "Relancer une carte trop mince"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_res_config_settings__celebration_thin_days
+msgid "Chase up a thin board (days before delivery)"
+msgstr "Relancer un tableau mince (jours avant livraison)"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__company_id
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__company_id
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__company_id
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__occasion_type__condolence
+msgid "Condolences"
+msgstr "Condoléances"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_board__theme__confetti
+msgid "Confetti"
+msgstr "Confettis"
+
+#. module: bf_celebrations
+#: model:ir.ui.menu,name:bf_celebrations.menu_celebrations_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_celebrations
+#: model:res.groups,name:bf_celebrations.group_manager
+msgid "Configure the celebrations"
+msgstr "Configurer les célébrations"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__occasion_type__congratulations
+msgid "Congratulations"
+msgstr "Félicitations"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__author_partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__recipient_partner_id
+msgid "Contact celebrated"
+msgstr "Contact fêté"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__partner_id
+msgid "Contact marked"
+msgstr "Contact souligné"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__partner_ids
+msgid "Contacts"
+msgstr "Contacts"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_form
+msgid "Create the card"
+msgstr "Créer la carte"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__create_uid
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__create_uid
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__create_uid
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__create_uid
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__create_date
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__create_date
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__create_date
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__create_date
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: bf_celebrations
+#: model:res.groups,comment:bf_celebrations.group_organizer
+msgid ""
+"Creates the wishes boards, shares the links\n"
+"                and moderates the messages. Gives NO access to colleagues'\n"
+"                consent answers."
+msgstr ""
+"Crée les tableaux de vœux, partage les liens\n"
+"                et modère les messages. Ne donne AUCUN accès aux réponses de\n"
+"                consentement des collègues."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Cut the link"
+msgstr "Couper le lien"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__celebration_day
+msgid "Day"
+msgstr "Jour"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_profile_self_form
+msgid "Day and month"
+msgstr "Jour et mois"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__12
+msgid "December"
+msgstr "Décembre"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_res_config_settings__celebration_default_organizer_id
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "Default organiser"
+msgstr "Personne qui organise par défaut"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Deliver now"
+msgstr "Livrer maintenant"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_board__state__delivered
+msgid "Delivered"
+msgstr "Livré"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__delivered_date
+msgid "Delivered on"
+msgstr "Livré le"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__recipient_email
+msgid "Delivery email"
+msgstr "Courriel de livraison"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__delivery_date
+msgid "Delivery planned"
+msgstr "Livraison prévue"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__department_ids
+msgid "Departments"
+msgstr "Services"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__display_name
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__display_name
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__display_name
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__display_name
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__recipient_name
+msgid "Displayed name"
+msgstr "Nom affiché"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Download as PDF"
+msgstr "Télécharger en PDF"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Download the page"
+msgstr "Télécharger la page"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_board__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Draw your message or your signature"
+msgstr "Tracez votre mot ou votre signature"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Drawing"
+msgstr "Tracé"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_post.py:0
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__has_ink
+msgid "Drawn by hand"
+msgstr "Tracé à la main"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid "Empty board, delivery held"
+msgstr "Tableau vide, livraison retenue"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_res_config_settings__celebration_retention_months
+msgid "Erase delivered cards after (months)"
+msgstr "Effacer les cartes livrées après (mois)"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Erase everything"
+msgstr "Tout effacer"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "Erase the delivered cards"
+msgstr "Effacer les cartes livrées"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_signer_group__department_ids
+msgid "Every active member of the department, read at the moment of sending."
+msgstr "Tous les membres actifs du service, lus au moment de l'envoi."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__failed_message_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__failed_message_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__failed_message_ids
+msgid "Failed Messages"
+msgstr "Failed Messages"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__allow_board
+msgid "False when the person said \"yes, but no board\"."
+msgstr "Faux quand la personne a dit « oui, mais sans tableau »."
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__2
+msgid "February"
+msgstr "Février"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_post__author_user_id
+msgid "Filled in only when the person was signed in."
+msgstr "Rempli seulement quand la personne était connectée."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_follower_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_follower_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_follower_ids
+msgid "Followers"
+msgstr "Followers"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_partner_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_partner_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Followers (Partners)"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome icon e.g. fa-tasks"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__years
+msgid ""
+"For seniority only. Age is never computed nor shown anywhere in this module."
+msgstr ""
+"Pour l'ancienneté seulement. L'âge n'est jamais calculé ni affiché nulle "
+"part dans ce module."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "For whom"
+msgstr "Pour qui"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_board__theme__foret
+msgid "Forest"
+msgstr "Forêt"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Group card"
+msgstr "Carte collective"
+
+#. module: bf_celebrations
+#: model:ir.actions.act_window,name:bf_celebrations.action_celebration_board
+#: model:ir.ui.menu,name:bf_celebrations.menu_celebrations_cartes
+msgid "Group cards"
+msgstr "Cartes collectives"
+
+#. module: bf_celebrations
+#: model:ir.module.category,description:bf_celebrations.module_category_celebrations
+msgid "Group cards and occasions calendar"
+msgstr "Cartes collectives et calendrier des occasions"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_post__style__hand
+msgid "Handwritten"
+msgstr "Manuscrit"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Happy celebration!"
+msgstr "Bonne fête !"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__has_message
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__has_message
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__has_message
+msgid "Has Message"
+msgstr "Has Message"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__empty_notified
+msgid "Hold reported"
+msgstr "Retenue signalée"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "How far ahead occasions are laid down."
+msgstr "Jusqu'où les occasions sont posées à l'avance."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "How to write"
+msgstr "Comment écrire"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "How you sign"
+msgstr "Comment vous signez"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__id
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__id
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__id
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__id
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__activity_exception_icon
+msgid "Icon"
+msgstr "Icon"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icon to indicate an exception activity."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__message_needaction
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__message_needaction
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "If checked, new messages require your attention."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__message_has_error
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__message_has_sms_error
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__message_has_error
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__message_has_sms_error
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__message_has_error
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "If checked, some messages have a delivery error."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__image
+msgid "Image"
+msgstr "Image"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_diaporama
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_souvenir
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Image from #{mot.author_name}"
+msgstr "Image de #{mot.author_name}"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__ink_strokes
+msgid "Ink"
+msgstr "Encre"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__invitation_date
+msgid "Invitation sent on"
+msgstr "Invitation envoyée le"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Invite the signatories"
+msgstr "Inviter les signataires"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_is_follower
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_is_follower
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_is_follower
+msgid "Is Follower"
+msgstr "Is Follower"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__1
+msgid "January"
+msgstr "Janvier"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__7
+msgid "July"
+msgstr "Juillet"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__6
+msgid "June"
+msgstr "Juin"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_profile_self_form
+msgid "Keep my cards"
+msgstr "Garder mes cartes"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Keep this card"
+msgstr "Garder cette carte"
+
+#. module: bf_celebrations
+#: model:ir.actions.report,name:bf_celebrations.action_report_board
+msgid "Keepsake card"
+msgstr "Carte souvenir"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_post__create_ip
+msgid "Kept to trace abuse on a public link. Erased with the board."
+msgstr ""
+"Conservée pour retracer un abus sur un lien public. Effacée avec le tableau."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__name
+msgid "Label"
+msgstr "Intitulé"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_occasion.py:0
+msgid ""
+"Laid down by the Celebrations module. Removed on its own if the person "
+"changes their mind."
+msgstr ""
+"Posé par le module Célébrations. Retiré tout seul si la personne change "
+"d'avis."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__write_uid
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__write_uid
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__write_uid
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__write_uid
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__write_date
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__write_date
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__write_date
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__write_date
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_res_config_settings__celebration_calendar_mirror
+msgid "Lay the celebrations down in the Odoo calendar"
+msgstr "Poser les célébrations dans l'agenda Odoo"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "Lay the celebrations down in the calendar"
+msgstr "Poser les célébrations dans l'agenda"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__occasion_type__farewell
+msgid "Leaving"
+msgstr "Départ"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__recipient_url
+msgid "Link for the person celebrated"
+msgstr "Lien de la personne fêtée"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid "Link sent to %(nb)s person(s) to sign."
+msgstr "Lien envoyé à %(nb)s personne(s) pour signer."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid "Link sent to %(nb)s person(s)."
+msgstr "Lien envoyé à %(nb)s personne(s)."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__contribution_url
+msgid "Link to share"
+msgstr "Lien à partager"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__3
+msgid "March"
+msgstr "Mars"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_form
+msgid "Mark as past"
+msgstr "Marquer passée"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__share_work_anniversary
+msgid "Mark my work anniversary too"
+msgstr "Souligner aussi mon anniversaire d'embauche"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__5
+msgid "May"
+msgstr "Mai"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__body
+msgid "Message"
+msgstr "Message"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_content
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_content
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_content
+msgid "Message Content"
+msgstr "Message Content"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_has_error
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_has_error
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_has_error
+msgid "Message Delivery error"
+msgstr "Message Delivery error"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_search
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_search
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_search
+msgid "Message Search"
+msgstr "Message Search"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__message_content
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__message_content
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Message content, to be used only in searches"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__post_count
+msgid "Message count"
+msgstr "Mots"
+
+#. module: bf_celebrations
+#: model:ir.model,name:bf_celebrations.model_bf_celebration_post
+msgid "Message on a wishes board"
+msgstr "Message sur un tableau de vœux"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__message_search
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__message_search
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Message search, to be used only in searches"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__post_ids
+msgid "Messages on the card"
+msgstr "Mots sur la carte"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__published_post_count
+msgid "Messages visible"
+msgstr "Mots visibles"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__celebration_month
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_search
+msgid "Month"
+msgstr "Mois"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_signer_group_form
+msgid "Montréal team"
+msgstr "Équipe de Montréal"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "My Activity Deadline"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_profile.py:0
+#: model:ir.actions.server,name:bf_celebrations.action_mon_profil
+#: model:ir.ui.menu,name:bf_celebrations.menu_celebrations_moi
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_profile_self_form
+msgid "My celebrations"
+msgstr "Mes célébrations"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__person_name
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Next Activity Calendar Event"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Next Activity Deadline"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__activity_summary
+msgid "Next Activity Summary"
+msgstr "Next Activity Summary"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__activity_type_id
+msgid "Next Activity Type"
+msgstr "Next Activity Type"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_board__theme__nuit
+msgid "Night"
+msgstr "Nuit"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid ""
+"No account is needed. The QR code leads to\n"
+"                                    the same page: print it, stick it in the\n"
+"                                    kitchen."
+msgstr ""
+"Aucun compte n'est demandé. Le code QR mène à\n"
+"                                    la même page : imprimez-le, collez-le dans la\n"
+"                                    cuisine."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid ""
+"No account is needed. The person celebrated sees nothing before delivery."
+msgstr ""
+"Aucun compte n'est demandé. La personne fêtée ne voit rien avant la "
+"livraison."
+
+#. module: bf_celebrations
+#: model_terms:ir.actions.act_window,help:bf_celebrations.action_celebration_board
+msgid "No card yet"
+msgstr "Aucune carte pour l'instant"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_search
+msgid "No date"
+msgstr "Sans date"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_form
+msgid ""
+"No date: the occasion stays \"upcoming\" until\n"
+"                                its card is delivered or somebody marks it\n"
+"                                past. No reminder and no calendar, for want of a day."
+msgstr ""
+"Sans date : l'occasion reste « à venir » jusqu'à\n"
+"                                ce que sa carte soit livrée ou qu'on la marque\n"
+"                                passée. Ni rappel ni agenda, faute de jour."
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__state__skipped
+msgid "No follow-up"
+msgstr "Sans suite"
+
+#. module: bf_celebrations
+#: model_terms:ir.actions.act_window,help:bf_celebrations.action_celebration_signer_group
+msgid "No group yet"
+msgstr "Aucun groupe pour l'instant"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_occasion.py:0
+msgid "No name"
+msgstr "Sans nom"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__consent__none
+msgid "No thanks"
+msgstr "Non merci"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.report_board
+msgid "Nobody has signed this card yet."
+msgstr "Personne n'a encore signé cette carte."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid ""
+"Nobody has signed yet. You can be the\n"
+"                            first one."
+msgstr ""
+"Personne n'a encore signé. Vous pouvez être la\n"
+"                            première personne."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid "Nobody new to invite: everybody has already received the link."
+msgstr "Personne de nouveau à inviter : tout le monde a déjà reçu le lien."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid ""
+"Nobody signed %(nom)s's card. It was not sent. Share the link, then deliver "
+"it by hand."
+msgstr ""
+"Personne n'a signé la carte de %(nom)s. Elle n'a pas été envoyée. Partagez "
+"le lien, puis livrez à la main."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_celebrations
+#: model_terms:ir.actions.act_window,help:bf_celebrations.action_celebration_occasion
+msgid "Nothing in the calendar yet"
+msgstr "Rien au calendrier pour l'instant"
+
+#. module: bf_celebrations
+#: model_terms:ir.actions.act_window,help:bf_celebrations.action_celebration_profile_admin
+msgid "Nothing to see here, and that is deliberate"
+msgstr "Rien à voir ici, et c'est voulu"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_diaporama
+msgid "Nothing to show yet."
+msgstr "Rien à montrer pour l'instant."
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__11
+msgid "November"
+msgstr "Novembre"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Number of Actions"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_has_error_counter
+msgid "Number of errors"
+msgstr "Number of errors"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__message_needaction_counter
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__message_needaction_counter
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Number of messages requiring action"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__message_has_error_counter
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__message_has_error_counter
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Number of messages with delivery error"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__years
+msgid "Number of years"
+msgstr "Nombre d'années"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__occasion_id
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_form
+msgid "Occasion"
+msgstr "Occasion"
+
+#. module: bf_celebrations
+#: model:ir.model,name:bf_celebrations.model_bf_celebration_occasion
+msgid "Occasion to mark"
+msgstr "Occasion à souligner"
+
+#. module: bf_celebrations
+#: model_terms:ir.actions.act_window,help:bf_celebrations.action_celebration_occasion
+msgid ""
+"Occasions come from the answers people give\n"
+"               themselves in \"My celebrations\". No date is taken\n"
+"               from the HR record. A promotion, a recovery, a\n"
+"               departure are created here, with or without a date."
+msgstr ""
+"Les occasions naissent des réponses que les gens donnent\n"
+"               eux-mêmes dans « Mes célébrations ». Aucune date n'est prise\n"
+"               dans le dossier RH. Une promotion, un rétablissement, un\n"
+"               départ se créent ici, avec ou sans date."
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__10
+msgid "October"
+msgstr "Octobre"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid ""
+"Off by default: a calendar entry goes out to phones and to CalDAV, beyond "
+"the reach of a removal made later. Only the people who accepted a card "
+"appear there."
+msgstr ""
+"Éteint par défaut : une entrée d'agenda part vers les téléphones et le "
+"CalDAV, hors de portée d'un retrait fait plus tard. Seules les personnes qui"
+" ont accepté une carte y paraissent."
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_board__state__open
+msgid "Open for signatures"
+msgstr "Ouvert aux signatures"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Open for signatures now"
+msgstr "Ouvrir aux signatures"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Open the card"
+msgstr "Ouvrir la carte"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid "Open the card for signatures first."
+msgstr "Ouvrez d'abord la carte aux signatures."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__intro_html
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Opening message"
+msgstr "Mot d'introduction"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_profile_self_form
+msgid ""
+"Optional. A card delivered in the system disappears\n"
+"                            with your account, then with the purge set by the\n"
+"                            retention policy. The same delivery arrives at this\n"
+"                            address, as a PDF and as a page to keep. Nobody\n"
+"                            else sees this address."
+msgstr ""
+"Facultatif. Une carte livrée dans le système disparaît\n"
+"                            avec votre compte, puis avec la purge prévue par la\n"
+"                            politique de conservation. À cette adresse arrive la\n"
+"                            même livraison, en PDF et en page à garder. Personne\n"
+"                            d'autre ne voit cette adresse."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__keepsake_email
+msgid ""
+"Optional. Delivered cards are also sent there, as a PDF and as a page to "
+"keep, so they stay with you after you leave or after the purge set by the "
+"retention policy. Nobody else sees this address."
+msgstr ""
+"Facultative. Les cartes livrées y sont aussi envoyées, en PDF et en page à "
+"conserver, pour qu'elles vous restent après votre départ ou après la purge "
+"prévue par la politique de conservation. Personne d'autre ne voit cette "
+"adresse."
+
+#. module: bf_celebrations
+#: model:res.groups,name:bf_celebrations.group_organizer
+msgid "Organise cards"
+msgstr "Organiser des cartes"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__organizer_id
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__organizer_id
+msgid "Organiser"
+msgstr "Personne qui organise"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__create_ip
+msgid "Originating address"
+msgstr "Adresse d'origine"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__occasion_type__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__signer_partner_ids
+msgid "Other signatories"
+msgstr "Autres signataires"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__state__done
+msgid "Past"
+msgstr "Passée"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_res_config_settings__celebration_invite_cap
+msgid ""
+"Past that, sending is refused rather than flooding the email queue. Split "
+"the group."
+msgstr ""
+"Au-delà, l'envoi est refusé plutôt que de saturer la file de courriels. "
+"Découpez le groupe."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid ""
+"Past that, sending to the signatories is refused rather than flooding the "
+"email queue."
+msgstr ""
+"Au-delà, l'envoi aux signataires est refusé plutôt que de saturer la file de"
+" courriels."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_signer_group__employee_ids
+msgid "People"
+msgstr "Personnes"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__signer_partner_ids
+msgid "People added for this card only."
+msgstr "Des gens ajoutés pour cette carte seulement."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__invited_count
+msgid "People invited"
+msgstr "Personnes invitées"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_signer_group__partner_ids
+msgid "People outside the company: a client, a partner."
+msgstr "Des gens hors de l'entreprise : un client, un partenaire."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__employee_id
+msgid "Person"
+msgstr "Personne"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__recipient_employee_id
+msgid "Person celebrated"
+msgstr "Personne fêtée"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__employee_id
+msgid "Person marked"
+msgstr "Personne soulignée"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__keepsake_email
+msgid "Personal address to keep my cards at"
+msgstr "Adresse personnelle où garder mes cartes"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_board__theme__sobre
+msgid "Plain"
+msgstr "Sobre"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_profile_list
+msgid "Profiles"
+msgstr "Profils"
+
+#. module: bf_celebrations
+#: model:ir.ui.menu,name:bf_celebrations.menu_celebrations_profils
+msgid "Profiles (troubleshooting)"
+msgstr "Profils (dépannage)"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Publish"
+msgstr "Publier"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__qr_image
+msgid "QR code"
+msgstr "Code QR"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__rating_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__rating_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__rating_ids
+msgid "Ratings"
+msgstr "Ratings"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__occasion_type__recovery
+msgid "Recovery"
+msgstr "Rétablissement"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__reminder_sent
+msgid "Reminder sent"
+msgstr "Rappel envoyé"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Remove"
+msgstr "Retirer"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_post__state__rejected
+msgid "Removed"
+msgstr "Retiré"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Replay the opening"
+msgstr "Rejouer l'ouverture"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__signer_group_ids
+msgid ""
+"Resolved at the moment of sending. The person celebrated is always taken "
+"out, even if they belong to the department."
+msgstr ""
+"Résolus au moment de l'envoi. La personne fêtée en est toujours retirée, "
+"même si elle fait partie du service."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__activity_user_id
+msgid "Responsible User"
+msgstr "Responsible User"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "Retention"
+msgstr "Conservation"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__occasion_type__retirement
+msgid "Retirement"
+msgstr "Retraite"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS Delivery error"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Say thank you"
+msgstr "Dire merci"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Send the thank-you"
+msgstr "Envoyer le merci"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid ""
+"Sends the link to the groups and the other signatories who have not received"
+" it yet. The person celebrated is never written to."
+msgstr ""
+"Envoie le lien aux groupes et aux autres signataires qui ne l'ont pas encore"
+" reçu. La personne fêtée n'est jamais écrite."
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__celebration_month__9
+msgid "September"
+msgstr "Septembre"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__sequence
+msgid "Sequence"
+msgstr "Sequence"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "Sharing"
+msgstr "Diffusion"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Show my message in handwriting"
+msgstr "Afficher mon mot en écriture manuscrite"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid "Sign the card"
+msgstr "Signer la carte"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid ""
+"Sign your message: the card needs to know who\n"
+"                        it comes from."
+msgstr ""
+"Signez votre mot : la carte a besoin de savoir de qui\n"
+"                        il vient."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Signatories"
+msgstr "Signataires"
+
+#. module: bf_celebrations
+#: model:ir.model,name:bf_celebrations.model_bf_celebration_signer_group
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_signer_group_form
+msgid "Signatory group"
+msgstr "Groupe de signataires"
+
+#. module: bf_celebrations
+#: model:ir.actions.act_window,name:bf_celebrations.action_celebration_signer_group
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__signer_group_ids
+#: model:ir.ui.menu,name:bf_celebrations.menu_celebrations_signataires
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_signer_group_list
+msgid "Signatory groups"
+msgstr "Groupes de signataires"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_list
+msgid "Signatures"
+msgstr "Signatures"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__author_name
+msgid "Signed"
+msgstr "Signé"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "Slideshow"
+msgstr "Diaporama"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__invited_keys
+msgid ""
+"So that each person is written to once only when a group is added or a "
+"reminder goes out."
+msgstr ""
+"Pour n'écrire qu'une fois à chacun quand on ajoute un groupe ou qu'on "
+"relance."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_diaporama
+msgid "Space pauses, the arrows move forward and back."
+msgstr "Espace met en pause, les flèches avancent et reculent."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__state
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__state
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_profile.py:0
+msgid "State the day and the month to mark, or choose \"No thanks\"."
+msgstr "Indiquez le jour et le mois à souligner, ou choisissez « Non merci »."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid "State when the delivery happens."
+msgstr "Indiquez le moment de la livraison."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__style
+msgid "Style"
+msgstr "Style"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Tap to open"
+msgstr "Touchez pour ouvrir"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "Tell people in advance"
+msgstr "Prévenir d'avance"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_res_config_settings__celebration_reminder_days
+msgid "Tell the organiser (days before)"
+msgstr "Prévenir la personne qui organise (jours avant)"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Thank you all…"
+msgstr "Merci à vous toutes et tous…"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Thank you, your message is on the card."
+msgstr "Merci, votre mot est sur la carte."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid ""
+"Thank you. Your message is waiting for the go-ahead from whoever\n"
+"                        organises before it appears."
+msgstr ""
+"Merci. Votre mot attend le feu vert de la personne qui\n"
+"                        organise avant de paraître."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid "Thank-you from %(nom)s"
+msgstr "Merci de %(nom)s"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__thanks_html
+msgid "Thank-you from the person celebrated"
+msgstr "Merci de la personne fêtée"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__thanks_token
+msgid "Thank-you key"
+msgstr "Clé du merci"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__thanks_date
+msgid "Thank-you received on"
+msgstr "Merci reçu le"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_search
+msgid "That I organise"
+msgstr "Que j'organise"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__qr_image
+msgid "The QR code of the link to share, to print and stick in the kitchen."
+msgstr "Le code QR du lien à partager, à imprimer et coller dans la cuisine."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__recipient_url
+msgid ""
+"The board's link, with the key that lets them thank. It goes to them alone."
+msgstr ""
+"Le lien du tableau, avec la clé qui lui permet de remercier. Il ne va qu'à "
+"elle."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "The card is empty."
+msgstr "La carte est vide."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/controllers/main.py:0
+msgid "The card is not delivered yet."
+msgstr "La carte n'est pas encore livrée."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_profile_self_form
+msgid "The date to mark"
+msgstr "La date à souligner"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__empty_notified
+msgid ""
+"The delivery job runs every hour; without this witness, an empty board that "
+"was due raised one activity per hour."
+msgstr ""
+"Le cron de livraison passe toutes les heures ; sans ce témoin, un tableau "
+"vide et dû posait une activité par heure."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid ""
+"The drawing was not kept. Try again, with a few\n"
+"                        fewer strokes."
+msgstr ""
+"Le tracé n'a pas été retenu. Réessayez, avec un peu\n"
+"                        moins de traits."
+
+#. module: bf_celebrations
+#: model_terms:ir.actions.act_window,help:bf_celebrations.action_celebration_profile_admin
+msgid ""
+"The global record rule limits reading to one's\n"
+"               own profile. This list only fills up for the\n"
+"               superuser, for troubleshooting."
+msgstr ""
+"La règle d'enregistrement globale limite la lecture à son\n"
+"               propre profil. Cette liste ne se remplit que pour le\n"
+"               superutilisateur, en dépannage."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_post.py:0
+msgid "The message is longer than %(n)s characters."
+msgstr "Le message dépasse %(n)s caractères."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_profile.py:0
+msgid "The month chosen has %(maxi)s days."
+msgstr "Le mois choisi compte %(maxi)s jours."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid ""
+"The number of days before the occasion when whoever organises gets their "
+"reminder."
+msgstr ""
+"Le nombre de jours avant l'occasion où la personne qui organise reçoit son "
+"rappel."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "The old link will stop working for everybody. Carry on?"
+msgstr "L'ancien lien cessera de fonctionner pour tout le monde. Continuer ?"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__delivery_date
+msgid "The person celebrated sees nothing before that moment."
+msgstr "La personne fêtée ne voit rien avant ce moment."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid ""
+"The person celebrated will receive the card right away, with the PDF and the"
+" keepsake page attached. Carry on?"
+msgstr ""
+"La personne fêtée recevra la carte tout de suite, avec le PDF et la page "
+"souvenir en pièces jointes. Continuer ?"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.res_config_settings_view_form
+msgid "The reminder"
+msgstr "Le rappel"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_post.py:0
+msgid "The signature is longer than %(n)s characters."
+msgstr "La signature dépasse %(n)s caractères."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__share_work_anniversary
+msgid "The start date, with no age and no date of birth."
+msgstr "La date d'entrée en poste, sans l'âge ni la date de naissance."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_post__ink_strokes
+msgid ""
+"The strokes drawn by hand on the public page, as coordinates. Redrawn in the"
+" theme's colour."
+msgstr ""
+"Les traits dessinés à la main sur la page publique, en coordonnées. "
+"Redessinés dans la couleur du thème."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__theme
+msgid "Theme"
+msgstr "Thème"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid ""
+"This card is delivered. It can still be read, but\n"
+"                            it can no longer be signed."
+msgstr ""
+"Cette carte est livrée. Elle se lit encore, mais\n"
+"                            elle ne se signe plus."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid ""
+"This image was not kept. Accepted formats:\n"
+"                        PNG, JPEG, GIF, WebP, up to 8 MB."
+msgstr ""
+"Cette image n'a pas été retenue. Formats acceptés :\n"
+"                        PNG, JPEG, GIF, WebP, jusqu'à 8 Mo."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/controllers/main.py:0
+msgid "This link does not allow thanking."
+msgstr "Ce lien ne permet pas de remercier."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/controllers/main.py:0
+msgid "This link is no longer valid."
+msgstr "Ce lien n'est plus valide."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_indisponible
+msgid "This link leads nowhere"
+msgstr "Ce lien ne mène nulle part"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid ""
+"This link will not last forever. Download the card\n"
+"                           to keep it: as a PDF, or as a complete page that\n"
+"                           opens on its own, where animated images still\n"
+"                           move."
+msgstr ""
+"Ce lien ne durera pas toujours. Téléchargez la carte\n"
+"                           pour la garder : en PDF, ou en page complète qui\n"
+"                           s'ouvre sans rien d'autre, où les images animées\n"
+"                           bougent encore."
+
+#. module: bf_celebrations
+#: model:ir.model.constraint,message:bf_celebrations.constraint_bf_celebration_occasion_occurrence_uniq
+msgid "This occasion is already in the calendar for that date."
+msgstr "Cette occasion est déjà au calendrier pour cette date."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid ""
+"This page is private: it is not indexed and\n"
+"                           exists only for whoever has the link."
+msgstr ""
+"Cette page est privée : elle n'est pas indexée et\n"
+"                           n'existe que pour qui a le lien."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_form
+msgid ""
+"This person has asked that the date be marked\n"
+"                            without a group card."
+msgstr ""
+"Cette personne a demandé qu'on souligne la date\n"
+"                            sans monter de carte collective."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_occasion.py:0
+msgid "This person has asked that the date be marked without a board."
+msgstr ""
+"Cette personne a demandé qu'on souligne la date sans monter de tableau."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__name
+msgid "Title"
+msgstr "Titre"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__partner_id
+msgid "To mark a milestone at a client rather than a colleague's."
+msgstr "Pour souligner un jalon chez un client plutôt qu'un collègue."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__access_token
+msgid "Token"
+msgstr "Jeton"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_board.py:0
+msgid ""
+"Too heavy for email, not attached: %(noms)s. The card is still downloadable "
+"from its page."
+msgstr ""
+"Trop lourd pour le courriel, non joint : %(noms)s. La carte reste "
+"téléchargeable depuis sa page."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/controllers/main.py:0
+msgid "Try again in a few minutes."
+msgstr "Réessayez dans quelques minutes."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__occasion_type
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_search
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type of the exception activity on record."
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_post__style__typed
+msgid "Typed"
+msgstr "Tapé"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Undo the last stroke"
+msgstr "Annuler le dernier trait"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__state__upcoming
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_search
+msgid "Upcoming"
+msgstr "À venir"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__recipient_user_id
+msgid ""
+"Used only to hide their own board from them before delivery. See the "
+"module's record rule."
+msgstr ""
+"Sert uniquement à lui cacher son propre tableau avant la livraison. Voir la "
+"règle d'enregistrement du module."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__invitation_date
+msgid ""
+"Used to ask once only. A person who answered \"No thanks\" is never chased "
+"up."
+msgstr ""
+"Sert à ne demander qu'une fois. Une personne qui a répondu « Non merci » "
+"n'est jamais relancée."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_res_config_settings__celebration_default_organizer_id
+msgid "Used when the person celebrated has no manager."
+msgstr "Sert quand la personne fêtée n'a pas de gestionnaire."
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_post__author_user_id
+msgid "User"
+msgstr "Usager"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__user_id
+msgid "User account"
+msgstr "Compte usager"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "View as a slideshow"
+msgstr "Voir en diaporama"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "View the card"
+msgstr "Voir la carte"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "View the page"
+msgstr "Voir la page"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_post__state__published
+msgid "Visible"
+msgstr "Visible"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_board__website_message_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__website_message_ids
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__website_message_ids
+msgid "Website Messages"
+msgstr "Website Messages"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__website_message_ids
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_occasion__website_message_ids
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_profile__website_message_ids
+msgid "Website communication history"
+msgstr "Website communication history"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__occasion_type__welcome
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_profile__consent
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_profile_self_form
+msgid "What I would like"
+msgstr "Ce que je souhaite"
+
+#. module: bf_celebrations
+#: model:ir.model.fields,help:bf_celebrations.field_bf_celebration_board__intro_html
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "What people read when they land on the page."
+msgstr "Ce que les gens lisent en arrivant sur la page."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "What you would have written in the paper card."
+msgstr "Ce que vous auriez écrit dans la carte de papier."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid "When and how"
+msgstr "Quand et comment"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_signer_group_form
+msgid ""
+"Who a card is held out to. The group resolves at the moment\n"
+"                        of sending: somebody who joined the department since\n"
+"                        receives the link, somebody who left does not. It\n"
+"                        never says who signed."
+msgstr ""
+"À qui l'on tend une carte. Le groupe se résout au moment\n"
+"                        de l'envoi : une personne arrivée depuis dans le service\n"
+"                        reçoit le lien, une personne partie ne le reçoit pas. Il\n"
+"                        ne dit jamais qui a signé."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_search
+msgid "Who organises"
+msgstr "Qui organise"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_form
+msgid ""
+"Who the card is held out to. The link goes out once\n"
+"                                per address, when it opens and on each\n"
+"                                \"Invite the signatories\". The person celebrated is\n"
+"                                taken out by all of their addresses, even if they\n"
+"                                belong to the department."
+msgstr ""
+"À qui l'on tend la carte. Le lien part une seule\n"
+"                                fois par adresse, à l'ouverture puis à chaque\n"
+"                                « Inviter les signataires ». La personne fêtée est\n"
+"                                retirée par toutes ses adresses, même si elle\n"
+"                                fait partie du service."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_signer_group_form
+msgid "Why this group, and for whom."
+msgstr "Pourquoi ce groupe, pour qui."
+
+#. module: bf_celebrations
+#: model:ir.model,name:bf_celebrations.model_bf_celebration_board
+msgid "Wishes board"
+msgstr "Tableau de vœux"
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_occasion.py:0
+#: model:ir.model.fields,field_description:bf_celebrations.field_bf_celebration_occasion__board_ids
+msgid "Wishes boards"
+msgstr "Tableaux de vœux"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid ""
+"With a finger, a stylus or a mouse.\n"
+"                                   The stroke takes the card's colour."
+msgstr ""
+"Au doigt, au stylet ou à la souris.\n"
+"                                   Le trait prend la couleur de la carte."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_occasion_search
+msgid "Without a card yet"
+msgstr "Sans carte encore"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_occasion__occasion_type__work_anniversary
+msgid "Work anniversary"
+msgstr "Anniversaire d'embauche"
+
+#. module: bf_celebrations
+#: model:mail.template,subject:bf_celebrations.mail_template_invitation
+msgid "Would you like your celebration marked?"
+msgstr "Souhaitez-vous qu'on souligne votre fête ?"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Write"
+msgstr "Écrire"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Write a message before sending."
+msgstr "Écrivez un mot avant d'envoyer."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Write a message, draw something or add an image."
+msgstr "Écrivez un mot, tracez quelque chose ou ajoutez une image."
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__consent__quiet
+msgid "Yes, but no board"
+msgstr "Oui, mais sans tableau"
+
+#. module: bf_celebrations
+#: model:ir.model.fields.selection,name:bf_celebrations.selection__bf_celebration_profile__consent__full
+msgid "Yes, with a wishes board"
+msgstr "Oui, avec un tableau de vœux"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_profile_self_form
+msgid ""
+"You will appear nowhere, and you will no longer\n"
+"                            receive invitations to answer."
+msgstr ""
+"Vous ne paraîtrez nulle part, et vous ne recevrez\n"
+"                            plus d'invitation à répondre."
+
+#. module: bf_celebrations
+#. odoo-python
+#: code:addons/bf_celebrations/models/celebration_profile.py:0
+msgid ""
+"Your account is not attached to any employee record. Ask human resources "
+"about it."
+msgstr ""
+"Votre compte n'est rattaché à aucune fiche employé. Demandez-le aux "
+"ressources humaines."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_profile_self_form
+msgid ""
+"Your answer is visible to you alone. It does not\n"
+"                        touch your date of birth on the HR record,\n"
+"                        which this module neither reads nor shows.\n"
+"                        You can change your mind at any time, and the\n"
+"                        withdrawal is immediate."
+msgstr ""
+"Votre réponse n'est visible que par vous. Elle ne\n"
+"                        touche pas votre date de naissance au dossier RH,\n"
+"                        qui n'est ni lue ni affichée par ce module.\n"
+"                        Vous pouvez changer d'idée à tout moment, et le\n"
+"                        retrait est immédiat."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Your message"
+msgstr "Votre mot"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid "Your name"
+msgstr "Votre nom"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "Your thank-you has gone to those who signed."
+msgstr "Votre merci est parti à celles et ceux qui ont signé."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.report_board
+msgid "message(s)"
+msgstr "mot(s)"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_souvenir
+msgid "message(s) from your colleagues"
+msgstr "mot(s) de vos collègues"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_tableau
+msgid "message(s) from your colleagues."
+msgstr "mot(s) de vos collègues."
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_board_kanban
+msgid "signature(s)"
+msgstr "signature(s)"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.bloc_merci
+msgid "thanks you"
+msgstr "vous remercie"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.view_celebration_profile_self_form
+msgid "vous@exemple.com"
+msgstr "vous@exemple.com"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.page_signature
+msgid ""
+"will see nothing\n"
+"                            before delivery."
+msgstr ""
+"ne verra rien\n"
+"                            avant la livraison."
+
+#. module: bf_celebrations
+#: model:mail.template,subject:bf_celebrations.mail_template_livraison
+msgid "{{ object.name }}"
+msgstr "{{ object.name }}"
+
+#. module: bf_celebrations
+#: model:mail.template,subject:bf_celebrations.mail_template_rappel_organisateur
+msgid "{{ object.person_name }}: a card to open before {{ object.date }}"
+msgstr ""
+"{{ object.person_name }} : une carte à ouvrir avant le {{ object.date }}"
+
+#. module: bf_celebrations
+#: model:mail.template,subject:bf_celebrations.mail_template_merci
+msgid "{{ object.recipient_name }} thanks you"
+msgstr "{{ object.recipient_name }} vous remercie"
+
+#. module: bf_celebrations
+#: model:mail.template,subject:bf_celebrations.mail_template_tableau_mince
+msgid "{{ object.recipient_name }}'s card is still quite empty"
+msgstr "La carte de {{ object.recipient_name }} est encore bien vide"
+
+#. module: bf_celebrations
+#: model_terms:ir.ui.view,arch_db:bf_celebrations.report_board
+msgid "— delivered on"
+msgstr "— livrée le"

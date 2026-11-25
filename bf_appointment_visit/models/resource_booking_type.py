@@ -13,8 +13,8 @@ class ResourceBookingType(models.Model):
     _inherit = "resource.booking.type"
 
     visit_listing_id = fields.Many2one(
-        "bf.visit.listing", string="Inscription à visiter",
+        "bf.visit.listing", string="Property listing",
         copy=False, ondelete="cascade", index=True,
-        help="Rempli par le module de visites. Un type qui porte une "
-             "inscription produit une visite à chaque réservation.",
+        help="Filled in by the showings module. A type that carries a "
+             "listing produces a showing with every booking.",
     )

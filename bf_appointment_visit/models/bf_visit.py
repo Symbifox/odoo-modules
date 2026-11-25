@@ -25,174 +25,179 @@ import secrets
 from datetime import timedelta
 
 from odoo import _, api, fields, models
+from odoo.tools.misc import get_lang
 from odoo.exceptions import AccessError, UserError
+
+from .langue import langue_de
 
 _logger = logging.getLogger(__name__)
 
 
 class BfVisit(models.Model):
     _name = "bf.visit"
-    _description = "Visite d'une propriété"
+    _description = "Property showing"
     _inherit = ["mail.thread"]
     _order = "start desc, id desc"
 
     name = fields.Char(
-        string="Numéro", required=True, copy=False, default="Nouveau", index=True,
+        string="Number", required=True, copy=False, default="Nouveau", index=True,
     )
     listing_id = fields.Many2one(
-        "bf.visit.listing", string="Inscription", required=True,
+        "bf.visit.listing", string="Listing", required=True,
         ondelete="cascade", index=True, tracking=True,
     )
     booking_id = fields.Many2one(
-        "resource.booking", string="Réservation", ondelete="cascade",
+        "resource.booking", string="Booking", ondelete="cascade",
         index=True, copy=False,
-        help="Vide pour une personne qui s'est présentée sans rendez-vous.",
+        help="Empty for a person who showed up without an appointment.",
     )
     company_id = fields.Many2one(
-        related="listing_id.company_id", store=True, string="Société",
+        related="listing_id.company_id", store=True, string="Company",
     )
     is_walkin = fields.Boolean(
-        string="Sans rendez-vous", readonly=True,
-        help="Inscrite sur place, pendant une visite libre.",
+        string="Walk-in", readonly=True,
+        help="Signed in on site, during an open house.",
     )
-    start = fields.Datetime(string="Début", tracking=True, index=True)
-    duration = fields.Float(string="Durée (heures)")
+    start = fields.Datetime(string="Start", tracking=True, index=True)
+    duration = fields.Float(string="Duration (hours)")
     state = fields.Selection(
         [
-            ("requested", "Demandée"),
-            ("approved", "Confirmée"),
-            ("declined", "Refusée"),
-            ("cancelled", "Annulée"),
-            ("done", "Faite"),
-            ("no_show", "Personne ne s'est présenté"),
+            ("requested", "Requested"),
+            ("approved", "Confirmed"),
+            ("declined", "Refused"),
+            ("cancelled", "Cancelled"),
+            ("done", "Done"),
+            ("no_show", "Nobody showed up"),
         ],
-        default="requested", required=True, string="État", tracking=True,
+        default="requested", required=True, string="Status", tracking=True,
         index=True,
     )
 
     # --- Qui est venu -------------------------------------------------------
-    visitor_partner_id = fields.Many2one("res.partner", string="Visiteur")
-    visitor_name = fields.Char(string="Nom du visiteur", tracking=True)
-    visitor_email = fields.Char(string="Courriel")
-    visitor_phone = fields.Char(string="Téléphone")
+    visitor_partner_id = fields.Many2one("res.partner", string="Visitor")
+    visitor_name = fields.Char(string="Visitor's name", tracking=True)
+    visitor_email = fields.Char(string="Email")
+    visitor_phone = fields.Char(string="Phone")
     visitor_count = fields.Integer(
-        string="Nombre de personnes", default=1,
-        help="Le conjoint, les parents, un inspecteur : ce que le vendeur veut "
-             "savoir avant d'ouvrir sa porte.",
+        string="Number of people", default=1,
+        help="The spouse, the parents, an inspector: what the seller "
+             "wants to know before opening the door.",
     )
 
     # --- La question qui décide de la rémunération --------------------------
     representation = fields.Selection(
         [
-            ("unknown", "Question non posée"),
-            ("none", "Non représenté"),
-            ("broker", "Représenté par un courtier"),
+            ("unknown", "Question not asked"),
+            ("none", "Not represented"),
+            ("broker", "Represented by a broker"),
         ],
-        default="unknown", required=True, string="Représentation", tracking=True,
+        default="unknown", required=True, string="Representation", tracking=True,
     )
     representation_asked_at = fields.Datetime(
-        string="Question posée le", readonly=True, copy=False,
-        help="Horodatage de la réponse. C'est la pièce qui compte si la "
-             "rémunération se discute plus tard.",
+        string="Question asked on", readonly=True, copy=False,
+        help="Time stamp of the answer. This is the piece of evidence "
+             "that counts if remuneration is disputed later.",
     )
-    buyer_broker_name = fields.Char(string="Courtier du visiteur")
-    buyer_broker_agency = fields.Char(string="Agence du courtier")
-    buyer_broker_email = fields.Char(string="Courriel du courtier")
-    buyer_broker_phone = fields.Char(string="Téléphone du courtier")
+    buyer_broker_name = fields.Char(string="Visitor's broker")
+    buyer_broker_agency = fields.Char(string="Broker's agency")
+    buyer_broker_email = fields.Char(string="Broker's email")
+    buyer_broker_phone = fields.Char(string="Broker's phone")
 
     # --- L'identité, consignée sans être conservée --------------------------
-    identity_checked = fields.Boolean(string="Identité vérifiée", tracking=True)
+    identity_checked = fields.Boolean(string="Identity verified", tracking=True)
     identity_method = fields.Selection(
         [
-            ("in_person", "En personne, sur pièce officielle"),
-            ("remote", "À distance, pièce authentifiée"),
+            ("in_person", "In person, against an official document"),
+            ("remote", "Remotely, with an authenticated document"),
         ],
-        string="Mode de vérification",
+        string="Verification method",
     )
     identity_doc_kind = fields.Selection(
         [
-            ("licence", "Permis de conduire"),
-            ("health", "Carte d'assurance maladie"),
-            ("passport", "Passeport"),
-            ("other", "Autre pièce officielle"),
+            ("licence", "Driver's licence"),
+            ("health", "Health insurance card"),
+            ("passport", "Passport"),
+            ("other", "Other official document"),
         ],
-        string="Pièce vue",
-        help="⚠️ Le type de pièce, et rien d'autre. Une vérification faite en "
-             "personne ne garde pas de photocopie : elle se consigne.",
+        string="Document seen",
+        help="⚠️ The kind of document, and nothing else. A verification "
+             "done in person does not keep a photocopy: it is recorded.",
     )
     identity_checked_by = fields.Many2one(
-        "res.users", string="Vérifiée par", readonly=True, copy=False,
+        "res.users", string="Verified by", readonly=True, copy=False,
     )
     identity_checked_at = fields.Datetime(
-        string="Vérifiée le", readonly=True, copy=False,
+        string="Verified on", readonly=True, copy=False,
     )
 
     # --- Ce que le courtier constate ---------------------------------------
     accompanied_by_id = fields.Many2one(
-        "res.users", string="Accompagnée par", tracking=True,
+        "res.users", string="Accompanied by", tracking=True,
     )
-    arrived_at = fields.Datetime(string="Arrivée", readonly=True, copy=False)
-    departed_at = fields.Datetime(string="Départ", readonly=True, copy=False)
+    arrived_at = fields.Datetime(string="Arrival", readonly=True, copy=False)
+    departed_at = fields.Datetime(string="Departure", readonly=True, copy=False)
 
     # --- La boucle vendeur --------------------------------------------------
-    seller_token = fields.Char(string="Jeton de décision", copy=False, readonly=True)
+    seller_token = fields.Char(string="Decision token", copy=False, readonly=True)
     seller_decision_at = fields.Datetime(
-        string="Décision du vendeur", readonly=True, copy=False,
+        string="Seller's decision", readonly=True, copy=False,
     )
-    seller_note = fields.Text(string="Mot du vendeur")
+    seller_note = fields.Text(string="Word from the seller")
     proposed_start = fields.Datetime(
-        string="Autre heure proposée",
-        help="Ce que le vendeur suggère quand l'heure demandée ne va pas.",
+        string="Proposed alternative time",
+        help="What the seller suggests when the requested time does not work.",
     )
     access_released = fields.Boolean(
-        string="Accès transmis", readonly=True, copy=False,
-        help="Les consignes d'accès ne partent qu'à la confirmation.",
+        string="Access released", readonly=True, copy=False,
+        help="The access instructions only go out on confirmation.",
     )
 
     # --- Le locataire -------------------------------------------------------
     tenant_notice_sent_at = fields.Datetime(
-        string="Avis au locataire envoyé le", readonly=True, copy=False,
-        help="La trace du préavis de 24 heures de l'article 1931.",
+        string="Notice to tenant sent on", readonly=True, copy=False,
+        help="The record of the 24 hours' notice required by article 1931.",
     )
 
     # --- Après la visite ----------------------------------------------------
     feedback_interest = fields.Selection(
         [
-            ("1", "Aucun intérêt"),
-            ("2", "Faible"),
-            ("3", "À considérer"),
-            ("4", "Fort"),
-            ("5", "Offre à venir"),
+            ("1", "No interest"),
+            ("2", "Low"),
+            ("3", "Worth considering"),
+            ("4", "Strong"),
+            ("5", "Offer coming"),
         ],
-        string="Intérêt",
+        string="Interest",
     )
     feedback_price = fields.Selection(
         [
-            ("high", "Au-dessus du marché"),
-            ("fair", "Dans le marché"),
-            ("low", "En dessous du marché"),
+            ("high", "Above market"),
+            ("fair", "At market"),
+            ("low", "Below market"),
         ],
-        string="Perception du prix",
+        string="Price perception",
     )
-    feedback_comment = fields.Text(string="Commentaires")
-    feedback_received_at = fields.Datetime(string="Reçue le", readonly=True)
+    feedback_comment = fields.Text(string="Comments")
+    feedback_received_at = fields.Datetime(string="Received on", readonly=True)
     feedback_shared = fields.Boolean(
-        string="Partagée au vendeur",
-        help="Un commentaire de visiteur n'est pas toujours bon à transmettre "
-             "tel quel. Rien ne part sans cette case.",
+        string="Shared with the seller",
+        help="A visitor's comment is not always fit to pass on as is. "
+             "Nothing goes out without this box.",
     )
     feedback_token = fields.Char(copy=False, readonly=True)
     url_decision = fields.Char(
-        string="Lien de décision", compute="_compute_urls",
-        help="Ce que le vendeur reçoit pour trancher, sans compte à créer.",
+        string="Decision link", compute="_compute_urls",
+        help="What the seller receives in order to decide, with no "
+             "account to create.",
     )
     url_feedback = fields.Char(
-        string="Lien de rétroaction", compute="_compute_urls",
+        string="Feedback link", compute="_compute_urls",
     )
     setup_done = fields.Boolean(
-        string="Parcours amorcé", copy=False, readonly=True,
-        help="Garde du double envoi, posée sur la fiche : `action_confirm` est "
-             "appelée plus d'une fois dans la vie d'une réservation.",
+        string="Flow started", copy=False, readonly=True,
+        help="Guard against a double send, kept on the record: "
+             "`action_confirm` is called more than once in the life of a "
+             "booking.",
     )
 
     @api.depends("seller_token", "feedback_token")
@@ -242,9 +247,10 @@ class BfVisit(models.Model):
             if touche and commencees:
                 raise AccessError(
                     _(
-                        "« %s » est déjà arrivée : ce qui a été constaté ne se "
-                        "réécrit pas. Un gestionnaire peut corriger une erreur "
-                        "de saisie, et la correction reste au dossier."
+                        "\"%s\" has already arrived: what has been "
+                        "recorded is not rewritten. A manager can correct "
+                        "a typing mistake, and the correction stays on "
+                        "the record."
                     )
                     % commencees[0].display_name
                 )
@@ -256,7 +262,7 @@ class BfVisit(models.Model):
             if vals.get("name", "Nouveau") == "Nouveau":
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "bf.visit"
-                ) or _("Visite")
+                ) or _("Showing")
             if not vals.get("seller_token"):
                 vals["seller_token"] = secrets.token_urlsafe(24)
             if not vals.get("feedback_token"):
@@ -319,7 +325,7 @@ class BfVisit(models.Model):
         for rec in self:
             if rec.state not in ("requested", "declined"):
                 raise UserError(
-                    _("« %s » n'est pas en attente d'une décision.") % rec.display_name
+                    _("\"%s\" is not waiting for a decision.") % rec.display_name
                 )
             rec.state = "approved"
             if not silencieux_vendeur:
@@ -333,7 +339,7 @@ class BfVisit(models.Model):
         for rec in self:
             if rec.state not in ("requested", "approved"):
                 raise UserError(
-                    _("« %s » n'est plus en attente.") % rec.display_name
+                    _("\"%s\" is no longer waiting.") % rec.display_name
                 )
             rec.state = "declined"
             rec.seller_decision_at = fields.Datetime.now()
@@ -352,7 +358,7 @@ class BfVisit(models.Model):
         for rec in self:
             if rec.arrived_at:
                 raise UserError(
-                    _("L'arrivée de « %s » est déjà constatée.") % rec.display_name
+                    _("The arrival of \"%s\" has already been recorded.") % rec.display_name
                 )
             rec.arrived_at = fields.Datetime.now()
             if not rec.accompanied_by_id:
@@ -365,7 +371,7 @@ class BfVisit(models.Model):
         for rec in self:
             if not rec.arrived_at:
                 raise UserError(
-                    _("Personne n'est arrivé : il n'y a pas de départ à constater.")
+                    _("Nobody arrived: there is no departure to record.")
                 )
             rec.departed_at = fields.Datetime.now()
             rec.state = "done"
@@ -375,7 +381,7 @@ class BfVisit(models.Model):
         for rec in self:
             if rec.arrived_at:
                 raise UserError(
-                    _("« %s » est arrivée : elle ne peut pas être absente.")
+                    _("\"%s\" has arrived: it cannot be marked as a no-show.")
                     % rec.display_name
                 )
             rec.state = "no_show"
@@ -386,7 +392,7 @@ class BfVisit(models.Model):
         for rec in self:
             if not rec.identity_method:
                 raise UserError(
-                    _("Dites d'abord comment l'identité a été vérifiée.")
+                    _("Say first how the identity was verified.")
                 )
             rec.write({
                 "identity_checked": True,
@@ -422,7 +428,10 @@ class BfVisit(models.Model):
             if not gabarit:
                 _logger.warning("Gabarit %s introuvable", template_xmlid)
                 continue
-            gabarit.sudo().send_mail(
+            # Dans la langue du visiteur s'il a une fiche, sinon de la société : la demande d'avis
+            # part d'un travail planifié, sans langue au contexte.
+            gabarit.sudo().with_context(lang=langue_de(
+                rec.env, rec.visitor_partner_id, societe=rec.company_id)).send_mail(
                 rec.id, force_send=False
             )
 
@@ -436,7 +445,8 @@ class BfVisit(models.Model):
                 destinataires = rec.booking_id.user_id.partner_id or destinataires
             if not gabarit or not destinataires:
                 continue
-            gabarit.sudo().send_mail(
+            gabarit.sudo().with_context(lang=langue_de(
+                rec.env, destinataires[:1], societe=rec.company_id)).send_mail(
                 rec.id,
                 force_send=False,
                 email_values={
@@ -458,7 +468,8 @@ class BfVisit(models.Model):
             locataire = rec.listing_id.tenant_id
             if rec.listing_id.occupancy != "tenant" or not locataire or not gabarit:
                 continue
-            gabarit.sudo().send_mail(
+            gabarit.sudo().with_context(lang=langue_de(
+                rec.env, locataire[:1], societe=rec.company_id)).send_mail(
                 rec.id,
                 force_send=False,
                 email_values={"recipient_ids": [(6, 0, locataire.ids)]},
@@ -480,6 +491,10 @@ class BfVisit(models.Model):
         se comptent différemment, et le vendeur a le droit de savoir lequel des
         deux s'est produit.
         """
+        # Sans langue au contexte (travail planifié, XML-RPC), les libellés écrits au chatter
+        # (suivi des états, message de création) sortaient en anglais depuis la bascule.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         maintenant = fields.Datetime.now()
         a_fermer = self.search([
             ("state", "=", "approved"),

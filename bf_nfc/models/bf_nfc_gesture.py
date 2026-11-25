@@ -42,71 +42,73 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 
 class BfNfcGesture(models.Model):
     _name = "bf.nfc.gesture"
-    _description = "Geste déclenché par une pastille NFC"
+    _description = "Gesture triggered by an NFC tag"
     _inherit = ["mail.thread"]
     _order = "sequence, name"
 
     name = fields.Char(required=True, translate=True, tracking=True)
     code = fields.Char(
         required=True, copy=False,
-        help="Identifiant stable du geste. Les pastilles s'y rattachent.",
+        help="Stable identifier of the gesture. Tags are attached to it.",
     )
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True, tracking=True)
     kind = fields.Selection(
         selection=[
-            ("open", "Ouvrir une fiche"),
-            ("url", "Ouvrir une adresse"),
-            ("note", "Consigner un passage"),
-            ("cron", "Lancer une tâche planifiée"),
-            ("action", "Exécuter une action"),
-            ("server_action", "Exécuter une action serveur"),
-            ("menu", "Proposer un menu"),
+            ("open", "Open a record"),
+            ("url", "Open an address"),
+            ("note", "Log a visit"),
+            ("cron", "Run a scheduled action"),
+            ("action", "Run an action"),
+            ("server_action", "Run a server action"),
+            ("menu", "Offer a menu"),
         ],
-        string="Nature", required=True, default="open",
+        string="Kind", required=True, default="open",
     )
     writes = fields.Boolean(
-        string="Ce geste écrit", tracking=True,
-        help="Coché dès que le geste modifie quoi que ce soit. Un geste qui "
-             "écrit demande une confirmation quand il arrive par le navigateur.",
+        string="This gesture writes", tracking=True,
+        help="Checked as soon as the gesture changes anything. A gesture "
+             "that writes asks for confirmation when it comes through the "
+             "browser.",
     )
     needs_target = fields.Boolean(
-        string="Exige une cible",
-        help="La pastille doit désigner un enregistrement.",
+        string="Requires a target",
+        help="The tag must point to a record.",
     )
     target_model_id = fields.Many2one(
-        "ir.model", string="Modèle attendu", ondelete="cascade",
-        help="Laisser vide si le geste accepte n'importe quel modèle.",
+        "ir.model", string="Expected model", ondelete="cascade",
+        help="Leave empty if the gesture accepts any model.",
     )
     # 🔴 Le nom du modèle attendu, STOCKÉ sur le geste. Un gestionnaire des
     # pastilles qui n'est pas administrateur n'a aucun droit sur ``ir.model`` :
     # un filtre ou une vue qui passe par ``target_model_id.model`` tombe sur une
     # erreur d'accès pour lui, et seulement pour lui.
     target_model = fields.Char(
-        string="Modèle attendu (nom technique)", related="target_model_id.model", store=True,
+        string="Expected model (technical name)", related="target_model_id.model", store=True,
     )
     server_action_id = fields.Many2one(
-        "ir.actions.server", string="Action serveur", ondelete="restrict",
+        "ir.actions.server", string="Server action", ondelete="restrict",
     )
     description = fields.Text(translate=True)
     saisie = fields.Selection(
-        [("aucune", "Aucune"), ("cible", "Une fiche"), ("url", "Une adresse"),
-         ("cible_texte", "Une fiche et un texte")],
-        compute="_compute_saisie",
-        help="Ce que l'écran de gravure doit demander pour ce geste. Calculé : "
-             "l'application le lit dans le catalogue au lieu de le deviner.",
+        [("aucune", "None"), ("cible", "A record"), ("url", "An address"),
+         ("cible_texte", "A record and a text")],
+        string="Input", compute="_compute_saisie",
+        help="What the engraving screen must ask for this gesture. "
+             "Computed: the app reads it from the catalogue instead of "
+             "guessing.",
     )
     accepte_differe = fields.Boolean(
-        string="Se joue en différé", tracking=True,
-        help="Un tapotement fait sans réseau et envoyé plus tard est accepté, "
-             "avec l'heure notée par le téléphone. À laisser décoché pour ce qui "
-             "n'a de sens que sur place et tout de suite : ouvrir une fiche, "
-             "lancer un chrono, prendre une salle.",
+        string="Can be sent later", tracking=True,
+        help="A tap made without a network and sent later is accepted, "
+             "with the time recorded by the phone. Leave unchecked for "
+             "what only makes sense on site and right away: opening a "
+             "record, starting a timer, taking a room.",
     )
     reserve_gestion = fields.Boolean(
-        string="Réservé à la gestion", tracking=True,
-        help="Seul un gestionnaire des pastilles peut jouer ce geste. Pour ce qui "
-             "déclenche un traitement ou une action serveur.",
+        string="Reserved for managers", tracking=True,
+        help="Only a tag manager can play this gesture. For what triggers "
+             "a job or a server action.",
     )
 
     @api.depends("kind", "needs_target")
@@ -124,7 +126,7 @@ class BfNfcGesture(models.Model):
                 geste.saisie = "aucune"
 
     _sql_constraints = [
-        ("code_unique", "unique(code)", "Ce code de geste existe déjà."),
+        ("code_unique", "unique(code)", "This gesture code already exists."),
     ]
 
     # ------------------------------------------------------------------
@@ -140,10 +142,11 @@ class BfNfcGesture(models.Model):
         """
         self.ensure_one()
         if self.reserve_gestion and not self.env.user.has_group("bf_nfc.group_nfc_manager"):
-            raise AccessError(_("Ce geste est réservé à la gestion des pastilles."))
+            raise AccessError(_("This gesture is reserved for tag managers."))
         methode = getattr(self, "_executer_%s" % self.kind, None)
         if methode is None:
-            raise UserError(_("Le geste « %s » n'est pas installé sur ce système.", self.name))
+            raise UserError(_("The gesture “%s” is not installed on this "
+                              "system.", self.name))
         return methode(tag, tap, params)
 
     def _executer_open(self, tag, tap, params):
@@ -156,11 +159,11 @@ class BfNfcGesture(models.Model):
         """
         self.ensure_one()
         if not (tag.res_model and tag.res_id):
-            raise UserError(_("Cette pastille ne désigne aucune fiche."))
+            raise UserError(_("This tag points to no record."))
         record = tag._cible()
         return {
             "titre": record.display_name or tag.name,
-            "message": _("Fiche ouverte."),
+            "message": _("Record opened."),
             "url": "/mail/view?model=%s&res_id=%s" % (tag.res_model, tag.res_id),
         }
 
@@ -178,7 +181,7 @@ class BfNfcGesture(models.Model):
         """
         self.ensure_one()
         if not self.server_action_id:
-            raise UserError(_("Aucune action serveur n'est rattachée à ce geste."))
+            raise UserError(_("No server action is attached to this gesture."))
         contexte = {"bf_nfc_tag_id": tag.id, "bf_nfc_params": params}
         if tag.res_model and tag.res_id:
             contexte.update({
@@ -189,7 +192,7 @@ class BfNfcGesture(models.Model):
         self.server_action_id.with_context(**contexte).run()
         return {
             "titre": tag.name,
-            "message": _("Geste exécuté : %s", self.name),
+            "message": _("Gesture run: %s", self.name),
             "url": None,
         }
 
@@ -211,8 +214,8 @@ class BfNfcGesture(models.Model):
         adresse = ((params or {}).get("url") or "").strip()
         schema = urlparse(adresse).scheme.lower()
         if not adresse or schema not in self.SCHEMAS_PERMIS or not urlparse(adresse).netloc:
-            raise UserError(_("Cette pastille ne porte pas une adresse web valide."))
-        return {"titre": tag.name, "message": _("Adresse ouverte."), "url": adresse}
+            raise UserError(_("This tag does not carry a valid web address."))
+        return {"titre": tag.name, "message": _("Address opened."), "url": adresse}
 
     # ------------------------------------------------------------------
     # Consigner un passage
@@ -234,7 +237,8 @@ class BfNfcGesture(models.Model):
         self.ensure_one()
         cible = tag._cible()
         if not cible or not hasattr(cible, "message_post"):
-            raise UserError(_("Cette fiche n'a pas de fil de discussion où consigner un passage."))
+            raise UserError(_("This record has no discussion thread to "
+                              "log a visit in."))
         # ⚠️ Poster une note exige le droit prévu par le modèle (`_mail_post_access`,
         # « write » par défaut). Dans Odoo 18, un interne ordinaire ne peut PAS
         # écrire sur une fiche contact : sans ce contrôle préalable, le refus
@@ -244,21 +248,23 @@ class BfNfcGesture(models.Model):
         droit = getattr(cible, "_mail_post_access", "write") or "write"
         if not cible.has_access(droit):
             raise UserError(_(
-                "Vous n'avez pas le droit d'écrire sur « %s » : un passage ne peut "
-                "pas y être consigné.", cible.display_name))
-        texte = ((params or {}).get("texte") or "").strip() or _("Passage enregistré par pastille.")
+                "You are not allowed to write on “%s”: a visit cannot be "
+                "logged there.", cible.display_name))
+        texte = ((params or {}).get("texte") or "").strip() or _("Visit "
+                                                                 "recorded "
+                                                                 "by tag.")
         endroit = tag.place or tag.name
-        pied = _("Pastille : %s", endroit)
+        pied = _("Tag: %s", endroit)
         if (params or {}).get("differe") and params.get("quand"):
             # ⚠️ La note est postée à la réception : l'heure du passage doit donc
             # être écrite dans le corps, sinon le fil dirait « 9 h » pour une
             # ronde faite à 3 h dans un sous-sol sans réseau.
             heure = fields.Datetime.context_timestamp(self, params["quand"])
-            pied = _("Pastille : %(endroit)s · passage à %(heure)s, envoyé en différé",
+            pied = _("Tag: %(endroit)s · visit at %(heure)s, sent later",
                      endroit=endroit, heure=heure.strftime("%Y-%m-%d %H:%M"))
         corps = Markup("<p>%s</p><p><small>%s</small></p>") % (escape(texte), escape(pied))
         cible.message_post(body=corps, message_type="comment", subtype_xmlid="mail.mt_note")
-        return {"titre": cible.display_name, "message": _("Passage consigné."), "url": None}
+        return {"titre": cible.display_name, "message": _("Visit logged."), "url": None}
 
     # ------------------------------------------------------------------
     # Lancer une tâche planifiée
@@ -280,14 +286,14 @@ class BfNfcGesture(models.Model):
         """
         self.ensure_one()
         if tag.res_model != "ir.cron" or not tag.res_id:
-            raise UserError(_("Cette pastille ne désigne pas une tâche planifiée."))
+            raise UserError(_("This tag does not point to a scheduled action."))
         tache = self.env["ir.cron"].sudo().browse(tag.res_id).exists()
         if not tache:
-            raise UserError(_("La tâche planifiée de cette pastille n'existe plus."))
+            raise UserError(_("This tag's scheduled action no longer exists."))
         if not tache.active:
-            raise UserError(_("La tâche « %s » est désactivée : elle ne partirait pas.", tache.name))
+            raise UserError(_("The action “%s” is disabled: it would not run.", tache.name))
         tache._trigger()
-        return {"titre": tache.name, "message": _("Tâche lancée."), "url": None}
+        return {"titre": tache.name, "message": _("Scheduled action started."), "url": None}
 
     # ------------------------------------------------------------------
     # Exécuter une action désignée par la pastille
@@ -302,12 +308,12 @@ class BfNfcGesture(models.Model):
         """
         self.ensure_one()
         if tag.res_model != "ir.actions.server" or not tag.res_id:
-            raise UserError(_("Cette pastille ne désigne pas une action."))
+            raise UserError(_("This tag does not point to an action."))
         action = self.env["ir.actions.server"].browse(tag.res_id).exists()
         if not action:
-            raise UserError(_("L'action de cette pastille n'existe plus."))
+            raise UserError(_("This tag's action no longer exists."))
         action.with_context(bf_nfc_tag_id=tag.id, bf_nfc_params=params).run()
-        return {"titre": action.name, "message": _("Action exécutée."), "url": None}
+        return {"titre": action.name, "message": _("Action run."), "url": None}
 
     # ------------------------------------------------------------------
     # Aides pour les satellites
@@ -329,8 +335,9 @@ class BfNfcGesture(models.Model):
         une salle au nom de ce compte-là écrirait un mensonge dans le registre.
         """
         if (params or {}).get("porte") == "signed":
-            raise UserError(_("Ce geste engage la personne qui tape : il se joue avec "
-                              "l'application ou une session, pas avec une pastille signée."))
+            raise UserError(_("This gesture commits the person tapping: "
+                              "it is played with the app or a session, "
+                              "not with a signed tag."))
 
     def _lire_formulaire(self, formulaire, params):
         """Valide les réponses d'un formulaire et rend ``{cle: valeur typée}``.
@@ -347,29 +354,29 @@ class BfNfcGesture(models.Model):
             brut = (reponses.get(champ["cle"]) or "").strip()
             if not brut:
                 if champ.get("requis"):
-                    fautes.append(_("« %s » est requis", champ["libelle"]))
+                    fautes.append(_("“%s” is required", champ["libelle"]))
                 lues[champ["cle"]] = None
                 continue
             genre = champ.get("type")
             if genre == "conforme":
                 if brut.lower() not in ("oui", "non"):
-                    fautes.append(_("« %s » attend conforme ou non conforme", champ["libelle"]))
+                    fautes.append(_("“%s” expects compliant or non-compliant", champ["libelle"]))
                     continue
                 lues[champ["cle"]] = brut.lower() == "oui"
             elif genre == "nombre":
                 try:
                     lues[champ["cle"]] = float(brut.replace(",", ".").replace("\u00a0", "").replace(" ", ""))
                 except ValueError:
-                    fautes.append(_("« %s » attend un nombre", champ["libelle"]))
+                    fautes.append(_("“%s” expects a number", champ["libelle"]))
             elif genre == "choix":
                 if brut not in (champ.get("options") or []):
-                    fautes.append(_("« %s » n'accepte pas « %s »", champ["libelle"], brut))
+                    fautes.append(_("“%s” does not accept “%s”", champ["libelle"], brut))
                     continue
                 lues[champ["cle"]] = brut
             else:
                 lues[champ["cle"]] = brut
         if fautes:
-            raise UserError(_("Le relevé n'est pas enregistré : %s.", " ; ".join(fautes)))
+            raise UserError(_("The reading was not saved: %s.", " ; ".join(fautes)))
         return lues
 
     def _moment(self, params):
@@ -402,17 +409,17 @@ class BfNfcGesture(models.Model):
         cle = str((params or {}).get("choix") or "")
         if not cle:
             if not lignes:
-                raise UserError(_("Ce menu ne propose aucun choix."))
+                raise UserError(_("This menu offers no choice."))
             return {
                 "titre": tag.name,
-                "message": _("Que voulez-vous faire ?"),
+                "message": _("What would you like to do?"),
                 "choix": [{"cle": str(l.id), "libelle": l.name, "style": l.style, "saisie": None}
                           for l in lignes],
             }
         tete, _sep, reste = cle.partition("/")
         ligne = tag.choice_ids.filtered(lambda l: str(l.id) == tete)
         if not ligne:
-            raise UserError(_("Ce choix n'existe plus sur cette pastille."))
+            raise UserError(_("This choice no longer exists on this tag."))
         # ⚠️ La description du geste se lit en sudo : `target_model_id` pointe vers
         # `ir.model`, qu'un interne ordinaire ne peut pas lire, et le refus
         # arrivait sous la forme d'un message d'accès technique. Le geste, lui,
@@ -420,15 +427,16 @@ class BfNfcGesture(models.Model):
         meta = ligne.gesture_id.sudo()
         sous = meta.sudo(False)
         if meta.reserve_gestion and not gestion:
-            raise AccessError(_("Ce geste est réservé à la gestion des pastilles."))
+            raise AccessError(_("This gesture is reserved for tag managers."))
         if meta.needs_target and not (tag.res_model and tag.res_id):
-            raise UserError(_("Cette pastille ne désigne aucune fiche."))
+            raise UserError(_("This tag points to no record."))
         if meta.target_model and tag.res_model != meta.target_model:
-            raise UserError(_("Le choix « %s » vise un autre type de fiche que cette pastille.",
+            raise UserError(_("The choice “%s” targets another type of "
+                              "record than this tag.",
                               ligne.name))
         if params.get("differe") and not meta.accepte_differe:
-            raise UserError(_("« %s » ne se joue pas en différé : approchez de nouveau la "
-                              "pastille, sur place.", ligne.name))
+            raise UserError(_("“%s” cannot be sent later: tap the tag "
+                              "again, on site.", ligne.name))
         valeurs = dict(params)
         valeurs.update(ligne._params())
         valeurs["choix"] = reste or None
@@ -442,4 +450,5 @@ class BfNfcGesture(models.Model):
     def _check_server_action(self):
         for geste in self:
             if geste.kind == "server_action" and not geste.server_action_id:
-                raise ValidationError(_("Un geste « action serveur » doit désigner une action."))
+                raise ValidationError(_("A “server action” gesture must "
+                                        "point to an action."))

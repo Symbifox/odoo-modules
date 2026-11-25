@@ -1,90 +1,90 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_federation_document
-#
+# Translation template for Fédération : livrables remis.
+# The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: bf_federation_document 18.0.1.2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 14:24+0000\n"
-"PO-Revision-Date: 2026-09-13 14:24+0000\n"
+"POT-Creation-Date: 2026-11-20 23:09+0000\n"
+"PO-Revision-Date: 2026-11-20 23:09+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "(aucune)"
+msgid "(no date)"
 msgstr ""
 
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "(sans date)"
+msgid "(none)"
 msgstr ""
 
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "(sans titre)"
+msgid "(untitled)"
 msgstr ""
 
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "<p>Chez %s, <b>%s</b> a accusé réception du livrable.</p>"
-msgstr ""
-
-#. module: bf_federation_document
-#. odoo-python
-#: code:addons/bf_federation_document/models/federation_document.py:0
-msgid ""
-"<p>Chez %s, la version <b>%s</b> a été lue par %s, mais nous en sommes à la "
-"<b>%s</b> : l'accusé ne vaut pas pour la version en cours.</p>"
+msgid "<p>At %s, <b>%s</b> acknowledged receipt of the deliverable.</p>"
 msgstr ""
 
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
 msgid ""
-"<p>Chez %s, le livrable est passé à la version <b>%s</b> : l'accusé de "
-"réception est à refaire.</p>"
+"<p>At %s, the deliverable moved to version <b>%s</b>: the read receipt must "
+"be given again.</p>"
 msgstr ""
 
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "<p>Livrable reçu de %s : <b>%s</b>, version %s, remis le %s.</p>"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields.selection,name:bf_federation_document.selection__federation_outbox__kind__document_ack
-msgid "Accusé de réception"
+msgid ""
+"<p>At %s, version <b>%s</b> was read by %s, but we are now at <b>%s</b>: the"
+" receipt does not apply to the current version.</p>"
 msgstr ""
 
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "Accusé de réception envoyé à %s."
+msgid ""
+"<p>Deliverable received from %s: <b>%s</b>, version %s, delivered on %s.</p>"
 msgstr ""
 
 #. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__acknowledged_on
-msgid "Accusé le"
+#: model:ir.model.fields,help:bf_federation_document.field_federation_document__summary
+msgid "A few lines of plain text. No markup crosses over."
+msgstr ""
+
+#. module: bf_federation_document
+#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
+msgid "A few lines. No markup crosses over."
+msgstr ""
+
+#. module: bf_federation_document
+#: model_terms:ir.actions.act_window,help:bf_federation_document.action_federation_document
+msgid ""
+"A title, a version, a date, a file. The read receipt comes back, and nothing"
+" else."
 msgstr ""
 
 #. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__acknowledged_by
-msgid "Accusé par"
+msgid "Acknowledged by"
 msgstr ""
 
 #. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__acknowledged
-msgid "Accusé reçu"
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__acknowledged_on
+msgid "Acknowledged on"
 msgstr ""
 
 #. module: bf_federation_document
@@ -98,8 +98,13 @@ msgid "Active"
 msgstr ""
 
 #. module: bf_federation_document
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_allowed_peer_ids
+msgid "Allowed peers"
+msgstr ""
+
+#. module: bf_federation_document
 #: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_search
-msgid "Archivés"
+msgid "Archived"
 msgstr ""
 
 #. module: bf_federation_document
@@ -108,19 +113,8 @@ msgid "Attachment Count"
 msgstr ""
 
 #. module: bf_federation_document
-#: model:ir.model,name:bf_federation_document.model_federation_outbox
-msgid "Boîte de sortie de la fédération"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__summary
-#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
-msgid "Ce que c'est"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_remote_url
-msgid "Chez le pair"
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__company_id
+msgid "Company"
 msgstr ""
 
 #. module: bf_federation_document
@@ -134,8 +128,42 @@ msgid "Created on"
 msgstr ""
 
 #. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__peer_partner_id
-msgid "Destinataire"
+#: model_terms:ir.actions.act_window,help:bf_federation_document.action_federation_document
+msgid "Deliver a document to a peer"
+msgstr ""
+
+#. module: bf_federation_document
+#. odoo-python
+#: code:addons/bf_federation_document/models/federation_document.py:0
+msgid ""
+"Deliverable delivered to %s: title, reference, version, date, plain-text "
+"summary and files under the ceiling. What comes back: the read receipt, and "
+"nothing else."
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model.fields.selection,name:bf_federation_document.selection__federation_outbox__kind__document_share
+msgid "Deliverable handed over"
+msgstr ""
+
+#. module: bf_federation_document
+#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
+msgid "Deliverable title"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.ui.menu,name:bf_federation_document.menu_federation_documents
+msgid "Deliverables"
+msgstr ""
+
+#. module: bf_federation_document
+#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_search
+msgid "Delivered from here"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__issued_on
+msgid "Delivered on"
 msgstr ""
 
 #. module: bf_federation_document
@@ -144,14 +172,51 @@ msgid "Display Name"
 msgstr ""
 
 #. module: bf_federation_document
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model,name:bf_federation_document.model_federation_document
+#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
+msgid "Federated deliverable"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.actions.act_window,name:bf_federation_document.action_federation_document
+#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_list
+msgid "Federated deliverables"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_link_id
+msgid "Federated link"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_peer_id
+msgid "Federated with"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_possible
+msgid "Federation possible"
+msgstr ""
+
+#. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__file_note
-msgid "Fichier resté chez l'émetteur"
+msgid "File kept by the sender"
 msgstr ""
 
 #. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__attachment_ids
 #: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
-msgid "Fichiers"
+msgid "Files"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model.fields,help:bf_federation_document.field_federation_document__file_note
+msgid "Filled in when the file exceeded the peer's ceiling."
 msgstr ""
 
 #. module: bf_federation_document
@@ -165,23 +230,18 @@ msgid "Followers (Partners)"
 msgstr ""
 
 #. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_possible
-msgid "Fédération possible"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_peer_id
-msgid "Fédéré avec"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_outbox__kind
-msgid "Genre"
+#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_search
+msgid "Group by"
 msgstr ""
 
 #. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__has_message
 msgid "Has Message"
+msgstr ""
+
+#. module: bf_federation_document
+#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
+msgid "I have read this deliverable"
 msgstr ""
 
 #. module: bf_federation_document
@@ -206,8 +266,8 @@ msgid "Is Follower"
 msgstr ""
 
 #. module: bf_federation_document
-#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
-msgid "J'ai lu ce livrable"
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_outbox__kind
+msgid "Kind"
 msgstr ""
 
 #. module: bf_federation_document
@@ -221,50 +281,28 @@ msgid "Last Updated on"
 msgstr ""
 
 #. module: bf_federation_document
-#: model:ir.model.fields,help:bf_federation_document.field_federation_document__reference
-msgid "Le code du livrable chez l'émetteur, s'il en a un."
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,help:bf_federation_document.field_federation_document__federation_peer_id
-msgid ""
-"Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_link_id
-msgid "Lien fédéré"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model,name:bf_federation_document.model_federation_document
-#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
-msgid "Livrable fédéré"
-msgstr ""
-
-#. module: bf_federation_document
-#. odoo-python
-#: code:addons/bf_federation_document/models/federation_document.py:0
-msgid ""
-"Livrable remis à %s : titre, référence, version, date, résumé en texte et "
-"fichiers sous le plafond. Ce qui revient : l'accusé de réception, et rien "
-"d'autre."
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.ui.menu,name:bf_federation_document.menu_federation_documents
-msgid "Livrables"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.actions.act_window,name:bf_federation_document.action_federation_document
-#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_list
-msgid "Livrables fédérés"
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__message_content
+msgid "Message Content"
 msgstr ""
 
 #. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__message_has_error
 msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model.fields,help:bf_federation_document.field_federation_document__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model.fields,help:bf_federation_document.field_federation_document__message_search
+msgid "Message search, to be used only in searches"
 msgstr ""
 
 #. module: bf_federation_document
@@ -274,7 +312,7 @@ msgstr ""
 
 #. module: bf_federation_document
 #: model:ir.model.fields.selection,name:bf_federation_document.selection__federation_outbox__kind__document_card
-msgid "Nouvelle version d'un livrable"
+msgid "New version of a deliverable"
 msgstr ""
 
 #. module: bf_federation_document
@@ -298,33 +336,29 @@ msgid "Number of messages with delivery error"
 msgstr ""
 
 #. module: bf_federation_document
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_remote_url
+msgid "On the peer"
+msgstr ""
+
+#. module: bf_federation_document
+#. odoo-python
+#: code:addons/bf_federation_document/models/federation_document.py:0
+msgid "Only a deliverable received from a peer can be acknowledged."
+msgstr ""
+
+#. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_origin
-msgid "Origine"
+msgid "Origin"
 msgstr ""
 
 #. module: bf_federation_document
 #: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_search
-msgid "Pair"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_allowed_peer_ids
-msgid "Pairs permis"
+msgid "Peer"
 msgstr ""
 
 #. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__source_ref
-msgid "Produit à partir de"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,help:bf_federation_document.field_federation_document__summary
-msgid "Quelques lignes en texte. Aucun balisage ne traverse."
-msgstr ""
-
-#. module: bf_federation_document
-#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
-msgid "Quelques lignes. Aucun balisage ne traverse."
+msgid "Produced from"
 msgstr ""
 
 #. module: bf_federation_document
@@ -333,43 +367,34 @@ msgid "Ratings"
 msgstr ""
 
 #. module: bf_federation_document
-#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_search
-msgid "Regrouper par"
+#: model:ir.model.fields.selection,name:bf_federation_document.selection__federation_outbox__kind__document_ack
+msgid "Read receipt"
 msgstr ""
 
 #. module: bf_federation_document
-#: model_terms:ir.actions.act_window,help:bf_federation_document.action_federation_document
-msgid "Remettre un livrable à un pair"
+#. odoo-python
+#: code:addons/bf_federation_document/models/federation_document.py:0
+msgid "Read receipt sent to %s."
 msgstr ""
 
 #. module: bf_federation_document
-#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_search
-msgid "Remis d'ici"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__issued_on
-msgid "Remis le"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields.selection,name:bf_federation_document.selection__federation_outbox__kind__document_share
-msgid "Remise d'un livrable"
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,help:bf_federation_document.field_federation_document__file_note
-msgid "Rempli quand le fichier dépassait le plafond du pair."
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__acknowledged
+msgid "Receipt received"
 msgstr ""
 
 #. module: bf_federation_document
 #: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_search
-msgid "Reçus d'un pair"
+msgid "Received from a peer"
+msgstr ""
+
+#. module: bf_federation_document
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__peer_partner_id
+msgid "Recipient"
 msgstr ""
 
 #. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__reference
-msgid "Référence"
+msgid "Reference"
 msgstr ""
 
 #. module: bf_federation_document
@@ -378,36 +403,20 @@ msgid "SMS Delivery error"
 msgstr ""
 
 #. module: bf_federation_document
-#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_search
-msgid "Sans accusé"
+#: model:ir.model.fields,help:bf_federation_document.field_federation_document__reference
+msgid "The deliverable's code at the sender, if it has one."
 msgstr ""
 
 #. module: bf_federation_document
-#. odoo-python
-#: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "Seul un livrable reçu d'un pair s'accuse."
-msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__company_id
-msgid "Société"
+#: model:ir.model.fields,help:bf_federation_document.field_federation_document__federation_peer_id
+msgid ""
+"The peer where this object has a mirror. Clearing the field archives the "
+"mirror."
 msgstr ""
 
 #. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__name
-msgid "Titre"
-msgstr ""
-
-#. module: bf_federation_document
-#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
-msgid "Titre du livrable"
-msgstr ""
-
-#. module: bf_federation_document
-#: model_terms:ir.actions.act_window,help:bf_federation_document.action_federation_document
-msgid ""
-"Un titre, une version, une date, un fichier. L'accusé de réception revient,\n"
-"               et rien d'autre."
+msgid "Title"
 msgstr ""
 
 #. module: bf_federation_document
@@ -426,32 +435,43 @@ msgid "Website communication history"
 msgstr ""
 
 #. module: bf_federation_document
-#. odoo-python
-#: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "ce livrable"
-msgstr ""
-
-#. module: bf_federation_document
-#. odoo-python
-#: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "le livrable"
-msgstr ""
-
-#. module: bf_federation_document
-#. odoo-python
-#: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "quelqu'un"
-msgstr ""
-
-#. module: bf_federation_document
-#. odoo-python
-#: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "resté chez %s : %s"
+#: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__summary
+#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_form
+msgid "What it is"
 msgstr ""
 
 #. module: bf_federation_document
 #: model:ir.model.fields,help:bf_federation_document.field_federation_document__peer_partner_id
 msgid ""
-"À qui ce livrable est remis. C'est lui qui décide quel pair peut le recevoir"
-" : sans destinataire, aucun pair n'est proposé."
+"Who this deliverable is delivered to. The recipient decides which peer can "
+"receive it: with no recipient, no peer is offered."
+msgstr ""
+
+#. module: bf_federation_document
+#: model_terms:ir.ui.view,arch_db:bf_federation_document.view_federation_document_search
+msgid "Without receipt"
+msgstr ""
+
+#. module: bf_federation_document
+#. odoo-python
+#: code:addons/bf_federation_document/models/federation_document.py:0
+msgid "kept by %s: %s"
+msgstr ""
+
+#. module: bf_federation_document
+#. odoo-python
+#: code:addons/bf_federation_document/models/federation_document.py:0
+msgid "someone"
+msgstr ""
+
+#. module: bf_federation_document
+#. odoo-python
+#: code:addons/bf_federation_document/models/federation_document.py:0
+msgid "the deliverable"
+msgstr ""
+
+#. module: bf_federation_document
+#. odoo-python
+#: code:addons/bf_federation_document/models/federation_document.py:0
+msgid "this deliverable"
 msgstr ""

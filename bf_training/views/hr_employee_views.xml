@@ -9,11 +9,11 @@
                 <button name="action_open_training_records" type="object"
                         class="oe_stat_button" icon="fa-graduation-cap"
                         groups="bf_training.group_training_officer">
-                    <field name="training_record_count" widget="statinfo" string="Formations"/>
+                    <field name="training_record_count" widget="statinfo" string="Training records"/>
                 </button>
             </div>
             <notebook position="inside">
-                <page string="Formation" name="bf_training"
+                <page string="Training" name="bf_training"
                       groups="bf_training.group_training_officer">
                     <group>
                         <field name="training_reference_date"/>
@@ -29,7 +29,7 @@
                             <field name="state"/>
                         </list>
                     </field>
-                    <separator string="Formations suivies"/>
+                    <separator string="Training completed"/>
                     <field name="training_record_ids" readonly="1">
                         <list decoration-danger="expiry_state == 'expired'">
                             <field name="date_done"/>

@@ -19,29 +19,30 @@ PAYLOAD_RETIREE = '{"_retiree": true}'
 # le module qui apporte le modèle : le socle n'a pas à les connaître.
 KINDS = [
     ("ping", "Contact"), ("message.new", "Message"),
-    ("link.archive", "Retrait"), ("link.restore", "Remise"), ("mirror.dropped", "Miroir retiré"),
-    ("task.share", "Partage d'une tâche"), ("task.card", "Carte de la tâche"),
-    ("task.state", "État"), ("task.day", "Jour d'échéance"),
+    ("link.archive", "Removal"), ("link.restore", "Delivery"), ("mirror.dropped", "Mirror "
+                                                                                "removed"),
+    ("task.share", "Sharing a task"), ("task.card", "Task card"),
+    ("task.state", "State"), ("task.day", "Deadline day"),
 ]
 
 
 class FederationOutbox(models.Model):
     _name = "federation.outbox"
-    _description = "Boîte de sortie de la fédération"
+    _description = "Federation outbox"
     _order = "id"
 
-    peer_id = fields.Many2one("federation.peer", string="Pair", required=True, ondelete="cascade", index=True)
-    link_id = fields.Many2one("federation.link", string="Lien", ondelete="set null", index=True)
-    kind = fields.Selection(KINDS, string="Genre", required=True)
-    payload = fields.Text(string="Charge", required=True)
-    state = fields.Selection([("pending", "À envoyer"), ("sent", "Envoyé"), ("failed", "Abandonné")],
-                             string="État", default="pending", required=True, index=True)
-    attempts = fields.Integer(string="Essais", default=0)
-    next_attempt = fields.Datetime(string="Prochain essai", default=fields.Datetime.now, index=True)
-    sent_at = fields.Datetime(string="Envoyé le")
-    last_error = fields.Text(string="Dernière erreur")
-    response = fields.Text(string="Réponse du pair")
-    sender_ref = fields.Char(string="Référence de l'objet ici", compute="_compute_sender_ref")
+    peer_id = fields.Many2one("federation.peer", string="Peer", required=True, ondelete="cascade", index=True)
+    link_id = fields.Many2one("federation.link", string="Link", ondelete="set null", index=True)
+    kind = fields.Selection(KINDS, string="Kind", required=True)
+    payload = fields.Text(string="Payload", required=True)
+    state = fields.Selection([("pending", "To send"), ("sent", "Sent"), ("failed", "Abandoned")],
+                             string="State", default="pending", required=True, index=True)
+    attempts = fields.Integer(string="Attempts", default=0)
+    next_attempt = fields.Datetime(string="Next attempt", default=fields.Datetime.now, index=True)
+    sent_at = fields.Datetime(string="Sent on")
+    last_error = fields.Text(string="Last error")
+    response = fields.Text(string="Peer answer")
+    sender_ref = fields.Char(string="Reference of the object here", compute="_compute_sender_ref")
 
     def _compute_sender_ref(self):
         for entry in self:
@@ -109,7 +110,8 @@ class FederationOutbox(models.Model):
         share_pending = self.link_id and not self.link_id.remote_ref and self.kind != "task.share"
         definitive = status in (404, 409, 410, 422) and not share_pending
         attempts = self.attempts + 1
-        vals = {"attempts": attempts, "last_error": (_("%s : %s") % (status, transport.clean_text(data.get("error")) or _("aucune réponse")))[:500]}
+        vals = {"attempts": attempts, "last_error": (_("%s: %s") % (status, transport.clean_text(data.get("error")) or _("no "
+                                                                                                                          "answer")))[:500]}
         too_old = self.create_date and self.create_date < fields.Datetime.now() - timedelta(days=MAX_AGE_DAYS)
         if definitive or too_old:
             vals["state"] = "failed"
@@ -123,20 +125,24 @@ class FederationOutbox(models.Model):
     def action_retry(self):
         vides = self.filtered(lambda e: e.payload == PAYLOAD_RETIREE)
         if vides:
-            raise UserError(_("La charge de %s envoi(s) a été retirée après abandon : "
-                              "il n'y a plus rien à rejouer. Repartagez l'objet.") % len(vides))
+            raise UserError(_("The payload of %s send(s) was removed "
+                              "after they were abandoned: there is "
+                              "nothing left to replay. Share the object "
+                              "again.") % len(vides))
         self.filtered(lambda e: e.state != "sent").write({"state": "pending", "attempts": 0, "next_attempt": fields.Datetime.now()})
 
 
 class FederationNonce(models.Model):
     _name = "federation.nonce"
-    _description = "Nonce reçu (anti-rejeu)"
+    _description = "Nonce received (replay protection)"
 
-    peer_id = fields.Many2one("federation.peer", string="Pair", required=True, ondelete="cascade", index=True)
+    peer_id = fields.Many2one("federation.peer", string="Peer", required=True, ondelete="cascade", index=True)
     nonce = fields.Char(string="Nonce", required=True)
-    received_at = fields.Datetime(string="Reçu le", default=fields.Datetime.now)
+    received_at = fields.Datetime(string="Received on", default=fields.Datetime.now)
 
-    _sql_constraints = [("peer_nonce_unique", "unique(peer_id, nonce)", "Message déjà reçu.")]
+    _sql_constraints = [("peer_nonce_unique", "unique(peer_id, nonce)", "Message "
+                                                                        "already "
+                                                                        "received.")]
 
     @api.model
     def _cron_prune(self):

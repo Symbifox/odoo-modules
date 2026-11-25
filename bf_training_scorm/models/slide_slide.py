@@ -9,7 +9,7 @@ class SlideSlide(models.Model):
     #: laisserait des contenus dans un type que plus rien ne sait lire, et Odoo
     #: refuse la désinstallation.
     slide_category = fields.Selection(
-        selection_add=[("scorm", "Paquet SCORM")],
+        selection_add=[("scorm", "SCORM package")],
         ondelete={"scorm": "set default"})
 
     #: 🔴 Le MÊME compteur que sur le canal, et c'est celui-ci qu'on oublie.
@@ -23,9 +23,9 @@ class SlideSlide(models.Model):
         "Number of SCORM packages", compute="_compute_slides_statistics", store=True)
 
     scorm_package_id = fields.Many2one(
-        "bf.scorm.package", string="Paquet SCORM", copy=False)
+        "bf.scorm.package", string="SCORM package", copy=False)
     scorm_version = fields.Selection(
-        related="scorm_package_id.version", string="Version SCORM")
+        related="scorm_package_id.version", string="SCORM version")
     scorm_uses_sequencing = fields.Boolean(
         related="scorm_package_id.uses_sequencing")
 
@@ -39,7 +39,7 @@ class SlideSlide(models.Model):
         for diapo in self:
             if diapo.slide_category == "scorm" and not diapo.scorm_package_id:
                 raise ValidationError(
-                    _("Un contenu SCORM doit porter un paquet."))
+                    _("SCORM content must carry a package."))
 
     def _get_completion_time(self):
         """La durée d'un SCORM n'est pas devinable : ne rien inventer.

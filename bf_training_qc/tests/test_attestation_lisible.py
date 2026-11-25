@@ -10,6 +10,12 @@ class TestAttestationLisible(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # 🔴 La langue est épinglée : la source du module est anglaise depuis la
+        # 18.0.1.0.2, et les assertions ci-dessous lisent des libellés rendus.
+        # Sans cet ancrage elles suivaient la langue d'OdooBot, donc l'état de
+        # la base. Le français a ses propres essais (test_deux_langues.py).
+        cls.env["res.lang"]._activate_lang("en_US")
+        cls.env = cls.env(context=dict(cls.env.context, lang="en_US"))
         cls.employe = cls.env["hr.employee"].create(
             {"name": "Personne attestée", "company_id": cls.env.company.id,
              "hourly_cost": 30.0})
@@ -52,9 +58,9 @@ class TestAttestationLisible(TransactionCase):
         self.assertNotIn("16.00", html)
         self.assertNotIn("heure(s)", html)
         self.assertIn("16", html)
-        self.assertIn("heures", html)
+        self.assertIn("hours", html)
 
     def test_le_numero_porte_son_signe(self):
         html = self._html()
-        self.assertIn("Attestation n°", html)
+        self.assertIn("Certificate no.", html)
         self.assertNotIn("Attestation no ", html)

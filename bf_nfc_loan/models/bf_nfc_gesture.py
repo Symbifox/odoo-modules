@@ -16,7 +16,7 @@ class BfNfcGesture(models.Model):
     _inherit = "bf.nfc.gesture"
 
     kind = fields.Selection(
-        selection_add=[("loan", "Prendre ou rendre un équipement")],
+        selection_add=[("loan", "Take or return equipment")],
         ondelete={"loan": "cascade"},
     )
 
@@ -25,7 +25,8 @@ class BfNfcGesture(models.Model):
         self._exiger_une_personne(params)
         equipement = tag._cible()
         if not equipement or equipement._name != "bf.nfc.equipment":
-            raise UserError(_("Cette pastille ne désigne pas un équipement."))
+            raise UserError(_("This tag does not point to a piece of "
+                              "equipment."))
         moi = self.env.user
         moment = self._moment(params)
         differe = bool(params.get("differe"))
@@ -38,34 +39,36 @@ class BfNfcGesture(models.Model):
         if detenteur == moi:
             if sens == "prendre":
                 return {"titre": equipement.name, "url": None,
-                        "message": _("Vous l'avez déjà depuis le %s.", self._heure(depuis, "%Y-%m-%d %H:%M"))}
+                        "message": _("You have had it since %s already.", self._heure(depuis, "%Y-%m-%d %H:%M"))}
             equipement._rendre(moi, moment)
             return {"titre": equipement.name, "url": None,
-                    "message": _("Rendu. Merci de le ranger : %s.", equipement.place)
-                    if equipement.place else _("Rendu.")}
+                    "message": _("Returned. Please put it back: %s.", equipement.place)
+                    if equipement.place else _("Returned.")}
 
         if sens == "rendre":
-            raise UserError(_("Vous n'avez pas « %s » : rien à rendre.", equipement.name))
+            raise UserError(_("You don't have “%s”: nothing to return.", equipement.name))
 
         if detenteur and params.get("choix") != "reprendre":
             # La seule question du geste : l'équipement est entre d'autres mains.
             return {
                 "titre": equipement.name,
-                "message": _("%(qui)s l'a depuis le %(quand)s.", qui=detenteur.name,
+                "message": _("%(qui)s has had it since %(quand)s.", qui=detenteur.name,
                              quand=self._heure(depuis, "%Y-%m-%d %H:%M")),
-                "choix": [{"cle": "reprendre", "libelle": _("Je le prends quand même"),
+                "choix": [{"cle": "reprendre", "libelle": _("I'll take it "
+                                                            "anyway"),
                            "style": "principal", "saisie": None}],
             }
 
         precedent = equipement._prendre(moi, moment, differe)
         if precedent:
             equipement.sudo().message_post(
-                body=_("%(moi)s a repris l'équipement à %(autre)s.", moi=moi.name, autre=precedent.user_id.name),
+                body=_("%(moi)s took the equipment back from %(autre)s.", moi=moi.name, autre=precedent.user_id.name),
                 message_type="comment", subtype_xmlid="mail.mt_note")
             return {"titre": equipement.name, "url": None,
-                    "message": _("Vous l'avez repris à %s.", precedent.user_id.name)}
+                    "message": _("You took it back from %s.", precedent.user_id.name)}
         return {"titre": equipement.name, "url": None,
-                "message": _("Il est à vous. Approchez de nouveau le téléphone pour le rendre.")}
+                "message": _("It's yours. Bring the phone close again to "
+                             "return it.")}
 
     def _pret_externe(self, equipement, moi, moment, differe, params):
         """Le registre des cadenas : on remet à quelqu'un qui se nomme, on reprend d'un tapotement.
@@ -81,31 +84,33 @@ class BfNfcGesture(models.Model):
             if choix != "reprendre":
                 return {
                     "titre": equipement.name,
-                    "message": _("Remis à %(qui)s le %(quand)s.", qui=pret.holder_label,
+                    "message": _("Handed out to %(qui)s on %(quand)s.", qui=pret.holder_label,
                                  quand=self._heure(pret.date_start, "%Y-%m-%d %H:%M")),
-                    "choix": [{"cle": "reprendre", "libelle": _("Il est rendu"),
+                    "choix": [{"cle": "reprendre", "libelle": _("It has "
+                                                                "been "
+                                                                "returned"),
                                "style": "principal", "saisie": None}],
                 }
             equipement._rendre(moi, moment)
             return {"titre": equipement.name, "url": None,
-                    "message": _("Retour noté au registre : %s.", pret.holder_label)}
+                    "message": _("Return recorded in the register: %s.", pret.holder_label)}
         formulaire = [
-            {"cle": "nom", "libelle": _("Remis à (nom)"), "type": "texte", "requis": True,
+            {"cle": "nom", "libelle": _("Handed out to (name)"), "type": "texte", "requis": True,
              "unite": None, "min": None, "max": None, "options": None, "aide": None},
-            {"cle": "telephone", "libelle": _("Téléphone"), "type": "texte", "requis": True,
+            {"cle": "telephone", "libelle": _("Phone"), "type": "texte", "requis": True,
              "unite": None, "min": None, "max": None, "options": None, "aide": None},
-            {"cle": "employeur", "libelle": _("Employeur"), "type": "texte", "requis": False,
+            {"cle": "employeur", "libelle": _("Employer"), "type": "texte", "requis": False,
              "unite": None, "min": None, "max": None, "options": None,
-             "aide": _("S'il travaille pour une autre entreprise.")},
+             "aide": _("If they work for another company.")},
         ]
         if choix != "remettre":
             return {
                 "titre": equipement.name,
-                "message": _("À qui le remettez-vous ?"),
+                "message": _("Who are you handing it to?"),
                 "formulaire": formulaire,
-                "choix": [{"cle": "remettre", "libelle": _("Remettre"), "style": "principal", "saisie": None}],
+                "choix": [{"cle": "remettre", "libelle": _("Hand out"), "style": "principal", "saisie": None}],
             }
         lues = self._lire_formulaire(formulaire, params)
         equipement._prendre(moi, moment, differe, externe=lues)
         return {"titre": equipement.name, "url": None,
-                "message": _("Remis à %s : noté au registre.", lues["nom"])}
+                "message": _("Handed out to %s: recorded in the register.", lues["nom"])}

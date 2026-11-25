@@ -48,3 +48,7 @@ Les libellés d'une cible et de ses touches (genre, sens, issue) viennent du dé
 
 `bf_federation`. L'agence a besoin de `bf_outreach` pour tirer un suivi d'une
 campagne ; le client, non.
+
+## Languages (v18.0.1.0.3)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.

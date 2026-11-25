@@ -9,6 +9,13 @@ class PersonaCase(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # 🔴 ces essais lisent les textes du module en FRANÇAIS. Sur une base anglaise
+        # seule (la CI publique, par exemple), `_()` rendait l'anglais et ils tombaient alors que
+        # le module faisait juste. Amorce : le français actif, son catalogue, et l'usager des
+        # essais réglé en français, comme sur une base francophone.
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(["bf_persona"], ["fr_CA"], overwrite=True)
+        cls.env.user.lang = "fr_CA"
         cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
         cls.Partner = cls.env["res.partner"]
         cls.Persona = cls.env["contact.persona"]

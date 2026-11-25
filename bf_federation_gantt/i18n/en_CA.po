@@ -32,8 +32,13 @@ msgstr "(untitled)"
 
 #. module: bf_federation_gantt
 #: model_terms:ir.ui.view,arch_db:bf_federation_gantt.view_bf_gantt_plan_form_federation
-msgid ".\n                    Il se lit ici : le prochain changement de l'émetteur le remplacera, et il ne se\n                    publie pas au portail."
-msgstr ". It is read-only here: the sender's next change will replace it, and it is not published to the portal."
+msgid ""
+".\n"
+"                    Il se lit ici : le prochain changement de l'émetteur le remplacera, et il ne se\n"
+"                    publie pas au portail."
+msgstr ""
+". It is read-only here: the sender's next change will replace it, and it is "
+"not published to the portal."
 
 #. module: bf_federation_gantt
 #. odoo-python
@@ -46,27 +51,34 @@ msgstr "<p>At %s, the schedule changed: from %s to %s, status %s.</p>"
 #. odoo-python
 #: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
 #: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
-msgid "<p>Échéancier reçu de %s : <b>%s</b>, %s ligne(s). Il se lit ici ; chaque changement de l'émetteur le remplacera.</p>"
-msgstr "<p>Schedule received from %s: <b>%s</b>, %s line(s). It is read-only here; each change by the sender will replace it.</p>"
-
-#. module: bf_federation_gantt
-#: model:ir.model,name:bf_federation_gantt.model_federation_outbox
-msgid "Boîte de sortie de la fédération"
-msgstr "Federation outbox"
-
-#. module: bf_federation_gantt
-#. odoo-python
-#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
-#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
-msgid "Cet échéancier est reçu de %s : il a été partagé avec votre entreprise, pas avec vos clients. Il ne se publie pas au portail."
-msgstr "This schedule is received from %s: it was shared with your company, not with your customers. It is not published to the portal."
+msgid ""
+"<p>Échéancier reçu de %s : <b>%s</b>, %s ligne(s). Il se lit ici ; chaque "
+"changement de l'émetteur le remplacera.</p>"
+msgstr ""
+"<p>Schedule received from %s: <b>%s</b>, %s line(s). It is read-only here; "
+"each change by the sender will replace it.</p>"
 
 #. module: bf_federation_gantt
 #. odoo-python
 #: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
 #: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
-msgid "Cet échéancier est reçu de %s : il se lit ici. Le prochain changement de l'émetteur le remplacerait, et le travail fait dessus serait perdu."
-msgstr "This schedule is received from %s: it is read-only here. The sender's next change would replace it, and any work done on it would be lost."
+msgid ""
+"Cet échéancier est reçu de %s : il a été partagé avec votre entreprise, pas "
+"avec vos clients. Il ne se publie pas au portail."
+msgstr ""
+"This schedule is received from %s: it was shared with your company, not with"
+" your customers. It is not published to the portal."
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid ""
+"Cet échéancier est reçu de %s : il se lit ici. Le prochain changement de "
+"l'émetteur le remplacerait, et le travail fait dessus serait perdu."
+msgstr ""
+"This schedule is received from %s: it is read-only here. The sender's next "
+"change would replace it, and any work done on it would be lost."
 
 #. module: bf_federation_gantt
 #. odoo-python
@@ -97,30 +109,34 @@ msgstr "Kind"
 
 #. module: bf_federation_gantt
 #: model_terms:ir.ui.view,arch_db:bf_federation_gantt.view_bf_gantt_plan_form_federation
-msgid "L'échéancier repart de lui-même quand une ligne bouge. Ce bouton                               le renvoie tel qu'il est, même s'il n'a pas changé."
-msgstr "The schedule is sent again on its own when a line moves. This button sends it as it is, even if it has not changed."
+msgid ""
+"L'échéancier repart de lui-même quand une ligne bouge. Ce bouton"
+"                               le renvoie tel qu'il est, même s'il n'a pas "
+"changé."
+msgstr ""
+"The schedule is sent again on its own when a line moves. This button sends "
+"it as it is, even if it has not changed."
 
 #. module: bf_federation_gantt
 #: model:ir.model.fields,help:bf_federation_gantt.field_bf_gantt_plan__federation_peer_id
-msgid "Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
-msgstr "The peer where this object has a mirror. Clearing the field archives the mirror."
+msgid ""
+"Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
+msgstr ""
+"The peer where this object has a mirror. Clearing the field archives the "
+"mirror."
 
 #. module: bf_federation_gantt
 #. odoo-python
 #: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
 #: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
 msgid "Les lignes de cet échéancier sont reçues de %s : elles se lisent ici."
-msgstr "The lines of this schedule are received from %s: they are read-only here."
+msgstr ""
+"The lines of this schedule are received from %s: they are read-only here."
 
 #. module: bf_federation_gantt
 #: model:ir.model.fields,field_description:bf_federation_gantt.field_bf_gantt_plan__federation_link_id
 msgid "Lien fédéré"
 msgstr "Federated link"
-
-#. module: bf_federation_gantt
-#: model:ir.model,name:bf_federation_gantt.model_bf_gantt_item
-msgid "Ligne d'un échéancier autonome"
-msgstr "Standalone schedule line"
 
 #. module: bf_federation_gantt
 #: model:ir.model.fields,field_description:bf_federation_gantt.field_bf_gantt_plan__federation_origin
@@ -146,13 +162,17 @@ msgstr "Send to the peer again"
 #. odoo-python
 #: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
 #: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
-msgid "Renvoyer un échéancier à un pair demande le rôle de gestionnaire de projet."
+msgid ""
+"Renvoyer un échéancier à un pair demande le rôle de gestionnaire de projet."
 msgstr "Sending a schedule to a peer again requires the project manager role."
 
 #. module: bf_federation_gantt
 #: model:ir.model.fields,help:bf_federation_gantt.field_bf_gantt_plan__federation_is_mirror
-msgid "Un échéancier reçu se lit : la prochaine version de l'émetteur le remplacera."
-msgstr "A received schedule is read-only: the sender's next version will replace it."
+msgid ""
+"Un échéancier reçu se lit : la prochaine version de l'émetteur le "
+"remplacera."
+msgstr ""
+"A received schedule is read-only: the sender's next version will replace it."
 
 #. module: bf_federation_gantt
 #. odoo-python
@@ -177,8 +197,13 @@ msgstr "Standalone schedule"
 #. odoo-python
 #: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
 #: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
-msgid "Échéancier fédéré avec %s : ses lignes, ses couloirs, ses jalons, ses dépendances et leur avancement. Ce qui reste ici : les heures prévues de chaque ligne."
-msgstr "Schedule federated with %s: its lines, lanes, milestones, dependencies and their progress. What stays here: the planned hours of each line."
+msgid ""
+"Échéancier fédéré avec %s : ses lignes, ses couloirs, ses jalons, ses "
+"dépendances et leur avancement. Ce qui reste ici : les heures prévues de "
+"chaque ligne."
+msgstr ""
+"Schedule federated with %s: its lines, lanes, milestones, dependencies and "
+"their progress. What stays here: the planned hours of each line."
 
 #. module: bf_federation_gantt
 #: model:ir.model.fields.selection,name:bf_federation_gantt.selection__federation_outbox__kind__gantt_card

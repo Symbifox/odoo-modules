@@ -4,7 +4,7 @@
         <field name="name">bf.nfc.equipment.list</field>
         <field name="model">bf.nfc.equipment</field>
         <field name="arch" type="xml">
-            <list string="Équipements">
+            <list string="Equipment">
                 <field name="name"/>
                 <field name="reference" optional="show"/>
                 <field name="holder_label"/>
@@ -20,30 +20,30 @@
         <field name="name">bf.nfc.equipment.form</field>
         <field name="model">bf.nfc.equipment</field>
         <field name="arch" type="xml">
-            <form string="Équipement">
+            <form string="Equipment name">
                 <header>
-                    <button name="action_creer_pastilles" type="object" string="Créer la pastille"
+                    <button name="action_creer_pastilles" type="object" string="Create the tag"
                             groups="bf_nfc.group_nfc_manager"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_voir_pastilles" type="object" class="oe_stat_button"
                                 icon="fa-wifi" invisible="not nfc_tag_count">
-                            <field name="nfc_tag_count" widget="statinfo" string="Pastilles"/>
+                            <field name="nfc_tag_count" widget="statinfo" string="Tags"/>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Portable de prêt nº 2, projecteur de la salle A…"/></h1>
+                        <h1><field name="name" placeholder="Loaner laptop #2, room A projector…"/></h1>
                     </div>
                     <group>
-                        <group string="Qui l'a">
+                        <group string="Who has it">
                             <field name="holder_id" widget="many2one_avatar_user" invisible="registre_externe"/>
                             <field name="holder_label" invisible="not registre_externe"/>
                             <field name="since"/>
                         </group>
-                        <group string="Ce que c'est">
+                        <group string="What it is">
                             <field name="reference"/>
                             <field name="place"/>
                             <field name="max_days"/>
@@ -53,12 +53,12 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Prêts" name="prets">
+                        <page string="Loans" name="prets">
                             <field name="loan_ids" readonly="1">
                                 <list>
                                     <field name="holder_label"/>
                                     <field name="borrower_phone" optional="show"/>
-                                    <field name="user_id" widget="many2one_avatar_user" string="Remis par / détenteur" optional="hide"/>
+                                    <field name="user_id" widget="many2one_avatar_user" string="Handed out by / holder" optional="hide"/>
                                     <field name="date_start"/>
                                     <field name="date_end"/>
                                     <field name="duration_hours" widget="float_time"/>
@@ -85,25 +85,25 @@
                 <field name="name"/>
                 <field name="reference"/>
                 <field name="holder_id"/>
-                <filter name="pretes" string="Prêtés" domain="[('holder_id', '!=', False)]"/>
-                <filter name="libres" string="Libres" domain="[('holder_id', '=', False)]"/>
-                <filter name="les_miens" string="Les miens" domain="[('holder_id', '=', uid)]"/>
+                <filter name="pretes" string="On loan" domain="[('holder_id', '!=', False)]"/>
+                <filter name="libres" string="Free" domain="[('holder_id', '=', False)]"/>
+                <filter name="les_miens" string="Mine" domain="[('holder_id', '=', uid)]"/>
             </search>
         </field>
     </record>
 
     <record id="action_bf_nfc_equipment" model="ir.actions.act_window">
-        <field name="name">Équipements</field>
+        <field name="name">Equipment</field>
         <field name="res_model">bf.nfc.equipment</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Enregistrer un premier équipement</p>
-            <p>Un portable, un projecteur, une clé : une pastille dessus, et on sait toujours qui l'a.</p>
+            <p class="o_view_nocontent_smiling_face">Register a first piece of equipment</p>
+            <p>A laptop, a projector, a key: a tag on it, and you always know who has it.</p>
         </field>
     </record>
 
     <record id="action_equipment_creer_pastilles" model="ir.actions.server">
-        <field name="name">Créer des pastilles</field>
+        <field name="name">Create tags</field>
         <field name="model_id" ref="model_bf_nfc_equipment"/>
         <field name="binding_model_id" ref="model_bf_nfc_equipment"/>
         <field name="binding_view_types">list</field>
@@ -112,7 +112,7 @@
         <field name="code">action = records.action_creer_pastilles()</field>
     </record>
 
-    <menuitem id="menu_nfc_equipment" name="Équipements" parent="bf_nfc.menu_nfc_root"
+    <menuitem id="menu_nfc_equipment" name="Equipment" parent="bf_nfc.menu_nfc_root"
               action="action_bf_nfc_equipment" sequence="30"/>
 
     <!-- Tous les prêts, pour répondre à « qui avait le cadenas 7 mardi » sans ouvrir
@@ -121,12 +121,12 @@
         <field name="name">bf.nfc.equipment.loan.list</field>
         <field name="model">bf.nfc.equipment.loan</field>
         <field name="arch" type="xml">
-            <list string="Prêts" create="false" edit="false" decoration-info="not date_end">
+            <list string="Loans" create="false" edit="false" decoration-info="not date_end">
                 <field name="equipment_id"/>
                 <field name="holder_label"/>
                 <field name="borrower_phone" optional="show"/>
                 <field name="borrower_employer" optional="show"/>
-                <field name="user_id" string="Remis par / détenteur" optional="show"/>
+                <field name="user_id" string="Handed out by / holder" optional="show"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
                 <field name="duration_hours" widget="float_time" optional="hide"/>
@@ -143,32 +143,32 @@
                 <field name="borrower_name"/>
                 <field name="borrower_employer"/>
                 <field name="user_id"/>
-                <filter name="en_cours" string="En cours" domain="[('date_end', '=', False)]"/>
-                <filter name="externes" string="Remis sans compte" domain="[('borrower_name', '!=', False)]"/>
-                <filter name="date_start" string="Date de remise" date="date_start"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="par_equipement" string="Équipement" context="{'group_by': 'equipment_id'}"/>
+                <filter name="en_cours" string="In progress" domain="[('date_end', '=', False)]"/>
+                <filter name="externes" string="Handed out without an account" domain="[('borrower_name', '!=', False)]"/>
+                <filter name="date_start" string="Hand-out date" date="date_start"/>
+                <group expand="0" string="Group by">
+                    <filter name="par_equipement" string="Equipment name" context="{'group_by': 'equipment_id'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_bf_nfc_equipment_loan" model="ir.actions.act_window">
-        <field name="name">Prêts</field>
+        <field name="name">Loans</field>
         <field name="res_model">bf.nfc.equipment.loan</field>
         <field name="view_mode">list</field>
     </record>
 
-    <menuitem id="menu_nfc_loans" name="Prêts" parent="bf_nfc.menu_nfc_root"
+    <menuitem id="menu_nfc_loans" name="Loans" parent="bf_nfc.menu_nfc_root"
               action="action_bf_nfc_equipment_loan" sequence="31"/>
 
     <record id="action_report_registre_cadenas" model="ir.actions.report">
-        <field name="name">Registre des remises</field>
+        <field name="name">Hand-out register</field>
         <field name="model">bf.nfc.equipment</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_nfc_loan.report_registre_cadenas</field>
         <field name="report_file">bf_nfc_loan.report_registre_cadenas</field>
-        <field name="print_report_name">'Registre des remises'</field>
+        <field name="print_report_name">'Hand-out register'</field>
         <field name="binding_model_id" ref="model_bf_nfc_equipment"/>
         <field name="binding_type">report</field>
     </record>
@@ -178,21 +178,21 @@
         <t t-call="web.html_container">
             <t t-call="web.basic_layout">
                 <div class="page" style="font-size: 10px;">
-                    <h2 style="font-size: 16px; margin-bottom: 2px;">Registre des remises</h2>
+                    <h2 style="font-size: 16px; margin-bottom: 2px;">Hand-out register</h2>
                     <div class="text-muted" style="margin-bottom: 8px;">
-                        <t t-esc="res_company.name"/> · imprimé le
+                        <t t-esc="res_company.name"/> · printed on
                         <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
                     </div>
                     <table class="table table-sm table-bordered" style="width: 100%;">
                         <thead>
                             <tr>
                                 <th>Identification</th>
-                                <th>Remis à</th>
-                                <th>Téléphone</th>
-                                <th>Employeur</th>
-                                <th>Remis le</th>
-                                <th>Rendu le</th>
-                                <th>Remis par</th>
+                                <th>Handed out to</th>
+                                <th>Phone</th>
+                                <th>Employer</th>
+                                <th>Handed out on</th>
+                                <th>Returned on</th>
+                                <th>Handed out by</th>
                             </tr>
                         </thead>
                         <tbody>

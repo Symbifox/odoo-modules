@@ -7,10 +7,10 @@
         <field name="arch" type="xml">
             <button name="action_confirm" position="before">
                 <button name="action_trainee_confirm" type="object"
-                        string="L'apprenant confirme"
+                        string="The learner confirms"
                         invisible="mode != 'on_the_job' or trainee_confirmed"/>
                 <button name="action_trainer_confirm" type="object"
-                        string="Le formateur confirme"
+                        string="The trainer confirms"
                         invisible="mode != 'on_the_job' or trainer_confirmed"/>
             </button>
             <field name="trainer_partner_id" position="after">

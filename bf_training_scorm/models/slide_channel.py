@@ -19,5 +19,5 @@ class SlideChannel(models.Model):
     #: touche un canal — pas à l'installation, pas aux vues : bien plus tard, sur
     #: une écriture sans rapport apparent avec le module.
     nbr_scorm = fields.Integer(
-        string="Nombre de paquets SCORM", compute="_compute_slides_statistics",
+        string="Number of SCORM packages", compute="_compute_slides_statistics",
         store=True)

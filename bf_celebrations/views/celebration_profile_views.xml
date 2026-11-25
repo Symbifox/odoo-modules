@@ -9,26 +9,26 @@
         <field name="name">bf.celebration.profile.self.form</field>
         <field name="model">bf.celebration.profile</field>
         <field name="arch" type="xml">
-            <form string="Mes célébrations">
+            <form string="My celebrations">
                 <sheet>
                     <div class="oe_title">
-                        <h1>Mes célébrations</h1>
+                        <h1>My celebrations</h1>
                     </div>
                     <div class="alert alert-info" role="status">
-                        Votre réponse n'est visible que par vous. Elle ne
-                        touche pas votre date de naissance au dossier RH,
-                        qui n'est ni lue ni affichée par ce module.
-                        Vous pouvez changer d'idée à tout moment, et le
-                        retrait est immédiat.
+                        Your answer is visible to you alone. It does not
+                        touch your date of birth on the HR record,
+                        which this module neither reads nor shows.
+                        You can change your mind at any time, and the
+                        withdrawal is immediate.
                     </div>
                     <group>
-                        <group string="Ce que je souhaite">
+                        <group string="What I would like">
                             <field name="consent" widget="radio"
                                    nolabel="1"/>
                         </group>
-                        <group string="La date à souligner"
+                        <group string="The date to mark"
                                invisible="consent in ('pending', 'none')">
-                            <label for="celebration_day" string="Jour et mois"/>
+                            <label for="celebration_day" string="Day and month"/>
                             <div class="o_row">
                                 <field name="celebration_day"
                                        required="consent in ('full','quiet')"
@@ -42,19 +42,19 @@
                     </group>
                     <group invisible="consent != 'none'">
                         <div class="text-muted">
-                            Vous ne paraîtrez nulle part, et vous ne recevrez
-                            plus d'invitation à répondre.
+                            You will appear nowhere, and you will no longer
+                            receive invitations to answer.
                         </div>
                     </group>
-                    <group string="Garder mes cartes" invisible="consent == 'none'">
+                    <group string="Keep my cards" invisible="consent == 'none'">
                         <field name="keepsake_email" widget="email"
                                placeholder="vous@exemple.com"/>
                         <div class="text-muted" colspan="2">
-                            Facultatif. Une carte livrée dans le système disparaît
-                            avec votre compte, puis avec la purge prévue par la
-                            politique de conservation. À cette adresse arrive la
-                            même livraison, en PDF et en page à garder. Personne
-                            d'autre ne voit cette adresse.
+                            Optional. A card delivered in the system disappears
+                            with your account, then with the purge set by the
+                            retention policy. The same delivery arrives at this
+                            address, as a PDF and as a page to keep. Nobody
+                            else sees this address.
                         </div>
                     </group>
                     <field name="employee_id" invisible="1"/>
@@ -71,7 +71,7 @@
         <field name="name">bf.celebration.profile.list</field>
         <field name="model">bf.celebration.profile</field>
         <field name="arch" type="xml">
-            <list string="Profils">
+            <list string="Profiles">
                 <field name="employee_id"/>
                 <field name="consent"/>
                 <field name="celebration_day"/>
@@ -83,21 +83,21 @@
     </record>
 
     <record id="action_mon_profil" model="ir.actions.server">
-        <field name="name">Mes célébrations</field>
+        <field name="name">My celebrations</field>
         <field name="model_id" ref="model_bf_celebration_profile"/>
         <field name="state">code</field>
         <field name="code">action = model.action_mon_profil()</field>
     </record>
 
     <record id="action_celebration_profile_admin" model="ir.actions.act_window">
-        <field name="name">Profils de célébration</field>
+        <field name="name">Celebration profiles</field>
         <field name="res_model">bf.celebration.profile</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Rien à voir ici, et c'est voulu</p>
-            <p>La règle d'enregistrement globale limite la lecture à son
-               propre profil. Cette liste ne se remplit que pour le
-               superutilisateur, en dépannage.</p>
+            <p class="o_view_nocontent_smiling_face">Nothing to see here, and that is deliberate</p>
+            <p>The global record rule limits reading to one's
+               own profile. This list only fills up for the
+               superuser, for troubleshooting.</p>
         </field>
     </record>
 

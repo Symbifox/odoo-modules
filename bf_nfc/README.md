@@ -201,6 +201,10 @@ device safeguards. Administration tests run as a tag manager who is NOT a system
 administrator (no rights on `ir.model`), and every shipped template is applied
 with its own example lines.
 
+## Languages (v18.0.2.6.5)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. A device registered from the mobile app without a name is called "Tags" in the user's language.
+
 ## License
 
 Business Source License 1.1, see [LICENSE](LICENSE). Each version converts to

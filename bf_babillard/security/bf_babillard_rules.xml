@@ -9,7 +9,7 @@
          de département n'invalide pas ce cache. Avec la liste, la personne
          mutée ne voyait pas les annonces de son nouveau département. -->
     <record id="rule_post_audience" model="ir.rule">
-        <field name="name">Babillard : ce qui m'est adressé</field>
+        <field name="name">Noticeboard: what is addressed to me</field>
         <field name="model_id" ref="model_bf_babillard_post"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
         <field name="perm_read" eval="True"/>
@@ -29,7 +29,7 @@
     </record>
 
     <record id="rule_post_redacteur" model="ir.rule">
-        <field name="name">Babillard : la rédaction voit tout</field>
+        <field name="name">Noticeboard: the editors see everything</field>
         <field name="model_id" ref="model_bf_babillard_post"/>
         <field name="groups" eval="[(6, 0, [ref('group_babillard_redacteur'), ref('group_babillard_moderation')])]"/>
         <field name="domain_force">[(1, '=', 1)]</field>
@@ -39,27 +39,27 @@
          des règles de groupe : sans elle, une personne d'une autre société lisait
          les annonces « tout le personnel », et sa modération les signalements. -->
     <record id="rule_post_societe" model="ir.rule">
-        <field name="name">Babillard : les publications de mes sociétés</field>
+        <field name="name">Noticeboard: the posts of my companies</field>
         <field name="model_id" ref="model_bf_babillard_post"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 
     <record id="rule_lecture_la_mienne" model="ir.rule">
-        <field name="name">Babillard : mon accusé de lecture</field>
+        <field name="name">Noticeboard: my read receipt</field>
         <field name="model_id" ref="model_bf_babillard_lecture"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
         <field name="domain_force">[('user_id', '=', user.id)]</field>
     </record>
 
     <record id="rule_lecture_redacteur" model="ir.rule">
-        <field name="name">Babillard : la rédaction voit les accusés</field>
+        <field name="name">Noticeboard: the editors see the receipts</field>
         <field name="model_id" ref="model_bf_babillard_lecture"/>
         <field name="groups" eval="[(6, 0, [ref('group_babillard_redacteur')])]"/>
         <field name="domain_force">[(1, '=', 1)]</field>
     </record>
 
     <record id="rule_lecture_societe" model="ir.rule">
-        <field name="name">Babillard : les accusés de mes sociétés</field>
+        <field name="name">Noticeboard: the receipts of my companies</field>
         <field name="model_id" ref="model_bf_babillard_lecture"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
@@ -80,7 +80,7 @@
          ⚠️ L'accusé de lecture, lui, RESTE personnel. C'est une autre table et
          un autre usage : il prouve la diffusion, et sa règle n'a pas bougé. -->
     <record id="rule_geste_audience" model="ir.rule">
-        <field name="name">Babillard : les réactions de ce qui m'est adressé</field>
+        <field name="name">Noticeboard: the reactions on what is addressed to me</field>
         <field name="model_id" ref="model_bf_babillard_geste"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
         <field name="perm_read" eval="True"/>
@@ -100,7 +100,7 @@
     </record>
 
     <record id="rule_geste_redacteur" model="ir.rule">
-        <field name="name">Babillard : la rédaction voit les réactions</field>
+        <field name="name">Noticeboard: the editors see the reactions</field>
         <field name="model_id" ref="model_bf_babillard_geste"/>
         <field name="groups" eval="[(6, 0, [ref('group_babillard_redacteur'), ref('group_babillard_moderation')])]"/>
         <field name="perm_read" eval="True"/>
@@ -114,7 +114,7 @@
          comprise. Une règle par permission : celle-ci ne dit rien de la
          lecture, donc elle ne l'élargit pas. -->
     <record id="rule_geste_le_mien" model="ir.rule">
-        <field name="name">Babillard : je ne pose que mes réactions</field>
+        <field name="name">Noticeboard: I place only my own reactions</field>
         <field name="model_id" ref="model_bf_babillard_geste"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
         <field name="perm_read" eval="False"/>
@@ -125,7 +125,7 @@
     </record>
 
     <record id="rule_geste_societe" model="ir.rule">
-        <field name="name">Babillard : les réactions de mes sociétés</field>
+        <field name="name">Noticeboard: the reactions of my companies</field>
         <field name="model_id" ref="model_bf_babillard_geste"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
@@ -135,7 +135,7 @@
          sondages qu'on n'a pas le droit de lire. Le domaine traverse les
          données pour la raison expliquée en tête de fichier. -->
     <record id="rule_option_audience" model="ir.rule">
-        <field name="name">Babillard : les choix de ce qui m'est adressé</field>
+        <field name="name">Noticeboard: the options on what is addressed to me</field>
         <field name="model_id" ref="model_bf_babillard_option"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
         <field name="perm_read" eval="True"/>
@@ -155,14 +155,14 @@
     </record>
 
     <record id="rule_option_redacteur" model="ir.rule">
-        <field name="name">Babillard : la rédaction voit les choix</field>
+        <field name="name">Noticeboard: the editors see the options</field>
         <field name="model_id" ref="model_bf_babillard_option"/>
         <field name="groups" eval="[(6, 0, [ref('group_babillard_redacteur'), ref('group_babillard_moderation')])]"/>
         <field name="domain_force">[(1, '=', 1)]</field>
     </record>
 
     <record id="rule_option_societe" model="ir.rule">
-        <field name="name">Babillard : les choix de mes sociétés</field>
+        <field name="name">Noticeboard: the options of my companies</field>
         <field name="model_id" ref="model_bf_babillard_option"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
@@ -177,7 +177,7 @@
          exactement comme les réactions depuis la 18.0.1.6.0 : on voit qui a
          voté quoi, et seulement sur ce qui nous est adressé. -->
     <record id="rule_vote_audience" model="ir.rule">
-        <field name="name">Babillard : les voix de ce qui m'est adressé</field>
+        <field name="name">Noticeboard: the votes on what is addressed to me</field>
         <field name="model_id" ref="model_bf_babillard_vote"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
         <field name="perm_read" eval="True"/>
@@ -205,7 +205,7 @@
          propre table. C'est la seule règle de rédaction du module qui porte une
          condition, et elle la porte exprès. -->
     <record id="rule_vote_redacteur" model="ir.rule">
-        <field name="name">Babillard : la rédaction voit les voix nominatives</field>
+        <field name="name">Noticeboard: the editors see the named votes</field>
         <field name="model_id" ref="model_bf_babillard_vote"/>
         <field name="groups" eval="[(6, 0, [ref('group_babillard_redacteur'), ref('group_babillard_moderation')])]"/>
         <field name="perm_read" eval="True"/>
@@ -216,14 +216,14 @@
     </record>
 
     <record id="rule_vote_societe" model="ir.rule">
-        <field name="name">Babillard : les voix de mes sociétés</field>
+        <field name="name">Noticeboard: the votes of my companies</field>
         <field name="model_id" ref="model_bf_babillard_vote"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 
     <!-- Le catalogue : ce qui est partagé, et ce qui appartient à ma société. -->
     <record id="rule_reaction_societe" model="ir.rule">
-        <field name="name">Babillard : les réactions offertes chez moi</field>
+        <field name="name">Noticeboard: the reactions offered in my companies</field>
         <field name="model_id" ref="model_bf_babillard_reaction"/>
         <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
@@ -231,14 +231,14 @@
     <!-- Un signalement est confidentiel : la modération, et elle seule. La personne
          qui signale n'y a plus accès une fois qu'il est parti (voir l'assistant). -->
     <record id="rule_signalement_moderation" model="ir.rule">
-        <field name="name">Babillard : la modération voit les signalements, sauf ceux qui la visent</field>
+        <field name="name">Noticeboard: moderation sees the reports, except those about them</field>
         <field name="model_id" ref="model_bf_babillard_signalement"/>
         <field name="groups" eval="[(6, 0, [ref('group_babillard_moderation')])]"/>
         <field name="domain_force">[('cible_partner_id', '!=', user.partner_id.id)]</field>
     </record>
 
     <record id="rule_signalement_administration" model="ir.rule">
-        <field name="name">Babillard : l'administration voit les signalements remontés</field>
+        <field name="name">Noticeboard: the administration sees the escalated reports</field>
         <field name="model_id" ref="model_bf_babillard_signalement"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_system')])]"/>
         <field name="domain_force">[('escalade', '=', True), ('cible_partner_id', '!=', user.partner_id.id)]</field>
@@ -248,14 +248,14 @@
          Odoo 18 : sans cette règle, tout le personnel lisait les motifs des
          dialogues en attente de purge. -->
     <record id="rule_assistant_le_mien" model="ir.rule">
-        <field name="name">Babillard : mon dialogue de signalement</field>
+        <field name="name">Noticeboard: my report dialog</field>
         <field name="model_id" ref="model_bf_babillard_signalement_assistant"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
         <field name="domain_force">[('create_uid', '=', user.id)]</field>
     </record>
 
     <record id="rule_signalement_societe" model="ir.rule">
-        <field name="name">Babillard : les signalements de mes sociétés</field>
+        <field name="name">Noticeboard: the reports of my companies</field>
         <field name="model_id" ref="model_bf_babillard_signalement"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>

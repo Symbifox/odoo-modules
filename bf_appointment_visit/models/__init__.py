@@ -1,3 +1,4 @@
+from . import langue
 from . import bf_visit_listing
 from . import bf_visit_window
 from . import bf_visit

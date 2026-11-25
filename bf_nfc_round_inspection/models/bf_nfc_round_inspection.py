@@ -16,8 +16,10 @@ from odoo.addons.bf_nfc_inspection.models.bf_nfc_gesture import CHOIX_ENREGISTRE
 class BfNfcRoundCheckpoint(models.Model):
     _inherit = "bf.nfc.round.checkpoint"
 
-    checklist_id = fields.Many2one("bf.nfc.checklist", string="Grille", ondelete="restrict",
-                                   help="Remplie à chaque passage : le point devient une ligne de registre.")
+    checklist_id = fields.Many2one("bf.nfc.checklist", string="Checklist", ondelete="restrict",
+                                   help="Filled in at each visit: the "
+                                        "checkpoint becomes a register "
+                                        "line.")
 
 
 class BfNfcGesture(models.Model):

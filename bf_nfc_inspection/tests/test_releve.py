@@ -167,6 +167,24 @@ class TestReleve(_Base, TransactionCase):
         Tag._cron_guetter_releves()
         self.assertEqual(len(self.pastille.activity_ids), 1, "Une seule alerte par période manquée.")
 
+    def test_le_guet_ecrit_dans_la_langue_du_responsable(self):
+        """le guet tourne sans langue au contexte. La note mêlait le français de `_()`
+        au nom de la grille et au rythme lus en anglais."""
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_nfc_inspection"], ["fr_CA"], overwrite=True)
+        self.env.cr.execute("UPDATE bf_nfc_tag SET create_date = %s WHERE id = %s",
+                            (fields.Datetime.now() - timedelta(days=40), self.pastille.id))
+        self.pastille.invalidate_recordset()
+        self.gestion.lang = "fr_CA"
+        self.env(context={})["bf.nfc.tag"]._cron_guetter_releves()
+        note = self.pastille.activity_ids.note or ""
+        self.assertIn("est à relever", note)
+        rythme_fr = dict(self.env["bf.nfc.checklist"]._fields["periode"]._description_selection(
+            self.env(context={"lang": "fr_CA"})))["mois"].lower()
+        self.assertNotEqual(rythme_fr, "every month", "catalogue non chargé : l'essai ne mesure rien")
+        self.assertIn(rythme_fr, note)
+        self.assertNotIn("every month", note)
+
     def test_une_pastille_releve_ne_declenche_pas_le_guet(self):
         self.env.cr.execute("UPDATE bf_nfc_tag SET create_date = %s WHERE id = %s",
                             (fields.Datetime.now() - timedelta(days=40), self.pastille.id))

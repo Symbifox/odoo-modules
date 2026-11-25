@@ -14,26 +14,27 @@ from odoo.exceptions import ValidationError
 
 class BfNfcRoom(models.Model):
     _name = "bf.nfc.room"
-    _description = "Salle réservable par pastille"
+    _description = "Room bookable by tag"
     _inherit = ["bf.nfc.target.mixin"]
     _order = "name"
 
-    name = fields.Char(string="Salle", required=True)
-    place = fields.Char(string="Où", help="Étage, aile : ce qu'on dit pour y envoyer quelqu'un.")
-    capacity = fields.Integer(string="Places")
+    name = fields.Char(string="Room", required=True)
+    place = fields.Char(string="Where", help="Floor, wing: what you say to "
+                                          "send someone there.")
+    capacity = fields.Integer(string="Seats")
     active = fields.Boolean(default=True)
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company, required=True)
     checkin_delay = fields.Integer(
-        string="Délai de confirmation (min)", default=10,
-        help="Une réservation que personne ne confirme par la pastille dans ce délai "
-             "après son début perd sa salle.")
+        string="Confirmation delay (min)", default=10,
+        help="A booking nobody confirms with the tag within this delay "
+             "after it starts loses its room.")
     require_checkin = fields.Boolean(
-        string="Libérer les réservations non confirmées", default=True,
-        help="Décoché : une réservation garde sa salle même si personne ne vient.")
+        string="Release unconfirmed bookings", default=True,
+        help="Unchecked: a booking keeps its room even if nobody shows up.")
     durations = fields.Char(
-        string="Durées proposées (min)", default="30,60",
-        help="Les boutons « Prendre » de la porte, en minutes, séparés par des virgules.")
-    event_ids = fields.One2many("calendar.event", "bf_nfc_room_id", string="Réservations")
+        string="Offered durations (min)", default="30,60",
+        help="The door's “Take” buttons, in minutes, separated by commas.")
+    event_ids = fields.One2many("calendar.event", "bf_nfc_room_id", string="Bookings")
     note = fields.Text()
 
     def _durees(self):
@@ -68,8 +69,9 @@ class BfNfcRoom(models.Model):
                 evenement.bf_nfc_room_id = False
                 evenement.message_post(
                     body=Markup("<p>%s</p>") % escape(_(
-                        "Salle « %(salle)s » libérée : personne n'a confirmé sa présence par la "
-                        "pastille dans les %(delai)s minutes.", salle=salle.name,
+                        "Room “%(salle)s” released: nobody confirmed "
+                        "their presence with the tag within %(delai)s "
+                        "minutes.", salle=salle.name,
                         delai=salle.checkin_delay or 10)),
                     message_type="comment", subtype_xmlid="mail.mt_note")
 
@@ -77,8 +79,8 @@ class BfNfcRoom(models.Model):
 class CalendarEvent(models.Model):
     _inherit = "calendar.event"
 
-    bf_nfc_room_id = fields.Many2one("bf.nfc.room", string="Salle", index=True, tracking=True)
-    bf_nfc_checkin = fields.Datetime(string="Confirmée à la porte", copy=False)
+    bf_nfc_room_id = fields.Many2one("bf.nfc.room", string="Room", index=True, tracking=True)
+    bf_nfc_checkin = fields.Datetime(string="Confirmed at the door", copy=False)
 
     @api.constrains("bf_nfc_room_id", "start", "stop")
     def _check_salle_libre(self):
@@ -90,7 +92,8 @@ class CalendarEvent(models.Model):
             ], limit=1)
             if conflit:
                 raise ValidationError(_(
-                    "La salle « %(salle)s » est déjà réservée de %(debut)s à %(fin)s.",
+                    "The room “%(salle)s” is already booked from "
+                    "%(debut)s to %(fin)s.",
                     salle=evenement.bf_nfc_room_id.name,
                     debut=fields.Datetime.context_timestamp(self, conflit.start).strftime("%H:%M"),
                     fin=fields.Datetime.context_timestamp(self, conflit.stop).strftime("%H:%M")))

@@ -4,13 +4,13 @@
         <field name="name">bf.nfc.gesture.list</field>
         <field name="model">bf.nfc.gesture</field>
         <field name="arch" type="xml">
-            <list string="Gestes">
+            <list string="Gestures">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="code"/>
                 <field name="kind"/>
-                <field name="writes" string="Écrit"/>
-                <field name="needs_target" string="Cible"/>
+                <field name="writes" string="Writes"/>
+                <field name="needs_target" string="Target"/>
             </list>
         </field>
     </record>
@@ -19,7 +19,7 @@
         <field name="name">bf.nfc.gesture.form</field>
         <field name="model">bf.nfc.gesture</field>
         <field name="arch" type="xml">
-            <form string="Geste">
+            <form string="Gesture">
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
@@ -51,7 +51,7 @@
     </record>
 
     <record id="action_bf_nfc_gesture" model="ir.actions.act_window">
-        <field name="name">Gestes</field>
+        <field name="name">Gestures</field>
         <field name="res_model">bf.nfc.gesture</field>
         <field name="view_mode">list,form</field>
     </record>

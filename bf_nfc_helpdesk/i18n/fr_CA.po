@@ -1,141 +1,31 @@
-#
+# Translation of Pastilles NFC : signaler un problème - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: bf_nfc_helpdesk 18.0.1.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 04:56+0000\n"
-"PO-Revision-Date: 2026-09-14 04:56+0000\n"
+"POT-Creation-Date: 2026-11-20 04:09+0000\n"
+"PO-Revision-Date: 2026-11-20 04:09+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_nfc_helpdesk
 #. odoo-python
 #: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
-msgid "%(quoi)s : %(texte)s"
+msgid "%(quoi)s: %(texte)s"
 msgstr "%(quoi)s : %(texte)s"
-
-#. module: bf_nfc_helpdesk
-#: model:bf.nfc.gesture,description:bf_nfc_helpdesk.gesture_ticket
-msgid ""
-"Approcher le téléphone demande une phrase, et le billet naît rempli : le "
-"client de la fiche, l'endroit, qui a signalé et quand. Dans un menu, "
-"{\"texte_fixe\": \"Plus de papier\"} crée le billet sans rien demander."
-msgstr ""
-"Approcher le téléphone demande une phrase, et le billet naît rempli : le "
-"client de la fiche, l'endroit, qui a signalé et quand. Dans un menu, "
-"{\"texte_fixe\": \"Plus de papier\"} crée le billet sans rien demander."
-
-#. module: bf_nfc_helpdesk
-#. odoo-python
-#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
-msgid "Billet %s créé. Merci, c'est signalé."
-msgstr "Billet %s créé. Merci, c'est signalé."
-
-#. module: bf_nfc_helpdesk
-#. odoo-python
-#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
-msgid "Cette pastille ne désigne aucune fiche."
-msgstr "Cette pastille ne désigne aucune fiche."
-
-#. module: bf_nfc_helpdesk
-#. odoo-python
-#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
-msgid "Décrire le problème"
-msgstr "Décrire le problème"
-
-#. module: bf_nfc_helpdesk
-#. odoo-python
-#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
-msgid "Décrivez le problème en une phrase avant d'envoyer."
-msgstr "Décrivez le problème en une phrase avant d'envoyer."
-
-#. module: bf_nfc_helpdesk
-#. odoo-python
-#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
-msgid "Endroit : %s"
-msgstr "Endroit : %s"
-
-#. module: bf_nfc_helpdesk
-#. odoo-python
-#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
-msgid "Envoyé en différé : le téléphone n'avait pas de réseau."
-msgstr "Envoyé en différé : le téléphone n'avait pas de réseau."
-
-#. module: bf_nfc_helpdesk
-#. odoo-python
-#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
-msgid "Fiche : %s"
-msgstr "Fiche : %s"
-
-#. module: bf_nfc_helpdesk
-#: model:ir.model,name:bf_nfc_helpdesk.model_bf_nfc_gesture
-msgid "Geste déclenché par une pastille NFC"
-msgstr "Geste déclenché par une pastille NFC"
-
-#. module: bf_nfc_helpdesk
-#: model:bf.nfc.template,name:bf_nfc_helpdesk.gabarit_imprimante
-msgid "Imprimante ou photocopieur en panne"
-msgstr "Imprimante ou photocopieur en panne"
-
-#. module: bf_nfc_helpdesk
-#: model:bf.nfc.template,exemple:bf_nfc_helpdesk.gabarit_signalement_bris
-msgid ""
-"Laveuse 1 ; buanderie du sous-sol\n"
-"Porte du garage ; stationnement\n"
-"Interphone ; hall"
-msgstr ""
-"Laveuse 1 ; buanderie du sous-sol\n"
-"Porte du garage ; stationnement\n"
-"Interphone ; hall"
-
-#. module: bf_nfc_helpdesk
-#: model:ir.model.fields,field_description:bf_nfc_helpdesk.field_bf_nfc_gesture__kind
-msgid "Nature"
-msgstr "Nature"
-
-#. module: bf_nfc_helpdesk
-#: model:helpdesk.ticket.channel,name:bf_nfc_helpdesk.channel_pastille
-msgid "Pastille"
-msgstr "Pastille"
-
-#. module: bf_nfc_helpdesk
-#: model:bf.nfc.template,exemple:bf_nfc_helpdesk.gabarit_imprimante
-msgid ""
-"Photocopieur ; 2e étage\n"
-"Imprimante couleur ; accueil"
-msgstr ""
-"Photocopieur ; 2e étage\n"
-"Imprimante couleur ; accueil"
-
-#. module: bf_nfc_helpdesk
-#: model:bf.nfc.template,name:bf_nfc_helpdesk.gabarit_signalement_bris
-msgid "Signalement de bris par les occupants"
-msgstr "Signalement de bris par les occupants"
-
-#. module: bf_nfc_helpdesk
-#. odoo-python
-#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
-#: model:bf.nfc.gesture,name:bf_nfc_helpdesk.gesture_ticket
-#: model:ir.model.fields.selection,name:bf_nfc_helpdesk.selection__bf_nfc_gesture__kind__ticket
-msgid "Signaler un problème"
-msgstr "Signaler un problème"
-
-#. module: bf_nfc_helpdesk
-#. odoo-python
-#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
-msgid "Signalé par %(qui)s le %(quand)s, par la pastille « %(pastille)s »."
-msgstr "Signalé par %(qui)s le %(quand)s, par la pastille « %(pastille)s »."
 
 #. module: bf_nfc_helpdesk
 #: model:bf.nfc.template,description:bf_nfc_helpdesk.gabarit_imprimante
 msgid ""
-"Une pastille sur chaque appareil. Bourrage, toner, écran d'erreur : une "
-"phrase, et le billet part avec l'appareil et l'endroit déjà remplis."
+"A tag on each device. Paper jam, toner, error screen: one sentence, and the "
+"ticket goes out with the device and the place already filled in."
 msgstr ""
 "Une pastille sur chaque appareil. Bourrage, toner, écran d'erreur : une "
 "phrase, et le billet part avec l'appareil et l'endroit déjà remplis."
@@ -143,12 +33,120 @@ msgstr ""
 #. module: bf_nfc_helpdesk
 #: model:bf.nfc.template,description:bf_nfc_helpdesk.gabarit_signalement_bris
 msgid ""
-"Une pastille sur la laveuse, la porte du garage, l'interphone. L'occupant la"
-" tape, décrit le problème en une phrase, et un billet rempli (l'endroit, "
-"l'heure, la fiche de l'immeuble) arrive à l'équipe de soutien. Les occupants"
-" n'ont pas de compte : gravez ces pastilles sur des puces signées."
+"A tag on the washer, the garage door, the intercom. The occupant taps it, "
+"describes the problem in one sentence, and a filled-in ticket (the place, "
+"the time, the building record) reaches the support team. Occupants have no "
+"account: engrave these tags on signed chips."
 msgstr ""
 "Une pastille sur la laveuse, la porte du garage, l'interphone. L'occupant la"
 " tape, décrit le problème en une phrase, et un billet rempli (l'endroit, "
 "l'heure, la fiche de l'immeuble) arrive à l'équipe de soutien. Les occupants"
 " n'ont pas de compte : gravez ces pastilles sur des puces signées."
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,name:bf_nfc_helpdesk.gabarit_signalement_bris
+msgid "Breakdown reports from occupants"
+msgstr "Signalement de bris par les occupants"
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.gesture,description:bf_nfc_helpdesk.gesture_ticket
+msgid ""
+"Bringing the phone close asks for one sentence, and the ticket is created "
+"filled in: the record's customer, the place, who reported it and when. In a "
+"menu, {\"texte_fixe\": \"Out of paper\"} creates the ticket without asking "
+"anything."
+msgstr ""
+"Approcher le téléphone demande une phrase, et le billet naît rempli : le "
+"client de la fiche, l'endroit, qui a signalé et quand. Dans un menu, "
+"{\"texte_fixe\": \"Plus de papier\"} crée le billet sans rien demander."
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Describe the problem"
+msgstr "Décrire le problème"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Describe the problem in one sentence before sending."
+msgstr "Décrivez le problème en une phrase avant d'envoyer."
+
+#. module: bf_nfc_helpdesk
+#: model:ir.model.fields,field_description:bf_nfc_helpdesk.field_bf_nfc_gesture__kind
+msgid "Kind"
+msgstr "Nature"
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,exemple:bf_nfc_helpdesk.gabarit_imprimante
+msgid ""
+"Photocopier ; 2nd floor\n"
+"Colour printer ; reception"
+msgstr ""
+"Photocopieur ; 2e étage\n"
+"Imprimante couleur ; accueil"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Place: %s"
+msgstr "Endroit : %s"
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,name:bf_nfc_helpdesk.gabarit_imprimante
+msgid "Printer or photocopier out of order"
+msgstr "Imprimante ou photocopieur en panne"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Record: %s"
+msgstr "Fiche : %s"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+#: model:bf.nfc.gesture,name:bf_nfc_helpdesk.gesture_ticket
+#: model:ir.model.fields.selection,name:bf_nfc_helpdesk.selection__bf_nfc_gesture__kind__ticket
+msgid "Report a problem"
+msgstr "Signaler un problème"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Reported by %(qui)s on %(quand)s, with the tag “%(pastille)s”."
+msgstr "Signalé par %(qui)s le %(quand)s, par la pastille « %(pastille)s »."
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Sent later: the phone had no network."
+msgstr "Envoyé en différé : le téléphone n'avait pas de réseau."
+
+#. module: bf_nfc_helpdesk
+#: model:helpdesk.ticket.channel,name:bf_nfc_helpdesk.channel_pastille
+msgid "Tag"
+msgstr "Pastille"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "This tag points to no record."
+msgstr "Cette pastille ne désigne aucune fiche."
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Ticket %s created. Thanks, it has been reported."
+msgstr "Billet %s créé. Merci, c'est signalé."
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,exemple:bf_nfc_helpdesk.gabarit_signalement_bris
+msgid ""
+"Washer 1 ; basement laundry room\n"
+"Garage door ; parking\n"
+"Intercom ; lobby"
+msgstr ""
+"Laveuse 1 ; buanderie du sous-sol\n"
+"Porte du garage ; stationnement\n"
+"Interphone ; hall"

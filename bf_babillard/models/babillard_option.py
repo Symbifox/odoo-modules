@@ -21,28 +21,28 @@ class BabillardOption(models.Model):
     """
 
     _name = "bf.babillard.option"
-    _description = "Choix offert par un sondage du babillard"
+    _description = "Option offered by a noticeboard poll"
     _order = "post_id, sequence, id"
 
     post_id = fields.Many2one(
-        "bf.babillard.post", string="Publication", required=True,
+        "bf.babillard.post", string="Post", required=True,
         ondelete="cascade", index=True)
-    name = fields.Char("Choix", required=True, translate=False)
-    sequence = fields.Integer("Ordre", default=10)
+    name = fields.Char("Options", required=True, translate=False)
+    sequence = fields.Integer("Sequence", default=10)
     propose_par_id = fields.Many2one(
-        "res.users", string="Proposé par", readonly=True, ondelete="set null",
+        "res.users", string="Suggested by", readonly=True, ondelete="set null",
         groups="bf_babillard.group_babillard_redacteur",
-        help="Vide quand l'option vient de la rédaction avec la publication. "
-             "Renseigné quand quelqu'un de l'audience l'a ajoutée.")
+        help="Empty when the option comes from the editors with the post. "
+             "Filled in when somebody in the audience added it.")
     # Portée pour la règle multi-société : une option suit sa publication.
     company_id = fields.Many2one(
-        related="post_id.company_id", store=True, string="Société")
+        related="post_id.company_id", store=True, string="Company")
     vote_ids = fields.One2many(
         "bf.babillard.vote", "option_id", string="Votes")
 
     _sql_constraints = [
         ("libelle_non_vide", "CHECK (length(trim(name)) > 0)",
-         "Un choix sans texte n'est pas un choix."),
+         "An option with no text is not an option."),
     ]
 
     @api.constrains("post_id")
@@ -56,4 +56,4 @@ class BabillardOption(models.Model):
         for option in self:
             if option.post_id.type_publication != "sondage":
                 raise ValidationError(self.env._(
-                    "Seule une publication de type « Sondage » porte des choix."))
+                    "Only a post of type \"Poll\" carries options."))

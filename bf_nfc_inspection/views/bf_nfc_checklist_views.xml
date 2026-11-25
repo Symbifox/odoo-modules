@@ -4,12 +4,12 @@
         <field name="name">bf.nfc.checklist.list</field>
         <field name="model">bf.nfc.checklist</field>
         <field name="arch" type="xml">
-            <list string="Grilles de relevé">
+            <list string="Checklists">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="periode"/>
                 <field name="responsible_id" widget="many2one_avatar_user" optional="show"/>
-                <field name="item_count" string="Éléments"/>
+                <field name="item_count" string="Items"/>
                 <field name="a_valider" optional="show"/>
             </list>
         </field>
@@ -19,16 +19,15 @@
         <field name="name">bf.nfc.checklist.form</field>
         <field name="model">bf.nfc.checklist</field>
         <field name="arch" type="xml">
-            <form string="Grille de relevé">
+            <form string="Inspection checklist">
                 <sheet>
-                    <widget name="web_ribbon" title="Retirée" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Retired" bg_color="text-bg-danger" invisible="active"/>
                     <div class="alert alert-warning" role="status" invisible="not a_valider">
-                        Grille livrée comme point de départ : confirmez ses éléments et son rythme
-                        contre la norme et l'équipement réels, puis décochez « À valider ».
+                        Checklist delivered as a starting point: confirm its items and frequency against the actual standard and equipment, then uncheck “To validate”.
                     </div>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Extincteur portatif : vérification mensuelle"/></h1>
+                        <h1><field name="name" placeholder="Portable fire extinguisher: monthly check"/></h1>
                     </div>
                     <group>
                         <group>
@@ -38,12 +37,12 @@
                             <field name="active" invisible="1"/>
                         </group>
                         <group>
-                            <field name="reference" placeholder="La règle que ce relevé prouve"/>
+                            <field name="reference" placeholder="The rule this reading proves"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Éléments" name="elements">
+                        <page string="Items" name="elements">
                             <field name="item_ids">
                                 <list editable="bottom">
                                     <field name="sequence" widget="handle"/>
@@ -71,7 +70,7 @@
     </record>
 
     <record id="action_bf_nfc_checklist" model="ir.actions.act_window">
-        <field name="name">Grilles de relevé</field>
+        <field name="name">Checklists</field>
         <field name="res_model">bf.nfc.checklist</field>
         <field name="view_mode">list,form</field>
     </record>
@@ -87,7 +86,7 @@
                        required="gesture_kind == 'reading'"/>
             </field>
             <xpath expr="//notebook/page[@name='journal']" position="before">
-                <page string="Relevés" name="releves" invisible="gesture_kind != 'reading'">
+                <page string="Readings" name="releves" invisible="gesture_kind != 'reading'">
                     <field name="reading_ids" readonly="1">
                         <list decoration-danger="state == 'anomalie'" decoration-muted="state == 'corrige'">
                             <field name="tapped_at"/>
@@ -101,6 +100,6 @@
         </field>
     </record>
 
-    <menuitem id="menu_nfc_checklists" name="Grilles de relevé" parent="bf_nfc.menu_nfc_config"
+    <menuitem id="menu_nfc_checklists" name="Checklists" parent="bf_nfc.menu_nfc_config"
               action="action_bf_nfc_checklist" sequence="12"/>
 </odoo>

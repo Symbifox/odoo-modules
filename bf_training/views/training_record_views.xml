@@ -4,7 +4,7 @@
         <field name="name">bf.training.record.list</field>
         <field name="model">bf.training.record</field>
         <field name="arch" type="xml">
-            <list string="Réalisations"
+            <list string="Completions"
                   decoration-danger="expiry_state == 'expired'"
                   decoration-warning="expiry_state == 'expiring'"
                   decoration-muted="state == 'cancelled'">
@@ -13,8 +13,8 @@
                 <field name="activity_id"/>
                 <field name="category_id" optional="hide"/>
                 <field name="mode" optional="hide"/>
-                <field name="hours" sum="Heures"/>
-                <field name="total_cost" sum="Coût" optional="show" widget="monetary"/>
+                <field name="hours" sum="Hours"/>
+                <field name="total_cost" sum="Cost" optional="show" widget="monetary"/>
                 <field name="currency_id" column_invisible="1"/>
                 <field name="date_expiry" optional="show"/>
                 <field name="expiry_state" widget="badge"
@@ -33,25 +33,25 @@
         <field name="name">bf.training.record.form</field>
         <field name="model">bf.training.record</field>
         <field name="arch" type="xml">
-            <form string="Réalisation">
+            <form string="Completion">
                 <header>
-                    <button name="action_confirm" type="object" string="Confirmer"
+                    <button name="action_confirm" type="object" string="Confirm"
                             class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_reset" type="object" string="Remettre en brouillon"
+                    <button name="action_reset" type="object" string="Reset to draft"
                             invisible="state == 'draft'"/>
-                    <button name="action_cancel" type="object" string="Annuler"
+                    <button name="action_cancel" type="object" string="Cancel"
                             invisible="state == 'cancelled'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Périmée" bg_color="text-bg-danger"
+                    <widget name="web_ribbon" title="Expired" bg_color="text-bg-danger"
                             invisible="expiry_state != 'expired'"/>
                     <div class="oe_title">
                         <label for="activity_id"/>
-                        <h1><field name="activity_id" class="w-100" placeholder="Quelle formation ?"/></h1>
+                        <h1><field name="activity_id" class="w-100" placeholder="Which training?"/></h1>
                     </div>
                     <group>
-                        <group string="Qui, quand, combien">
+                        <group string="Who, when, how much">
                             <field name="employee_id"/>
                             <field name="date_done"/>
                             <field name="hours"/>
@@ -59,7 +59,7 @@
                             <field name="category_id" readonly="1"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
-                        <group string="La preuve">
+                        <group string="The proof">
                             <field name="provider_partner_id"/>
                             <field name="certificate_number"/>
                             <field name="date_issued"/>
@@ -68,12 +68,12 @@
                         </group>
                     </group>
                     <div class="alert alert-warning" role="alert" invisible="is_complete">
-                        Il manque <field name="missing_info" readonly="1" nolabel="1" class="oe_inline"/>.
-                        La ligne reste au registre, et elle sort des totaux : ce qui
-                        manque ne vaut pas zéro.
+                        Missing <field name="missing_info" readonly="1" nolabel="1" class="oe_inline"/>.
+                        The line stays in the register and drops out of the totals: what
+                        is missing is not worth zero.
                     </div>
                     <group>
-                        <group string="Coût">
+                        <group string="Cost">
                             <field name="hourly_cost" widget="monetary"/>
                             <field name="salary_cost" widget="monetary"/>
                             <field name="payroll_charge_rate"/>
@@ -83,7 +83,7 @@
                             <field name="currency_id" invisible="1"/>
                             <field name="is_complete" invisible="1"/>
                         </group>
-                        <group string="Encadrement">
+                        <group string="Supervision">
                             <field name="plan_id"/>
                             <field name="support_provided"/>
                             <field name="trainer_employee_id"/>
@@ -91,12 +91,12 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Pièces justificatives" name="pieces">
+                        <page string="Supporting documents" name="pieces">
                             <field name="attachment_ids" widget="many2many_binary"/>
                             <div class="text-muted">
-                                L'attestation reçue de l'extérieur se range ici. Elle se
-                                conserve six ans après la dernière année à laquelle elle
-                                se rapporte.
+                                A certificate received from outside is filed here. It is
+                                kept for six years after the last year it relates
+                                to.
                             </div>
                         </page>
                         <page string="Note" name="note">
@@ -117,34 +117,33 @@
                 <field name="activity_id"/>
                 <field name="provider_partner_id"/>
                 <field name="certificate_number"/>
-                <filter name="confirmees" string="Confirmées" domain="[('state', '=', 'confirmed')]"/>
-                <filter name="incompletes" string="Incomplètes" domain="[('is_complete', '=', False)]"/>
+                <filter name="confirmees" string="Confirmed records" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="incompletes" string="Incomplete records" domain="[('is_complete', '=', False)]"/>
                 <separator/>
-                <filter name="perimees" string="Périmées" domain="[('expiry_state', '=', 'expired')]"/>
-                <filter name="expirent" string="Expirent bientôt" domain="[('expiry_state', '=', 'expiring')]"/>
+                <filter name="perimees" string="Expired records" domain="[('expiry_state', '=', 'expired')]"/>
+                <filter name="expirent" string="Expiring soon" domain="[('expiry_state', '=', 'expiring')]"/>
                 <separator/>
-                <filter name="cette_annee" string="Cette année civile"
+                <filter name="cette_annee" string="This calendar year"
                         domain="[('date_done', '&gt;=', (context_today()).strftime('%Y-01-01')),
                                  ('date_done', '&lt;=', (context_today()).strftime('%Y-12-31'))]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_employee" string="Personne" context="{'group_by': 'employee_id'}"/>
-                    <filter name="group_activity" string="Activité" context="{'group_by': 'activity_id'}"/>
-                    <filter name="group_category" string="Catégorie" context="{'group_by': 'category_id'}"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_employee" string="Person" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_activity" string="Activity" context="{'group_by': 'activity_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
                     <filter name="group_date" string="Date" context="{'group_by': 'date_done:year'}"/>
                 </group>
             </search>
         </field>
     </record>
     <record id="action_training_record" model="ir.actions.act_window">
-        <field name="name">Registre</field>
+        <field name="name">Register</field>
         <field name="res_model">bf.training.record</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_training_record_search"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Ouvrir le registre</p>
-            <p>Une ligne par formation suivie, avec la vraie date, les heures et la
-               pièce. Un renouvellement est une ligne de plus, jamais une ligne
-               réécrite.</p>
+            <p class="o_view_nocontent_smiling_face">Open the register</p>
+            <p>One line per training completed, with the real date, the hours and
+               the document. A renewal is one more line, never a rewritten one.</p>
         </field>
     </record>
 </odoo>

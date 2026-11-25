@@ -205,3 +205,17 @@ class TestFederationTimesheet(TestFederation):
         recu.invalidate_recordset()
         self.assertEqual(recu.version, "1.0")
         self.assertEqual(recu.name, "Relevé du pair")
+
+    def test_l_empreinte_ne_change_pas_avec_la_bascule(self):
+        """l'empreinte d'un relevé contient son regroupement. Calculée sur le libellé
+        anglais, elle changeait après la montée et un relevé inchangé repartait chez le client.
+        Elle se calcule sur les libellés français d'avant, quelle que soit la langue."""
+        import hashlib
+        self.env["res.lang"]._activate_lang("fr_CA")
+        Assistant = type(self.env["federation.timesheet.statement"])
+        for langue in ("en_US", "fr_CA"):
+            s = self._assistant().with_context(lang=langue)._statement()
+            avant = {k: v for k, v in s.items() if k not in ("company", "group_key")}
+            avant["group_by"] = "Par tâche"
+            attendue = hashlib.sha256(repr(sorted(avant.items())).encode("utf-8")).hexdigest()
+            self.assertEqual(Assistant._fingerprint(s), attendue, langue)

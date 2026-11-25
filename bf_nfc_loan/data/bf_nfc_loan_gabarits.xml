@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
     <record id="gabarit_cadenas" model="bf.nfc.template">
-        <field name="name">Registre des cadenas</field>
+        <field name="name">Padlock register</field>
         <field name="secteur">sst</field>
         <field name="sequence">20</field>
         <field name="recette">equipements</field>
         <field name="registre_externe" eval="True"/>
-        <field name="reference">Règlement sur la santé et la sécurité du travail (S-2.1, r. 13, art. 205)</field>
-        <field name="description">Une pastille par cadenas à cléage unique sans nom. La personne qui remet le cadenas tape sa pastille et nomme qui le reçoit (nom, téléphone, employeur) ; le retour se confirme d'un second tapotement. Le registre des remises s'imprime depuis les équipements et porte les colonnes du règlement.</field>
-        <field name="exemple">Cadenas 01 ; armoire de cadenassage
-Cadenas 02 ; armoire de cadenassage
-Cadenas 03 ; armoire de cadenassage</field>
+        <field name="reference">Regulation respecting occupational health and safety (S-2.1, r. 13, s. 205)</field>
+        <field name="description">One tag per unnamed single-key padlock. The person handing out the padlock taps its tag and names who receives it (name, phone, employer); the return is confirmed with a second tap. The hand-out register is printed from the equipment list and carries the columns the regulation requires.</field>
+        <field name="exemple">Padlock 01 ; lockout cabinet
+Padlock 02 ; lockout cabinet
+Padlock 03 ; lockout cabinet</field>
     </record>
 
     <record id="gabarit_pret_materiel" model="bf.nfc.template">
-        <field name="name">Prêt de matériel</field>
+        <field name="name">Equipment loan</field>
         <field name="secteur">bureau</field>
         <field name="sequence">10</field>
         <field name="recette">equipements</field>
         <field name="max_days">7</field>
-        <field name="description">Portables de prêt, projecteurs, caméras, clés. Libre, on le prend d'un tapotement ; à soi, on le rend. Au-delà de sept jours, la personne qui le garde reçoit un rappel.</field>
-        <field name="exemple">Portable de prêt 1 ; armoire de l'accueil
-Projecteur ; salle A
-Clé de la remise ; accueil</field>
+        <field name="description">Loaner laptops, projectors, cameras, keys. If it is free, you take it with a tap; if it is yours, you return it. After seven days, the person keeping it gets a reminder.</field>
+        <field name="exemple">Loaner laptop 1 ; reception cabinet
+Projector ; room A
+Shed key ; reception</field>
     </record>
 </odoo>

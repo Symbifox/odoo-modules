@@ -4,12 +4,12 @@
         <field name="name">bf.nfc.round.list</field>
         <field name="model">bf.nfc.round</field>
         <field name="arch" type="xml">
-            <list string="Tournées">
+            <list string="Rounds">
                 <field name="name"/>
                 <field name="responsible_id" widget="many2one_avatar_user"/>
                 <field name="schedule"/>
                 <field name="start_hour" widget="float_time" invisible="schedule == 'none'"/>
-                <field name="checkpoint_count" string="Points"/>
+                <field name="checkpoint_count" string="Checkpoints"/>
             </list>
         </field>
     </record>
@@ -18,42 +18,40 @@
         <field name="name">bf.nfc.round.form</field>
         <field name="model">bf.nfc.round</field>
         <field name="arch" type="xml">
-            <form string="Tournée">
+            <form string="Round">
                 <header>
-                    <button name="action_creer_pastilles" type="object" string="Créer les pastilles des points"
+                    <button name="action_creer_pastilles" type="object" string="Create checkpoint tags"
                             groups="bf_nfc.group_nfc_manager"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_voir_pastilles" type="object" class="oe_stat_button"
                                 icon="fa-wifi" invisible="not nfc_tag_count">
-                            <field name="nfc_tag_count" widget="statinfo" string="Pastilles"/>
+                            <field name="nfc_tag_count" widget="statinfo" string="Tags"/>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Ronde du soir, tournée d'entretien…"/></h1>
+                        <h1><field name="name" placeholder="Evening patrol, maintenance round…"/></h1>
                     </div>
                     <group>
-                        <group string="Qui et comment">
+                        <group string="Who and how">
                             <field name="responsible_id" widget="many2one_avatar_user"/>
                             <field name="strict_order"/>
                             <field name="active" invisible="1"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
-                        <group string="Quand">
+                        <group string="When">
                             <field name="schedule"/>
                             <field name="start_hour" widget="float_time" invisible="schedule == 'none'"/>
                             <field name="duration_minutes"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Points" name="points">
+                        <page string="Checkpoints" name="points">
                             <div class="text-muted mb-2">
-                                Chaque point reçoit une pastille « Point de tournée » : enregistrez les
-                                points, puis « Créer les pastilles des points ». Un point qui a déjà la
-                                sienne est sauté.
+                                Each checkpoint gets a “Round checkpoint” tag: save the checkpoints, then “Create checkpoint tags”. A checkpoint that already has its own is skipped.
                             </div>
                             <field name="checkpoint_ids">
                                 <list editable="bottom">
@@ -63,7 +61,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Tournées faites" name="faites">
+                        <page string="Completed rounds" name="faites">
                             <field name="run_ids" readonly="1">
                                 <list decoration-danger="state == 'incomplete'" decoration-success="state == 'done'">
                                     <field name="date_start"/>
@@ -85,7 +83,7 @@
         <field name="name">bf.nfc.round.run.form</field>
         <field name="model">bf.nfc.round.run</field>
         <field name="arch" type="xml">
-            <form string="Tournée faite" create="false">
+            <form string="Completed round" create="false">
                 <sheet>
                     <group>
                         <field name="round_id"/>
@@ -109,11 +107,11 @@
     </record>
 
     <record id="action_bf_nfc_round" model="ir.actions.act_window">
-        <field name="name">Tournées</field>
+        <field name="name">Rounds</field>
         <field name="res_model">bf.nfc.round</field>
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_nfc_round" name="Tournées" parent="bf_nfc.menu_nfc_root"
+    <menuitem id="menu_nfc_round" name="Rounds" parent="bf_nfc.menu_nfc_root"
               action="action_bf_nfc_round" sequence="40"/>
 </odoo>

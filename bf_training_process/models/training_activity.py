@@ -6,15 +6,16 @@ class BfTrainingActivity(models.Model):
 
     process_node_ids = fields.Many2many(
         "bf.process.node", "bf_training_activity_node_rel", "activity_id", "node_id",
-        string="Étapes de processus enseignées",
-        help="Les gestes que cette formation apprend à tenir. Une formation peut "
-             "couvrir plusieurs étapes, et une étape peut en demander plusieurs.")
+        string="Process steps taught",
+        help="The tasks this training teaches people to carry out. One "
+             "training activity can cover several steps, and one step can "
+             "require several activities.")
     process_node_count = fields.Integer(
-        string="Nombre d'étapes", compute="_compute_process_node_count")
+        string="Number of steps", compute="_compute_process_node_count")
     process_lane_ids = fields.Many2many(
-        "bf.process.lane", string="Couloirs concernés",
+        "bf.process.lane", string="Lanes involved",
         compute="_compute_process_lane_ids",
-        help="Les rôles qui tiennent au moins une des étapes enseignées.")
+        help="The roles that carry out at least one of the steps taught.")
 
     @api.depends("process_node_ids")
     def _compute_process_node_count(self):
@@ -30,7 +31,7 @@ class BfTrainingActivity(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Étapes enseignées",
+            "name": self.env._("Steps taught"),
             "res_model": "bf.process.node",
             "view_mode": "list,form",
             "domain": [("id", "in", self.process_node_ids.ids)],

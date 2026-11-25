@@ -1,0 +1,1575 @@
+# Translation of Contact personas - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_persona 18.0.3.3.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-19 08:01+0000\n"
+"PO-Revision-Date: 2026-11-19 08:01+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "%(count)s emails unanswered since %(date)s"
+msgstr "%(count)s courriels sans réponse depuis le %(date)s"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid ""
+"%(count)s of our %(total)s emails since %(date)s, %(cc)s of them in copy"
+msgstr ""
+"%(count)s de nos %(total)s courriels depuis le %(date)s, dont %(cc)s en "
+"copie"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "%d new item(s) added."
+msgstr "%d nouveau(x) élément(s) ajouté(s)."
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "%s mandatory copy(ies) added"
+msgstr "%s copie(s) obligatoire(s) ajoutée(s)"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "%s person(s) removed from the copies"
+msgstr "%s personne(s) retirée(s) des copies"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona_kpi__source__project_sync
+msgid "/project-sync"
+msgstr "/project-sync"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_partner_form_persona
+msgid "<span class=\"o_stat_text\">/persona</span>"
+msgstr "<span class=\"o_stat_text\">/persona</span>"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_partner_form_persona
+msgid "<span class=\"o_stat_text\">Persona</span>"
+msgstr "<span class=\"o_stat_text\">Persona</span>"
+
+#. module: bf_persona
+#: model:ir.model,name:bf_persona.model_contact_persona
+msgid "A contact's persona (preferences, tone, payer, KPIs)"
+msgstr "Persona d'un contact (préférences, ton, payeur, KPIs)"
+
+#. module: bf_persona
+#: model:ir.model.constraint,message:bf_persona.constraint_contact_persona_partner_unique
+msgid "A persona already exists for this contact."
+msgstr "Il existe déjà un persona pour ce contact."
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,done_text:bf_persona.bf_onb_step_permissions
+msgid "Access granted"
+msgstr "Accès distribués"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona_kpi__source__account
+msgid "Accounting"
+msgstr "Comptabilité"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_needaction
+msgid "Action Needed"
+msgstr "Action Needed"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__active
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_cc_rule__state__active
+msgid "Active"
+msgstr "Active"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__active
+msgid "Active persona"
+msgstr "Actif"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_cc_rule_search
+msgid "Active rules"
+msgstr "Actives"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__activity_ids
+msgid "Activities"
+msgstr "Activities"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Activity Exception Decoration"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__activity_state
+msgid "Activity State"
+msgstr "Activity State"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Activity Type Icon"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_mail_compose_message_persona
+msgid "Apply the persona"
+msgstr "Appliquer le persona"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Archived"
+msgstr "Archivés"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,title:bf_persona.bf_onb_step_permissions
+msgid "Assign the Persona access rights"
+msgstr "Assigner les accès Persona"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_attachment_count
+msgid "Attachment Count"
+msgstr "Attachment Count"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__addressing_style__auto
+msgid "Auto"
+msgstr "Auto"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,done_text:bf_persona.bf_onb_step_defaults
+msgid "Automations on"
+msgstr "Automatisations actives"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__payer_quality__average
+msgid "Average"
+msgstr "Moyen"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__avg_payment_delay_days
+msgid "Average delay between the invoice date and the payment date (days)."
+msgstr "Délai moyen entre la date de facture et la date de paiement (jours)."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__avg_payment_delay_days
+msgid "Average payment delay (days)"
+msgstr "Délai moyen de paiement (jours)"
+
+#. module: bf_persona
+#: model:contact.persona.category,name:bf_persona.category_billing
+msgid "Billing"
+msgstr "Facturation"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__claude_context_summary
+#: model:ir.model.fields,help:bf_persona.field_res_partner__persona_summary
+#: model:ir.model.fields,help:bf_persona.field_res_users__persona_summary
+msgid "Block of text injected into Gen's context to steer the tone."
+msgstr "Bloc texte injecté dans le contexte de Gen pour guider le ton."
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__preferred_language
+msgid "By default, the contact's language."
+msgstr "Par défaut, la langue du contact."
+
+#. module: bf_persona
+#: model:res.groups,comment:bf_persona.group_persona_user
+msgid "Can view and edit the personas (without the personal details)."
+msgstr "Peut consulter et modifier les personas (sans détails personnels)."
+
+#. module: bf_persona
+#: model:ir.ui.menu,name:bf_persona.menu_personas_categories
+msgid "Categories"
+msgstr "Catégories"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__category_id
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__name
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,description:bf_persona.bf_onb_step_defaults
+msgid ""
+"Check that the crons (seed, refresh, degradation) are active and in step "
+"with your team's cadence."
+msgstr ""
+"Vérifiez que les crons (seed, refresh, dégradation) sont actifs et alignés "
+"sur votre cadence d'équipe."
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona_category__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr "Closest Odoo palette index, for views that only understand 0-11."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__color_source
+msgid "Color Source"
+msgstr "Color Source"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona_category__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr "Color of the record for everyone (hex)."
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona_category__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__color
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_category_list
+msgid "Colour"
+msgstr "Couleur"
+
+#. module: bf_persona
+#: model:ir.actions.act_window,name:bf_persona.action_contact_persona_category
+msgid "Communication categories"
+msgstr "Catégories de communication"
+
+#. module: bf_persona
+#: model:ir.model,name:bf_persona.model_contact_persona_category
+msgid "Communication category (for cc rules)"
+msgstr "Catégorie de communication (pour règles c.c.)"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__relationship_health
+msgid ""
+"Computed each day from facts: emails left unanswered, and signals from the "
+"linked modules (customer experience)."
+msgstr ""
+"Calculée chaque jour à partir de faits : courriels sans réponse, et signaux "
+"des modules liés (expérience client)."
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,title:bf_persona.bf_onb_step_ntfy
+msgid "Configure the ntfy key"
+msgstr "Configurer la clé ntfy"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_cc_rule_list
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Confirm"
+msgstr "Confirmer"
+
+#. module: bf_persona
+#: model:ir.model,name:bf_persona.model_res_partner
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_persona
+#: model:ir.module.category,name:bf_persona.module_category_persona
+#: model:onboarding.onboarding,name:bf_persona.bf_onboarding_panel
+msgid "Contact personas"
+msgstr "Persona des contacts"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__cc_partner_ids
+msgid "Contacts"
+msgstr "Contacts"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Copies"
+msgstr "Copies"
+
+#. module: bf_persona
+#: model:ir.model,name:bf_persona.model_contact_cc_rule
+msgid "Copy rule of a persona"
+msgstr "Règle de copie d'un persona"
+
+#. module: bf_persona
+#: model:ir.actions.act_window,name:bf_persona.action_contact_cc_rule
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__cc_rule_ids
+#: model:ir.ui.menu,name:bf_persona.menu_personas_cc_rules
+msgid "Copy rules"
+msgstr "Règles de copie"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid ""
+"Copy rules have been suggested from the emails sent:\n"
+"                        confirm or reject them in the \"Copies\" tab."
+msgstr ""
+"Des règles de copie ont été suggérées d'après les courriels envoyés :\n"
+"                        les confirmer ou les rejeter dans l'onglet « Copies »."
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,title:bf_persona.bf_onb_step_seed
+msgid "Create a first persona"
+msgstr "Créer un premier persona"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,button_text:bf_persona.bf_onb_step_seed
+msgid "Create a persona"
+msgstr "Créer un persona"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__create_uid
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__create_uid
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__create_uid
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__create_date
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__create_date
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__create_date
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: bf_persona
+#: model:ir.ui.menu,name:bf_persona.menu_personas_dashboard
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,done_text:bf_persona.bf_onb_step_dashboard
+msgid "Dashboard reviewed"
+msgstr "Tableau de bord validé"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__relationship_health__degraded
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
+msgid "Degraded"
+msgstr "Dégradée"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Degraded relationship"
+msgstr "Relation dégradée"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__display_name
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__display_name
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__display_name
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__color_resolved
+msgid "Displayed color"
+msgstr "Displayed color"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr "Displayed color (Odoo palette)"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_category_list
+msgid "Displayed colour"
+msgstr "Couleur affichée"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__tone_drift_score
+msgid "Drift score (deprecated)"
+msgstr "Score de dérive (déprécié)"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__preferred_salutation
+msgid "E.g.: 'Hello Jean', 'Dear Maître Tremblay'."
+msgstr "Ex.: 'Bonjour Jean', 'Cher Maître Tremblay'."
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__closing_formula
+msgid "E.g.: 'Regards', 'Yours sincerely'."
+msgstr "Ex.: 'Cordialement', 'Bien à vous'."
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid ""
+"E.g.: write to info@ for the documentation; attachments rather than links; "
+"informal address (former colleague)."
+msgstr ""
+"Ex. : écrire à info@ pour la documentation ; pièces jointes plutôt que liens"
+" ; tutoiement (ancien collègue)."
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona_kpi__source__email_management
+msgid "Email management"
+msgstr "Gestion des courriels"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,description:bf_persona.bf_onb_step_ntfy
+msgid ""
+"Enter the ntfy webhook key in Settings to receive the persona degradation "
+"alerts."
+msgstr ""
+"Renseignez la clé webhook ntfy dans Paramètres pour recevoir les alertes de "
+"dégradation persona."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__evidence
+msgid "Evidence"
+msgstr "Constat"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__payer_quality__excellent
+msgid "Excellent"
+msgstr "Excellent"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__failed_message_ids
+msgid "Failed Messages"
+msgstr "Failed Messages"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__personal_details
+msgid "Family, hobbies, milestones. Visible to the persona managers only."
+msgstr ""
+"Famille, hobbies, jalons. Visible aux gestionnaires de personas seulement."
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,done_text:bf_persona.bf_onb_step_seed
+msgid "First persona created"
+msgstr "Premier persona créé"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_follower_ids
+msgid "Followers"
+msgstr "Followers"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Followers (Partners)"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome icon e.g. fa-tasks"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__addressing_style
+msgid "Form of address"
+msgstr "Style d'adresse"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Form of address to fill in (auto)"
+msgstr "Style à compléter (auto)"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__our_tone_summary__formal
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__tone_summary__formal
+msgid "Formal"
+msgstr "Formel"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__addressing_style__vous
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Formal (vous)"
+msgstr "Vouvoiement"
+
+#. module: bf_persona
+#: model:res.groups,comment:bf_persona.group_persona_manager
+msgid "Full access, including the sensitive personal details."
+msgstr "Accès complet, incluant les détails personnels sensibles."
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__payer_quality__good
+msgid "Good"
+msgstr "Bon"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__preferred_salutation
+msgid "Greeting"
+msgstr "Salutation"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Group By"
+msgstr "Regrouper par"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__has_message
+msgid "Has Message"
+msgstr "Has Message"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_res_partner__has_persona
+#: model:ir.model.fields,field_description:bf_persona.field_res_users__has_persona
+msgid "Has a persona"
+msgstr "A un persona"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__relationship_health__healthy
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Healthy"
+msgstr "Saine"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__id
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__id
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__id
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__activity_exception_icon
+msgid "Icon"
+msgstr "Icon"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icon to indicate an exception activity."
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "If checked, new messages require your attention."
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__message_has_error
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "If checked, some messages have a delivery error."
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__addressing_style__tu
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Informal (tu)"
+msgstr "Tutoiement"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_is_follower
+msgid "Is Follower"
+msgstr "Is Follower"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__shared_knowledge_item_ids
+msgid "Items shared with the contact"
+msgstr "Éléments partagés avec le contact"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__name
+msgid "KPI"
+msgstr "Indicateur"
+
+#. module: bf_persona
+#: model:ir.model,name:bf_persona.model_contact_persona_kpi
+msgid "KPI on a contact"
+msgstr "KPI sur un contact"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__kpi_ids
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "KPIs"
+msgstr "Indicateurs"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,done_text:bf_persona.bf_onb_step_ntfy
+msgid "Key configured"
+msgstr "Clé configurée"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_res_config_settings__bf_persona_ntfy_hook_key
+msgid ""
+"Key of the webhook-relay hook (push-server) that receives the alerts when "
+"relationship_health switches to 'degraded' or tone_summary to 'tense'. Empty"
+" = alerts disabled."
+msgstr ""
+"Clé du hook webhook-relay (push-server) qui reçoit les alertes lorsque "
+"relationship_health bascule en 'degraded' ou tone_summary en 'tense'. Vide ="
+" alertes désactivées."
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_cc_rule__category_id
+msgid "Label only: the rule applies whatever the subject."
+msgstr "Étiquette seulement : la règle s'applique quel que soit le sujet."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__preferred_language
+msgid "Language"
+msgstr "Langue"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__write_uid
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__write_uid
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__write_uid
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__write_date
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__write_date
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__write_date
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__last_interaction_date
+msgid "Last email exchanged with this contact, in either direction."
+msgstr ""
+"Dernier courriel échangé avec ce contact, dans un sens ou dans l'autre."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__last_inbound_date
+msgid "Last email received"
+msgstr "Dernier courriel reçu"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__last_outbound_date
+msgid "Last email sent"
+msgstr "Dernier courriel envoyé"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__last_interaction_date
+msgid "Last exchange"
+msgstr "Dernier échange"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
+msgid "Last exchange:"
+msgstr "Dernier échange :"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Launch Claude /persona refresh"
+msgstr "Lancer Claude /persona refresh"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_partner_form_persona
+msgid "Launches the Claude /persona refresh skill on this contact."
+msgstr "Lance la skill Claude /persona refresh sur ce contact."
+
+#. module: bf_persona
+#: model:contact.persona.category,name:bf_persona.category_legal
+msgid "Legal"
+msgstr "Juridique"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__our_words_median
+msgid "Length of our emails (words)"
+msgstr "Longueur de nos courriels (mots)"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Link the matrix items"
+msgstr "Lier les éléments de matrice"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid ""
+"Looks for the matrix items where this contact appears (decision maker, "
+"consulted, informed) and adds them to the shared knowledge."
+msgstr ""
+"Cherche les éléments de matrice où ce contact apparaît (décideur, consulté, "
+"informé) et les ajoute aux connaissances partagées."
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,button_text:bf_persona.bf_onb_step_permissions
+msgid "Manage the users"
+msgstr "Gérer les utilisateurs"
+
+#. module: bf_persona
+#: model:ir.module.category,description:bf_persona.module_category_persona
+msgid "Managing relationship preferences, tone and payer rating per contact"
+msgstr "Gestion des préférences relationnelles, ton et payeur par contact"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__mandatory
+msgid "Mandatory"
+msgstr "Obligatoire"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_cc_rule__mandatory
+msgid ""
+"Mandatory copy: the composer flags it in red as long as it is missing. "
+"Otherwise it suggests it."
+msgstr ""
+"Copie obligatoire : le composeur la signale en rouge tant qu'elle manque. "
+"Sinon, il la propose."
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona_kpi__source__manual
+msgid "Manual"
+msgstr "Manuel"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "Matrix items linked"
+msgstr "Éléments de matrice liés"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Measure now"
+msgstr "Mesurer maintenant"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__facts_refreshed_at
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__date_measured
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Measured on"
+msgstr "Mesuré le"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__our_words_median
+msgid "Median over our last 10 emails to this contact, quoted text excluded."
+msgstr ""
+"Médiane sur nos 10 derniers courriels à ce contact, citations exclues."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_content
+msgid "Message Content"
+msgstr "Message Content"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_has_error
+msgid "Message Delivery error"
+msgstr "Message Delivery error"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_search
+msgid "Message Search"
+msgstr "Message Search"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Message content, to be used only in searches"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Message search, to be used only in searches"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "My Activity Deadline"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__our_tone_summary__na
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__payer_quality__na
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__relationship_health__na
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__tone_summary__na
+msgid "N/A"
+msgstr "N/D"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__our_tone_summary__neutral
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__tone_summary__neutral
+msgid "Neutral"
+msgstr "Neutre"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_cc_rule__rule_type__never
+msgid "Never put in copy"
+msgstr "Ne jamais mettre en copie"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Next Activity Calendar Event"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Next Activity Deadline"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__activity_summary
+msgid "Next Activity Summary"
+msgstr "Next Activity Summary"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__activity_type_id
+msgid "Next Activity Type"
+msgstr "Next Activity Type"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__custom_appellations
+msgid ""
+"Nicknames, titles to use or to avoid, the address to favour, attachments "
+"rather than links: what the composer and Gen need to know."
+msgstr ""
+"Surnoms, titres à utiliser ou à éviter, adresse à privilégier, pièces "
+"jointes plutôt que liens : ce que le composeur et Gen doivent savoir."
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "No change needed."
+msgstr "Aucun changement nécessaire."
+
+#. module: bf_persona
+#: model_terms:ir.actions.act_window,help:bf_persona.action_contact_cc_rule
+msgid "No copy rule to review."
+msgstr "Aucune règle de copie à revoir."
+
+#. module: bf_persona
+#: model_terms:ir.actions.act_window,help:bf_persona.action_contact_persona_dashboard
+msgid ""
+"No persona: the automatic seeding creates some each month for the active "
+"contacts, or create one from a contact record."
+msgstr ""
+"Aucun persona : le semis automatique en crée chaque mois pour les contacts "
+"actifs, ou créez-en un depuis une fiche contact."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__notes
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__notes
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__our_tone_notes
+msgid "Notes on our tone"
+msgstr "Notes sur notre ton"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__our_tone_notes
+msgid "Notes on our tone/posture towards the contact."
+msgstr "Notes sur notre ton/posture envers le contact."
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__tone_notes
+msgid "Notes on the contact's tone towards us."
+msgstr "Notes sur le ton du contact envers nous."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__tone_notes
+msgid "Notes on their tone"
+msgstr "Notes sur leur ton"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Number of Actions"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_has_error_counter
+msgid "Number of errors"
+msgstr "Number of errors"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Number of messages requiring action"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Number of messages with delivery error"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__value_float
+msgid "Numeric value"
+msgstr "Valeur numérique"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,step_image_alt:bf_persona.bf_onb_step_dashboard
+#: model:onboarding.onboarding.step,step_image_alt:bf_persona.bf_onb_step_defaults
+#: model:onboarding.onboarding.step,step_image_alt:bf_persona.bf_onb_step_ntfy
+#: model:onboarding.onboarding.step,step_image_alt:bf_persona.bf_onb_step_permissions
+#: model:onboarding.onboarding.step,step_image_alt:bf_persona.bf_onb_step_seed
+msgid "Onboarding Step Image"
+msgstr "Onboarding Step Image"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,button_text:bf_persona.bf_onb_step_defaults
+#: model:onboarding.onboarding.step,button_text:bf_persona.bf_onb_step_ntfy
+msgid "Open Settings"
+msgstr "Ouvrir Paramètres"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,button_text:bf_persona.bf_onb_step_dashboard
+msgid "Open the dashboard"
+msgstr "Ouvrir le tableau de bord"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Opens the Claude panel with /persona refresh pre-filled."
+msgstr "Ouvre le panneau Claude avec /persona refresh pré-rempli."
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__unanswered_count
+msgid "Our emails to this contact sent since their last email."
+msgstr "Nos courriels à ce contact envoyés depuis son dernier courriel."
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
+msgid "Our emails:"
+msgstr "Nos courriels :"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Our overly long emails"
+msgstr "Nos courriels trop longs"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__our_tone_summary
+msgid "Our tone towards the contact, observed in the outgoing emails."
+msgstr "Notre ton envers le contact, observé dans les courriels sortants."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__our_tone_summary
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Our tone towards them"
+msgstr "Notre ton envers eux"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__color_hex
+msgid "Own color"
+msgstr "Own color"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__payer_quality
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Payer"
+msgstr "Payeur"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
+msgid "Payer:"
+msgstr "Payeur :"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__payer_notes
+msgid "Payment notes"
+msgstr "Notes sur le paiement"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__persona_id
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__name
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__persona_id
+#: model:ir.model.fields,field_description:bf_persona.field_res_partner__persona_id
+#: model:ir.model.fields,field_description:bf_persona.field_res_users__persona_id
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_partner_form_persona
+msgid "Persona"
+msgstr "Persona"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_mail_compose_message__persona_hint_html
+msgid "Persona Hint Html"
+msgstr "Persona Hint Html"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_mail_compose_message__persona_hint_partner_id
+msgid "Persona Hint Partner"
+msgstr "Persona Hint Partner"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "Persona applied"
+msgstr "Persona appliqué"
+
+#. module: bf_persona
+#: model:res.groups,name:bf_persona.group_persona_manager
+msgid "Persona manager"
+msgstr "Gestionnaire persona"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_res_partner__persona_summary
+#: model:ir.model.fields,field_description:bf_persona.field_res_users__persona_summary
+msgid "Persona summary"
+msgstr "Résumé persona"
+
+#. module: bf_persona
+#: model:res.groups,name:bf_persona.group_persona_user
+msgid "Persona user"
+msgstr "Utilisateur persona"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "Persona with no contact"
+msgstr "Persona sans contact"
+
+#. module: bf_persona
+#: model:ir.actions.server,name:bf_persona.cron_seed_personas_ir_actions_server
+msgid "Persona: automatic seeding of the active contacts"
+msgstr "Persona : seed automatique des contacts actifs"
+
+#. module: bf_persona
+#: model:ir.actions.server,name:bf_persona.cron_create_persona_refresh_activities_ir_actions_server
+msgid "Persona: create \"Reassess the persona\" activities"
+msgstr "Persona : créer activités « Réévaluer le persona »"
+
+#. module: bf_persona
+#: model:ir.actions.server,name:bf_persona.cron_flag_stale_tones_ir_actions_server
+msgid "Persona: flag the tones to refresh"
+msgstr "Persona : marquer les tons à rafraîchir"
+
+#. module: bf_persona
+#: model:ir.actions.server,name:bf_persona.cron_detect_relationship_degradation_ir_actions_server
+msgid "Persona: measure the relationships"
+msgstr "Persona : mesurer les relations"
+
+#. module: bf_persona
+#: model:ir.actions.server,name:bf_persona.cron_recompute_payment_delay_ir_actions_server
+msgid "Persona: recompute the average payment delay"
+msgstr "Persona : recalculer délai moyen de paiement"
+
+#. module: bf_persona
+#: model:ir.actions.server,name:bf_persona.cron_suggest_cc_rules_ir_actions_server
+msgid "Persona: suggest copy rules"
+msgstr "Persona : suggérer des règles de copie"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__personal_details
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Personal details"
+msgstr "Détails personnels"
+
+#. module: bf_persona
+#: model:ir.actions.act_window,name:bf_persona.action_contact_persona
+#: model:ir.ui.menu,name:bf_persona.menu_personas_list
+#: model:ir.ui.menu,name:bf_persona.menu_personas_root
+msgid "Personas"
+msgstr "Personas"
+
+#. module: bf_persona
+#: model:ir.actions.act_window,name:bf_persona.action_contact_persona_dashboard
+msgid "Personas: dashboard"
+msgstr "Personas : tableau de bord"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__payer_quality__poor
+msgid "Poor"
+msgstr "Mauvais"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_cc_rule__rule_type__cc
+msgid "Put in copy"
+msgstr "Mettre en copie"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__rating_ids
+msgid "Ratings"
+msgstr "Ratings"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid ""
+"Re-reads the emails exchanged with this contact and recomputes the "
+"relationship."
+msgstr ""
+"Relit les courriels échangés avec ce contact et recalcule la relation."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__inbound_count_90d
+msgid "Received (90 d)"
+msgstr "Reçus (90 j)"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_cc_rule_list
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Reject"
+msgstr "Rejeter"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_cc_rule__state__rejected
+msgid "Rejected"
+msgstr "Rejetée"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_cc_rule_search
+msgid "Rejected rules"
+msgstr "Rejetées"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__relationship_health
+msgid "Relationship"
+msgstr "Relation"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Relationship health"
+msgstr "Santé relationnelle"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Relationship, measured on the emails"
+msgstr "Relation, mesurée sur les courriels"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__activity_user_id
+msgid "Responsible User"
+msgstr "Responsible User"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,title:bf_persona.bf_onb_step_dashboard
+msgid "Review the dashboard"
+msgstr "Consulter le tableau de bord"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__rule_type
+msgid "Rule"
+msgstr "Règle"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS Delivery error"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__outbound_count_90d
+msgid "Sent (90 d)"
+msgstr "Envoyés (90 j)"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__tone_is_stale
+msgid ""
+"Set to True by the cron when tone_last_assessed is empty or > 6 months."
+msgstr "Mis à True par le cron quand tone_last_assessed est vide ou > 6 mois."
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Shared knowledge"
+msgstr "Connaissances partagées"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__closing_formula
+msgid "Sign-off"
+msgstr "Formule de clôture"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__payer_quality__slow
+msgid "Slow"
+msgstr "Lent"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Slow or poor payer"
+msgstr "Payeur lent ou mauvais"
+
+#. module: bf_persona
+#: model:contact.persona.category,name:bf_persona.category_social
+msgid "Social"
+msgstr "Social"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__source
+msgid "Source"
+msgstr "Source"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_cc_rule__state
+msgid "Status"
+msgstr "État"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Style"
+msgstr "Style"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
+msgid "Style:"
+msgstr "Style :"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_cc_rule__state__suggested
+msgid "Suggested"
+msgstr "Suggérée"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Suggested copy rules"
+msgstr "Règles de copie suggérées"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__suggested_rule_count
+msgid "Suggested rule count"
+msgstr "Règles suggérées"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_cc_rule_search
+msgid "Suggested rules"
+msgstr "Suggérées"
+
+#. module: bf_persona
+#: model:contact.persona.category,name:bf_persona.category_support
+msgid "Support"
+msgstr "Support"
+
+#. module: bf_persona
+#: model:contact.persona.category,name:bf_persona.category_technical
+msgid "Technical"
+msgstr "Technique"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona_category__code
+msgid "Technical identifier (billing, support, ...)"
+msgstr "Identifiant technique (billing, support, ...)"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__our_tone_summary__tense
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__tone_summary__tense
+msgid "Tense"
+msgstr "Tendu"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Tense tone"
+msgstr "Ton tendu"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_category__color_text
+msgid "Text color"
+msgstr "Text color"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona_kpi.py:0
+msgid "The KPIs drawn from accounting are reserved to the persona manager."
+msgstr ""
+"Les indicateurs tirés de la comptabilité sont réservés au gestionnaire "
+"persona."
+
+#. module: bf_persona
+#: model:ir.model.constraint,message:bf_persona.constraint_contact_persona_category_code_unique
+msgid "The category code must be unique."
+msgstr "Le code de catégorie doit être unique."
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__tone_summary
+msgid ""
+"The contact's tone towards us, observed in the emails received from them."
+msgstr "Ton du contact envers nous, observé dans ses courriels reçus."
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "The payer rating is reserved to the persona manager: %s."
+msgstr "La cote de payeur est réservée au gestionnaire persona : %s."
+
+#. module: bf_persona
+#: model_terms:ir.actions.act_window,help:bf_persona.action_contact_cc_rule
+msgid ""
+"The suggested rules come from the emails sent: someone usually\n"
+"               in copy with a contact. Nothing applies before confirmation."
+msgstr ""
+"Les règles suggérées viennent des courriels envoyés : une personne habituellement\n"
+"               en copie avec un contact. Rien ne s'applique avant confirmation."
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Their tone"
+msgstr "Leur ton"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__tone_summary
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Their tone towards us"
+msgstr "Leur ton envers nous"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__relationship_health__watch
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "To watch"
+msgstr "À surveiller"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "Tone"
+msgstr "Ton"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__tone_last_assessed
+msgid "Tone assessed on"
+msgstr "Ton évalué le"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__tone_is_stale
+msgid "Tone to refresh"
+msgstr "Ton à rafraîchir"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,title:bf_persona.bf_onb_step_defaults
+msgid "Turn on the automations"
+msgstr "Activer les automatisations"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type of the exception activity on record."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__unanswered_count
+msgid "Unanswered"
+msgstr "Sans réponse"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_search
+msgid "Unanswered emails"
+msgstr "Courriels sans réponse"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__unanswered_since
+msgid "Unanswered since"
+msgstr "Sans réponse depuis"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
+msgid "Unanswered:"
+msgstr "Sans réponse :"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__unit
+msgid "Unit"
+msgstr "Unité"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona_kpi__value_text
+msgid "Value"
+msgstr "Valeur"
+
+#. module: bf_persona
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__our_tone_summary__warm
+#: model:ir.model.fields.selection,name:bf_persona.selection__contact_persona__tone_summary__warm
+msgid "Warm"
+msgstr "Chaleureux"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__website_message_ids
+msgid "Website Messages"
+msgstr "Website Messages"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_persona__website_message_ids
+msgid "Website communication history"
+msgstr "Website communication history"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__claude_context_summary
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_form
+msgid "What Gen receives"
+msgstr "Ce que Gen reçoit"
+
+#. module: bf_persona
+#: model:ir.model.fields,help:bf_persona.field_contact_cc_rule__evidence
+msgid "What led to the rule being suggested, found in the emails sent."
+msgstr "Ce qui a fait suggérer la règle, relevé dans les courriels envoyés."
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__custom_appellations
+msgid "What to know before writing"
+msgstr "À savoir avant d'écrire"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__health_reason
+msgid "Why"
+msgstr "Pourquoi"
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,description:bf_persona.bf_onb_step_permissions
+msgid ""
+"[action:base.action_res_users] Give the \"Persona user\" group to the "
+"advisers and \"Persona manager\" to those in charge."
+msgstr ""
+"[action:base.action_res_users] Donnez le groupe « Utilisateur persona » aux "
+"conseillers et « Gestionnaire persona » aux responsables."
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,description:bf_persona.bf_onb_step_seed
+msgid ""
+"[action:bf_persona.action_contact_persona] Create a persona from a key "
+"contact to get the module going."
+msgstr ""
+"[action:bf_persona.action_contact_persona] Créez un persona à partir d'un "
+"contact clé pour amorcer le module."
+
+#. module: bf_persona
+#: model:onboarding.onboarding.step,description:bf_persona.bf_onb_step_dashboard
+msgid ""
+"[action:bf_persona.action_contact_persona_dashboard] Check that the KPIs are"
+" visible and make sense."
+msgstr ""
+"[action:bf_persona.action_contact_persona_dashboard] Validez que les KPIs "
+"sont visibles et compréhensibles."
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "address of an internal user"
+msgstr "adresse d'un utilisateur interne"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "archived contact"
+msgstr "contact archivé"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "automatic \"Dernière interaction\" rows"
+msgstr "lignes automatiques « Dernière interaction »"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "company record"
+msgstr "fiche de société"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "contact with no address"
+msgstr "contact sans adresse"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "contradicted by our emails"
+msgstr "contredit par nos courriels"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
+msgid "d)"
+msgstr "j)"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "duplicate of %s (same address)"
+msgstr "doublon de %s (même adresse)"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "empty, filled in from our emails"
+msgstr "vide, rempli d'après nos courriels"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "greeting added"
+msgstr "salutation ajoutée"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "greeting addressed to someone else"
+msgstr "salutation adressée à quelqu'un d'autre"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "internal user"
+msgstr "utilisateur interne"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "malformed record name"
+msgstr "nom de fiche mal formé"
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_res_config_settings__bf_persona_ntfy_hook_key
+msgid "ntfy hook key (persona degradation)"
+msgstr "Clé hook ntfy (dégradation persona)"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "our latest emails run %s words at the median"
+msgstr "nos derniers courriels font %s mots de médiane"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "our own company"
+msgstr "notre propre société"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "role mailbox"
+msgstr "boîte de rôle"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "same name as an internal user"
+msgstr "même nom qu'un utilisateur interne"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "set by the old traffic detector"
+msgstr "posé par l'ancien détecteur de trafic"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "several recipients: the greeting is left to you"
+msgstr "plusieurs destinataires : salutation laissée à vous"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "sign-off added"
+msgstr "clôture ajoutée"
+
+#. module: bf_persona
+#: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
+msgid "words"
+msgstr "mots"

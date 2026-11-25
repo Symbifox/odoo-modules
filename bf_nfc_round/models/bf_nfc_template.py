@@ -5,14 +5,17 @@ from odoo import _, fields, models
 class BfNfcTemplate(models.Model):
     _inherit = "bf.nfc.template"
 
-    recette = fields.Selection(selection_add=[("tournee", "Une tournée et ses points")],
+    recette = fields.Selection(selection_add=[("tournee", "A round and "
+                                                          "its checkpoints")],
                                ondelete={"tournee": "set default"})
     round_schedule = fields.Selection(
-        [("none", "Sans horaire"), ("daily", "Chaque jour"), ("weekdays", "Du lundi au vendredi")],
-        string="Horaire de la tournée", default="none")
-    round_start_hour = fields.Float(string="Commence à", default=8.0)
-    round_duration = fields.Integer(string="Durée maximale (min)", default=60)
-    round_strict_order = fields.Boolean(string="Dans l'ordre")
+        [("none", "No schedule"), ("daily", "Every day"), ("weekdays", "Monday "
+                                                                          "to "
+                                                                          "Friday")],
+        string="Round schedule", default="none")
+    round_start_hour = fields.Float(string="Starts at", default=8.0)
+    round_duration = fields.Integer(string="Maximum duration (min)", default=60)
+    round_strict_order = fields.Boolean(string="In order")
 
     def _valeurs_point(self, pose, nom, endroit):
         """Les valeurs d'un point créé par ce gabarit. Un satellite ajoute les siennes (la grille)."""

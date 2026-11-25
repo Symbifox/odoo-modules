@@ -1,6 +1,10 @@
 {
     "name": "Pastilles NFC : les skills de Gen",
-    "version": "18.0.1.0.2",
+    # 18.0.1.0.3: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.0.3",
     "category": "Productivity",
     "summary": "Une pastille qui demande à Gen de préparer l'ordre du jour ou de raffiner le compte rendu",
     "description": """

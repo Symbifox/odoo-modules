@@ -4,18 +4,18 @@
         <field name="name">bf.babillard.signalement.form</field>
         <field name="model">bf.babillard.signalement</field>
         <field name="arch" type="xml">
-            <form string="Signalement">
+            <form string="Report">
                 <header>
                     <button name="action_prendre_en_charge" type="object"
-                            string="Prendre en charge" class="btn-primary"
+                            string="Take it on" class="btn-primary"
                             invisible="state != 'nouveau'"
                             groups="bf_babillard.group_babillard_moderation"/>
                     <button name="action_retirer_la_publication" type="object"
-                            string="Retirer la publication"
+                            string="Take the post down"
                             invisible="state == 'traite'"
                             groups="bf_babillard.group_babillard_moderation"
-                            confirm="La publication quitte le fil tout de suite. Rien n'est détruit."/>
-                    <button name="action_clore" type="object" string="Clore"
+                            confirm="The post leaves the feed right away. Nothing is destroyed."/>
+                    <button name="action_clore" type="object" string="Close"
                             invisible="state == 'traite'"
                             groups="bf_babillard.group_babillard_moderation"/>
                     <field name="state" widget="statusbar"
@@ -23,8 +23,8 @@
                 </header>
                 <sheet>
                     <div class="alert alert-info" role="status">
-                        Ce signalement est lu par la personne désignée, et par elle seule.
-                        Conservez le dossier au moins deux ans.
+                        This report is read by the designated person, and by them alone.
+                        Keep the file for at least two years.
                     </div>
                     <group>
                         <group>
@@ -38,15 +38,15 @@
                                    groups="bf_babillard.group_babillard_moderation"/>
                         </group>
                     </group>
-                    <group string="Motif">
+                    <group string="Reason">
                         <field name="motif" nolabel="1"
-                               placeholder="Ce qui pose problème, en vos mots."/>
+                               placeholder="What the problem is, in your own words."/>
                     </group>
-                    <group string="Contenu signalé, tel qu'il était"
+                    <group string="Content reported, as it was"
                            invisible="not extrait">
                         <field name="extrait" nolabel="1" readonly="1"/>
                     </group>
-                    <group string="Suite donnée"
+                    <group string="Action taken"
                            groups="bf_babillard.group_babillard_moderation">
                         <field name="suite" nolabel="1"/>
                     </group>
@@ -60,8 +60,8 @@
         <field name="name">bf.babillard.signalement.list</field>
         <field name="model">bf.babillard.signalement</field>
         <field name="arch" type="xml">
-            <list string="Signalements" decoration-danger="state == 'nouveau'">
-                <field name="create_date" string="Reçu le"/>
+            <list string="Reports" decoration-danger="state == 'nouveau'">
+                <field name="create_date" string="Received on"/>
                 <field name="post_id"/>
                 <field name="auteur_signalement_id"/>
                 <field name="responsable_id"/>
@@ -71,7 +71,7 @@
     </record>
 
     <record id="action_babillard_signalement" model="ir.actions.act_window">
-        <field name="name">Signalements</field>
+        <field name="name">Reports</field>
         <field name="res_model">bf.babillard.signalement</field>
         <field name="view_mode">list,form</field>
     </record>
@@ -82,10 +82,10 @@
         <field name="name">bf.babillard.signalement.assistant.form</field>
         <field name="model">bf.babillard.signalement.assistant</field>
         <field name="arch" type="xml">
-            <form string="Signaler ce contenu">
+            <form string="Report this content">
                 <div class="alert alert-info" role="status">
-                    Ce signalement est lu par la personne désignée, et par elle seule.
-                    Ni la rédaction ni vos collègues n'y ont accès.
+                    This report is read by the designated person, and by them alone.
+                    Neither the editors nor your colleagues can see it.
                 </div>
                 <group>
                     <field name="post_ref" invisible="1"/>
@@ -93,21 +93,21 @@
                     <field name="post_titre" readonly="1"/>
                     <field name="auteur_nom" readonly="1"/>
                 </group>
-                <group string="Motif">
+                <group string="Reason">
                     <field name="motif" nolabel="1"
-                           placeholder="Ce qui pose problème, en vos mots."/>
+                           placeholder="What the problem is, in your own words."/>
                 </group>
                 <footer>
                     <button name="action_envoyer" type="object"
-                            string="Envoyer le signalement" class="btn-primary"/>
-                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                            string="Send the report" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_babillard_signalement_nouveau" model="ir.actions.act_window">
-        <field name="name">Signaler ce contenu</field>
+        <field name="name">Report this content</field>
         <field name="res_model">bf.babillard.signalement.assistant</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_babillard_signalement_assistant_form"/>

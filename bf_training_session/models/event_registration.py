@@ -10,17 +10,17 @@ class EventRegistration(models.Model):
 
     training_activity_id = fields.Many2one(
         related="event_id.training_activity_id", store=True, index=True,
-        string="Activité de formation")
+        string="Training activity")
     training_signature = fields.Binary(
         string="Signature", attachment=True,
-        help="La signature de la personne sur la feuille de présence.")
+        help="The person's signature on the attendance sheet.")
     training_signature_date = fields.Datetime(
-        string="Signée le", readonly=True,
-        help="Écrit au moment où la signature est apposée. Ce n'est pas la date "
-             "de la séance : c'est la date de la signature.")
+        string="Signed on", readonly=True,
+        help="Written at the moment the signature is added. This is not "
+             "the date of the session: it is the date of the signature.")
     training_record_id = fields.Many2one(
-        "bf.training.record", string="Réalisation", readonly=True, copy=False,
-        help="La ligne du registre écrite pour cette présence.")
+        "bf.training.record", string="Completion", readonly=True, copy=False,
+        help="The register line written for this attendance.")
 
     def write(self, vals):
         """Horodater la signature, et écrire au registre quand la présence tombe.
@@ -89,7 +89,8 @@ class EventRegistration(models.Model):
                 "state": "confirmed",
                 "event_id": inscription.event_id.id,
                 "event_registration_id": inscription.id,
-                "note": _("Écrite automatiquement à la présence en séance."),
+                "note": _("Written automatically when attendance is "
+                          "marked at the session."),
             })
             inscription.training_record_id = realisation
             creees |= realisation

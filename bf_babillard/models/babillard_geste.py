@@ -27,29 +27,29 @@ class BabillardGeste(models.Model):
     """
 
     _name = "bf.babillard.geste"
-    _description = "Réaction posée sur une publication du babillard"
+    _description = "Reaction placed on a noticeboard post"
     _rec_name = "post_id"
 
     post_id = fields.Many2one(
-        "bf.babillard.post", string="Publication", required=True,
+        "bf.babillard.post", string="Post", required=True,
         ondelete="cascade", index=True)
     user_id = fields.Many2one(
-        "res.users", string="Personne", required=True, ondelete="cascade",
+        "res.users", string="Person", required=True, ondelete="cascade",
         index=True, default=lambda s: s.env.user)
     # 🔴 `restrict` et non `cascade` : supprimer une réaction du catalogue
     # effacerait l'historique de toutes les publications qui la portent. Le
     # catalogue refuse déjà la suppression d'une réaction posée, avec un
     # message qui dit quoi faire ; ceci est la garde de la base de données.
     reaction_id = fields.Many2one(
-        "bf.babillard.reaction", string="Réaction", required=True,
+        "bf.babillard.reaction", string="Reaction", required=True,
         ondelete="restrict", index=True)
     # Portée pour la règle multi-société : un geste suit sa publication.
     company_id = fields.Many2one(
-        related="post_id.company_id", store=True, string="Société")
+        related="post_id.company_id", store=True, string="Company")
 
     _sql_constraints = [
         ("geste_unique", "UNIQUE(post_id, user_id, reaction_id)",
-         "On ne pose pas deux fois la même réaction sur la même publication."),
+         "The same reaction is not placed twice on the same post."),
     ]
 
     @api.model_create_multi
@@ -62,5 +62,5 @@ class BabillardGeste(models.Model):
         for vals in vals_list:
             if not self.env.su and vals.get("user_id", self.env.uid) != self.env.uid:
                 raise AccessError(self.env._(
-                    "On ne réagit pas au nom de quelqu'un d'autre."))
+                    "You do not react on somebody else's behalf."))
         return super().create(vals_list)

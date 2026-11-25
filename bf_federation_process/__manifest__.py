@@ -1,6 +1,10 @@
 {
     "name": "Fédération : cartographies",
-    "version": "18.0.1.2.1",
+    # 18.0.1.2.2: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.2.2",
     "category": "Project",
     "summary": "La cartographie du client vit chez lui, et la version qui suit y arrive toute seule",
     "description": """

@@ -148,7 +148,7 @@ class TestSondage(TransactionCase):
         n'a pas été confronté aux choix de CETTE publication."""
         post = self._sondage()
         ailleurs = self._sondage(choix=("Ailleurs",), name="Un autre sondage")
-        with self.assertRaisesRegex(UserError, "n'existe pas sur cette publication"):
+        with self.assertRaisesRegex(UserError, "does not exist on this post"):
             post.with_user(self.u1).action_basculer_vote(
                 self._option(ailleurs, "Ailleurs").id)
 

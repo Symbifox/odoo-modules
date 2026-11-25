@@ -208,6 +208,10 @@ between light and dark backgrounds.
 Odoo 18 Community. Depends on `hr`, `mail`, `portal` and `calendar` — all core.
 `qrcode` and `Pillow` are used for the QR code and image validation.
 
+## Languages (v18.0.2.2.1)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Invitations, reminders, the delivered card (email, PDF and keepsake page) and the thin-board reminder go out in the recipient's language, or the company's when the recipient has none. The occasion's stored name follows the same rule, so the calendar and the noticeboard read it in French on a French-speaking database. What a scheduled job writes without anyone at the screen (status changes in the chatter, creation messages) is written in the company's language.
+
 ## Licence
 
 BUSL-1.1. You may run this module in production for your own internal business
@@ -219,6 +223,7 @@ after its release — see `LICENSE` for the exact parameters.
 
 | Version | Notes |
 |---|---|
+| 18.0.2.2.1 | Labels written in English in the source, French in `i18n/fr_CA.po`. Emails, the delivered card and the occasion's stored name follow the recipient's or the company's language; scheduled jobs write in the company's language. Older shipped wordings of the six emails are recognised, so they switch to English on upgrade. See Languages. |
 | 18.0.2.2.0 | The module's six emails (delivery, signer invitations, thank-you, thin-board nudge, consent invitation, occasion reminder to the organiser) use the shared mail layout of `bf_onboarding_base` (replaced by `bluefox_branding`'s when installed) instead of Odoo's light layout, which stays the fallback; no new dependency. A test rejects any `email_layout_xmlid=` that bypasses `_mise_en_page()` |
 | 18.0.2.1.6 | A signature posted from another site (its `Origin` or `Referer` is missing or names another site) is still accepted but no longer attached to the signed-in account; the public rate limiter no longer empties itself past its size cap: expired keys go first, then the lightest |
 | 18.0.2.1.5 | The board, occasion and message status fields carry a French label (« État ») instead of the default derived from the technical field name; consent email wording fix |

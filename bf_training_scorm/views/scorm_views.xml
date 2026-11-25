@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="scorm_player" name="Lecteur SCORM">
+    <template id="scorm_player" name="SCORM player">
         <t t-call="web.frontend_layout">
             <div class="container my-3" t-att-data-scorm-package="paquet.id">
                 <h4 t-field="paquet.name"/>
                 <div t-if="paquet.uses_sequencing" class="alert alert-warning">
-                    Ce paquet déclare des règles de séquencement SCORM 2004.
-                    Elles ne sont pas appliquées : le contenu jouera son premier
-                    SCO. Le module l'annonce plutôt que de faire semblant.
+                    This package declares SCORM 2004 sequencing rules.
+                    They are not applied: the content will play its first
+                    SCO. The module says so rather than pretending otherwise.
                 </div>
                 <!-- 🔴 Le contenu d'un paquet est du code arbitraire : cloisonné
                      ici, et aussi par l'en-tête CSP du serveur (qui tient même
@@ -24,10 +24,10 @@
         <field name="name">bf.scorm.package.form</field>
         <field name="model">bf.scorm.package</field>
         <field name="arch" type="xml">
-            <form string="Paquet SCORM">
+            <form string="SCORM package">
                 <sheet>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Nom du paquet"/></h1>
+                        <h1><field name="name" placeholder="Package name"/></h1>
                     </div>
                     <group>
                         <group>
@@ -45,13 +45,13 @@
                     <div class="alert alert-warning" role="alert"
                          invisible="not uses_sequencing">
                         <field name="uses_sequencing" invisible="1"/>
-                        Ce paquet déclare du séquencement SCORM 2004, qui n'est
-                        pas appliqué. Un lecteur qui prétend séquencer et se
-                        trompe est pire qu'un lecteur qui annonce qu'il ne
-                        séquence pas.
+                        This package declares SCORM 2004 sequencing, which is
+                        not applied. A player that claims to sequence and gets
+                        it wrong is worse than a player that says it does
+                        not sequence.
                     </div>
                     <notebook>
-                        <page string="Tentatives" name="attempts">
+                        <page string="Attempts" name="attempts">
                             <field name="attempt_ids" readonly="1">
                                 <list>
                                     <field name="partner_id"/>
@@ -74,7 +74,7 @@
         <field name="name">bf.scorm.package.list</field>
         <field name="model">bf.scorm.package</field>
         <field name="arch" type="xml">
-            <list string="Paquets SCORM">
+            <list string="SCORM packages">
                 <field name="name"/>
                 <field name="version"/>
                 <field name="slide_id"/>
@@ -85,12 +85,12 @@
     </record>
 
     <record id="action_scorm_package" model="ir.actions.act_window">
-        <field name="name">Paquets SCORM</field>
+        <field name="name">SCORM packages</field>
         <field name="res_model">bf.scorm.package</field>
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_scorm_package" name="Paquets SCORM"
+    <menuitem id="menu_scorm_package" name="SCORM packages"
               parent="bf_training.menu_training_config"
               action="action_scorm_package" sequence="60"/>
 </odoo>

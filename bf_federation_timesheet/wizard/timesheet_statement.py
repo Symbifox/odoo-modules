@@ -25,31 +25,38 @@ import io
 from collections import OrderedDict
 
 from odoo import _, api, fields, models
+from odoo.tools.misc import get_lang
 from odoo.exceptions import AccessError, UserError
 
-REGROUPEMENTS = [("task", "Par tâche"), ("employee", "Par personne"), ("day", "Par jour")]
+REGROUPEMENTS = [("task", "By task"), ("employee", "By person"), ("day", "By day")]
+#: Le libellé que portaient les relevés AVANT la bascule en anglais. L'empreinte d'un
+#: relevé le contient : la calculer sur ces libellés-là, et non sur celui de la langue courante,
+#: garde l'empreinte des livrables déjà remis. Sinon, un relevé inchangé produit après la montée
+#: changeait d'empreinte, passait à une nouvelle version et repartait chez le client.
+REGROUPEMENTS_EMPREINTE = {"task": "Par tâche", "employee": "Par personne", "day": "Par jour"}
 
 
 class FederationTimesheetStatement(models.TransientModel):
     _name = "federation.timesheet.statement"
-    _description = "Relevé des heures à remettre"
+    _description = "Timesheet statement to deliver"
 
-    project_id = fields.Many2one("project.project", string="Projet", required=True)
-    partner_id = fields.Many2one(related="project_id.partner_id", string="Destinataire")
-    date_from = fields.Date(string="Du", required=True)
-    date_to = fields.Date(string="Au", required=True)
-    group_by = fields.Selection(REGROUPEMENTS, string="Regrouper", default="task", required=True)
+    project_id = fields.Many2one("project.project", string="Project", required=True)
+    partner_id = fields.Many2one(related="project_id.partner_id", string="Recipient")
+    date_from = fields.Date(string="From", required=True)
+    date_to = fields.Date(string="To", required=True)
+    group_by = fields.Selection(REGROUPEMENTS, string="Group", default="task", required=True)
     include_descriptions = fields.Boolean(
-        string="Inclure les descriptions", default=True,
-        help="Les descriptions des lignes de temps disent ce qui a été fait. Décochez si "
-             "elles portent des mentions internes qui n'ont pas à sortir.")
+        string="Include descriptions", default=True,
+        help="Timesheet descriptions say what was done. Untick if they "
+             "carry internal remarks that should not leave.")
     federation_peer_id = fields.Many2one(
-        "federation.peer", string="Remettre à",
+        "federation.peer", string="Deliver to",
         domain="[('id', 'in', allowed_peer_ids)]",
-        help="Le pair qui reçoit le relevé. Vide : le livrable est préparé ici, sans être remis.")
+        help="The peer that receives the statement. Empty: the "
+             "deliverable is prepared here, without being delivered.")
     allowed_peer_ids = fields.Many2many("federation.peer", compute="_compute_allowed_peer_ids")
-    line_count = fields.Integer(string="Lignes", compute="_compute_apercu")
-    total_hours = fields.Float(string="Heures", compute="_compute_apercu")
+    line_count = fields.Integer(string="Lines", compute="_compute_apercu")
+    total_hours = fields.Float(string="Hours", compute="_compute_apercu")
 
     @api.depends("project_id", "project_id.partner_id")
     def _compute_allowed_peer_ids(self):
@@ -70,7 +77,7 @@ class FederationTimesheetStatement(models.TransientModel):
     def _lines(self):
         self.ensure_one()
         if self.date_to < self.date_from:
-            raise UserError(_("La période finit avant de commencer."))
+            raise UserError(_("The period ends before it begins."))
         return self.env["account.analytic.line"].search([
             ("project_id", "=", self.project_id.id),
             ("employee_id", "!=", False),
@@ -80,10 +87,10 @@ class FederationTimesheetStatement(models.TransientModel):
 
     def _group_key(self, line):
         if self.group_by == "employee":
-            return line.employee_id.name or _("(sans personne)")
+            return line.employee_id.name or _("(no person)")
         if self.group_by == "day":
             return fields.Date.to_string(line.date)
-        return line.task_id.name or _("(sans tâche)")
+        return line.task_id.name or _("(no task)")
 
     def _statement(self):
         """Le relevé, en données : ce que le PDF, le CSV et l'empreinte lisent tous les trois.
@@ -112,7 +119,10 @@ class FederationTimesheetStatement(models.TransientModel):
             "company": self.project_id.company_id.name or self.env.company.name,
             "date_from": fields.Date.to_string(self.date_from),
             "date_to": fields.Date.to_string(self.date_to),
-            "group_by": dict(REGROUPEMENTS)[self.group_by],
+            # Libellé dans la langue de l'appel (celle de l'usager à défaut), pas la liste source.
+            "group_by": dict(self._fields["group_by"]._description_selection(
+                self.with_context(lang=get_lang(self.env, self.env.lang or self.env.user.lang).code).env))[self.group_by],
+            "group_key": self.group_by,
             "include_descriptions": self.include_descriptions,
             "groups": [{"label": k, **v} for k, v in groupes.items()],
             "line_count": sum(len(g["lines"]) for g in groupes.values()),
@@ -122,14 +132,16 @@ class FederationTimesheetStatement(models.TransientModel):
     @staticmethod
     def _fingerprint(statement):
         """Ce qui décrit le contenu du relevé, jamais le moment où il a été produit."""
-        stable = {k: v for k, v in statement.items() if k not in ("company",)}
+        stable = {k: v for k, v in statement.items() if k not in ("company", "group_key")}
+        if statement.get("group_key") in REGROUPEMENTS_EMPREINTE:
+            stable["group_by"] = REGROUPEMENTS_EMPREINTE[statement["group_key"]]
         brut = repr(sorted(stable.items())).encode("utf-8")
         return hashlib.sha256(brut).hexdigest()
 
     def _csv(self, statement):
         tampon = io.StringIO()
         ecrit = csv.writer(tampon, delimiter=";")
-        ecrit.writerow([_("Date"), _("Personne"), _("Tâche"), _("Description"), _("Heures")])
+        ecrit.writerow([_("Date"), _("Person"), _("Task"), _("Description"), _("Hours")])
         for groupe in statement["groups"]:
             for l in groupe["lines"]:
                 ecrit.writerow([l["date"], l["employee"], l["task"], l["description"],
@@ -146,17 +158,19 @@ class FederationTimesheetStatement(models.TransientModel):
     # --- Produire et remettre ---------------------------------------------------------
     def _check_role(self):
         if not self.env.su and not self.env.user.has_group("project.group_project_manager"):
-            raise AccessError(_("Remettre un relevé des heures demande le rôle de gestionnaire de projet."))
+            raise AccessError(_("Delivering a timesheet statement "
+                                "requires the project manager role."))
 
     def action_produce(self):
         """Produire le relevé, le déposer en livrable, et le remettre si un pair est choisi."""
         self.ensure_one()
         self._check_role()
         if not self.project_id.partner_id:
-            raise UserError(_("Le projet n'a pas de client : un relevé est remis à quelqu'un."))
+            raise UserError(_("The project has no customer: a statement "
+                              "is delivered to someone."))
         statement = self._statement()
         if not statement["line_count"]:
-            raise UserError(_("Aucune heure sur ce projet pour cette période."))
+            raise UserError(_("No hours on this project for this period."))
         document = self._produce_document(statement)
         if self.federation_peer_id and document.federation_peer_id != self.federation_peer_id:
             document.write({"federation_peer_id": self.federation_peer_id.id})
@@ -186,12 +200,13 @@ class FederationTimesheetStatement(models.TransientModel):
             return document
         pieces = self._attachments(statement, document)
         vals = {
-            "name": _("Relevé des heures, %s, du %s au %s")
+            "name": _("Timesheet statement, %s, from %s to %s")
                     % (statement["project"], statement["date_from"], statement["date_to"]),
             "reference": reference,
             "issued_on": fields.Date.context_today(self),
-            "summary": _("%(n)s ligne(s), %(h)s h, du %(du)s au %(au)s, regroupées %(par)s. "
-                         "Le relevé dit combien de temps, jamais combien d'argent.")
+            "summary": _("%(n)s line(s), %(h)s h, from %(du)s to %(au)s, "
+                         "grouped %(par)s. The statement says how much "
+                         "time, never how much money.")
                        % {"n": statement["line_count"], "h": f"{statement['total_hours']:.2f}".replace(".", ","),
                           "du": statement["date_from"], "au": statement["date_to"],
                           "par": statement["group_by"].lower()},

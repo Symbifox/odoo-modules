@@ -1,6 +1,10 @@
 {
     "name": "Fédération : livrables remis",
-    "version": "18.0.1.2.2",
+    # 18.0.1.2.3: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.2.3",
     "category": "Project",
     "summary": "Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu",
     "description": """

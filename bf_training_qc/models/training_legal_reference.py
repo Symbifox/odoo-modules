@@ -11,28 +11,28 @@ class BfTrainingLegalReference(models.Model):
     """
 
     _name = "bf.training.legal.reference"
-    _description = "Base réglementaire de formation"
+    _description = "Training regulatory basis"
     _order = "sequence, name"
 
-    name = fields.Char(string="Intitulé", required=True, translate=True)
+    name = fields.Char(string="Title", required=True, translate=True)
     code = fields.Char(string="Code", required=True)
     citation = fields.Char(
-        string="Référence", required=True,
-        help="Le chapitre et l'article, tels qu'ils se citent.")
-    article = fields.Char(string="Article")
-    text = fields.Text(string="Texte cité", translate=True)
-    url = fields.Char(string="Adresse du texte officiel")
+        string="Reference", required=True,
+        help="The chapter and the section, as they are cited.")
+    article = fields.Char(string="Section")
+    text = fields.Text(string="Quoted text", translate=True)
+    url = fields.Char(string="Address of the official text")
     sector = fields.Selection(
-        [("general", "Tous les employeurs"),
-         ("childcare", "Services de garde éducatifs"),
-         ("seniors", "Résidences privées pour aînés"),
+        [("general", "All employers"),
+         ("childcare", "Educational childcare"),
+         ("seniors", "Private seniors' residences"),
          ("construction", "Construction")],
-        string="Secteur", default="general", required=True)
-    sequence = fields.Integer(string="Ordre", default=10)
-    active = fields.Boolean(string="Actif", default=True)
+        string="Sector", default="general", required=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
     requirement_ids = fields.One2many(
-        "bf.training.requirement", "legal_reference_id", string="Exigences")
+        "bf.training.requirement", "legal_reference_id", string="Requirements")
 
     _sql_constraints = [
-        ("code_uniq", "unique (code)", "Ce code de référence est déjà pris."),
+        ("code_uniq", "unique (code)", "This reference code is already taken."),
     ]

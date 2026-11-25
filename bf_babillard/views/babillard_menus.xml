@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_babillard_root" name="Babillard"
+    <menuitem id="menu_babillard_root" name="Noticeboard"
               web_icon="bf_babillard,static/description/icon.png" sequence="46"/>
 
-    <menuitem id="menu_babillard_fil" name="Le fil" parent="menu_babillard_root"
+    <menuitem id="menu_babillard_fil" name="The feed" parent="menu_babillard_root"
               action="action_babillard_fil" sequence="10"/>
 
-    <menuitem id="menu_babillard_publications" name="Publications"
+    <menuitem id="menu_babillard_publications" name="Posts"
               parent="menu_babillard_root" action="action_babillard_publications"
               groups="bf_babillard.group_babillard_redacteur" sequence="20"/>
 
-    <menuitem id="menu_babillard_sondages" name="Sondages" parent="menu_babillard_root"
+    <menuitem id="menu_babillard_sondages" name="Polls" parent="menu_babillard_root"
               action="action_babillard_sondages"
               groups="bf_babillard.group_babillard_redacteur" sequence="25"/>
 
-    <menuitem id="menu_babillard_signalements" name="Signalements"
+    <menuitem id="menu_babillard_signalements" name="Reports"
               parent="menu_babillard_root" action="action_babillard_signalement"
               groups="bf_babillard.group_babillard_moderation" sequence="30"/>
 
@@ -22,7 +22,7 @@
               parent="menu_babillard_root" groups="base.group_system"
               sequence="90"/>
 
-    <menuitem id="menu_babillard_reactions" name="Réactions"
+    <menuitem id="menu_babillard_reactions" name="Reactions"
               parent="menu_babillard_configuration"
               action="action_babillard_reaction" sequence="10"/>
 </odoo>

@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="%(action_federation_timesheet_statement)d" type="action"
-                        string="Remettre le relevé des heures"
+                        string="Deliver the timesheet statement"
                         context="{'default_project_id': id}"
                         invisible="not partner_id"
                         groups="project.group_project_manager"/>

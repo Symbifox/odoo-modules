@@ -7,14 +7,14 @@ class BfTrainingRecord(models.Model):
     _inherit = "bf.training.record"
 
     distribution_id = fields.Many2one(
-        "project.document.distribution", string="Remise du document",
+        "project.document.distribution", string="Document distribution",
         ondelete="set null", index=True)
     document_version_id = fields.Many2one(
-        "project.document.version", string="Version lue", ondelete="restrict",
-        help="La version exacte que la personne a confirmé avoir lue. C'est elle "
-             "qui décide si l'accusé vaut encore.")
+        "project.document.version", string="Version read", ondelete="restrict",
+        help="The exact version the person confirmed having read. It is "
+             "what decides whether the acknowledgement still holds.")
     document_version_number = fields.Char(
-        related="document_version_id.version_number", string="Numéro de version")
+        related="document_version_id.version_number", string="Version number")
 
     @api.depends("document_version_id",
                  "activity_id.document_id.latest_version_id",

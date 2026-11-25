@@ -18,51 +18,55 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 SECTEURS = [
-    ("incendie", "Sécurité incendie"),
-    ("sst", "Santé et sécurité du travail"),
-    ("bureau", "Bureau"),
-    ("immeuble", "Immeuble"),
-    ("garde", "Services de garde"),
-    ("autre", "Autre"),
+    ("incendie", "Fire safety"),
+    ("sst", "Occupational health and safety"),
+    ("bureau", "Office"),
+    ("immeuble", "Building"),
+    ("garde", "Childcare services"),
+    ("autre", "Other"),
 ]
 
 
 class BfNfcTemplate(models.Model):
     _name = "bf.nfc.template"
-    _description = "Gabarit de pastilles"
+    _description = "Tag template"
     _order = "secteur, sequence, name"
 
-    name = fields.Char(string="Gabarit", required=True, translate=True)
+    name = fields.Char(string="Template", required=True, translate=True)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
-    secteur = fields.Selection(SECTEURS, string="Secteur", required=True, default="autre")
+    secteur = fields.Selection(SECTEURS, string="Sector", required=True, default="autre")
     description = fields.Text(translate=True)
-    reference = fields.Char(string="Référence", translate=True,
-                            help="L'obligation ou la norme que ce gabarit aide à prouver.")
+    reference = fields.Char(string="Reference", translate=True,
+                            help="The obligation or standard this "
+                                 "template helps prove.")
     recette = fields.Selection(
-        [("pastilles", "Une pastille par ligne")], string="Ce qu'il crée",
+        [("pastilles", "One tag per line")], string="What it creates",
         required=True, default="pastilles")
-    gesture_id = fields.Many2one("bf.nfc.gesture", string="Geste", ondelete="cascade",
+    gesture_id = fields.Many2one("bf.nfc.gesture", string="Gesture", ondelete="cascade",
                                  domain=[("kind", "!=", "menu")])
     gesture_kind = fields.Selection(related="gesture_id.kind")
-    params = fields.Char(string="Paramètres", help="JSON posé sur chaque pastille créée.")
-    confirm_required = fields.Boolean(string="Confirmer avant d'agir", default=True)
+    params = fields.Char(string="Parameters", help="JSON set on each tag "
+                                                   "created.")
+    confirm_required = fields.Boolean(string="Confirm before acting", default=True)
     choice_ids = fields.One2many("bf.nfc.template.choice", "template_id", string="Menu", copy=True)
     cible_requise = fields.Boolean(
-        string="Demande une fiche visée",
-        help="Toutes les pastilles créées visent la même fiche, choisie à la pose : "
-             "l'immeuble d'un signalement, l'entreprise d'une imprimante.")
+        string="Requires a target record",
+        help="All tags created target the same record, chosen when the "
+             "template is applied: the building for a report, the company "
+             "for a printer.")
     signee_recommandee = fields.Boolean(
-        string="Pastille signée recommandée",
-        help="Les personnes qui tapent n'ont pas de compte : la pastille devrait être une "
-             "NTAG 424 DNA, son identifiant saisi après la gravure.")
-    exemple = fields.Text(string="Exemple de lignes", translate=True)
+        string="Signed tag recommended",
+        help="The people tapping have no account: the tag should be an "
+             "NTAG 424 DNA, with its identifier entered after engraving.")
+    exemple = fields.Text(string="Example lines", translate=True)
 
     @api.constrains("recette", "gesture_id", "choice_ids")
     def _check_geste(self):
         for gabarit in self:
             if gabarit.recette == "pastilles" and not (gabarit.gesture_id or gabarit.choice_ids):
-                raise ValidationError(_("« %s » : une pastille a besoin d'un geste ou d'un menu.",
+                raise ValidationError(_("“%s”: a tag needs a gesture or a "
+                                        "menu.",
                                         gabarit.name))
 
     def action_utiliser(self):
@@ -84,7 +88,8 @@ class BfNfcTemplate(models.Model):
         self.ensure_one()
         methode = getattr(self, "_recette_%s" % self.recette, None)
         if methode is None:
-            raise UserError(_("La recette « %s » n'est pas installée sur ce système.", self.recette))
+            raise UserError(_("The recipe “%s” is not installed on this "
+                              "system.", self.recette))
         return methode(pose, lignes)
 
     def _valeurs_pastille(self, pose, nom, endroit):
@@ -99,9 +104,11 @@ class BfNfcTemplate(models.Model):
         try:
             params = json.loads(self.params) if self.params else {}
         except ValueError:
-            raise UserError(_("Les paramètres du gabarit « %s » ne sont pas du JSON valide.", self.name))
+            raise UserError(_("The parameters of template “%s” are not "
+                              "valid JSON.", self.name))
         if not isinstance(params, dict):
-            raise UserError(_("Les paramètres du gabarit « %s » doivent être un objet JSON.", self.name))
+            raise UserError(_("The parameters of template “%s” must be a "
+                              "JSON object.", self.name))
         if pose.adresse:
             params["url"] = pose.adresse.strip()
         if params:
@@ -124,15 +131,15 @@ class BfNfcTemplate(models.Model):
 
 class BfNfcTemplateChoice(models.Model):
     _name = "bf.nfc.template.choice"
-    _description = "Choix du menu d'un gabarit"
+    _description = "Template menu choice"
     _order = "sequence, id"
 
     template_id = fields.Many2one("bf.nfc.template", required=True, ondelete="cascade", index=True)
     sequence = fields.Integer(default=10)
-    name = fields.Char(string="Libellé du bouton", required=True, translate=True)
-    gesture_id = fields.Many2one("bf.nfc.gesture", string="Geste", required=True, ondelete="cascade",
+    name = fields.Char(string="Button label", required=True, translate=True)
+    gesture_id = fields.Many2one("bf.nfc.gesture", string="Gesture", required=True, ondelete="cascade",
                                  domain=[("kind", "!=", "menu")])
-    params = fields.Char(string="Paramètres")
+    params = fields.Char(string="Parameters")
     style = fields.Selection(
-        [("principal", "Principal"), ("secondaire", "Secondaire"), ("danger", "Attention")],
+        [("principal", "Primary"), ("secondaire", "Secondary"), ("danger", "Warning")],
         default="secondaire", required=True)

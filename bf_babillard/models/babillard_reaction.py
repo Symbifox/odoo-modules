@@ -25,31 +25,33 @@ class BabillardReaction(models.Model):
     """
 
     _name = "bf.babillard.reaction"
-    _description = "Réaction offerte sur le babillard"
+    _description = "Reaction offered on the noticeboard"
     _order = "sequence, id"
 
     name = fields.Char(
-        "Nom", required=True, translate=True,
-        help="Ce que le survol annonce : « Bravo », « Merci ».")
+        "Name", required=True, translate=True,
+        help="What the tooltip says: \"Bravo\", \"Thank you\".")
     symbole = fields.Char(
-        "Symbole", required=True,
-        help="L'émoji affiché sur la publication.")
-    sequence = fields.Integer("Séquence", default=10)
+        "Symbol", required=True,
+        help="The emoji shown on the post.")
+    sequence = fields.Integer("Sequence order", default=10)
     active = fields.Boolean(
-        "Offerte", default=True,
-        help="Décochée, la réaction n'est plus proposée. Celles déjà posées "
-             "restent affichées : l'historique ne se réécrit pas tout seul.")
+        "Offered", default=True,
+        help="Unticked, the reaction is no longer offered. The ones "
+             "already placed stay visible: history does not rewrite "
+             "itself.")
     predefinie = fields.Boolean(
-        "Prédéfinie", readonly=True, default=False,
-        help="Fournie avec le module. Elle se décoche, elle ne se supprime pas.")
+        "Predefined", readonly=True, default=False,
+        help="Shipped with the module. It can be unticked, it cannot be "
+             "deleted.")
     company_id = fields.Many2one(
-        "res.company", string="Société",
-        help="Vide : offerte dans toutes les sociétés.")
-    nb_gestes = fields.Integer("Posée", compute="_compute_nb_gestes")
+        "res.company", string="Company",
+        help="Empty: offered in every company.")
+    nb_gestes = fields.Integer("Placed", compute="_compute_nb_gestes")
 
     _sql_constraints = [
         ("symbole_non_vide", "CHECK(symbole <> '')",
-         "Une réaction a besoin d'un symbole."),
+         "A reaction needs a symbol."),
     ]
 
     def _compute_nb_gestes(self):
@@ -66,8 +68,8 @@ class BabillardReaction(models.Model):
         for reaction in self:
             if len(reaction.symbole or "") > LONGUEUR_MAX_SYMBOLE:
                 raise ValidationError(self.env._(
-                    "Un symbole tient en %(max)s caractères. "
-                    "« %(symbole)s » en fait %(long)s.",
+                    "A symbol fits in %(max)s characters. \"%(symbole)s\" "
+                    "is %(long)s long.",
                     max=LONGUEUR_MAX_SYMBOLE, symbole=reaction.symbole,
                     long=len(reaction.symbole)))
 
@@ -99,25 +101,25 @@ class BabillardReaction(models.Model):
             ], limit=1)
             if jumelle:
                 raise ValidationError(self.env._(
-                    "« %(symbole)s » est déjà offert sous le nom "
-                    "« %(nom)s ».", symbole=reaction.symbole, nom=jumelle.name))
+                    "\"%(symbole)s\" is already offered under the name "
+                    "\"%(nom)s\".", symbole=reaction.symbole, nom=jumelle.name))
 
     def unlink(self):
         # 🔴 Deux refus, deux raisons différentes.
         prealables = self.filtered("predefinie")
         if prealables:
             raise UserError(self.env._(
-                "« %(noms)s » vient avec le module : décochez « Offerte » "
-                "plutôt que de la supprimer. Supprimée, elle revient à la "
-                "prochaine mise à jour, cochée.",
+                "\"%(noms)s\" ships with the module: untick \"Offered\" "
+                "rather than deleting it. Deleted, it comes back ticked "
+                "at the next update.",
                 noms=", ".join(prealables.mapped("name"))))
         # `ondelete="restrict"` sur le geste rendrait une erreur de base de
         # données ; celle-ci dit quoi faire.
         posees = self.filtered(lambda r: r.nb_gestes)
         if posees:
             raise UserError(self.env._(
-                "« %(noms)s » a déjà été posée sur des publications. "
-                "Décochez « Offerte » : les réactions déjà là restent "
-                "lisibles, et personne n'en pose de nouvelle.",
+                "\"%(noms)s\" has already been placed on posts. Untick "
+                "\"Offered\": the reactions already there stay readable, "
+                "and nobody places a new one.",
                 noms=", ".join(posees.mapped("name"))))
         return super().unlink()

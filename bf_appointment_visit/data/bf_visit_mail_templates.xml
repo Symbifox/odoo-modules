@@ -5,10 +5,10 @@
         <!-- Le contenu commun des six messages : surtitre, contenu (par
              `t-set="contenu"`) et bouton. L'habillage vient de la mise en page
              commune, que chaque gabarit déclare. -->
-        <template id="visit_email_layout" name="Visites : contenu des courriels (la mise en page commune les habille)">
+        <template id="visit_email_layout" name="Showings: the contents of the emails (the common layout dresses them)">
             <t t-set="company" t-value="(object.listing_id.company_id) or user.company_id"/>
             <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
-            <p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Visite</p>
+            <p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Showing</p>
             <t t-out="contenu"/>
             <table t-if="bouton_url" role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:22px 0 6px 0;">
                 <tbody>
@@ -25,22 +25,22 @@
 
         <!-- 1. Au visiteur : la demande est partie -->
         <record id="mail_visit_pending" model="mail.template">
-            <field name="name">Visite : demande transmise</field>
+            <field name="name">Showing: request sent</field>
             <field name="model_id" ref="model_bf_visit"/>
-            <field name="subject">Votre demande de visite : {{ object.listing_id.name }}</field>
+            <field name="subject">Your showing request: {{ object.listing_id.name }}</field>
             <field name="email_from">{{ (object.listing_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.visitor_email }}</field>
             <field name="body_html" type="html">
                 <t t-set="contenu">
-                    <p>Bonjour <t t-out="object.visitor_name or ''"/>,</p>
+                    <p>Hello <t t-out="object.visitor_name or ''"/>,</p>
                     <p>
-                        Votre demande de visite du <strong t-out="object.listing_id.name"/>
-                        le <strong t-out="format_datetime(object.start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')"/>
-                        est transmise pour approbation.
+                        Your request to see <strong t-out="object.listing_id.name"/>
+                        on <strong t-out="format_datetime(object.start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')"/>
+                        has been sent for approval.
                     </p>
-                    <p>Le créneau vous est réservé le temps de la réponse. Vous recevrez un courriel dès qu'elle est donnée.</p>
+                    <p>The slot is held for you until the answer comes. You will receive an email as soon as it does.</p>
                     <p t-if="object.listing_id.occupancy == 'tenant'">
-                        Le logement est occupé : la visite est annoncée au locataire au moins 24 heures d'avance.
+                        The dwelling is occupied: the tenant is told about the showing at least 24 hours in advance.
                     </p>
                 </t>
                 <t t-call="bf_appointment_visit.visit_email_layout"/>
@@ -50,29 +50,29 @@
 
         <!-- 2. Au visiteur : c'est accordé -->
         <record id="mail_visit_approved" model="mail.template">
-            <field name="name">Visite : confirmée</field>
+            <field name="name">Showing: confirmed</field>
             <field name="model_id" ref="model_bf_visit"/>
-            <field name="subject">Visite confirmée : {{ object.listing_id.name }}</field>
+            <field name="subject">Showing confirmed: {{ object.listing_id.name }}</field>
             <field name="email_from">{{ (object.listing_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.visitor_email }}</field>
             <field name="body_html" type="html">
                 <t t-set="contenu">
-                    <p>Bonjour <t t-out="object.visitor_name or ''"/>,</p>
+                    <p>Hello <t t-out="object.visitor_name or ''"/>,</p>
                     <p>
-                        Votre visite du <strong t-out="object.listing_id.name"/> est confirmée pour le
+                        Your showing of <strong t-out="object.listing_id.name"/> is confirmed for
                         <strong t-out="format_datetime(object.start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')"/>.
                     </p>
                     <div t-if="object.listing_id.showing_instructions">
-                        <p style="margin-bottom:4px;"><strong>Avant de venir</strong></p>
+                        <p style="margin-bottom:4px;"><strong>Before you come</strong></p>
                         <div t-out="object.listing_id.showing_instructions"/>
                     </div>
                     <div t-if="object.access_released and object.listing_id.access_instructions"
                          style="margin-top:14px; padding:12px 14px; background-color:#F4F8FB; border-left-width:4px; border-left-style:solid; border-left-color:#29ABE2;">
-                        <p style="margin:0 0 4px 0;"><strong>Accès</strong></p>
+                        <p style="margin:0 0 4px 0;"><strong>Access</strong></p>
                         <div t-out="object.listing_id.access_instructions"/>
                     </div>
                     <p t-if="object.listing_id.require_identity" style="margin-top:14px; color:#6b7280; font-size:13px;">
-                        Une pièce d'identité vous sera demandée à l'arrivée. Rien n'en est photocopié ni conservé.
+                        You will be asked for identification on arrival. Nothing is photocopied or kept.
                     </p>
                 </t>
                 <t t-call="bf_appointment_visit.visit_email_layout"/>
@@ -82,25 +82,25 @@
 
         <!-- 3. Au visiteur : c'est refusé -->
         <record id="mail_visit_declined" model="mail.template">
-            <field name="name">Visite : refusée</field>
+            <field name="name">Showing: declined</field>
             <field name="model_id" ref="model_bf_visit"/>
-            <field name="subject">Votre demande de visite : {{ object.listing_id.name }}</field>
+            <field name="subject">Your showing request: {{ object.listing_id.name }}</field>
             <field name="email_from">{{ (object.listing_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.visitor_email }}</field>
             <field name="body_html" type="html">
                 <t t-set="contenu">
-                    <p>Bonjour <t t-out="object.visitor_name or ''"/>,</p>
+                    <p>Hello <t t-out="object.visitor_name or ''"/>,</p>
                     <p>
-                        L'heure demandée pour visiter le <strong t-out="object.listing_id.name"/> ne peut pas être retenue.
+                        The time requested to see <strong t-out="object.listing_id.name"/> cannot be accepted.
                     </p>
                     <p t-if="object.proposed_start">
-                        Une autre heure vous est proposée :
+                        Another time is proposed to you:
                         <strong t-out="format_datetime(object.proposed_start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')"/>.
-                        Répondez à ce courriel si elle vous convient.
+                        Reply to this email if it suits you.
                     </p>
                     <p t-if="object.seller_note" t-out="object.seller_note"/>
                     <p t-if="not object.proposed_start">
-                        Les autres créneaux offerts restent disponibles sur la page de réservation.
+                        The other slots on offer are still available on the booking page.
                     </p>
                 </t>
                 <t t-call="bf_appointment_visit.visit_email_layout"/>
@@ -110,37 +110,37 @@
 
         <!-- 4. Au vendeur : une demande à trancher -->
         <record id="mail_visit_seller_request" model="mail.template">
-            <field name="name">Visite : demande au vendeur</field>
+            <field name="name">Showing: request to the seller</field>
             <field name="model_id" ref="model_bf_visit"/>
-            <field name="subject">Demande de visite : {{ object.listing_id.name }}</field>
+            <field name="subject">Showing request: {{ object.listing_id.name }}</field>
             <field name="email_from">{{ (object.listing_id.company_id.email_formatted or '') }}</field>
             <field name="body_html" type="html">
                 <t t-set="contenu">
-                    <p>Bonjour,</p>
+                    <p>Hello,</p>
                     <p>
-                        Une visite du <strong t-out="object.listing_id.name"/> est demandée pour le
+                        A showing of <strong t-out="object.listing_id.name"/> is requested for
                         <strong t-out="format_datetime(object.start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')"/>.
                     </p>
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:12px 0; font-size:14px;">
                         <tbody>
                             <tr>
-                                <td style="padding:3px 14px 3px 0; color:#6b7280;">Personnes attendues</td>
+                                <td style="padding:3px 14px 3px 0; color:#6b7280;">People expected</td>
                                 <td style="padding:3px 0;"><t t-out="object.visitor_count or 1"/></td>
                             </tr>
                             <tr t-if="object.representation == 'broker'">
-                                <td style="padding:3px 14px 3px 0; color:#6b7280;">Accompagné de son courtier</td>
-                                <td style="padding:3px 0;"><t t-out="object.buyer_broker_name or 'oui'"/></td>
+                                <td style="padding:3px 14px 3px 0; color:#6b7280;">Accompanied by their broker</td>
+                                <td style="padding:3px 0;"><t t-out="object.buyer_broker_name or 'yes'"/></td>
                             </tr>
                             <tr t-if="object.representation == 'none'">
-                                <td style="padding:3px 14px 3px 0; color:#6b7280;">Représentation</td>
-                                <td style="padding:3px 0;">la personne n'a pas de courtier</td>
+                                <td style="padding:3px 14px 3px 0; color:#6b7280;">Representation</td>
+                                <td style="padding:3px 0;">the person has no broker</td>
                             </tr>
                         </tbody>
                     </table>
-                    <p>Vous pouvez accepter, refuser, ou proposer une autre heure.</p>
+                    <p>You can accept, decline, or propose another time.</p>
                 </t>
                 <t t-set="bouton_url" t-value="object.url_decision"/>
-                <t t-set="bouton_texte">Répondre à la demande</t>
+                <t t-set="bouton_texte">Answer the request</t>
                 <t t-call="bf_appointment_visit.visit_email_layout"/>
             </field>
             <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -148,27 +148,27 @@
 
         <!-- 5. Au locataire : l'avis de 24 heures -->
         <record id="mail_visit_tenant_notice" model="mail.template">
-            <field name="name">Visite : avis au locataire</field>
+            <field name="name">Showing: notice to the tenant</field>
             <field name="model_id" ref="model_bf_visit"/>
-            <field name="subject">Avis de visite : {{ object.listing_id.name }}</field>
+            <field name="subject">Showing notice: {{ object.listing_id.name }}</field>
             <field name="email_from">{{ (object.listing_id.company_id.email_formatted or '') }}</field>
             <field name="body_html" type="html">
                 <t t-set="contenu">
-                    <p>Bonjour <t t-out="object.listing_id.tenant_id.name or ''"/>,</p>
+                    <p>Hello <t t-out="object.listing_id.tenant_id.name or ''"/>,</p>
                     <p>
-                        Le logement que vous occupez sera visité le
+                        The dwelling you occupy will be shown on
                         <strong t-out="format_datetime(object.start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')"/>,
-                        pour une durée d'environ <t t-out="int((object.duration or 0.5) * 60)"/> minutes.
+                        for about <t t-out="int((object.duration or 0.5) * 60)"/> minutes.
                     </p>
                     <p>
-                        Cet avis vous est donné au moins 24 heures à l'avance, et la visite a lieu entre
-                        9 h et 21 h, comme l'exige l'article 1931 du Code civil du Québec.
+                        This notice is given to you at least 24 hours in advance, and the showing takes place
+                        between 9 a.m. and 9 p.m., as article 1931 of the Civil Code of Québec requires.
                     </p>
                     <p t-if="object.listing_id.tenant_wants_presence">
-                        Vous avez demandé la présence du locateur pendant les visites : elle est prévue.
+                        You asked for the landlord to be present during showings: that is arranged.
                     </p>
                     <p style="color:#6b7280; font-size:13px;">
-                        Si ce moment ne convient pas, répondez à ce courriel.
+                        If this time does not suit you, reply to this email.
                     </p>
                 </t>
                 <t t-call="bf_appointment_visit.visit_email_layout"/>
@@ -178,21 +178,21 @@
 
         <!-- 6. Au visiteur : ce que vous en avez pensé -->
         <record id="mail_visit_feedback_request" model="mail.template">
-            <field name="name">Visite : demande de rétroaction</field>
+            <field name="name">Showing: feedback request</field>
             <field name="model_id" ref="model_bf_visit"/>
-            <field name="subject">Votre visite du {{ object.listing_id.name }}</field>
+            <field name="subject">Your showing of {{ object.listing_id.name }}</field>
             <field name="email_from">{{ (object.listing_id.company_id.email_formatted or '') }}</field>
             <field name="email_to">{{ object.visitor_email }}</field>
             <field name="body_html" type="html">
                 <t t-set="contenu">
-                    <p>Bonjour <t t-out="object.visitor_name or ''"/>,</p>
+                    <p>Hello <t t-out="object.visitor_name or ''"/>,</p>
                     <p>
-                        Merci d'être passé visiter le <strong t-out="object.listing_id.name"/>.
-                        Deux questions, trente secondes, et le vendeur saura où il en est.
+                        Thank you for coming to see <strong t-out="object.listing_id.name"/>.
+                        Two questions, thirty seconds, and the seller will know where things stand.
                     </p>
                 </t>
                 <t t-set="bouton_url" t-value="object.url_feedback"/>
-                <t t-set="bouton_texte">Donner mon impression</t>
+                <t t-set="bouton_texte">Give my impression</t>
                 <t t-call="bf_appointment_visit.visit_email_layout"/>
             </field>
             <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>

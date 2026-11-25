@@ -58,3 +58,7 @@ modélisait déjà l'accusé nominatif.
 ## Dépendances
 
 `bf_federation`.
+
+## Languages (v18.0.1.2.3)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.

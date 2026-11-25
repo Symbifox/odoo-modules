@@ -2,20 +2,20 @@
 <odoo>
     <data noupdate="0">
         <record id="module_category_training" model="ir.module.category">
-            <field name="name">Registre de formation</field>
-            <field name="description">Qui doit quelle formation, et qui l'a faite.</field>
+            <field name="name">Training register</field>
+            <field name="description">Who owes which training, and who has done it.</field>
             <field name="sequence">40</field>
         </record>
 
         <record id="group_training_officer" model="res.groups">
-            <field name="name">Agent</field>
+            <field name="name">Officer</field>
             <field name="category_id" ref="module_category_training"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
-            <field name="comment">Tient le registre : saisit les réalisations, assigne, relance.</field>
+            <field name="comment">Keeps the register: records completions, assigns, sends reminders.</field>
         </record>
 
         <record id="group_training_manager" model="res.groups">
-            <field name="name">Responsable</field>
+            <field name="name">Manager</field>
             <field name="category_id" ref="module_category_training"/>
             <field name="implied_ids" eval="[(4, ref('bf_training.group_training_officer'))]"/>
             <!-- ⚠️ Sans cette ligne, personne n'est dans le groupe au lendemain de
@@ -25,36 +25,36 @@
                  voit. L'administrateur entre d'office ; le reste se distribue à la
                  main. -->
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>
-            <field name="comment">Écrit les exigences et les plans, et répond de la conformité.</field>
+            <field name="comment">Writes the requirements and the plans, and answers for compliance.</field>
         </record>
 
         <record id="rule_training_activity_company" model="ir.rule">
-            <field name="name">Activités de formation : société</field>
+            <field name="name">Training activities: company</field>
             <field name="model_id" ref="model_bf_training_activity"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
         <record id="rule_training_requirement_company" model="ir.rule">
-            <field name="name">Exigences de formation : société</field>
+            <field name="name">Training requirements: company</field>
             <field name="model_id" ref="model_bf_training_requirement"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
         <record id="rule_training_plan_company" model="ir.rule">
-            <field name="name">Plans de formation : société</field>
+            <field name="name">Training plans: company</field>
             <field name="model_id" ref="model_bf_training_plan"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
         <record id="rule_training_obligation_company" model="ir.rule">
-            <field name="name">Obligations : société</field>
+            <field name="name">Obligations: company</field>
             <field name="model_id" ref="model_bf_training_obligation"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
         <record id="rule_training_assignment_company" model="ir.rule">
-            <field name="name">Assignations : société</field>
+            <field name="name">Assignments: company</field>
             <field name="model_id" ref="model_bf_training_assignment"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
         <record id="rule_training_record_company" model="ir.rule">
-            <field name="name">Réalisations : société</field>
+            <field name="name">Completions: company</field>
             <field name="model_id" ref="model_bf_training_record"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
@@ -63,7 +63,7 @@
              Les deux règles qui suivent s'additionnent pour qui porte les deux
              groupes : l'agent voit tout, l'employé ordinaire voit son dossier. -->
         <record id="rule_training_record_own" model="ir.rule">
-            <field name="name">Réalisations : les miennes</field>
+            <field name="name">Completions: my own</field>
             <field name="model_id" ref="model_bf_training_record"/>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
             <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
@@ -73,13 +73,13 @@
             <field name="perm_unlink" eval="False"/>
         </record>
         <record id="rule_training_record_officer" model="ir.rule">
-            <field name="name">Réalisations : agent du registre</field>
+            <field name="name">Completions: register officer</field>
             <field name="model_id" ref="model_bf_training_record"/>
             <field name="groups" eval="[(4, ref('bf_training.group_training_officer'))]"/>
             <field name="domain_force">[(1, '=', 1)]</field>
         </record>
         <record id="rule_training_obligation_own" model="ir.rule">
-            <field name="name">Obligations : les miennes</field>
+            <field name="name">Obligations: my own</field>
             <field name="model_id" ref="model_bf_training_obligation"/>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
             <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
@@ -89,13 +89,13 @@
             <field name="perm_unlink" eval="False"/>
         </record>
         <record id="rule_training_obligation_officer" model="ir.rule">
-            <field name="name">Obligations : agent du registre</field>
+            <field name="name">Obligations: register officer</field>
             <field name="model_id" ref="model_bf_training_obligation"/>
             <field name="groups" eval="[(4, ref('bf_training.group_training_officer'))]"/>
             <field name="domain_force">[(1, '=', 1)]</field>
         </record>
         <record id="rule_training_assignment_own" model="ir.rule">
-            <field name="name">Assignations : les miennes</field>
+            <field name="name">Assignments: my own</field>
             <field name="model_id" ref="model_bf_training_assignment"/>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
             <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
@@ -105,7 +105,7 @@
             <field name="perm_unlink" eval="False"/>
         </record>
         <record id="rule_training_assignment_officer" model="ir.rule">
-            <field name="name">Assignations : agent du registre</field>
+            <field name="name">Assignments: register officer</field>
             <field name="model_id" ref="model_bf_training_assignment"/>
             <field name="groups" eval="[(4, ref('bf_training.group_training_officer'))]"/>
             <field name="domain_force">[(1, '=', 1)]</field>

@@ -23,34 +23,35 @@ from odoo import api, fields, models
 
 class CelebrationSignerGroup(models.Model):
     _name = "bf.celebration.signer.group"
-    _description = "Groupe de signataires"
+    _description = "Signatory group"
     _order = "name"
 
-    name = fields.Char(string="Nom", required=True)
+    name = fields.Char(string="Name", required=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
-        "res.company", string="Société",
+        "res.company", string="Company",
         default=lambda self: self.env.company)
 
     employee_ids = fields.Many2many(
         "hr.employee", "bf_celebration_signer_group_employee_rel",
-        "group_id", "employee_id", string="Personnes")
+        "group_id", "employee_id", string="People")
     department_ids = fields.Many2many(
         "hr.department", "bf_celebration_signer_group_department_rel",
-        "group_id", "department_id", string="Services",
-        help="Tous les membres actifs du service, lus au moment de l'envoi.")
+        "group_id", "department_id", string="Departments",
+        help="Every active member of the department, read at the moment "
+             "of sending.")
     partner_ids = fields.Many2many(
         "res.partner", "bf_celebration_signer_group_partner_rel",
         "group_id", "partner_id", string="Contacts",
-        help="Des gens hors de l'entreprise : un client, un partenaire.")
+        help="People outside the company: a client, a partner.")
 
     member_count = fields.Integer(
-        string="Adresses", compute="_compute_member_count")
+        string="Addresses", compute="_compute_member_count")
     note = fields.Text(string="Note")
 
     _sql_constraints = [
         ("name_company_uniq", "unique(name, company_id)",
-         "Un groupe de signataires porte déjà ce nom."),
+         "A signatory group already has that name."),
     ]
 
     @api.depends("employee_ids", "department_ids", "partner_ids")

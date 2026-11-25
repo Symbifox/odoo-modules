@@ -22,7 +22,7 @@ class BfNfcGesture(models.Model):
     _inherit = "bf.nfc.gesture"
 
     kind = fields.Selection(
-        selection_add=[("event_presence", "Noter ma présence à la séance")],
+        selection_add=[("event_presence", "Record my attendance at the session")],
         ondelete={"event_presence": "cascade"},
     )
 
@@ -42,8 +42,9 @@ class BfNfcGesture(models.Model):
         if cible and cible._name == "event.event":
             seances = Evenement.browse(cible.id)
             if not self._seance_en_cours(seances, moment):
-                raise UserError(_("« %(seance)s » a lieu le %(quand)s : la présence se note "
-                                  "pendant la séance.", seance=seances.name,
+                raise UserError(_("“%(seance)s” takes place on %(quand)s: "
+                                  "attendance is recorded during the "
+                                  "session.", seance=seances.name,
                                   quand=self._heure(seances.date_begin, "%Y-%m-%d %H:%M")))
         elif cible and cible._name == "res.partner":
             seances = Evenement.search([
@@ -55,17 +56,19 @@ class BfNfcGesture(models.Model):
             if annulee:
                 seances = seances.filtered(lambda s: s.stage_id != annulee)
             if not seances:
-                raise UserError(_("Aucune séance en cours à « %s ».", cible.display_name))
+                raise UserError(_("No session in progress at “%s”.", cible.display_name))
         else:
-            raise UserError(_("Cette pastille doit viser une séance ou le lieu d'une séance."))
+            raise UserError(_("This tag must point to a session or a "
+                              "session's venue."))
 
         choix = params.get("choix")
         if len(seances) > 1:
             seance = seances.filtered(lambda s: str(s.id) == str(choix or ""))
             if not seance:
                 return {
-                    "titre": _("Quelle séance ?"),
-                    "message": _("Plusieurs séances ont lieu ici en ce moment."),
+                    "titre": _("Which session?"),
+                    "message": _("Several sessions are taking place here "
+                                 "right now."),
                     "choix": [{"cle": str(s.id), "libelle": "%s · %s" % (s.name, self._heure(s.date_begin)),
                                "style": "secondaire", "saisie": None} for s in seances],
                 }
@@ -80,7 +83,7 @@ class BfNfcGesture(models.Model):
         ], limit=1)
         if inscription.state == "done":
             return {"titre": seance.name, "url": None,
-                    "message": _("Votre présence était déjà notée.")}
+                    "message": _("Your attendance was already recorded.")}
         nouvelle = not inscription
         if nouvelle:
             inscription = Inscription.create({
@@ -90,13 +93,14 @@ class BfNfcGesture(models.Model):
         inscription.action_set_done()
         if params.get("differe"):
             inscription.message_post(
-                body=_("Présence notée par pastille à %s, envoyée en différé.",
+                body=_("Attendance recorded by tag at %s, sent later.",
                        self._heure(moment, "%Y-%m-%d %H:%M")),
                 message_type="comment", subtype_xmlid="mail.mt_note")
         return {
             "titre": seance.name, "url": None,
-            "message": _("Présence notée, et inscription créée : vous n'étiez pas inscrit.")
-            if nouvelle else _("Présence notée. Bonne séance."),
+            "message": _("Attendance recorded, and registration created: "
+                         "you were not registered.")
+            if nouvelle else _("Attendance recorded. Enjoy the session."),
         }
 
     def _seance_en_cours(self, seance, moment):

@@ -42,6 +42,10 @@ summary of CSA Z614, not from the standard itself), office closing round.
 Templates shipped here: first aid kit and defibrillator, fire alarm panel, office
 closing round.
 
+## Languages (v18.0.1.0.3)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The missed-reading activity is written entirely in the language of the person in charge: checklist name and frequency included.
+
 ## License
 
 Business Source License 1.1, see [LICENSE](LICENSE).

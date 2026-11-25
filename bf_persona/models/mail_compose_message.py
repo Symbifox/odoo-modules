@@ -233,14 +233,14 @@ class MailComposeMessage(models.TransientModel):
             head = "\n".join(plain.splitlines()[:1]).strip().lower() if plain else ""
             if persona.preferred_salutation and not SALUT_HEAD_RX.match(head):
                 body = Markup("<p>%s,</p><p><br/></p>") % persona.preferred_salutation + body
-                msg.append(_("salutation ajoutée"))
+                msg.append(_("greeting added"))
             if persona.closing_formula and persona.closing_formula.lower() not in (plain or "").lower():
                 body = body + Markup("<p><br/></p><p>%s,</p>") % persona.closing_formula
-                msg.append(_("clôture ajoutée"))
+                msg.append(_("sign-off added"))
             if msg:
                 update["body"] = body
         elif pairs:
-            msg.append(_("plusieurs destinataires : salutation laissée à vous"))
+            msg.append(_("several recipients: the greeting is left to you"))
 
         personas = self.env["contact.persona"].browse([p.id for _r, p in pairs]).sudo()
         missing, _usual, forbidden = self._persona_rule_findings(personas)
@@ -249,18 +249,18 @@ class MailComposeMessage(models.TransientModel):
         if to_add:
             target = "partner_cc_ids" if "partner_cc_ids" in self._fields else "partner_ids"
             update[target] = [(4, p.id) for p in to_add]
-            msg.append(_("%s copie(s) obligatoire(s) ajoutée(s)") % len(to_add))
+            msg.append(_("%s mandatory copy(ies) added") % len(to_add))
         if to_remove:
             for field in ("partner_ids", "partner_cc_ids", "partner_bcc_ids"):
                 if field in self._fields and self[field] & to_remove:
                     update.setdefault(field, [])
                     update[field] += [(3, p.id) for p in self[field] & to_remove]
-            msg.append(_("%s personne(s) retirée(s) des copies") % len(to_remove))
+            msg.append(_("%s person(s) removed from the copies") % len(to_remove))
         if update:
             self.write(update)
         params = {
-            "title": _("Persona appliqué"),
-            "message": ", ".join(msg) or _("Aucun changement nécessaire."),
+            "title": _("Persona applied"),
+            "message": ", ".join(msg) or _("No change needed."),
             "type": "success" if update else "info",
             "sticky": False,
         }

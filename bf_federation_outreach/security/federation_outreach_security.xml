@@ -3,17 +3,17 @@
     <!-- 🔴 Un company_id ne cloisonne rien tant qu'une règle ne s'en sert pas : le livrable
          fédéré l'a appris à ses dépens. Les trois modèles portent la leur. -->
     <record id="rule_federation_outreach_report_company" model="ir.rule">
-        <field name="name">Suivis de démarchage : société</field>
+        <field name="name">Outreach follow-ups: company</field>
         <field name="model_id" ref="model_federation_outreach_report"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
     <record id="rule_federation_outreach_line_company" model="ir.rule">
-        <field name="name">Cibles d'un suivi de démarchage : société</field>
+        <field name="name">Outreach follow-up targets: company</field>
         <field name="model_id" ref="model_federation_outreach_report_line"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
     <record id="rule_federation_outreach_touch_company" model="ir.rule">
-        <field name="name">Touches d'un suivi de démarchage : société</field>
+        <field name="name">Outreach follow-up touches: company</field>
         <field name="model_id" ref="model_federation_outreach_report_touch"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>

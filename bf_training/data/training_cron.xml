@@ -2,43 +2,44 @@
 <odoo>
     <data noupdate="1">
         <record id="mail_template_training_reminder" model="mail.template">
-            <field name="name">Registre de formation : relance</field>
+            <field name="name">Training register: reminder</field>
             <field name="model_id" ref="model_bf_training_assignment"/>
-            <field name="subject">Formation à faire : {{ object.activity_id.name }}</field>
+            <field name="subject">Training to complete: {{ object.activity_id.name }}</field>
             <!-- 🔴 `email_formatted`, pas `email` : l'adresse nue arrivait sans nom
                  d'expéditeur, et « bonjour@… » ne dit pas qui écrit. -->
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="partner_to">{{ object.partner_id.id }}</field>
             <field name="body_html" type="html">
                 <div style="margin: 0; padding: 0;">
-                    <p>Bonjour <t t-out="object.employee_id.name or object.partner_id.name or ''">Prénom</t>,</p>
-                    <p>La formation <strong t-out="object.activity_id.name">Activité</strong>
-                        est attendue
-                        <t t-if="object.due_date">pour le
-                            <!-- 🔴 La date se formate dans la langue de la personne :
-                                 `t-out` sur une date brute rendait « 2026-09-16 ». -->
-                            <strong t-out="format_date(object.due_date, date_format='d MMMM yyyy', lang_code=object.partner_id.lang)">16 septembre 2026</strong></t>.</p>
+                    <p>Hello <t t-out="object.employee_id.name or object.partner_id.name or ''">First name</t>,</p>
+                    <p>The training <strong t-out="object.activity_id.name">Activity</strong>
+                        is due
+                        <t t-if="object.due_date">on
+                            <!-- 🔴 The date is formatted in the person's own language:
+                                 `t-out` on a raw date rendered « 2026-09-16 ». -->
+                            <strong t-out="format_date(object.due_date, date_format='d MMMM yyyy', lang_code=object.partner_id.lang)">16 September 2026</strong></t>.</p>
                     <p t-if="object.activity_id.duration_hours">
-                        <!-- « 2.0 heures » devient « 2 heures », « 1.5 » devient « 1,5 ». -->
-                        Durée prévue :
-                        <t t-out="('%g' % object.activity_id.duration_hours).replace('.', ',')">2</t>
-                        <t t-if="object.activity_id.duration_hours &lt;= 1">heure</t><t t-else="">heures</t>.
+                        <!-- « 2.0 hours » becomes « 2 hours ». ⚠️ No decimal comma here,
+                             unlike the French body: English writes « 1.5 hours ». -->
+                        Planned duration:
+                        <t t-out="'%g' % object.activity_id.duration_hours">2</t>
+                        <t t-if="object.activity_id.duration_hours &lt;= 1">hour</t><t t-else="">hours</t>.
                     </p>
-                    <!-- 🔴 La relance n'avait AUCUN lien : la personne savait qu'elle
-                         devait une formation et n'avait aucun moyen d'y aller. -->
+                    <!-- 🔴 The reminder carried NO link at all: people knew they owed
+                         training and had no way to get to it. -->
                     <p t-if="object.training_url" style="margin: 24px 0;">
-                        <!-- ⚠️ La couleur du bouton vient de la SOCIÉTÉ, jamais d'un code
-                             écrit ici : ce module part chez d'autres organisations. Elle
-                             suit la mise en page retenue (accent de marque sous la mise en
-                             page maison, couleur des boutons de courriel sous celle
-                             d'Odoo) : voir `_compute_reminder_presentation`. -->
+                        <!-- ⚠️ The button colour comes from the COMPANY, never from a code
+                             written here: this module ships to other organisations. It
+                             follows the chosen layout (brand accent under the in-house
+                             layout, email button colour under Odoo's): see
+                             `_compute_reminder_presentation`. -->
                         <a t-att-href="object.training_url"
                            t-attf-style="background-color: {{ object.reminder_button_color }}; padding: 10px 18px; text-decoration: none; color: #fff; border-radius: 5px; font-weight: bold;">
-                            Ouvrir la formation
+                            Open the training
                         </a>
                     </p>
-                    <!-- Pas de nom quand la mise en page pose déjà la signature de la société. -->
-                    <p>Merci,<t t-if="object.reminder_signature_name"><br/><t t-out="object.reminder_signature_name">La société</t></t></p>
+                    <!-- No name when the layout already adds the company signature. -->
+                    <p>Thank you,<t t-if="object.reminder_signature_name"><br/><t t-out="object.reminder_signature_name">The company</t></t></p>
                 </div>
             </field>
             <field name="lang">{{ object.partner_id.lang }}</field>
@@ -49,7 +50,7 @@
              l'expiration ne bouge jamais : un état qui dépend de la date du jour
              ne peut pas être porté par un champ calculé stocké. -->
         <record id="cron_training_refresh_expiry" model="ir.cron">
-            <field name="name">Registre de formation : rafraîchir les validités</field>
+            <field name="name">Training register: refresh the validity dates</field>
             <field name="model_id" ref="model_bf_training_record"/>
             <field name="state">code</field>
             <field name="code">model._cron_refresh_expiry()</field>
@@ -58,7 +59,7 @@
             <field name="active" eval="True"/>
         </record>
         <record id="cron_training_refresh_obligations" model="ir.cron">
-            <field name="name">Registre de formation : rafraîchir les obligations</field>
+            <field name="name">Training register: refresh the obligations</field>
             <field name="model_id" ref="model_bf_training_obligation"/>
             <field name="state">code</field>
             <field name="code">model._cron_refresh()</field>
@@ -67,7 +68,7 @@
             <field name="active" eval="True"/>
         </record>
         <record id="cron_training_reminders" model="ir.cron">
-            <field name="name">Registre de formation : relances</field>
+            <field name="name">Training register: reminders</field>
             <field name="model_id" ref="model_bf_training_assignment"/>
             <field name="state">code</field>
             <field name="code">model._cron_reminders()</field>

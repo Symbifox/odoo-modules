@@ -26,31 +26,31 @@
                                 <field name="partner_id"/>
                             </div>
                             <span t-if="record.relationship_health.raw_value == 'degraded'"
-                                  class="badge text-bg-danger">Dégradée</span>
+                                  class="badge text-bg-danger">Degraded</span>
                             <span t-if="record.relationship_health.raw_value == 'watch'"
-                                  class="badge text-bg-warning">À surveiller</span>
+                                  class="badge text-bg-warning">To watch</span>
                             <span t-if="record.relationship_health.raw_value == 'healthy'"
-                                  class="badge text-bg-success">Saine</span>
+                                  class="badge text-bg-success">Healthy</span>
                         </div>
                         <div class="text-muted small">
-                            <span>Style : <field name="addressing_style"/></span>
-                            <span class="ms-2" t-if="record.unanswered_count.raw_value">Sans réponse : <field name="unanswered_count"/></span>
+                            <span>Style: <field name="addressing_style"/></span>
+                            <span class="ms-2" t-if="record.unanswered_count.raw_value">Unanswered: <field name="unanswered_count"/></span>
                         </div>
                         <div class="text-muted small" groups="bf_persona.group_persona_manager">
-                            <span>Payeur : <field name="payer_quality"/></span>
+                            <span>Payer: <field name="payer_quality"/></span>
                             <span t-if="record.avg_payment_delay_days.raw_value" class="ms-2">
-                                (<field name="avg_payment_delay_days" widget="float" digits="[8,0]"/>j)
+                                (<field name="avg_payment_delay_days" widget="float" digits="[8,0]"/>d)
                             </span>
                         </div>
                         <div class="text-muted small mt-1" t-if="record.last_interaction_date.raw_value">
-                            Dernier échange : <field name="last_interaction_date" widget="date"/>
+                            Last exchange: <field name="last_interaction_date" widget="date"/>
                         </div>
                         <div t-if="record.health_reason.raw_value" class="small mt-1 text-warning-emphasis">
                             <field name="health_reason"/>
                         </div>
                         <div t-if="record.our_words_median.raw_value >= 120" class="small mt-1">
                             <span class="badge text-bg-warning">
-                                Nos courriels : <field name="our_words_median"/> mots
+                                Our emails: <field name="our_words_median"/> words
                             </span>
                         </div>
                     </t>
@@ -60,14 +60,14 @@
     </record>
 
     <record id="action_contact_persona_dashboard" model="ir.actions.act_window">
-        <field name="name">Personas : tableau de bord</field>
+        <field name="name">Personas: dashboard</field>
         <field name="res_model">contact.persona</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_contact_persona_search"/>
         <field name="context">{'search_default_group_health': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucun persona : le semis automatique en crée chaque mois pour les contacts actifs, ou créez-en un depuis une fiche contact.
+                No persona: the automatic seeding creates some each month for the active contacts, or create one from a contact record.
             </p>
         </field>
     </record>

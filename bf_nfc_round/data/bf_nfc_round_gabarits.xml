@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
     <record id="gabarit_ronde_surveillance" model="bf.nfc.template">
-        <field name="name">Ronde de surveillance</field>
+        <field name="name">Security patrol</field>
         <field name="secteur">immeuble</field>
         <field name="sequence">20</field>
         <field name="recette">tournee</field>
         <field name="round_schedule">daily</field>
         <field name="round_start_hour">22.0</field>
         <field name="round_duration">60</field>
-        <field name="description">Une pastille à chaque point de passage. La tournée dit « point 3 sur 7 », et une ronde commencée et pas finie, ou pas faite du tout, crée une activité pour la personne responsable.</field>
-        <field name="exemple">Entrée principale
-Stationnement ; niveau P1
-Salle mécanique ; sous-sol
-Toit ; accès par l'escalier est</field>
+        <field name="description">A tag at each checkpoint. The round shows “checkpoint 3 of 7”, and a round started but not finished, or not done at all, creates an activity for the person in charge.</field>
+        <field name="exemple">Main entrance
+Parking ; level P1
+Mechanical room ; basement
+Roof ; access by the east stairs</field>
     </record>
 </odoo>

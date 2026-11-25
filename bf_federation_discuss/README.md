@@ -46,3 +46,7 @@ meilleur.
 ## Dépendances
 
 `bf_federation`, `mail`.
+
+## Languages (v18.0.1.1.2)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.

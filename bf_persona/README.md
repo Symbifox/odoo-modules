@@ -112,7 +112,14 @@ who holds the persona role.
 
 `bf_persona_cx` plugs the customer-experience module in when both are installed.
 
+## Languages (v18.0.3.3.1)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The name of a CC rule shows its type in the reader's language (one cached name per language).
+
 ## Changelog
+
+### 18.0.3.3.1
+- **Source language.** Labels and messages are written in English; the French ships in `i18n/fr_CA.po`. A CC rule's name shows its type in the reader's language. See Languages.
 
 ### 18.0.3.3.0
 - The contact's mirror of the persona (`persona_summary`) is restricted to the
@@ -176,5 +183,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-18, this version converts automatically to
+- **Change Date**: on 2030-11-25, this version converts automatically to
   **LGPL-3.0-or-later**.

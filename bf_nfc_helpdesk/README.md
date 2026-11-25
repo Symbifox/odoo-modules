@@ -23,6 +23,10 @@ sends it to the customer.
 
 Installs itself when both `bf_nfc` and `helpdesk_mgmt` are present.
 
+## Languages (v18.0.1.1.1)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## License
 
 Business Source License 1.1, see [LICENSE](LICENSE).

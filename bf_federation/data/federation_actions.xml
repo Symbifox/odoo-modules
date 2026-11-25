@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="action_task_federate" model="ir.actions.act_window">
-        <field name="name">Fédérer avec…</field>
+        <field name="name">Federate with…</field>
         <field name="res_model">federation.share.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -10,7 +10,7 @@
         <field name="groups_id" eval="[(4, ref('project.group_project_manager'))]"/>
     </record>
     <record id="action_task_unfederate" model="ir.actions.server">
-        <field name="name">Retirer de la fédération</field>
+        <field name="name">Remove from federation</field>
         <field name="model_id" ref="project.model_project_task"/>
         <field name="binding_model_id" ref="project.model_project_task"/>
         <field name="binding_view_types">list,form</field>

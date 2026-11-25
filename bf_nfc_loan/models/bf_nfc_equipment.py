@@ -11,19 +11,21 @@ from odoo import _, api, fields, models
 
 class BfNfcEquipment(models.Model):
     _name = "bf.nfc.equipment"
-    _description = "Équipement prêté par pastille"
+    _description = "Equipment loaned by tag"
     _inherit = ["mail.thread", "mail.activity.mixin", "bf.nfc.target.mixin"]
     _order = "name"
 
-    name = fields.Char(string="Équipement", required=True, tracking=True)
-    reference = fields.Char(string="Référence", help="Numéro de série, étiquette d'inventaire.")
-    place = fields.Char(string="Rangé à", help="Où il revient quand on le rend.")
+    name = fields.Char(string="Equipment name", required=True, tracking=True)
+    reference = fields.Char(string="Reference", help="Serial number, "
+                                                     "inventory label.")
+    place = fields.Char(string="Stored at", help="Where it goes back when "
+                                               "returned.")
     active = fields.Boolean(default=True)
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company, required=True)
     max_days = fields.Integer(
-        string="Rappel après (jours)",
-        help="Au-delà, la personne qui le garde reçoit une activité « à rendre ». "
-             "Zéro : jamais de rappel.",
+        string="Reminder after (days)",
+        help="Beyond this, the person keeping it gets a “to return” "
+             "activity. Zero: never a reminder.",
     )
     note = fields.Text()
     # 🔴 Le registre des cadenas (RSST, art. 205) : un cadenas à cléage unique sans nom
@@ -31,16 +33,17 @@ class BfNfcEquipment(models.Model):
     # registre exige son nom, son téléphone, son employeur, l'heure de remise et de
     # retour. La personne qui tape est celle qui REMET ; celle qui reçoit se nomme.
     registre_externe = fields.Boolean(
-        string="Remis à des personnes sans compte", tracking=True,
-        help="Chaque remise demande le nom, le téléphone et l'employeur de la personne qui "
-             "reçoit : c'est le registre des cadenas à cléage unique sans nom (RSST, art. 205).")
-    loan_ids = fields.One2many("bf.nfc.equipment.loan", "equipment_id", string="Prêts")
+        string="Handed out to people without an account", tracking=True,
+        help="Each hand-out asks for the name, phone number and employer "
+             "of the person receiving it: this is the register of unnamed "
+             "single-key padlocks (RSST, s. 205).")
+    loan_ids = fields.One2many("bf.nfc.equipment.loan", "equipment_id", string="Loans")
     current_loan_id = fields.Many2one(
-        "bf.nfc.equipment.loan", string="Prêt en cours", compute="_compute_current", store=True)
+        "bf.nfc.equipment.loan", string="Current loan", compute="_compute_current", store=True)
     holder_id = fields.Many2one(
-        "res.users", string="Détenteur", compute="_compute_current", store=True, tracking=True)
-    since = fields.Datetime(string="Depuis", compute="_compute_current", store=True)
-    holder_label = fields.Char(string="Qui l'a", related="current_loan_id.holder_label")
+        "res.users", string="Holder", compute="_compute_current", store=True, tracking=True)
+    since = fields.Datetime(string="Since", compute="_compute_current", store=True)
+    holder_label = fields.Char(string="Who has it", related="current_loan_id.holder_label")
 
     @api.depends("loan_ids.date_end", "loan_ids.date_start", "loan_ids.user_id")
     def _compute_current(self):
@@ -95,33 +98,35 @@ class BfNfcEquipment(models.Model):
             equipement.activity_schedule(
                 activity_type_id=type_todo.id if type_todo else False,
                 user_id=pret.user_id.id,
-                summary=_("À rendre : %s", equipement.name),
-                note=_("Vous l'avez depuis plus de %s jours. Rapportez-le et approchez "
-                       "le téléphone de sa pastille.", equipement.max_days),
+                summary=_("To return: %s", equipement.name),
+                note=_("You have had it for more than %s days. Bring it "
+                       "back and tap its tag with your phone.", equipement.max_days),
             )
             pret.reminded = True
 
 
 class BfNfcEquipmentLoan(models.Model):
     _name = "bf.nfc.equipment.loan"
-    _description = "Prêt d'équipement"
+    _description = "Equipment loan"
     _order = "date_start desc, id desc"
 
     equipment_id = fields.Many2one("bf.nfc.equipment", required=True, ondelete="cascade", index=True)
-    user_id = fields.Many2one("res.users", string="Détenteur", required=True, index=True,
-                              help="Pour une remise à une personne sans compte : la personne qui a remis.")
-    borrower_name = fields.Char(string="Remis à")
-    borrower_phone = fields.Char(string="Téléphone")
-    borrower_employer = fields.Char(string="Employeur")
-    holder_label = fields.Char(string="Qui l'a", compute="_compute_holder_label")
-    date_start = fields.Datetime(string="Pris le", required=True)
-    date_end = fields.Datetime(string="Rendu le")
+    user_id = fields.Many2one("res.users", string="Holder", required=True, index=True,
+                              help="For a hand-out to a person without an "
+                                   "account: the person who handed it out.")
+    borrower_name = fields.Char(string="Handed out to")
+    borrower_phone = fields.Char(string="Phone")
+    borrower_employer = fields.Char(string="Employer")
+    holder_label = fields.Char(string="Who has it", compute="_compute_holder_label")
+    date_start = fields.Datetime(string="Taken on", required=True)
+    date_end = fields.Datetime(string="Returned on")
     closed_by_id = fields.Many2one(
-        "res.users", string="Fermé par",
-        help="La personne qui a rendu l'équipement, ou qui l'a repris à quelqu'un d'autre.")
-    offline = fields.Boolean(string="Pris en différé")
-    reminded = fields.Boolean(string="Rappel envoyé")
-    duration_hours = fields.Float(string="Durée (h)", compute="_compute_duration")
+        "res.users", string="Closed by",
+        help="The person who returned the equipment, or took it back from "
+             "someone else.")
+    offline = fields.Boolean(string="Taken later (offline)")
+    reminded = fields.Boolean(string="Reminder sent")
+    duration_hours = fields.Float(string="Duration (h)", compute="_compute_duration")
 
     @api.depends("user_id", "borrower_name", "borrower_employer")
     def _compute_holder_label(self):

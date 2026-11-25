@@ -30,37 +30,42 @@ MAX_FILE_NAME = 200
 
 class FederationDocument(models.Model):
     _name = "federation.document"
-    _description = "Livrable fédéré"
+    _description = "Federated deliverable"
     _inherit = ["mail.thread", "federation.federable"]
     _order = "issued_on desc, id desc"
 
     _federation_kind = "document"
     _federation_verbs = ("card", "ack")
 
-    name = fields.Char(string="Titre", required=True, tracking=True)
-    reference = fields.Char(string="Référence", tracking=True,
-                            help="Le code du livrable chez l'émetteur, s'il en a un.")
+    name = fields.Char(string="Title", required=True, tracking=True)
+    reference = fields.Char(string="Reference", tracking=True,
+                            help="The deliverable's code at the sender, "
+                                 "if it has one.")
     version = fields.Char(string="Version", default="1.0", tracking=True)
-    issued_on = fields.Date(string="Remis le", default=fields.Date.context_today, required=True, tracking=True)
-    summary = fields.Text(string="Ce que c'est",
-                          help="Quelques lignes en texte. Aucun balisage ne traverse.")
-    attachment_ids = fields.Many2many("ir.attachment", string="Fichiers")
-    file_note = fields.Char(string="Fichier resté chez l'émetteur", readonly=True,
-                            help="Rempli quand le fichier dépassait le plafond du pair.")
-    company_id = fields.Many2one("res.company", string="Société", default=lambda self: self.env.company)
+    issued_on = fields.Date(string="Delivered on", default=fields.Date.context_today, required=True, tracking=True)
+    summary = fields.Text(string="What it is",
+                          help="A few lines of plain text. No markup "
+                               "crosses over.")
+    attachment_ids = fields.Many2many("ir.attachment", string="Files")
+    file_note = fields.Char(string="File kept by the sender", readonly=True,
+                            help="Filled in when the file exceeded the "
+                                 "peer's ceiling.")
+    company_id = fields.Many2one("res.company", string="Company", default=lambda self: self.env.company)
     active = fields.Boolean(default=True)
 
     # Ce qui a produit la remise, ici. Ne voyage jamais : les identifiants des deux
     # bases se recouvrent, et le pair n'a que faire de nos clés.
-    source_ref = fields.Reference(selection="_selection_source", string="Produit à partir de", copy=False)
+    source_ref = fields.Reference(selection="_selection_source", string="Produced "
+                                                                        "from", copy=False)
 
     peer_partner_id = fields.Many2one(
-        "res.partner", string="Destinataire", tracking=True,
-        help="À qui ce livrable est remis. C'est lui qui décide quel pair peut le "
-             "recevoir : sans destinataire, aucun pair n'est proposé.")
-    acknowledged = fields.Boolean(string="Accusé reçu", readonly=True, copy=False, tracking=True)
-    acknowledged_on = fields.Datetime(string="Accusé le", readonly=True, copy=False)
-    acknowledged_by = fields.Char(string="Accusé par", readonly=True, copy=False)
+        "res.partner", string="Recipient", tracking=True,
+        help="Who this deliverable is delivered to. The recipient decides "
+             "which peer can receive it: with no recipient, no peer is "
+             "offered.")
+    acknowledged = fields.Boolean(string="Receipt received", readonly=True, copy=False, tracking=True)
+    acknowledged_on = fields.Datetime(string="Acknowledged on", readonly=True, copy=False)
+    acknowledged_by = fields.Char(string="Acknowledged by", readonly=True, copy=False)
 
     @api.model
     def _selection_source(self):
@@ -115,10 +120,10 @@ class FederationDocument(models.Model):
                  peers.mapped("partner_id").ids)]
 
     def _federation_label_the(self):
-        return _("le livrable")
+        return _("the deliverable")
 
     def _federation_label_this(self):
-        return _("ce livrable")
+        return _("this deliverable")
 
     def _federation_watched(self):
         return ("name", "reference", "version", "issued_on", "summary", "attachment_ids",
@@ -163,17 +168,18 @@ class FederationDocument(models.Model):
         doc = self.create(self._federation_mirror_vals(peer, card))
         doc._federation_absorb_files(peer, card)
         doc.message_post(
-            body=Markup(_("<p>Livrable reçu de %s : <b>%s</b>, version %s, remis le %s.</p>"))
+            body=Markup(_("<p>Deliverable received from %s: <b>%s</b>, "
+                          "version %s, delivered on %s.</p>"))
             % (peer.name, transport.clean_text(card.get("name"), 300),
-               transport.clean_text(card.get("version"), 40) or _("(aucune)"),
-               transport.valid_day(card.get("issued_on")) or _("(sans date)")),
+               transport.clean_text(card.get("version"), 40) or _("(none)"),
+               transport.valid_day(card.get("issued_on")) or _("(no date)")),
             message_type="comment", subtype_xmlid="mail.mt_note")
         return doc
 
     @api.model
     def _federation_mirror_vals(self, peer, card):
         return {
-            "name": transport.clean_text(card.get("name"), 300) or _("(sans titre)"),
+            "name": transport.clean_text(card.get("name"), 300) or _("(untitled)"),
             "reference": transport.clean_text(card.get("reference"), 60),
             "version": transport.clean_text(card.get("version"), 40),
             "issued_on": transport.valid_day(card.get("issued_on")) or fields.Date.context_today(self),
@@ -210,7 +216,7 @@ class FederationDocument(models.Model):
             vals["attachment_ids"] = [(6, 0, gardes)]
         if laisses:
             vals["file_note"] = transport.clean_text(
-                _("resté chez %s : %s") % (peer.name, ", ".join(laisses)), 500)
+                _("kept by %s: %s") % (peer.name, ", ".join(laisses)), 500)
         if vals:
             self._federation_silent().write(vals)
 
@@ -232,9 +238,10 @@ class FederationDocument(models.Model):
         doc.write({"attachment_ids": [(5, 0, 0)]})
         self._federation_absorb_files(peer, card)
         if (vals.get("version") or "") != (ancienne or ""):
-            note = link._note(Markup(_("<p>Chez %s, le livrable est passé à la version <b>%s</b> : "
-                                       "l'accusé de réception est à refaire.</p>"))
-                              % (peer.name, transport.clean_text(vals.get("version"), 40) or _("(aucune)")))
+            note = link._note(Markup(_("<p>At %s, the deliverable moved "
+                                       "to version <b>%s</b>: the read "
+                                       "receipt must be given again.</p>"))
+                              % (peer.name, transport.clean_text(vals.get("version"), 40) or _("(none)")))
             link._inbox_notify(note)
         return True
 
@@ -244,7 +251,8 @@ class FederationDocument(models.Model):
         self.ensure_one()
         link = self._federation_link()
         if not link or link.origin != "remote":
-            raise UserError(_("Seul un livrable reçu d'un pair s'accuse."))
+            raise UserError(_("Only a deliverable received from a peer "
+                              "can be acknowledged."))
         if self.acknowledged:
             return True
         who = self.env.user.name
@@ -253,25 +261,28 @@ class FederationDocument(models.Model):
         link.peer_id._enqueue("document.ack", {
             "by": who, "on": fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "version": self.version or ""}, link)
-        self.message_post(body=_("Accusé de réception envoyé à %s.") % link.peer_id.name,
+        self.message_post(body=_("Read receipt sent to %s.") % link.peer_id.name,
                           message_type="comment", subtype_xmlid="mail.mt_note")
         return True
 
     def _federation_apply_ack(self, link, data):
         """L'émetteur apprend que son livrable a été lu, et par qui."""
         self.ensure_one()
-        who = transport.clean_text(data.get("by"), 120) or _("quelqu'un")
+        who = transport.clean_text(data.get("by"), 120) or _("someone")
         on = transport.valid_datetime(data.get("on")) or fields.Datetime.now()
         version = transport.clean_text(data.get("version"), 40)
         if version and self.version and version != self.version:
             # Un accusé pour une version qui n'est plus la nôtre ne vaut pas pour celle-ci.
-            link._note(Markup(_("<p>Chez %s, la version <b>%s</b> a été lue par %s, mais nous en sommes "
-                                "à la <b>%s</b> : l'accusé ne vaut pas pour la version en cours.</p>"))
+            link._note(Markup(_("<p>At %s, version <b>%s</b> was read by "
+                                "%s, but we are now at <b>%s</b>: the "
+                                "receipt does not apply to the current "
+                                "version.</p>"))
                        % (link.peer_id.name, version, who, self.version))
             return True
         self._federation_silent().write({
             "acknowledged": True, "acknowledged_on": on, "acknowledged_by": who})
-        note = link._note(Markup(_("<p>Chez %s, <b>%s</b> a accusé réception du livrable.</p>"))
+        note = link._note(Markup(_("<p>At %s, <b>%s</b> acknowledged "
+                                   "receipt of the deliverable.</p>"))
                           % (link.peer_id.name, who))
         link._inbox_notify(note)
         self._federation_report_ack(who, on)
@@ -343,8 +354,10 @@ class FederationDocument(models.Model):
     def _federation_share_note(self, peer):
         self.ensure_one()
         self.sudo().with_context(federation_inbound=True).message_post(
-            body=_("Livrable remis à %s : titre, référence, version, date, résumé en texte et fichiers "
-                   "sous le plafond. Ce qui revient : l'accusé de réception, et rien d'autre.") % peer.name,
+            body=_("Deliverable delivered to %s: title, reference, "
+                   "version, date, plain-text summary and files under the "
+                   "ceiling. What comes back: the read receipt, and "
+                   "nothing else.") % peer.name,
             message_type="comment", subtype_xmlid="mail.mt_note")
 
     # --- Le geste de remise, depuis n'importe quel enregistrement -------------------------

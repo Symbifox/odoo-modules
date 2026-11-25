@@ -5,9 +5,10 @@ class FederationDocument(models.Model):
     _inherit = "federation.document"
 
     federation_statement_fingerprint = fields.Char(
-        string="Empreinte du relevé", readonly=True, copy=False,
-        help="L'empreinte du contenu du relevé des heures. Refaire le relevé d'une même période "
-             "ne publie une nouvelle version que si le contenu a changé.")
+        string="Statement fingerprint", readonly=True, copy=False,
+        help="The fingerprint of the timesheet statement's content. "
+             "Producing the statement again for the same period publishes "
+             "a new version only if the content changed.")
 
     @api.model
     def _selection_source(self):

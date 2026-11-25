@@ -219,7 +219,11 @@ n'est pas installé.
 odoo -d <base> -u bf_training --test-enable --test-tags bf_training
 ```
 
+## Languages (v18.0.1.4.3)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. Action titles and the stored "what is missing" list follow the user's language, also when the record is created by a scheduled job or an RPC call.
+
 ## Licence
 
-Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-11-13.
+Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-11-25.
 Voir `LICENSE`.

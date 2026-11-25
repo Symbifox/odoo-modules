@@ -16,12 +16,12 @@
             <field name="reopen_on_change" position="after">
                 <div colspan="2" class="alert alert-warning" role="alert"
                      invisible="not content_drifted">
-                    Le cours n'a plus le même nombre de contenus publiés qu'au
-                    moment où la version a été fixée. Monter la version fera
-                    refaire le cours à ceux qui l'ont suivi ; prendre acte du
-                    changement fige le compte sans rien redemander.
+                    The course no longer has the same number of published contents as it
+                    had when the version was set. Bumping the version will make
+                    anyone who took the course take it again; acknowledging the
+                    change freezes the count without asking for anything again.
                     <button name="action_acknowledge_drift" type="object"
-                            string="Prendre acte sans faire refaire"
+                            string="Acknowledge without a retake"
                             class="btn-link"/>
                 </div>
             </field>

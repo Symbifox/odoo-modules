@@ -16,6 +16,6 @@ class HrEmployee(models.Model):
 
     celebration_profile_id = fields.One2many(
         "bf.celebration.profile", "employee_id",
-        string="Profil de célébration",
+        string="Celebration profile",
         groups="base.group_system",
     )

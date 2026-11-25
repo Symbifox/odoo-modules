@@ -10,7 +10,7 @@
              règles sans les éprouver. Il s'est vu en jouant le parcours dans le
              rôle visé. -->
         <record id="rule_scorm_attempt_own" model="ir.rule">
-            <field name="name">Tentatives SCORM : les miennes</field>
+            <field name="name">SCORM attempts: mine</field>
             <field name="model_id" ref="model_bf_scorm_attempt"/>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
             <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
@@ -21,7 +21,7 @@
         </record>
 
         <record id="rule_scorm_attempt_officer" model="ir.rule">
-            <field name="name">Tentatives SCORM : toutes, pour le registre</field>
+            <field name="name">SCORM attempts: all, for the register</field>
             <field name="model_id" ref="model_bf_scorm_attempt"/>
             <field name="groups" eval="[(4, ref('bf_training.group_training_officer'))]"/>
             <field name="domain_force">[(1, '=', 1)]</field>
@@ -31,7 +31,7 @@
              monde le lit, comme une activité de formation. Ce qui est personnel
              est la tentative, et elle a sa règle ci-dessus. -->
         <record id="rule_scorm_package_all" model="ir.rule">
-            <field name="name">Paquets SCORM : le catalogue</field>
+            <field name="name">SCORM packages: the catalogue</field>
             <field name="model_id" ref="model_bf_scorm_package"/>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
             <field name="domain_force">[(1, '=', 1)]</field>

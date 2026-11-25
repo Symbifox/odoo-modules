@@ -18,7 +18,7 @@ class BfNfcGesture(models.Model):
     _inherit = "bf.nfc.gesture"
 
     kind = fields.Selection(
-        selection_add=[("room", "Salle de réunion")],
+        selection_add=[("room", "Meeting room")],
         ondelete={"room": "cascade"},
     )
 
@@ -27,7 +27,7 @@ class BfNfcGesture(models.Model):
         self._exiger_une_personne(params)
         salle = tag._cible()
         if not salle or salle._name != "bf.nfc.room":
-            raise UserError(_("Cette pastille ne désigne pas une salle."))
+            raise UserError(_("This tag does not point to a room."))
         maintenant = self._moment(params)
         moi = self.env.user
         Evenement = self.env["calendar.event"].sudo()
@@ -51,27 +51,31 @@ class BfNfcGesture(models.Model):
             evenement = Evenement.browse(int(valeur or 0)).exists()
             if not evenement or evenement.bf_nfc_room_id != salle or not a_moi(evenement) \
                     or not (evenement.start - delai <= maintenant < evenement.stop):
-                raise UserError(_("Cette réservation n'est plus à confirmer."))
+                raise UserError(_("This booking no longer needs confirming."))
             evenement.bf_nfc_checkin = maintenant
             return {"titre": salle.name, "url": None,
-                    "message": _("Confirmé : la salle est à vous jusqu'à %s.", fin_de(evenement))}
+                    "message": _("Confirmed: the room is yours until %s.", fin_de(evenement))}
         if action == "liberer":
             evenement = Evenement.browse(int(valeur or 0)).exists()
             if not evenement or evenement.bf_nfc_room_id != salle or not a_moi(evenement):
-                raise UserError(_("Cette réservation n'est pas la vôtre."))
+                raise UserError(_("This booking is not yours."))
             if evenement.start >= maintenant:
                 evenement.bf_nfc_room_id = False
             else:
                 evenement.stop = maintenant
-            return {"titre": salle.name, "url": None, "message": _("Salle libérée. Merci.")}
+            return {"titre": salle.name, "url": None, "message": _("Room "
+                                                                   "released. "
+                                                                   "Thank "
+                                                                   "you.")}
         if action == "prendre":
             if en_cours:
-                raise UserError(_("La salle vient d'être prise, jusqu'à %s.", fin_de(en_cours)))
+                raise UserError(_("The room was just taken, until %s.", fin_de(en_cours)))
             fin = maintenant + timedelta(minutes=int(valeur or 0))
             if prochain and prochain.start < fin:
                 fin = prochain.start
             if fin - maintenant < timedelta(minutes=5):
-                raise UserError(_("La salle est réservée à %s : trop peu de temps pour la prendre.",
+                raise UserError(_("The room is booked at %s: too little "
+                                  "time to take it.",
                                   self._heure(prochain.start)))
             self.env["calendar.event"].create({
                 "name": _("%(salle)s · %(qui)s", salle=salle.name, qui=moi.name),
@@ -80,40 +84,44 @@ class BfNfcGesture(models.Model):
                 "bf_nfc_room_id": salle.id, "bf_nfc_checkin": maintenant,
             })
             return {"titre": salle.name, "url": None,
-                    "message": _("Salle prise jusqu'à %s. Libérez-la en partant.", self._heure(fin))}
+                    "message": _("Room taken until %s. Release it when "
+                                 "you leave.", self._heure(fin))}
         if action:
-            raise UserError(_("Ce choix n'existe pas."))
+            raise UserError(_("This choice does not exist."))
 
         # ── Sans choix : dire, et proposer ───────────────────────────────
         if en_cours:
             if a_moi(en_cours):
                 choix = []
                 if not en_cours.bf_nfc_checkin:
-                    choix.append({"cle": "arrive:%s" % en_cours.id, "libelle": _("J'arrive"),
+                    choix.append({"cle": "arrive:%s" % en_cours.id, "libelle": _("I'm "
+                                                                                 "here"),
                                   "style": "principal", "saisie": None})
-                choix.append({"cle": "liberer:%s" % en_cours.id, "libelle": _("Libérer la salle"),
+                choix.append({"cle": "liberer:%s" % en_cours.id, "libelle": _("Release "
+                                                                              "the "
+                                                                              "room"),
                               "style": "danger", "saisie": None})
                 return {"titre": salle.name, "choix": choix,
-                        "message": _("Votre réservation, jusqu'à %s.", fin_de(en_cours))}
-            qui = en_cours.user_id.name or _("quelqu'un")
+                        "message": _("Your booking, until %s.", fin_de(en_cours))}
+            qui = en_cours.user_id.name or _("someone")
             return {"titre": salle.name, "choix": [],
-                    "message": _("Occupée par %(qui)s jusqu'à %(fin)s.", qui=qui, fin=fin_de(en_cours))}
+                    "message": _("Taken by %(qui)s until %(fin)s.", qui=qui, fin=fin_de(en_cours))}
 
         choix = []
         if prochain and a_moi(prochain) and prochain.start - delai <= maintenant:
             choix.append({"cle": "arrive:%s" % prochain.id, "style": "principal", "saisie": None,
-                          "libelle": _("J'arrive (réservation de %s)", self._heure(prochain.start))})
+                          "libelle": _("I'm here (booking at %s)", self._heure(prochain.start))})
         for minutes in salle._durees():
             if not prochain or maintenant + timedelta(minutes=minutes) <= prochain.start:
-                libelle = _("Prendre %s min", minutes) if minutes < 60 or minutes % 60 else \
-                    _("Prendre %s h", minutes // 60)
+                libelle = _("Take %s min", minutes) if minutes < 60 or minutes % 60 else \
+                    _("Take %s h", minutes // 60)
                 choix.append({"cle": "prendre:%s" % minutes, "libelle": libelle,
                               "style": "secondaire", "saisie": None})
         if prochain and not any(c["cle"].startswith("prendre") for c in choix):
             reste = int((prochain.start - maintenant).total_seconds() // 60)
             if reste >= 10:
                 choix.append({"cle": "prendre:%s" % reste, "style": "secondaire", "saisie": None,
-                              "libelle": _("Prendre jusqu'à %s", self._heure(prochain.start))})
-        message = _("Libre jusqu'à %s.", self._heure(prochain.start)) if prochain \
-            else _("Libre pour le reste de la journée.")
+                              "libelle": _("Take until %s", self._heure(prochain.start))})
+        message = _("Free until %s.", self._heure(prochain.start)) if prochain \
+            else _("Free for the rest of the day.")
         return {"titre": salle.name, "message": message, "choix": choix}

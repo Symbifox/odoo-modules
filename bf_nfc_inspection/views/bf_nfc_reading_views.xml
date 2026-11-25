@@ -4,7 +4,7 @@
         <field name="name">bf.nfc.reading.list</field>
         <field name="model">bf.nfc.reading</field>
         <field name="arch" type="xml">
-            <list string="Relevés" create="false" decoration-danger="state == 'anomalie'"
+            <list string="Readings" create="false" decoration-danger="state == 'anomalie'"
                   decoration-muted="state == 'corrige'">
                 <field name="tapped_at"/>
                 <field name="name" optional="show"/>
@@ -26,9 +26,9 @@
         <field name="name">bf.nfc.reading.form</field>
         <field name="model">bf.nfc.reading</field>
         <field name="arch" type="xml">
-            <form string="Relevé" create="false">
+            <form string="Reading" create="false">
                 <header>
-                    <button name="action_consigner_correction" type="object" string="Consigner la correction"
+                    <button name="action_consigner_correction" type="object" string="Log the correction"
                             class="btn-primary" invisible="state != 'anomalie'"
                             groups="bf_nfc.group_nfc_manager"/>
                     <field name="state" widget="statusbar" statusbar_visible="conforme,anomalie,corrige"/>
@@ -39,18 +39,18 @@
                         <h2 class="text-muted"><field name="checklist_id" readonly="1"/></h2>
                     </div>
                     <group>
-                        <group string="Où et quand">
+                        <group string="Where and when">
                             <field name="tag_name"/>
                             <field name="place"/>
                             <field name="tapped_at"/>
                             <field name="offline"/>
                             <field name="tag_id"/>
                         </group>
-                        <group string="Qui">
+                        <group string="Who">
                             <field name="verifier"/>
                             <div colspan="2" class="text-muted" invisible="door != 'signed'">
-                                Nom déclaré par la personne qui a tapé une pastille signée :
-                                l'identité n'est pas prouvée par un compte.
+                                Name declared by whoever tapped a signed tag:
+                                the identity is not proven by an account.
                             </div>
                             <field name="user_id" invisible="signed_name"/>
                             <field name="signed_name" invisible="not signed_name"/>
@@ -72,7 +72,7 @@
                     </field>
                     <group string="Correction" invisible="state == 'conforme'">
                         <field name="correction" readonly="state != 'anomalie'"
-                               placeholder="Ce qui a été fait : pièce remplacée, entreprise appelée, date de l'intervention."/>
+                               placeholder="What was done: part replaced, company called, date of the work."/>
                         <field name="correction_date" readonly="state != 'anomalie'"/>
                         <field name="corrected_by_id" invisible="not corrected_by_id"/>
                     </group>
@@ -92,31 +92,30 @@
                 <field name="checklist_id"/>
                 <field name="verifier"/>
                 <field name="tag_id"/>
-                <filter name="anomalies_ouvertes" string="Anomalies à corriger" domain="[('state', '=', 'anomalie')]"/>
-                <filter name="corrigees" string="Anomalies corrigées" domain="[('state', '=', 'corrige')]"/>
+                <filter name="anomalies_ouvertes" string="Issues to correct" domain="[('state', '=', 'anomalie')]"/>
+                <filter name="corrigees" string="Corrected issues" domain="[('state', '=', 'corrige')]"/>
                 <separator/>
-                <filter name="tapped_at" string="Date du relevé" date="tapped_at"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="par_grille" string="Grille" context="{'group_by': 'checklist_id'}"/>
-                    <filter name="par_element" string="Élément vérifié" context="{'group_by': 'tag_name'}"/>
-                    <filter name="par_endroit" string="Endroit" context="{'group_by': 'place'}"/>
-                    <filter name="par_mois" string="Mois" context="{'group_by': 'tapped_at:month'}"/>
+                <filter name="tapped_at" string="Reading date" date="tapped_at"/>
+                <group expand="0" string="Group by">
+                    <filter name="par_grille" string="Checklist" context="{'group_by': 'checklist_id'}"/>
+                    <filter name="par_element" string="Item checked" context="{'group_by': 'tag_name'}"/>
+                    <filter name="par_endroit" string="Place" context="{'group_by': 'place'}"/>
+                    <filter name="par_mois" string="Month" context="{'group_by': 'tapped_at:month'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_bf_nfc_reading" model="ir.actions.act_window">
-        <field name="name">Relevés</field>
+        <field name="name">Readings</field>
         <field name="res_model">bf.nfc.reading</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun relevé</p>
-            <p>Un relevé naît d'un tapotement sur une pastille « Faire un relevé ». Le registre
-            s'imprime depuis cette liste : sélectionnez les relevés, puis Imprimer.</p>
+            <p class="o_view_nocontent_smiling_face">No reading</p>
+            <p>A reading comes from a tap on a “Take a reading” tag. The register is printed from this list: select the readings, then Print.</p>
         </field>
     </record>
 
-    <menuitem id="menu_nfc_readings" name="Relevés" parent="bf_nfc.menu_nfc_root"
+    <menuitem id="menu_nfc_readings" name="Readings" parent="bf_nfc.menu_nfc_root"
               action="action_bf_nfc_reading" sequence="45"/>
 </odoo>

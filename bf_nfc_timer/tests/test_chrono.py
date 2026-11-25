@@ -44,7 +44,8 @@ class TestChronoParPastille(TransactionCase):
             [("task_id", "=", self.tache.id)])
         resultat = self.pastille.taper("app")
         self.assertEqual(resultat["statut"], "ok")
-        self.assertIn("saisies", resultat["message"])
+        # Le même appel que le code (`env._("%s logged.", durée)`), dans la langue de l'essai.
+        self.assertIn(self.env._("%s logged.").split("%s")[1], resultat["message"])
         apres = self.env["account.analytic.line"].search_count(
             [("task_id", "=", self.tache.id)])
         self.assertEqual(apres, avant + 1,

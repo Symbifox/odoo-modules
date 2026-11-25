@@ -9,20 +9,20 @@
                 <button name="action_open_process_nodes" type="object"
                         class="oe_stat_button" icon="fa-sitemap"
                         invisible="not process_node_count">
-                    <field name="process_node_count" widget="statinfo" string="Étapes"/>
+                    <field name="process_node_count" widget="statinfo" string="Steps"/>
                 </button>
             </div>
             <notebook position="inside">
-                <page string="Étapes enseignées" name="process">
+                <page string="Steps taught" name="process">
                     <field name="process_node_ids" widget="many2many_tags"
                            options="{'no_create': True}"/>
                     <group>
                         <field name="process_lane_ids" widget="many2many_tags" readonly="1"/>
                     </group>
                     <div class="text-muted">
-                        Les gestes que cette formation apprend à tenir. Les couloirs
-                        concernés s'en déduisent : ce sont les rôles qui tiennent au
-                        moins une de ces étapes.
+                        The tasks this training teaches people to carry out. The lanes
+                        involved follow from them: they are the roles that carry out at
+                        least one of these steps.
                     </div>
                 </page>
             </notebook>

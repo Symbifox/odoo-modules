@@ -1,0 +1,1850 @@
+# Translation template for Noticeboard.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_babillard 18.0.1.8.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-19 06:03+0000\n"
+"PO-Revision-Date: 2026-11-19 06:03+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_babillard
+#: model:mail.template,body_html:bf_babillard.mail_template_annonce_a_lire
+msgid ""
+"\n"
+"    <t t-set=\"societe\" t-value=\"object.company_id\"/>\n"
+"    <t t-set=\"accent\" t-value=\"('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'\"/>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">\n"
+"        An announcement asks you to confirm you read it:\n"
+"        <strong t-out=\"object.name or ''\"/>\n"
+"    </p>\n"
+"    <div t-if=\"not is_html_empty(object.corps_html)\" style=\"margin:0 0 16px 0;\" t-out=\"object.corps_html\"/>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/mail/view?model=bf.babillard.post&amp;res_id={{ object.id }}\" t-attf-style=\"background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Read and confirm\n"
+"        </a>\n"
+"    </p>\n"
+"    <p style=\"margin:0;font-size:13px;color:#6B7280;\">\n"
+"        The confirmation happens in the application, after signing in: opening this\n"
+"        email or following its link does not count as a read.\n"
+"    </p>\n"
+msgstr ""
+
+#. module: bf_babillard
+#: model:mail.template,body_html:bf_babillard.mail_template_signalement_recu
+msgid ""
+"\n"
+"    <t t-set=\"societe\" t-value=\"object.post_id.company_id\"/>\n"
+"    <t t-set=\"accent\" t-value=\"('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'\"/>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">A report is waiting for your attention on the noticeboard.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/mail/view?model=bf.babillard.signalement&amp;res_id={{ object.id }}\" t-attf-style=\"background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Open the report\n"
+"        </a>\n"
+"    </p>\n"
+"    <p style=\"margin:0;font-size:13px;color:#6B7280;\">\n"
+"        To keep it confidential, this email says neither what is reported\n"
+"        nor who reported it.\n"
+"    </p>\n"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "\"%(nom)s\" is not offered on this noticeboard."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_reaction.py:0
+msgid ""
+"\"%(noms)s\" has already been placed on posts. Untick \"Offered\": the "
+"reactions already there stay readable, and nobody places a new one."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_reaction.py:0
+msgid ""
+"\"%(noms)s\" ships with the module: untick \"Offered\" rather than deleting "
+"it. Deleted, it comes back ticked at the next update."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_reaction.py:0
+msgid "\"%(symbole)s\" is already offered under the name \"%(nom)s\"."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "%(jours)s days ago"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-javascript
+#: code:addons/bf_babillard/static/src/js/babillard_sondage.js:0
+msgid "%s people have answered"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-javascript
+#: code:addons/bf_babillard/static/src/js/babillard_sondage.js:0
+msgid "1 person has answered"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_kanban
+msgid "<i class=\"fa fa-comment-o me-1\" title=\"Comments\"/>"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid ""
+"<span class=\"badge text-bg-warning ms-2\" invisible=\"not "
+"a_lire_pour_moi\">To read</span>"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "<span invisible=\"not personne_nom\">· by</span>"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "<span invisible=\"state == 'brouillon'\">·</span>"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_kanban
+msgid "<span>·</span>"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__sondage_ferme
+msgid ""
+"A closed poll keeps its result in the feed, but accepts no further votes."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__extrait
+msgid ""
+"A copy of the content at the time of the report. The file holds even if the "
+"comment is erased or rewritten afterwards."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "A negative ceiling means nothing."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.constraint,message:bf_babillard.constraint_bf_babillard_lecture_lecture_unique
+msgid "A person confirms reading a post once only."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__epingle
+msgid "A pinned post stays at the top of the feed."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "A poll carries at most %(max)s options."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__a_lire_pour_moi
+msgid ""
+"A post in the feed, that asks for a confirmation, that is addressed to me, "
+"and that I have not confirmed yet."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "A post that is not in the feed is not confirmed."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "A post that is not in the feed receives no reaction."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.constraint,message:bf_babillard.constraint_bf_babillard_reaction_symbole_non_vide
+msgid "A reaction needs a symbol."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_signalement.py:0
+msgid "A report is handled, it is not rewritten. Fields refused: %s."
+msgstr ""
+
+#. module: bf_babillard
+#: model:mail.template,subject:bf_babillard.mail_template_signalement_recu
+msgid "A report is waiting on the noticeboard"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_reaction.py:0
+msgid "A symbol fits in %(max)s characters. \"%(symbole)s\" is %(long)s long."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_needaction
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__suite
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_form
+msgid "Action taken"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-javascript
+#: code:addons/bf_babillard/static/src/js/babillard_sondage.js:0
+msgid "Add an option"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__date_echeance
+msgid ""
+"After this date the post leaves the feed without being destroyed. Empty, it "
+"stays until somebody takes it down."
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_d_accord
+msgid "Agreed"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__audience__tous
+msgid "All staff"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "An announcement asks you to confirm you read it: %s"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__image_couverture
+msgid ""
+"An image at the top of the post. Optional: an announcement with no image is "
+"still an announcement."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+#: model:ir.model.constraint,message:bf_babillard.constraint_bf_babillard_option_libelle_non_vide
+msgid "An option with no text is not an option."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__type_publication__annonce
+msgid "Announcement"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.actions.act_window,help:bf_babillard.action_babillard_fil
+msgid "Announcements addressed to your team will appear here."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-javascript
+#: code:addons/bf_babillard/static/src/xml/babillard_sondage.xml:0
+msgid "Anonymous"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__sondage_anonyme
+msgid "Anonymous vote"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.actions.act_window,help:bf_babillard.action_babillard_sondages
+msgid "Ask the organisation a question"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_attachment_count
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__audience
+msgid "Audience"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__auteur_user_id
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "Author"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__auteur_avatar
+msgid "Author's face"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_signalement__state__en_cours
+msgid "Being handled"
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_bravo
+msgid "Bravo"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_assistant_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__type_publication__celebration
+msgid "Celebration"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_form
+msgid "Close"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Close the poll"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_list
+msgid "Closed"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__message_ref
+msgid "Comment reported"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__nb_commentaires
+msgid "Comments"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__commentaires_ouverts
+msgid ""
+"Comments and reactions go through the post's message thread. They are closed"
+" by default on a mandatory read."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Comments are closed on this post."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__commentaires_ouverts
+msgid "Comments open"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_geste__company_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__company_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__company_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__company_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__company_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__company_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_vote__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.ui.menu,name:bf_babillard.menu_babillard_configuration
+msgid "Configuration"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__date
+msgid "Confirmed on"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__corps_html
+msgid "Content"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__extrait
+msgid "Content reported"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_form
+msgid "Content reported, as it was"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_geste__create_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__create_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__create_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__create_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__create_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__create_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__create_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_vote__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_geste__create_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__create_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__create_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__create_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__create_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__create_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__create_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_vote__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__date_jour
+msgid "Day"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__department_ids
+msgid "Departments"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__responsable_id
+msgid "Designated person"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_geste__display_name
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__display_name
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__display_name
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__display_name
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__display_name
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__display_name
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__display_name
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_vote__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__state__brouillon
+msgid "Draft"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "Drafts"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__date_echeance
+msgid "Due date"
+msgstr ""
+
+#. module: bf_babillard
+#: model:res.groups,name:bf_babillard.group_babillard_redacteur
+msgid "Editors"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_option__propose_par_id
+msgid ""
+"Empty when the option comes from the editors with the post. Filled in when "
+"somebody in the audience added it."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__message_id
+msgid "Empty when the post itself is the thing reported."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_reaction__company_id
+msgid "Empty: offered in every company."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__escalade
+msgid "Escalated to the administration"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__type_publication__evenement
+msgid "Event"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__lecture_requise
+msgid ""
+"Everybody in the audience has to confirm they read it. The receipt is there "
+"to prove the posting, never to measure anybody."
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_excellent
+msgid "Excellent"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__state__echue
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "Expired"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__failed_message_ids
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_follower_ids
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_partner_ids
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__a_lire_pour_moi
+msgid "For me to read"
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_bonne_idee
+msgid "Good idea"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__group_ids
+msgid "Groups"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_signalement__state__traite
+msgid "Handled"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__has_message
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_kanban
+msgid "I have read it"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__peut_relancer_equipe
+msgid "I remind my team"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_geste__id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_vote__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__message_needaction
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__message_has_error
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__message_has_sms_error
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__message_has_error
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__image_couverture
+msgid "Image"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "In the feed"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_is_follower
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_geste__write_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__write_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__write_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__write_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__write_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__write_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__write_uid
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_vote__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_geste__write_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__write_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__write_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__write_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__write_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__write_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__write_date
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_vote__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_jaime
+msgid "Like"
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_coup_de_coeur
+msgid "Love it"
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_rire
+msgid "Made me laugh"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__lecture_requise
+msgid "Mandatory read"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_content
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_has_error
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_search
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__message_content
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__message_search
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_ids
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_babillard
+#: model:res.groups,name:bf_babillard.group_babillard_moderation
+msgid "Moderation"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "My posts"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "My team"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "My team, read pending"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "Name at least one department, or address the post to all staff."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "Name at least one group, or address the post to all staff."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__est_nouveau
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_signalement__state__nouveau
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_kanban
+msgid "New"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__type_publication__nouvelle
+msgid "News"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.actions.act_window,help:bf_babillard.action_babillard_reaction
+msgid "No reaction offered."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__sans_destinataire
+msgid "No recipient"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__sans_destinataire
+msgid ""
+"Nobody in the organisation could receive this report: it is kept, and the "
+"person reporting was pointed back to their policy."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__escalade
+msgid ""
+"Nobody other than the person reported was in moderation: the report went to "
+"the administration, who must designate somebody."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "Nobody reports to you: there is no team to remind."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "Not enough answers to show the result."
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.actions.act_window,help:bf_babillard.action_babillard_fil
+msgid "Nothing on the noticeboard yet."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__avis_envoye_le
+msgid "Notice sent on"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.module.category,name:bf_babillard.module_category_babillard
+#: model:ir.ui.menu,name:bf_babillard.menu_babillard_root
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "Noticeboard"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-javascript
+#: code:addons/bf_babillard/static/src/js/babillard_sondage.js:0
+msgid "Noticeboard poll"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model,name:bf_babillard.model_bf_babillard_post
+msgid "Noticeboard post"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-javascript
+#: code:addons/bf_babillard/static/src/js/babillard_reactions.js:0
+msgid "Noticeboard reactions"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model,name:bf_babillard.model_bf_babillard_lecture
+msgid "Noticeboard read receipt"
+msgstr ""
+
+#. module: bf_babillard
+#: model:mail.template,name:bf_babillard.mail_template_annonce_a_lire
+msgid "Noticeboard: announcement to read"
+msgstr ""
+
+#. module: bf_babillard
+#: model:mail.template,name:bf_babillard.mail_template_signalement_recu
+msgid "Noticeboard: report received"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.actions.server,name:bf_babillard.cron_babillard_echoir_ir_actions_server
+msgid "Noticeboard: take down expired posts"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__message_needaction_counter
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__message_has_error_counter
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__active
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_reaction_list
+msgid "Offered"
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_en_route
+msgid "On it"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.constraint,message:bf_babillard.constraint_bf_babillard_post_source_unique
+msgid "One source cannot produce two posts."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_option.py:0
+msgid "Only a post of type \"Poll\" carries options."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "Only the editors close or reopen a poll."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "Only the editors see who has not confirmed yet."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model,name:bf_babillard.model_bf_babillard_option
+msgid "Option offered by a noticeboard poll"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__name
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__option_ids
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_vote__option_id
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Options"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__sondage_max_ajouts
+msgid "Options per person"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_geste__user_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__user_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_vote__user_id
+msgid "Person"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__personne_id
+msgid "Person featured"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__cible_partner_id
+msgid "Person reported"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__personne_avatar
+msgid "Person's face"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__personne_nom
+msgid "Person's name"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__epingle
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_kanban
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "Pinned"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__nb_gestes
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_reaction_list
+msgid "Placed"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__sondage
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__type_publication__sondage
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Poll"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-javascript
+#: code:addons/bf_babillard/static/src/js/babillard_sondage.js:0
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__sondage_ferme
+msgid "Poll closed"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.actions.act_window,name:bf_babillard.action_babillard_sondages
+#: model:ir.ui.menu,name:bf_babillard.menu_babillard_sondages
+msgid "Polls"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_geste__post_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__post_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__post_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__post_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__post_titre
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_vote__post_id
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Post"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__post_ref
+msgid "Post reported"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Posting"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.actions.act_window,name:bf_babillard.action_babillard_publications
+#: model:ir.ui.menu,name:bf_babillard.menu_babillard_publications
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_list
+msgid "Posts"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__predefinie
+msgid "Predefined"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Publish"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__state__publie
+msgid "Published"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__est_nouveau
+msgid "Published less than two days ago."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__date_publication
+msgid "Published on"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__rating_ids
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-javascript
+#: code:addons/bf_babillard/static/src/js/babillard_reactions.js:0
+msgid "React"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_geste__reaction_id
+msgid "Reaction"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model,name:bf_babillard.model_bf_babillard_reaction
+msgid "Reaction offered on the noticeboard"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model,name:bf_babillard.model_bf_babillard_geste
+msgid "Reaction placed on a noticeboard post"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.actions.act_window,name:bf_babillard.action_babillard_reaction
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__reactions
+#: model:ir.ui.menu,name:bf_babillard.menu_babillard_reactions
+msgid "Reactions"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_reaction_list
+msgid "Reactions offered"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__geste_ids
+msgid "Reactions placed"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_kanban
+msgid "Read"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_list
+msgid "Read by"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__lu_par_moi
+msgid "Read by me"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "Read notice sent to %(n)s person(s)."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "Read pending"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Read tracking"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__motif
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__motif
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_assistant_form
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_form
+msgid "Reason"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__lecture_ids
+msgid "Receipts"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__nb_lectures
+msgid "Receipts received"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_list
+msgid "Received on"
+msgstr ""
+
+#. module: bf_babillard
+#: model:res.groups,comment:bf_babillard.group_babillard_moderation
+msgid ""
+"Receives the reports and can take content down. This is the group of the "
+"person designated by the harassment prevention policy."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__nb_destinataires
+msgid "Recipients"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__type_publication__reconnaissance
+msgid "Recognition"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__name
+msgid "Reference"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Reopen the poll"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_signalement.py:0
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_form
+msgid "Report"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model,name:bf_babillard.model_bf_babillard_signalement_assistant
+msgid "Report a noticeboard content"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_signalement.py:0
+msgid "Report no. %s"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model,name:bf_babillard.model_bf_babillard_signalement
+msgid "Report of a noticeboard content"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.actions.act_window,name:bf_babillard.action_babillard_signalement_nouveau
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_assistant_form
+msgid "Report this content"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_signalement.py:0
+msgid "Report to handle"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_signalement.py:0
+msgid "Report with nobody to handle it: designate somebody to moderation"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__auteur_signalement_id
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__auteur_nom
+msgid "Reported by"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.actions.act_window,name:bf_babillard.action_babillard_signalement
+#: model:ir.ui.menu,name:bf_babillard.menu_babillard_signalements
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_list
+msgid "Reports"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Reset to draft"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_assistant_form
+msgid "Send the report"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__sequence
+msgid "Sequence order"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__sondage_choix_multiple
+msgid "Several options"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_reaction__predefinie
+msgid "Shipped with the module. It can be unticked, it cannot be deleted."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__auteur_nom
+msgid "Signature"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__audience__departements
+msgid "Some departments"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__audience__groupes
+msgid "Some groups"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__source_res_id
+msgid "Source identifier"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__source_model
+msgid "Source model"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__state
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__state
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "State"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__propose_par_id
+msgid "Suggested by"
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_etonnant
+msgid "Surprising"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_reaction__symbole
+msgid "Symbol"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_form
+msgid "Take it on"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "Take out of the feed"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_form
+msgid "Take the post down"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_list
+msgid "Targeted"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "Telling the audience is not done by hand."
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_merci
+msgid "Thank you"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__sondage_ajout_ouvert
+msgid "The audience can add an option"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__department_ids
+msgid "The audience follows the department on the employee record."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__cible_partner_id
+msgid ""
+"The author of the content at the time of the report. They do not receive the"
+" report and do not read it, even if they are part of moderation."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__sondage_max_ajouts
+msgid ""
+"The ceiling of options one person can add. Without it, somebody suggests "
+"fifteen and the count no longer says anything."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_signalement.py:0
+msgid "The comment reported does not belong to this post."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__date_jour
+msgid ""
+"The day of posting, in the time zone of whoever posts. That is what the card"
+" shows: the time to the second teaches nothing."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_reaction__symbole
+msgid "The emoji shown on the post."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.actions.act_window,name:bf_babillard.action_babillard_fil
+#: model:ir.ui.menu,name:bf_babillard.menu_babillard_fil
+msgid "The feed"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__avis_envoye_le
+msgid ""
+"The moment the audience was told about an announcement to read. A notice "
+"goes out once only, even if the post comes back to the feed."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__option_ids
+msgid "The options offered. They belong to this post."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.module.category,description:bf_babillard.module_category_babillard
+msgid "The organisation's announcements and their posting."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__personne_id
+msgid ""
+"The person the post is about. Their face appears on the card, instead of the"
+" author's."
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_form
+msgid "The post leaves the feed right away. Nothing is destroyed."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.constraint,message:bf_babillard.constraint_bf_babillard_geste_geste_unique
+msgid "The same reaction is not placed twice on the same post."
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.actions.act_window,help:bf_babillard.action_babillard_sondages
+msgid ""
+"The title is the question, and the post carries its own options.\n"
+"               You vote with one click on the card in the feed."
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "The title people will read"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid ""
+"This audience has %(nb)s people. An anonymous vote will show no result until"
+" three people have answered."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid ""
+"This audience has exactly three people: the result will only appear if all "
+"three answer, and it will stay easy to guess."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_signalement_assistant.py:0
+msgid "This comment does not belong to this post."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "This filter is only searched as yes or no."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_vote.py:0
+msgid "This option does not belong to this post."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "This option does not exist on this post."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "This option is already offered."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "This poll accepts no further options."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "This poll accepts no further votes."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "This poll already carries %(max)s options."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "This poll only accepts the editors' options."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "This post does not ask for a confirmation."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "This post is not addressed to you."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_signalement_assistant.py:0
+msgid "This post no longer exists."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "This reaction does not exist."
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_form
+msgid ""
+"This report is read by the designated person, and by them alone.\n"
+"                        Keep the file for at least two years."
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_assistant_form
+msgid ""
+"This report is read by the designated person, and by them alone.\n"
+"                    Neither the editors nor your colleagues can see it."
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.actions.act_window,help:bf_babillard.action_babillard_reaction
+msgid ""
+"Tick \"Offered\" on the ones the organisation offers, or add\n"
+"               your own on the last line."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__sondage_ajout_ouvert
+msgid ""
+"Ticked, everybody in the audience can suggest their own options, up to the "
+"ceiling."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__sondage_choix_multiple
+msgid ""
+"Ticked, you tick as many options as you like. Unticked, voting for one "
+"option drops the previous one."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__name
+msgid "Title"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_kanban
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_list
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "To read"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "To read: %s"
+msgstr ""
+
+#. module: bf_babillard
+#: model:mail.template,subject:bf_babillard.mail_template_annonce_a_lire
+msgid "To read: {{ object.name }}"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__type_publication
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_search
+msgid "Type"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__sondage_anonyme
+msgid ""
+"Unticked, the audience sees who voted for what, as with reactions. Ticked, "
+"nobody sees it, not even the editors, and the result stays hidden until at "
+"least three people have answered."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_reaction__active
+msgid ""
+"Unticked, the reaction is no longer offered. The ones already placed stay "
+"visible: history does not rewrite itself."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model,name:bf_babillard.model_bf_babillard_vote
+msgid "Vote placed on a noticeboard poll"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_option__vote_ids
+msgid "Votes"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__vote_ids
+msgid "Votes cast"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__sondage_avertissement
+msgid "Warning"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__website_message_ids
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__website_message_ids
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_signalement__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/hr_employee.py:0
+msgid "Welcome to %(nom)s"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/hr_employee.py:0
+msgid "Welcome to %(nom)s, joining %(equipe)s"
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_bien_joue
+msgid "Well done"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "What people need to know, plainly."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__sondage_avertissement
+msgid ""
+"What the editors need to know BEFORE publishing, not after the first vote."
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_assistant_form
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_signalement_form
+msgid "What the problem is, in your own words."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__sondage
+msgid ""
+"What the screen shows of the poll: the options, what I voted, and the count "
+"when it is allowed to appear."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__reactions
+msgid ""
+"What the screen shows: symbol, count, names, and what is left to offer. "
+"Computed per person looking."
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_reaction_list
+msgid "What the tooltip says"
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_reaction__name
+msgid "What the tooltip says: \"Bravo\", \"Thank you\"."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__date_affichee
+msgid "When"
+msgstr ""
+
+#. module: bf_babillard
+#: model:bf.babillard.reaction,name:bf_babillard.reaction_a_creuser
+msgid "Worth digging into"
+msgstr ""
+
+#. module: bf_babillard
+#: model:res.groups,comment:bf_babillard.group_babillard_redacteur
+msgid ""
+"Writes, publishes and takes down posts, and sees who confirmed they read "
+"them."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_geste.py:0
+msgid "You do not react on somebody else's behalf."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_vote.py:0
+msgid "You do not vote on somebody else's behalf."
+msgstr ""
+
+#. module: bf_babillard
+#: model:ir.model.constraint,message:bf_babillard.constraint_bf_babillard_vote_vote_unique
+msgid "You do not vote twice for the same option."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "You have already added %(nb)s options to this poll."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_signalement_assistant.py:0
+msgid "Your report has gone to the designated person."
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_signalement_assistant.py:0
+msgid ""
+"Your report is recorded, but nobody other than the person reported can "
+"receive it here. Speak to the person designated by your organisation's "
+"policy, or to the CNESST."
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "by"
+msgstr ""
+
+#. module: bf_babillard
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+msgid "have read it"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "today"
+msgstr ""
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "yesterday"
+msgstr ""

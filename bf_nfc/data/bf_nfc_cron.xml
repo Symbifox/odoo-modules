@@ -4,7 +4,7 @@
          périmé. Inerte, mais elle compte dans le plafond d'appareils par
          personne : dix tentatives ratées et plus personne ne peut apparier. -->
     <record id="cron_purger_appariements" model="ir.cron">
-        <field name="name">Pastilles : purger les appariements abandonnés</field>
+        <field name="name">Tags: purge abandoned pairings</field>
         <field name="model_id" ref="model_bf_nfc_device"/>
         <field name="state">code</field>
         <field name="code">model._purger_codes_perimes()</field>

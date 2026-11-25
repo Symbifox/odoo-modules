@@ -21,68 +21,68 @@ class BfTrainingStatement(models.Model):
     """
 
     _name = "bf.training.statement"
-    _description = "Relevé de participation au développement des compétences"
+    _description = "Skills development participation statement"
     _inherit = ["mail.thread"]
     _order = "year desc, id desc"
 
-    name = fields.Char(string="Relevé", compute="_compute_name", store=True)
+    name = fields.Char(string="Statement", compute="_compute_name", store=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company, index=True)
     currency_id = fields.Many2one(related="company_id.currency_id")
     year = fields.Integer(
-        string="Année civile", required=True,
+        string="Calendar year", required=True,
         default=lambda self: fields.Date.context_today(self).year)
     state = fields.Selection(
-        [("draft", "Brouillon"), ("computed", "Calculé"), ("closed", "Clos")],
-        string="État", default="draft", required=True, tracking=True)
+        [("draft", "Draft"), ("computed", "Computed"), ("closed", "Closed")],
+        string="State", default="draft", required=True, tracking=True)
 
     payroll = fields.Monetary(
-        string="Masse salariale", currency_field="currency_id", tracking=True,
-        help="Telle que calculée pour la déclaration. Le registre ne la devine "
-             "pas : sans elle, rien n'est conclu.")
+        string="Payroll", currency_field="currency_id", tracking=True,
+        help="As computed for the return. The register does not guess it: "
+             "without it, nothing is concluded.")
     threshold = fields.Monetary(
-        string="Seuil d'assujettissement", currency_field="currency_id",
+        string="Liability threshold", currency_field="currency_id",
         compute="_compute_threshold", store=True, readonly=False)
     rate = fields.Float(
-        string="Taux (%)", digits=(5, 2), compute="_compute_threshold",
+        string="Rate (%)", digits=(5, 2), compute="_compute_threshold",
         store=True, readonly=False)
     is_subject = fields.Boolean(
-        string="Assujettie", compute="_compute_totaux", store=True)
+        string="Liable", compute="_compute_totaux", store=True)
     minimum_participation = fields.Monetary(
-        string="Participation minimale", currency_field="currency_id",
+        string="Minimum participation", currency_field="currency_id",
         compute="_compute_totaux", store=True)
 
     carryover_in = fields.Monetary(
-        string="Excédent reporté", currency_field="currency_id",
-        help="L'excédent de l'année précédente, qui devient une dépense "
-             "admissible de celle-ci.")
+        string="Surplus carried forward", currency_field="currency_id",
+        help="Last year's surplus, which becomes an eligible expense of "
+             "this one.")
     eligible_total = fields.Monetary(
-        string="Dépenses admissibles", currency_field="currency_id",
+        string="Eligible expenses", currency_field="currency_id",
         compute="_compute_totaux", store=True)
     shortfall = fields.Monetary(
-        string="Cotisation à verser", currency_field="currency_id",
+        string="Contribution payable", currency_field="currency_id",
         compute="_compute_totaux", store=True)
     carryover_out = fields.Monetary(
-        string="Excédent à reporter", currency_field="currency_id",
+        string="Surplus to carry forward", currency_field="currency_id",
         compute="_compute_totaux", store=True)
 
     line_ids = fields.One2many(
-        "bf.training.statement.line", "statement_id", string="Dépenses comptées")
+        "bf.training.statement.line", "statement_id", string="Expenses counted")
     excluded_ids = fields.One2many(
         "bf.training.statement.line", "excluded_statement_id",
-        string="Écartées, et pourquoi")
-    line_count = fields.Integer(string="Comptées", compute="_compute_comptes")
-    excluded_count = fields.Integer(string="Écartées", compute="_compute_comptes")
+        string="Excluded, and why")
+    line_count = fields.Integer(string="Counted", compute="_compute_comptes")
+    excluded_count = fields.Integer(string="Excluded", compute="_compute_comptes")
     excluded_hours = fields.Float(
-        string="Heures écartées", compute="_compute_comptes", digits=(8, 2))
+        string="Hours excluded", compute="_compute_comptes", digits=(8, 2))
     note = fields.Html(string="Note", sanitize_attributes=False)
 
     _sql_constraints = [
         ("annee_par_societe", "unique (company_id, year)",
-         "Il y a déjà un relevé pour cette société et cette année."),
+         "There is already a statement for this company and this year."),
         ("annee_plausible", "check (year between 1996 and 2100)",
-         "Cette année ne ressemble à rien."),
+         "That year makes no sense."),
     ]
 
     @api.depends("year", "company_id")
@@ -135,7 +135,7 @@ class BfTrainingStatement(models.Model):
         Ligne = self.env["bf.training.statement.line"]
         for rec in self:
             if rec.state == "closed":
-                raise UserError(_("Un relevé clos ne se recalcule pas."))
+                raise UserError(_("A closed statement is not recomputed."))
             (rec.line_ids | rec.excluded_ids).unlink()
             debut = fields.Date.to_date("%s-01-01" % rec.year)
             fin = fields.Date.to_date("%s-12-31" % rec.year)
@@ -169,11 +169,11 @@ class BfTrainingStatement(models.Model):
     def action_close(self):
         for rec in self:
             if rec.state == "draft":
-                raise UserError(_("Calculer le relevé avant de le clore."))
+                raise UserError(_("Compute the statement before closing it."))
             if rec.is_subject and rec.excluded_count:
                 rec.message_post(body=_(
-                    "Relevé clos avec %(n)s réalisation(s) écartée(s), "
-                    "%(h).2f heure(s) qui ne comptent pas.",
+                    "Statement closed with %(n)s completion(s) excluded, "
+                    "%(h).2f hour(s) that do not count.",
                     n=rec.excluded_count, h=rec.excluded_hours))
         self.write({"state": "closed"})
 
@@ -184,7 +184,7 @@ class BfTrainingStatement(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Réalisations écartées"),
+            "name": _("Completions excluded"),
             "res_model": "bf.training.statement.line",
             "view_mode": "list",
             "domain": [("excluded_statement_id", "=", self.id)],
@@ -195,20 +195,20 @@ class BfTrainingStatementLine(models.Model):
     """Une réalisation, vue par le relevé : comptée, ou écartée avec sa raison."""
 
     _name = "bf.training.statement.line"
-    _description = "Ligne de relevé de participation"
+    _description = "Participation statement line"
     _order = "date_done, id"
 
     statement_id = fields.Many2one(
-        "bf.training.statement", string="Relevé", ondelete="cascade", index=True)
+        "bf.training.statement", string="Statement", ondelete="cascade", index=True)
     excluded_statement_id = fields.Many2one(
-        "bf.training.statement", string="Relevé (écartée)", ondelete="cascade", index=True)
+        "bf.training.statement", string="Statement (excluded)", ondelete="cascade", index=True)
     record_id = fields.Many2one(
-        "bf.training.record", string="Réalisation", ondelete="cascade", required=True)
-    employee_id = fields.Many2one("hr.employee", string="Personne")
-    activity_id = fields.Many2one("bf.training.activity", string="Activité")
-    date_done = fields.Date(string="Faite le")
-    hours = fields.Float(string="Heures", digits=(6, 2))
+        "bf.training.record", string="Completion", ondelete="cascade", required=True)
+    employee_id = fields.Many2one("hr.employee", string="Person")
+    activity_id = fields.Many2one("bf.training.activity", string="Activity")
+    date_done = fields.Date(string="Done on")
+    hours = fields.Float(string="Hours", digits=(6, 2))
     currency_id = fields.Many2one(
-        related="record_id.currency_id", string="Devise")
-    amount = fields.Monetary(string="Montant", currency_field="currency_id")
-    reason = fields.Char(string="Pourquoi elle ne compte pas")
+        related="record_id.currency_id", string="Currency")
+    amount = fields.Monetary(string="Amount", currency_field="currency_id")
+    reason = fields.Char(string="Why it does not count")

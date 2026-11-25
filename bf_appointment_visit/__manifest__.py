@@ -14,7 +14,11 @@
     #   l'étaient : la première publication passait, la seconde rendait une
     #   erreur de droits sur « Temps de travail de la ressource ». Trouvé en
     #   jouant le parcours comme un courtier, pas comme administrateur.
-    "version": "18.0.1.2.0",
+    # 18.0.1.2.1: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.2.1",
     "category": "Appointments",
     "summary": "Faire visiter une propriété : plages du vendeur, registre des "
                "visites, approbation, logement occupé",

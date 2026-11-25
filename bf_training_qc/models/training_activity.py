@@ -1,21 +1,25 @@
 from odoo import _, api, fields, models
+from odoo.tools.misc import get_lang
 
 #: Les bases d'admissibilité, dans l'ordre du règlement. Le libellé dit la
 #: substance, pas seulement le numéro : un registre qui affiche « par. 7° » sans
 #: rien d'autre oblige à rouvrir le texte à chaque fois.
 BASES = [
-    ("etablissement", "Formation auprès d'un établissement d'enseignement reconnu"),
-    ("organisme_agree", "Formation auprès d'un organisme, d'un service ou d'un formateur agréé"),
-    ("remboursement", "Remboursement des frais assumés par l'employé"),
-    ("plan_entreprise", "Formation donnée dans le cadre du plan de formation de l'entreprise"),
-    ("ordre", "Formation organisée par un ordre professionnel dont l'employé est membre"),
-    ("tache", "Entraînement à la tâche, d'une durée établie au plan de formation"),
-    ("apprentissage_ti", "Apprentissage individuel par les technologies de l'information"),
-    ("colloque", "Activité de formation dans un colloque, un congrès ou un séminaire"),
-    ("association", "Formation d'une association de perfectionnement, par un spécialiste"),
-    ("stage", "Stage, apprentissage ou compagnonnage"),
-    ("autre", "Autre base, à documenter"),
-    ("non_admissible", "Non admissible"),
+    ("etablissement", "Training at a recognized educational institution"),
+    ("organisme_agree", "Training with an accredited body, service or trainer"),
+    ("remboursement", "Reimbursement of costs borne by the employee"),
+    ("plan_entreprise", "Training given under the company's training plan"),
+    ("ordre", "Training organised by a professional order the employee "
+              "belongs to"),
+    ("tache", "On-the-job training, of a duration set out in the training plan"),
+    ("apprentissage_ti", "Self-directed learning through information "
+                         "technology"),
+    ("colloque", "Training activity at a conference, a convention or a seminar"),
+    ("association", "Training from a professional development "
+                    "association, by a specialist"),
+    ("stage", "Internship, apprenticeship or mentoring"),
+    ("autre", "Another basis, to be documented"),
+    ("non_admissible", "Not eligible"),
 ]
 
 #: Ces bases-là n'existent que dans un plan de formation.
@@ -30,27 +34,30 @@ class BfTrainingActivity(models.Model):
     _inherit = "bf.training.activity"
 
     qc_basis = fields.Selection(
-        BASES, string="Base d'admissibilité", default=False, tracking=True,
-        help="Sur quelle base la dépense est admissible. Tant que ce n'est pas "
-             "dit, l'activité ne compte pas au relevé.")
+        BASES, string="Eligibility basis", default=False, tracking=True,
+        help="On what basis the expense is eligible. Until that is "
+             "stated, the activity does not count in the statement.")
     qc_eligible = fields.Boolean(
-        string="Admissible", compute="_compute_qc_eligible", store=True)
+        string="Eligible", compute="_compute_qc_eligible", store=True)
     qc_reason = fields.Char(
-        string="Pourquoi", compute="_compute_qc_eligible", store=True)
+        string="Why", compute="_compute_qc_eligible", store=True)
     qc_provider_number = fields.Char(
-        string="Numéro d'agrément",
-        help="Le numéro du formateur ou de l'organisme agréé, quand il y en a un.")
+        string="Accreditation number",
+        help="The number of the accredited trainer or body, when there is one.")
 
     @api.depends("qc_basis")
     def _compute_qc_eligible(self):
-        libelles = dict(BASES)
+        # Motif STOCKÉ : dans la langue de l'appel (celle de l'usager à défaut, comme `_()`),
+        # jamais la liste source, anglaise depuis la bascule.
+        env = self.with_context(lang=get_lang(self.env, self.env.lang or self.env.user.lang).code).env
+        libelles = dict(self._fields["qc_basis"]._description_selection(env))
         for rec in self:
             if not rec.qc_basis:
                 rec.qc_eligible = False
-                rec.qc_reason = _("Base d'admissibilité non établie.")
+                rec.qc_reason = _("Eligibility basis not established.")
             elif rec.qc_basis == "non_admissible":
                 rec.qc_eligible = False
-                rec.qc_reason = _("Déclarée non admissible.")
+                rec.qc_reason = _("Declared not eligible.")
             else:
                 rec.qc_eligible = True
                 rec.qc_reason = libelles.get(rec.qc_basis, "")

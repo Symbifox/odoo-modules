@@ -11,6 +11,13 @@ class TestTrainingRegister(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # 🔴 La langue est épinglée : la source du module est anglaise depuis la
+        # 18.0.1.4.3, et les assertions ci-dessous lisent des libellés rendus.
+        # Sans cet ancrage elles lisaient la langue d'OdooBot, qui dépend de la
+        # base : vertes ici, rouges sur une base dont le défaut est le français.
+        # Le français, lui, a ses propres essais (test_deux_langues.py).
+        cls.env["res.lang"]._activate_lang("en_US")
+        cls.env = cls.env(context=dict(cls.env.context, lang="en_US"))
         cls.societe = cls.env.company
         cls.aujourdhui = fields.Date.context_today(cls.env["bf.training.record"])
         cls.cat_perf = cls.env["bf.training.category"].create(
@@ -118,13 +125,13 @@ class TestTrainingRegister(TransactionCase):
     def test_ligne_sans_heures_est_marquee_incomplete(self):
         realisation = self._realisation(heures=0.0)
         self.assertFalse(realisation.is_complete)
-        self.assertIn("les heures", realisation.missing_info)
+        self.assertIn("the hours", realisation.missing_info)
         self.assertEqual(realisation.salary_cost, 0.0)
 
     def test_ligne_sans_cout_horaire_est_marquee_incomplete(self):
         realisation = self._realisation(hourly_cost=0.0)
         self.assertFalse(realisation.is_complete)
-        self.assertIn("le coût horaire", realisation.missing_info)
+        self.assertIn("the hourly cost", realisation.missing_info)
 
     def test_activite_sous_plan_exige_le_plan(self):
         activite = self.env["bf.training.activity"].create({
@@ -136,8 +143,8 @@ class TestTrainingRegister(TransactionCase):
         self.assertTrue(activite.requires_support)
         realisation = self._realisation(activite=activite, heures=2.0)
         self.assertFalse(realisation.is_complete)
-        self.assertIn("le plan de formation", realisation.missing_info)
-        self.assertIn("l'accompagnement", realisation.missing_info)
+        self.assertIn("the training plan", realisation.missing_info)
+        self.assertIn("the support provided", realisation.missing_info)
 
     def test_cout_total_additionne_salaire_charges_et_frais(self):
         realisation = self._realisation(heures=10.0, hourly_cost=25.0,
@@ -506,3 +513,23 @@ class TestTrainingRegister(TransactionCase):
         self.env["bf.training.assignment"]._cron_reminders()
         self.assertEqual(assignation.reminder_count, 0)
         self.assertEqual(assignation.completion, 100)
+
+    def test_les_textes_du_code_suivent_la_langue_de_l_usager(self):
+        """noms d'action écrits hors `_()`, et « ce qui manque » passé par `env._()`,
+        qui retombe sur l'anglais quand le contexte n'a pas de langue (travail planifié, RPC)."""
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_training"], ["fr_CA"], overwrite=True)
+        self.env.user.lang = "fr_CA"
+        sans_langue = self.env(context={})
+        realisation = sans_langue["bf.training.record"].create({
+            "employee_id": self.employe.id, "activity_id": self.activite_perf.id,
+            "date_done": self.aujourdhui, "state": "confirmed"})
+        self.assertIn("les heures", realisation.missing_info or "")
+        fr = self.env(context={"lang": "fr_CA"})
+        self.assertEqual(self.employe.with_env(fr).action_open_training_records()["name"],
+                         "Formations suivies")
+        self.assertEqual(self.activite_perf.with_env(fr).action_open_records()["name"],
+                         "Réalisations")
+        en = self.env(context={"lang": "en_US"})
+        self.assertEqual(self.employe.with_env(en).action_open_training_records()["name"],
+                         "Training completed")

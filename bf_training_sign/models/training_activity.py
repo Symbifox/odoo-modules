@@ -7,17 +7,17 @@ class BfTrainingActivity(models.Model):
     _inherit = "bf.training.activity"
 
     document_id = fields.Many2one(
-        "project.document", string="Document à lire",
-        help="La politique ou la procédure dont la lecture vaut formation. "
-             "Chaque module d'un processus d'accueil a le sien.")
+        "project.document", string="Document to read",
+        help="The policy or the procedure whose reading counts as "
+             "training. Each module of an onboarding process has its own.")
     document_latest_version_id = fields.Many2one(
-        related="document_id.latest_version_id", string="Version en vigueur")
+        related="document_id.latest_version_id", string="Current version")
     document_distribution_count = fields.Integer(
-        string="Nombre de remises", compute="_compute_document_distribution_count")
+        string="Number of distributions", compute="_compute_document_distribution_count")
 
     _sql_constraints = [
         ("document_unique", "unique (document_id)",
-         "Ce document est déjà adossé à une activité."),
+         "This document is already linked to an activity."),
     ]
 
     def _compute_document_distribution_count(self):
@@ -49,7 +49,7 @@ class BfTrainingActivity(models.Model):
         if existante:
             return existante
         base = {
-            "name": document.name or _("Document à lire"),
+            "name": document.name or _("Document to read"),
             "document_id": document.id,
             "mode": "self_study",
             "reopen_on_change": True,
@@ -61,7 +61,7 @@ class BfTrainingActivity(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Remises du document"),
+            "name": _("Document distributions"),
             "res_model": "project.document.distribution",
             "view_mode": "list,form",
             "domain": [("document_id", "=", self.document_id.id)],

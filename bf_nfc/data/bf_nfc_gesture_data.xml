@@ -7,50 +7,50 @@
          où coller la puce, et si le téléphone la lit à travers ce sur quoi
          elle est collée. -->
     <record id="gesture_open" model="bf.nfc.gesture">
-        <field name="name">Ouvrir la fiche</field>
+        <field name="name">Open the record</field>
         <field name="code">open</field>
         <field name="kind">open</field>
         <field name="sequence">1</field>
         <field name="writes" eval="False"/>
         <field name="needs_target" eval="True"/>
-        <field name="description">Approcher le téléphone ouvre la fiche désignée par la pastille. N'écrit rien, ne demande aucune confirmation, et se lit avec les droits de la personne qui tape : une fiche qu'elle n'a pas le droit de voir reste fermée.</field>
+        <field name="description">Bringing the phone close opens the record the tag points to. Writes nothing, asks for no confirmation, and reads with the rights of the person tapping: a record they may not see stays closed.</field>
     </record>
 
     <record id="gesture_url" model="bf.nfc.gesture">
-        <field name="name">Ouvrir une adresse</field>
+        <field name="name">Open an address</field>
         <field name="code">url</field>
         <field name="kind">url</field>
         <field name="sequence">2</field>
         <field name="writes" eval="False"/>
         <field name="needs_target" eval="False"/>
-        <field name="description">Approcher le téléphone ouvre une adresse web : une procédure, un formulaire, un plan, une vidéo. N'écrit rien. Seules les adresses https et http sont acceptées.</field>
+        <field name="description">Bringing the phone close opens a web address: a procedure, a form, a map, a video. Writes nothing. Only https and http addresses are accepted.</field>
     </record>
 
     <record id="gesture_note" model="bf.nfc.gesture">
-        <field name="name">Consigner un passage</field>
+        <field name="name">Log a visit</field>
         <field name="code">note</field>
         <field name="kind">note</field>
         <field name="sequence">3</field>
         <field name="writes" eval="True"/>
         <field name="needs_target" eval="True"/>
         <field name="accepte_differe" eval="True"/>
-        <field name="description">Laisse une note interne datée et signée sur la fiche : une ronde, une visite, une inspection. Une note, pas un message : personne ne reçoit de courriel.</field>
+        <field name="description">Leaves a dated, signed internal note on the record: a patrol, a visit, an inspection. A note, not a message: nobody receives an email.</field>
     </record>
 
     <!-- Un menu se compose dans le site (onglet « Menu » de la pastille), puis
          se grave depuis « Mes pastilles » dans l'application. -->
     <record id="gesture_menu" model="bf.nfc.gesture">
-        <field name="name">Proposer un menu</field>
+        <field name="name">Offer a menu</field>
         <field name="code">menu</field>
         <field name="kind">menu</field>
         <field name="sequence">5</field>
         <field name="writes" eval="True"/>
         <field name="needs_target" eval="False"/>
-        <field name="description">Approcher le téléphone propose quelques boutons au lieu d'un seul geste : « Je le prends », « Je le rapporte », « Signaler un problème ». Chaque choix joue son propre geste, avec ses propres gardes.</field>
+        <field name="description">Bringing the phone close offers a few buttons instead of a single gesture: “I'm taking it”, “I'm bringing it back”, “Report a problem”. Each choice plays its own gesture, with its own safeguards.</field>
     </record>
 
     <record id="gesture_cron" model="bf.nfc.gesture">
-        <field name="name">Lancer une tâche planifiée</field>
+        <field name="name">Run a scheduled action</field>
         <field name="code">cron</field>
         <field name="kind">cron</field>
         <field name="sequence">20</field>
@@ -58,11 +58,11 @@
         <field name="needs_target" eval="True"/>
         <field name="reserve_gestion" eval="True"/>
         <field name="target_model_id" ref="base.model_ir_cron"/>
-        <field name="description">Demande à une tâche planifiée de tourner tout de suite, sans attendre son prochain passage. Réservé à la gestion.</field>
+        <field name="description">Asks a scheduled action to run right away, without waiting for its next run. Reserved for managers.</field>
     </record>
 
     <record id="gesture_action" model="bf.nfc.gesture">
-        <field name="name">Exécuter une action</field>
+        <field name="name">Run an action</field>
         <field name="code">action</field>
         <field name="kind">action</field>
         <field name="sequence">21</field>
@@ -70,6 +70,6 @@
         <field name="needs_target" eval="True"/>
         <field name="reserve_gestion" eval="True"/>
         <field name="target_model_id" ref="base.model_ir_actions_server"/>
-        <field name="description">Exécute une action serveur ou une automatisation, avec les droits de la personne qui tape. Réservé à la gestion.</field>
+        <field name="description">Runs a server action or an automation, with the rights of the person tapping. Reserved for managers.</field>
     </record>
 </odoo>

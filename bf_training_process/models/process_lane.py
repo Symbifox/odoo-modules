@@ -14,13 +14,13 @@ class BfProcessLane(models.Model):
 
     employee_ids = fields.Many2many(
         "hr.employee", "bf_process_lane_employee_rel", "lane_id", "employee_id",
-        string="Personnes qui tiennent ce rôle",
-        help="Qui joue ce rôle aujourd'hui. Une exigence de formation peut viser "
-             "le couloir plutôt que de recopier les noms.")
+        string="People who hold this role",
+        help="Who plays this role today. A training requirement can "
+             "target the lane rather than copy out the names.")
     employee_count = fields.Integer(
-        string="Nombre de personnes", compute="_compute_employee_count")
+        string="Number of people", compute="_compute_employee_count")
     training_activity_count = fields.Integer(
-        string="Nombre de formations", compute="_compute_training_activity_count")
+        string="Number of training activities", compute="_compute_training_activity_count")
 
     @api.depends("employee_ids")
     def _compute_employee_count(self):
@@ -37,7 +37,7 @@ class BfProcessLane(models.Model):
         activites = self.node_ids.mapped("training_activity_ids")
         return {
             "type": "ir.actions.act_window",
-            "name": "Formations du couloir",
+            "name": self.env._("Training activities for the lane"),
             "res_model": "bf.training.activity",
             "view_mode": "list,form",
             "domain": [("id", "in", activites.ids)],

@@ -4,13 +4,13 @@
         <field name="name">bf.training.plan.list</field>
         <field name="model">bf.training.plan</field>
         <field name="arch" type="xml">
-            <list string="Plans de formation" decoration-muted="state == 'closed'">
+            <list string="Training plans" decoration-muted="state == 'closed'">
                 <field name="name"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
                 <field name="consultation_date"/>
                 <field name="consultation_proven" widget="boolean_toggle" readonly="1"/>
-                <field name="record_count" string="Réalisations"/>
+                <field name="record_count" string="Completions"/>
                 <field name="state" widget="badge"
                        decoration-success="state == 'approved'"
                        decoration-warning="state == 'draft'"/>
@@ -21,25 +21,25 @@
         <field name="name">bf.training.plan.form</field>
         <field name="model">bf.training.plan</field>
         <field name="arch" type="xml">
-            <form string="Plan de formation">
+            <form string="Training plan">
                 <header>
-                    <button name="action_mark_consulted" type="object" string="Marquer consulté"
+                    <button name="action_mark_consulted" type="object" string="Mark as consulted"
                             class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_approve" type="object" string="Approuver"
+                    <button name="action_approve" type="object" string="Approve"
                             class="btn-primary" invisible="state != 'consulted'"/>
-                    <button name="action_close" type="object" string="Clore"
+                    <button name="action_close" type="object" string="Close"
                             invisible="state != 'approved'"/>
-                    <button name="action_reset" type="object" string="Remettre en brouillon"
+                    <button name="action_reset" type="object" string="Reset to draft"
                             invisible="state == 'draft'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,consulted,approved"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Plan de formation 2027"/></h1>
+                        <h1><field name="name" placeholder="Training plan 2027"/></h1>
                     </div>
                     <group>
-                        <group string="Période">
+                        <group string="Period">
                             <field name="date_start"/>
                             <field name="date_end"/>
                             <field name="company_id" groups="base.group_multi_company"/>
@@ -51,33 +51,33 @@
                         </group>
                     </group>
                     <div class="alert alert-info" role="status" invisible="consultation_proven">
-                        Le plan se conserve avec la preuve qu'il a été consulté.
-                        Sans la date et la pièce, la consultation n'est pas prouvée,
-                        et c'est elle qui rend la formation donnée par l'entreprise
-                        admissible.
+                        The plan is kept together with the proof that it was consulted.
+                        Without the date and the document the consultation is not
+                        proven, and it is the consultation that makes training given
+                        by the company eligible.
                     </div>
                     <notebook>
-                        <page string="Ce qui a été consulté" name="consultation">
+                        <page string="What was consulted" name="consultation">
                             <field name="consultation_note"/>
                             <field name="attachment_ids" widget="many2many_binary"/>
                         </page>
-                        <page string="Activités prévues" name="activites">
+                        <page string="Planned activities" name="activites">
                             <field name="activity_ids">
                                 <list>
                                     <field name="name"/>
                                     <field name="category_id"/>
                                     <field name="mode"/>
-                                    <field name="duration_hours" sum="Heures"/>
+                                    <field name="duration_hours" sum="Hours"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Réalisations" name="realisations">
+                        <page string="Completions" name="realisations">
                             <field name="record_ids" readonly="1">
                                 <list>
                                     <field name="employee_id"/>
                                     <field name="activity_id"/>
                                     <field name="date_done"/>
-                                    <field name="hours" sum="Heures"/>
+                                    <field name="hours" sum="Hours"/>
                                 </list>
                             </field>
                         </page>
@@ -88,14 +88,14 @@
         </field>
     </record>
     <record id="action_training_plan" model="ir.actions.act_window">
-        <field name="name">Plans de formation</field>
+        <field name="name">Training plans</field>
         <field name="res_model">bf.training.plan</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Écrire le plan</p>
-            <p>Le plan porte deux choses qui ne vivent nulle part ailleurs : la
-               durée d'apprentissage établie à l'avance, et la preuve de la
-               consultation tenue sur ce plan.</p>
+            <p class="o_view_nocontent_smiling_face">Write the plan</p>
+            <p>The plan carries two things that live nowhere else: the
+               learning duration set out in advance, and the proof of the
+               consultation held on that plan.</p>
         </field>
     </record>
 </odoo>

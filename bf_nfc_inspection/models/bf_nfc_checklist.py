@@ -13,43 +13,45 @@ from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 PERIODES = [
-    ("aucune", "Sans rythme"),
-    ("jour", "Chaque jour"),
-    ("semaine", "Chaque semaine"),
-    ("mois", "Chaque mois"),
-    ("an", "Chaque année"),
+    ("aucune", "No frequency"),
+    ("jour", "Every day"),
+    ("semaine", "Every week"),
+    ("mois", "Every month"),
+    ("an", "Every year"),
 ]
 
 
 class BfNfcChecklist(models.Model):
     _name = "bf.nfc.checklist"
-    _description = "Grille de relevé"
+    _description = "Inspection checklist"
     _inherit = ["mail.thread"]
     _order = "sequence, name"
 
-    name = fields.Char(string="Grille", required=True, tracking=True, translate=True)
+    name = fields.Char(string="Checklist", required=True, tracking=True, translate=True)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True, tracking=True)
-    company_id = fields.Many2one("res.company", string="Société",
-                                 help="Vide : partagée par toutes les sociétés.")
+    company_id = fields.Many2one("res.company", string="Company",
+                                 help="Empty: shared by all companies.")
     description = fields.Text(translate=True)
     reference = fields.Char(
-        string="Référence", translate=True,
-        help="La règle ou la norme que ce relevé sert à prouver, telle qu'on la citerait "
-             "à une inspection.")
+        string="Reference", translate=True,
+        help="The rule or standard this reading serves to prove, as you "
+             "would cite it during an inspection.")
     periode = fields.Selection(
-        PERIODES, string="Rythme", default="aucune", required=True, tracking=True,
-        help="Une pastille qui porte cette grille et qui n'a pas été relevée dans la "
-             "période crée une activité pour la personne responsable.")
+        PERIODES, string="Frequency", default="aucune", required=True, tracking=True,
+        help="A tag that carries this checklist and has not been read "
+             "within the period creates an activity for the person in "
+             "charge.")
     responsible_id = fields.Many2one(
-        "res.users", string="Responsable", tracking=True,
-        help="Reçoit les anomalies et les relevés manqués.")
-    item_ids = fields.One2many("bf.nfc.checklist.item", "checklist_id", string="Éléments", copy=True)
+        "res.users", string="Person in charge", tracking=True,
+        help="Receives issues and missed readings.")
+    item_ids = fields.One2many("bf.nfc.checklist.item", "checklist_id", string="Items", copy=True)
     item_count = fields.Integer(compute="_compute_item_count")
     a_valider = fields.Boolean(
-        string="À valider",
-        help="Grille livrée comme point de départ : ses éléments et ses fréquences doivent "
-             "être confirmés contre la norme et l'équipement réels avant de s'en servir.")
+        string="To validate",
+        help="Checklist delivered as a starting point: its items and "
+             "frequencies must be confirmed against the actual standard "
+             "and equipment before it is used.")
 
     @api.depends("item_ids")
     def _compute_item_count(self):
@@ -76,9 +78,10 @@ class BfNfcChecklist(models.Model):
         self.ensure_one()
         champs = []
         if porte == "signed":
-            champs.append({"cle": "_nom", "libelle": _("Votre nom"), "type": "texte",
+            champs.append({"cle": "_nom", "libelle": _("Your name"), "type": "texte",
                            "requis": True, "unite": None, "min": None, "max": None,
-                           "options": None, "aide": _("Le registre dit qui a vérifié.")})
+                           "options": None, "aide": _("The register shows "
+                                                      "who checked.")})
         for element in self.item_ids:
             champs.append(element._champ())
         return champs
@@ -86,38 +89,42 @@ class BfNfcChecklist(models.Model):
 
 class BfNfcChecklistItem(models.Model):
     _name = "bf.nfc.checklist.item"
-    _description = "Élément d'une grille de relevé"
+    _description = "Inspection checklist item"
     _order = "checklist_id, sequence, id"
 
     checklist_id = fields.Many2one("bf.nfc.checklist", required=True, ondelete="cascade", index=True)
     sequence = fields.Integer(default=10)
-    name = fields.Char(string="Élément", required=True, translate=True)
+    name = fields.Char(string="Item", required=True, translate=True)
     kind = fields.Selection(
-        [("conforme", "Conforme / non conforme"), ("nombre", "Valeur mesurée"),
-         ("choix", "Choix"), ("texte", "Texte")],
-        string="Réponse", default="conforme", required=True)
-    required = fields.Boolean(string="Requis", default=True)
-    unit = fields.Char(string="Unité", translate=True)
+        [("conforme", "Compliant / non-compliant"), ("nombre", "Measured value"),
+         ("choix", "Choice"), ("texte", "Text")],
+        string="Answer", default="conforme", required=True)
+    required = fields.Boolean(string="Required", default=True)
+    unit = fields.Char(string="Unit", translate=True)
     min_value = fields.Float(string="Minimum")
     max_value = fields.Float(string="Maximum")
-    has_range = fields.Boolean(string="Plage", help="Une valeur hors de la plage est une anomalie.")
+    has_range = fields.Boolean(string="Range", help="A value outside the "
+                                                    "range is an issue.")
     options = fields.Char(string="Options", translate=True,
-                          help="Les choix proposés, séparés par des points-virgules.")
-    anomaly_options = fields.Char(string="Options en anomalie", translate=True,
-                                  help="Parmi les options, celles qui signalent une anomalie.")
-    help = fields.Char(string="Aide", translate=True)
+                          help="The choices offered, separated by semicolons.")
+    anomaly_options = fields.Char(string="Issue options", translate=True,
+                                  help="Among the options, those that "
+                                       "indicate an issue.")
+    help = fields.Char(string="Help", translate=True)
 
     @api.constrains("kind", "options")
     def _check_options(self):
         for element in self:
             if element.kind == "choix" and len(element._liste(element.options)) < 2:
-                raise ValidationError(_("« %s » : un choix propose au moins deux options.", element.name))
+                raise ValidationError(_("“%s”: a choice offers at least "
+                                        "two options.", element.name))
 
     @api.constrains("has_range", "min_value", "max_value")
     def _check_plage(self):
         for element in self:
             if element.has_range and element.min_value > element.max_value:
-                raise ValidationError(_("« %s » : le minimum dépasse le maximum.", element.name))
+                raise ValidationError(_("“%s”: the minimum exceeds the "
+                                        "maximum.", element.name))
 
     @staticmethod
     def _liste(texte):

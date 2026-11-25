@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="action_report_timesheet_statement" model="ir.actions.report">
-        <field name="name">Relevé des heures</field>
+        <field name="name">Timesheet statement</field>
         <field name="model">federation.timesheet.statement</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">bf_federation_timesheet.report_timesheet_statement</field>
@@ -16,20 +16,20 @@
             <t t-set="s" t-value="statement or {}"/>
             <t t-call="web.external_layout">
                 <div class="page">
-                    <h2>Relevé des heures</h2>
+                    <h2>Timesheet statement</h2>
                     <p>
                         <strong t-out="s.get('project')"/><br/>
-                        Pour <span t-out="s.get('partner')"/>, du <span t-out="s.get('date_from')"/>
-                        au <span t-out="s.get('date_to')"/>, regroupé <span t-out="(s.get('group_by') or '').lower()"/>.
+                        For <span t-out="s.get('partner')"/>, from <span t-out="s.get('date_from')"/>
+                        to <span t-out="s.get('date_to')"/>, grouped <span t-out="(s.get('group_by') or '').lower()"/>.
                     </p>
                     <table class="table table-sm o_main_table">
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th>Personne</th>
-                                <th>Tâche</th>
+                                <th>Person</th>
+                                <th>Task</th>
                                 <th t-if="s.get('include_descriptions')">Description</th>
-                                <th class="text-end">Heures</th>
+                                <th class="text-end">Hours</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,14 +52,14 @@
                         <tfoot>
                             <tr>
                                 <td t-att-colspan="4 if s.get('include_descriptions') else 3">
-                                    <strong>Total : <span t-out="s.get('line_count')"/> ligne(s)</strong>
+                                    <strong>Total: <span t-out="s.get('line_count')"/> line(s)</strong>
                                 </td>
                                 <td class="text-end"><strong t-out="'%.2f' % (s.get('total_hours') or 0)"/></td>
                             </tr>
                         </tfoot>
                     </table>
                     <p class="text-muted small">
-                        Ce relevé dit le temps fait sur la période. Il ne porte ni montant, ni taux, ni solde.
+                        This statement shows the time worked over the period. It carries no amount, no rate and no balance.
                     </p>
                 </div>
             </t>

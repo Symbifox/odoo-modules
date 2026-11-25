@@ -4,24 +4,25 @@ from odoo.exceptions import AccessError
 
 class ContactPersonaKpi(models.Model):
     _name = "contact.persona.kpi"
-    _description = "KPI sur un contact"
+    _description = "KPI on a contact"
     _order = "date_measured desc, id desc"
 
     persona_id = fields.Many2one(
         "contact.persona", required=True, ondelete="cascade", index=True,
         string="Persona",
     )
-    name = fields.Char(required=True, string="Indicateur")
-    value_text = fields.Char(string="Valeur")
-    value_float = fields.Float(string="Valeur numérique")
-    unit = fields.Char(string="Unité")
-    date_measured = fields.Date(default=fields.Date.context_today, string="Mesuré le")
+    name = fields.Char(required=True, string="KPI")
+    value_text = fields.Char(string="Value")
+    value_float = fields.Float(string="Numeric value")
+    unit = fields.Char(string="Unit")
+    date_measured = fields.Date(default=fields.Date.context_today, string="Measured "
+                                                                          "on")
     source = fields.Selection(
         [
-            ("manual", "Manuel"),
+            ("manual", "Manual"),
             ("project_sync", "/project-sync"),
-            ("email_management", "Gestion des courriels"),
-            ("account", "Comptabilité"),
+            ("email_management", "Email management"),
+            ("account", "Accounting"),
         ],
         default="manual",
         required=True,
@@ -37,8 +38,8 @@ class ContactPersonaKpi(models.Model):
             return
         if any(vals.get("source") == "account" for vals in vals_list) \
                 or self.env.context.get("default_source") == "account":
-            raise AccessError(_("Les indicateurs tirés de la comptabilité sont réservés "
-                                "au gestionnaire persona."))
+            raise AccessError(_("The KPIs drawn from accounting are "
+                                "reserved to the persona manager."))
 
     @api.model_create_multi
     def create(self, vals_list):

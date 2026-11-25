@@ -121,6 +121,10 @@ An employee record that is **deleted** rather than archived is cleared from the 
 
 `hr`, `mail`.
 
+## Languages (v18.0.1.8.1)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. What a scheduled job writes without anyone at the screen (status changes in the chatter, creation messages) is written in the company's language.
+
 ## Licence
 
 Business Source License 1.1; see `LICENSE`. Each version converts to LGPL-3.0-or-later four years after its release.

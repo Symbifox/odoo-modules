@@ -219,3 +219,7 @@ elle-même. Sans `bf_task_waiting_states`, une tâche qui attend l'autre reste �
   fuseau de qui écrit, ici le superutilisateur de la réception (UTC). Le fuseau voulu
   passe maintenant dans le contexte (`tz`) de l'écriture ; la relecture qui corrige
   d'un jour reste en place. Un essai couvre une société à Auckland.
+
+## Languages (v18.0.1.5.4)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.

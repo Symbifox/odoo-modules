@@ -21,7 +21,7 @@ class ResourceBooking(models.Model):
     _inherit = "resource.booking"
 
     visit_id = fields.Many2one(
-        "bf.visit", string="Visite", copy=False, ondelete="set null",
+        "bf.visit", string="Showing", copy=False, ondelete="set null",
     )
 
     def _bf_visit_listing(self):
@@ -121,8 +121,8 @@ class ResourceBooking(models.Model):
             # journal passe par `_message_log`.
             self.visit_id.sudo()._message_log(
                 body=_(
-                    "Confirmation automatique retenue : la visite attend la "
-                    "décision du vendeur."
+                    "Automatic confirmation held back: the showing is "
+                    "waiting for the seller's decision."
                 )
             )
             return None

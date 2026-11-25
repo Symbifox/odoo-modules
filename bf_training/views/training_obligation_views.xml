@@ -30,10 +30,10 @@
         <field name="arch" type="xml">
             <form string="Obligation" create="false">
                 <header>
-                    <button name="action_exempt" type="object" string="Dispenser"
+                    <button name="action_exempt" type="object" string="Waive"
                             invisible="state == 'exempt'"
-                            confirm="Une dispense est une décision qui reste : le recalcul ne la défait pas."/>
-                    <button name="action_open_record" type="object" string="Voir la preuve"
+                            confirm="A waiver is a decision that stays: recomputing does not undo it."/>
+                    <button name="action_open_record" type="object" string="View the proof"
                             invisible="not covered_by_id"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="pending,covered,expiring,overdue"/>
@@ -75,16 +75,16 @@
             <search>
                 <field name="employee_id"/>
                 <field name="requirement_id"/>
-                <filter name="overdue" string="En retard" domain="[('state', '=', 'overdue')]"/>
-                <filter name="expiring" string="Expirent" domain="[('state', '=', 'expiring')]"/>
-                <filter name="pending" string="À faire" domain="[('state', '=', 'pending')]"/>
-                <filter name="undated" string="Sans échéance" domain="[('state', '=', 'undated')]"/>
+                <filter name="overdue" string="Overdue" domain="[('state', '=', 'overdue')]"/>
+                <filter name="expiring" string="Expiring" domain="[('state', '=', 'expiring')]"/>
+                <filter name="pending" string="To do" domain="[('state', '=', 'pending')]"/>
+                <filter name="undated" string="No due date" domain="[('state', '=', 'undated')]"/>
                 <separator/>
-                <filter name="covered" string="À jour" domain="[('state', '=', 'covered')]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_requirement" string="Exigence" context="{'group_by': 'requirement_id'}"/>
-                    <filter name="group_employee" string="Personne" context="{'group_by': 'employee_id'}"/>
-                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                <filter name="covered" string="Up to date" domain="[('state', '=', 'covered')]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_requirement" string="Requirement" context="{'group_by': 'requirement_id'}"/>
+                    <filter name="group_employee" string="Person" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
                 </group>
             </search>
         </field>
@@ -96,13 +96,13 @@
         <field name="search_view_id" ref="view_training_obligation_search"/>
         <field name="context">{'search_default_group_requirement': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Rien à montrer pour l'instant</p>
-            <p>Les obligations se fabriquent toutes seules à partir des exigences.
-               Écrire une exigence, puis lancer « Recalculer ».</p>
+            <p class="o_view_nocontent_smiling_face">Nothing to show yet</p>
+            <p>Obligations build themselves from the requirements.
+               Write a requirement, then run "Recompute".</p>
         </field>
     </record>
     <record id="action_training_obligation_overdue" model="ir.actions.act_window">
-        <field name="name">En retard ou qui expirent</field>
+        <field name="name">Overdue or expiring</field>
         <field name="res_model">bf.training.obligation</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_training_obligation_search"/>

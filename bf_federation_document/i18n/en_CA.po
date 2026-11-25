@@ -43,20 +43,29 @@ msgstr "<p>At %s, <b>%s</b> acknowledged receipt of the deliverable.</p>"
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "<p>Chez %s, la version <b>%s</b> a été lue par %s, mais nous en sommes à la <b>%s</b> : l'accusé ne vaut pas pour la version en cours.</p>"
-msgstr "<p>At %s, version <b>%s</b> was read by %s, but we are now at <b>%s</b>: the receipt does not apply to the current version.</p>"
+msgid ""
+"<p>Chez %s, la version <b>%s</b> a été lue par %s, mais nous en sommes à la "
+"<b>%s</b> : l'accusé ne vaut pas pour la version en cours.</p>"
+msgstr ""
+"<p>At %s, version <b>%s</b> was read by %s, but we are now at <b>%s</b>: the"
+" receipt does not apply to the current version.</p>"
 
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "<p>Chez %s, le livrable est passé à la version <b>%s</b> : l'accusé de réception est à refaire.</p>"
-msgstr "<p>At %s, the deliverable moved to version <b>%s</b>: the read receipt must be given again.</p>"
+msgid ""
+"<p>Chez %s, le livrable est passé à la version <b>%s</b> : l'accusé de "
+"réception est à refaire.</p>"
+msgstr ""
+"<p>At %s, the deliverable moved to version <b>%s</b>: the read receipt must "
+"be given again.</p>"
 
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
 msgid "<p>Livrable reçu de %s : <b>%s</b>, version %s, remis le %s.</p>"
-msgstr "<p>Deliverable received from %s: <b>%s</b>, version %s, delivered on %s.</p>"
+msgstr ""
+"<p>Deliverable received from %s: <b>%s</b>, version %s, delivered on %s.</p>"
 
 #. module: bf_federation_document
 #: model:ir.model.fields.selection,name:bf_federation_document.selection__federation_outbox__kind__document_ack
@@ -103,11 +112,6 @@ msgstr "Archived"
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__message_attachment_count
 msgid "Attachment Count"
 msgstr ""
-
-#. module: bf_federation_document
-#: model:ir.model,name:bf_federation_document.model_federation_outbox
-msgid "Boîte de sortie de la fédération"
-msgstr "Federation outbox"
 
 #. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__summary
@@ -224,8 +228,11 @@ msgstr "The deliverable's code at the sender, if it has one."
 
 #. module: bf_federation_document
 #: model:ir.model.fields,help:bf_federation_document.field_federation_document__federation_peer_id
-msgid "Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
-msgstr "The peer where this object has a mirror. Clearing the field archives the mirror."
+msgid ""
+"Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
+msgstr ""
+"The peer where this object has a mirror. Clearing the field archives the "
+"mirror."
 
 #. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__federation_link_id
@@ -241,8 +248,14 @@ msgstr "Federated deliverable"
 #. module: bf_federation_document
 #. odoo-python
 #: code:addons/bf_federation_document/models/federation_document.py:0
-msgid "Livrable remis à %s : titre, référence, version, date, résumé en texte et fichiers sous le plafond. Ce qui revient : l'accusé de réception, et rien d'autre."
-msgstr "Deliverable delivered to %s: title, reference, version, date, plain-text summary and files under the ceiling. What comes back: the read receipt, and nothing else."
+msgid ""
+"Livrable remis à %s : titre, référence, version, date, résumé en texte et "
+"fichiers sous le plafond. Ce qui revient : l'accusé de réception, et rien "
+"d'autre."
+msgstr ""
+"Deliverable delivered to %s: title, reference, version, date, plain-text "
+"summary and files under the ceiling. What comes back: the read receipt, and "
+"nothing else."
 
 #. module: bf_federation_document
 #: model:ir.ui.menu,name:bf_federation_document.menu_federation_documents
@@ -398,8 +411,12 @@ msgstr "Deliverable title"
 
 #. module: bf_federation_document
 #: model_terms:ir.actions.act_window,help:bf_federation_document.action_federation_document
-msgid "Un titre, une version, une date, un fichier. L'accusé de réception revient,\n               et rien d'autre."
-msgstr "A title, a version, a date, a file. The read receipt comes back, and nothing else."
+msgid ""
+"Un titre, une version, une date, un fichier. L'accusé de réception revient,\n"
+"               et rien d'autre."
+msgstr ""
+"A title, a version, a date, a file. The read receipt comes back, and nothing"
+" else."
 
 #. module: bf_federation_document
 #: model:ir.model.fields,field_description:bf_federation_document.field_federation_document__version
@@ -442,5 +459,9 @@ msgstr "kept by %s: %s"
 
 #. module: bf_federation_document
 #: model:ir.model.fields,help:bf_federation_document.field_federation_document__peer_partner_id
-msgid "À qui ce livrable est remis. C'est lui qui décide quel pair peut le recevoir : sans destinataire, aucun pair n'est proposé."
-msgstr "Who this deliverable is delivered to. The recipient decides which peer can receive it: with no recipient, no peer is offered."
+msgid ""
+"À qui ce livrable est remis. C'est lui qui décide quel pair peut le recevoir"
+" : sans destinataire, aucun pair n'est proposé."
+msgstr ""
+"Who this deliverable is delivered to. The recipient decides which peer can "
+"receive it: with no recipient, no peer is offered."

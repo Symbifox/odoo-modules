@@ -66,17 +66,19 @@ class ProjectTask(models.Model):
     _federation_addressable = True
 
     federation_peer_id = fields.Many2one(
-        help="Le pair chez qui cette tâche a un miroir. Vider le champ archive le miroir.")
+        help="The peer where this task has a mirror. Clearing the field "
+             "archives the mirror.")
     federation_assignee_id = fields.Many2one(
-        "res.partner", string="Destinataire chez le pair", copy=False, tracking=True,
+        "res.partner", string="Addressee on the peer", copy=False, tracking=True,
         domain="[('id', 'in', federation_assignee_allowed_ids)]",
-        help="À qui, chez le pair, cette tâche est adressée. Une proposition, pas une "
-             "assignation : le pair la résout avec sa propre table des personnes "
-             "appariées, et garde le dernier mot. Vide : elle arrive chez la personne "
-             "qu'il a désignée pour tout recevoir.")
+        help="Who, on the peer's side, this task is addressed to. A "
+             "proposal, not an assignment: the peer resolves it with its "
+             "own matched people table, and keeps the last word. Empty: "
+             "it arrives with the person they designated to receive "
+             "everything.")
     federation_assignee_allowed_ids = fields.Many2many(
         "res.partner", compute="_compute_federation_assignee_allowed",
-        string="Personnes chez le pair")
+        string="People on the peer")
 
     @api.depends("federation_peer_id", "federation_peer_id.partner_id")
     def _compute_federation_assignee_allowed(self):
@@ -106,11 +108,12 @@ class ProjectTask(models.Model):
                 continue
             if not task.federation_peer_id:
                 raise ValidationError(
-                    _("Adressez d'abord la tâche à un pair : sans pair, « %s » ne désigne personne.")
+                    _("Address the task to a peer first: with no peer, « "
+                      "%s » designates no one.")
                     % task.federation_assignee_id.display_name)
             if task.federation_assignee_id not in task.federation_assignee_allowed_ids:
                 raise ValidationError(
-                    _("« %s » n'est pas une personne de %s.")
+                    _("« %s » is not a person of %s.")
                     % (task.federation_assignee_id.display_name, task.federation_peer_id.name))
 
     def _federation_check_writer(self, vals):
@@ -126,7 +129,8 @@ class ProjectTask(models.Model):
         nouveau = _as_id(vals.get("federation_assignee_id"))
         change = bool(nouveau) if not self else any(t.federation_assignee_id.id != nouveau for t in self)
         if change and not self.env.user.has_group("project.group_project_manager"):
-            raise AccessError(_("Adresser une tâche fédérée demande le rôle de gestionnaire de projet."))
+            raise AccessError(_("Addressing a federated task requires the "
+                                "project manager role."))
 
     @api.onchange("federation_peer_id")
     def _onchange_federation_peer_assignee(self):
@@ -139,10 +143,10 @@ class ProjectTask(models.Model):
         return self.project_id.federation_peer_ids
 
     def _federation_label_the(self):
-        return _("la tâche")
+        return _("the task")
 
     def _federation_label_this(self):
-        return _("cette tâche")
+        return _("this task")
 
     def _federation_watched(self):
         return WATCHED
@@ -186,7 +190,7 @@ class ProjectTask(models.Model):
         resolu = peer._local_assignee(courriel_propose)
         assigne = resolu or peer._fallback_user()
         vals = {
-            "name": transport.clean_text(card.get("name"), 500) or _("(sans titre)"),
+            "name": transport.clean_text(card.get("name"), 500) or _("(untitled)"),
             "description": self._federation_mirror_description(peer, card),
             "priority": card.get("priority") if card.get("priority") in ("0", "1") else "0",
             "project_id": project.id, "user_ids": [(6, 0, assigne.ids)], "partner_id": False,
@@ -218,29 +222,35 @@ class ProjectTask(models.Model):
         repli = peer._fallback_user()
         if resolu:
             # Résolu, même si le compte est aussi celui du repli : la ligne existe.
-            corps = _("<p>%(pair)s a adressé cette tâche à %(qui)s ; elle est assignée à "
-                      "%(compte)s.</p>") % {"pair": transport.html.escape(peer.name),
+            corps = _("<p>%(pair)s addressed this task to %(qui)s; it is "
+                      "assigned to %(compte)s.</p>") % {"pair": transport.html.escape(peer.name),
                                             "qui": qui,
                                             "compte": transport.html.escape(resolu.display_name)}
         elif peer._identity_for(courriel):
-            corps = _("<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s). Ce courriel est "
-                      "apparié, mais la ligne ne donne aucun compte utilisable ici (compte portail, "
-                      "plusieurs comptes, ou compte désigné devenu invalide) : elle est déposée chez "
-                      "%(repli)s. Désignez un compte sur la ligne d'appariement.</p>") % {
+            corps = _("<p>%(pair)s addressed this task to %(qui)s "
+                      "(%(courriel)s). This email is matched, but the row "
+                      "gives no usable account here (portal account, "
+                      "several accounts, or a designated account that "
+                      "became invalid): it is left with %(repli)s. "
+                      "Designate an account on the matching row.</p>") % {
                 "pair": transport.html.escape(peer.name), "qui": qui,
                 "courriel": transport.html.escape(courriel),
-                "repli": transport.html.escape(repli.display_name) if repli else _("personne")}
+                "repli": transport.html.escape(repli.display_name) if repli else _("no "
+                                                                                   "one")}
         elif not repli:
-            corps = _("<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s), qui ne figure "
-                      "pas dans les personnes appariées de ce pair, et la personne du repli n'est "
-                      "plus un compte interne actif : la tâche n'est assignée à personne.</p>") % {
+            corps = _("<p>%(pair)s addressed this task to %(qui)s "
+                      "(%(courriel)s), who is not in this peer's matched "
+                      "people, and the fallback person is no longer an "
+                      "active internal account: the task is assigned to "
+                      "no one.</p>") % {
                 "pair": transport.html.escape(peer.name), "qui": qui,
                 "courriel": transport.html.escape(courriel)}
         else:
-            corps = _("<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s), qui ne figure "
-                      "pas dans les personnes appariées de ce pair : elle est déposée chez "
-                      "%(repli)s. Ajoutez la ligne d'appariement sur la fiche du pair pour que "
-                      "la prochaine arrive au bon endroit.</p>") % {
+            corps = _("<p>%(pair)s addressed this task to %(qui)s "
+                      "(%(courriel)s), who is not in this peer's matched "
+                      "people: it is left with %(repli)s. Add the "
+                      "matching row on the peer's record so the next one "
+                      "lands in the right place.</p>") % {
                 "pair": transport.html.escape(peer.name), "qui": qui,
                 "courriel": transport.html.escape(courriel),
                 "repli": transport.html.escape(repli.display_name)}
@@ -278,8 +288,10 @@ class ProjectTask(models.Model):
 
     @api.model
     def _federation_mirror_description(self, peer, card):
-        header = _("<p><i>Tâche partagée par %s. L'état, le jour d'échéance, les messages et les pièces "
-                   "jointes reviennent chez lui ; un message ou une note qui commence par 🔒 reste ici.</i></p>") \
+        header = _("<p><i>Task shared by %s. The state, the deadline day, "
+                   "the messages and the attachments travel back to them; "
+                   "a message or a note starting with 🔒 stays "
+                   "here.</i></p>") \
             % transport.html.escape(peer.name)
         text = card.get("description_text") if isinstance(card.get("description_text"), str) else ""
         return header + transport.text_to_html(text)
@@ -287,9 +299,11 @@ class ProjectTask(models.Model):
     def _federation_share_note(self, peer):
         self.ensure_one()
         self.sudo().with_context(federation_inbound=True).message_post(
-            body=_("Tâche fédérée avec %s : le miroir apparaîtra chez lui au prochain envoi. Ce qui part : nom, "
-                   "description en texte, jour d'échéance, priorité, état, messages et pièces jointes sous le plafond. "
-                   "Ce qui reste ici : les notes internes, les heures, les feuilles de temps.") % peer.name,
+            body=_("Task federated with %s: the mirror will appear on "
+                   "their side at the next send. What travels: name, "
+                   "description as text, deadline day, priority, state, "
+                   "messages and attachments under the cap. What stays "
+                   "here: internal notes, hours, timesheets.") % peer.name,
             message_type="comment", subtype_xmlid="mail.mt_note")
 
     # --- Les états ------------------------------------------------------------------
@@ -317,8 +331,9 @@ class ProjectTask(models.Model):
             task.write({"state": new_state})
         known = remote_state in dict(self._fields["state"].selection)
         label = _state_label(self.env, remote_state) if known else transport.clean_text(remote_state, 40)
-        back = _(" : la tâche revient ici") if (link.origin == "local" and new_state == "01_in_progress") else ""
-        note = link._note(Markup(_("<p>Chez %s, la tâche est passée à « %s »%s.</p>")) % (link.peer_id.name, label, back))
+        back = _(": the task comes back here") if (link.origin == "local" and new_state == "01_in_progress") else ""
+        note = link._note(Markup(_("<p>On %s's side, the task moved to "
+                                   "\"%s\"%s.</p>")) % (link.peer_id.name, label, back))
         link._inbox_notify(note)
         return True
 
@@ -330,8 +345,9 @@ class ProjectTask(models.Model):
         task = self._federation_silent()
         # Le jour civil est le même des deux côtés ; l'heure est celle de midi ICI.
         transport.write_deadline_day(task, day or False, link.peer_id._our_tz())
-        note = link._note(Markup(_("<p>Chez %s, l'échéance a été déplacée au %s.</p>"))
-                          % (link.peer_id.name, day or _("(aucune)")))
+        note = link._note(Markup(_("<p>On %s's side, the deadline was "
+                                   "moved to %s.</p>"))
+                          % (link.peer_id.name, day or _("(none)")))
         link._inbox_notify(note)
         return True
 
@@ -373,7 +389,9 @@ class ProjectTask(models.Model):
         for task in self:
             peer = task.federation_peer_id
             if peer and peer not in task.project_id.federation_peer_ids:
-                raise ValidationError(_("Le projet « %s » ne fédère pas avec %s : ajoutez ce pair au projet d'abord.")
+                raise ValidationError(_("Project \"%s\" does not federate "
+                                        "with %s: add this peer to the "
+                                        "project first.")
                                       % (task.project_id.display_name, peer.name))
 
     # --- Émission -------------------------------------------------------------------

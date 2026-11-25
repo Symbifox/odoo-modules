@@ -40,188 +40,192 @@ OCCUPIED_NOTICE_HOURS = 24.0
 
 class BfVisitListing(models.Model):
     _name = "bf.visit.listing"
-    _description = "Inscription à visiter"
+    _description = "Property listing"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "state, name"
 
     name = fields.Char(
-        string="Adresse", required=True, tracking=True, index=True,
-        help="Ce que le visiteur lira en tête de la page de réservation.",
+        string="Address", required=True, tracking=True, index=True,
+        help="What the visitor will read at the top of the booking page.",
     )
     reference = fields.Char(
-        string="Numéro d'inscription",
-        help="Le numéro de la fiche au système de votre chambre, s'il y en a un.",
+        string="Listing number",
+        help="The listing number in your real estate board's system, if "
+             "there is one.",
     )
     active = fields.Boolean(default=True)
     state = fields.Selection(
         [
-            ("draft", "Brouillon"),
-            ("published", "En ligne"),
-            ("suspended", "Suspendue"),
-            ("closed", "Terminée"),
+            ("draft", "Draft"),
+            ("published", "Online"),
+            ("suspended", "Suspended"),
+            ("closed", "Closed"),
         ],
-        default="draft", required=True, tracking=True, string="État",
+        default="draft", required=True, tracking=True, string="Status",
     )
     listing_kind = fields.Selection(
-        [("sale", "À vendre"), ("rental", "À louer")],
-        default="sale", required=True, string="Nature", tracking=True,
+        [("sale", "For sale"), ("rental", "For rent")],
+        default="sale", required=True, string="Type", tracking=True,
     )
     occupancy = fields.Selection(
         [
-            ("vacant", "Inoccupée"),
-            ("owner", "Occupée par le propriétaire"),
-            ("tenant", "Occupée par un locataire"),
+            ("vacant", "Vacant"),
+            ("owner", "Occupied by the owner"),
+            ("tenant", "Occupied by a tenant"),
         ],
-        default="owner", required=True, string="Occupation", tracking=True,
-        help="« Occupée par un locataire » impose le préavis de 24 heures et "
-             "les heures de 9 h à 21 h de l'article 1931 du Code civil.",
+        default="owner", required=True, string="Occupancy", tracking=True,
+        help="\"Occupied by a tenant\" imposes the 24 hours' notice and "
+             "the 9 a.m. to 9 p.m. hours of article 1931 of the Civil "
+             "Code.",
     )
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company,
     )
 
     # --- Les gens -----------------------------------------------------------
     seller_ids = fields.Many2many(
         "res.partner", "bf_visit_listing_seller_rel", "listing_id", "partner_id",
-        string="Vendeurs",
-        help="Qui reçoit les demandes de visite quand l'inscription est en "
-             "mode « sur approbation », et le compte rendu des visites.",
+        string="Sellers",
+        help="Who receives showing requests when the listing is in \"on "
+             "approval\" mode, and the report on showings.",
     )
     broker_ids = fields.Many2many(
         "res.users", "bf_visit_listing_broker_rel", "listing_id", "user_id",
-        string="Courtiers autorisés",
-        help="Les personnes qui peuvent faire visiter. Un créneau n'est offert "
-             "que si l'une d'elles est libre en même temps que la propriété.",
+        string="Authorised brokers",
+        help="The people who can show the property. A slot is only "
+             "offered if one of them is free at the same time as the "
+             "property.",
     )
     tenant_id = fields.Many2one(
-        "res.partner", string="Locataire",
-        help="Qui reçoit l'avis de visite de 24 heures.",
+        "res.partner", string="Tenant",
+        help="Who receives the 24 hours' showing notice.",
     )
     tenant_wants_presence = fields.Boolean(
-        string="Le locataire demande la présence du locateur",
-        help="L'article 1931 lui en donne le droit. Coché, la mention part "
-             "avec chaque avis de visite.",
+        string="The tenant asks for the landlord to be present",
+        help="Article 1931 gives the tenant that right. When ticked, the "
+             "mention goes out with every showing notice.",
     )
 
     # --- L'adresse ----------------------------------------------------------
-    street = fields.Char(string="Rue")
-    street2 = fields.Char(string="Complément")
-    city = fields.Char(string="Ville")
+    street = fields.Char(string="Street")
+    street2 = fields.Char(string="Address line 2")
+    city = fields.Char(string="City")
     state_id = fields.Many2one("res.country.state", string="Province")
-    zip = fields.Char(string="Code postal")
+    zip = fields.Char(string="Postal code")
     country_id = fields.Many2one(
-        "res.country", string="Pays",
+        "res.country", string="Country",
         default=lambda self: self.env.company.country_id,
     )
     address_display = fields.Char(
-        string="Adresse complète", compute="_compute_address_display", store=True,
+        string="Full address", compute="_compute_address_display", store=True,
     )
 
     # --- Les règles de visite ----------------------------------------------
     visit_duration = fields.Float(
-        string="Durée d'une visite (heures)", default=0.5, required=True,
+        string="Duration of a showing (hours)", default=0.5, required=True,
     )
     slot_duration = fields.Float(
-        string="Intervalle entre les créneaux (heures)", default=0.5, required=True,
+        string="Interval between slots (hours)", default=0.5, required=True,
     )
     lead_time_hours = fields.Float(
-        string="Préavis minimum (heures)", default=2.0,
-        help="Délai entre la réservation et la visite. Porté à 24 heures d'office "
-             "pour un logement occupé par un locataire.",
+        string="Minimum notice (hours)", default=2.0,
+        help="Time between the booking and the showing. Raised to 24 "
+             "hours automatically for a dwelling occupied by a tenant.",
     )
     approval_mode = fields.Selection(
         [
-            ("auto", "Confirmation automatique"),
-            ("seller", "Sur approbation du vendeur"),
-            ("broker", "Sur approbation du courtier"),
+            ("auto", "Automatic confirmation"),
+            ("seller", "On the seller's approval"),
+            ("broker", "On the broker's approval"),
         ],
-        default="seller", required=True, string="Mode de confirmation",
+        default="seller", required=True, string="Confirmation mode",
         tracking=True,
-        help="La confirmation automatique convient à une propriété inoccupée. "
-             "Dès qu'il y a quelqu'un derrière la porte, l'approbation est la "
-             "règle du métier.",
+        help="Automatic confirmation suits a vacant property. As soon as "
+             "there is someone behind the door, approval is the rule of "
+             "the trade.",
     )
     open_house = fields.Boolean(
-        string="Visite libre", tracking=True,
-        help="Plusieurs personnes sur le même créneau, avec des arrivées "
-             "échelonnées. ⚠️ Un courtier doit être présent pendant toute la "
-             "visite libre, ou s'y faire remplacer.",
+        string="Open house", tracking=True,
+        help="Several people on the same slot, with staggered arrivals. "
+             "⚠️ A broker must be present for the whole open house, or "
+             "have someone stand in.",
     )
     slot_capacity = fields.Integer(
-        string="Personnes par créneau", default=1,
-        help="N'a d'effet qu'en visite libre.",
+        string="People per slot", default=1,
+        help="Has an effect only during an open house.",
     )
     require_identity = fields.Boolean(
-        string="Vérifier l'identité des visiteurs", default=True,
-        help="L'OACIQ le demande pour la sécurité et la protection de la "
-             "propriété. On consigne le type de pièce vue, jamais une copie.",
+        string="Verify visitors' identity", default=True,
+        help="The OACIQ asks for it, for the security and protection of "
+             "the property. The kind of document seen is recorded, never "
+             "a copy.",
     )
     require_representation = fields.Boolean(
-        string="Demander si la personne est représentée", default=True,
-        help="Le courtier du vendeur doit poser la question à la première "
-             "occasion. La réponse et son heure restent au registre : c'est la "
-             "pièce qui compte dans un litige sur la cause efficiente.",
+        string="Ask whether the person is represented", default=True,
+        help="The seller's broker must ask the question at the first "
+             "opportunity. The answer and its time stay in the register: "
+             "that is the piece of evidence that counts in a dispute over "
+             "the efficient cause.",
     )
     showing_instructions = fields.Html(
-        string="Consignes de visite",
-        help="Ce que le visiteur lit avant de venir : chaussures, animaux, "
-             "stationnement, ce qu'il ne faut pas ouvrir.",
+        string="Showing instructions",
+        help="What the visitor reads before coming: shoes, pets, parking, "
+             "what not to open.",
     )
     access_instructions = fields.Html(
-        string="Accès à la propriété",
-        help="⚠️ Livré SEULEMENT quand la visite est confirmée, et jamais sur "
-             "la page publique. Code de boîte à clés, porte à utiliser, "
-             "système d'alarme.",
+        string="Access to the property",
+        help="⚠️ Delivered ONLY when the showing is confirmed, and never "
+             "on the public page. Lockbox code, door to use, alarm system.",
     )
 
     # --- Ce que le module fabrique -----------------------------------------
     booking_type_id = fields.Many2one(
-        "resource.booking.type", string="Type de rendez-vous",
+        "resource.booking.type", string="Appointment type",
         readonly=True, copy=False, ondelete="set null",
     )
     resource_id = fields.Many2one(
-        "resource.resource", string="Ressource « propriété »",
+        "resource.resource", string="\"Property\" resource",
         readonly=True, copy=False, ondelete="set null",
     )
     calendar_id = fields.Many2one(
-        "resource.calendar", string="Calendrier des plages offertes",
+        "resource.calendar", string="Calendar of offered windows",
         readonly=True, copy=False, ondelete="set null",
     )
     window_ids = fields.One2many(
-        "bf.visit.window", "listing_id", string="Plages offertes",
+        "bf.visit.window", "listing_id", string="Offered windows",
     )
-    visit_ids = fields.One2many("bf.visit", "listing_id", string="Visites")
+    visit_ids = fields.One2many("bf.visit", "listing_id", string="Showings")
     visit_count = fields.Integer(
-        compute="_compute_visit_count", string="Nombre de visites",
+        compute="_compute_visit_count", string="Number of showings",
     )
     public_url = fields.Char(
-        related="booking_type_id.public_url", string="Page de réservation",
+        related="booking_type_id.public_url", string="Booking page",
         readonly=True,
     )
     walkin_token = fields.Char(
-        string="Jeton de la feuille d'inscription", copy=False, readonly=True,
+        string="Sign-in sheet token", copy=False, readonly=True,
         groups="bf_appointment_visit.group_bf_visit_user",
     )
     tz = fields.Selection(
-        _tz_get, string="Fuseau horaire", required=True,
+        _tz_get, string="Time zone", required=True,
         default=lambda self: self.env.user.tz or "America/Toronto",
-        help="Le fuseau dans lequel se lisent les plages offertes. 🔴 Il ne se "
-             "déduit PAS du calendrier de la société : sur une base neuve, "
-             "celui-ci est en UTC, et « samedi 13 h » devenait alors 9 h du "
-             "matin pour le visiteur. Mesuré au banc le 2026-09-11.",
+        help="The time zone the offered windows are read in. 🔴 It is NOT "
+             "deduced from the company calendar: on a fresh database that "
+             "one is in UTC, and \"Saturday 1 p.m.\" then became 9 a.m. "
+             "for the visitor. Measured on the bench on 2026-09-11.",
     )
     tz_name = fields.Char(
-        string="Fuseau appliqué", compute="_compute_tz_name",
-        help="Ce que le module utilise vraiment, repli compris.",
+        string="Time zone applied", compute="_compute_tz_name",
+        help="What the module actually uses, fallback included.",
     )
-    note = fields.Html(string="Notes internes")
+    note = fields.Html(string="Internal notes")
 
     _sql_constraints = [
         (
             "visit_duration_positive",
             "CHECK(visit_duration > 0)",
-            "La durée d'une visite doit être supérieure à zéro.",
+            "The duration of a showing must be greater than zero.",
         ),
     ]
 
@@ -262,9 +266,9 @@ class BfVisitListing(models.Model):
             if rec.state == "published" and rec.occupancy == "tenant" and not rec.tenant_id:
                 raise ValidationError(
                     _(
-                        "« %s » est occupée par un locataire : il faut dire QUI, "
-                        "sinon l'avis de 24 heures que la loi exige ne part "
-                        "nulle part."
+                        "\"%s\" is occupied by a tenant: you have to say "
+                        "WHO, otherwise the 24 hours' notice the law "
+                        "requires goes nowhere."
                     )
                     % rec.name
                 )
@@ -274,7 +278,7 @@ class BfVisitListing(models.Model):
         for rec in self:
             if rec.open_house and rec.slot_capacity < 2:
                 raise ValidationError(
-                    _("Une visite libre accueille au moins 2 personnes par créneau.")
+                    _("An open house takes at least 2 people per slot.")
                 )
 
     @api.onchange("occupancy")
@@ -323,9 +327,9 @@ class BfVisitListing(models.Model):
         # peuvent pas partager un calendrier, et un calendrier partagé qu'on
         # réécrirait au passage déplacerait les plages de l'autre.
         nom = "%s [%s]" % (
-            _("Visites — logement occupé (9 h à 21 h)")
+            _("Showings — occupied dwelling (9 a.m. to 9 p.m.)")
             if occupe
-            else _("Visites — sans restriction d'heure"),
+            else _("Showings — no time restriction"),
             tz,
         )
         Calendar = self.env["resource.calendar"].sudo()
@@ -387,7 +391,7 @@ class BfVisitListing(models.Model):
         """Le calendrier de la propriété : uniquement les plages offertes."""
         self.ensure_one()
         return {
-            "name": _("Plages offertes — %s") % (self.name or ""),
+            "name": _("Offered windows — %s") % (self.name or ""),
             "company_id": self.company_id.id,
             "tz": self.tz_name,
             "two_weeks_calendar": False,
@@ -444,13 +448,15 @@ class BfVisitListing(models.Model):
         if orphelines:
             raise UserError(
                 _(
-                    "Ces visites tombent hors des plages que vous gardez :\n\n%s\n\n"
-                    "Déplacez-les ou annulez-les d'abord. Retirer la plage sous "
-                    "leurs pieds ne les annule pas, ça les laisse debout sans "
-                    "disponibilité."
+                    "These showings fall outside the windows you are "
+                    "keeping:\n\n%s\n\nMove them or cancel them first. "
+                    "Removing the window from under them does not cancel "
+                    "them, it leaves them standing with no availability."
                 )
                 % "\n".join(
-                    "- %s, le %s"
+                    # Le « le » devant la date etait du francais en dur dans un
+                    # message vu par le courtier : il passe par le catalogue.
+                    self.env._("- %s, on %s")
                     % (v.display_name, fields.Datetime.context_timestamp(v, v.start))
                     for v in orphelines
                 )
@@ -560,7 +566,7 @@ class BfVisitListing(models.Model):
                 perimees.sudo().write({"active": False})
 
             valeurs_type = {
-                "name": _("Visite — %s") % rec.name,
+                "name": _("Showing — %s") % rec.name,
                 "duration": rec.visit_duration,
                 "slot_duration": rec.slot_duration,
                 "modifications_deadline": rec._effective_lead_time(),
@@ -596,13 +602,14 @@ class BfVisitListing(models.Model):
         morceaux = []
         if self.approval_mode != "auto":
             morceaux.append(
-                _("Votre demande est transmise pour approbation. Vous recevrez "
-                  "une réponse par courriel.")
+                _("Your request has been sent for approval. You will "
+                  "receive an answer by email.")
             )
         if self.occupancy == "tenant":
             morceaux.append(
-                _("Le logement est occupé : la visite est annoncée au locataire "
-                  "au moins 24 heures d'avance, entre 9 h et 21 h.")
+                _("The dwelling is occupied: the tenant is told about the "
+                  "showing at least 24 hours in advance, between 9 a.m. "
+                  "and 9 p.m.")
             )
         return "\n".join(morceaux)
 
@@ -618,8 +625,8 @@ class BfVisitListing(models.Model):
         Field = self.env["appointment.intake.field"].sudo()
         if not self.booking_type_id:
             return
-        libelle = _("Êtes-vous représenté par un courtier immobilier?")
-        libelle_nom = _("Si oui, le nom de votre courtier et de son agence")
+        libelle = _("Are you represented by a real estate broker?")
+        libelle_nom = _("If yes, your broker's name and agency")
         champs = Field.search([("type_id", "=", self.booking_type_id.id)])
         porte_question = champs.filtered(
             lambda f: f.bf_visit_role == "representation"
@@ -652,7 +659,7 @@ class BfVisitListing(models.Model):
                 "type_id": self.booking_type_id.id,
                 "name": libelle,
                 "field_type": "select",
-                "select_options": "%s\n%s" % (_("Oui"), _("Non")),
+                "select_options": "%s\n%s" % (_("Yes"), _("No")),
                 "required": True,
                 "sequence": 1,
                 "bf_visit_role": "representation",
@@ -675,16 +682,16 @@ class BfVisitListing(models.Model):
             if not rec.broker_ids:
                 raise UserError(
                     _(
-                        "« %s » n'a aucun courtier autorisé. Sans personne pour "
-                        "ouvrir la porte, aucun créneau n'existe."
+                        "\"%s\" has no authorised broker. With nobody to "
+                        "open the door, no slot exists."
                     )
                     % rec.name
                 )
             if not rec.window_ids:
                 raise UserError(
                     _(
-                        "« %s » n'offre aucune plage. Le vendeur doit dire quand "
-                        "il accepte de faire visiter."
+                        "\"%s\" offers no window. The seller has to say "
+                        "when they agree to have it shown."
                     )
                     % rec.name
                 )
@@ -715,7 +722,7 @@ class BfVisitListing(models.Model):
     def action_open_public_page(self):
         self.ensure_one()
         if not self.booking_type_id:
-            raise UserError(_("Publiez l'inscription d'abord."))
+            raise UserError(_("Publish the listing first."))
         return {
             "type": "ir.actions.act_url",
             "url": "/appointment/%s" % self.booking_type_id.slug,
@@ -726,7 +733,7 @@ class BfVisitListing(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Visites de %s") % self.name,
+            "name": _("Showings of %s") % self.name,
             "res_model": "bf.visit",
             "view_mode": "list,form",
             "domain": [("listing_id", "=", self.id)],

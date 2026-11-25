@@ -25,23 +25,23 @@ _MARQUEURS_2004 = ("2004", "cam 1.3", "1.3")
 
 class ScormPackage(models.Model):
     _name = "bf.scorm.package"
-    _description = "Paquet SCORM"
+    _description = "SCORM package"
     _order = "id desc"
 
-    name = fields.Char(string="Nom", required=True)
+    name = fields.Char(string="Name", required=True)
     slide_id = fields.Many2one(
-        "slide.slide", string="Contenu", ondelete="cascade", index=True)
-    archive = fields.Binary(string="Paquet (.zip)", attachment=True, required=True)
-    archive_filename = fields.Char(string="Nom du fichier")
+        "slide.slide", string="Content", ondelete="cascade", index=True)
+    archive = fields.Binary(string="Package (.zip)", attachment=True, required=True)
+    archive_filename = fields.Char(string="File name")
     version = fields.Selection(VERSIONS, string="Version", readonly=True)
-    launch_href = fields.Char(string="Point d'entrée", readonly=True)
-    identifier = fields.Char(string="Identifiant du manifeste", readonly=True)
-    sco_count = fields.Integer(string="Nombre de SCO", readonly=True)
+    launch_href = fields.Char(string="Entry point", readonly=True)
+    identifier = fields.Char(string="Manifest identifier", readonly=True)
+    sco_count = fields.Integer(string="Number of SCOs", readonly=True)
     uses_sequencing = fields.Boolean(
-        string="Déclare du séquencement", readonly=True,
-        help="Le manifeste porte des règles de séquencement SCORM 2004. Elles ne "
-             "sont PAS appliquées : le contenu jouera son premier SCO.")
-    attempt_ids = fields.One2many("bf.scorm.attempt", "package_id", string="Tentatives")
+        string="Declares sequencing", readonly=True,
+        help="The manifest carries SCORM 2004 sequencing rules. They are "
+             "NOT applied: the content will play its first SCO.")
+    attempt_ids = fields.One2many("bf.scorm.attempt", "package_id", string="Attempts")
 
     # ------------------------------------------------------------------
     # Lecture du manifeste
@@ -67,12 +67,12 @@ class ScormPackage(models.Model):
         """
         self.ensure_one()
         if not self.archive:
-            raise UserError(_("Aucun paquet déposé."))
+            raise UserError(_("No package uploaded."))
         try:
             return zipfile.ZipFile(io.BytesIO(base64.b64decode(self.archive)))
         except (zipfile.BadZipFile, ValueError) as exc:
             raise UserError(
-                _("Ce fichier n'est pas une archive lisible : %s", exc)) from exc
+                _("This file is not a readable archive: %s", exc)) from exc
 
     def _lire_le_manifeste(self):
         for paquet in self:
@@ -82,9 +82,9 @@ class ScormPackage(models.Model):
                 noms = zf.namelist()
                 if "imsmanifest.xml" not in noms:
                     raise UserError(_(
-                        "Ce paquet n'a pas d'« imsmanifest.xml » à sa racine : "
-                        "ce n'est pas un paquet SCORM, ou il a été rezippé avec "
-                        "son dossier parent."))
+                        "This package has no \"imsmanifest.xml\" at its "
+                        "root: it is not a SCORM package, or it was "
+                        "rezipped with its parent folder."))
                 brut = zf.read("imsmanifest.xml")
             paquet._appliquer_manifeste(brut)
 
@@ -94,7 +94,7 @@ class ScormPackage(models.Model):
             racine = etree.fromstring(brut)
         except etree.XMLSyntaxError as exc:
             raise UserError(
-                _("Le manifeste de ce paquet est illisible : %s", exc)) from exc
+                _("This package's manifest cannot be read: %s", exc)) from exc
 
         ns = {k: v for k, v in (racine.nsmap or {}).items() if k}
         defaut = racine.nsmap.get(None)
@@ -137,8 +137,8 @@ class ScormPackage(models.Model):
                     break
         if not lancement:
             raise UserError(_(
-                "Aucune ressource jouable dans ce manifeste : il ne déclare "
-                "aucun « href »."))
+                "No playable resource in this manifest: it declares no "
+                "\"href\"."))
 
         sequencement = bool(racine.findall(".//{*}sequencing"))
         self.write({

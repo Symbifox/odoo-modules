@@ -9,10 +9,10 @@ from odoo.tools import is_html_empty
 _logger = logging.getLogger(__name__)
 
 ETATS = [
-    ("pending", "Assignée"),
-    ("in_progress", "En cours"),
-    ("done", "Faite"),
-    ("cancelled", "Annulée"),
+    ("pending", "Assigned"),
+    ("in_progress", "In progress"),
+    ("done", "Done"),
+    ("cancelled", "Cancelled"),
 ]
 
 
@@ -31,7 +31,7 @@ class BfTrainingAssignment(models.Model):
     """
 
     _name = "bf.training.assignment"
-    _description = "Assignation de formation"
+    _description = "Training assignment"
     # 🔴 Le mixin d'activités s'était perdu au déménagement : l'assignation de
     # `bf_security_awareness` l'avait, et ses relances appellent
     # `activity_schedule`. Il n'ajoute aucune colonne. Son `activity_ids`
@@ -40,50 +40,53 @@ class BfTrainingAssignment(models.Model):
     _order = "due_date, id"
 
     partner_id = fields.Many2one(
-        "res.partner", string="Personne", required=True, index=True, tracking=True,
-        help="Le contact, parce qu'une formation peut être assignée à quelqu'un "
-             "qui n'a pas de fiche d'employé.")
+        "res.partner", string="Person", required=True, index=True, tracking=True,
+        help="The contact, because training can be assigned to somebody "
+             "with no employee record.")
     employee_id = fields.Many2one(
-        "hr.employee", string="Employé", index=True, tracking=True)
+        "hr.employee", string="Employee", index=True, tracking=True)
     activity_id = fields.Many2one(
-        "bf.training.activity", string="Activité", required=True, index=True, tracking=True)
+        "bf.training.activity", string="Activity", required=True, index=True, tracking=True)
     requirement_id = fields.Many2one(
-        "bf.training.requirement", string="Exigence", ondelete="set null")
+        "bf.training.requirement", string="Requirement", ondelete="set null")
     obligation_id = fields.Many2one(
         "bf.training.obligation", string="Obligation", ondelete="set null", index=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company, index=True)
 
-    assigned_date = fields.Datetime(string="Assignée le", default=fields.Datetime.now)
+    assigned_date = fields.Datetime(string="Assigned on", default=fields.Datetime.now)
     assigned_by_id = fields.Many2one(
-        "res.users", string="Assignée par", default=lambda self: self.env.user)
-    due_date = fields.Date(string="Échéance", index=True, tracking=True)
-    state = fields.Selection(ETATS, string="État", default="pending", required=True,
+        "res.users", string="Assigned by", default=lambda self: self.env.user)
+    due_date = fields.Date(string="Due date", index=True, tracking=True)
+    state = fields.Selection(ETATS, string="State", default="pending", required=True,
                              index=True, tracking=True)
     completion = fields.Integer(
-        string="Avancement (%)", default=0,
-        help="Rempli par le module qui porte le lecteur, quand il y en a un.")
+        string="Progress (%)", default=0,
+        help="Filled in by the module that carries the content player, "
+             "when there is one.")
     record_id = fields.Many2one(
-        "bf.training.record", string="Réalisation", ondelete="set null",
-        help="La pièce qui a clos l'assignation.")
-    reminder_count = fields.Integer(string="Relances", default=0, readonly=True)
+        "bf.training.record", string="Completion", ondelete="set null",
+        help="The document that closed the assignment.")
+    reminder_count = fields.Integer(string="Reminders", default=0, readonly=True)
     training_url = fields.Char(
-        string="Lien vers la formation", compute="_compute_training_url",
-        help="Où la relance envoie la personne. Par défaut, la fiche de "
-             "l'assignation ; un pont peut l'envoyer directement au contenu.")
+        string="Link to the training", compute="_compute_training_url",
+        help="Where the reminder sends the person. By default, the "
+             "assignment record; a bridge can send them straight to the "
+             "content.")
     reminder_button_color = fields.Char(
-        string="Couleur du bouton de relance",
+        string="Reminder button colour",
         compute="_compute_reminder_presentation",
-        help="La couleur du bouton que la mise en page retenue emploie elle-même : "
-             "l'accent de marque de la société sous la mise en page maison, la "
-             "couleur des boutons de ses courriels sous celle d'Odoo.")
+        help="The button colour the chosen layout uses itself: the "
+             "company's brand accent under the in-house layout, the "
+             "colour of its email buttons under Odoo's.")
     reminder_signature_name = fields.Char(
-        string="Signature de la relance",
+        string="Reminder signature",
         compute="_compute_reminder_presentation",
-        help="Le nom qui signe la relance. Vide quand la mise en page de la "
-             "société pose déjà sa propre signature, pour ne pas signer deux fois.")
-    last_reminder_date = fields.Datetime(string="Dernière relance", readonly=True)
+        help="The name that signs the reminder. Leave it empty when the "
+             "company layout already adds its own signature, so nothing "
+             "is signed twice.")
+    last_reminder_date = fields.Datetime(string="Last reminder", readonly=True)
     note = fields.Html(string="Note", sanitize_attributes=False)
 
     # Mises en page de la relance, par ordre de préférence : la première présente
@@ -98,7 +101,7 @@ class BfTrainingAssignment(models.Model):
 
     _sql_constraints = [
         ("completion_bornee", "check (completion >= 0 and completion <= 100)",
-         "Un avancement se dit entre 0 et 100."),
+         "Progress is stated between 0 and 100."),
     ]
 
 
@@ -170,7 +173,7 @@ class BfTrainingAssignment(models.Model):
         for rec in self:
             personne = rec.employee_id.name or rec.partner_id.name
             quoi = rec.activity_id.name
-            rec.display_name = " · ".join(x for x in (personne, quoi) if x) or _("Assignation")
+            rec.display_name = " · ".join(x for x in (personne, quoi) if x) or _("Assignment")
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -206,8 +209,8 @@ class BfTrainingAssignment(models.Model):
             # Vouvoiement : c'est le registre de ces modules, mesuré au
             # catalogue (10 chaînes au « vous », aucune au « tu »).
             return _(
-                "%(nom)s n'a pas d'adresse courriel : la relance ne peut pas "
-                "partir. Ajoutez son adresse, puis relancez.",
+                "%(nom)s has no email address: the reminder cannot go "
+                "out. Add their address, then send the reminder again.",
                 nom=self.partner_id.name)
         return False
 
@@ -255,10 +258,12 @@ class BfTrainingAssignment(models.Model):
                 continue
             if not gabarit:
                 rec.message_post(body=_(
-                    "Rappel : l'activité « %(activite)s » est attendue pour le "
+                    "Reminder: activity \"%(activite)s\" is due on "
                     "%(echeance)s.",
                     activite=rec.activity_id.name,
-                    echeance=rec.due_date or "sans échéance"))
+                    # Le repli aussi passe par le catalogue : il atterrissait
+                    # en français au milieu d'un message anglais.
+                    echeance=rec.due_date or _("no due date")))
             else:
                 try:
                     # 🔴 Point de sauvegarde. Une
@@ -278,7 +283,7 @@ class BfTrainingAssignment(models.Model):
                         "Registre de formation : relance en échec pour "
                         "l'assignation %s : %s", rec.id, exc)
                     rec.message_post(body=_(
-                        "Relance non envoyée : %(raison)s", raison=exc))
+                        "Reminder not sent: %(raison)s", raison=exc))
                     continue
             rec.reminder_count += 1
             rec.last_reminder_date = fields.Datetime.now()

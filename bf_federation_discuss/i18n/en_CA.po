@@ -42,28 +42,23 @@ msgstr "This link is no longer active: nothing would leave the channel."
 #. module: bf_federation_discuss
 #. odoo-python
 #: code:addons/bf_federation_discuss/models/discuss_channel.py:0
-msgid "Conversation avec %s au sujet de « %s ». Ce qui s'écrit ici est posté au chatter de l'objet, d'où il part chez le pair. Comptez deux à quatre minutes par aller-retour."
-msgstr "Conversation with %s about \"%s\". What is written here is posted to the object's message thread, from where it travels to the peer. Allow two to four minutes per round trip."
-
-#. module: bf_federation_discuss
-#: model:ir.model,name:bf_federation_discuss.model_discuss_channel
-msgid "Discussion Channel"
+msgid ""
+"Conversation avec %s au sujet de « %s ». Ce qui s'écrit ici est posté au "
+"chatter de l'objet, d'où il part chez le pair. Comptez deux à quatre minutes"
+" par aller-retour."
 msgstr ""
+"Conversation with %s about \"%s\". What is written here is posted to the "
+"object's message thread, from where it travels to the peer. Allow two to "
+"four minutes per round trip."
 
 #. module: bf_federation_discuss
 #: model:ir.model.fields,help:bf_federation_discuss.field_discuss_channel__federation_link_id
-msgid "Le canal d'un objet partagé avec un pair. Ce qui s'y dit passe par le chatter de l'objet, qui reste le registre."
-msgstr "The channel of an object shared with a peer. What is said here goes through the object's message thread, which remains the record."
-
-#. module: bf_federation_discuss
-#: model:ir.model,name:bf_federation_discuss.model_federation_link
-msgid "Lien fédéré"
-msgstr "Federated link"
-
-#. module: bf_federation_discuss
-#: model:ir.model,name:bf_federation_discuss.model_mail_message
-msgid "Message"
+msgid ""
+"Le canal d'un objet partagé avec un pair. Ce qui s'y dit passe par le "
+"chatter de l'objet, qui reste le registre."
 msgstr ""
+"The channel of an object shared with a peer. What is said here goes through "
+"the object's message thread, which remains the record."
 
 #. module: bf_federation_discuss
 #: model:ir.model.fields,field_description:bf_federation_discuss.field_discuss_channel__federation_link_id

@@ -12,23 +12,23 @@ class BabillardLecture(models.Model):
     """
 
     _name = "bf.babillard.lecture"
-    _description = "Accusé de lecture du babillard"
+    _description = "Noticeboard read receipt"
     _order = "date desc, id desc"
     _rec_name = "post_id"
 
     post_id = fields.Many2one(
-        "bf.babillard.post", string="Publication", required=True,
+        "bf.babillard.post", string="Post", required=True,
         ondelete="cascade", index=True)
     user_id = fields.Many2one(
-        "res.users", string="Personne", required=True, ondelete="cascade", index=True)
-    date = fields.Datetime("Confirmée le", required=True, default=fields.Datetime.now)
+        "res.users", string="Person", required=True, ondelete="cascade", index=True)
+    date = fields.Datetime("Confirmed on", required=True, default=fields.Datetime.now)
     # Porté pour la règle multi-société : un accusé suit la société de sa publication.
     company_id = fields.Many2one(
-        related="post_id.company_id", store=True, string="Société")
+        related="post_id.company_id", store=True, string="Company")
 
     _sql_constraints = [
         ("lecture_unique", "UNIQUE(post_id, user_id)",
-         "Une personne ne confirme qu'une fois la lecture d'une publication."),
+         "A person confirms reading a post once only."),
     ]
 
     @api.model_create_multi

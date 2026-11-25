@@ -8,7 +8,7 @@
              même oubli que sur n'importe quel modèle sensible, et il ne se voit pas
              tant qu'on n'a qu'une société. -->
         <record id="rule_federation_document_company" model="ir.rule">
-            <field name="name">Livrable fédéré : société</field>
+            <field name="name">Federated deliverable: company</field>
             <field name="model_id" ref="model_federation_document"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
             <field name="global" eval="True"/>

@@ -37,7 +37,7 @@ SILENT = {
 
 class FederationFederable(models.AbstractModel):
     _name = "federation.federable"
-    _description = "Objet fédérable"
+    _description = "Federable object"
 
     #: Clé de genre. Vide = le modèle hérite du mixin sans être fédérable
     #: (cas d'un module installé mais désactivé).
@@ -46,21 +46,26 @@ class FederationFederable(models.AbstractModel):
     _federation_verbs = ()
 
     federation_peer_id = fields.Many2one(
-        "federation.peer", string="Fédéré avec", copy=False, tracking=True,
+        "federation.peer", string="Federated with", copy=False, tracking=True,
         domain="[('state', '=', 'active'), ('id', 'in', federation_allowed_peer_ids)]",
-        help="Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir.")
+        help="The peer where this object has a mirror. Clearing the field "
+             "archives the mirror.")
     federation_allowed_peer_ids = fields.Many2many(
-        "federation.peer", compute="_compute_federation_allowed", string="Pairs permis")
+        "federation.peer", compute="_compute_federation_allowed", string="Allowed "
+                                                                         "peers")
     federation_possible = fields.Boolean(
-        compute="_compute_federation_allowed", string="Fédération possible",
+        compute="_compute_federation_allowed", string="Federation possible",
         search="_search_federation_possible")
     federation_link_id = fields.Many2one(
-        "federation.link", compute="_compute_federation", string="Lien fédéré",
+        "federation.link", compute="_compute_federation", string="Federated "
+                                                                 "link",
         search="_search_federation_link_id")
-    federation_remote_url = fields.Char(compute="_compute_federation", string="Chez le pair")
+    federation_remote_url = fields.Char(compute="_compute_federation", string="On "
+                                                                              "the "
+                                                                              "peer")
     federation_origin = fields.Selection(
-        [("local", "Partagé d'ici"), ("remote", "Reçu du pair")],
-        compute="_compute_federation", string="Origine", search="_search_federation_origin")
+        [("local", "Shared from here"), ("remote", "Received from the peer")],
+        compute="_compute_federation", string="Origin", search="_search_federation_origin")
 
     # --- Le registre des genres ---------------------------------------------------
     @api.model
@@ -125,11 +130,11 @@ class FederationFederable(models.AbstractModel):
         écrites pour tenir avec l'un comme avec l'autre, et le motif d'un retrait
         est un nom (« archivage »), jamais un participe (« archivée »).
         """
-        return _("l'objet")
+        return _("the object")
 
     def _federation_label_this(self):
         """« cette tâche », « ce livrable » : le nom avec son démonstratif."""
-        return _("cet objet")
+        return _("this object")
 
     def _federation_mirror_name(self):
         """Le nom affiché du lien, côté liste."""
@@ -202,7 +207,8 @@ class FederationFederable(models.AbstractModel):
             peer = record.federation_peer_id
             if peer and peer not in record._federation_allowed_peers():
                 raise ValidationError(
-                    _("Ce porteur ne fédère pas avec %s : ajoutez ce pair d'abord.") % peer.name)
+                    _("This holder does not federate with %s: add this "
+                      "peer first.") % peer.name)
 
     # --- Le lien ------------------------------------------------------------------
     def _federation_link(self, include_inactive=False):
@@ -232,7 +238,8 @@ class FederationFederable(models.AbstractModel):
         if "federation_peer_id" not in vals or self.env.su:
             return
         if not self.env.user.has_group("project.group_project_manager"):
-            raise AccessError(_("Fédérer un objet demande le rôle de gestionnaire de projet."))
+            raise AccessError(_("Federating an object requires the "
+                                "project manager role."))
 
     # --- Émission : les crochets que chaque modèle appelle depuis SES surcharges -------
     # ⚠️ Les surcharges ORM restent dans le modèle concret, pas ici. Un mixin qui
@@ -265,7 +272,9 @@ class FederationFederable(models.AbstractModel):
             for record in self:
                 link = links.get(record.id)
                 if link and link.origin == "remote" and link.peer_id.id != vals["federation_peer_id"]:
-                    raise UserError(_("Un objet reçu d'un pair ne peut pas être fédéré avec un autre pair."))
+                    raise UserError(_("An object received from a peer "
+                                      "cannot be federated with another "
+                                      "peer."))
         before = {}
         for record in self:
             snapshot = {"peer": record.federation_peer_id.id,
@@ -289,7 +298,7 @@ class FederationFederable(models.AbstractModel):
             if not link:
                 continue
             verb = "link.archive" if link.origin == "local" else "mirror.dropped"
-            link.peer_id._enqueue(verb, {"reason": _("suppression")}, link, record=record)
+            link.peer_id._enqueue(verb, {"reason": _("deletion")}, link, record=record)
 
     def _federation_share(self):
         """Créer le lien d'origine locale et envoyer la carte complète.
@@ -305,7 +314,8 @@ class FederationFederable(models.AbstractModel):
                             ("peer_id", "=", peer.id)], limit=1)
         card = self._federation_card()
         if link and link.origin == "remote":
-            raise UserError(_("Un objet reçu d'un pair ne peut pas être fédéré de nouveau."))
+            raise UserError(_("An object received from a peer cannot be "
+                              "federated again."))
         fingerprint = self.env["federation.link"]._card_fingerprint(card)
         if link:
             link.write({"active": True, "fingerprint": fingerprint})
@@ -325,7 +335,8 @@ class FederationFederable(models.AbstractModel):
         if not hasattr(self, "message_post"):
             return
         self.sudo().with_context(federation_inbound=True).message_post(
-            body=_("Fédéré avec %s : le miroir apparaîtra chez lui au prochain envoi.") % peer.name,
+            body=_("Federated with %s: the mirror will appear on their "
+                   "side at the next send.") % peer.name,
             message_type="comment", subtype_xmlid="mail.mt_note")
 
     def _federation_dispatch_write(self, vals, before, link):
@@ -336,17 +347,21 @@ class FederationFederable(models.AbstractModel):
             if link and link.origin == "remote":
                 if not new_peer and link.active:
                     # Le receveur détache son miroir : l'original n'est pas touché, il en est averti.
-                    link.peer_id._enqueue("mirror.dropped", {"reason": _("détachement")}, link)
+                    link.peer_id._enqueue("mirror.dropped", {"reason": _("detachment")}, link)
                     link.active = False
                 return
             if new_peer:
                 if link and link.peer_id != new_peer and link.active:
-                    link.peer_id._enqueue("link.archive", {"reason": _("retrait du partage")}, link)
+                    link.peer_id._enqueue("link.archive", {"reason": _("removal "
+                                                                       "from "
+                                                                       "sharing")}, link)
                     link.active = False
                 self._federation_share()
                 return
             if link and link.active:
-                link.peer_id._enqueue("link.archive", {"reason": _("retrait du partage")}, link)
+                link.peer_id._enqueue("link.archive", {"reason": _("removal "
+                                                                   "from "
+                                                                   "sharing")}, link)
                 link.active = False
                 return
         if not link:
@@ -360,10 +375,10 @@ class FederationFederable(models.AbstractModel):
             peer = link.peer_id
             if link.origin == "remote":
                 if not self.active:
-                    peer._enqueue("mirror.dropped", {"reason": _("archivage")}, link)
+                    peer._enqueue("mirror.dropped", {"reason": _("archiving")}, link)
                     link.active = False
                 return
-            peer._enqueue("link.restore" if self.active else "link.archive", {"reason": _("archivage")}, link)
+            peer._enqueue("link.restore" if self.active else "link.archive", {"reason": _("archiving")}, link)
             # 🔴 Le lien de l'émetteur suivait le miroir sans l'être : le pair éteignait
             # le sien à la réception et celui d'ici restait allumé, donc le compte des
             # objets fédérés sur la fiche du pair sur-comptait les archivés.

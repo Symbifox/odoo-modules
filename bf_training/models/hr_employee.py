@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class HrEmployee(models.Model):
@@ -14,15 +14,16 @@ class HrEmployee(models.Model):
     _inherit = "hr.employee"
 
     training_reference_date = fields.Date(
-        string="Date de référence (formation)",
+        string="Reference date (training)",
         compute="_compute_training_reference_date", store=True, readonly=False,
         # ⚠️ Champ privé : absent de `hr.employee.public`. Sans `groups=`, Odoo
         # le précharge avec le reste, et toute lecture d'un employé par une
         # personne sans droit RH (même son nom) lève une AccessError.
         groups="hr.group_hr_user",
-        help="Le point de départ des délais de formation. Reprise du premier "
-             "contrat quand il existe, sinon de la création de la fiche. Elle se "
-             "corrige à la main : c'est elle qui date les obligations.")
+        help="The starting point for training deadlines. Taken from the "
+             "first contract when there is one, otherwise from the "
+             "creation of the record. It can be corrected by hand: it is "
+             "what dates the obligations.")
     # ⚠️ Les cinq champs qui suivent sont privés eux aussi. Non stockés,
     # le préchargement ne les emporte pas ; mais sans `groups=`, Odoo les offre
     # à toute personne interne (`fields_get`, `read()` sans liste), et leur
@@ -34,19 +35,19 @@ class HrEmployee(models.Model):
     # stockée, c'est pire : le préchargement l'emporte et la lecture du seul NOM
     # tombe (même piège que `bf_shift`).
     training_record_ids = fields.One2many(
-        "bf.training.record", "employee_id", string="Formations suivies",
+        "bf.training.record", "employee_id", string="Training completed",
         groups="hr.group_hr_user")
     training_record_count = fields.Integer(
-        string="Formations", compute="_compute_training_counts",
+        string="Training records", compute="_compute_training_counts",
         groups="hr.group_hr_user")
     training_obligation_ids = fields.One2many(
-        "bf.training.obligation", "employee_id", string="Obligations de formation",
+        "bf.training.obligation", "employee_id", string="Training obligations",
         groups="hr.group_hr_user")
     training_overdue_count = fields.Integer(
-        string="Obligations en retard", compute="_compute_training_counts",
+        string="Overdue obligations", compute="_compute_training_counts",
         groups="hr.group_hr_user")
     training_expiring_count = fields.Integer(
-        string="Formations qui expirent", compute="_compute_training_counts",
+        string="Training expiring", compute="_compute_training_counts",
         groups="hr.group_hr_user")
 
     @api.depends("create_date")
@@ -82,7 +83,7 @@ class HrEmployee(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Formations suivies",
+            "name": _("Training completed"),
             "res_model": "bf.training.record",
             "view_mode": "list,form",
             "domain": [("employee_id", "=", self.id)],

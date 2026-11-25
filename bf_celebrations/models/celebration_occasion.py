@@ -11,19 +11,22 @@ import logging
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
+from odoo.tools.misc import get_lang
+
+from .langue import langue_de
 
 _logger = logging.getLogger(__name__)
 
 TYPES = [
-    ("birthday", "Anniversaire"),
-    ("work_anniversary", "Anniversaire d'embauche"),
-    ("welcome", "Bienvenue"),
-    ("farewell", "Départ"),
-    ("retirement", "Retraite"),
-    ("congratulations", "Félicitations"),
-    ("recovery", "Rétablissement"),
-    ("condolence", "Condoléances"),
-    ("other", "Autre"),
+    ("birthday", "Birthday"),
+    ("work_anniversary", "Work anniversary"),
+    ("welcome", "Welcome"),
+    ("farewell", "Leaving"),
+    ("retirement", "Retirement"),
+    ("congratulations", "Congratulations"),
+    ("recovery", "Recovery"),
+    ("condolence", "Condolences"),
+    ("other", "Other"),
 ]
 
 # Les types que le cron fabrique tout seul à partir d'un consentement. Les
@@ -50,11 +53,11 @@ JALONS_ANCIENNETE = (1, 5, 10, 15, 20, 25, 30, 35, 40)
 
 class CelebrationOccasion(models.Model):
     _name = "bf.celebration.occasion"
-    _description = "Occasion à souligner"
+    _description = "Occasion to mark"
     _inherit = ["mail.thread"]
     _order = "date, id"
 
-    name = fields.Char(string="Intitulé", compute="_compute_name", store=True)
+    name = fields.Char(string="Label", compute="_compute_name", store=True)
     occasion_type = fields.Selection(
         TYPES, string="Type", required=True, default="birthday", index=True)
     # ⚠️ Facultative depuis la 2.0. Une promotion, un rétablissement ou des
@@ -67,52 +70,52 @@ class CelebrationOccasion(models.Model):
     date = fields.Date(string="Date", index=True, tracking=True)
 
     employee_id = fields.Many2one(
-        "hr.employee", string="Personne soulignée", ondelete="cascade",
+        "hr.employee", string="Person marked", ondelete="cascade",
         index=True)
     partner_id = fields.Many2one(
-        "res.partner", string="Contact souligné", ondelete="cascade",
-        help="Pour souligner un jalon chez un client plutôt qu'un collègue.")
+        "res.partner", string="Contact marked", ondelete="cascade",
+        help="To mark a milestone at a client rather than a colleague's.")
     person_name = fields.Char(
-        string="Nom", compute="_compute_person_name", store=True)
+        string="Name", compute="_compute_person_name", store=True)
 
     years = fields.Integer(
-        string="Nombre d'années",
-        help="Pour l'ancienneté seulement. L'âge n'est jamais calculé ni "
-             "affiché nulle part dans ce module.")
+        string="Number of years",
+        help="For seniority only. Age is never computed nor shown "
+             "anywhere in this module.")
 
     organizer_id = fields.Many2one(
-        "res.users", string="Personne qui organise", tracking=True)
+        "res.users", string="Organiser", tracking=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company)
 
     board_ids = fields.One2many(
-        "bf.celebration.board", "occasion_id", string="Tableaux de vœux")
+        "bf.celebration.board", "occasion_id", string="Wishes boards")
     board_count = fields.Integer(compute="_compute_board_count")
 
     state = fields.Selection(
         [
-            ("upcoming", "À venir"),
-            ("done", "Passée"),
-            ("skipped", "Sans suite"),
+            ("upcoming", "Upcoming"),
+            ("done", "Past"),
+            ("skipped", "No follow-up"),
         ],
-        string="État",
+        string="State",
         default="upcoming", required=True, index=True, tracking=True)
 
     allow_board = fields.Boolean(
-        string="Tableau permis", default=True,
-        help="Faux quand la personne a dit « oui, mais sans tableau ».")
+        string="Board allowed", default=True,
+        help="False when the person said \"yes, but no board\".")
 
-    reminder_sent = fields.Boolean(string="Rappel envoyé", copy=False)
+    reminder_sent = fields.Boolean(string="Reminder sent", copy=False)
     calendar_event_id = fields.Many2one(
-        "calendar.event", string="Entrée d'agenda", copy=False,
+        "calendar.event", string="Calendar entry", copy=False,
         ondelete="set null")
 
     _sql_constraints = [
         (
             "occurrence_uniq",
             "unique(employee_id, occasion_type, date)",
-            "Cette occasion est déjà au calendrier pour cette date.",
+            "This occasion is already in the calendar for that date.",
         ),
     ]
 
@@ -129,12 +132,17 @@ class CelebrationOccasion(models.Model):
     @api.depends("occasion_type", "person_name", "years")
     def _compute_name(self):
         for occ in self:
-            libelle = dict(TYPES).get(occ.occasion_type, "")
+            # Nom STOCKÉ, repris par l'agenda et le babillard : il se rend dans la langue de
+            # l'appel, ou de la société quand un travail planifié le calcule sans langue.
+            env = occ.with_context(lang=occ.env.lang or langue_de(
+                occ.env, societe=occ.company_id)).env
+            libelle = dict(occ._fields["occasion_type"]._description_selection(env)).get(
+                occ.occasion_type, "")
             if occ.occasion_type == "work_anniversary" and occ.years:
-                libelle = _("%(n)s ans chez nous", n=occ.years)
+                libelle = env._("%(n)s years with us", n=occ.years)
             occ.name = "%s %s — %s" % (
                 EMOJI.get(occ.occasion_type, "✨"),
-                occ.person_name or _("Sans nom"),
+                occ.person_name or env._("No name"),
                 libelle,
             )
 
@@ -197,8 +205,8 @@ class CelebrationOccasion(models.Model):
                 "user_id": proprietaire.id,
                 "partner_ids": [(6, 0, [proprietaire.partner_id.id])],
                 "description": _(
-                    "Posé par le module Célébrations. Retiré tout seul si la "
-                    "personne change d'avis."),
+                    "Laid down by the Celebrations module. Removed on its "
+                    "own if the person changes their mind."),
             })
 
     def _supprimer_evenement_agenda(self):
@@ -244,6 +252,10 @@ class CelebrationOccasion(models.Model):
 
     @api.model
     def _cron_generer(self):
+        # Sans langue au contexte (travail planifié, XML-RPC), les libellés écrits au chatter
+        # (suivi des états, message de création) sortaient en anglais depuis la bascule.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         horizon = self._horizon_jours()
         aujourdhui = fields.Date.context_today(self)
         limite = aujourdhui + relativedelta(days=horizon)
@@ -372,6 +384,10 @@ class CelebrationOccasion(models.Model):
         Un calendrier que personne ne regarde ne fabrique pas de cartes.
         C'est ce rappel, pas la liste, qui fait exister la fonction.
         """
+        # Sans langue au contexte (travail planifié, XML-RPC), les libellés écrits au chatter
+        # (suivi des états, message de création) sortaient en anglais depuis la bascule.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         param = self.env["ir.config_parameter"].sudo()
         try:
             jours = max(0, int(param.get_param(
@@ -398,6 +414,7 @@ class CelebrationOccasion(models.Model):
             if gabarit:
                 gabarit.with_context(
                     organisateur=organisateur,
+                    lang=langue_de(self.env, organisateur, societe=occ.company_id),
                 ).send_mail(
                     occ.id,
                     email_values={
@@ -425,8 +442,8 @@ class CelebrationOccasion(models.Model):
                 "params": {
                     "type": "warning",
                     "message": _(
-                        "Cette personne a demandé qu'on souligne la date "
-                        "sans monter de tableau."),
+                        "This person has asked that the date be marked "
+                        "without a board."),
                 },
             }
         tableau = self.board_ids[:1]
@@ -479,5 +496,5 @@ class CelebrationOccasion(models.Model):
             "res_model": "bf.celebration.board",
             "domain": [("occasion_id", "=", self.id)],
             "view_mode": "list,form",
-            "name": _("Tableaux de vœux"),
+            "name": _("Wishes boards"),
         }

@@ -5,7 +5,7 @@
         <field name="name">bf.celebration.board.list</field>
         <field name="model">bf.celebration.board</field>
         <field name="arch" type="xml">
-            <list string="Cartes">
+            <list string="Cards">
                 <field name="name"/>
                 <field name="recipient_name"/>
                 <field name="delivery_date"/>
@@ -23,53 +23,53 @@
         <field name="name">bf.celebration.board.form</field>
         <field name="model">bf.celebration.board</field>
         <field name="arch" type="xml">
-            <form string="Carte collective">
+            <form string="Group card">
                 <header>
                     <button name="action_ouvrir" type="object"
-                            string="Ouvrir aux signatures" class="btn-primary"
+                            string="Open for signatures now" class="btn-primary"
                             invisible="state != 'draft'"/>
                     <button name="action_apercu" type="object"
-                            string="Voir la page" class="btn-secondary"
+                            string="View the page" class="btn-secondary"
                             invisible="state == 'draft'"/>
                     <button name="action_diaporama" type="object"
-                            string="Diaporama" class="btn-secondary"
+                            string="Slideshow" class="btn-secondary"
                             invisible="state == 'draft'"/>
                     <button name="action_inviter_signataires" type="object"
-                            string="Inviter les signataires" class="btn-secondary"
+                            string="Invite the signatories" class="btn-secondary"
                             invisible="state != 'open'"
                             groups="bf_celebrations.group_organizer"
-                            help="Envoie le lien aux groupes et aux autres signataires qui ne l'ont pas encore reçu. La personne fêtée n'est jamais écrite."/>
+                            help="Sends the link to the groups and the other signatories who have not received it yet. The person celebrated is never written to."/>
                     <button name="action_livrer_maintenant" type="object"
-                            string="Livrer maintenant"
+                            string="Deliver now"
                             invisible="state != 'open'"
-                            confirm="La personne fêtée recevra la carte tout de suite, avec le PDF et la page souvenir en pièces jointes. Continuer ?"/>
+                            confirm="The person celebrated will receive the card right away, with the PDF and the keepsake page attached. Carry on?"/>
                     <button name="action_regenerer_jeton" type="object"
-                            string="Couper le lien" invisible="state != 'open'"
-                            confirm="L'ancien lien cessera de fonctionner pour tout le monde. Continuer ?"/>
+                            string="Cut the link" invisible="state != 'open'"
+                            confirm="The old link will stop working for everybody. Carry on?"/>
                     <button name="action_annuler" type="object"
-                            string="Annuler" invisible="state in ('delivered', 'cancelled')"/>
+                            string="Cancel" invisible="state in ('delivered', 'cancelled')"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,open,delivered"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Bonne fête !"/></h1>
+                        <h1><field name="name" placeholder="Happy celebration!"/></h1>
                     </div>
                     <div class="alert alert-info o_cel_lien" role="status"
                          invisible="state == 'draft'">
                         <div class="d-flex flex-wrap align-items-start gap-3">
                             <div class="flex-grow-1">
-                                <p class="mb-1"><strong>Le lien à partager</strong></p>
+                                <p class="mb-1"><strong>The link to share</strong></p>
                                 <field name="contribution_url" widget="CopyClipboardChar"
                                        nolabel="1"/>
                                 <p class="mb-1 mt-2">
-                                    Aucun compte n'est demandé. Le code QR mène à
-                                    la même page : imprimez-le, collez-le dans la
-                                    cuisine.
+                                    No account is needed. The QR code leads to
+                                    the same page: print it, stick it in the
+                                    kitchen.
                                 </p>
                                 <p class="mb-0" invisible="state != 'delivered'">
-                                    <strong>La carte livrée :</strong>
+                                    <strong>The card delivered:</strong>
                                     <field name="board_url" widget="CopyClipboardChar"
                                            nolabel="1"/>
                                 </p>
@@ -84,13 +84,13 @@
                         </div>
                     </div>
                     <group>
-                        <group string="Pour qui">
+                        <group string="For whom">
                             <field name="recipient_employee_id"/>
                             <field name="recipient_partner_id"/>
                             <field name="recipient_email"/>
                             <field name="occasion_id"/>
                         </group>
-                        <group string="Quand et comment">
+                        <group string="When and how">
                             <field name="delivery_date"/>
                             <field name="organizer_id"/>
                             <field name="theme"/>
@@ -102,19 +102,19 @@
                     </group>
                     <div class="alert alert-success" role="status"
                          invisible="not thanks_html">
-                        <p class="mb-1"><strong>Merci de la personne fêtée</strong>,
-                           reçu le <field name="thanks_date" readonly="1" class="oe_inline"/></p>
+                        <p class="mb-1"><strong>Thank-you from the person celebrated</strong>,
+                           received on <field name="thanks_date" readonly="1" class="oe_inline"/></p>
                         <field name="thanks_html" readonly="1" nolabel="1"/>
                     </div>
                     <notebook>
-                        <page string="Signataires" name="signataires"
+                        <page string="Signatories" name="signataires"
                               groups="bf_celebrations.group_organizer">
                             <p class="text-muted">
-                                À qui l'on tend la carte. Le lien part une seule
-                                fois par adresse, à l'ouverture puis à chaque
-                                « Inviter les signataires ». La personne fêtée est
-                                retirée par toutes ses adresses, même si elle
-                                fait partie du service.
+                                Who the card is held out to. The link goes out once
+                                per address, when it opens and on each
+                                "Invite the signatories". The person celebrated is
+                                taken out by all of their addresses, even if they
+                                belong to the department.
                             </p>
                             <group>
                                 <field name="signer_group_ids" widget="many2many_tags"
@@ -125,9 +125,9 @@
                             </group>
                             <field name="invited_keys" invisible="1"/>
                         </page>
-                        <page string="Mot d'introduction" name="intro">
+                        <page string="Opening message" name="intro">
                             <field name="intro_html"
-                                   placeholder="Ce que les gens lisent en arrivant sur la page."/>
+                                   placeholder="What people read when they land on the page."/>
                             <field name="background_image" widget="image"
                                    class="mt-3" options="{'size': [400, 200]}"/>
                         </page>
@@ -137,7 +137,7 @@
                                     <field name="author_name"/>
                                     <field name="body" widget="html"/>
                                     <field name="style" optional="show"/>
-                                    <field name="has_ink" string="Tracé" optional="show"/>
+                                    <field name="has_ink" string="Drawing" optional="show"/>
                                     <field name="image" widget="image"
                                            options="{'size': [60, 60]}"/>
                                     <field name="state" widget="badge"
@@ -145,10 +145,10 @@
                                            decoration-success="state == 'published'"
                                            decoration-muted="state == 'rejected'"/>
                                     <button name="action_publier" type="object"
-                                            icon="fa-check" title="Publier"
+                                            icon="fa-check" title="Publish"
                                             invisible="state == 'published'"/>
                                     <button name="action_retirer" type="object"
-                                            icon="fa-ban" title="Retirer"
+                                            icon="fa-ban" title="Remove"
                                             invisible="state == 'rejected'"/>
                                 </list>
                             </field>
@@ -185,7 +185,7 @@
                                 signature(s)
                             </div>
                             <div class="text-muted">
-                                <i class="fa fa-clock-o me-1" title="Livraison prévue" role="img" aria-label="Livraison prévue"/>
+                                <i class="fa fa-clock-o me-1" title="Delivery planned" role="img" aria-label="Delivery planned"/>
                                 <field name="delivery_date" widget="date"/>
                             </div>
                         </div>
@@ -196,13 +196,13 @@
     </record>
 
     <record id="action_celebration_board" model="ir.actions.act_window">
-        <field name="name">Cartes collectives</field>
+        <field name="name">Group cards</field>
         <field name="res_model">bf.celebration.board</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucune carte pour l'instant</p>
-            <p>Une carte s'ouvre depuis une occasion du calendrier, ou ici
-               pour un événement qui n'a pas de date au dossier.</p>
+            <p class="o_view_nocontent_smiling_face">No card yet</p>
+            <p>A card opens from an occasion in the calendar, or here
+               for an event that has no date on file.</p>
         </field>
     </record>
 

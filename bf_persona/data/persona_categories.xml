@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="category_billing" model="contact.persona.category">
-        <field name="name">Facturation</field>
+        <field name="name">Billing</field>
         <field name="code">billing</field>
         <field name="sequence">10</field>
         <field name="color">2</field>
@@ -16,14 +16,14 @@
     </record>
 
     <record id="category_technical" model="contact.persona.category">
-        <field name="name">Technique</field>
+        <field name="name">Technical</field>
         <field name="code">technical</field>
         <field name="sequence">30</field>
         <field name="color">4</field>
     </record>
 
     <record id="category_legal" model="contact.persona.category">
-        <field name="name">Juridique</field>
+        <field name="name">Legal</field>
         <field name="code">legal</field>
         <field name="sequence">40</field>
         <field name="color">1</field>

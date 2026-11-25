@@ -95,7 +95,7 @@ class TestMerci(TransactionCase):
         courriels = self.env["mail.mail"].sudo().search(
             [("model", "=", "bf.celebration.board"),
              ("res_id", "=", board.id),
-             ("subject", "ilike", "remercie")])
+             ("subject", "ilike", "thanks you")])
         destinataires = sorted(c.email_to for c in courriels)
         self.assertEqual(set(destinataires), {
             "anouk@example.test", "bastien@example.test",

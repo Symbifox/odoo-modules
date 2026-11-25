@@ -21,41 +21,53 @@ HTTP_TIMEOUT = 10
 
 class FederationPeer(models.Model):
     _name = "federation.peer"
-    _description = "Pair de fédération"
+    _description = "Federation peer"
     _inherit = ["mail.thread"]
     _order = "name"
 
-    name = fields.Char(string="Nom du pair", required=True, tracking=True)
-    base_url = fields.Char(string="Adresse du pair", help="Adresse de base de l'autre instance (https://…).", tracking=True)
+    name = fields.Char(string="Peer name", required=True, tracking=True)
+    base_url = fields.Char(string="Peer address", help="Base address "
+                                                          "of the other "
+                                                          "instance "
+                                                          "(https://…).", tracking=True)
     state = fields.Selection([
-        ("draft", "Brouillon"), ("invited", "Invitation émise"),
-        ("active", "Actif"), ("suspended", "Suspendu"),
-    ], string="État", default="draft", required=True, tracking=True)
-    uuid = fields.Char(string="Identifiant présenté par le pair", default=lambda self: uuid.uuid4().hex,
+        ("draft", "Draft"), ("invited", "Invitation issued"),
+        ("active", "Active"), ("suspended", "Suspended"),
+    ], string="State", default="draft", required=True, tracking=True)
+    uuid = fields.Char(string="Identifier presented by the peer", default=lambda self: uuid.uuid4().hex,
                        readonly=True, copy=False, index=True, groups="base.group_system",
-                       help="Ce que le pair présente pour être reconnu ici.")
-    remote_uuid = fields.Char(string="Identifiant que je présente", readonly=True, copy=False, groups="base.group_system")
-    secret = fields.Char(string="Secret partagé", groups="base.group_system", copy=False)
-    handshake_part = fields.Char(string="Part locale du secret", groups="base.group_system", copy=False)
-    invitation_code = fields.Char(string="Code d'invitation", groups="base.group_system", copy=False, readonly=True)
-    invitation_expiry = fields.Datetime(string="Invitation valide jusqu'au", readonly=True, copy=False)
-    partner_id = fields.Many2one("res.partner", string="Organisation du pair", copy=False,
-                                 help="Auteur des messages reçus dont la personne n'est pas dans la table des personnes appariées.")
-    mirror_project_id = fields.Many2one("project.project", string="Projet des tâches reçues", copy=False)
+                       help="What the peer presents to be recognised here.")
+    remote_uuid = fields.Char(string="Identifier I present", readonly=True, copy=False, groups="base.group_system")
+    secret = fields.Char(string="Shared secret", groups="base.group_system", copy=False)
+    handshake_part = fields.Char(string="Local half of the secret", groups="base.group_system", copy=False)
+    invitation_code = fields.Char(string="Invitation code", groups="base.group_system", copy=False, readonly=True)
+    invitation_expiry = fields.Datetime(string="Invitation valid until", readonly=True, copy=False)
+    partner_id = fields.Many2one("res.partner", string="Peer organisation", copy=False,
+                                 help="Author of received messages whose "
+                                      "person is not in the matched "
+                                      "people table.")
+    mirror_project_id = fields.Many2one("project.project", string="Project "
+                                                                  "for "
+                                                                  "received "
+                                                                  "tasks", copy=False)
     mirror_user_id = fields.Many2one(
-        "res.users", string="Assigner les tâches reçues à", required=True,
+        "res.users", string="Assign received tasks to", required=True,
         default=lambda self: self._default_mirror_user(),
         domain="[('share', '=', False), ('active', '=', True)]",
-        help="Le repli : la personne qui reçoit ce que le pair n'a adressé à personne, "
-             "ou ce qu'il a adressé à quelqu'un qui n'est pas dans les personnes appariées.")
-    send_notes = fields.Boolean(string="Envoyer aussi mes notes internes",
-                                help="Les notes internes écrites ici sur une tâche fédérée partent vers ce pair. "
-                                     "Décoché : seuls les messages « Envoyer un message » partent.")
-    attachment_limit_mb = fields.Integer(string="Plafond des pièces jointes (Mio)", default=2)
-    identity_ids = fields.One2many("federation.peer.identity", "peer_id", string="Personnes appariées")
-    link_ids = fields.One2many("federation.link", "peer_id", string="Liens")
-    link_count = fields.Integer(string="Tâches fédérées", compute="_compute_counts")
-    outbox_pending = fields.Integer(string="À envoyer", compute="_compute_counts")
+        help="The fallback: the person who receives what the peer "
+             "addressed to no one, or what it addressed to someone who is "
+             "not in the matched people.")
+    send_notes = fields.Boolean(string="Also send my internal notes",
+                                help="Internal notes written here on a "
+                                     "federated task travel to this peer. "
+                                     "Unchecked: only \"Send message\" "
+                                     "messages travel.")
+    attachment_limit_mb = fields.Integer(string="Attachment cap (MiB)", default=2)
+    identity_ids = fields.One2many("federation.peer.identity", "peer_id", string="Matched "
+                                                                                 "people")
+    link_ids = fields.One2many("federation.link", "peer_id", string="Links")
+    link_count = fields.Integer(string="Federated tasks", compute="_compute_counts")
+    outbox_pending = fields.Integer(string="To send", compute="_compute_counts")
     # --- Ce que CE pair a le droit de m'envoyer -------------------------------------
     # ⚠️ À ne pas confondre avec `accepted_kinds`, qui est ce que l'instance SAIT
     # recevoir : une capacité. Ici c'est un consentement, et il se règle par pair.
@@ -63,30 +75,35 @@ class FederationPeer(models.Model):
     # fédère avec cinq partenaires, elle est la différence entre un canal et une
     # boîte aux lettres ouverte.
     inbound_policy = fields.Selection(
-        [("all", "Tout ce que je sais recevoir"), ("listed", "Seulement ce qui est coché")],
-        string="Ce que ce pair peut m'envoyer", default="all", required=True, tracking=True)
+        [("all", "Everything I can receive"), ("listed", "Only what "
+                                                             "is ticked")],
+        string="What this peer may send me", default="all", required=True, tracking=True)
     inbound_model_ids = fields.Many2many(
         "ir.model", "federation_peer_inbound_model_rel", "peer_id", "model_id",
-        string="Objets acceptés de ce pair", domain="[('id', 'in', federation_model_ids)]",
-        help="Ce que ce pair a le droit de déposer ici. Les messages, l'archivage et la "
-             "remise suivent l'objet auquel ils se rapportent.")
+        string="Objects accepted from this peer", domain="[('id', 'in', federation_model_ids)]",
+        help="What this peer may drop here. Messages, archiving and "
+             "handover follow the object they relate to.")
     federation_model_ids = fields.Many2many(
-        "ir.model", compute="_compute_federation_models", string="Objets fédérables ici")
+        "ir.model", compute="_compute_federation_models", string="Objects "
+                                                                 "federable "
+                                                                 "here")
     invitation_email = fields.Char(
-        string="Adresse d'invitation", copy=False,
-        help="À qui envoyer le code. Un code dans une boîte de courriel est un code "
-             "dans une boîte de courriel : il reste à usage unique et limité dans le temps.")
+        string="Invitation address", copy=False,
+        help="Who to send the code to. A code in a mailbox is a code in a "
+             "mailbox: it stays single-use and time-limited.")
 
     accepted_kinds = fields.Char(
-        string="Genres acceptés par le pair", readonly=True, copy=False,
-        help="Ce que le pair a annoncé savoir recevoir, au dernier contact. Vide : "
-             "jamais annoncé (pair d'une version antérieure), et on n'empêche alors rien.")
-    accepted_kinds_date = fields.Datetime(string="Genres annoncés le", readonly=True, copy=False)
-    last_ping = fields.Datetime(string="Dernier contact", readonly=True)
-    last_error = fields.Char(string="Dernière erreur", readonly=True)
-    company_id = fields.Many2one("res.company", string="Société", default=lambda self: self.env.company)
+        string="Kinds accepted by the peer", readonly=True, copy=False,
+        help="What the peer announced it can receive, at the last "
+             "contact. Empty: never announced (a peer on an earlier "
+             "version), and nothing is then prevented.")
+    accepted_kinds_date = fields.Datetime(string="Kinds announced on", readonly=True, copy=False)
+    last_ping = fields.Datetime(string="Last contact", readonly=True)
+    last_error = fields.Char(string="Last error", readonly=True)
+    company_id = fields.Many2one("res.company", string="Company", default=lambda self: self.env.company)
 
-    _sql_constraints = [("uuid_unique", "unique(uuid)", "Cet identifiant existe déjà.")]
+    _sql_constraints = [("uuid_unique", "unique(uuid)", "This identifier "
+                                                        "already exists.")]
 
     @api.model
     def _default_mirror_user(self):
@@ -152,18 +169,19 @@ class FederationPeer(models.Model):
             user = peer.mirror_user_id
             if user and (user.share or not user.active):
                 raise ValidationError(
-                    _("« %s » ne peut pas recevoir les tâches d'un pair : il faut un compte "
-                      "interne actif.") % user.display_name)
+                    _("« %s » cannot receive a peer's tasks: it takes an "
+                      "active internal account.") % user.display_name)
 
     @api.constrains("base_url")
     def _check_base_url(self):
         for peer in self:
             if peer.base_url and not peer._url_ok(peer.base_url):
-                raise ValidationError(_("L'adresse du pair doit commencer par https://."))
+                raise ValidationError(_("The peer address must start with "
+                                        "https://."))
 
     def _require_admin(self):
         if not self.env.su and not self.env.user.has_group("base.group_system"):
-            raise AccessError(_("Le jumelage est réservé aux administrateurs."))
+            raise AccessError(_("Pairing is reserved for administrators."))
 
     # --- Ce que je suis pour le pair ------------------------------------------
     @api.model
@@ -184,13 +202,14 @@ class FederationPeer(models.Model):
         self.ensure_one()
         self._require_admin()
         if self.state == "active":
-            raise UserError(_("Ce pair est déjà actif ; suspendez-le d'abord pour le rejumeler."))
+            raise UserError(_("This peer is already active; suspend it "
+                              "first to pair it again."))
         self.sudo().write({
             "invitation_code": transport.new_code(), "handshake_part": transport.new_secret(),
             "invitation_expiry": fields.Datetime.now() + timedelta(hours=INVITATION_HOURS),
             "state": "invited",
         })
-        self.message_post(body=_("Invitation émise, valide %s heures.") % INVITATION_HOURS)
+        self.message_post(body=_("Invitation issued, valid for %s hours.") % INVITATION_HOURS)
         return True
 
     def action_send_invitation(self):
@@ -209,28 +228,29 @@ class FederationPeer(models.Model):
         destinataire = transport.strip_control(self.invitation_email or "").strip()
         destinataire = destinataire.split(",")[0].split(";")[0].strip()
         if not destinataire or "@" not in destinataire or " " in destinataire:
-            raise UserError(_("Indiquez une seule adresse de courriel valide."))
+            raise UserError(_("Give a single valid email address."))
         if self.state != "invited" or not self.sudo().invitation_code:
             self.action_generate_invitation()
         me = self._our_name()
         corps = _(
-            "<p>%(nous)s vous invite à fédérer votre Symbifox avec le sien : les objets "
-            "partagés d'un côté paraissent chez l'autre, sans que personne ait besoin d'un "
-            "compte chez l'autre.</p>"
-            "<p>Dans votre Symbifox, <i>Fédération › Accepter une invitation</i> :</p>"
-            "<ul><li>Adresse : <code>%(url)s</code></li>"
-            "<li>Code : <code>%(code)s</code></li></ul>"
-            "<p>Le code ne sert qu'une fois et expire le %(fin)s.</p>"
+            "<p>%(nous)s invites you to federate your Symbifox with "
+            "theirs: objects shared on one side appear on the other, "
+            "without anyone needing an account on the other "
+            "side.</p><p>In your Symbifox, <i>Federation › Accept an "
+            "invitation</i>:</p><ul><li>Address: "
+            "<code>%(url)s</code></li><li>Code: "
+            "<code>%(code)s</code></li></ul><p>The code works once and "
+            "expires on %(fin)s.</p>"
         ) % {"nous": html.escape(me), "url": html.escape(self._our_base_url() or ""),
              "code": html.escape(self.sudo().invitation_code or ""),
              "fin": self.invitation_expiry and fields.Datetime.to_string(self.invitation_expiry) or ""}
         self.env["mail.mail"].sudo().create({
-            "subject": _("%s vous invite à fédérer vos Symbifox") % me,
+            "subject": _("%s invites you to federate your Symbifox") % me,
             "body_html": corps,
             "email_to": destinataire,
             "auto_delete": False,
         }).send()
-        self.message_post(body=_("Invitation envoyée à %s.") % destinataire)
+        self.message_post(body=_("Invitation sent to %s.") % destinataire)
         return True
 
     @api.model
@@ -263,7 +283,7 @@ class FederationPeer(models.Model):
         peer._remember_kinds({"kinds": remote_kinds})
         # Côté invitant, le nom du pair a été saisi ici, à la création de la fiche.
         peer._ensure_partner(nom_saisi_ici=True)
-        peer.message_post(body=_("Jumelage accepté par %s.") % transport.clean_text(remote_name or peer.name))
+        peer.message_post(body=_("Pairing accepted by %s.") % transport.clean_text(remote_name or peer.name))
         return peer, local_part
 
     def action_accept_invitation(self, code):
@@ -271,16 +291,18 @@ class FederationPeer(models.Model):
         self.ensure_one()
         self._require_admin()
         if self.state == "active":
-            raise UserError(_("Ce pair est déjà actif ; suspendez-le d'abord pour le rejumeler."))
+            raise UserError(_("This peer is already active; suspend it "
+                              "first to pair it again."))
         if not self.base_url:
-            raise UserError(_("Indiquez d'abord l'adresse du pair."))
+            raise UserError(_("Enter the peer address first."))
         my_part = transport.new_secret()
         payload = {"protocol": transport.PROTOCOL, "code": code, "part": my_part, "uuid": self.sudo().uuid,
                    "base_url": self._our_base_url(), "name": self._our_name(),
                    "kinds": self.env["federation.federable"]._federation_kinds()}
         status, data = self._post("/federation/v1/handshake", payload, signed=False)
         if status != 200 or not data.get("ok") or not isinstance(data.get("part"), str) or not isinstance(data.get("uuid"), str):
-            raise UserError(_("Le pair a refusé l'invitation (%s) : %s") % (status, data.get("error") or _("aucun détail")))
+            raise UserError(_("The peer refused the invitation (%s): %s") % (status, data.get("error") or _("no "
+                                                                                                           "detail")))
         typed = self.name and self.name != self.base_url
         self._remember_kinds(data)
         self.sudo().write({"secret": self._derive_secret(data["part"], my_part), "remote_uuid": data["uuid"], "state": "active",
@@ -289,7 +311,7 @@ class FederationPeer(models.Model):
         # Côté invité, le nom peut être celui que le PAIR a annoncé : on ne s'en sert
         # pour retrouver une fiche que si l'administrateur l'a saisi lui-même.
         self._ensure_partner(nom_saisi_ici=typed)
-        self.message_post(body=_("Jumelage établi avec %s.") % self.name)
+        self.message_post(body=_("Pairing established with %s.") % self.name)
         return True
 
     def _remember_kinds(self, data):
@@ -316,10 +338,11 @@ class FederationPeer(models.Model):
         if status == 200 and data.get("ok"):
             self._remember_kinds(data)
             self.write({"last_ping": fields.Datetime.now(), "last_error": False})
-            self.message_post(body=_("Contact établi : %s répond.") % transport.clean_text(data.get("name") or self.name))
+            self.message_post(body=_("Contact established: %s answers.") % transport.clean_text(data.get("name") or self.name))
             return True
-        self.write({"last_error": _("%s : %s") % (status, transport.clean_text(data.get("error")) or _("aucune réponse"))})
-        raise UserError(_("Le pair ne répond pas correctement (%s).") % status)
+        self.write({"last_error": _("%s: %s") % (status, transport.clean_text(data.get("error")) or _("no "
+                                                                                                       "answer"))})
+        raise UserError(_("The peer is not answering correctly (%s).") % status)
 
     def action_suspend(self):
         self._require_admin()
@@ -329,7 +352,8 @@ class FederationPeer(models.Model):
         self._require_admin()
         for peer in self:
             if not peer.sudo().secret or not peer.sudo().remote_uuid:
-                raise UserError(_("Ce pair n'a jamais été jumelé ; émettez ou acceptez une invitation."))
+                raise UserError(_("This peer has never been paired; issue "
+                                  "or accept an invitation."))
         self.write({"state": "active"})
 
     def write(self, vals):
@@ -398,8 +422,9 @@ class FederationPeer(models.Model):
             candidats = peer._partner_candidates(peer.name) if nom_saisi_ici else Partner
             if len(candidats) == 1:
                 peer.sudo().partner_id = candidats
-                peer.message_post(body=_("Organisation du pair : la fiche existante « %s » (n° %s), "
-                                         "retrouvée par le nom saisi ici.") % (candidats.name, candidats.id))
+                peer.message_post(body=_("Peer organisation: the existing "
+                                         "record « %s » (no. %s), found "
+                                         "by the name entered here.") % (candidats.name, candidats.id))
                 continue
             peer.sudo().partner_id = Partner.create({
                 "name": peer.name, "is_company": True, "active": True, "company_id": peer.company_id.id})
@@ -458,12 +483,14 @@ class FederationPeer(models.Model):
             return self.mirror_project_id
         Project = self.env["project.project"].sudo().with_context(mail_create_nolog=True, mail_create_nosubscribe=True)
         project = Project.create({
-            "name": _("%s (fédéré)") % self.name, "privacy_visibility": "followers",
+            "name": _("%s (federated)") % self.name, "privacy_visibility": "followers",
             "user_id": self.mirror_user_id.id, "partner_id": False, "company_id": self.company_id.id,
             "federation_peer_ids": [(4, self.id)],
-            "description": _("<p>Tâches que %s partage avec nous par la fédération. L'état, le jour d'échéance, "
-                             "les messages et les pièces jointes reviennent chez lui ; un message ou une note qui "
-                             "commence par 🔒 reste ici.</p>") % transport.html.escape(self.name),
+            "description": _("<p>Tasks that %s shares with us through "
+                             "federation. The state, the deadline day, "
+                             "the messages and the attachments travel "
+                             "back to them; a message or a note starting "
+                             "with 🔒 stays here.</p>") % transport.html.escape(self.name),
         })
         Stage = self.env["project.task.type"].sudo()
         for seq, (key, name) in enumerate(self._stage_names(), start=1):
@@ -473,7 +500,7 @@ class FederationPeer(models.Model):
 
     def _stage_names(self):
         self.ensure_one()
-        return [("todo", _("À faire")), ("waiting", _("En attente de %s") % self.name), ("done", _("Terminé"))]
+        return [("todo", _("To do")), ("waiting", _("Waiting on %s") % self.name), ("done", _("Done"))]
 
     def _stage_for(self, state):
         self.ensure_one()
@@ -554,18 +581,19 @@ class FederationPeer(models.Model):
 
 class FederationPeerIdentity(models.Model):
     _name = "federation.peer.identity"
-    _description = "Personne appariée entre deux pairs"
+    _description = "Person matched between two peers"
 
-    peer_id = fields.Many2one("federation.peer", string="Pair", required=True, ondelete="cascade")
-    remote_email = fields.Char(string="Courriel chez le pair", required=True)
-    remote_name = fields.Char(string="Nom chez le pair")
-    local_partner_id = fields.Many2one("res.partner", string="Contact ici", required=True)
+    peer_id = fields.Many2one("federation.peer", string="Peer", required=True, ondelete="cascade")
+    remote_email = fields.Char(string="Email on the peer", required=True)
+    remote_name = fields.Char(string="Name on the peer")
+    local_partner_id = fields.Many2one("res.partner", string="Contact here", required=True)
     local_user_id = fields.Many2one(
-        "res.users", string="Compte ici",
+        "res.users", string="Account here",
         domain="[('share', '=', False), ('active', '=', True)]",
-        help="À qui donner ce que le pair adresse à cette personne. Vide : le compte "
-             "interne du contact, s'il n'y en a qu'un. Sinon, le repli du pair.")
-    company_id = fields.Many2one(related="peer_id.company_id", string="Société")
+        help="Who to give what the peer addresses to this person. Empty: "
+             "the contact's internal account, if it has exactly one. "
+             "Otherwise, the peer's fallback.")
+    company_id = fields.Many2one(related="peer_id.company_id", string="Company")
 
     @api.constrains("peer_id", "remote_email")
     def _check_unique_email(self):
@@ -575,7 +603,8 @@ class FederationPeerIdentity(models.Model):
             doublons = ident.peer_id.identity_ids.filtered(
                 lambda i: i != ident and (i.remote_email or "").strip().lower() == courriel)
             if courriel and doublons:
-                raise ValidationError(_("« %s » est déjà apparié pour ce pair.") % ident.remote_email)
+                raise ValidationError(_("« %s » is already matched for "
+                                        "this peer.") % ident.remote_email)
 
     def _assignable_user(self):
         """Le compte à qui confier ce qui est adressé à cette personne, ou rien.

@@ -10,10 +10,10 @@ from .training_activity import MODES
 _logger = logging.getLogger(__name__)
 
 ETATS_EXPIRATION = [
-    ("permanent", "Ne périme pas"),
-    ("valid", "Valide"),
-    ("expiring", "Expire bientôt"),
-    ("expired", "Périmée"),
+    ("permanent", "Never expires"),
+    ("valid", "Valid"),
+    ("expiring", "Expires soon"),
+    ("expired", "Expired"),
 ]
 
 
@@ -34,93 +34,98 @@ class BfTrainingRecord(models.Model):
     """
 
     _name = "bf.training.record"
-    _description = "Réalisation de formation"
+    _description = "Training completion"
     _inherit = ["mail.thread"]
     _order = "date_done desc, id desc"
 
     employee_id = fields.Many2one(
-        "hr.employee", string="Personne", required=True, index=True, tracking=True)
+        "hr.employee", string="Person", required=True, index=True, tracking=True)
     activity_id = fields.Many2one(
-        "bf.training.activity", string="Activité", required=True, index=True, tracking=True)
+        "bf.training.activity", string="Activity", required=True, index=True, tracking=True)
     category_id = fields.Many2one(
-        related="activity_id.category_id", string="Catégorie", store=True, index=True)
+        related="activity_id.category_id", string="Category", store=True, index=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company, index=True)
-    currency_id = fields.Many2one(related="company_id.currency_id", string="Devise")
+    currency_id = fields.Many2one(related="company_id.currency_id", string="Currency")
 
     date_done = fields.Date(
-        string="Faite le", required=True, index=True, tracking=True,
+        string="Done on", required=True, index=True, tracking=True,
         default=fields.Date.context_today,
-        help="Le jour où la formation a réellement été suivie, pas celui de la "
-             "saisie.")
-    hours = fields.Float(string="Heures", digits=(6, 2), tracking=True)
+        help="The day the training was actually completed, not the day it "
+             "was entered.")
+    hours = fields.Float(string="Hours", digits=(6, 2), tracking=True)
     mode = fields.Selection(MODES, string="Mode", tracking=True)
     state = fields.Selection(
-        [("draft", "Brouillon"),
-         ("confirmed", "Confirmée"),
-         ("cancelled", "Annulée")],
-        string="État", default="draft", required=True, tracking=True)
+        [("draft", "Draft"),
+         ("confirmed", "Confirmed"),
+         ("cancelled", "Cancelled")],
+        string="State", default="draft", required=True, tracking=True)
 
     provider_partner_id = fields.Many2one(
-        "res.partner", string="Formateur ou organisme", tracking=True)
-    certificate_number = fields.Char(string="Numéro d'attestation")
-    date_issued = fields.Date(string="Délivrée le")
+        "res.partner", string="Trainer or body", tracking=True)
+    certificate_number = fields.Char(string="Certificate number")
+    date_issued = fields.Date(string="Issued on")
     date_expiry = fields.Date(
-        string="Expire le", compute="_compute_date_expiry", store=True, readonly=False,
+        string="Expires on", compute="_compute_date_expiry", store=True, readonly=False,
         tracking=True,
-        help="Reprise de la validité de l'activité, et modifiable : une "
-             "attestation reçue de l'extérieur porte sa propre date.")
+        help="Taken from the activity's validity, and editable: a "
+             "certificate received from outside carries its own date.")
     expiry_state = fields.Selection(
-        ETATS_EXPIRATION, string="Validité", default="permanent", index=True, readonly=True,
-        help="Écrit à l'enregistrement et rafraîchi chaque jour par une tâche "
-             "planifiée. Ce n'est pas un champ calculé : un état qui dépend de "
-             "la date du jour ne se recalcule jamais tout seul.")
+        ETATS_EXPIRATION, string="Validity", default="permanent", index=True, readonly=True,
+        help="Written on save and refreshed every day by a scheduled job. "
+             "This is not a computed field: a state that depends on "
+             "today's date never recomputes on its own.")
     attachment_ids = fields.Many2many(
         "ir.attachment", "bf_training_record_attachment_rel", "record_id", "attachment_id",
-        string="Pièces justificatives")
+        string="Supporting documents")
     attachment_count = fields.Integer(
-        string="Pièces", compute="_compute_attachment_count")
+        string="Documents", compute="_compute_attachment_count")
 
     content_version = fields.Integer(
-        string="Version suivie", default=1,
-        help="La version du contenu au moment où la formation a été suivie.")
+        string="Version completed", default=1,
+        help="The version of the content at the time the training was "
+             "completed.")
     is_outdated = fields.Boolean(
-        string="Version dépassée", compute="_compute_is_outdated", store=True)
+        string="Outdated version", compute="_compute_is_outdated", store=True)
 
-    plan_id = fields.Many2one("bf.training.plan", string="Plan de formation", tracking=True)
-    trainer_employee_id = fields.Many2one("hr.employee", string="Formateur interne")
-    trainer_partner_id = fields.Many2one("res.partner", string="Formateur externe")
+    plan_id = fields.Many2one("bf.training.plan", string="Training plan", tracking=True)
+    trainer_employee_id = fields.Many2one("hr.employee", string="Internal "
+                                                                "trainer")
+    trainer_partner_id = fields.Many2one("res.partner", string="External "
+                                                               "trainer")
     support_provided = fields.Boolean(
-        string="Accompagnement offert",
-        help="Un accompagnement pendant l'apprentissage, ou une interaction "
-             "possible avec l'organisateur.")
+        string="Support provided",
+        help="Support during the learning, or the possibility of "
+             "interacting with the organiser.")
 
     hourly_cost = fields.Monetary(
-        string="Coût horaire", currency_field="currency_id",
-        help="Figé au moment de la saisie : le taux d'aujourd'hui ne réécrit pas "
-             "une dépense d'il y a trois ans.")
+        string="Hourly cost", currency_field="currency_id",
+        help="Frozen when entered: today's rate does not rewrite an "
+             "expense from three years ago.")
     salary_cost = fields.Monetary(
-        string="Salaire", compute="_compute_costs", store=True, currency_field="currency_id")
+        string="Salary", compute="_compute_costs", store=True, currency_field="currency_id")
     payroll_charge_rate = fields.Float(
-        string="Charges (%)", digits=(5, 2), default=0.0,
-        help="Les cotisations de l'employeur sur ce salaire.")
+        string="Payroll costs (%)", digits=(5, 2), default=0.0,
+        help="The employer's contributions on this salary.")
     payroll_charges = fields.Monetary(
-        string="Charges", compute="_compute_costs", store=True, currency_field="currency_id")
-    other_cost = fields.Monetary(string="Autres frais", currency_field="currency_id")
+        string="Payroll costs", compute="_compute_costs", store=True, currency_field="currency_id")
+    other_cost = fields.Monetary(string="Other costs", currency_field="currency_id")
     total_cost = fields.Monetary(
-        string="Coût total", compute="_compute_costs", store=True, currency_field="currency_id")
+        string="Total cost", compute="_compute_costs", store=True, currency_field="currency_id")
 
     is_complete = fields.Boolean(
-        string="Complète", compute="_compute_is_complete", store=True,
-        help="Une ligne incomplète reste au registre et sort des totaux.")
+        string="Complete", compute="_compute_is_complete", store=True,
+        help="An incomplete line stays in the register and drops out of "
+             "the totals.")
     missing_info = fields.Char(
-        string="Ce qui manque", compute="_compute_is_complete", store=True)
+        string="What is missing", compute="_compute_is_complete", store=True)
     note = fields.Html(string="Note", sanitize_attributes=False)
 
     _sql_constraints = [
-        ("hours_positive", "check (hours >= 0)", "Des heures ne peuvent pas être négatives."),
-        ("other_cost_positive", "check (other_cost >= 0)", "Un frais ne peut pas être négatif."),
+        ("hours_positive", "check (hours >= 0)", "Hours cannot be negative."),
+        ("other_cost_positive", "check (other_cost >= 0)", "A cost cannot "
+                                                           "be negative."),
     ]
 
     # ------------------------------------------------------------------
@@ -162,15 +167,25 @@ class BfTrainingRecord(models.Model):
                  "activity_id.requires_support", "support_provided")
     def _compute_is_complete(self):
         for rec in self:
+            # 🔴 Ces quatre morceaux vivaient hors de tout `_()`, en français :
+            # un anglophone lisait « les heures, le coût horaire » dans la
+            # colonne « Ce qui manque ». Ils passent par le catalogue.
+            #
+            # ⚠️ `missing_info` est un calculé STOCKÉ : la valeur garde la langue
+            # de qui a déclenché le calcul, et un recalcul par quelqu'un d'une
+            # autre langue la réécrit. Rendre la phrase à l'affichage
+            # demanderait de stocker des codes et de changer la forme du champ ;
+            # ce n'est pas le travail de cette bascule-ci. Le défaut qui restait
+            # — du français EN DUR, que personne ne pouvait traduire — est levé.
             manques = []
             if not rec.hours:
-                manques.append("les heures")
+                manques.append(_("the hours"))
             if not rec.hourly_cost:
-                manques.append("le coût horaire")
+                manques.append(_("the hourly cost"))
             if rec.activity_id.requires_plan and not rec.plan_id:
-                manques.append("le plan de formation")
+                manques.append(_("the training plan"))
             if rec.activity_id.requires_support and not rec.support_provided:
-                manques.append("l'accompagnement")
+                manques.append(_("the support provided"))
             rec.is_complete = not manques
             rec.missing_info = ", ".join(manques) if manques else False
 
@@ -257,9 +272,9 @@ class BfTrainingRecord(models.Model):
         for rec in self:
             if rec.plan_id and rec.date_done and not rec.plan_id.date_couvre(rec.date_done):
                 raise ValidationError(_(
-                    "Le plan « %(plan)s » ne couvre pas le %(jour)s. Une durée "
-                    "établie dans un plan doit l'être dans le plan de la bonne "
-                    "période.",
+                    "Plan \"%(plan)s\" does not cover %(jour)s. A "
+                    "duration set out in a plan must be set out in the "
+                    "plan for the right period.",
                     plan=rec.plan_id.name, jour=rec.date_done))
 
     @api.model_create_multi

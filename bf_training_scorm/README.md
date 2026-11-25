@@ -88,6 +88,10 @@ une écriture sans rapport apparent avec le module.
 
 `bf_training_slides` (et donc `bf_training` et `website_slides`).
 
+## Languages (v18.0.1.0.3)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## Licence
 
 BUSL-1.1. Chaque version bascule en LGPL-3.0-or-later quatre ans après sa

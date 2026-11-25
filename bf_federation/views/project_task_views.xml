@@ -33,12 +33,12 @@
         <field name="inherit_id" ref="project.view_task_search_form"/>
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='my_tasks']" position="before">
-                <filter name="federated" string="Fédérées" domain="[('federation_peer_id', '!=', False)]"/>
+                <filter name="federated" string="Federated" domain="[('federation_peer_id', '!=', False)]"/>
             </xpath>
         </field>
     </record>
     <record id="action_federated_tasks" model="ir.actions.act_window">
-        <field name="name">Tâches fédérées</field>
+        <field name="name">Federated tasks</field>
         <field name="res_model">project.task</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="domain">[('federation_peer_id', '!=', False)]</field>

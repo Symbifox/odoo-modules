@@ -15,56 +15,56 @@ from odoo import fields, models
 
 class BfNfcTap(models.Model):
     _name = "bf.nfc.tap"
-    _description = "Tapotement de pastille NFC"
+    _description = "NFC tag tap"
     _order = "tapped_at desc, id desc"
 
-    tag_id = fields.Many2one("bf.nfc.tag", string="Pastille", ondelete="set null", index=True)
+    tag_id = fields.Many2one("bf.nfc.tag", string="Tag", ondelete="set null", index=True)
     tag_code = fields.Char(string="Code", readonly=True)
-    gesture_code = fields.Char(string="Geste", readonly=True)
-    user_id = fields.Many2one("res.users", string="Par", readonly=True, index=True)
+    gesture_code = fields.Char(string="Gesture", readonly=True)
+    user_id = fields.Many2one("res.users", string="By", readonly=True, index=True)
     door = fields.Selection(
         [
-            ("app", "Application"),
-            ("session", "Navigateur"),
-            ("signed", "Pastille signée"),
+            ("app", "App"),
+            ("session", "Browser"),
+            ("signed", "Signed tag"),
         ],
-        string="Porte", readonly=True,
+        string="Door", readonly=True,
     )
     status = fields.Selection(
         [
-            ("ok", "Fait"),
-            ("duplicate", "Doublon écarté"),
-            ("refused", "Refusé"),
-            ("error", "Erreur"),
+            ("ok", "Done"),
+            ("duplicate", "Duplicate ignored"),
+            ("refused", "Refused"),
+            ("error", "Error"),
         ],
-        string="Résultat", readonly=True, index=True,
+        string="Result", readonly=True, index=True,
     )
-    titre = fields.Char(readonly=True)
+    titre = fields.Char(string="Title", readonly=True)
     message = fields.Char(readonly=True)
-    url = fields.Char(readonly=True)
-    device_label = fields.Char(string="Appareil", readonly=True)
+    url = fields.Char(string="URL", readonly=True)
+    device_label = fields.Char(string="Device", readonly=True)
     counter = fields.Integer(
-        string="Compteur de la puce", readonly=True,
-        help="Compteur de lecture d'une pastille signée. Il ne remonte jamais.",
+        string="Chip counter", readonly=True,
+        help="Read counter of a signed tag. It never goes back.",
     )
     # 🔴 L'heure du TAPOTEMENT, qui n'est pas celle de l'écriture en base. Un
     # tapotement fait sans réseau arrive plus tard : la ronde de 3 h du matin
     # dans un sous-sol doit rester à 3 h, pas à l'heure où le téléphone a
     # retrouvé le réseau. `create_date` garde l'heure de réception.
     tapped_at = fields.Datetime(
-        string="Tapée le", readonly=True, index=True, default=fields.Datetime.now,
+        string="Tapped on", readonly=True, index=True, default=fields.Datetime.now,
     )
     offline = fields.Boolean(
-        string="Envoyé en différé", readonly=True,
-        help="Tapé sans réseau, envoyé ensuite. L'heure du tapotement est celle "
-             "que le téléphone a notée, bornée par le serveur.",
+        string="Sent later", readonly=True,
+        help="Tapped without a network, sent afterwards. The time of the "
+             "tap is the one the phone recorded, bounded by the server.",
     )
     # Une clé tirée par le téléphone pour CE tapotement. Le même envoi rejoué
     # (réseau coupé au moment de la réponse, file hors ligne relancée) rend la
     # ligne déjà écrite au lieu de refaire le geste.
     nonce = fields.Char(readonly=True, index=True, copy=False)
-    choice_key = fields.Char(string="Choix", readonly=True)
-    device_id = fields.Many2one("bf.nfc.device", string="Appareil apparié",
+    choice_key = fields.Char(string="Choice", readonly=True)
+    device_id = fields.Many2one("bf.nfc.device", string="Paired device",
                                 readonly=True, ondelete="set null")
 
     def _compute_display_name(self):

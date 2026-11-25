@@ -22,6 +22,14 @@ UID = "04DE5F1EACC040"
 @tagged("post_install", "-at_install")
 class TestPortes(HttpCase):
 
+    def setUp(self):
+        super().setUp()
+        # Langue du visiteur ÉPINGLÉE : sans langue déclarée, Odoo
+        # retombe sous essai sur le contexte de la requête, donc sur l'anglais
+        # installé (`en_CA`), et la page sort en anglais quelle que soit la langue
+        # du site. Le cookie passe avant le contexte (http_routing, ir_http).
+        self.opener.cookies.set("frontend_lang", "fr_CA")
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

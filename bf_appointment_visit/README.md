@@ -98,3 +98,7 @@ shorthands that a message body drops.
 - **Buyer tours.** Chaining several showings into one optimised route is a
   module of its own.
 - **MLS synchronisation.** Listings are entered here or come from the bridge.
+
+## Languages (v18.0.1.2.1)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The emails to the visitor, the seller and the tenant go out in the recipient's language, or the company's when the recipient has none; the feedback request sent by the nightly job follows the same rule. The public seller page shows the visit state in the page's language. What a scheduled job writes without anyone at the screen (status changes in the chatter, creation messages) is written in the company's language.

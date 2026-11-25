@@ -55,7 +55,7 @@ class _Question(Exception):
 
 class BfNfcTag(models.Model):
     _name = "bf.nfc.tag"
-    _description = "Pastille NFC"
+    _description = "NFC tag"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
 
@@ -63,98 +63,101 @@ class BfNfcTag(models.Model):
     # agit : sans lui, personne ne pouvait dire qui avait changé la cible ou le
     # compte d'une pastille signée. Pas sur les compteurs, qui bougent à chaque
     # tapotement et noieraient le fil.
-    name = fields.Char(string="Libellé", required=True, translate=False, tracking=True)
+    name = fields.Char(string="Label", required=True, translate=False, tracking=True)
     code = fields.Char(
         required=True, copy=False, index=True, readonly=True,
         default=lambda self: self._generer_code(),
-        help="Ce que porte la pastille. Public : il sert à la retrouver, pas à "
-             "prouver quoi que ce soit.",
+        help="What the tag carries. Public: it is used to find the tag, "
+             "not to prove anything.",
     )
     active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company,
     )
     gesture_id = fields.Many2one(
-        "bf.nfc.gesture", string="Geste", required=True, ondelete="restrict", tracking=True,
+        "bf.nfc.gesture", string="Gesture", required=True, ondelete="restrict", tracking=True,
     )
     gesture_writes = fields.Boolean(related="gesture_id.writes", readonly=True)
-    res_model = fields.Char(string="Modèle cible", tracking=True)
+    res_model = fields.Char(string="Target model", tracking=True)
     # 🔴 PAS de suivi sur ``res_id`` : Odoo ne sait pas suivre un Many2oneReference.
     # Avec ``tracking=True``, toute écriture de la fiche visée levait « Unsupported
     # tracking on field res_id » au vidage final de la transaction, donc après le
     # clic, jamais dans un essai qui s'arrête avant. ``res_model`` reste
     # suivi, et ``cible`` dit à l'écran quelle fiche est visée.
     res_id = fields.Many2oneReference(
-        string="Fiche cible", model_field="res_model",
+        string="Target record ID", model_field="res_model",
     )
     # 🔴 Ce que l'écran montre, à la place du nom technique tapé à la main
     # (« project.task ») et d'une « Fiche cible » bloquée tant qu'il était vide.
     # Calculé depuis ``res_model``/``res_id``, qui restent la vérité en base : les
     # satellites, l'application et le journal les lisent déjà.
     cible = fields.Reference(
-        selection="_selection_cible", string="Fiche visée",
+        selection="_selection_cible", string="Target record",
         compute="_compute_cible", inverse="_inverse_cible",
-        help="Le type de fiche, puis la fiche. Les types proposés sont ceux de la liste "
-             "« Types de fiche » et ceux qu'un geste exige.",
+        help="The record type, then the record. The types offered are "
+             "those in the “Record types” list and those a gesture "
+             "requires.",
     )
     params = fields.Char(
-        string="Paramètres", tracking=True,
-        help="JSON facultatif passé au geste, par exemple {\"minutes\": 15}. Fixé ici, "
-             "par la gestion : la personne qui tape ne peut pas le remplacer.",
+        string="Parameters", tracking=True,
+        help="Optional JSON passed to the gesture, for example "
+             "{\"minutes\": 15}. Set here, by managers: the person "
+             "tapping cannot override it.",
     )
     place = fields.Char(
-        string="Posée sur", tracking=True,
-        help="Où la pastille est collée. C'est ce qu'on lit quand on cherche "
-             "laquelle retirer.",
+        string="Placed on", tracking=True,
+        help="Where the tag is stuck. This is what you read when looking "
+             "for the one to remove.",
     )
     date_expiry = fields.Date(
-        string="Expire le", tracking=True,
-        help="Après cette date, la pastille refuse poliment. Elle n'est pas "
-             "supprimée : on veut encore savoir ce qu'elle a fait.",
+        string="Expires on", tracking=True,
+        help="After this date, the tag politely refuses. It is not "
+             "deleted: we still want to know what it did.",
     )
     confirm_required = fields.Boolean(
-        string="Confirmer avant d'agir", default=True, tracking=True,
-        help="S'applique aux tapotements venus d'un navigateur. Un geste qui "
-             "n'écrit rien passe toujours sans confirmation.",
+        string="Confirm before acting", default=True, tracking=True,
+        help="Applies to taps coming from a browser. A gesture that "
+             "writes nothing always goes through without confirmation.",
     )
 
     # Porte signée (NTAG 424 DNA). Une pastille remise à quelqu'un qui n'a pas
     # de compte agit au nom de user_id, et seule la signature de la puce
     # autorise le geste.
-    sdm_enabled = fields.Boolean(string="Pastille signée (SDM)", tracking=True)
+    sdm_enabled = fields.Boolean(string="Signed tag (SDM)", tracking=True)
     sdm_uid = fields.Char(
-        string="UID de la puce", copy=False, index=True, tracking=True,
-        help="Les 7 octets gravés en usine, en hexadécimal. C'est par lui "
-             "qu'une pastille signée se reconnaît : son adresse ne porte aucun "
-             "code, seulement le bloc chiffré que la puce fabrique.",
+        string="Chip UID", copy=False, index=True, tracking=True,
+        help="The 7 bytes engraved at the factory, in hexadecimal. This "
+             "is how a signed tag is recognized: its address carries no "
+             "code, only the encrypted block the chip builds.",
     )
     sdm_counter = fields.Integer(
-        string="Dernier compteur vu", readonly=True, copy=False,
-        help="Le compteur de lecture de la puce ne remonte jamais. Un "
-             "tapotement rejoué porte un compteur déjà vu, et se fait refuser.",
+        string="Last counter seen", readonly=True, copy=False,
+        help="The chip's read counter never goes back. A replayed tap "
+             "carries a counter already seen and is refused.",
     )
     user_id = fields.Many2one(
-        "res.users", string="Agit au nom de", tracking=True,
-        help="Obligatoire pour une pastille signée, ignoré ailleurs : par les "
-             "deux autres portes, c'est la personne qui tape qui agit.",
+        "res.users", string="Acts on behalf of", tracking=True,
+        help="Required for a signed tag, ignored elsewhere: through the "
+             "other two doors, the person tapping is the one acting.",
     )
 
-    choice_ids = fields.One2many("bf.nfc.tag.choice", "tag_id", string="Choix du menu", copy=True)
+    choice_ids = fields.One2many("bf.nfc.tag.choice", "tag_id", string="Menu "
+                                                                       "choices", copy=True)
     gesture_kind = fields.Selection(related="gesture_id.kind", readonly=True)
     url = fields.Char(
-        string="Adresse gravée", compute="_compute_url",
-        help="Ce que la puce porte. Une pastille signée n'a pas d'adresse fixe : "
-             "la puce la fabrique à chaque lecture.",
+        string="Engraved address", compute="_compute_url",
+        help="What the chip carries. A signed tag has no fixed address: "
+             "the chip builds it at every read.",
     )
 
-    tap_count = fields.Integer(string="Tapotements", readonly=True, copy=False)
-    last_tap_date = fields.Datetime(string="Dernier tapotement", readonly=True, copy=False)
-    tap_ids = fields.One2many("bf.nfc.tap", "tag_id", string="Journal")
+    tap_count = fields.Integer(string="Taps", readonly=True, copy=False)
+    last_tap_date = fields.Datetime(string="Last tap", readonly=True, copy=False)
+    tap_ids = fields.One2many("bf.nfc.tap", "tag_id", string="Log")
     note = fields.Text()
 
     _sql_constraints = [
-        ("code_unique", "unique(code)", "Ce code de pastille existe déjà."),
+        ("code_unique", "unique(code)", "This tag code already exists."),
     ]
 
     # ------------------------------------------------------------------
@@ -222,9 +225,9 @@ class BfNfcTag(models.Model):
         attendu = self.gesture_id.sudo().target_model
         if attendu and self.cible and self.cible._name != attendu:
             return {"warning": {
-                "title": _("Type de fiche"),
-                "message": _("Le geste « %(geste)s » vise une fiche de type « %(type)s ». "
-                             "Choisissez-en une de ce type.",
+                "title": _("Record type"),
+                "message": _("The gesture “%(geste)s” targets a record of "
+                             "type “%(type)s”. Choose one of that type.",
                              geste=self.gesture_id.name,
                              type=self.env["ir.model"].sudo()._get(attendu).name),
             }}
@@ -270,7 +273,7 @@ class BfNfcTag(models.Model):
             code = "".join(secrets.choice(ALPHABET) for _ in range(LONGUEUR_CODE))
             if not self.sudo().search_count([("code", "=", code)]):
                 return code
-        raise UserError(_("Impossible de tirer un code de pastille libre."))
+        raise UserError(_("Could not draw a free tag code."))
 
     def action_regenerer_code(self):
         """Change le code : la pastille physique devient inerte et doit être regravée."""
@@ -351,8 +354,8 @@ class BfNfcTag(models.Model):
         dépassé, ou quand la suite est close : un geste l'a déjà menée à un
         résultat (réussi, refusé ou en erreur), ce que dit le journal.
         """
-        refus = _("Ce tapotement a déjà servi. Approchez de nouveau le téléphone "
-                  "de la pastille.")
+        refus = _("This tap has already been used. Bring the phone close "
+                  "to the tag again.")
         morceaux = (jeton or "").split(".")
         if len(morceaux) != 4 or not all(m.isdigit() for m in morceaux[:3]):
             return self.browse(), 0, refus
@@ -384,7 +387,7 @@ class BfNfcTag(models.Model):
         if not (self.res_model and self.res_id):
             return self.env["bf.nfc.tag"].browse()
         if self.res_model not in self.env:
-            raise UserError(_("Le modèle « %s » n'existe pas sur ce système.", self.res_model))
+            raise UserError(_("The model “%s” does not exist on this system.", self.res_model))
         modele = self.env[self.res_model]
         if superutilisateur:
             return modele.browse(self.res_id)
@@ -416,9 +419,9 @@ class BfNfcTag(models.Model):
         try:
             charge = json.loads(self.params)
         except ValueError:
-            raise UserError(_("Les paramètres de cette pastille ne sont pas du JSON valide."))
+            raise UserError(_("This tag's parameters are not valid JSON."))
         if not isinstance(charge, dict):
-            raise UserError(_("Les paramètres d'une pastille doivent être un objet JSON."))
+            raise UserError(_("A tag's parameters must be a JSON object."))
         return charge
 
     # ------------------------------------------------------------------
@@ -477,8 +480,8 @@ class BfNfcTag(models.Model):
         refus = tag._refus_eventuel(porte) or refus_heure
         if not refus and differe and not tag.gesture_id.accepte_differe \
                 and tag.gesture_id.kind != "menu":
-            refus = _("Ce geste ne se joue pas en différé : approchez de nouveau "
-                      "la pastille, sur place et avec du réseau.")
+            refus = _("This gesture cannot be sent later: tap the tag "
+                      "again, on site and with a network.")
         if refus:
             return tag._journaliser(porte, "refused", refus, **trace)
 
@@ -504,7 +507,7 @@ class BfNfcTag(models.Model):
             if differe:
                 return tag._journaliser(
                     porte, "refused",
-                    _("Cette pastille demande un choix : approchez-la de nouveau sur place."),
+                    _("This tag asks for a choice: tap it again on site."),
                     **trace)
             q = question.question
             return {
@@ -522,7 +525,7 @@ class BfNfcTag(models.Model):
             _logger.exception("Pastille %s : le geste a levé", tag.code)
             return tag._journaliser(
                 porte, "error",
-                _("Le geste n'a pas abouti. Rien n'a été laissé à moitié fait."),
+                _("The gesture did not complete. Nothing was left half done."),
                 **trace)
 
         ecrit = tag._journaliser(
@@ -573,21 +576,23 @@ class BfNfcTag(models.Model):
             try:
                 lu = datetime.fromisoformat(quand.strip().replace("Z", "+00:00"))
             except ValueError:
-                return maintenant, False, _("L'heure de ce tapotement est illisible.")
+                return maintenant, False, _("The time of this tap cannot "
+                                            "be read.")
         else:
             lu = quand
         if lu.tzinfo:
             lu = lu.astimezone(timezone.utc).replace(tzinfo=None)
         if lu > maintenant + TOLERANCE_HORLOGE:
-            return maintenant, False, _("L'heure de ce tapotement est dans le futur : "
-                                        "l'horloge du téléphone est fausse.")
+            return maintenant, False, _("The time of this tap is in the "
+                                        "future: the phone's clock is "
+                                        "wrong.")
         if maintenant - lu <= TOLERANCE_HORLOGE:
             return maintenant, False, None
         heures = int(self.env["ir.config_parameter"].sudo().get_param(
             PARAM_DIFFERE_HEURES, DIFFERE_DEFAUT_HEURES))
         if maintenant - lu > timedelta(hours=heures):
-            return lu, True, _("Ce tapotement date de plus de %s heures : il n'est "
-                               "plus accepté.", heures)
+            return lu, True, _("This tap is more than %s hours old: it is "
+                               "no longer accepted.", heures)
         return lu, True, None
 
     def _rendu(self, tap):
@@ -603,20 +608,21 @@ class BfNfcTag(models.Model):
         """La phrase de refus, ou rien quand la pastille a le droit d'agir."""
         self.ensure_one()
         if not self.active:
-            return _("Cette pastille a été retirée du service.")
+            return _("This tag has been taken out of service.")
         if self.date_expiry and self.date_expiry < fields.Date.context_today(self):
-            return _("Cette pastille a expiré le %s.", self.date_expiry)
+            return _("This tag expired on %s.", self.date_expiry)
         if self.gesture_id.needs_target and not (self.res_model and self.res_id):
-            return _("Cette pastille ne désigne aucune fiche.")
+            return _("This tag points to no record.")
         if self.gesture_id.target_model_id \
                 and self.res_model != self.gesture_id.target_model:
-            return _("Cette pastille désigne un type de fiche que le geste n'accepte pas.")
+            return _("This tag points to a type of record the gesture "
+                     "does not accept.")
         if porte == "signed":
             if not self.sdm_enabled:
-                return _("Cette pastille n'est pas une pastille signée.")
+                return _("This tag is not a signed tag.")
             if not self.user_id:
-                return _("Cette pastille signée ne désigne aucun compte au nom "
-                         "duquel agir.")
+                return _("This signed tag names no account to act on "
+                         "behalf of.")
         return None
 
     def _tapotement_recent(self, acteur, choix=None, moment=None):
@@ -678,7 +684,7 @@ class BfNfcTag(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Journal de « %s »", self.name),
+            "name": _("Log of “%s”", self.name),
             "res_model": "bf.nfc.tap",
             "view_mode": "list,form",
             "domain": [("tag_id", "=", self.id)],

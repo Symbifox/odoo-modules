@@ -6,44 +6,44 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="Célébrations" string="Célébrations"
+                <app data-string="Celebrations" string="Celebrations"
                      name="bf_celebrations"
                      groups="bf_celebrations.group_manager">
-                    <block title="Le rappel" name="celebrations_rappel">
-                        <setting string="Prévenir d'avance"
-                                 help="Le nombre de jours avant l'occasion où la personne qui organise reçoit son rappel.">
+                    <block title="The reminder" name="celebrations_rappel">
+                        <setting string="Tell people in advance"
+                                 help="The number of days before the occasion when whoever organises gets their reminder.">
                             <field name="celebration_reminder_days"/>
                         </setting>
-                        <setting string="Horizon du calendrier"
-                                 help="Jusqu'où les occasions sont posées à l'avance.">
+                        <setting string="Calendar horizon"
+                                 help="How far ahead occasions are laid down.">
                             <field name="celebration_horizon_days"/>
                         </setting>
-                        <setting string="Relancer une carte trop mince"
-                                 help="Une carte vide n'est jamais livrée : elle est retenue et la personne qui organise est prévenue.">
+                        <setting string="Chase up a card that is too thin"
+                                 help="An empty card is never delivered: it is held and whoever organises is told.">
                             <field name="celebration_thin_threshold"/>
                             <field name="celebration_thin_days"/>
                         </setting>
                     </block>
-                    <block title="Conservation" name="celebrations_conservation">
-                        <setting string="Effacer les cartes livrées"
-                                 help="0 : on garde tout. Sinon, une carte livrée depuis plus de N mois est effacée avec ses mots, ses images et ses pièces jointes. La personne fêtée a reçu la sienne en PDF et en page souvenir à la livraison.">
+                    <block title="Retention" name="celebrations_conservation">
+                        <setting string="Erase the delivered cards"
+                                 help="0: keep everything. Otherwise, a card delivered more than N months ago is erased with its messages, its images and its attachments. The person celebrated received theirs as a PDF and as a keepsake page at delivery.">
                             <field name="celebration_retention_months"/>
                         </setting>
-                        <setting string="Plafond d'invitations par envoi"
-                                 help="Au-delà, l'envoi aux signataires est refusé plutôt que de saturer la file de courriels.">
+                        <setting string="Ceiling of invitations per send"
+                                 help="Past that, sending to the signatories is refused rather than flooding the email queue.">
                             <field name="celebration_invite_cap"/>
                         </setting>
                     </block>
-                    <block title="Diffusion" name="celebrations_diffusion">
-                        <setting string="Personne qui organise par défaut">
+                    <block title="Sharing" name="celebrations_diffusion">
+                        <setting string="Default organiser">
                             <field name="celebration_default_organizer_id"/>
                         </setting>
-                        <setting string="Canal où annoncer les cartes"
-                                 help="Un lien qui dort dans un courriel ne récolte pas de signatures.">
+                        <setting string="Channel to announce the cards in"
+                                 help="A link asleep in an email collects no signatures.">
                             <field name="celebration_discuss_channel_id"/>
                         </setting>
-                        <setting string="Poser les célébrations dans l'agenda"
-                                 help="Éteint par défaut : une entrée d'agenda part vers les téléphones et le CalDAV, hors de portée d'un retrait fait plus tard. Seules les personnes qui ont accepté une carte y paraissent.">
+                        <setting string="Lay the celebrations down in the calendar"
+                                 help="Off by default: a calendar entry goes out to phones and to CalDAV, beyond the reach of a removal made later. Only the people who accepted a card appear there.">
                             <field name="celebration_calendar_mirror"/>
                         </setting>
                     </block>

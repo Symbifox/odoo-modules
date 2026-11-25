@@ -16,9 +16,10 @@ class DiscussChannel(models.Model):
     _inherit = "discuss.channel"
 
     federation_link_id = fields.Many2one(
-        "federation.link", string="Objet fédéré", index=True, copy=False, ondelete="set null",
-        help="Le canal d'un objet partagé avec un pair. Ce qui s'y dit passe par le chatter "
-             "de l'objet, qui reste le registre.")
+        "federation.link", string="Federated object", index=True, copy=False, ondelete="set null",
+        help="The channel of an object shared with a peer. What is said "
+             "here goes through the object's message thread, which "
+             "remains the record.")
 
     @api.model
     def _federation_open(self, link):
@@ -33,9 +34,11 @@ class DiscussChannel(models.Model):
             "name": _("%s ⇄ %s") % (nom[:80], link.peer_id.name),
             "channel_type": "group",
             "federation_link_id": link.id,
-            "description": _("Conversation avec %s au sujet de « %s ». Ce qui s'écrit ici est "
-                             "posté au chatter de l'objet, d'où il part chez le pair. Comptez "
-                             "deux à quatre minutes par aller-retour.") % (link.peer_id.name, nom[:120]),
+            "description": _("Conversation with %s about \"%s\". What is "
+                             "written here is posted to the object's "
+                             "message thread, from where it travels to "
+                             "the peer. Allow two to four minutes per "
+                             "round trip.") % (link.peer_id.name, nom[:120]),
         })
         canal._federation_sync_members(link)
         return canal

@@ -16,10 +16,10 @@ class AppointmentIntakeField(models.Model):
 
     bf_visit_role = fields.Selection(
         [
-            ("representation", "Représentation par un courtier"),
-            ("broker_name", "Nom du courtier du visiteur"),
+            ("representation", "Representation by a broker"),
+            ("broker_name", "Name of the visitor's broker"),
         ],
-        string="Rôle dans le registre des visites",
-        help="Posé par le module de visites. Dit où la réponse se range dans "
-             "le registre, quel que soit le libellé de la question.",
+        string="Role in the visit register",
+        help="Set by the showings module. Says where the answer goes in "
+             "the register, whatever the wording of the question.",
     )

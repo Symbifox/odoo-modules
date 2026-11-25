@@ -1,240 +1,234 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_training_process
-#
+# Translation of Registre de formation : entraînement à la tâche - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: bf_training_process 18.0.1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-19 11:56+0000\n"
+"PO-Revision-Date: 2026-11-19 11:56+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+#. module: bf_training_process
+#: model:ir.model.fields.selection,name:bf_training_process.selection__bf_training_requirement__scope__lane
+msgid "A process lane"
+msgstr "Un couloir de processus"
 
 #. module: bf_training_process
-#: model:ir.model,name:bf_training_process.model_bf_training_activity
-msgid "Activité de formation"
-msgstr "Activité de formation"
-
-#. module: bf_training_process
-#: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_node_form_training
-msgid ""
-"Ce qu'il faut savoir pour tenir cette étape. De là, le registre\n"
-"                        dit qui est à jour et qui ne l'est pas."
-msgstr ""
-"Ce qu'il faut savoir pour tenir cette étape. De là, le registre\n"
-"                        dit qui est à jour et qui ne l'est pas."
+#. odoo-python
+#: code:addons/bf_training_process/models/training_requirement.py:0
+msgid "A scope by lane must name the lane."
+msgstr "Une portée par couloir doit nommer le couloir."
 
 #. module: bf_training_process
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_training_record__trainee_confirm_date
-msgid "Confirmé par l'apprenant le"
+msgid "Confirmed by the learner on"
 msgstr "Confirmé par l'apprenant le"
 
 #. module: bf_training_process
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_training_record__trainer_confirm_date
-msgid "Confirmé par le formateur le"
+msgid "Confirmed by the trainer on"
 msgstr "Confirmé par le formateur le"
 
 #. module: bf_training_process
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_training_record__both_confirmed
-msgid "Confirmée des deux côtés"
+msgid "Confirmed on both sides"
 msgstr "Confirmée des deux côtés"
 
 #. module: bf_training_process
 #: model:ir.model,name:bf_training_process.model_bf_process_lane
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_training_requirement__lane_id
 #: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_lane_form_training
-msgid "Couloir"
+msgid "Lane"
 msgstr "Couloir"
 
 #. module: bf_training_process
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_training_activity__process_lane_ids
-msgid "Couloirs concernés"
+msgid "Lanes involved"
 msgstr "Couloirs concernés"
 
 #. module: bf_training_process
-#: model:ir.model,name:bf_training_process.model_bf_training_requirement
-msgid "Exigence de formation"
-msgstr "Exigence de formation"
-
-#. module: bf_training_process
-#: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_node_form_training
-msgid "Formation"
-msgstr "Formation"
-
-#. module: bf_training_process
-#: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_lane_form_training
-msgid "Formations"
-msgstr "Formations"
-
-#. module: bf_training_process
-#: model:ir.model.fields,field_description:bf_training_process.field_bf_process_node__training_activity_ids
-msgid "Formations exigées par cette étape"
-msgstr "Formations exigées par cette étape"
-
-#. module: bf_training_process
-#: model:ir.model.fields,field_description:bf_training_process.field_bf_training_record__trainee_confirmed
-#: model_terms:ir.ui.view,arch_db:bf_training_process.view_training_record_form_process
-msgid "L'apprenant confirme"
-msgstr "L'apprenant confirme"
-
-#. module: bf_training_process
-#: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_lane_form_training
-msgid ""
-"La carte nomme le rôle ; elle ne sait pas qui le tient. Renseigner\n"
-"                        les personnes permet à une exigence de formation de viser ce\n"
-"                        couloir plutôt qu'une liste de noms recopiée à la main."
-msgstr ""
-"La carte nomme le rôle ; elle ne sait pas qui le tient. Renseigner\n"
-"                        les personnes permet à une exigence de formation de viser ce\n"
-"                        couloir plutôt qu'une liste de noms recopiée à la main."
-
-#. module: bf_training_process
-#: model:ir.model.fields,field_description:bf_training_process.field_bf_training_record__trainer_confirmed
-#: model_terms:ir.ui.view,arch_db:bf_training_process.view_training_record_form_process
-msgid "Le formateur confirme"
-msgstr "Le formateur confirme"
-
-#. module: bf_training_process
-#: model:ir.model.fields,help:bf_training_process.field_bf_training_record__process_node_id
-msgid "Le geste sur lequel l'entraînement a porté."
-msgstr "Le geste sur lequel l'entraînement a porté."
-
-#. module: bf_training_process
-#: model:ir.model.fields,help:bf_training_process.field_bf_training_requirement__lane_id
-msgid "Le rôle visé, tel qu'il est dessiné sur la carte."
-msgstr "Le rôle visé, tel qu'il est dessiné sur la carte."
-
-#. module: bf_training_process
-#: model_terms:ir.ui.view,arch_db:bf_training_process.view_training_activity_form_process
-msgid ""
-"Les gestes que cette formation apprend à tenir. Les couloirs\n"
-"                        concernés s'en déduisent : ce sont les rôles qui tiennent au\n"
-"                        moins une de ces étapes."
-msgstr ""
-"Les gestes que cette formation apprend à tenir. Les couloirs\n"
-"                        concernés s'en déduisent : ce sont les rôles qui tiennent au\n"
-"                        moins une de ces étapes."
-
-#. module: bf_training_process
-#: model:ir.model.fields,help:bf_training_process.field_bf_training_activity__process_node_ids
-msgid ""
-"Les gestes que cette formation apprend à tenir. Une formation peut couvrir "
-"plusieurs étapes, et une étape peut en demander plusieurs."
-msgstr ""
-"Les gestes que cette formation apprend à tenir. Une formation peut couvrir "
-"plusieurs étapes, et une étape peut en demander plusieurs."
-
-#. module: bf_training_process
-#: model:ir.model.fields,help:bf_training_process.field_bf_training_activity__process_lane_ids
-msgid "Les rôles qui tiennent au moins une des étapes enseignées."
-msgstr "Les rôles qui tiennent au moins une des étapes enseignées."
+#: model:ir.model.fields,field_description:bf_training_process.field_bf_process_lane__employee_count
+msgid "Number of people"
+msgstr "Nombre de personnes"
 
 #. module: bf_training_process
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_training_activity__process_node_count
-msgid "Nombre d'étapes"
+msgid "Number of steps"
 msgstr "Nombre d'étapes"
 
 #. module: bf_training_process
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_process_lane__training_activity_count
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_process_node__training_activity_count
-msgid "Nombre de formations"
+msgid "Number of training activities"
 msgstr "Nombre de formations"
 
 #. module: bf_training_process
-#: model:ir.model.fields,field_description:bf_training_process.field_bf_process_lane__employee_count
-msgid "Nombre de personnes"
-msgstr "Nombre de personnes"
-
-#. module: bf_training_process
-#: model:ir.model,name:bf_training_process.model_bf_process_node
-msgid "Nœud de processus"
-msgstr "Nœud de processus"
-
-#. module: bf_training_process
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_process_lane__employee_ids
-msgid "Personnes qui tiennent ce rôle"
+msgid "People who hold this role"
 msgstr "Personnes qui tiennent ce rôle"
 
 #. module: bf_training_process
-#: model:ir.model.fields,field_description:bf_training_process.field_bf_training_requirement__scope
-msgid "Portée"
-msgstr "Portée"
-
-#. module: bf_training_process
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_training_record__process_id
-msgid "Processus"
+msgid "Process"
 msgstr "Processus"
 
 #. module: bf_training_process
-#: model:ir.model.fields,help:bf_training_process.field_bf_process_lane__employee_ids
-msgid ""
-"Qui joue ce rôle aujourd'hui. Une exigence de formation peut viser le "
-"couloir plutôt que de recopier les noms."
-msgstr ""
-"Qui joue ce rôle aujourd'hui. Une exigence de formation peut viser le "
-"couloir plutôt que de recopier les noms."
+#: model:ir.model.fields,field_description:bf_training_process.field_bf_training_activity__process_node_ids
+msgid "Process steps taught"
+msgstr "Étapes de processus enseignées"
 
 #. module: bf_training_process
-#: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_lane_form_training
-msgid "Qui tient ce rôle"
-msgstr "Qui tient ce rôle"
-
-#. module: bf_training_process
-#: model:ir.model,name:bf_training_process.model_bf_training_record
-msgid "Réalisation de formation"
-msgstr "Réalisation de formation"
-
-#. module: bf_training_process
-#: model:ir.model.fields.selection,name:bf_training_process.selection__bf_training_requirement__scope__lane
-msgid "Un couloir de processus"
-msgstr "Un couloir de processus"
-
-#. module: bf_training_process
-#. odoo-python
-#: code:addons/bf_training_process/models/training_requirement.py:0
-msgid "Une portée par couloir doit nommer le couloir."
-msgstr "Une portée par couloir doit nommer le couloir."
-
-#. module: bf_training_process
-#. odoo-python
-#: code:addons/bf_training_process/models/training_record.py:0
-msgid "la confirmation de l'apprenant"
-msgstr "la confirmation de l'apprenant"
-
-#. module: bf_training_process
-#. odoo-python
-#: code:addons/bf_training_process/models/training_record.py:0
-msgid "la confirmation du formateur"
-msgstr "la confirmation du formateur"
-
-#. module: bf_training_process
-#. odoo-python
-#: code:addons/bf_training_process/models/training_record.py:0
-msgid "le formateur"
-msgstr "le formateur"
+#: model:ir.model.fields,field_description:bf_training_process.field_bf_training_requirement__scope
+msgid "Scope"
+msgstr "Scope"
 
 #. module: bf_training_process
 #: model:ir.model.fields,field_description:bf_training_process.field_bf_training_record__process_node_id
-msgid "Étape travaillée"
+msgid "Step worked on"
 msgstr "Étape travaillée"
 
 #. module: bf_training_process
 #: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_lane_form_training
 #: model_terms:ir.ui.view,arch_db:bf_training_process.view_training_activity_form_process
-msgid "Étapes"
+msgid "Steps"
 msgstr "Étapes"
 
 #. module: bf_training_process
-#: model:ir.model.fields,field_description:bf_training_process.field_bf_training_activity__process_node_ids
-msgid "Étapes de processus enseignées"
-msgstr "Étapes de processus enseignées"
+#. odoo-python
+#: code:addons/bf_training_process/models/training_activity.py:0
+#: model_terms:ir.ui.view,arch_db:bf_training_process.view_training_activity_form_process
+msgid "Steps taught"
+msgstr "Étapes enseignées"
+
+#. module: bf_training_process
+#: model:ir.model.fields,field_description:bf_training_process.field_bf_training_record__trainee_confirmed
+#: model_terms:ir.ui.view,arch_db:bf_training_process.view_training_record_form_process
+msgid "The learner confirms"
+msgstr "L'apprenant confirme"
+
+#. module: bf_training_process
+#: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_lane_form_training
+msgid ""
+"The map names the role; it does not know who holds it. Filling in\n"
+"                        the people lets a training requirement target this\n"
+"                        lane rather than a list of names copied out by hand."
+msgstr ""
+"La carte nomme le rôle ; elle ne sait pas qui le tient. Renseigner\n"
+"                        les personnes permet à une exigence de formation de viser ce\n"
+"                        couloir plutôt qu'une liste de noms recopiée à la main."
+
+#. module: bf_training_process
+#: model:ir.model.fields,help:bf_training_process.field_bf_training_requirement__lane_id
+msgid "The role targeted, as it is drawn on the map."
+msgstr "Le rôle visé, tel qu'il est dessiné sur la carte."
+
+#. module: bf_training_process
+#: model:ir.model.fields,help:bf_training_process.field_bf_training_activity__process_lane_ids
+msgid "The roles that carry out at least one of the steps taught."
+msgstr "Les rôles qui tiennent au moins une des étapes enseignées."
+
+#. module: bf_training_process
+#: model:ir.model.fields,help:bf_training_process.field_bf_training_record__process_node_id
+msgid "The task the training covered."
+msgstr "Le geste sur lequel l'entraînement a porté."
+
+#. module: bf_training_process
+#: model:ir.model.fields,help:bf_training_process.field_bf_training_activity__process_node_ids
+msgid ""
+"The tasks this training teaches people to carry out. One training activity "
+"can cover several steps, and one step can require several activities."
+msgstr ""
+"Les gestes que cette formation apprend à tenir. Une formation peut couvrir "
+"plusieurs étapes, et une étape peut en demander plusieurs."
 
 #. module: bf_training_process
 #: model_terms:ir.ui.view,arch_db:bf_training_process.view_training_activity_form_process
-msgid "Étapes enseignées"
-msgstr "Étapes enseignées"
+msgid ""
+"The tasks this training teaches people to carry out. The lanes\n"
+"                        involved follow from them: they are the roles that carry out at\n"
+"                        least one of these steps."
+msgstr ""
+"Les gestes que cette formation apprend à tenir. Les couloirs\n"
+"                        concernés s'en déduisent : ce sont les rôles qui tiennent au\n"
+"                        moins une de ces étapes."
+
+#. module: bf_training_process
+#: model:ir.model.fields,field_description:bf_training_process.field_bf_training_record__trainer_confirmed
+#: model_terms:ir.ui.view,arch_db:bf_training_process.view_training_record_form_process
+msgid "The trainer confirms"
+msgstr "Le formateur confirme"
+
+#. module: bf_training_process
+#: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_node_form_training
+msgid "Training"
+msgstr "Formation"
+
+#. module: bf_training_process
+#: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_lane_form_training
+msgid "Training activities"
+msgstr "Formations"
+
+#. module: bf_training_process
+#. odoo-python
+#: code:addons/bf_training_process/models/process_lane.py:0
+msgid "Training activities for the lane"
+msgstr "Formations du couloir"
+
+#. module: bf_training_process
+#. odoo-python
+#: code:addons/bf_training_process/models/process_node.py:0
+msgid "Training activities for the step"
+msgstr "Formations de l'étape"
+
+#. module: bf_training_process
+#: model:ir.model.fields,field_description:bf_training_process.field_bf_process_node__training_activity_ids
+msgid "Training required by this step"
+msgstr "Formations exigées par cette étape"
+
+#. module: bf_training_process
+#: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_node_form_training
+msgid ""
+"What you need to know to carry out this step. From there, the register\n"
+"                        says who is up to date and who is not."
+msgstr ""
+"Ce qu'il faut savoir pour tenir cette étape. De là, le registre\n"
+"                        dit qui est à jour et qui ne l'est pas."
+
+#. module: bf_training_process
+#: model_terms:ir.ui.view,arch_db:bf_training_process.view_process_lane_form_training
+msgid "Who holds this role"
+msgstr "Qui tient ce rôle"
+
+#. module: bf_training_process
+#: model:ir.model.fields,help:bf_training_process.field_bf_process_lane__employee_ids
+msgid ""
+"Who plays this role today. A training requirement can target the lane rather"
+" than copy out the names."
+msgstr ""
+"Qui joue ce rôle aujourd'hui. Une exigence de formation peut viser le "
+"couloir plutôt que de recopier les noms."
+
+#. module: bf_training_process
+#. odoo-python
+#: code:addons/bf_training_process/models/training_record.py:0
+msgid "the learner's confirmation"
+msgstr "la confirmation de l'apprenant"
+
+#. module: bf_training_process
+#. odoo-python
+#: code:addons/bf_training_process/models/training_record.py:0
+msgid "the trainer"
+msgstr "le formateur"
+
+#. module: bf_training_process
+#. odoo-python
+#: code:addons/bf_training_process/models/training_record.py:0
+msgid "the trainer's confirmation"
+msgstr "la confirmation du formateur"

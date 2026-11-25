@@ -5,18 +5,19 @@ from datetime import timedelta
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
+from odoo.tools.misc import get_lang
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import format_date
 
 _logger = logging.getLogger(__name__)
 
 TYPES = [
-    ("annonce", "Annonce"),
-    ("nouvelle", "Nouvelle"),
-    ("reconnaissance", "Reconnaissance"),
-    ("evenement", "Événement"),
-    ("celebration", "Célébration"),
-    ("sondage", "Sondage"),
+    ("annonce", "Announcement"),
+    ("nouvelle", "News"),
+    ("reconnaissance", "Recognition"),
+    ("evenement", "Event"),
+    ("celebration", "Celebration"),
+    ("sondage", "Poll"),
 ]
 
 #: 🔴 Sous ce nombre de votants, un résultat anonyme se déchiffre par
@@ -39,7 +40,7 @@ class BabillardPost(models.Model):
     """
 
     _name = "bf.babillard.post"
-    _description = "Publication du babillard"
+    _description = "Noticeboard post"
     _inherit = ["mail.thread"]
     _order = "epingle desc, date_publication desc, id desc"
     # 🔴 Par défaut, Odoo exige le droit d'ÉCRITURE sur la fiche pour y laisser
@@ -48,64 +49,66 @@ class BabillardPost(models.Model):
     # et l'écran laisse quand même le composeur ouvert.
     _mail_post_access = "read"
 
-    name = fields.Char("Titre", required=True, tracking=True)
-    corps_html = fields.Html("Contenu", sanitize=True)
+    name = fields.Char("Title", required=True, tracking=True)
+    corps_html = fields.Html("Content", sanitize=True)
     type_publication = fields.Selection(
         TYPES, string="Type", required=True, default="annonce", tracking=True)
     state = fields.Selection(
-        [("brouillon", "Brouillon"), ("publie", "Publiée"), ("echue", "Échue")],
-        string="État", default="brouillon", required=True, tracking=True, copy=False)
-    active = fields.Boolean("Actif", default=True)
+        [("brouillon", "Draft"), ("publie", "Published"), ("echue", "Expired")],
+        string="State", default="brouillon", required=True, tracking=True, copy=False)
+    active = fields.Boolean("Active", default=True)
 
-    date_publication = fields.Datetime("Publiée le", readonly=True, copy=False)
+    date_publication = fields.Datetime("Published on", readonly=True, copy=False)
     date_jour = fields.Date(
-        "Journée", compute="_compute_date_jour", store=True,
-        help="La journée de publication, dans le fuseau de qui publie. "
-             "C'est ce que la carte affiche : l'heure à la seconde n'apprend rien.")
+        "Day", compute="_compute_date_jour", store=True,
+        help="The day of posting, in the time zone of whoever posts. That "
+             "is what the card shows: the time to the second teaches "
+             "nothing.")
     date_echeance = fields.Date(
-        "Échéance", tracking=True,
-        help="Après cette date, la publication quitte le fil sans être détruite. "
-             "Vide, elle reste jusqu'à ce qu'on la retire.")
+        "Due date", tracking=True,
+        help="After this date the post leaves the feed without being "
+             "destroyed. Empty, it stays until somebody takes it down.")
     epingle = fields.Boolean(
-        "Épinglée", default=False, tracking=True,
-        help="Une publication épinglée reste en tête du fil.")
+        "Pinned", default=False, tracking=True,
+        help="A pinned post stays at the top of the feed.")
 
     auteur_user_id = fields.Many2one(
-        "res.users", string="Auteur", required=True, default=lambda s: s.env.user,
+        "res.users", string="Author", required=True, default=lambda s: s.env.user,
         ondelete="restrict")
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda s: s.env.company, ondelete="restrict")
 
     audience = fields.Selection(
-        [("tous", "Tout le personnel"),
-         ("departements", "Des départements"),
-         ("groupes", "Des groupes")],
+        [("tous", "All staff"),
+         ("departements", "Some departments"),
+         ("groupes", "Some groups")],
         string="Audience", required=True, default="tous", tracking=True)
     department_ids = fields.Many2many(
-        "hr.department", string="Départements",
-        help="L'audience suit le département de la fiche d'employé.")
-    group_ids = fields.Many2many("res.groups", string="Groupes")
+        "hr.department", string="Departments",
+        help="The audience follows the department on the employee record.")
+    group_ids = fields.Many2many("res.groups", string="Groups")
 
     lecture_requise = fields.Boolean(
-        "Lecture obligatoire", default=False, tracking=True,
-        help="Chaque personne de l'audience doit confirmer sa lecture. "
-             "L'accusé sert à prouver la diffusion, jamais à mesurer quelqu'un.")
+        "Mandatory read", default=False, tracking=True,
+        help="Everybody in the audience has to confirm they read it. The "
+             "receipt is there to prove the posting, never to measure "
+             "anybody.")
     commentaires_ouverts = fields.Boolean(
-        "Commentaires ouverts", compute="_compute_commentaires_ouverts",
+        "Comments open", compute="_compute_commentaires_ouverts",
         store=True, readonly=False,
-        help="Les commentaires et les réactions passent par le fil de discussion "
-             "de la publication. Ils sont fermés d'office sur une lecture obligatoire.")
+        help="Comments and reactions go through the post's message "
+             "thread. They are closed by default on a mandatory read.")
 
-    lecture_ids = fields.One2many("bf.babillard.lecture", "post_id", string="Accusés")
-    nb_lectures = fields.Integer("Accusés reçus", compute="_compute_lectures")
-    nb_destinataires = fields.Integer("Destinataires", compute="_compute_lectures")
+    lecture_ids = fields.One2many("bf.babillard.lecture", "post_id", string="Receipts")
+    nb_lectures = fields.Integer("Receipts received", compute="_compute_lectures")
+    nb_destinataires = fields.Integer("Recipients", compute="_compute_lectures")
     lu_par_moi = fields.Boolean(
-        "Lue par moi", compute="_compute_lu_par_moi", search="_search_lu_par_moi")
+        "Read by me", compute="_compute_lu_par_moi", search="_search_lu_par_moi")
     a_lire_pour_moi = fields.Boolean(
-        "À lire par moi", compute="_compute_a_lire_pour_moi",
-        help="Une publication au fil, qui demande une confirmation, qui m'est "
-             "adressée, et que je n'ai pas encore confirmée.")
+        "For me to read", compute="_compute_a_lire_pour_moi",
+        help="A post in the feed, that asks for a confirmation, that is "
+             "addressed to me, and that I have not confirmed yet.")
 
     # ⚠️ `hr.employee` n'est PAS lisible par une personne interne ordinaire
     # (seule la RH l'est) : le modèle public porte les mêmes identifiants et se
@@ -116,93 +119,96 @@ class BabillardPost(models.Model):
     # (`Many2one.update_db_foreign_key` sort avant). Un `ondelete` déclaré
     # mentirait. Le ménage se fait à la main, dans `HrEmployee.unlink`.
     personne_id = fields.Many2one(
-        "hr.employee.public", string="Personne mise en avant",
-        help="La personne dont la publication parle. Son visage paraît sur la "
-             "carte, à la place de celui de l'auteur.")
+        "hr.employee.public", string="Person featured",
+        help="The person the post is about. Their face appears on the "
+             "card, instead of the author's.")
     personne_avatar = fields.Image(
-        "Visage de la personne", related="personne_id.avatar_128")
+        "Person's face", related="personne_id.avatar_128")
     auteur_avatar = fields.Image(
-        "Visage de l'auteur", related="auteur_user_id.avatar_128")
+        "Author's face", related="auteur_user_id.avatar_128")
     auteur_nom = fields.Char("Signature", related="auteur_user_id.name")
-    personne_nom = fields.Char("Nom de la personne", related="personne_id.name")
+    personne_nom = fields.Char("Person's name", related="personne_id.name")
     image_couverture = fields.Image(
         "Image", max_width=1920, max_height=1920,
-        help="Une image en tête de la publication. Facultative : une annonce "
-             "sans image reste une annonce.")
+        help="An image at the top of the post. Optional: an announcement "
+             "with no image is still an announcement.")
 
     # Le fil de discussion, vu de la carte. Des cardinaux, jamais des noms :
     # une carte ne dit pas qui a commenté, elle dit que quelqu'un l'a fait.
-    nb_commentaires = fields.Integer("Commentaires", compute="_compute_fil")
+    nb_commentaires = fields.Integer("Comments", compute="_compute_fil")
 
     peut_relancer_equipe = fields.Boolean(
-        "Je relance mon équipe", compute="_compute_peut_relancer_equipe")
+        "I remind my team", compute="_compute_peut_relancer_equipe")
 
     # Un fil se lit « hier », pas « 2026-09-15 ». ⚠️ Le format de `fr_CA` dans
     # Odoo est `%Y-%m-%d` : le corriger sur `res.lang` déplacerait TOUTES les
     # dates du locataire, factures comprises. Le babillard rend donc la sienne.
-    date_affichee = fields.Char("Quand", compute="_compute_date_affichee")
+    date_affichee = fields.Char("When", compute="_compute_date_affichee")
     est_nouveau = fields.Boolean(
-        "Nouveau", compute="_compute_est_nouveau",
-        help="Publiée depuis moins de deux jours.")
+        "New", compute="_compute_est_nouveau",
+        help="Published less than two days ago.")
 
     geste_ids = fields.One2many(
-        "bf.babillard.geste", "post_id", string="Réactions posées")
+        "bf.babillard.geste", "post_id", string="Reactions placed")
     # 🔴 Un seul champ calculé porte TOUT ce que l'écran rend : les réactions
     # posées avec leur compte et les noms, et celles encore offertes. Un champ
     # par réaction était impossible, le catalogue étant configurable ; une
     # requête par bouton aurait rendu une carte à dix requêtes.
     reactions = fields.Json(
-        "Réactions", compute="_compute_reactions",
-        help="Ce que l'écran affiche : symbole, compte, noms, et ce qui reste "
-             "à offrir. Calculé par personne qui regarde.")
+        "Reactions", compute="_compute_reactions",
+        help="What the screen shows: symbol, count, names, and what is "
+             "left to offer. Computed per person looking.")
 
     # ── Sondage ───────────────────────────────────────────────────────────
     # Le titre de la publication EST la question : « taper la question et les
     # options » est la façon dont le marché entier décrit le geste, et un champ
     # « question » de plus aurait fait deux titres sur la carte.
     option_ids = fields.One2many(
-        "bf.babillard.option", "post_id", string="Choix",
-        help="Les choix offerts. Ils appartiennent à cette publication.")
-    vote_ids = fields.One2many("bf.babillard.vote", "post_id", string="Voix")
+        "bf.babillard.option", "post_id", string="Options",
+        help="The options offered. They belong to this post.")
+    vote_ids = fields.One2many("bf.babillard.vote", "post_id", string="Votes "
+                                                                      "cast")
     sondage_choix_multiple = fields.Boolean(
-        "Plusieurs choix", default=False, tracking=True,
-        help="Coché, on coche autant de choix qu'on veut. Décoché, voter pour "
-             "un choix retire le précédent.")
+        "Several options", default=False, tracking=True,
+        help="Ticked, you tick as many options as you like. Unticked, "
+             "voting for one option drops the previous one.")
     sondage_anonyme = fields.Boolean(
-        "Vote anonyme", default=False, tracking=True,
-        help="Décoché, l'audience voit qui a voté quoi, comme pour les "
-             "réactions. Coché, personne ne le voit, pas même la rédaction, et "
-             "le résultat reste caché tant que moins de trois personnes n'ont "
-             "pas répondu.")
+        "Anonymous vote", default=False, tracking=True,
+        help="Unticked, the audience sees who voted for what, as with "
+             "reactions. Ticked, nobody sees it, not even the editors, "
+             "and the result stays hidden until at least three people "
+             "have answered.")
     sondage_ajout_ouvert = fields.Boolean(
-        "L'audience peut ajouter un choix", default=False, tracking=True,
-        help="Coché, chaque personne de l'audience peut proposer ses propres "
-             "choix, dans la limite du plafond.")
+        "The audience can add an option", default=False, tracking=True,
+        help="Ticked, everybody in the audience can suggest their own "
+             "options, up to the ceiling.")
     sondage_max_ajouts = fields.Integer(
-        "Choix par personne", default=2,
-        help="Plafond de choix qu'une même personne peut ajouter. Sans lui, "
-             "quelqu'un en propose quinze et le dépouillement ne dit plus rien.")
+        "Options per person", default=2,
+        help="The ceiling of options one person can add. Without it, "
+             "somebody suggests fifteen and the count no longer says "
+             "anything.")
     sondage_ferme = fields.Boolean(
-        "Sondage fermé", default=False, copy=False, tracking=True,
-        help="Un sondage fermé garde son résultat au fil, mais n'accepte plus "
-             "de voix.")
+        "Poll closed", default=False, copy=False, tracking=True,
+        help="A closed poll keeps its result in the feed, but accepts no "
+             "further votes.")
     sondage_avertissement = fields.Char(
-        "Avertissement", compute="_compute_sondage_avertissement",
-        help="Ce que la rédaction doit savoir AVANT de publier, pas après le "
-             "premier vote.")
+        "Warning", compute="_compute_sondage_avertissement",
+        help="What the editors need to know BEFORE publishing, not after "
+             "the first vote.")
     # 🔴 Même patron que `reactions`, et pour les mêmes raisons : un seul champ
     # calculé porte tout ce que l'écran rend, borné au serveur et calculé par
     # personne qui regarde. C'est aussi le SEUL endroit d'où sort un
     # dépouillement : ni l'option ni la voix ne portent de compteur lisible.
     sondage = fields.Json(
-        "Sondage", compute="_compute_sondage",
-        help="Ce que l'écran affiche du sondage : les choix, ce que j'ai voté, "
-             "et le dépouillement quand il a le droit de paraître.")
+        "Poll", compute="_compute_sondage",
+        help="What the screen shows of the poll: the options, what I "
+             "voted, and the count when it is allowed to appear.")
 
     avis_envoye_le = fields.Datetime(
-        "Avis envoyé le", readonly=True, copy=False,
-        help="Le moment où l'audience a été prévenue d'une annonce à lire. "
-             "Un avis ne part qu'une fois, même si la publication repasse au fil.")
+        "Notice sent on", readonly=True, copy=False,
+        help="The moment the audience was told about an announcement to "
+             "read. A notice goes out once only, even if the post comes "
+             "back to the feed.")
 
     # Mises en page des courriels, par ordre de préférence : la première présente
     # sur la base sert. `bluefox_branding` n'est pas une dépendance ; installé, il
@@ -213,13 +219,13 @@ class BabillardPost(models.Model):
     )
 
     # Ce qui a produit la carte, quand elle vient d'un pont plutôt que d'une saisie.
-    source_model = fields.Char("Modèle source", readonly=True, copy=False)
-    source_res_id = fields.Integer("Identifiant source", readonly=True, copy=False)
+    source_model = fields.Char("Source model", readonly=True, copy=False)
+    source_res_id = fields.Integer("Source identifier", readonly=True, copy=False)
 
     _sql_constraints = [
         ("source_unique",
          "UNIQUE(source_model, source_res_id)",
-         "Une même source ne peut pas produire deux publications."),
+         "One source cannot produce two posts."),
     ]
 
     @api.depends("date_publication")
@@ -267,7 +273,7 @@ class BabillardPost(models.Model):
 
     def _search_lu_par_moi(self, operator, value):
         if operator not in ("=", "!=") or not isinstance(value, bool):
-            raise UserError(_("Ce filtre ne se cherche qu'en oui ou non."))
+            raise UserError(_("This filter is only searched as yes or no."))
         lues = self.env["bf.babillard.lecture"].sudo().search([
             ("user_id", "=", self.env.uid)]).mapped("post_id").ids
         positif = (operator == "=") == value
@@ -319,11 +325,11 @@ class BabillardPost(models.Model):
                 post, post.date_publication).date()
             ecart = (aujourdhui - jour).days
             if ecart <= 0:
-                post.date_affichee = self.env._("aujourd'hui")
+                post.date_affichee = self.env._("today")
             elif ecart == 1:
-                post.date_affichee = self.env._("hier")
+                post.date_affichee = self.env._("yesterday")
             elif ecart < 7:
-                post.date_affichee = self.env._("il y a %(jours)s jours", jours=ecart)
+                post.date_affichee = self.env._("%(jours)s days ago", jours=ecart)
             elif jour.year == aujourdhui.year:
                 post.date_affichee = format_date(self.env, jour, date_format="d MMMM")
             else:
@@ -503,7 +509,7 @@ class BabillardPost(models.Model):
                 "masque": masque,
                 "nb_votants": 0 if masque else len(votants),
                 "message": self.env._(
-                    "Pas assez de réponses pour afficher le résultat."
+                    "Not enough answers to show the result."
                 ) if masque else False,
                 "options": options,
             }
@@ -528,14 +534,13 @@ class BabillardPost(models.Model):
             audience = len(post.sudo()._destinataires())
             if audience < SEUIL_ANONYME:
                 post.sondage_avertissement = _(
-                    "Cette audience compte %(nb)s personnes. Un vote anonyme "
-                    "n'affichera aucun résultat tant que trois personnes n'auront "
-                    "pas répondu.", nb=audience)
+                    "This audience has %(nb)s people. An anonymous vote "
+                    "will show no result until three people have answered.", nb=audience)
             elif audience == SEUIL_ANONYME:
                 post.sondage_avertissement = _(
-                    "Cette audience compte exactement trois personnes : le "
-                    "résultat ne paraîtra que si toutes les trois répondent, et "
-                    "il restera facile à deviner.")
+                    "This audience has exactly three people: the result "
+                    "will only appear if all three answer, and it will "
+                    "stay easy to guess.")
 
     @api.constrains("type_publication", "sondage_max_ajouts", "option_ids")
     def _check_sondage(self):
@@ -543,10 +548,10 @@ class BabillardPost(models.Model):
             if post.type_publication != "sondage":
                 continue
             if post.sondage_max_ajouts < 0:
-                raise ValidationError(_("Un plafond négatif ne veut rien dire."))
+                raise ValidationError(_("A negative ceiling means nothing."))
             if len(post.option_ids) > MAX_OPTIONS:
                 raise ValidationError(_(
-                    "Un sondage porte au plus %(max)s choix.", max=MAX_OPTIONS))
+                    "A poll carries at most %(max)s options.", max=MAX_OPTIONS))
 
     def action_basculer_vote(self, option_id):
         """Voter, ou retirer sa voix. Un clic, et il se reprend.
@@ -559,13 +564,14 @@ class BabillardPost(models.Model):
         self.check_access("read")
         post = self.sudo()
         if not post._sondage_ouvert():
-            raise UserError(self.env._("Ce sondage n'accepte plus de voix."))
+            raise UserError(self.env._("This poll accepts no further votes."))
         if not post._est_destinataire(self.env.user):
-            raise AccessError(self.env._("Cette publication ne vous est pas adressée."))
+            raise AccessError(self.env._("This post is not addressed to you."))
 
         option = self.env["bf.babillard.option"].sudo().browse(int(option_id)).exists()
         if not option or option.post_id.id != self.id:
-            raise UserError(self.env._("Ce choix n'existe pas sur cette publication."))
+            raise UserError(self.env._("This option does not exist on "
+                                       "this post."))
 
         Vote = self.env["bf.babillard.vote"].sudo()
         deja = Vote.search([
@@ -598,34 +604,35 @@ class BabillardPost(models.Model):
         self.check_access("read")
         post = self.sudo()
         if not post._sondage_ouvert():
-            raise UserError(self.env._("Ce sondage n'accepte plus de choix."))
+            raise UserError(self.env._("This poll accepts no further options."))
         # ⚠️ L'audience d'abord : « ce n'est pas pour vous » précède « ce
         # sondage n'accepte pas d'ajout ». Dans l'autre ordre, une personne hors
         # audience apprenait un réglage du sondage avant d'être refusée.
         if not post._est_destinataire(self.env.user):
-            raise AccessError(self.env._("Cette publication ne vous est pas adressée."))
+            raise AccessError(self.env._("This post is not addressed to you."))
         if not post.sondage_ajout_ouvert:
             raise UserError(self.env._(
-                "Ce sondage n'accepte que les choix de la rédaction."))
+                "This poll only accepts the editors' options."))
 
         texte = " ".join((libelle or "").split())[:80]
         if not texte:
-            raise UserError(self.env._("Un choix sans texte n'est pas un choix."))
+            raise UserError(self.env._("An option with no text is not an "
+                                       "option."))
 
         deja = post.option_ids.filtered(
             lambda o: o.propose_par_id.id == self.env.uid)
         if len(deja) >= post.sondage_max_ajouts:
             raise UserError(self.env._(
-                "Vous avez déjà ajouté %(nb)s choix à ce sondage.", nb=len(deja)))
+                "You have already added %(nb)s options to this poll.", nb=len(deja)))
         if len(post.option_ids) >= MAX_OPTIONS:
             raise UserError(self.env._(
-                "Ce sondage porte déjà %(max)s choix.", max=MAX_OPTIONS))
+                "This poll already carries %(max)s options.", max=MAX_OPTIONS))
         # ⚠️ Comparaison sur le texte normalisé : « Le jeudi » et « le  jeudi »
         # sont le même choix, et deux lignes jumelles partagent les voix sans
         # que personne comprenne pourquoi le total ne tombe pas juste.
         if any(o.name.strip().casefold() == texte.casefold()
                for o in post.option_ids):
-            raise UserError(self.env._("Ce choix est déjà offert."))
+            raise UserError(self.env._("This option is already offered."))
 
         self.env["bf.babillard.option"].sudo().create({
             "post_id": self.id,
@@ -652,7 +659,7 @@ class BabillardPost(models.Model):
         """🔴 Les deux méthodes au-dessus sont publiques : le `groups=` d'un
         bouton ne garde que l'écran."""
         if not self.env.user.has_group("bf_babillard.group_babillard_redacteur"):
-            raise AccessError(_("Seule la rédaction ferme ou rouvre un sondage."))
+            raise AccessError(_("Only the editors close or reopen a poll."))
 
     @api.depends("message_ids")
     def _compute_fil(self):
@@ -734,11 +741,11 @@ class BabillardPost(models.Model):
     def _check_audience(self):
         for post in self:
             if post.audience == "departements" and not post.department_ids:
-                raise UserError(_("Nommez au moins un département, "
-                                  "ou adressez la publication à tout le personnel."))
+                raise UserError(_("Name at least one department, or "
+                                  "address the post to all staff."))
             if post.audience == "groupes" and not post.group_ids:
-                raise UserError(_("Nommez au moins un groupe, "
-                                  "ou adressez la publication à tout le personnel."))
+                raise UserError(_("Name at least one group, or address "
+                                  "the post to all staff."))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -841,9 +848,9 @@ class BabillardPost(models.Model):
             if dans_odoo:
                 post_l.message_notify(
                     partner_ids=dans_odoo.partner_id.ids,
-                    subject=post_l.env._("À lire : %s", post.name),
+                    subject=post_l.env._("To read: %s", post.name),
                     body=Markup("<p>%s</p>") % post_l.env._(
-                        "Une annonce vous demande de confirmer sa lecture : %s", post.name),
+                        "An announcement asks you to confirm you read it: %s", post.name),
                 )
             partenaires = destinataires.partner_id.filtered("email")
             if gabarit and partenaires:
@@ -854,7 +861,7 @@ class BabillardPost(models.Model):
                     email_layout_xmlid=mise_en_page)
             post_l.write({"avis_envoye_le": fields.Datetime.now()})
             post_l.message_post(
-                body=post_l.env._("Avis de lecture envoyé à %(n)s personne(s).",
+                body=post_l.env._("Read notice sent to %(n)s person(s).",
                                   n=len(destinataires)),
                 message_type="notification", subtype_xmlid="mail.mt_note")
         # Un courriel mis en file attend le prochain passage du cron, jusqu'à une
@@ -875,12 +882,12 @@ class BabillardPost(models.Model):
         Lecture = self.env["bf.babillard.lecture"]
         for post in self:
             if post.state != "publie":
-                raise UserError(_("Une publication qui n'est pas au fil ne se "
-                                  "confirme pas."))
+                raise UserError(_("A post that is not in the feed is not "
+                                  "confirmed."))
             if not post.lecture_requise:
-                raise UserError(_("Cette publication ne demande pas de confirmation."))
+                raise UserError(_("This post does not ask for a confirmation."))
             if not post.sudo()._est_destinataire(self.env.user):
-                raise AccessError(_("Cette publication ne vous est pas adressée."))
+                raise AccessError(_("This post is not addressed to you."))
             deja = Lecture.sudo().search_count([
                 ("post_id", "=", post.id), ("user_id", "=", self.env.uid)])
             if not deja:
@@ -903,16 +910,15 @@ class BabillardPost(models.Model):
         self.check_access("read")
         if self.sudo().state != "publie":
             raise UserError(self.env._(
-                "Une publication qui n'est pas au fil ne reçoit pas de "
-                "réaction."))
+                "A post that is not in the feed receives no reaction."))
         if not self.sudo()._est_destinataire(self.env.user):
             raise AccessError(self.env._(
-                "Cette publication ne vous est pas adressée."))
+                "This post is not addressed to you."))
 
         reaction = self.env["bf.babillard.reaction"].sudo().with_context(
             active_test=False).browse(int(reaction_id)).exists()
         if not reaction:
-            raise UserError(self.env._("Cette réaction n'existe pas."))
+            raise UserError(self.env._("This reaction does not exist."))
 
         Geste = self.env["bf.babillard.geste"].sudo()
         deja = Geste.search([
@@ -929,7 +935,7 @@ class BabillardPost(models.Model):
         if not reaction.active or reaction.company_id not in (
                 self.env["res.company"], self.sudo().company_id):
             raise UserError(self.env._(
-                "« %(nom)s » n'est pas offerte sur ce babillard.",
+                "\"%(nom)s\" is not offered on this noticeboard.",
                 nom=reaction.name))
         Geste.create({
             "post_id": self.id, "user_id": self.env.uid,
@@ -946,12 +952,13 @@ class BabillardPost(models.Model):
         """
         self.ensure_one()
         if not self.env.user.has_group("bf_babillard.group_babillard_redacteur"):
-            raise AccessError(_("Seule la rédaction voit qui n'a pas encore confirmé."))
+            raise AccessError(_("Only the editors see who has not "
+                                "confirmed yet."))
         lus = self.sudo().lecture_ids.mapped("user_id")
         manquants = self.sudo()._destinataires() - lus
         return {
             "type": "ir.actions.act_window",
-            "name": _("Lecture en attente"),
+            "name": _("Read pending"),
             "res_model": "res.users",
             "view_mode": "list,form",
             "domain": [("id", "in", manquants.ids)],
@@ -975,15 +982,15 @@ class BabillardPost(models.Model):
         self.check_access("read")
         equipe = self.sudo()._equipe_du_gestionnaire(self.env.user)
         if not equipe:
-            raise AccessError(_("Personne ne relève de vous : il n'y a pas "
-                                "d'équipe à relancer."))
+            raise AccessError(_("Nobody reports to you: there is no team "
+                                "to remind."))
         if self.sudo().state != "publie" or not self.sudo().lecture_requise:
-            raise UserError(_("Cette publication ne demande pas de confirmation."))
+            raise UserError(_("This post does not ask for a confirmation."))
         lus = self.sudo().lecture_ids.mapped("user_id")
         manquants = (self.sudo()._destinataires() & equipe) - lus
         return {
             "type": "ir.actions.act_window",
-            "name": _("Mon équipe, lecture en attente"),
+            "name": _("My team, read pending"),
             "res_model": "res.users",
             "view_mode": "list,form",
             "domain": [("id", "in", manquants.ids)],
@@ -1032,7 +1039,7 @@ class BabillardPost(models.Model):
         contacts. Le module s'en sert en superutilisateur, pour l'avis de lecture.
         """
         if not (self.env.su or self._est_de_l_equipe()):
-            raise AccessError(_("Prévenir l'audience ne se fait pas à la main."))
+            raise AccessError(_("Telling the audience is not done by hand."))
         return super().message_notify(**kwargs)
 
     def message_post(self, **kwargs):
@@ -1064,7 +1071,7 @@ class BabillardPost(models.Model):
         if fermees and (message_type == "email"
                         or not (self.env.su
                                 or self._note_de_l_equipe(subtype_xmlid, subtype_id))):
-            raise UserError(_("Les commentaires sont fermés sur cette publication."))
+            raise UserError(_("Comments are closed on this post."))
 
     def _est_de_l_equipe(self):
         user = self.env.user
@@ -1096,6 +1103,10 @@ class BabillardPost(models.Model):
         🔴 L'échéance ne peut pas rester un simple calcul : une publication échue
         qui reste « publiée » en base continue de passer la règle d'enregistrement.
         """
+        # Sans langue au contexte (travail planifié, XML-RPC), les libellés écrits au chatter
+        # (suivi des états, message de création) sortaient en anglais depuis la bascule.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         aujourdhui = fields.Date.context_today(self)
         echues = self.search([
             ("state", "=", "publie"),

@@ -29,7 +29,14 @@ activity when Gen has finished or failed.
 limited to the tenant, a turn ceiling, at most two concurrent tag passes, and a
 pass that fails is logged too. Only an integer reaches the prompt.
 
+## Languages (v18.0.1.0.3)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. What a scheduled job writes without anyone at the screen (status changes in the chatter, creation messages) is written in the company's language.
+
 ## Changelog
+
+### 18.0.1.0.3
+- **Source language.** Labels and messages are written in English; the French ships in `i18n/fr_CA.po`. Status changes written by the scheduled job or by the bridge over XML-RPC read in the company's language. See Languages.
 
 ### 18.0.1.0.2
 - **An unreachable bridge no longer leaves the request hanging.** When the call to the bridge failed, the background thread built its error message outside any environment, raised, and the request stayed "Sent" until the watchdog caught it. The message is now written once the request is reloaded, in the requester's language, and the request goes straight to the error state.

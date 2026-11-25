@@ -10,7 +10,7 @@
          sur une annonce de la maison, un 👎 n'ouvre pas une conversation, il la
          ferme. Qui veut nuancer a le fil de discussion juste en dessous. -->
     <record id="reaction_jaime" model="bf.babillard.reaction">
-        <field name="name">J'aime</field>
+        <field name="name">Like</field>
         <field name="symbole">👍</field>
         <field name="sequence">10</field>
         <field name="active" eval="True"/>
@@ -26,7 +26,7 @@
     </record>
 
     <record id="reaction_coup_de_coeur" model="bf.babillard.reaction">
-        <field name="name">Coup de cœur</field>
+        <field name="name">Love it</field>
         <field name="symbole">❤️</field>
         <field name="sequence">30</field>
         <field name="active" eval="True"/>
@@ -34,7 +34,7 @@
     </record>
 
     <record id="reaction_bonne_idee" model="bf.babillard.reaction">
-        <field name="name">Bonne idée</field>
+        <field name="name">Good idea</field>
         <field name="symbole">💡</field>
         <field name="sequence">40</field>
         <field name="active" eval="True"/>
@@ -42,7 +42,7 @@
     </record>
 
     <record id="reaction_merci" model="bf.babillard.reaction">
-        <field name="name">Merci</field>
+        <field name="name">Thank you</field>
         <field name="symbole">🙏</field>
         <field name="sequence">50</field>
         <field name="active" eval="True"/>
@@ -52,7 +52,7 @@
     <!-- Les sept autres attendent dans la liste, décochées. Elles sont là pour
          être cochées en deux secondes plutôt que retapées. -->
     <record id="reaction_bien_joue" model="bf.babillard.reaction">
-        <field name="name">Bien joué</field>
+        <field name="name">Well done</field>
         <field name="symbole">👏</field>
         <field name="sequence">60</field>
         <field name="active" eval="False"/>
@@ -60,7 +60,7 @@
     </record>
 
     <record id="reaction_d_accord" model="bf.babillard.reaction">
-        <field name="name">D'accord</field>
+        <field name="name">Agreed</field>
         <field name="symbole">🤝</field>
         <field name="sequence">70</field>
         <field name="active" eval="False"/>
@@ -76,7 +76,7 @@
     </record>
 
     <record id="reaction_rire" model="bf.babillard.reaction">
-        <field name="name">Ça m'a fait rire</field>
+        <field name="name">Made me laugh</field>
         <field name="symbole">😂</field>
         <field name="sequence">90</field>
         <field name="active" eval="False"/>
@@ -84,7 +84,7 @@
     </record>
 
     <record id="reaction_etonnant" model="bf.babillard.reaction">
-        <field name="name">Étonnant</field>
+        <field name="name">Surprising</field>
         <field name="symbole">😮</field>
         <field name="sequence">100</field>
         <field name="active" eval="False"/>
@@ -92,7 +92,7 @@
     </record>
 
     <record id="reaction_a_creuser" model="bf.babillard.reaction">
-        <field name="name">À creuser</field>
+        <field name="name">Worth digging into</field>
         <field name="symbole">🤔</field>
         <field name="sequence">110</field>
         <field name="active" eval="False"/>
@@ -100,7 +100,7 @@
     </record>
 
     <record id="reaction_en_route" model="bf.babillard.reaction">
-        <field name="name">En route</field>
+        <field name="name">On it</field>
         <field name="symbole">🚀</field>
         <field name="sequence">120</field>
         <field name="active" eval="False"/>

@@ -3,7 +3,11 @@
     # 18.0.1.0.2: le rafraîchissement planifié lit les libellés de bf_outreach dans
     #   la langue du client du suivi, plus dans la source (anglaise depuis
     #   bf_outreach 18.0.1.5.0).
-    "version": "18.0.1.0.2",
+    # 18.0.1.0.3: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.0.3",
     "category": "Sales",
     "summary": "L'agence qui démarche pour son client lui montre ses cibles et ses touches, et le client peut en écarter",
     "description": """

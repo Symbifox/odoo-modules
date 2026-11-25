@@ -4,14 +4,14 @@
         <field name="name">bf.process.lane.form.training</field>
         <field name="model">bf.process.lane</field>
         <field name="arch" type="xml">
-            <form string="Couloir">
+            <form string="Lane">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_open_training_activities" type="object"
                                 class="oe_stat_button" icon="fa-graduation-cap"
                                 groups="bf_training.group_training_officer">
                             <field name="training_activity_count" widget="statinfo"
-                                   string="Formations"/>
+                                   string="Training activities"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -25,21 +25,21 @@
                             <field name="employee_count"/>
                         </group>
                     </group>
-                    <separator string="Qui tient ce rôle"/>
+                    <separator string="Who holds this role"/>
                     <div class="text-muted">
-                        La carte nomme le rôle ; elle ne sait pas qui le tient. Renseigner
-                        les personnes permet à une exigence de formation de viser ce
-                        couloir plutôt qu'une liste de noms recopiée à la main.
+                        The map names the role; it does not know who holds it. Filling in
+                        the people lets a training requirement target this
+                        lane rather than a list of names copied out by hand.
                     </div>
                     <field name="employee_ids" widget="many2many_tags"
                            options="{'no_create': True}"/>
-                    <separator string="Étapes"/>
+                    <separator string="Steps"/>
                     <field name="node_ids" readonly="1">
                         <list>
                             <field name="code"/>
                             <field name="name"/>
                             <field name="kind"/>
-                            <field name="training_activity_count" string="Formations"/>
+                            <field name="training_activity_count" string="Training activities"/>
                         </list>
                     </field>
                 </sheet>

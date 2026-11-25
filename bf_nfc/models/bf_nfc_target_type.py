@@ -23,22 +23,24 @@ MODELES_GESTION = {"ir.cron", "ir.actions.server"}
 
 class BfNfcTargetType(models.Model):
     _name = "bf.nfc.target.type"
-    _description = "Type de fiche visable par une pastille"
+    _description = "Record type a tag can target"
     _order = "sequence, id"
 
     sequence = fields.Integer(default=10)
-    model = fields.Selection(selection="_selection_modeles", string="Type de fiche", required=True)
-    name = fields.Char(string="Libellé", compute="_compute_name", store=True, readonly=False,
+    model = fields.Selection(selection="_selection_modeles", string="Record "
+                                                                    "type", required=True)
+    name = fields.Char(string="Label", compute="_compute_name", store=True, readonly=False,
                        translate=True)
     active = fields.Boolean(default=True)
     gestion_seulement = fields.Boolean(
-        string="Réservé à la gestion", compute="_compute_gestion_seulement", store=True,
+        string="Reserved for managers", compute="_compute_gestion_seulement", store=True,
         readonly=False,
-        help="Le type n'est proposé qu'aux gestionnaires des pastilles. Toujours coché "
-             "pour ce qui déclenche un traitement (tâche planifiée, action).")
+        help="The type is offered only to tag managers. Always checked "
+             "for what triggers a job (scheduled action, action).")
 
     _sql_constraints = [
-        ("modele_unique", "unique(model)", "Ce type de fiche est déjà dans la liste."),
+        ("modele_unique", "unique(model)", "This record type is already "
+                                           "in the list."),
     ]
 
     @api.model
@@ -78,8 +80,8 @@ class BfNfcTargetType(models.Model):
     def _check_gestion(self):
         for ligne in self:
             if ligne.model in MODELES_GESTION and not ligne.gestion_seulement:
-                raise ValidationError(_("« %s » déclenche un traitement : ce type reste réservé "
-                                        "à la gestion.", ligne.name or ligne.model))
+                raise ValidationError(_("“%s” triggers a job: this type "
+                                        "stays reserved for managers.", ligne.name or ligne.model))
 
     @api.model
     def _noms(self, gestion):

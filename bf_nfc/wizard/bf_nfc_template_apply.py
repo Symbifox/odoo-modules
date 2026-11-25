@@ -14,23 +14,25 @@ MAX_LIGNES = 200
 
 class BfNfcTemplateApply(models.TransientModel):
     _name = "bf.nfc.template.apply"
-    _description = "Pose d'un gabarit de pastilles"
+    _description = "Tag template application"
 
-    template_id = fields.Many2one("bf.nfc.template", string="Gabarit", required=True, readonly=True)
+    template_id = fields.Many2one("bf.nfc.template", string="Template", required=True, readonly=True)
     description = fields.Text(related="template_id.description")
     reference = fields.Char(related="template_id.reference")
     recette = fields.Selection(related="template_id.recette")
     cible_requise = fields.Boolean(related="template_id.cible_requise")
     signee_recommandee = fields.Boolean(related="template_id.signee_recommandee")
-    demande_adresse = fields.Boolean(compute="_compute_demande_adresse")
-    lignes = fields.Text(string="Une ligne par pastille", required=True,
-                         help="« nom ; endroit », l'endroit est facultatif.")
-    prefixe = fields.Char(string="Préfixe du libellé")
-    cible = fields.Reference(selection="_selection_cible", string="Fiche visée")
-    adresse = fields.Char(string="Adresse à ouvrir", help="https://…")
-    responsible_id = fields.Many2one("res.users", string="Responsable",
+    demande_adresse = fields.Boolean(string="Asks for an address", compute="_compute_demande_adresse")
+    lignes = fields.Text(string="One line per tag", required=True,
+                         help="“name ; place”, the place is optional.")
+    prefixe = fields.Char(string="Label prefix")
+    cible = fields.Reference(selection="_selection_cible", string="Target "
+                                                                  "record")
+    adresse = fields.Char(string="Address to open", help="https://…")
+    responsible_id = fields.Many2one("res.users", string="Person in charge",
                                      default=lambda self: self.env.user,
-                                     help="Reçoit les alertes de ce qui est créé.")
+                                     help="Receives the alerts for what "
+                                          "is created.")
 
     @api.model
     def _selection_cible(self):
@@ -68,24 +70,27 @@ class BfNfcTemplateApply(models.TransientModel):
             if nom.strip():
                 lues.append((nom.strip()[:120], endroit.strip()[:120]))
         if not lues:
-            raise UserError(_("Écrivez au moins une ligne : une par pastille à créer."))
+            raise UserError(_("Write at least one line: one per tag to create."))
         if len(lues) > MAX_LIGNES:
-            raise UserError(_("%s lignes : posez ce gabarit par étage ou par bâtiment, "
-                              "pas plus de %s d'un coup.", len(lues), MAX_LIGNES))
+            raise UserError(_("%s lines: apply this template by floor or "
+                              "by building, no more than %s at a time.", len(lues), MAX_LIGNES))
         return lues
 
     def action_appliquer(self):
         self.ensure_one()
         if not self.env.user.has_group("bf_nfc.group_nfc_manager"):
-            raise AccessError(_("Poser un gabarit est réservé à la gestion des pastilles."))
+            raise AccessError(_("Applying a template is reserved for tag "
+                                "managers."))
         if self.cible_requise and not self.cible:
-            raise UserError(_("Ce gabarit demande la fiche que les pastilles visent."))
+            raise UserError(_("This template needs the record the tags "
+                              "point to."))
         if self.demande_adresse and not (self.adresse or "").startswith(("https://", "http://")):
-            raise UserError(_("Donnez l'adresse que la pastille ouvrira (https://…)."))
+            raise UserError(_("Enter the address the tag will open "
+                              "(https://…)."))
         crees = self.template_id._appliquer(self, self._lignes())
         return {
             "type": "ir.actions.act_window",
-            "name": _("%(n)s pastilles : %(gabarit)s", n=len(crees), gabarit=self.template_id.name),
+            "name": _("%(n)s tags: %(gabarit)s", n=len(crees), gabarit=self.template_id.name),
             "res_model": "bf.nfc.tag",
             "view_mode": "list,form",
             "domain": [("id", "in", crees.ids)],

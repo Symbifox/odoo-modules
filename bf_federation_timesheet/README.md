@@ -40,3 +40,7 @@ comme le destinataire d'un livrable.
 ## Dépendances
 
 `bf_federation_document`, `hr_timesheet`.
+
+## Languages (v18.0.1.0.2)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The grouping label of a statement follows the user's language. Its fingerprint is still computed on the labels statements carried before this version, so an unchanged statement produced after the upgrade is not delivered again.

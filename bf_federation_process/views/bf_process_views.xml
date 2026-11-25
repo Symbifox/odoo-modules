@@ -7,8 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="before">
                 <div class="alert alert-info" role="status" invisible="not federation_is_mirror">
-                    Cartographie reçue de <field name="federation_peer_id" readonly="1" class="oe_inline"/>.
-                    Elle se lit ici : la version suivante remplacera le tracé.
+                    Process map received from <field name="federation_peer_id" readonly="1" class="oe_inline"/>. It is read-only here: the next version will replace the drawing.
                 </div>
             </xpath>
             <xpath expr="//header" position="inside">
@@ -16,10 +15,9 @@
                 <field name="federation_origin" invisible="1"/>
                 <field name="federation_possible" invisible="1"/>
                 <field name="federation_allowed_peer_ids" invisible="1"/>
-                <button name="action_federation_push" type="object" string="Renvoyer le tracé au pair"
+                <button name="action_federation_push" type="object" string="Send the drawing to the peer again"
                         invisible="federation_origin != 'local' or not federation_peer_id"
-                        help="Les niveaux ne sont pas des champs surveillés : après avoir retouché
-                              le tracé, ce bouton envoie la carte telle qu'elle est."/>
+                        help="Levels are not watched fields: after reworking the drawing, this button sends the map as it is."/>
             </xpath>
             <xpath expr="//field[@name='version']" position="after">
                 <field name="federation_peer_id" invisible="federation_is_mirror or not federation_possible"/>

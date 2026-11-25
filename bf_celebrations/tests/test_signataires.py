@@ -15,6 +15,13 @@ class TestSignataires(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # 🔴 La langue est épinglée : la source du module est anglaise depuis la
+        # 18.0.2.2.1, et les assertions ci-dessous lisent des libellés rendus
+        # (un sujet de courriel, un nom d'occasion fabriqué depuis le type).
+        # Sans cet ancrage elles suivaient la langue d'OdooBot, donc l'état de
+        # la base. Le français a ses propres essais (test_deux_langues.py).
+        cls.env["res.lang"]._activate_lang("en_US")
+        cls.env = cls.env(context=dict(cls.env.context, lang="en_US"))
         cls.organisateur = cls.env["res.users"].create({
             "name": "Org", "login": "cel_sg_org@example.test",
             "email": "cel_sg_org@example.test",
@@ -55,7 +62,7 @@ class TestSignataires(TransactionCase):
         return self.env["mail.mail"].sudo().search([
             ("model", "=", "bf.celebration.board"),
             ("res_id", "=", self.board.id),
-            ("subject", "ilike", "carte à signer")])
+            ("subject", "ilike", "card to sign")])
 
     def test_le_groupe_se_resout_a_l_envoi(self):
         adresses = self.groupe._resoudre()
@@ -76,7 +83,7 @@ class TestSignataires(TransactionCase):
         self.assertEqual(self.board.sudo().invited_count, 3)
         # Le chatter dit combien, pas qui.
         notes = self.board.sudo().message_ids.filtered(
-            lambda m: "pour signer" in (m.body or ""))
+            lambda m: "to sign" in (m.body or ""))
         self.assertTrue(notes)
         self.assertNotIn("a@example.test", notes[0].body)
         self.assertIn("3", notes[0].body)
@@ -85,7 +92,7 @@ class TestSignataires(TransactionCase):
         self.board.action_ouvrir()
         courriel = self._courriels().filtered(
             lambda c: c.email_to == "client@example.test")
-        self.assertIn("Bonjour Client", courriel.body_html)
+        self.assertIn("Hello Client", courriel.body_html)
         self.assertIn(self.board.sudo().contribution_url, courriel.body_html)
 
     def test_on_n_ecrit_qu_une_fois_a_chacun(self):
@@ -93,7 +100,7 @@ class TestSignataires(TransactionCase):
         avant = len(self._courriels())
         action = self.board.action_inviter_signataires()
         self.assertEqual(len(self._courriels()), avant)
-        self.assertIn("déjà reçu", action["params"]["message"])
+        self.assertIn("already received", action["params"]["message"])
         # Une personne ajoutée ensuite reçoit le lien, et elle seule.
         nouveau = self.env["res.partner"].create({
             "name": "Nouveau", "email": "nouveau@example.test"})

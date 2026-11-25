@@ -17,22 +17,22 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     celebration_reminder_days = fields.Integer(
-        string="Prévenir la personne qui organise (jours avant)",
+        string="Tell the organiser (days before)",
         default=10,
         config_parameter="bf_celebrations.reminder_days",
     )
     celebration_horizon_days = fields.Integer(
-        string="Horizon du calendrier (jours)",
+        string="Calendar horizon (days)",
         default=60,
         config_parameter="bf_celebrations.horizon_days",
     )
     celebration_thin_threshold = fields.Integer(
-        string="Un tableau est mince en deçà de (messages)",
+        string="A board is thin below (messages)",
         default=3,
         config_parameter="bf_celebrations.thin_threshold",
     )
     celebration_thin_days = fields.Integer(
-        string="Relancer un tableau mince (jours avant livraison)",
+        string="Chase up a thin board (days before delivery)",
         default=2,
         config_parameter="bf_celebrations.thin_days",
     )
@@ -40,38 +40,38 @@ class ResConfigSettings(models.TransientModel):
     # 0 est ici l'état sûr : « ne rien effacer ». La purge ne s'allume qu'en
     # posant un nombre de mois. Voir `_cron_purger_livres`.
     celebration_retention_months = fields.Integer(
-        string="Effacer les cartes livrées après (mois)",
+        string="Erase delivered cards after (months)",
         default=0,
         config_parameter="bf_celebrations.retention_months",
-        help="0 : on garde tout. Sinon, une carte livrée depuis plus de N "
-             "mois est effacée avec ses mots, ses images et ses pièces "
-             "jointes. La personne fêtée a reçu la sienne en PDF et en page "
-             "souvenir à la livraison : ce qui s'efface ici est la copie du "
-             "système, pas la sienne.",
+        help="0: keep everything. Otherwise, a card delivered more than N "
+             "months ago is erased with its messages, its images and its "
+             "attachments. The person celebrated received theirs as a PDF "
+             "and as a keepsake page at delivery: what is erased here is "
+             "the system's copy, not theirs.",
     )
     celebration_invite_cap = fields.Integer(
-        string="Plafond d'invitations par envoi",
+        string="Ceiling of invitations per send",
         default=300,
         config_parameter="bf_celebrations.invite_cap",
-        help="Au-delà, l'envoi est refusé plutôt que de saturer la file de "
-             "courriels. Découpez le groupe.",
+        help="Past that, sending is refused rather than flooding the "
+             "email queue. Split the group.",
     )
     celebration_calendar_mirror = fields.Boolean(
-        string="Poser les célébrations dans l'agenda Odoo",
+        string="Lay the celebrations down in the Odoo calendar",
         config_parameter="bf_celebrations.calendar_mirror",
-        help="Les entrées d'agenda se synchronisent vers les téléphones et "
-             "le CalDAV. Seules les personnes qui ont accepté un tableau y "
-             "paraissent, jamais celles qui ont demandé la discrétion.",
+        help="Calendar entries sync to phones and to CalDAV. Only the "
+             "people who accepted a board appear there, never those who "
+             "asked for discretion.",
     )
     celebration_default_organizer_id = fields.Many2one(
         "res.users",
-        string="Personne qui organise par défaut",
+        string="Default organiser",
         config_parameter="bf_celebrations.default_organizer_id",
-        help="Sert quand la personne fêtée n'a pas de gestionnaire.",
+        help="Used when the person celebrated has no manager.",
     )
     celebration_discuss_channel_id = fields.Many2one(
         "discuss.channel",
-        string="Canal où annoncer les cartes",
+        string="Channel to announce the cards in",
         config_parameter="bf_celebrations.discuss_channel_id",
     )
 

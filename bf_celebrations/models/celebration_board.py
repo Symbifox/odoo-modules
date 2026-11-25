@@ -23,8 +23,11 @@ from dateutil.relativedelta import relativedelta
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
+from odoo.tools.misc import get_lang
 from odoo.exceptions import UserError
 from odoo.tools import file_open
+
+from .langue import langue_de
 
 _logger = logging.getLogger(__name__)
 
@@ -40,10 +43,10 @@ BOUTON_COURRIEL = "#177AA3"
 PIECES_JOINTES_MAX = 15 * 1024 * 1024
 
 THEMES = [
-    ("confetti", "Confettis"),
-    ("sobre", "Sobre"),
-    ("nuit", "Nuit"),
-    ("foret", "Forêt"),
+    ("confetti", "Confetti"),
+    ("sobre", "Plain"),
+    ("nuit", "Night"),
+    ("foret", "Forest"),
 ]
 
 # Palette par thème.
@@ -91,7 +94,7 @@ PALETTES = {
 
 class CelebrationBoard(models.Model):
     _name = "bf.celebration.board"
-    _description = "Tableau de vœux"
+    _description = "Wishes board"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "delivery_date desc, id desc"
 
@@ -104,68 +107,68 @@ class CelebrationBoard(models.Model):
         "mail.mail_notification_light",
     )
 
-    name = fields.Char(string="Titre", required=True, tracking=True)
+    name = fields.Char(string="Title", required=True, tracking=True)
     occasion_id = fields.Many2one(
         "bf.celebration.occasion", string="Occasion", ondelete="set null",
         index=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company)
 
     recipient_employee_id = fields.Many2one(
-        "hr.employee", string="Personne fêtée", index=True)
+        "hr.employee", string="Person celebrated", index=True)
     recipient_partner_id = fields.Many2one(
-        "res.partner", string="Contact fêté")
+        "res.partner", string="Contact celebrated")
     recipient_user_id = fields.Many2one(
-        "res.users", string="Compte de la personne fêtée",
+        "res.users", string="Account of the person celebrated",
         compute="_compute_recipient_user", store=True, index=True,
-        help="Sert uniquement à lui cacher son propre tableau avant la "
-             "livraison. Voir la règle d'enregistrement du module.")
+        help="Used only to hide their own board from them before "
+             "delivery. See the module's record rule.")
     recipient_name = fields.Char(
-        string="Nom affiché", compute="_compute_recipient_name", store=True)
+        string="Displayed name", compute="_compute_recipient_name", store=True)
     recipient_email = fields.Char(
-        string="Courriel de livraison", compute="_compute_recipient_email",
+        string="Delivery email", compute="_compute_recipient_email",
         store=True, readonly=False)
 
     organizer_id = fields.Many2one(
-        "res.users", string="Personne qui organise", required=True,
+        "res.users", string="Organiser", required=True,
         default=lambda self: self.env.user, tracking=True)
 
     intro_html = fields.Html(
-        string="Mot d'introduction", sanitize=True,
-        help="Ce que les gens lisent en arrivant sur la page.")
-    theme = fields.Selection(THEMES, string="Thème", default="confetti",
+        string="Opening message", sanitize=True,
+        help="What people read when they land on the page.")
+    theme = fields.Selection(THEMES, string="Theme", default="confetti",
                              required=True)
-    background_image = fields.Image(string="Image de fond", max_width=2400,
+    background_image = fields.Image(string="Background image", max_width=2400,
                                     max_height=1400)
 
     state = fields.Selection(
         [
-            ("draft", "Brouillon"),
-            ("open", "Ouvert aux signatures"),
-            ("delivered", "Livré"),
-            ("cancelled", "Annulé"),
+            ("draft", "Draft"),
+            ("open", "Open for signatures"),
+            ("delivered", "Delivered"),
+            ("cancelled", "Cancelled"),
         ],
-        string="État",
+        string="State",
         default="draft", required=True, index=True, tracking=True)
 
     delivery_date = fields.Datetime(
-        string="Livraison prévue", required=True, tracking=True,
-        help="La personne fêtée ne voit rien avant ce moment.")
-    delivered_date = fields.Datetime(string="Livré le", readonly=True,
+        string="Delivery planned", required=True, tracking=True,
+        help="The person celebrated sees nothing before that moment.")
+    delivered_date = fields.Datetime(string="Delivered on", readonly=True,
                                      copy=False)
 
     moderation = fields.Boolean(
-        string="Approuver les messages", default=False,
-        help="Un lien public reste un lien public. Coché, chaque message "
-             "attend votre feu vert avant de paraître.")
-    allow_images = fields.Boolean(string="Accepter les images", default=True)
+        string="Approve the messages", default=False,
+        help="A public link stays a public link. Ticked, every message "
+             "waits for your go-ahead before appearing.")
+    allow_images = fields.Boolean(string="Accept images", default=True)
 
-    access_token = fields.Char(string="Jeton", copy=False, index=True,
+    access_token = fields.Char(string="Token", copy=False, index=True,
                                groups="bf_celebrations.group_organizer")
     contribution_url = fields.Char(
-        string="Lien à partager", compute="_compute_urls")
-    board_url = fields.Char(string="Lien du tableau", compute="_compute_urls")
+        string="Link to share", compute="_compute_urls")
+    board_url = fields.Char(string="Board link", compute="_compute_urls")
     # ------------------------------------------------------------------
     # Le merci de la personne fêtée
     # ------------------------------------------------------------------
@@ -175,26 +178,26 @@ class CelebrationBoard(models.Model):
     # elle. Le formulaire de merci n'apparaît que si la page est ouverte avec
     # cette clé, et le merci ne se dit qu'une fois.
     thanks_token = fields.Char(
-        string="Clé du merci", copy=False,
+        string="Thank-you key", copy=False,
         groups="bf_celebrations.group_organizer")
     recipient_url = fields.Char(
-        string="Lien de la personne fêtée", compute="_compute_urls",
-        help="Le lien du tableau, avec la clé qui lui permet de remercier. "
-             "Il ne va qu'à elle.")
+        string="Link for the person celebrated", compute="_compute_urls",
+        help="The board's link, with the key that lets them thank. It "
+             "goes to them alone.")
     thanks_html = fields.Html(
-        string="Merci de la personne fêtée", sanitize=True, readonly=True,
+        string="Thank-you from the person celebrated", sanitize=True, readonly=True,
         copy=False)
-    thanks_date = fields.Datetime(string="Merci reçu le", readonly=True,
+    thanks_date = fields.Datetime(string="Thank-you received on", readonly=True,
                                   copy=False)
 
     qr_image = fields.Binary(
-        string="Code QR", compute="_compute_qr_image",
-        help="Le code QR du lien à partager, à imprimer et coller dans la "
-             "cuisine.")
+        string="QR code", compute="_compute_qr_image",
+        help="The QR code of the link to share, to print and stick in the "
+             "kitchen.")
     empty_notified = fields.Boolean(
-        string="Retenue signalée", copy=False,
-        help="Le cron de livraison passe toutes les heures ; sans ce témoin, "
-             "un tableau vide et dû posait une activité par heure.")
+        string="Hold reported", copy=False,
+        help="The delivery job runs every hour; without this witness, an "
+             "empty board that was due raised one activity per hour.")
 
     # ------------------------------------------------------------------
     # À qui l'on tend la carte
@@ -205,35 +208,35 @@ class CelebrationBoard(models.Model):
     signer_group_ids = fields.Many2many(
         "bf.celebration.signer.group",
         "bf_celebration_board_signer_group_rel", "board_id", "group_id",
-        string="Groupes de signataires",
+        string="Signatory groups",
         groups="bf_celebrations.group_organizer",
-        help="Résolus au moment de l'envoi. La personne fêtée en est "
-             "toujours retirée, même si elle fait partie du service.")
+        help="Resolved at the moment of sending. The person celebrated is "
+             "always taken out, even if they belong to the department.")
     signer_partner_ids = fields.Many2many(
         "res.partner", "bf_celebration_board_signer_partner_rel",
-        "board_id", "partner_id", string="Autres signataires",
+        "board_id", "partner_id", string="Other signatories",
         groups="bf_celebrations.group_organizer",
-        help="Des gens ajoutés pour cette carte seulement.")
+        help="People added for this card only.")
     invited_count = fields.Integer(
-        string="Personnes invitées", copy=False, readonly=True,
+        string="People invited", copy=False, readonly=True,
         groups="bf_celebrations.group_organizer")
     invited_keys = fields.Text(
-        string="Adresses déjà invitées", copy=False, readonly=True,
+        string="Addresses already invited", copy=False, readonly=True,
         groups="bf_celebrations.group_organizer",
-        help="Pour n'écrire qu'une fois à chacun quand on ajoute un groupe "
-             "ou qu'on relance.")
+        help="So that each person is written to once only when a group is "
+             "added or a reminder goes out.")
 
     # ⚠️ Intitulés choisis pour ne PAS entrer en collision avec
     # `message_ids` de `mail.thread`, qui porte déjà « Messages ». Odoo
     # n'annonce ce doublon qu'au chargement d'un registre NEUF : sur un
     # locataire déjà monté, l'avertissement ne paraît jamais.
     post_ids = fields.One2many(
-        "bf.celebration.post", "board_id", string="Mots sur la carte")
+        "bf.celebration.post", "board_id", string="Messages on the card")
     post_count = fields.Integer(compute="_compute_post_count",
-                                string="Mots")
+                                string="Message count")
     published_post_count = fields.Integer(compute="_compute_post_count",
-                                          string="Mots visibles")
-    thin_notified = fields.Boolean(string="Relance « tableau mince » envoyée",
+                                          string="Messages visible")
+    thin_notified = fields.Boolean(string="\"Thin board\" reminder sent",
                                    copy=False)
 
     # ------------------------------------------------------------------
@@ -347,7 +350,7 @@ class CelebrationBoard(models.Model):
     def action_ouvrir(self):
         for board in self:
             if not board.delivery_date:
-                raise UserError(_("Indiquez le moment de la livraison."))
+                raise UserError(_("State when the delivery happens."))
             board.state = "open"
         self._diffuser_le_lien()
         # Ouvrir aux signatures, c'est tendre la carte : les groupes déjà
@@ -393,9 +396,13 @@ class CelebrationBoard(models.Model):
             # Le souvenir part AVEC la carte : un PDF et une page autonome,
             # que la personne garde hors du système. Le lien, lui, meurt
             # avec le compte ou avec la purge de rétention.
-            pieces = board._pieces_souvenir()
+            # La carte, le souvenir et le courriel dans la langue de la personne fêtée.
+            lang = langue_de(self.env, board.recipient_employee_id.user_id,
+                             board.recipient_employee_id.work_contact_id,
+                             societe=board.company_id)
+            pieces = board.with_context(lang=lang)._pieces_souvenir()
             if gabarit:
-                gabarit.send_mail(
+                gabarit.with_context(lang=lang).send_mail(
                     board.id,
                     email_values={
                         "email_to": ", ".join(adresses),
@@ -531,8 +538,8 @@ class CelebrationBoard(models.Model):
         if retenues:
             self.message_post(
                 body=Markup("<p>%s</p>") % _(
-                    "Trop lourd pour le courriel, non joint : %(noms)s. La "
-                    "carte reste téléchargeable depuis sa page.",
+                    "Too heavy for email, not attached: %(noms)s. The "
+                    "card is still downloadable from its page.",
                     noms=", ".join(retenues)),
                 message_type="comment", subtype_xmlid="mail.mt_note")
         return pieces
@@ -546,6 +553,10 @@ class CelebrationBoard(models.Model):
         et le lien. Une occasion garde sa ligne au calendrier (un type, un
         nom, une date), ce qui n'est pas la carte.
         """
+        # Sans langue au contexte (travail planifié, XML-RPC), les libellés écrits au chatter
+        # (suivi des états, message de création) sortaient en anglais depuis la bascule.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         brut = self.env["ir.config_parameter"].sudo().get_param(
             "bf_celebrations.retention_months")
         try:
@@ -616,8 +627,8 @@ class CelebrationBoard(models.Model):
         plafond = self._plafond_invitations()
         if len(nouveaux) > plafond:
             raise UserError(_(
-                "%(nb)s personnes à inviter, au-delà du plafond de %(max)s. "
-                "Découpez le groupe, ou relevez le plafond dans la "
+                "%(nb)s people to invite, past the ceiling of %(max)s. "
+                "Split the group, or raise the ceiling in the "
                 "configuration.", nb=len(nouveaux), max=plafond))
         if gabarit:
             for cle, (nom, adresse) in sorted(nouveaux.items()):
@@ -641,7 +652,7 @@ class CelebrationBoard(models.Model):
             # livraison par la personne fêtée.
             board.message_post(
                 body=Markup("<p>%s</p>") % _(
-                    "Lien envoyé à %(nb)s personne(s) pour signer.",
+                    "Link sent to %(nb)s person(s) to sign.",
                     nb=len(nouveaux)),
                 message_type="comment", subtype_xmlid="mail.mt_note")
         return len(nouveaux)
@@ -707,7 +718,7 @@ class CelebrationBoard(models.Model):
         })
         board.message_post(
             body=Markup("<p><strong>%s</strong></p>%s") % (
-                _("Merci de %(nom)s", nom=board.recipient_name or ""),
+                _("Thank-you from %(nom)s", nom=board.recipient_name or ""),
                 Markup(board.thanks_html or "")),
             message_type="comment", subtype_xmlid="mail.mt_note")
         gabarit = self.env.ref(
@@ -752,7 +763,7 @@ class CelebrationBoard(models.Model):
             return
         canal.message_post(
             body=Markup("<p>%s</p>%s") % (
-                _("%(nom)s a reçu sa carte et vous remercie :",
+                _("%(nom)s has received their card and thanks you:",
                   nom=self.recipient_name or ""),
                 Markup(self.sudo().thanks_html or "")),
             message_type="comment", subtype_xmlid="mail.mt_comment")
@@ -773,7 +784,7 @@ class CelebrationBoard(models.Model):
         self.ensure_one()
         if self.state != "open":
             raise UserError(_(
-                "Ouvrez d'abord la carte aux signatures."))
+                "Open the card for signatures first."))
         nombre = self._inviter_signataires()
         return {
             "type": "ir.actions.client",
@@ -781,10 +792,10 @@ class CelebrationBoard(models.Model):
             "params": {
                 "type": "success" if nombre else "info",
                 "message": (
-                    _("Lien envoyé à %(nb)s personne(s).", nb=nombre)
+                    _("Link sent to %(nb)s person(s).", nb=nombre)
                     if nombre else
-                    _("Personne de nouveau à inviter : tout le monde a "
-                      "déjà reçu le lien.")),
+                    _("Nobody new to invite: everybody has already "
+                      "received the link.")),
             },
         }
 
@@ -826,13 +837,13 @@ class CelebrationBoard(models.Model):
             '<p style="color:#6b7280;font-size:12px">%(note)s</p>'
         ) % {
             "intro": _(
-                "Une carte collective est ouverte pour %(nom)s.",
+                "A group card is open for %(nom)s.",
                 nom=self.recipient_name or ""),
             "url": self.contribution_url or "",
-            "cta": _("Signer la carte"),
+            "cta": _("Sign the card"),
             "note": _(
-                "Aucun compte n'est demandé. La personne fêtée ne voit rien "
-                "avant la livraison."),
+                "No account is needed. The person celebrated sees nothing "
+                "before delivery."),
         }
 
     # ------------------------------------------------------------------
@@ -841,6 +852,10 @@ class CelebrationBoard(models.Model):
 
     @api.model
     def _cron_livrer(self):
+        # Sans langue au contexte (travail planifié, XML-RPC), les libellés écrits au chatter
+        # (suivi des états, message de création) sortaient en anglais depuis la bascule.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         maintenant = fields.Datetime.now()
         a_livrer = self.sudo().search([
             ("state", "=", "open"),
@@ -857,6 +872,10 @@ class CelebrationBoard(models.Model):
     @api.model
     def _cron_relancer_tableaux_minces(self):
         """Deux jours avant, un tableau trop mince mérite une relance."""
+        # Sans langue au contexte (travail planifié, XML-RPC), les libellés écrits au chatter
+        # (suivi des états, message de création) sortaient en anglais depuis la bascule.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         param = self.env["ir.config_parameter"].sudo()
         try:
             seuil = max(1, int(param.get_param(
@@ -880,7 +899,8 @@ class CelebrationBoard(models.Model):
         ]).filtered(lambda b: b.published_post_count < seuil)
         for board in minces:
             if gabarit and board.organizer_id.email_formatted:
-                gabarit.send_mail(
+                gabarit.with_context(lang=langue_de(
+                    self.env, board.organizer_id, societe=board.company_id)).send_mail(
                     board.id,
                     email_values={
                         "email_to": board.organizer_id.email_formatted,
@@ -901,10 +921,10 @@ class CelebrationBoard(models.Model):
         self.sudo().activity_schedule(
             "mail.mail_activity_data_todo",
             user_id=self.organizer_id.id,
-            summary=_("Tableau vide, livraison retenue"),
+            summary=_("Empty board, delivery held"),
             note=_(
-                "Personne n'a signé la carte de %(nom)s. Elle n'a pas été "
-                "envoyée. Partagez le lien, puis livrez à la main.",
+                "Nobody signed %(nom)s's card. It was not sent. Share the "
+                "link, then deliver it by hand.",
                 nom=self.recipient_name or ""),
         )
 

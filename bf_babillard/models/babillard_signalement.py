@@ -27,47 +27,50 @@ class BabillardSignalement(models.Model):
     """
 
     _name = "bf.babillard.signalement"
-    _description = "Signalement d'un contenu du babillard"
+    _description = "Report of a noticeboard content"
     _order = "create_date desc, id desc"
     # ⚠️ `mail.activity.mixin` et pas seulement `mail.thread` : une activité posée
     # sur un modèle qui n'a pas le mixin fait tomber tout le tableau des activités.
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
-    name = fields.Char("Référence", compute="_compute_name", store=True)
+    name = fields.Char("Reference", compute="_compute_name", store=True)
     post_id = fields.Many2one(
-        "bf.babillard.post", string="Publication", required=True, ondelete="cascade")
+        "bf.babillard.post", string="Post", required=True, ondelete="cascade")
     company_id = fields.Many2one(
-        related="post_id.company_id", store=True, string="Société")
+        related="post_id.company_id", store=True, string="Company")
     message_id = fields.Many2one(
-        "mail.message", string="Commentaire visé", ondelete="set null",
-        help="Vide quand c'est la publication elle-même qui est signalée.")
+        "mail.message", string="Comment reported", ondelete="set null",
+        help="Empty when the post itself is the thing reported.")
     auteur_signalement_id = fields.Many2one(
-        "res.users", string="Signalé par", required=True,
+        "res.users", string="Reported by", required=True,
         default=lambda s: s.env.user, ondelete="restrict")
     cible_partner_id = fields.Many2one(
-        "res.partner", string="Personne visée", readonly=True,
-        help="L'auteur du contenu au moment du signalement. Il ne reçoit pas le "
-             "signalement et ne le lit pas, même s'il fait partie de la modération.")
+        "res.partner", string="Person reported", readonly=True,
+        help="The author of the content at the time of the report. They "
+             "do not receive the report and do not read it, even if they "
+             "are part of moderation.")
     extrait = fields.Html(
-        "Contenu signalé", readonly=True, sanitize=True,
-        help="Copie du contenu au moment du signalement. Le dossier tient même si "
-             "le commentaire est effacé ou réécrit ensuite.")
-    motif = fields.Text("Motif", required=True)
+        "Content reported", readonly=True, sanitize=True,
+        help="A copy of the content at the time of the report. The file "
+             "holds even if the comment is erased or rewritten afterwards.")
+    motif = fields.Text("Reason", required=True)
     state = fields.Selection(
-        [("nouveau", "Nouveau"), ("en_cours", "En traitement"), ("traite", "Traité")],
-        string="État", default="nouveau", required=True, tracking=True)
+        [("nouveau", "New"), ("en_cours", "Being handled"), ("traite", "Handled")],
+        string="State", default="nouveau", required=True, tracking=True)
     responsable_id = fields.Many2one(
-        "res.users", string="Personne désignée", tracking=True,
+        "res.users", string="Designated person", tracking=True,
         groups="bf_babillard.group_babillard_moderation")
-    suite = fields.Text("Suite donnée", groups="bf_babillard.group_babillard_moderation")
+    suite = fields.Text("Action taken", groups="bf_babillard.group_babillard_moderation")
     escalade = fields.Boolean(
-        "Remonté à l'administration", readonly=True, copy=False,
-        help="Personne d'autre que la personne visée n'était à la modération : le "
-             "signalement est allé à l'administration, qui doit désigner quelqu'un.")
+        "Escalated to the administration", readonly=True, copy=False,
+        help="Nobody other than the person reported was in moderation: "
+             "the report went to the administration, who must designate "
+             "somebody.")
     sans_destinataire = fields.Boolean(
-        "Sans destinataire", readonly=True, copy=False,
-        help="Personne dans l'organisation ne pouvait recevoir ce signalement : il "
-             "est conservé, et la personne qui signale a été renvoyée à sa politique.")
+        "No recipient", readonly=True, copy=False,
+        help="Nobody in the organisation could receive this report: it is "
+             "kept, and the person reporting was pointed back to their "
+             "policy.")
 
     @api.depends("create_date")
     def _compute_name(self):
@@ -81,8 +84,8 @@ class BabillardSignalement(models.Model):
         """
         for sig in self:
             numero = sig._origin.id or sig.id
-            sig.name = (_("Signalement n° %s", numero) if isinstance(numero, int)
-                        else _("Signalement"))
+            sig.name = (_("Report no. %s", numero) if isinstance(numero, int)
+                        else _("Report"))
 
     @api.constrains("post_id", "message_id")
     def _check_commentaire_de_la_publication(self):
@@ -91,8 +94,8 @@ class BabillardSignalement(models.Model):
             message = sig.sudo().message_id
             if message and (message.model != sig.post_id._name
                             or message.res_id != sig.post_id.id):
-                raise ValidationError(_("Le commentaire visé n'appartient pas à "
-                                        "cette publication."))
+                raise ValidationError(_("The comment reported does not "
+                                        "belong to this post."))
 
     @api.model
     def default_get(self, champs):
@@ -153,8 +156,8 @@ class BabillardSignalement(models.Model):
         if not self.env.su:
             interdits = set(vals) - CHAMPS_DE_LA_MODERATION
             if interdits:
-                raise AccessError(_("Un signalement se traite, il ne se réécrit pas. "
-                                    "Champs refusés : %s.", ", ".join(sorted(interdits))))
+                raise AccessError(_("A report is handled, it is not "
+                                    "rewritten. Fields refused: %s.", ", ".join(sorted(interdits))))
         return super().write(vals)
 
     def _eligibles(self, users):
@@ -223,15 +226,15 @@ class BabillardSignalement(models.Model):
         mise_en_page = self.env["bf.babillard.post"]._mise_en_page()
         for sig in self.sudo():
             destinataires = sig._moderation()
-            resume = _("Signalement à traiter")
+            resume = _("Report to handle")
             if not destinataires:
                 destinataires = sig._administration()
                 if destinataires:
                     # Le drapeau d'abord : la règle d'accès de l'administration le
                     # lit, et une activité s'adresse à qui peut ouvrir la fiche.
                     sig.escalade = True
-                    resume = _("Signalement sans personne pour le traiter : "
-                               "désignez quelqu'un à la modération")
+                    resume = _("Report with nobody to handle it: "
+                               "designate somebody to moderation")
             if not destinataires:
                 sig.sans_destinataire = True
                 _logger.warning("Babillard : le signalement %s n'a personne pour le "

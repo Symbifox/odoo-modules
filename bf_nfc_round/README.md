@@ -32,6 +32,10 @@ The *A round and its checkpoints* template recipe creates the round, its
 checkpoints and their tags from a list of lines. With `bf_nfc_inspection`
 installed, a checkpoint can also carry a checklist (see `bf_nfc_round_inspection`).
 
+## Languages (v18.0.1.1.1)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## License
 
 Business Source License 1.1, see [LICENSE](LICENSE).

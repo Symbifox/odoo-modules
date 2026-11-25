@@ -1,4 +1,4 @@
-from odoo import fields
+from odoo import _, fields
 from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
 
@@ -138,15 +138,20 @@ class TestTrainingProcess(TransactionCase):
     def test_entrainement_sans_les_deux_confirmations_est_incomplet(self):
         r = self._realisation(trainer_employee_id=self.formateur.id)
         self.assertFalse(r.is_complete)
-        self.assertIn("la confirmation de l'apprenant", r.missing_info)
-        self.assertIn("la confirmation du formateur", r.missing_info)
+        # ⚠️ Le fragment se lit par `_()`, comme le calcul l'écrit : sous
+        # essai la langue est celle de la base (fr_CA ici), et une attente écrite
+        # en dur dépend alors du catalogue CHARGÉ -- ce qui a fait croire que le
+        # français était faux. Ce qui se mesure, c'est que le
+        # fragment de CE module est là, pas sa langue.
+        self.assertIn(_("the learner's confirmation"), r.missing_info)
+        self.assertIn(_("the trainer's confirmation"), r.missing_info)
 
         r.action_trainee_confirm()
         self.assertTrue(r.trainee_confirmed)
         self.assertTrue(r.trainee_confirm_date)
         self.assertFalse(r.is_complete)
-        self.assertIn("la confirmation du formateur", r.missing_info)
-        self.assertNotIn("la confirmation de l'apprenant", r.missing_info)
+        self.assertIn(_("the trainer's confirmation"), r.missing_info)
+        self.assertNotIn(_("the learner's confirmation"), r.missing_info)
 
         r.action_trainer_confirm()
         self.assertTrue(r.both_confirmed)
@@ -158,13 +163,21 @@ class TestTrainingProcess(TransactionCase):
         r.action_trainee_confirm()
         r.action_trainer_confirm()
         self.assertFalse(r.is_complete)
-        self.assertIn("le formateur", r.missing_info)
+        self.assertIn(_("the trainer"), r.missing_info)
 
     def test_les_manques_du_socle_survivent(self):
         """L'extension ajoute ses manques, elle n'efface pas ceux du socle."""
         r = self._realisation(trainer_employee_id=self.formateur.id, hours=0.0)
-        self.assertIn("les heures", r.missing_info)
-        self.assertIn("la confirmation de l'apprenant", r.missing_info)
+        morceaux = [x for x in (r.missing_info or "").split(", ") if x]
+        # 🔴 On ne NOMME pas le fragment du socle : il appartient à `bf_training`, et
+        # sa langue dépend du catalogue chargé pour CE module-là, pas pour celui-ci
+        # (lu en anglais ici, en français dès que le catalogue du
+        # parent est chargé). Ce qui se mesure, c'est qu'il SURVIT à la surcharge :
+        # trois morceaux, dont deux sont les nôtres.
+        self.assertIn(_("the learner's confirmation"), morceaux)
+        self.assertIn(_("the trainer's confirmation"), morceaux)
+        self.assertEqual(len(morceaux), 3,
+                         "le manque du socle doit survivre à la surcharge")
 
     def test_une_formation_en_salle_n_exige_aucune_confirmation(self):
         activite = self.env["bf.training.activity"].create({

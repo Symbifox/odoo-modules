@@ -26,28 +26,30 @@ HEX_32 = re.compile(r"^[0-9A-Fa-f]{32}$")
 
 class BfNfcSdmKey(models.Model):
     _name = "bf.nfc.sdm.key"
-    _description = "Clés des pastilles signées"
+    _description = "Signed tag keys"
     _order = "company_id"
     _rec_name = "company_id"
 
-    company_id = fields.Many2one("res.company", string="Société", required=True,
+    company_id = fields.Many2one("res.company", string="Company", required=True,
                                  ondelete="cascade", index=True)
     meta_key_enc = fields.Char(groups="base.group_system", copy=False)
     file_key_enc = fields.Char(groups="base.group_system", copy=False)
     # ⚠️ Facultative, et son absence se paie à la gravure : une puce dont la clé
     # d'usine n'a pas été remplacée se regrave par n'importe qui. Personne ne peut
     # pour autant forger sa signature, qui dépend des deux autres clés.
-    master_key_enc = fields.Char(groups="base.group_system", copy=False)
-    set_date = fields.Datetime(string="Posées le", readonly=True)
-    set_by_id = fields.Many2one("res.users", string="Posées par", readonly=True)
+    master_key_enc = fields.Char(string="Encrypted master key", groups="base.group_system", copy=False)
+    set_date = fields.Datetime(string="Set on", readonly=True)
+    set_by_id = fields.Many2one("res.users", string="Set by", readonly=True)
     state = fields.Selection(
-        [("ok", "Lisibles"), ("illisibles", "À reposer")],
-        string="État", compute="_compute_state",
-        help="« À reposer » : la clé de chiffrement a changé depuis la pose, les "
-             "clés ne se déchiffrent plus et les pastilles signées sont refusées.")
+        [("ok", "Readable"), ("illisibles", "To set again")],
+        string="Status", compute="_compute_state",
+        help="“To set again”: the encryption key has changed since the "
+             "keys were set, so the keys can no longer be decrypted and "
+             "signed tags are refused.")
 
     _sql_constraints = [
-        ("societe_unique", "unique(company_id)", "Cette société a déjà ses clés."),
+        ("societe_unique", "unique(company_id)", "This company already "
+                                                 "has its keys."),
     ]
 
     def _compute_state(self):
@@ -88,14 +90,15 @@ class BfNfcSdmKey(models.Model):
     def _poser_la_maitresse(self, company, valeur):
         """Pose la clé 0. Réservé à la gestion, comme les deux autres."""
         if not self.env.user.has_group("bf_nfc.group_nfc_manager"):
-            raise AccessError(_("Poser la clé maîtresse est réservé à la gestion."))
+            raise AccessError(_("Setting the master key is reserved for "
+                                "managers."))
         valeur = (valeur or "").strip()
         if not HEX_32.match(valeur):
-            raise UserError(_("La clé maîtresse doit compter 32 caractères "
-                              "hexadécimaux (16 octets AES)."))
+            raise UserError(_("The master key must be 32 hexadecimal "
+                              "characters (16 AES bytes)."))
         ligne = self.sudo().search([("company_id", "=", company.id)], limit=1)
         if not ligne:
-            raise UserError(_("Posez d'abord la paire de clés de cette société."))
+            raise UserError(_("Set this company's key pair first."))
         ligne.master_key_enc = chiffrement.chiffrer(self.env, valeur.upper())
         return ligne
 
@@ -106,8 +109,8 @@ class BfNfcSdmKey(models.Model):
         if not valeur:
             return False
         if not HEX_32.match(valeur):
-            raise UserError(_("La clé %s doit compter 32 caractères hexadécimaux "
-                              "(16 octets AES).", nom))
+            raise UserError(_("The %s key must have 32 hexadecimal "
+                              "characters (16 AES bytes).", nom))
         return chiffrement.chiffrer(self.env, valeur.upper())
 
     @api.model
@@ -120,10 +123,12 @@ class BfNfcSdmKey(models.Model):
         pourquoi.
         """
         if not self.env.user.has_group("bf_nfc.group_nfc_manager"):
-            raise AccessError(_("Poser les clés des pastilles signées est réservé à la gestion."))
+            raise AccessError(_("Setting the signed tag keys is reserved "
+                                "for managers."))
         if not all(chiffrement.dechiffrer(self.env, jeton) for jeton in (meta_enc, fichier_enc)):
-            raise UserError(_("Les clés saisies ne se relisent pas : la clé de chiffrement "
-                              "a changé entre la saisie et l'enregistrement. Ressaisissez-les."))
+            raise UserError(_("The keys entered cannot be read back: the "
+                              "encryption key changed between entry and "
+                              "save. Enter them again."))
         return self._ranger(company, meta_enc, fichier_enc)
 
     def _ranger(self, company, meta_enc, fichier_enc):
@@ -140,12 +145,13 @@ class BfNfcSdmKey(models.Model):
     def _poser(self, company, meta, fichier):
         """Chiffre et range la paire d'une société. Réservé à la gestion."""
         if not self.env.user.has_group("bf_nfc.group_nfc_manager"):
-            raise AccessError(_("Poser les clés des pastilles signées est réservé à la gestion."))
+            raise AccessError(_("Setting the signed tag keys is reserved "
+                                "for managers."))
         meta, fichier = (meta or "").strip(), (fichier or "").strip()
-        for nom, valeur in ((_("de métadonnées"), meta), (_("de fichier"), fichier)):
+        for nom, valeur in ((_("metadata"), meta), (_("file"), fichier)):
             if not HEX_32.match(valeur):
-                raise UserError(_("La clé %s doit compter 32 caractères hexadécimaux "
-                                  "(16 octets AES).", nom))
+                raise UserError(_("The %s key must have 32 hexadecimal "
+                                  "characters (16 AES bytes).", nom))
         return self._ranger(company, chiffrement.chiffrer(self.env, meta.upper()),
                             chiffrement.chiffrer(self.env, fichier.upper()))
 

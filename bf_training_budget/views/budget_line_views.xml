@@ -30,18 +30,18 @@
             <xpath expr="//sheet" position="inside">
                 <div class="alert alert-warning mt-2" role="alert"
                      invisible="not training_uncosted_count">
-                    Des obligations de formation à venir ne peuvent pas être
-                    chiffrées — activité sans durée prévue, ou personne sans taux
-                    horaire. Elles ne sont pas dans l'engagé. Un engagement
-                    sous-évalué est pire qu'un engagement absent, parce qu'il a
-                    l'air renseigné.
+                    Some upcoming training obligations cannot be
+                    costed — an activity with no planned duration, or a person with
+                    no hourly rate. They are not in the committed amount. A
+                    commitment that is understated is worse than no commitment at
+                    all, because it looks filled in.
                 </div>
                 <div class="alert alert-warning mt-2" role="alert"
                      invisible="not training_incomplete_count">
-                    Des formations de ces catégories sont incomplètes et ne sont
-                    donc pas comptées dans le réalisé. Leurs heures apparaissent
-                    dans les heures non valorisées. Une formation à laquelle il
-                    manque ses heures ou son coût horaire ne vaut pas zéro.
+                    Some training records in these categories are incomplete and so are
+                    not counted in the actual. Their hours show up in the
+                    uncosted hours. Training that is missing its hours or its
+                    hourly cost is not worth zero.
                 </div>
             </xpath>
         </field>

@@ -26,6 +26,11 @@ class TestGravure(HttpCase):
 
     def setUp(self):
         super().setUp()
+        # Langue du visiteur ÉPINGLÉE : sans langue déclarée, Odoo
+        # retombe sous essai sur le contexte de la requête, donc sur l'anglais
+        # installé (`en_CA`), et la page sort en anglais quelle que soit la langue
+        # du site. Le cookie passe avant le contexte (http_routing, ir_http).
+        self.opener.cookies.set("frontend_lang", "fr_CA")
         self.partenaire = self.env["res.partner"].create({"name": "Cible de gravure"})
         self.env["bf.nfc.sdm.key"]._poser(self.env.company, CLE_META, CLE_FICHIER)
         self.env["bf.nfc.sdm.key"]._poser_la_maitresse(self.env.company, CLE_MAITRESSE)

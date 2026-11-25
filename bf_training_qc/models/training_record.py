@@ -11,13 +11,13 @@ class BfTrainingRecord(models.Model):
     _inherit = "bf.training.record"
 
     retention_until = fields.Date(
-        string="À conserver jusqu'au", compute="_compute_retention_until", store=True,
-        help="Six ans après la fin de l'année civile à laquelle la dépense se "
-             "rapporte.")
+        string="To be kept until", compute="_compute_retention_until", store=True,
+        help="Six years after the end of the calendar year the expense "
+             "relates to.")
     qc_countable = fields.Boolean(
-        string="Compte au relevé", compute="_compute_qc_countable", store=True)
+        string="Counts in the statement", compute="_compute_qc_countable", store=True)
     qc_excluded_reason = fields.Char(
-        string="Pourquoi elle ne compte pas", compute="_compute_qc_countable", store=True)
+        string="Why it does not count", compute="_compute_qc_countable", store=True)
 
     @api.depends("date_done")
     def _compute_retention_until(self):
@@ -35,11 +35,12 @@ class BfTrainingRecord(models.Model):
         for rec in self:
             motifs = []
             if rec.state != "confirmed":
-                motifs.append(_("la réalisation n'est pas confirmée"))
+                motifs.append(_("the completion is not confirmed"))
             if not rec.activity_id.qc_eligible:
-                motifs.append(rec.activity_id.qc_reason or _("activité non admissible"))
+                motifs.append(rec.activity_id.qc_reason or _("activity "
+                                                             "not eligible"))
             if not rec.is_complete:
-                motifs.append(_("il manque %s") % (rec.missing_info or _("des informations")))
+                motifs.append(_("%s missing") % (rec.missing_info or _("information")))
             rec.qc_countable = not motifs
             rec.qc_excluded_reason = " ; ".join(motifs) if motifs else False
 
@@ -59,9 +60,9 @@ class BfTrainingRecord(models.Model):
             noms = ", ".join(
                 "%s (%s)" % (r.employee_id.name, r.date_done) for r in retenues[:5])
             raise UserError(_(
-                "Ces pièces se conservent six ans après la dernière année à "
-                "laquelle elles se rapportent : %(noms)s. Annuler la réalisation "
-                "la retire des totaux sans la faire disparaître.",
+                "These documents are kept for six years after the last "
+                "year they relate to: %(noms)s. Cancelling the completion "
+                "takes it out of the totals without making it disappear.",
                 noms=noms))
         return super().unlink()
 
@@ -70,7 +71,7 @@ class BfTrainingRecord(models.Model):
         manquants = self.filtered(lambda r: not r.date_done or not r.employee_id)
         if manquants:
             raise UserError(_(
-                "Une attestation nomme une personne et une date. Il en manque "
-                "sur %s réalisation(s).") % len(manquants))
+                "A certificate names a person and a date. %s "
+                "completion(s) are missing one.") % len(manquants))
         return self.env.ref(
             "bf_training_qc.action_report_training_attestation").report_action(self)

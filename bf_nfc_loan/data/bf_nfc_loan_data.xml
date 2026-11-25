@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="gesture_loan" model="bf.nfc.gesture">
-        <field name="name">Prendre ou rendre un équipement</field>
+        <field name="name">Take or return equipment</field>
         <field name="code">loan</field>
         <field name="kind">loan</field>
         <field name="sequence">30</field>
@@ -9,11 +9,11 @@
         <field name="needs_target" eval="True"/>
         <field name="accepte_differe" eval="True"/>
         <field name="target_model_id" ref="bf_nfc_loan.model_bf_nfc_equipment"/>
-        <field name="description">Libre, vous le prenez ; à vous, vous le rendez. Si quelqu'un d'autre l'a, l'écran le nomme et propose de le reprendre. Dans un menu, le paramètre {"sens": "prendre"} ou {"sens": "rendre"} fixe le sens.</field>
+        <field name="description">Free, you take it; yours, you return it. If someone else has it, the screen names them and offers to take it back. In a menu, the parameter {"sens": "prendre"} or {"sens": "rendre"} sets the direction.</field>
     </record>
 
     <record id="cron_loan_reminders" model="ir.cron">
-        <field name="name">Pastilles : rappels des équipements à rendre</field>
+        <field name="name">Tags: reminders for equipment to return</field>
         <field name="model_id" ref="bf_nfc_loan.model_bf_nfc_equipment"/>
         <field name="state">code</field>
         <field name="code">model._cron_rappels()</field>

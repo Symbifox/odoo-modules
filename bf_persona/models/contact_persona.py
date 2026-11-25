@@ -147,7 +147,7 @@ LONG_MESSAGE_WORDS = 120
 
 class ContactPersona(models.Model):
     _name = "contact.persona"
-    _description = "Persona d'un contact (préférences, ton, payeur, KPIs)"
+    _description = "A contact's persona (preferences, tone, payer, KPIs)"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _rec_name = "name"
     _order = "name"
@@ -158,47 +158,49 @@ class ContactPersona(models.Model):
         string="Contact",
     )
     name = fields.Char(compute="_compute_name", store=True, index=True, string="Persona")
-    active = fields.Boolean(default=True, string="Actif")
+    active = fields.Boolean(default=True, string="Active persona")
 
     # --- Communication preferences ---------------------------------------
     addressing_style = fields.Selection(
-        [("tu", "Tutoiement"), ("vous", "Vouvoiement"), ("auto", "Auto")],
+        [("tu", "Informal (tu)"), ("vous", "Formal (vous)"), ("auto", "Auto")],
         default="auto", required=True, tracking=True,
-        string="Style d'adresse",
+        string="Form of address",
     )
     preferred_salutation = fields.Char(
-        help="Ex.: 'Bonjour Jean', 'Cher Maître Tremblay'.",
+        help="E.g.: 'Hello Jean', 'Dear Maître Tremblay'.",
         tracking=True,
-        string="Salutation",
+        string="Greeting",
     )
     closing_formula = fields.Char(
-        help="Ex.: 'Cordialement', 'Bien à vous'.",
+        help="E.g.: 'Regards', 'Yours sincerely'.",
         tracking=True,
-        string="Formule de clôture",
+        string="Sign-off",
     )
     preferred_language = fields.Selection(
         selection="_selection_preferred_language",
-        help="Par défaut, la langue du contact.",
-        string="Langue",
+        help="By default, the contact's language.",
+        string="Language",
     )
     custom_appellations = fields.Text(
-        string="À savoir avant d'écrire",
-        help="Surnoms, titres à utiliser ou à éviter, adresse à privilégier, "
-             "pièces jointes plutôt que liens : ce que le composeur et Gen doivent savoir.",
+        string="What to know before writing",
+        help="Nicknames, titles to use or to avoid, the address to "
+             "favour, attachments rather than links: what the composer "
+             "and Gen need to know.",
     )
 
     # --- Personal details (sensible) -------------------------------------
     personal_details = fields.Html(
-        help="Famille, hobbies, jalons. Visible aux gestionnaires de personas seulement.",
+        help="Family, hobbies, milestones. Visible to the persona "
+             "managers only.",
         groups="bf_persona.group_persona_manager",
-        string="Détails personnels",
+        string="Personal details",
     )
     shared_knowledge_item_ids = fields.Many2many(
         "project.knowledge.item",
         relation="contact_persona_knowledge_item_rel",
         column1="persona_id",
         column2="item_id",
-        string="Éléments partagés avec le contact",
+        string="Items shared with the contact",
     )
 
     # --- Payer behavior ---------------------------------------------------
@@ -208,135 +210,144 @@ class ContactPersona(models.Model):
     payer_quality = fields.Selection(
         [
             ("excellent", "Excellent"),
-            ("good", "Bon"),
-            ("average", "Moyen"),
-            ("slow", "Lent"),
-            ("poor", "Mauvais"),
-            ("na", "N/D"),
+            ("good", "Good"),
+            ("average", "Average"),
+            ("slow", "Slow"),
+            ("poor", "Poor"),
+            ("na", "N/A"),
         ],
         default="na", tracking=True,
         groups="bf_persona.group_persona_manager",
-        string="Payeur",
+        string="Payer",
     )
     payer_notes = fields.Text(
         groups="bf_persona.group_persona_manager",
-        string="Notes sur le paiement",
+        string="Payment notes",
     )
     avg_payment_delay_days = fields.Float(
         compute="_compute_avg_payment_delay_days", store=True,
         groups="bf_persona.group_persona_manager",
-        help="Délai moyen entre la date de facture et la date de paiement (jours).",
-        string="Délai moyen de paiement (jours)",
+        help="Average delay between the invoice date and the payment date "
+             "(days).",
+        string="Average payment delay (days)",
     )
 
     # --- Tone -------------------------------------------------------------
     tone_summary = fields.Selection(
         [
-            ("warm", "Chaleureux"),
-            ("neutral", "Neutre"),
-            ("formal", "Formel"),
-            ("tense", "Tendu"),
-            ("na", "N/D"),
+            ("warm", "Warm"),
+            ("neutral", "Neutral"),
+            ("formal", "Formal"),
+            ("tense", "Tense"),
+            ("na", "N/A"),
         ],
         default="na", tracking=True,
-        help="Ton du contact envers nous, observé dans ses courriels reçus.",
-        string="Leur ton envers nous",
+        help="The contact's tone towards us, observed in the emails "
+             "received from them.",
+        string="Their tone towards us",
     )
     tone_notes = fields.Html(
-        help="Notes sur le ton du contact envers nous.",
-        string="Notes sur leur ton",
+        help="Notes on the contact's tone towards us.",
+        string="Notes on their tone",
     )
     our_tone_summary = fields.Selection(
         [
-            ("warm", "Chaleureux"),
-            ("neutral", "Neutre"),
-            ("formal", "Formel"),
-            ("tense", "Tendu"),
-            ("na", "N/D"),
+            ("warm", "Warm"),
+            ("neutral", "Neutral"),
+            ("formal", "Formal"),
+            ("tense", "Tense"),
+            ("na", "N/A"),
         ],
         default="na", tracking=True,
-        help="Notre ton envers le contact, observé dans les courriels sortants.",
-        string="Notre ton envers eux",
+        help="Our tone towards the contact, observed in the outgoing emails.",
+        string="Our tone towards them",
     )
     our_tone_notes = fields.Html(
-        help="Notes sur notre ton/posture envers le contact.",
-        string="Notes sur notre ton",
+        help="Notes on our tone/posture towards the contact.",
+        string="Notes on our tone",
     )
-    tone_last_assessed = fields.Date(string="Ton évalué le")
+    tone_last_assessed = fields.Date(string="Tone assessed on")
     tone_is_stale = fields.Boolean(
         default=False, copy=False, index=True,
-        help="Mis à True par le cron quand tone_last_assessed est vide ou > 6 mois.",
-        string="Ton à rafraîchir",
+        help="Set to True by the cron when tone_last_assessed is empty or "
+             "> 6 months.",
+        string="Tone to refresh",
     )
 
     # --- Relationship, measured on the messages themselves ----------------
     last_interaction_date = fields.Date(
         index=True, copy=False,
-        help="Dernier courriel échangé avec ce contact, dans un sens ou dans l'autre.",
-        string="Dernier échange",
+        help="Last email exchanged with this contact, in either direction.",
+        string="Last exchange",
     )
     last_inbound_date = fields.Date(
-        string="Dernier courriel reçu", copy=False, readonly=True,
+        string="Last email received", copy=False, readonly=True,
     )
     last_outbound_date = fields.Date(
-        string="Dernier courriel envoyé", copy=False, readonly=True,
+        string="Last email sent", copy=False, readonly=True,
     )
     inbound_count_90d = fields.Integer(
-        string="Reçus (90 j)", copy=False, readonly=True,
+        string="Received (90 d)", copy=False, readonly=True,
     )
     outbound_count_90d = fields.Integer(
-        string="Envoyés (90 j)", copy=False, readonly=True,
+        string="Sent (90 d)", copy=False, readonly=True,
     )
     unanswered_count = fields.Integer(
-        string="Sans réponse", copy=False, readonly=True,
-        help="Nos courriels à ce contact envoyés depuis son dernier courriel.",
+        string="Unanswered", copy=False, readonly=True,
+        help="Our emails to this contact sent since their last email.",
     )
     unanswered_since = fields.Date(
-        string="Sans réponse depuis", copy=False, readonly=True,
+        string="Unanswered since", copy=False, readonly=True,
     )
     our_words_median = fields.Integer(
-        string="Longueur de nos courriels (mots)", copy=False, readonly=True,
-        help="Médiane sur nos 10 derniers courriels à ce contact, citations exclues.",
+        string="Length of our emails (words)", copy=False, readonly=True,
+        help="Median over our last 10 emails to this contact, quoted text "
+             "excluded.",
     )
     relationship_health = fields.Selection(
         [
-            ("healthy", "Saine"),
-            ("watch", "À surveiller"),
-            ("degraded", "Dégradée"),
-            ("na", "N/D"),
+            ("healthy", "Healthy"),
+            ("watch", "To watch"),
+            ("degraded", "Degraded"),
+            ("na", "N/A"),
         ],
         default="na", tracking=True, index=True, copy=False,
-        help="Calculée chaque jour à partir de faits : courriels sans réponse, et "
-             "signaux des modules liés (expérience client).",
-        string="Relation",
+        help="Computed each day from facts: emails left unanswered, and "
+             "signals from the linked modules (customer experience).",
+        string="Relationship",
     )
     health_reason = fields.Char(
-        string="Pourquoi", copy=False, readonly=True,
+        string="Why", copy=False, readonly=True,
     )
-    facts_refreshed_at = fields.Datetime(copy=False, readonly=True, string="Mesuré le")
+    facts_refreshed_at = fields.Datetime(copy=False, readonly=True, string="Measured "
+                                                                           "on")
     # Kept for existing data and reports; no longer written since 18.0.3.0.0.
-    tone_drift_score = fields.Float(default=0.0, copy=False, string="Score de dérive (déprécié)")
+    tone_drift_score = fields.Float(default=0.0, copy=False, string="Drift "
+                                                                    "score "
+                                                                    "(deprecated)")
 
     # --- Sub-records -----------------------------------------------------
     cc_rule_ids = fields.One2many(
         "contact.cc.rule", "persona_id", domain=[("state", "!=", "rejected")],
-        string="Règles de copie",
+        string="Copy rules",
     )
-    suggested_rule_count = fields.Integer(compute="_compute_suggested_rule_count", string="Règles suggérées")
-    kpi_ids = fields.One2many("contact.persona.kpi", "persona_id", string="Indicateurs")
+    suggested_rule_count = fields.Integer(compute="_compute_suggested_rule_count", string="Suggested "
+                                                                                          "rule "
+                                                                                          "count")
+    kpi_ids = fields.One2many("contact.persona.kpi", "persona_id", string="KPIs")
 
     # --- Claude bridge ---------------------------------------------------
     # Computed on read: it quotes facts refreshed daily and signals from other
     # modules, which a stored value would freeze at its last write.
     claude_context_summary = fields.Text(
         compute="_compute_claude_context_summary",
-        help="Bloc texte injecté dans le contexte de Gen pour guider le ton.",
-        string="Ce que Gen reçoit",
+        help="Block of text injected into Gen's context to steer the tone.",
+        string="What Gen receives",
     )
 
     _sql_constraints = [
         ("partner_unique", "unique(partner_id)",
-         "Il existe déjà un persona pour ce contact."),
+         "A persona already exists for this contact."),
     ]
 
     # --- Compute helpers --------------------------------------------------
@@ -347,7 +358,8 @@ class ContactPersona(models.Model):
     @api.depends("partner_id.display_name")
     def _compute_name(self):
         for rec in self:
-            rec.name = rec.partner_id.display_name or _("Persona sans contact")
+            rec.name = rec.partner_id.display_name or _("Persona with no "
+                                                        "contact")
 
     def _compute_suggested_rule_count(self):
         groups = self.env["contact.cc.rule"]._read_group(
@@ -421,7 +433,7 @@ class ContactPersona(models.Model):
             if age >= 14:
                 signals.append((
                     "watch",
-                    _("%(count)s courriels sans réponse depuis le %(date)s") % {
+                    _("%(count)s emails unanswered since %(date)s") % {
                         "count": self.unanswered_count,
                         "date": self.unanswered_since.isoformat(),
                     },
@@ -438,7 +450,8 @@ class ContactPersona(models.Model):
         # this morning must show before the daily measure runs.
         facts = list(self._health_signals())
         if self.our_words_median >= LONG_MESSAGE_WORDS:
-            facts.append(("watch", _("nos derniers courriels font %s mots de médiane") % self.our_words_median))
+            facts.append(("watch", _("our latest emails run %s words at "
+                                     "the median") % self.our_words_median))
         if self.custom_appellations:
             facts.append(("info", self.custom_appellations.strip()))
         return facts
@@ -520,7 +533,8 @@ class ContactPersona(models.Model):
             # The context defaults are applied inside super().create, after this check.
             posed |= {f for f in PAYER_FIELDS if f"default_{f}" in self.env.context}
             if posed:
-                raise AccessError(_("La cote de payeur est réservée au gestionnaire persona : %s.")
+                raise AccessError(_("The payer rating is reserved to the "
+                                    "persona manager: %s.")
                                   % ", ".join(sorted(posed)))
         records = super().create(vals_list)
         partners = records.mapped("partner_id")
@@ -627,8 +641,8 @@ class ContactPersona(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Éléments de matrice liés"),
-                "message": _("%d nouveau(x) élément(s) ajouté(s).") % len(new_items),
+                "title": _("Matrix items linked"),
+                "message": _("%d new item(s) added.") % len(new_items),
                 "type": "success" if new_items else "info",
                 "sticky": False,
             },
@@ -945,34 +959,34 @@ class ContactPersona(models.Model):
         director of a small organisation often writes from info@ or direction@.
         """
         if not partner.active:
-            return _("contact archivé")
+            return _("archived contact")
         email = partner.email_normalized or ""
         if seeding and not email:
-            return _("contact sans adresse")
+            return _("contact with no address")
         if any(not u.share for u in partner.with_context(active_test=False).user_ids):
-            return _("utilisateur interne")
+            return _("internal user")
         own_partner_ids = set(self.env["res.company"].sudo().search([]).partner_id.ids)
         if partner.id in own_partner_ids or partner.commercial_partner_id.id in own_partner_ids:
-            return _("notre propre société")
+            return _("our own company")
         internal_emails, internal_names = self._internal_identities()
         if email and email in internal_emails:
-            return _("adresse d'un utilisateur interne")
+            return _("address of an internal user")
         if not partner.is_company and _deaccent(partner.name or "").strip() in internal_names:
-            return _("même nom qu'un utilisateur interne")
+            return _("same name as an internal user")
         if seeding and partner.is_company:
-            return _("fiche de société")
+            return _("company record")
         name = partner.name or ""
         if "@" in name or "<" in name:
-            return _("nom de fiche mal formé")
+            return _("malformed record name")
         tokens = [t for t in re.split(r"[^\w]+", _deaccent(name)) if t]
         if tokens and all(t in self.ROLE_NAME_WORDS for t in tokens):
-            return _("boîte de rôle")
+            return _("role mailbox")
         if email:
             localpart = _deaccent(email.split("@")[0])
             role = localpart if localpart in self.ROLE_LOCALPARTS else re.split(r"[.\-_+]", localpart)[0]
             # "Nextcloud Server" <nextcloud@>: the mailbox names itself.
             if role in self.ROLE_LOCALPARTS and (not self._looks_like_person_name(name) or role in tokens):
-                return _("boîte de rôle")
+                return _("role mailbox")
         return None
 
     @api.model
@@ -1204,7 +1218,8 @@ class ContactPersona(models.Model):
                     "rule_type": "cc",
                     "cc_partner_ids": [(6, 0, [other_id])],
                     "state": "suggested",
-                    "evidence": _("%(count)s de nos %(total)s courriels depuis le %(date)s, dont %(cc)s en copie") % {
+                    "evidence": _("%(count)s of our %(total)s emails "
+                                  "since %(date)s, %(cc)s of them in copy") % {
                         "count": count, "total": len(messages),
                         "date": since.date().isoformat(), "cc": copied[other_id],
                     },
@@ -1288,7 +1303,7 @@ class ContactPersona(models.Model):
                 if persona.id in human_created:
                     continue
                 plan.append((persona.id, persona.partner_id.display_name, "archive", "active", True, False,
-                             _("doublon de %s (même adresse)") % ranked[0].partner_id.display_name))
+                             _("duplicate of %s (same address)") % ranked[0].partner_id.display_name))
                 archived.add(persona.id)
 
         for persona in personas:
@@ -1302,30 +1317,33 @@ class ContactPersona(models.Model):
             if "addressing_style" not in hands:
                 before, after = persona.addressing_style or "auto", inferred.get("addressing_style")
                 if after in ("tu", "vous") and after != before:
-                    reason = _("vide, rempli d'après nos courriels") if before == "auto" else _("contredit par nos courriels")
+                    reason = _("empty, filled in from our emails") if before == "auto" else _("contradicted "
+                                                                                                "by "
+                                                                                                "our "
+                                                                                                "emails")
                     plan.append((persona.id, partner.display_name, "write", "addressing_style", before, after, reason))
             if "preferred_salutation" not in hands:
                 before, after = persona.preferred_salutation or False, inferred.get("preferred_salutation") or False
                 if before and self._salutation_is_wrong(before, partner):
                     plan.append((persona.id, partner.display_name, "write", "preferred_salutation", before, after,
-                                 _("salutation adressée à quelqu'un d'autre")))
+                                 _("greeting addressed to someone else")))
                 elif not before and after:
                     plan.append((persona.id, partner.display_name, "write", "preferred_salutation", before, after,
-                                 _("vide, rempli d'après nos courriels")))
+                                 _("empty, filled in from our emails")))
             if "closing_formula" not in hands:
                 before, after = persona.closing_formula or False, inferred.get("closing_formula") or False
                 if not before and after:
                     plan.append((persona.id, partner.display_name, "write", "closing_formula", before, after,
-                                 _("vide, rempli d'après nos courriels")))
+                                 _("empty, filled in from our emails")))
             if persona.tone_summary == "tense" and "tone_summary" not in hands:
                 plan.append((persona.id, partner.display_name, "write", "tone_summary", "tense", "na",
-                             _("posé par l'ancien détecteur de trafic")))
+                             _("set by the old traffic detector")))
 
         Kpi = self.env["contact.persona.kpi"].sudo()
         noise = Kpi.search([("name", "=", "Dernière interaction"), ("source", "=", "email_management")])
         if noise:
             plan.append((False, False, "delete", "contact.persona.kpi", len(noise), 0,
-                         _("lignes automatiques « Dernière interaction »")))
+                         _("automatic \"Dernière interaction\" rows")))
 
         if apply:
             Persona = self.with_context(tracking_disable=True, mail_create_nolog=True)

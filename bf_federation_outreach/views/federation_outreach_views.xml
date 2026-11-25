@@ -4,25 +4,23 @@
         <field name="name">federation.outreach.report.form</field>
         <field name="model">federation.outreach.report</field>
         <field name="arch" type="xml">
-            <form string="Suivi de démarchage">
+            <form string="Prospecting report">
                 <header>
                     <field name="federation_is_mirror" invisible="1"/>
                     <field name="federation_origin" invisible="1"/>
                     <field name="federation_possible" invisible="1"/>
                     <field name="federation_allowed_peer_ids" invisible="1"/>
-                    <button name="action_refresh" type="object" string="Relire la campagne et renvoyer"
+                    <button name="action_refresh" type="object" string="Reread the campaign and send"
                             class="btn-primary" invisible="federation_is_mirror"
                             groups="project.group_project_manager"/>
                 </header>
                 <div class="alert alert-info" role="status" invisible="not federation_is_mirror">
-                    Suivi reçu de <field name="federation_peer_id" readonly="1" class="oe_inline"/>.
-                    Il se lit ici et se rafraîchit chaque jour. Pour qu'une cible ne soit pas contactée,
-                    ouvrez-la et utilisez <strong>Écarter</strong> : l'agence le recevra.
+                    Report received from <field name="federation_peer_id" readonly="1" class="oe_inline"/>. It is read-only here and refreshes daily. To keep a target from being contacted, open it and use <strong>Set aside</strong>: the agency will receive it.
                 </div>
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Démarchage, campagne d'automne"/></h1>
+                        <h1><field name="name" placeholder="Prospecting, autumn campaign"/></h1>
                     </div>
                     <group>
                         <group>
@@ -49,7 +47,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Cibles" name="cibles">
+                        <page string="Targets" name="cibles">
                             <field name="line_ids" readonly="1">
                                 <list decoration-muted="do_not_contact or excluded_by_client"
                                       decoration-success="has_reply">
@@ -66,7 +64,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Argumentaire" name="argumentaire">
+                        <page string="Pitch" name="argumentaire">
                             <field name="description" nolabel="1"/>
                         </page>
                     </notebook>
@@ -80,10 +78,10 @@
         <field name="name">federation.outreach.report.line.form</field>
         <field name="model">federation.outreach.report.line</field>
         <field name="arch" type="xml">
-            <form string="Cible">
+            <form string="Target">
                 <header>
                     <field name="federation_is_mirror" invisible="1"/>
-                    <button name="action_open_exclude_wizard" type="object" string="Écarter"
+                    <button name="action_open_exclude_wizard" type="object" string="Set aside"
                             class="btn-primary"
                             invisible="not federation_is_mirror or excluded_by_client or do_not_contact"
                             groups="project.group_project_manager"/>
@@ -129,15 +127,15 @@
         <field name="name">federation.outreach.exclude.wizard.form</field>
         <field name="model">federation.outreach.exclude.wizard</field>
         <field name="arch" type="xml">
-            <form string="Écarter une cible">
-                <p>La cible deviendra « ne pas contacter » chez l'agence, avec ce motif.</p>
+            <form string="Set a target aside">
+                <p>The target will become "do not contact" at the agency, with this reason.</p>
                 <group>
                     <field name="line_id" readonly="1"/>
-                    <field name="reason" placeholder="Déjà notre client"/>
+                    <field name="reason" placeholder="Already our customer"/>
                 </group>
                 <footer>
-                    <button name="action_confirm" type="object" string="Écarter" class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button name="action_confirm" type="object" string="Set aside" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
@@ -147,7 +145,7 @@
         <field name="name">federation.outreach.report.list</field>
         <field name="model">federation.outreach.report</field>
         <field name="arch" type="xml">
-            <list string="Suivis de démarchage">
+            <list string="Prospecting reports">
                 <field name="name"/>
                 <field name="client_partner_id"/>
                 <field name="federation_peer_id"/>
@@ -162,12 +160,12 @@
     </record>
 
     <record id="action_federation_outreach_report" model="ir.actions.act_window">
-        <field name="name">Suivis de démarchage</field>
+        <field name="name">Prospecting reports</field>
         <field name="res_model">federation.outreach.report</field>
         <field name="view_mode">list,form</field>
     </record>
 
-    <menuitem id="menu_federation_outreach_report" name="Suivis de démarchage"
+    <menuitem id="menu_federation_outreach_report" name="Prospecting reports"
               parent="bf_federation.menu_federation_root"
               action="action_federation_outreach_report" sequence="48"/>
 </odoo>

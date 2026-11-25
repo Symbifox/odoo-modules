@@ -27,6 +27,9 @@ import os
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.cmac import CMAC
+from odoo.tools.translate import LazyTranslate
+
+_lt = LazyTranslate(__name__)
 
 IV_NUL = b"\x00" * 16
 
@@ -87,7 +90,7 @@ def statut(reponse_hex):
     """Les deux derniers octets d'une réponse, en majuscules."""
     reponse = (reponse_hex or "").strip().upper()
     if len(reponse) < 4:
-        raise Ev2Invalide("La puce n'a rien répondu.")
+        raise Ev2Invalide(_lt("The chip did not answer."))
     return reponse[-4:]
 
 
@@ -112,10 +115,10 @@ def repondre_au_defi(cle, reponse_hex, rnda=None):
     qu'on a vraiment déchiffré et pas recopié.
     """
     if statut(reponse_hex) != STATUT_SUITE:
-        raise Ev2Invalide("La puce a refusé l'authentification (%s)." % statut(reponse_hex))
+        raise Ev2Invalide(_lt("The chip refused authentication (%s).", statut(reponse_hex)))
     rndb = dechiffrer(cle, _corps(reponse_hex))
     if len(rndb) != 16:
-        raise Ev2Invalide("Le défi de la puce ne fait pas 16 octets.")
+        raise Ev2Invalide(_lt("The chip's challenge is not 16 bytes long."))
     rnda = rnda or os.urandom(16)
     envoi = chiffrer(cle, rnda + _tourner_a_gauche(rndb))
     return "90AF000020%s00" % envoi.hex().upper(), rnda, rndb
@@ -129,13 +132,14 @@ def session_depuis(cle, rnda, rndb, reponse_hex):
     relais deviendrait un oracle de chiffrement pour qui tient le téléphone.
     """
     if statut(reponse_hex) != STATUT_OK:
-        raise Ev2Invalide("La puce a refusé notre réponse (%s)." % statut(reponse_hex))
+        raise Ev2Invalide(_lt("The chip refused our answer (%s).", statut(reponse_hex)))
     clair = dechiffrer(cle, _corps(reponse_hex))
     if len(clair) < 20:
-        raise Ev2Invalide("La confirmation de la puce est trop courte.")
+        raise Ev2Invalide(_lt("The chip's confirmation is too short."))
     ti, rnda_retour = clair[:4], clair[4:20]
     if rnda_retour != _tourner_a_gauche(rnda):
-        raise Ev2Invalide("La puce n'a pas rendu notre aléa : clé ou puce inattendue.")
+        raise Ev2Invalide(_lt("The chip did not return our random value: "
+                               "unexpected key or chip."))
 
     prefixe = bytes([rnda[0], rnda[1]]) + bytes(a ^ b for a, b in zip(rnda[2:8], rndb[:6]))
     corps = prefixe + rndb[6:16] + rnda[8:16]
@@ -185,7 +189,7 @@ def _enregistrement_uri(url):
             break
     charge = bytes([code]) + reste.encode()
     if len(charge) > 254:
-        raise Ev2Invalide("L'adresse est trop longue pour un enregistrement court.")
+        raise Ev2Invalide(_lt("The address is too long for a short record."))
     return bytes([0xD1, 0x01, len(charge), 0x55]) + charge
 
 
@@ -207,7 +211,7 @@ def decalages(fichier, url):
         marque = (nom + "=").encode()
         position = fichier.find(marque)
         if position < 0:
-            raise Ev2Invalide("L'adresse gravée ne porte pas « %s= »." % nom)
+            raise Ev2Invalide(_lt("The engraved address does not carry “%s=”.", nom))
         trouves[nom] = position + len(marque)
     return trouves
 
@@ -263,7 +267,8 @@ def apdu_changer_cle(session, numero, nouvelle, ancienne=None, version=1):
         clair = nouvelle + bytes([version]) + b"\x80" + b"\x00" * 14
     else:
         if not ancienne:
-            raise Ev2Invalide("Changer une autre clé que la clé 0 exige l'ancienne.")
+            raise Ev2Invalide(_lt("Changing a key other than key 0 requires the "
+                                   "old one."))
         melange = bytes(a ^ b for a, b in zip(nouvelle, ancienne))
         clair = melange + bytes([version]) + _crc_jam(nouvelle) + b"\x80" + b"\x00" * 10
     chiffre = chiffrer(bytes.fromhex(session["chiffrement"]), clair, _iv_d_envoi(session))

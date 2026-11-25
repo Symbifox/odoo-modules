@@ -5,13 +5,15 @@ from odoo import fields, models
 class BfNfcTemplate(models.Model):
     _inherit = "bf.nfc.template"
 
-    recette = fields.Selection(selection_add=[("equipements", "Des équipements et leur pastille")],
+    recette = fields.Selection(selection_add=[("equipements", "Equipment "
+                                                              "items and "
+                                                              "their tags")],
                                ondelete={"equipements": "set default"})
     registre_externe = fields.Boolean(
-        string="Remis à des personnes sans compte",
-        help="Chaque remise demande le nom, le téléphone et l'employeur de qui reçoit "
-             "(registre des cadenas, RSST art. 205).")
-    max_days = fields.Integer(string="Rappel après (jours)")
+        string="Handed out to people without an account",
+        help="Each hand-out asks for the name, phone number and employer "
+             "of the recipient (padlock register, RSST s. 205).")
+    max_days = fields.Integer(string="Reminder after (days)")
 
     def _recette_equipements(self, pose, lignes):
         self.ensure_one()

@@ -93,11 +93,11 @@ class PortailNfc(http.Controller):
 
     @staticmethod
     def _DEJA_SERVI():
-        return _("Ce tapotement a déjà servi. Approchez de nouveau le téléphone "
-                 "de la pastille.")
+        return _("This tap has already been used. Bring the phone close "
+                 "to the tag again.")
 
     def _page_refus(self, message):
-        return self._page_resultat(None, {"statut": "refused", "titre": _("Refusé"),
+        return self._page_resultat(None, {"statut": "refused", "titre": _("Refused"),
                                           "message": message, "url": None})
 
     def _verifier_signature(self, kw):
@@ -113,7 +113,7 @@ class PortailNfc(http.Controller):
         picc = kw.get("picc_data") or kw.get("p")
         cmac = kw.get("cmac") or kw.get("c")
         if not (picc and cmac):
-            return None, 0, _("Cette adresse ne porte pas de signature de puce.")
+            return None, 0, _("This address carries no chip signature.")
         Tag = request.env["bf.nfc.tag"].sudo()
         Cles = request.env["bf.nfc.sdm.key"].sudo()
         societes = request.env["res.company"].sudo().search([])
@@ -135,22 +135,23 @@ class PortailNfc(http.Controller):
             try:
                 valide = verifier_cmac(cle_fichier, uid, compteur, cmac)
             except SdmInvalide as exc:
-                return None, 0, str(exc)
+                motif = exc.args[0] if exc.args else ""
+                return None, 0, motif if isinstance(motif, str) else request.env._(motif)
             if not valide:
                 _logger.warning("Pastille signée %s : CMAC invalide", uid)
-                return None, 0, _("La signature de cette pastille n'est pas valide.")
+                return None, 0, _("This tag's signature is not valid.")
             if not tag.user_id:
                 # ⚠️ Refusé ici et pas seulement dans _refus_eventuel : plus bas,
                 # on bascule l'environnement sur ce compte, et basculer sur rien
                 # lève avant que la phrase de refus n'ait pu être écrite.
-                return None, 0, _("Cette pastille signée ne désigne aucun compte "
-                                  "au nom duquel agir.")
+                return None, 0, _("This signed tag names no account to "
+                                  "act on behalf of.")
             if compteur <= tag.sdm_counter:
                 _logger.warning("Pastille signée %s : compteur rejoué (%s <= %s)",
                                 uid, compteur, tag.sdm_counter)
                 return None, 0, self._DEJA_SERVI()
             return tag, compteur, None
-        return None, 0, _("Cette pastille n'est pas reconnue.")
+        return None, 0, _("This tag is not recognized.")
 
     def _agir_signe(self, tag, compteur, kw, jeton):
         """Exécute au nom du compte désigné sur la pastille.

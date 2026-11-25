@@ -16,33 +16,33 @@ TERMINAUX_ECHOUES = ("failed",)
 
 class ScormAttempt(models.Model):
     _name = "bf.scorm.attempt"
-    _description = "Tentative SCORM"
+    _description = "SCORM attempt"
     _order = "write_date desc"
 
     package_id = fields.Many2one(
-        "bf.scorm.package", string="Paquet", required=True,
+        "bf.scorm.package", string="Package", required=True,
         ondelete="cascade", index=True)
     partner_id = fields.Many2one(
-        "res.partner", string="Apprenant", required=True, index=True)
+        "res.partner", string="Learner", required=True, index=True)
     slide_id = fields.Many2one(
-        related="package_id.slide_id", store=True, string="Contenu")
+        related="package_id.slide_id", store=True, string="Content")
     cmi_data = fields.Text(
-        string="Données CMI", default="{}",
-        help="Le modèle de données CMI tel que le contenu l'a écrit, en JSON.")
-    lesson_status = fields.Char(string="État rapporté", readonly=True)
+        string="CMI data", default="{}",
+        help="The CMI data model as the content wrote it, in JSON.")
+    lesson_status = fields.Char(string="Reported status", readonly=True)
     score_raw = fields.Float(string="Score", readonly=True)
-    score_max = fields.Float(string="Score maximal", readonly=True)
-    total_time = fields.Char(string="Temps passé", readonly=True)
-    completed = fields.Boolean(string="Terminé", readonly=True, index=True)
+    score_max = fields.Float(string="Maximum score", readonly=True)
+    total_time = fields.Char(string="Time spent", readonly=True)
+    completed = fields.Boolean(string="Ended", readonly=True, index=True)
     date_completed = fields.Datetime(
-        string="Terminé le", readonly=True,
-        help="Écrit au moment où le contenu a rapporté son état terminal. Ce "
-             "n'est pas un calcul : une date qui dépend d'un événement se pose "
-             "quand l'événement arrive.")
+        string="Ended on", readonly=True,
+        help="Written at the moment the content reported its terminal "
+             "state. This is not a computation: a date that depends on an "
+             "event is set when the event happens.")
 
     _sql_constraints = [
         ("unique_par_apprenant", "unique (package_id, partner_id)",
-         "Une seule tentative par paquet et par apprenant."),
+         "Only one attempt per package and per learner."),
     ]
 
     # ------------------------------------------------------------------

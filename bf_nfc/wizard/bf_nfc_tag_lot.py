@@ -16,23 +16,24 @@ from odoo.exceptions import AccessError, UserError
 
 class BfNfcTagLot(models.TransientModel):
     _name = "bf.nfc.tag.lot"
-    _description = "Création de pastilles en lot"
+    _description = "Batch tag creation"
 
     res_model = fields.Char(required=True, readonly=True)
     res_ids = fields.Char(required=True, readonly=True)
-    fiche_count = fields.Integer(string="Fiches", compute="_compute_resume")
-    deja_count = fields.Integer(string="Déjà munies", compute="_compute_resume")
+    fiche_count = fields.Integer(string="Records", compute="_compute_resume")
+    deja_count = fields.Integer(string="Already tagged", compute="_compute_resume")
     gesture_id = fields.Many2one(
-        "bf.nfc.gesture", string="Geste", required=True,
+        "bf.nfc.gesture", string="Gesture", required=True,
         domain="[('kind', '!=', 'menu'), '|', ('target_model', '=', False), "
                "('target_model', '=', res_model)]",
     )
     prefixe = fields.Char(
-        string="Préfixe du libellé",
-        help="Ajouté devant le nom de chaque fiche : « Ronde du soir · » donne "
-             "« Ronde du soir · Porte arrière ».")
-    params = fields.Char(string="Paramètres", help="JSON facultatif, le même pour toutes.")
-    confirm_required = fields.Boolean(string="Confirmer avant d'agir", default=True)
+        string="Label prefix",
+        help="Added in front of each record's name: “Evening patrol · ” "
+             "gives “Evening patrol · Back door”.")
+    params = fields.Char(string="Parameters", help="Optional JSON, the "
+                                                   "same for all.")
+    confirm_required = fields.Boolean(string="Confirm before acting", default=True)
 
     @api.model
     def default_get(self, champs):
@@ -47,7 +48,7 @@ class BfNfcTagLot(models.TransientModel):
     def _fiches(self):
         self.ensure_one()
         if self.res_model not in self.env:
-            raise UserError(_("Ce type de fiche n'existe pas sur ce système."))
+            raise UserError(_("This record type does not exist on this system."))
         ids = [int(i) for i in (self.res_ids or "").split(",") if i.strip().isdigit()]
         return self.env[self.res_model].browse(ids).exists()
 
@@ -70,20 +71,22 @@ class BfNfcTagLot(models.TransientModel):
     def action_creer(self):
         self.ensure_one()
         if not self.env.user.has_group("bf_nfc.group_nfc_manager"):
-            raise AccessError(_("Créer des pastilles est réservé à la gestion."))
+            raise AccessError(_("Creating tags is reserved for managers."))
         if self.params:
             try:
                 if not isinstance(json.loads(self.params), dict):
                     raise ValueError
             except ValueError:
-                raise UserError(_("Les paramètres doivent être un objet JSON."))
+                raise UserError(_("The parameters must be a JSON object."))
         fiches = self._fiches()
         attendu = self.gesture_id.target_model
         if attendu and attendu != fiches._name:
-            raise UserError(_("Le geste « %s » ne vise pas ce type de fiche.", self.gesture_id.name))
+            raise UserError(_("The gesture “%s” does not target this "
+                              "record type.", self.gesture_id.name))
         a_faire = fiches - self._deja_munies(fiches)
         if not a_faire:
-            raise UserError(_("Toutes ces fiches ont déjà une pastille pour ce geste."))
+            raise UserError(_("All these records already have a tag for "
+                              "this gesture."))
         Tag = self.env["bf.nfc.tag"]
         crees = Tag.browse()
         for fiche in a_faire:
@@ -102,7 +105,7 @@ class BfNfcTagLot(models.TransientModel):
             crees |= Tag.create(valeurs)
         return {
             "type": "ir.actions.act_window",
-            "name": _("%s pastilles créées", len(crees)),
+            "name": _("%s tags created", len(crees)),
             "res_model": "bf.nfc.tag",
             "view_mode": "list,form",
             "domain": [("id", "in", crees.ids)],

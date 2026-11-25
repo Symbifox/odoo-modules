@@ -7,12 +7,12 @@ from odoo import api, fields, models
 _logger = logging.getLogger(__name__)
 
 ETATS = [
-    ("pending", "À faire"),
-    ("covered", "À jour"),
-    ("expiring", "Expire bientôt"),
-    ("overdue", "En retard"),
-    ("undated", "Sans échéance"),
-    ("exempt", "Dispensée"),
+    ("pending", "To do"),
+    ("covered", "Up to date"),
+    ("expiring", "Expires soon"),
+    ("overdue", "Overdue"),
+    ("undated", "No due date"),
+    ("exempt", "Waived"),
 ]
 
 
@@ -29,34 +29,34 @@ class BfTrainingObligation(models.Model):
     """
 
     _name = "bf.training.obligation"
-    _description = "Obligation de formation"
+    _description = "Training obligation"
     _order = "due_date, id"
 
     requirement_id = fields.Many2one(
-        "bf.training.requirement", string="Exigence", required=True,
+        "bf.training.requirement", string="Requirement", required=True,
         ondelete="cascade", index=True)
     employee_id = fields.Many2one(
-        "hr.employee", string="Personne", required=True, ondelete="cascade", index=True)
+        "hr.employee", string="Person", required=True, ondelete="cascade", index=True)
     company_id = fields.Many2one(
         related="requirement_id.company_id", store=True, index=True)
     activity_id = fields.Many2one(
-        related="requirement_id.activity_id", string="Activité exigée", store=True)
-    due_date = fields.Date(string="Échéance", index=True)
-    state = fields.Selection(ETATS, string="État", default="pending", required=True, index=True)
+        related="requirement_id.activity_id", string="Required activity", store=True)
+    due_date = fields.Date(string="Due date", index=True)
+    state = fields.Selection(ETATS, string="State", default="pending", required=True, index=True)
     covered_by_id = fields.Many2one(
-        "bf.training.record", string="Couverte par", ondelete="set null")
-    valid_until = fields.Date(string="Valide jusqu'au")
-    hours_done = fields.Float(string="Heures faites", digits=(6, 2))
+        "bf.training.record", string="Covered by", ondelete="set null")
+    valid_until = fields.Date(string="Valid until")
+    hours_done = fields.Float(string="Hours done", digits=(6, 2))
     hours_required = fields.Float(
-        related="requirement_id.min_hours", string="Heures exigées")
-    exempt_reason = fields.Char(string="Motif de dispense")
-    last_computed = fields.Datetime(string="Dernier calcul", readonly=True)
+        related="requirement_id.min_hours", string="Hours required")
+    exempt_reason = fields.Char(string="Waiver reason")
+    last_computed = fields.Datetime(string="Last computed", readonly=True)
     assignment_ids = fields.One2many(
-        "bf.training.assignment", "obligation_id", string="Assignations")
+        "bf.training.assignment", "obligation_id", string="Assignments")
 
     _sql_constraints = [
         ("unique_par_personne", "unique (requirement_id, employee_id)",
-         "Cette personne a déjà une ligne pour cette exigence."),
+         "This person already has a line for this requirement."),
     ]
 
     @api.depends("requirement_id.name", "employee_id.name")

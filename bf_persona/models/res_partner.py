@@ -17,14 +17,14 @@ class ResPartner(models.Model):
     has_persona = fields.Boolean(
         compute="_compute_persona_id", compute_sudo=True, store=False,
         groups="bf_persona.group_persona_user",
-        string="A un persona",
+        string="Has a persona",
     )
     # The persona form is behind the persona role; its mirror on the partner,
     # which portal users could read on their own record, must be too.
     persona_summary = fields.Text(
         related="persona_id.claude_context_summary",
         groups="bf_persona.group_persona_user",
-        string="Résumé persona",
+        string="Persona summary",
         readonly=True,
     )
 

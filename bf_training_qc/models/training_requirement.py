@@ -5,9 +5,9 @@ class BfTrainingRequirement(models.Model):
     _inherit = "bf.training.requirement"
 
     legal_reference_id = fields.Many2one(
-        "bf.training.legal.reference", string="Référence du catalogue",
-        help="Reprend l'intitulé, la citation et le texte, plutôt que de les "
-             "recopier de mémoire.")
+        "bf.training.legal.reference", string="Catalogue reference",
+        help="Takes the title, the citation and the text, rather than "
+             "copying them from memory.")
 
     @api.onchange("legal_reference_id")
     def _onchange_legal_reference_id(self):

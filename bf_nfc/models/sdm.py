@@ -24,6 +24,9 @@ toujours, ce qui se lit comme une mauvaise clé.
 """
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.cmac import CMAC
+from odoo.tools.translate import LazyTranslate
+
+_lt = LazyTranslate(__name__)
 
 IV_NUL = b"\x00" * 16
 # AN12196 §Secure Dynamic Messaging : le vecteur de session pour le MAC.
@@ -37,14 +40,14 @@ class SdmInvalide(Exception):
 def _cle(valeur):
     """Une clé AES-128 à partir de 32 caractères hexadécimaux."""
     if not valeur:
-        raise SdmInvalide("Aucune clé de pastille signée n'est configurée.")
+        raise SdmInvalide(_lt("No signed tag key is configured."))
     brut = valeur.strip().replace(" ", "")
     try:
         octets = bytes.fromhex(brut)
     except ValueError:
-        raise SdmInvalide("La clé n'est pas de l'hexadécimal.")
+        raise SdmInvalide(_lt("The key is not hexadecimal."))
     if len(octets) != 16:
-        raise SdmInvalide("Une clé AES-128 fait 16 octets (32 caractères).")
+        raise SdmInvalide(_lt("An AES-128 key is 16 bytes (32 characters)."))
     return octets
 
 
@@ -79,9 +82,9 @@ def verifier_cmac(cle_fichier, uid_hex, compteur, cmac_hex, message=b""):
     try:
         attendu_brut = bytes.fromhex((cmac_hex or "").strip())
     except ValueError:
-        raise SdmInvalide("cmac n'est pas de l'hexadécimal.")
+        raise SdmInvalide(_lt("cmac is not hexadecimal."))
     if len(attendu_brut) != 8:
-        raise SdmInvalide("Le CMAC tronqué fait 8 octets.")
+        raise SdmInvalide(_lt("The truncated CMAC is 8 bytes."))
     uid = bytes.fromhex(uid_hex)
     sv2 = PREFIXE_SV2 + uid + int(compteur).to_bytes(3, "little")
     session = CMAC(algorithms.AES(_cle(cle_fichier)))

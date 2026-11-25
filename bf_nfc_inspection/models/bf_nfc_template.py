@@ -6,13 +6,15 @@ from odoo.exceptions import ValidationError
 class BfNfcTemplate(models.Model):
     _inherit = "bf.nfc.template"
 
-    checklist_id = fields.Many2one("bf.nfc.checklist", string="Grille de relevé", ondelete="restrict")
+    checklist_id = fields.Many2one("bf.nfc.checklist", string="Inspection "
+                                                              "checklist", ondelete="restrict")
 
     @api.constrains("gesture_id", "checklist_id")
     def _check_grille(self):
         for gabarit in self:
             if gabarit.gesture_id.kind == "reading" and not gabarit.checklist_id:
-                raise ValidationError(_("« %s » : un gabarit de relevé porte sa grille.", gabarit.name))
+                raise ValidationError(_("“%s”: a reading template carries "
+                                        "its checklist.", gabarit.name))
 
     def _valeurs_pastille(self, pose, nom, endroit):
         valeurs = super()._valeurs_pastille(pose, nom, endroit)

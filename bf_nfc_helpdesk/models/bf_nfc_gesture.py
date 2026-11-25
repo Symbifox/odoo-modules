@@ -21,7 +21,7 @@ class BfNfcGesture(models.Model):
     _inherit = "bf.nfc.gesture"
 
     kind = fields.Selection(
-        selection_add=[("ticket", "Signaler un problème")],
+        selection_add=[("ticket", "Report a problem")],
         ondelete={"ticket": "cascade"},
     )
 
@@ -29,17 +29,19 @@ class BfNfcGesture(models.Model):
         self.ensure_one()
         cible = tag._cible()
         if not cible:
-            raise UserError(_("Cette pastille ne désigne aucune fiche."))
+            raise UserError(_("This tag points to no record."))
         client = cible if cible._name == "res.partner" else (
             cible.partner_id if "partner_id" in cible._fields else cible.env["res.partner"])
         texte = (params.get("texte_fixe") or params.get("texte") or "").strip()
         if not texte:
             if params.get("choix") == "signaler":
-                raise UserError(_("Décrivez le problème en une phrase avant d'envoyer."))
+                raise UserError(_("Describe the problem in one sentence "
+                                  "before sending."))
             return {
-                "titre": _("Signaler un problème"),
+                "titre": _("Report a problem"),
                 "message": " · ".join(filter(None, [cible.display_name, tag.place])),
-                "choix": [{"cle": "signaler", "libelle": _("Décrire le problème"),
+                "choix": [{"cle": "signaler", "libelle": _("Describe the "
+                                                           "problem"),
                            "style": "principal", "saisie": "texte"}],
             }
 
@@ -47,16 +49,16 @@ class BfNfcGesture(models.Model):
         qui = self.env.user
         lignes = [escape(texte)]
         details = [
-            _("Fiche : %s", cible.display_name),
-            _("Endroit : %s", tag.place) if tag.place else None,
-            _("Signalé par %(qui)s le %(quand)s, par la pastille « %(pastille)s ».",
+            _("Record: %s", cible.display_name),
+            _("Place: %s", tag.place) if tag.place else None,
+            _("Reported by %(qui)s on %(quand)s, with the tag “%(pastille)s”.",
               qui=qui.name, quand=self._heure(moment, "%Y-%m-%d %H:%M"), pastille=tag.name),
-            _("Envoyé en différé : le téléphone n'avait pas de réseau.") if params.get("differe") else None,
+            _("Sent later: the phone had no network.") if params.get("differe") else None,
         ]
         corps = Markup("<p>%s</p><p><small>%s</small></p>") % (
             lignes[0], Markup("<br/>").join(escape(d) for d in details if d))
         valeurs = {
-            "name": _("%(quoi)s : %(texte)s", quoi=tag.place or cible.display_name, texte=texte)[:200],
+            "name": _("%(quoi)s: %(texte)s", quoi=tag.place or cible.display_name, texte=texte)[:200],
             "description": corps,
             "partner_id": client.id or False,
             "channel_id": self.env.ref("bf_nfc_helpdesk.channel_pastille").id,
@@ -68,6 +70,6 @@ class BfNfcGesture(models.Model):
         lisible = billet.with_user(qui).sudo(False).has_access("read")
         return {
             "titre": billet.number,
-            "message": _("Billet %s créé. Merci, c'est signalé.", billet.number),
+            "message": _("Ticket %s created. Thanks, it has been reported.", billet.number),
             "url": "/mail/view?model=helpdesk.ticket&res_id=%s" % billet.id if lisible else None,
         }

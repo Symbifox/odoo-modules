@@ -68,6 +68,7 @@ class SlideChannelPartner(models.Model):
                 "state": "confirmed",
                 "support_provided": activite.requires_support and activite.support_default,
                 "plan_id": activite.default_plan_id.id if activite.default_plan_id else False,
-                "note": _("Écrite automatiquement à la complétion du cours en ligne."),
+                "note": _("Written automatically when the online course "
+                          "is completed."),
             })
         return creees

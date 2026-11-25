@@ -1,16 +1,18 @@
-#
+# Translation of Pastilles NFC : la salle de réunion - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: bf_nfc_room 18.0.1.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 04:56+0000\n"
-"PO-Revision-Date: 2026-09-14 04:56+0000\n"
+"POT-Creation-Date: 2026-11-20 04:09+0000\n"
+"PO-Revision-Date: 2026-11-20 04:09+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_nfc_room
@@ -20,53 +22,47 @@ msgid "%(salle)s · %(qui)s"
 msgstr "%(salle)s · %(qui)s"
 
 #. module: bf_nfc_room
+#: model:ir.model.fields,help:bf_nfc_room.field_bf_nfc_room__checkin_delay
+msgid ""
+"A booking nobody confirms with the tag within this delay after it starts "
+"loses its room."
+msgstr ""
+"Une réservation que personne ne confirme par la pastille dans ce délai après"
+" son début perd sa salle."
+
+#. module: bf_nfc_room
+#: model:bf.nfc.template,description:bf_nfc_room.gabarit_salle_reunion
+msgid ""
+"A tag on the door of each room. You tap it to see whether the room is free, "
+"take it for 30 or 60 minutes, or confirm your booking; a booking nobody "
+"confirms releases the room. What is taken at the door shows in everyone's "
+"calendar."
+msgstr ""
+"Une pastille sur la porte de chaque salle. On la tape pour savoir si elle "
+"est libre, la prendre pour 30 ou 60 minutes, ou confirmer sa réservation ; "
+"une réservation que personne ne confirme libère la salle. Ce qui se prend à "
+"la porte se voit dans l'agenda de tout le monde."
+
+#. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__active
 msgid "Active"
 msgstr "Actif"
 
 #. module: bf_nfc_room
 #: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid "Archivée"
+msgid "Archived"
 msgstr "Archivée"
 
 #. module: bf_nfc_room
-#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_calendar_event_search_salle
-msgid "Avec une salle"
-msgstr "Avec une salle"
+#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
+msgid "At the door"
+msgstr "À la porte"
 
 #. module: bf_nfc_room
-#: model:ir.model,name:bf_nfc_room.model_calendar_event
-msgid "Calendar Event"
-msgstr "Événement du calendrier"
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Ce choix n'existe pas."
-msgstr "Ce choix n'existe pas."
-
-#. module: bf_nfc_room
-#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_template__recette
-msgid "Ce qu'il crée"
-msgstr "Ce qu'il crée"
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Cette pastille ne désigne pas une salle."
-msgstr "Cette pastille ne désigne pas une salle."
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Cette réservation n'est pas la vôtre."
-msgstr "Cette réservation n'est pas la vôtre."
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Cette réservation n'est plus à confirmer."
-msgstr "Cette réservation n'est plus à confirmer."
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__event_ids
+#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
+msgid "Bookings"
+msgstr "Réservations"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__company_id
@@ -74,15 +70,25 @@ msgid "Company"
 msgstr "Société"
 
 #. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Confirmé : la salle est à vous jusqu'à %s."
-msgstr "Confirmé : la salle est à vous jusqu'à %s."
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__checkin_delay
+msgid "Confirmation delay (min)"
+msgstr "Délai de confirmation (min)"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_calendar_event__bf_nfc_checkin
-msgid "Confirmée à la porte"
+msgid "Confirmed at the door"
 msgstr "Confirmée à la porte"
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "Confirmed: the room is yours until %s."
+msgstr "Confirmé : la salle est à vous jusqu'à %s."
+
+#. module: bf_nfc_room
+#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
+msgid "Create the door tag"
+msgstr "Créer la pastille de la porte"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__create_uid
@@ -95,49 +101,38 @@ msgid "Created on"
 msgstr "Créé le"
 
 #. module: bf_nfc_room
-#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid "Créer la pastille de la porte"
-msgstr "Créer la pastille de la porte"
-
-#. module: bf_nfc_room
-#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid "Dans l'agenda, un événement réserve la salle par son champ « Salle »."
-msgstr "Dans l'agenda, un événement réserve la salle par son champ « Salle »."
-
-#. module: bf_nfc_room
-#: model:ir.model.fields.selection,name:bf_nfc_room.selection__bf_nfc_template__recette__salles
-msgid "Des salles et la pastille de leur porte"
-msgstr "Des salles et la pastille de leur porte"
-
-#. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
 
 #. module: bf_nfc_room
-#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__durations
-msgid "Durées proposées (min)"
-msgstr "Durées proposées (min)"
+#: model:ir.model.fields,help:bf_nfc_room.field_bf_nfc_room__place
+msgid "Floor, wing: what you say to send someone there."
+msgstr "Étage, aile : ce qu'on dit pour y envoyer quelqu'un."
 
 #. module: bf_nfc_room
-#: model:ir.model.fields,help:bf_nfc_room.field_bf_nfc_room__require_checkin
-msgid "Décoché : une réservation garde sa salle même si personne ne vient."
-msgstr "Décoché : une réservation garde sa salle même si personne ne vient."
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "Free for the rest of the day."
+msgstr "Libre pour le reste de la journée."
 
 #. module: bf_nfc_room
-#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__checkin_delay
-msgid "Délai de confirmation (min)"
-msgstr "Délai de confirmation (min)"
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "Free until %s."
+msgstr "Libre jusqu'à %s."
 
 #. module: bf_nfc_room
-#: model:ir.model,name:bf_nfc_room.model_bf_nfc_template
-msgid "Gabarit de pastilles"
-msgstr "Gabarit de pastilles"
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "I'm here"
+msgstr "J'arrive"
 
 #. module: bf_nfc_room
-#: model:ir.model,name:bf_nfc_room.model_bf_nfc_gesture
-msgid "Geste déclenché par une pastille NFC"
-msgstr "Geste déclenché par une pastille NFC"
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "I'm here (booking at %s)"
+msgstr "J'arrive (réservation de %s)"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__id
@@ -145,39 +140,14 @@ msgid "ID"
 msgstr "ID"
 
 #. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "J'arrive"
-msgstr "J'arrive"
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "J'arrive (réservation de %s)"
-msgstr "J'arrive (réservation de %s)"
-
-#. module: bf_nfc_room
 #: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid "La salle"
-msgstr "La salle"
+msgid "In the calendar, an event books the room through its “Room” field."
+msgstr "Dans l'agenda, un événement réserve la salle par son champ « Salle »."
 
 #. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "La salle est réservée à %s : trop peu de temps pour la prendre."
-msgstr "La salle est réservée à %s : trop peu de temps pour la prendre."
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "La salle vient d'être prise, jusqu'à %s."
-msgstr "La salle vient d'être prise, jusqu'à %s."
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_room.py:0
-msgid "La salle « %(salle)s » est déjà réservée de %(debut)s à %(fin)s."
-msgstr "La salle « %(salle)s » est déjà réservée de %(debut)s à %(fin)s."
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_gesture__kind
+msgid "Kind"
+msgstr "Nature"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__write_uid
@@ -190,39 +160,11 @@ msgid "Last Updated on"
 msgstr "Dernière modification le"
 
 #. module: bf_nfc_room
-#: model:ir.model.fields,help:bf_nfc_room.field_bf_nfc_room__durations
-msgid ""
-"Les boutons « Prendre » de la porte, en minutes, séparés par des virgules."
-msgstr ""
-"Les boutons « Prendre » de la porte, en minutes, séparés par des virgules."
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Libre jusqu'à %s."
-msgstr "Libre jusqu'à %s."
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Libre pour le reste de la journée."
-msgstr "Libre pour le reste de la journée."
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Libérer la salle"
-msgstr "Libérer la salle"
-
-#. module: bf_nfc_room
-#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__require_checkin
-msgid "Libérer les réservations non confirmées"
-msgstr "Libérer les réservations non confirmées"
-
-#. module: bf_nfc_room
-#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_gesture__kind
-msgid "Nature"
-msgstr "Nature"
+#: model:bf.nfc.gesture,name:bf_nfc_room.gesture_room
+#: model:bf.nfc.template,name:bf_nfc_room.gabarit_salle_reunion
+#: model:ir.model.fields.selection,name:bf_nfc_room.selection__bf_nfc_gesture__kind__room
+msgid "Meeting room"
+msgstr "Salle de réunion"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__note
@@ -235,69 +177,43 @@ msgid "Notes"
 msgstr "Notes"
 
 #. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Occupée par %(qui)s jusqu'à %(fin)s."
-msgstr "Occupée par %(qui)s jusqu'à %(fin)s."
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__durations
+msgid "Offered durations (min)"
+msgstr "Durées proposées (min)"
 
 #. module: bf_nfc_room
-#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__place
-msgid "Où"
-msgstr "Où"
-
-#. module: bf_nfc_room
-#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__nfc_tag_count
-#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid "Pastilles"
-msgstr "Pastilles"
-
-#. module: bf_nfc_room
-#: model:ir.actions.server,name:bf_nfc_room.cron_room_release_ir_actions_server
-msgid "Pastilles : libérer les salles non confirmées"
-msgstr "Pastilles : libérer les salles non confirmées"
-
-#. module: bf_nfc_room
-#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__capacity
-msgid "Places"
-msgstr "Places"
+#: model:bf.nfc.gesture,description:bf_nfc_room.gesture_room
+msgid ""
+"On the door: tells whether the room is free or taken, offers to take it, "
+"confirm a booking or release it. Never acts without a button."
+msgstr ""
+"Sur la porte : dit si la salle est libre ou occupée, propose de la prendre, "
+"de confirmer sa réservation ou de la libérer. N'agit jamais sans un bouton."
 
 #. module: bf_nfc_room
 #. odoo-python
 #: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Prendre %s h"
-msgstr "Prendre %s h"
+msgid "Release the room"
+msgstr "Libérer la salle"
 
 #. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Prendre %s min"
-msgstr "Prendre %s min"
-
-#. module: bf_nfc_room
-#. odoo-python
-#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Prendre jusqu'à %s"
-msgstr "Prendre jusqu'à %s"
-
-#. module: bf_nfc_room
-#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__event_ids
-#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid "Réservations"
-msgstr "Réservations"
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__require_checkin
+msgid "Release unconfirmed bookings"
+msgstr "Libérer les réservations non confirmées"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__name
 #: model:ir.model.fields,field_description:bf_nfc_room.field_calendar_event__bf_nfc_room_id
 #: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid "Salle"
+msgid "Room"
 msgstr "Salle"
 
 #. module: bf_nfc_room
 #: model:bf.nfc.template,exemple:bf_nfc_room.gabarit_salle_reunion
 msgid ""
-"Salle A ; 2e étage\n"
-"Salle B ; 2e étage\n"
-"Bureau d'appoint ; accueil"
+"Room A ; 2nd floor\n"
+"Room B ; 2nd floor\n"
+"Spare office ; reception"
 msgstr ""
 "Salle A ; 2e étage\n"
 "Salle B ; 2e étage\n"
@@ -305,39 +221,32 @@ msgstr ""
 
 #. module: bf_nfc_room
 #: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid "Salle A, bureau d'appoint…"
+msgid "Room A, spare office…"
 msgstr "Salle A, bureau d'appoint…"
 
 #. module: bf_nfc_room
-#: model:bf.nfc.gesture,name:bf_nfc_room.gesture_room
-#: model:bf.nfc.template,name:bf_nfc_room.gabarit_salle_reunion
-#: model:ir.model.fields.selection,name:bf_nfc_room.selection__bf_nfc_gesture__kind__room
-msgid "Salle de réunion"
-msgstr "Salle de réunion"
+#: model:ir.model,name:bf_nfc_room.model_bf_nfc_room
+msgid "Room bookable by tag"
+msgstr "Salle réservable par pastille"
 
 #. module: bf_nfc_room
 #. odoo-python
 #: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Salle libérée. Merci."
+msgid "Room released. Thank you."
 msgstr "Salle libérée. Merci."
 
 #. module: bf_nfc_room
 #. odoo-python
 #: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Salle prise jusqu'à %s. Libérez-la en partant."
+msgid "Room taken until %s. Release it when you leave."
 msgstr "Salle prise jusqu'à %s. Libérez-la en partant."
-
-#. module: bf_nfc_room
-#: model:ir.model,name:bf_nfc_room.model_bf_nfc_room
-msgid "Salle réservable par pastille"
-msgstr "Salle réservable par pastille"
 
 #. module: bf_nfc_room
 #. odoo-python
 #: code:addons/bf_nfc_room/models/bf_nfc_room.py:0
 msgid ""
-"Salle « %(salle)s » libérée : personne n'a confirmé sa présence par la "
-"pastille dans les %(delai)s minutes."
+"Room “%(salle)s” released: nobody confirmed their presence with the tag "
+"within %(delai)s minutes."
 msgstr ""
 "Salle « %(salle)s » libérée : personne n'a confirmé sa présence par la "
 "pastille dans les %(delai)s minutes."
@@ -346,58 +255,135 @@ msgstr ""
 #: model:ir.actions.act_window,name:bf_nfc_room.action_bf_nfc_room
 #: model:ir.ui.menu,name:bf_nfc_room.menu_nfc_room
 #: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_list
-msgid "Salles"
+msgid "Rooms"
 msgstr "Salles"
 
 #. module: bf_nfc_room
-#: model:bf.nfc.gesture,description:bf_nfc_room.gesture_room
-msgid ""
-"Sur la porte : dit si la salle est libre ou occupée, propose de la prendre, "
-"de confirmer sa réservation ou de la libérer. N'agit jamais sans un bouton."
-msgstr ""
-"Sur la porte : dit si la salle est libre ou occupée, propose de la prendre, "
-"de confirmer sa réservation ou de la libérer. N'agit jamais sans un bouton."
+#: model:ir.model.fields.selection,name:bf_nfc_room.selection__bf_nfc_template__recette__salles
+msgid "Rooms and their door tags"
+msgstr "Des salles et la pastille de leur porte"
 
 #. module: bf_nfc_room
-#: model:bf.nfc.template,description:bf_nfc_room.gabarit_salle_reunion
-msgid ""
-"Une pastille sur la porte de chaque salle. On la tape pour savoir si elle "
-"est libre, la prendre pour 30 ou 60 minutes, ou confirmer sa réservation ; "
-"une réservation que personne ne confirme libère la salle. Ce qui se prend à "
-"la porte se voit dans l'agenda de tout le monde."
-msgstr ""
-"Une pastille sur la porte de chaque salle. On la tape pour savoir si elle "
-"est libre, la prendre pour 30 ou 60 minutes, ou confirmer sa réservation ; "
-"une réservation que personne ne confirme libère la salle. Ce qui se prend à "
-"la porte se voit dans l'agenda de tout le monde."
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__capacity
+msgid "Seats"
+msgstr "Places"
 
 #. module: bf_nfc_room
-#: model:ir.model.fields,help:bf_nfc_room.field_bf_nfc_room__checkin_delay
-msgid ""
-"Une réservation que personne ne confirme par la pastille dans ce délai après"
-" son début perd sa salle."
-msgstr ""
-"Une réservation que personne ne confirme par la pastille dans ce délai après"
-" son début perd sa salle."
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__nfc_tag_count
+#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
+msgid "Tags"
+msgstr "Pastilles"
+
+#. module: bf_nfc_room
+#: model:ir.actions.server,name:bf_nfc_room.cron_room_release_ir_actions_server
+msgid "Tags: release unconfirmed rooms"
+msgstr "Pastilles : libérer les salles non confirmées"
 
 #. module: bf_nfc_room
 #. odoo-python
 #: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "Votre réservation, jusqu'à %s."
+msgid "Take %s h"
+msgstr "Prendre %s h"
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "Take %s min"
+msgstr "Prendre %s min"
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "Take until %s"
+msgstr "Prendre jusqu'à %s"
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "Taken by %(qui)s until %(fin)s."
+msgstr "Occupée par %(qui)s jusqu'à %(fin)s."
+
+#. module: bf_nfc_room
+#: model:ir.model.fields,help:bf_nfc_room.field_bf_nfc_room__durations
+msgid "The door's “Take” buttons, in minutes, separated by commas."
+msgstr ""
+"Les boutons « Prendre » de la porte, en minutes, séparés par des virgules."
+
+#. module: bf_nfc_room
+#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
+msgid "The room"
+msgstr "La salle"
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "The room is booked at %s: too little time to take it."
+msgstr "La salle est réservée à %s : trop peu de temps pour la prendre."
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "The room was just taken, until %s."
+msgstr "La salle vient d'être prise, jusqu'à %s."
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_room.py:0
+msgid "The room “%(salle)s” is already booked from %(debut)s to %(fin)s."
+msgstr "La salle « %(salle)s » est déjà réservée de %(debut)s à %(fin)s."
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "This booking is not yours."
+msgstr "Cette réservation n'est pas la vôtre."
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "This booking no longer needs confirming."
+msgstr "Cette réservation n'est plus à confirmer."
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "This choice does not exist."
+msgstr "Ce choix n'existe pas."
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "This tag does not point to a room."
+msgstr "Cette pastille ne désigne pas une salle."
+
+#. module: bf_nfc_room
+#: model:ir.model.fields,help:bf_nfc_room.field_bf_nfc_room__require_checkin
+msgid "Unchecked: a booking keeps its room even if nobody shows up."
+msgstr "Décoché : une réservation garde sa salle même si personne ne vient."
+
+#. module: bf_nfc_room
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_template__recette
+msgid "What it creates"
+msgstr "Ce qu'il crée"
+
+#. module: bf_nfc_room
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__place
+msgid "Where"
+msgstr "Où"
+
+#. module: bf_nfc_room
+#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_calendar_event_search_salle
+msgid "With a room"
+msgstr "Avec une salle"
+
+#. module: bf_nfc_room
+#. odoo-python
+#: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
+msgid "Your booking, until %s."
 msgstr "Votre réservation, jusqu'à %s."
 
 #. module: bf_nfc_room
 #. odoo-python
 #: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
-msgid "quelqu'un"
+msgid "someone"
 msgstr "quelqu'un"
-
-#. module: bf_nfc_room
-#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid "À la porte"
-msgstr "À la porte"
-
-#. module: bf_nfc_room
-#: model:ir.model.fields,help:bf_nfc_room.field_bf_nfc_room__place
-msgid "Étage, aile : ce qu'on dit pour y envoyer quelqu'un."
-msgstr "Étage, aile : ce qu'on dit pour y envoyer quelqu'un."

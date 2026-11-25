@@ -14,7 +14,7 @@ class ContactCcRule(models.Model):
     """
 
     _name = "contact.cc.rule"
-    _description = "Règle de copie d'un persona"
+    _description = "Copy rule of a persona"
     _order = "state, rule_type, mandatory desc, id"
 
     persona_id = fields.Many2one(
@@ -22,13 +22,13 @@ class ContactCcRule(models.Model):
         string="Persona",
     )
     rule_type = fields.Selection(
-        [("cc", "Mettre en copie"), ("never", "Ne jamais mettre en copie")],
-        string="Règle", default="cc", required=True,
+        [("cc", "Put in copy"), ("never", "Never put in copy")],
+        string="Rule", default="cc", required=True,
     )
     category_id = fields.Many2one(
         "contact.persona.category", ondelete="restrict",
-        help="Étiquette seulement : la règle s'applique quel que soit le sujet.",
-        string="Catégorie",
+        help="Label only: the rule applies whatever the subject.",
+        string="Category",
     )
     cc_partner_ids = fields.Many2many(
         "res.partner",
@@ -39,27 +39,32 @@ class ContactCcRule(models.Model):
         required=True,
     )
     mandatory = fields.Boolean(
-        string="Obligatoire",
+        string="Mandatory",
         default=False,
-        help="Copie obligatoire : le composeur la signale en rouge tant qu'elle manque. "
-             "Sinon, il la propose.",
+        help="Mandatory copy: the composer flags it in red as long as it "
+             "is missing. Otherwise it suggests it.",
     )
     state = fields.Selection(
-        [("suggested", "Suggérée"), ("active", "Active"), ("rejected", "Rejetée")],
-        string="État", default="active", required=True, index=True,
+        [("suggested", "Suggested"), ("active", "Active"), ("rejected", "Rejected")],
+        string="Status", default="active", required=True, index=True,
     )
     evidence = fields.Char(
-        string="Constat",
+        string="Evidence",
         readonly=True,
-        help="Ce qui a fait suggérer la règle, relevé dans les courriels envoyés.",
+        help="What led to the rule being suggested, found in the emails sent.",
     )
     notes = fields.Text(string="Notes")
+
+    # Le nom porte le libellé du type de règle : un cache par langue, sinon le premier calcul
+    # servait l'autre langue dans la même transaction.
+    display_name = fields.Char(compute="_compute_display_name", search="_search_display_name",
+                               depends_context=("lang",))
 
     @api.depends("rule_type", "cc_partner_ids", "persona_id")
     def _compute_display_name(self):
         for rule in self:
             names = ", ".join(rule.cc_partner_ids.mapped("name"))
-            label = dict(self._fields["rule_type"].selection).get(rule.rule_type, "")
+            label = dict(self._fields["rule_type"]._description_selection(self.env)).get(rule.rule_type, "")
             rule.display_name = f"{label} : {names}" if names else label
 
     def action_confirm(self):

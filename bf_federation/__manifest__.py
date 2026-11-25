@@ -1,6 +1,10 @@
 {
     "name": "Fédération",
-    "version": "18.0.1.5.3",
+    # 18.0.1.5.4: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.5.4",
     "category": "Project",
     "summary": "Fédérer deux instances : partager un objet d'un Symbifox à l'autre, avec "
                "les messages et les pièces jointes qui suivent. Le socle porte la tâche ; "

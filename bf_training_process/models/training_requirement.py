@@ -13,18 +13,18 @@ class BfTrainingRequirement(models.Model):
     _inherit = "bf.training.requirement"
 
     scope = fields.Selection(
-        selection_add=[("lane", "Un couloir de processus")],
+        selection_add=[("lane", "A process lane")],
         ondelete={"lane": "set default"})
     lane_id = fields.Many2one(
-        "bf.process.lane", string="Couloir",
-        help="Le rôle visé, tel qu'il est dessiné sur la carte.")
+        "bf.process.lane", string="Lane",
+        help="The role targeted, as it is drawn on the map.")
 
     @api.constrains("scope", "lane_id")
     def _check_portee_couloir(self):
         for rec in self:
             if rec.scope == "lane" and not rec.lane_id:
                 raise ValidationError(_(
-                    "Une portée par couloir doit nommer le couloir."))
+                    "A scope by lane must name the lane."))
 
     def _employes_vises(self):
         """Les personnes du couloir, quand la portée est un couloir.

@@ -10,54 +10,67 @@ from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 JOURS = [
-    ("0", "Lundi"),
-    ("1", "Mardi"),
-    ("2", "Mercredi"),
-    ("3", "Jeudi"),
-    ("4", "Vendredi"),
-    ("5", "Samedi"),
-    ("6", "Dimanche"),
+    ("0", "Monday"),
+    ("1", "Tuesday"),
+    ("2", "Wednesday"),
+    ("3", "Thursday"),
+    ("4", "Friday"),
+    ("5", "Saturday"),
+    ("6", "Sunday"),
 ]
 
 
 class BfVisitWindow(models.Model):
     _name = "bf.visit.window"
-    _description = "Plage offerte pour une visite"
+    _description = "Window offered for a showing"
     _order = "date, dayofweek, hour_from"
 
     listing_id = fields.Many2one(
-        "bf.visit.listing", string="Inscription", required=True,
+        "bf.visit.listing", string="Listing", required=True,
         ondelete="cascade", index=True,
     )
     kind = fields.Selection(
-        [("once", "Une seule date"), ("weekly", "Toutes les semaines")],
-        default="once", required=True, string="Genre",
+        [("once", "One date only"), ("weekly", "Every week")],
+        default="once", required=True, string="Kind",
     )
     date = fields.Date(string="Date")
-    dayofweek = fields.Selection(JOURS, string="Jour")
-    hour_from = fields.Float(string="De", required=True, default=13.0)
-    hour_to = fields.Float(string="À", required=True, default=16.0)
+    dayofweek = fields.Selection(JOURS, string="Day")
+    hour_from = fields.Float(string="From", required=True, default=13.0)
+    hour_to = fields.Float(string="To", required=True, default=16.0)
     source = fields.Selection(
         [
-            ("seller", "Donnée par le vendeur"),
-            ("broker", "Donnée par le courtier"),
-            ("tenant", "Donnée par le locataire"),
+            ("seller", "Given by the seller"),
+            ("broker", "Given by the broker"),
+            ("tenant", "Given by the tenant"),
         ],
-        default="seller", required=True, string="Provenance",
-        help="Utile quand quelqu'un demande plus tard d'où venait la plage.",
+        default="seller", required=True, string="Source",
+        help="Useful when someone asks later where the window came from.",
     )
     note = fields.Char(string="Note")
 
+    # ⚠️ `depends_context=("lang",)` : sans lui, le cache d'un calculé NON stocké
+    # ignore la langue, et la PREMIÈRE lecture gagne pour toutes les autres. Odoo
+    # ne le pose pas sur le `display_name` automatique. Depuis que le libellé de
+    # genre se lit par le catalogue, ça se voit : un rapport rendu dans
+    # une autre langue que celle de la session recevait la valeur déjà calculée.
+    display_name = fields.Char(
+        compute="_compute_display_name", search="_search_display_name",
+        depends_context=("lang",))
+
     @api.depends("kind", "date", "dayofweek", "hour_from", "hour_to")
     def _compute_display_name(self):
-        jours = dict(JOURS)
+        # ⚠️ Le jour se lit par la LISTE DU CHAMP, pas par la table brute `JOURS` :
+        # celle-ci n'est traduite nulle part, et depuis que la source du module est
+        # anglaise un lecteur français y aurait lu « Saturday ». La liste
+        # d'un champ, elle, passe par le catalogue.
+        jours = dict(self._fields["dayofweek"]._description_selection(self.env))
         for rec in self:
             quand = (
                 fields.Date.to_string(rec.date)
                 if rec.kind == "once" and rec.date
                 else jours.get(rec.dayofweek, "")
             )
-            rec.display_name = "%s %s à %s" % (
+            rec.display_name = self.env._("%s %s to %s") % (
                 quand, _format_hour(rec.hour_from), _format_hour(rec.hour_to)
             )
 
@@ -73,7 +86,7 @@ class BfVisitWindow(models.Model):
         for rec in self:
             if rec.hour_to <= rec.hour_from:
                 raise ValidationError(
-                    _("Une plage se termine après avoir commencé (%s à %s).")
+                    _("A window ends after it starts (%s to %s).")
                     % (_format_hour(rec.hour_from), _format_hour(rec.hour_to))
                 )
 
@@ -81,9 +94,9 @@ class BfVisitWindow(models.Model):
     def _check_when(self):
         for rec in self:
             if rec.kind == "once" and not rec.date:
-                raise ValidationError(_("Une plage à date unique demande sa date."))
+                raise ValidationError(_("A single-date window needs its date."))
             if rec.kind == "weekly" and not rec.dayofweek:
-                raise ValidationError(_("Une plage hebdomadaire demande son jour."))
+                raise ValidationError(_("A weekly window needs its day."))
 
     @api.constrains("hour_from", "hour_to", "listing_id")
     def _check_occupied_bounds(self):
@@ -101,9 +114,10 @@ class BfVisitWindow(models.Model):
             if rec.hour_from < OCCUPIED_HOUR_FROM or rec.hour_to > OCCUPIED_HOUR_TO:
                 raise ValidationError(
                     _(
-                        "« %(adresse)s » est occupée par un locataire : la loi "
-                        "borne les visites à 9 h et 21 h (art. 1931 du Code "
-                        "civil). La plage %(plage)s déborde."
+                        "\"%(adresse)s\" is occupied by a tenant: the law "
+                        "holds showings between 9 a.m. and 9 p.m. (art. "
+                        "1931 of the Civil Code). Window %(plage)s goes "
+                        "beyond that."
                     )
                     % {
                         "adresse": rec.listing_id.name,

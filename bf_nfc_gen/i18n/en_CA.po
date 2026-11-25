@@ -232,11 +232,6 @@ msgid "Gen y travaille déjà depuis %(heure)s, demandé par %(qui)s."
 msgstr "Gen has been working on it since %(heure)s, requested by %(qui)s."
 
 #. module: bf_nfc_gen
-#: model:ir.model,name:bf_nfc_gen.model_bf_nfc_gesture
-msgid "Geste déclenché par une pastille NFC"
-msgstr "Gesture triggered by an NFC tag"
-
-#. module: bf_nfc_gen
 #: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__has_message
 msgid "Has Message"
 msgstr "Has Message"
@@ -398,11 +393,6 @@ msgstr "Number of messages with delivery error"
 #: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__tag_id
 msgid "Pastille"
 msgstr "Tag"
-
-#. module: bf_nfc_gen
-#: model:ir.model,name:bf_nfc_gen.model_bf_nfc_tag
-msgid "Pastille NFC"
-msgstr "NFC tag"
 
 #. module: bf_nfc_gen
 #: model:ir.actions.server,name:bf_nfc_gen.cron_perimer_demandes_ir_actions_server

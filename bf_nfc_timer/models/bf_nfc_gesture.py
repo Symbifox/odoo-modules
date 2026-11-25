@@ -23,9 +23,9 @@ class BfNfcGesture(models.Model):
 
     kind = fields.Selection(
         selection_add=[
-            ("timer_toggle", "Démarrer ou arrêter le chrono"),
-            ("timer_start", "Démarrer le chrono"),
-            ("timer_stop", "Arrêter le chrono et saisir"),
+            ("timer_toggle", "Start or stop the timer"),
+            ("timer_start", "Start the timer"),
+            ("timer_stop", "Stop the timer and log"),
         ],
         ondelete={
             "timer_toggle": "cascade",
@@ -48,14 +48,14 @@ class BfNfcGesture(models.Model):
         if self._chrono_actif(tache):
             # Rendu comme un refus et pas comme une erreur : rien n'est cassé,
             # le chrono tourne déjà, et c'est exactement ce qu'on voulait.
-            raise UserError(_("Le chrono tourne déjà sur « %s ».", tache.name))
+            raise UserError(_("The timer is already running on “%s”.", tache.name))
         return self._demarrer(tache)
 
     def _executer_timer_stop(self, tag, tap, params):
         tache = self._tache(tag)
         chrono = self._chrono_actif(tache)
         if not chrono:
-            raise UserError(_("Aucun chrono en cours sur « %s ».", tache.name))
+            raise UserError(_("No timer running on “%s”.", tache.name))
         return self._arreter(tache, chrono, params)
 
     # ------------------------------------------------------------------
@@ -63,9 +63,9 @@ class BfNfcGesture(models.Model):
         """La tâche visée, lue avec les droits de la personne qui tape."""
         tache = tag._cible()
         if not tache or tache._name != "project.task":
-            raise UserError(_("Cette pastille ne désigne pas une tâche."))
+            raise UserError(_("This tag does not point to a task."))
         if not tache.exists():
-            raise UserError(_("La tâche de cette pastille n'existe plus."))
+            raise UserError(_("This tag's task no longer exists."))
         return tache
 
     def _chrono_actif(self, tache):
@@ -79,7 +79,7 @@ class BfNfcGesture(models.Model):
         self.env["bf.timer"].start_timer(tache.id)
         return {
             "titre": tache.name,
-            "message": _("Chrono démarré."),
+            "message": _("Timer started."),
             "url": None,
         }
 
@@ -105,6 +105,6 @@ class BfNfcGesture(models.Model):
         Timer.confirm_timesheet(chrono.id, heures, description)
         return {
             "titre": tache.name,
-            "message": self.env._("%s saisies.", self._duree_lisible(heures)),
+            "message": self.env._("%s logged.", self._duree_lisible(heures)),
             "url": None,
         }

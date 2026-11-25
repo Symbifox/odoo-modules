@@ -17,10 +17,10 @@ class ProjectDocumentDistribution(models.Model):
     _inherit = "project.document.distribution"
 
     training_record_id = fields.Many2one(
-        "bf.training.record", string="Réalisation au registre",
+        "bf.training.record", string="Register completion",
         ondelete="set null", readonly=True)
     training_activity_id = fields.Many2one(
-        "bf.training.activity", string="Activité du registre",
+        "bf.training.activity", string="Register activity",
         compute="_compute_training_activity_id")
 
     @api.depends("document_id")
@@ -71,7 +71,7 @@ class ProjectDocumentDistribution(models.Model):
                 "state": "confirmed",
                 "distribution_id": remise.id,
                 "document_version_id": remise.version_id.id,
-                "note": _("Écrite automatiquement à l'accusé de réception."),
+                "note": _("Written automatically when receipt is acknowledged."),
             })
             remise.training_record_id = realisation
             creees |= realisation

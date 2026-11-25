@@ -1,6 +1,10 @@
 {
     "name": "Registre de formation",
-    "version": "18.0.1.4.2",
+    # 18.0.1.4.3: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.4.3",
     "category": "Human Resources",
     "summary": "Qui doit quelle formation, pour quand, prouvé par quelle pièce, "
                "valide jusqu'à quand. Le registre nominatif que le lecteur eLearning "

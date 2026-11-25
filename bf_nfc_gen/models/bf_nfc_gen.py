@@ -16,6 +16,7 @@ import threading
 from datetime import timedelta
 
 from odoo import SUPERUSER_ID, _, api, fields, models
+from odoo.tools.misc import get_lang
 from odoo.exceptions import AccessError, UserError
 
 from odoo.addons.bf_ai_bridge.tools import transport
@@ -26,29 +27,34 @@ CHOIX_LANCER = "lancer"
 # Une demande « en cours » depuis plus longtemps que ça ne bloque plus un nouveau
 # lancement : le pont a pu redémarrer et la perdre sans jamais écrire son état.
 PEREMPTION = timedelta(minutes=20)
-ETATS = [("queued", "Transmise"), ("running", "En cours"), ("done", "Terminée"),
-         ("busy", "Gen occupé"), ("error", "Échec")]
+ETATS = [("queued", "Sent"), ("running", "In progress"), ("done", "Done"),
+         ("busy", "Gen busy"), ("error", "Failed")]
 
 
 class BfNfcGenSkill(models.Model):
     _name = "bf.nfc.gen.skill"
-    _description = "Skill de Gen lançable par pastille"
+    _description = "Gen skill a tag can run"
     _order = "name"
 
     skill = fields.Char(string="Skill", required=True, readonly=True)
-    name = fields.Char(string="Libellé", required=True, readonly=True)
+    name = fields.Char(string="Label", required=True, readonly=True)
     description = fields.Text(readonly=True)
-    modeles = fields.Char(string="Types de fiche", readonly=True,
-                          help="Les modèles que ce skill accepte, séparés par des virgules.")
+    modeles = fields.Char(string="Record types", readonly=True,
+                          help="The models this skill accepts, separated "
+                               "by commas.")
     allowed = fields.Boolean(
-        string="Permis sur cette instance",
-        help="Coché : une pastille « Demander à Gen » peut lancer ce skill. Le pont reste "
-             "seul juge de ce qu'il accepte.")
-    published = fields.Boolean(string="Publié par le pont", readonly=True, default=True,
-                               help="Décoché : le pont ne le publie plus ; il ne se lance plus.")
-    last_sync = fields.Datetime(string="Actualisé le", readonly=True)
+        string="Allowed on this instance",
+        help="Checked: an “Ask Gen” tag can run this skill. The bridge "
+             "remains the sole judge of what it accepts.")
+    published = fields.Boolean(string="Published by the bridge", readonly=True, default=True,
+                               help="Unchecked: the bridge no longer "
+                                    "publishes it; it can no longer be "
+                                    "run.")
+    last_sync = fields.Datetime(string="Refreshed on", readonly=True)
 
-    _sql_constraints = [("skill_unique", "unique(skill)", "Ce skill est déjà dans la liste.")]
+    _sql_constraints = [("skill_unique", "unique(skill)", "This skill is "
+                                                          "already in the "
+                                                          "list.")]
 
     def _modeles(self):
         self.ensure_one()
@@ -58,22 +64,23 @@ class BfNfcGenSkill(models.Model):
     def action_actualiser(self):
         """Relit la liste que le pont publie pour ce locataire."""
         if not self.env.user.has_group("bf_nfc.group_nfc_manager"):
-            raise AccessError(_("Actualiser les skills de Gen est réservé à la gestion."))
+            raise AccessError(_("Refreshing Gen's skills is reserved for "
+                                "managers."))
         pont = self.env["bf.ai.bridge"]
-        pont.check_available(_("La liste des skills ne peut pas être actualisée."))
+        pont.check_available(_("The skill list cannot be refreshed."))
         locataire = pont.tenant()
         try:
             reponse = pont.call("/nfc-skills", {"tenant": locataire}, timeout=15)
         except Exception as exc:  # noqa: BLE001 — la cause est rendue à l'écran
-            raise UserError(_("Le pont n'a pas rendu la liste des skills (%s).", type(exc).__name__))
+            raise UserError(_("The bridge did not return the skill list (%s).", type(exc).__name__))
         # 🔴 Une liste vide n'est pas une réponse : le pont répond aussi « aucun skill »
         # quand le locataire déclaré ne lui dit rien (paramètre bf_ai_bridge.tenant mal
         # posé). Écrire cette réponse-là déclasserait tous les skills d'un coup.
         if not (reponse.get("skills") or []):
             raise UserError(_(
-                "Le pont ne publie aucun skill lançable par pastille pour le locataire "
-                "« %s ». Rien n'a été changé : vérifiez le paramètre système "
-                "bf_ai_bridge.tenant.", locataire))
+                "The bridge publishes no tag-launchable skill for tenant "
+                "“%s”. Nothing was changed: check the bf_ai_bridge.tenant "
+                "system parameter.", locataire))
         vus = self.browse()
         maintenant = fields.Datetime.now()
         for entree in reponse.get("skills") or []:
@@ -101,21 +108,21 @@ class BfNfcGenSkill(models.Model):
 
 class BfNfcGenRequest(models.Model):
     _name = "bf.nfc.gen.request"
-    _description = "Demande à Gen par pastille"
+    _description = "Gen request by tag"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "create_date desc, id desc"
 
     skill_id = fields.Many2one("bf.nfc.gen.skill", string="Skill", required=True, readonly=True,
                                ondelete="restrict")
-    tag_id = fields.Many2one("bf.nfc.tag", string="Pastille", readonly=True, ondelete="set null")
-    user_id = fields.Many2one("res.users", string="Demandé par", required=True, readonly=True)
+    tag_id = fields.Many2one("bf.nfc.tag", string="Tag", readonly=True, ondelete="set null")
+    user_id = fields.Many2one("res.users", string="Requested by", required=True, readonly=True)
     res_model = fields.Char(readonly=True, required=True)
     res_id = fields.Many2oneReference(model_field="res_model", readonly=True, required=True)
-    target_name = fields.Char(string="Fiche", readonly=True)
-    state = fields.Selection(ETATS, string="État", default="queued", required=True, readonly=True,
+    target_name = fields.Char(string="Record", readonly=True)
+    state = fields.Selection(ETATS, string="Status", default="queued", required=True, readonly=True,
                              tracking=True, index=True)
     message = fields.Char(readonly=True)
-    date_end = fields.Datetime(string="Finie le", readonly=True)
+    date_end = fields.Datetime(string="Finished on", readonly=True)
     company_id = fields.Many2one("res.company", readonly=True, default=lambda self: self.env.company)
 
     def _en_cours(self):
@@ -128,11 +135,16 @@ class BfNfcGenRequest(models.Model):
         ⚠️ Public parce que le pont l'appelle en XML-RPC. Ce qu'il ne fait pas : rien
         d'autre qu'un état, un message court et une activité à la personne.
         """
+        # Sans langue au contexte (travail planifié, XML-RPC), les libellés écrits au chatter
+        # (suivi des états, message de création) sortaient en anglais depuis la bascule.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         if not (self.env.user.has_group("bf_nfc.group_nfc_manager")
                 or self.env.user.has_group("base.group_system")):
-            raise AccessError(_("Seul le pont écrit l'état d'une demande à Gen."))
+            raise AccessError(_("Only the bridge writes the status of a "
+                                "Gen request."))
         if state not in dict(ETATS):
-            raise UserError(_("État inconnu : %s", state))
+            raise UserError(_("Unknown status: %s", state))
         todo = self.env.ref("mail.mail_activity_data_todo", raise_if_not_found=False)
         for demande in self.sudo():
             valeurs = {"state": state, "message": (message or "")[:250]}
@@ -142,8 +154,8 @@ class BfNfcGenRequest(models.Model):
             if state in ("done", "error"):
                 demande.activity_schedule(
                     activity_type_id=todo.id if todo else False, user_id=demande.user_id.id,
-                    summary=(_("Gen a terminé : %s", demande.skill_id.name) if state == "done"
-                             else _("Gen n'a pas abouti : %s", demande.skill_id.name)),
+                    summary=(_("Gen finished: %s", demande.skill_id.name) if state == "done"
+                             else _("Gen did not complete: %s", demande.skill_id.name)),
                     note=_("%(fiche)s. %(message)s", fiche=demande.target_name,
                            message=(message or "")[:250]))
         return True
@@ -151,13 +163,18 @@ class BfNfcGenRequest(models.Model):
     @api.model
     def _cron_perimer(self):
         """Déclasse les demandes dont le pont n'a plus donné de nouvelles."""
+        # Sans langue au contexte (travail planifié, XML-RPC), les libellés écrits au chatter
+        # (suivi des états, message de création) sortaient en anglais depuis la bascule.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         limite = fields.Datetime.now() - PEREMPTION
         oubliees = self.sudo().search([("state", "in", ("queued", "running")),
                                        ("create_date", "<", limite)])
         if oubliees:
             oubliees.set_state("error", _(
-                "Sans nouvelle du pont depuis %s minutes. Regardez les journaux du service "
-                "d'assistance IA ; rien ne dit si la passe a tourné.", int(PEREMPTION.total_seconds() // 60)))
+                "No news from the bridge for %s minutes. Check the AI "
+                "assistant service logs; nothing says whether the pass "
+                "ran.", int(PEREMPTION.total_seconds() // 60)))
         return len(oubliees)
 
     def _transmettre_apres_commit(self):
@@ -205,7 +222,9 @@ class BfNfcGenRequest(models.Model):
                         # demande restait « Transmise » jusqu'au guet quand le pont était
                         # injoignable. Le texte se rédige ici, dans la langue de la personne.
                         message = env["bf.nfc.gen.request"].with_context(
-                            lang=demande.user_id.lang or "en_US").env._("Pont injoignable (%s).") % cause
+                            lang=demande.user_id.lang or get_lang(env).code).env._("Bridge "
+                                                                        "unreachable "
+                                                                        "(%s).") % cause
                     demande.set_state("busy" if statut == "busy" else "error", message)
 
         self.env.cr.postcommit.add(lambda: threading.Thread(target=_envoyer, daemon=True).start())
@@ -215,16 +234,17 @@ class BfNfcTag(models.Model):
     _inherit = "bf.nfc.tag"
 
     gen_skill_id = fields.Many2one(
-        "bf.nfc.gen.skill", string="Skill de Gen", ondelete="restrict", tracking=True,
+        "bf.nfc.gen.skill", string="Gen skill", ondelete="restrict", tracking=True,
         domain=[("allowed", "=", True), ("published", "=", True)])
-    gen_request_ids = fields.One2many("bf.nfc.gen.request", "tag_id", string="Demandes à Gen")
+    gen_request_ids = fields.One2many("bf.nfc.gen.request", "tag_id", string="Gen "
+                                                                             "requests")
 
 
 class BfNfcGesture(models.Model):
     _inherit = "bf.nfc.gesture"
 
     kind = fields.Selection(
-        selection_add=[("gen_skill", "Demander à Gen")],
+        selection_add=[("gen_skill", "Ask Gen")],
         ondelete={"gen_skill": "cascade"},
     )
 
@@ -233,31 +253,32 @@ class BfNfcGesture(models.Model):
         self._exiger_une_personne(params)
         skill = tag.sudo().gen_skill_id
         if not skill:
-            raise UserError(_("Cette pastille ne désigne aucun skill de Gen."))
+            raise UserError(_("This tag points to no Gen skill."))
         if not (skill.allowed and skill.published):
-            raise UserError(_("« %s » n'est pas permis sur cette instance.", skill.name))
+            raise UserError(_("“%s” is not allowed on this instance.", skill.name))
         if tag.res_model not in skill._modeles():
-            raise UserError(_("« %(skill)s » ne vise pas ce type de fiche.", skill=skill.name))
+            raise UserError(_("“%(skill)s” does not target this record type.", skill=skill.name))
         cible = tag._cible()
         if not cible.exists():
-            raise UserError(_("La fiche de cette pastille n'existe plus."))
+            raise UserError(_("This tag's record no longer exists."))
         pont = self.env["bf.ai.bridge"]
         if not pont.available():
-            raise UserError(_("Gen n'est pas joignable pour le moment."))
+            raise UserError(_("Gen cannot be reached right now."))
         Demande = self.env["bf.nfc.gen.request"].sudo()
         deja = Demande.search([("skill_id", "=", skill.id), ("res_model", "=", tag.res_model),
                                ("res_id", "=", tag.res_id), ("state", "in", ("queued", "running"))],
                               order="create_date desc", limit=1)
         if deja and deja._en_cours():
             return {"titre": skill.name, "url": None, "choix": [],
-                    "message": _("Gen y travaille déjà depuis %(heure)s, demandé par %(qui)s.",
+                    "message": _("Gen has been working on it since "
+                                 "%(heure)s, requested by %(qui)s.",
                                  heure=self._heure(deja.create_date), qui=deja.user_id.name)}
         if params.get("choix") != CHOIX_LANCER:
             return {
                 "titre": skill.name,
-                "message": _("Sur « %s ». Gen travaillera seul ; une activité vous préviendra "
-                             "quand il aura fini.", cible.display_name),
-                "choix": [{"cle": CHOIX_LANCER, "libelle": _("Lancer"), "style": "principal",
+                "message": _("On “%s”. Gen will work on its own; an "
+                             "activity will let you know when it is done.", cible.display_name),
+                "choix": [{"cle": CHOIX_LANCER, "libelle": _("Run"), "style": "principal",
                            "saisie": None}],
             }
         demande = Demande.create({
@@ -267,4 +288,4 @@ class BfNfcGesture(models.Model):
         })
         demande._transmettre_apres_commit()
         return {"titre": skill.name, "url": None,
-                "message": _("Demande transmise à Gen, sur « %s ».", cible.display_name)}
+                "message": _("Request sent to Gen, on “%s”.", cible.display_name)}
