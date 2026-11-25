@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "Babillard : sondages Odoo",
-    "summary": "Annoncer un sondage Odoo au fil, avec son lien ; et sa séance en direct, avec son code",
-    "version": "18.0.1.1.0",
+    "name": "Noticeboard: Odoo surveys",
+    "summary": "Announce an Odoo survey in the feed, with its link; and its live session, with its code",
+    # 18.0.1.1.1: labels written in English in the source, French in fr_CA.po:
+    #   Odoo never translates into en_US, the source language.
+    "version": "18.0.1.1.1",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -12,46 +14,44 @@
     "auto_install": True,
     "installable": True,
     "description": """
-Pont Babillard ↔ Sondages
-=========================
+Noticeboard ↔ Surveys bridge
+============================
 
-S'auto-installe quand `bf_babillard` et Sondages sont tous deux là.
+Installs itself when both `bf_babillard` and Surveys are present.
 
-Le babillard porte ses propres sondages : une question, des choix, un clic. Ce
-pont sert l'autre besoin, celui du questionnaire : un sondage Odoo a des pages,
-des sections, des questions notées, et il se répond ailleurs. Le fil l'annonce
-et donne son lien, il ne le rejoue pas.
+The noticeboard carries polls of its own: one question, a few options, one
+click. This bridge serves the other need, the questionnaire: an Odoo survey has
+pages, sections and scored questions, and it is answered elsewhere. The feed
+announces it and gives its link; it does not replay it.
 
-C'est un geste de la rédaction, pas un automatisme : un questionnaire ouvert
-n'est pas forcément une nouvelle de la maison, et le fil est le seul endroit que
-tout le monde lit.
+It is a gesture of the editors, not an automatic one: an open questionnaire is
+not necessarily company news, and the feed is the one place everybody reads.
 
-⚠️ Un sondage réservé aux invités ne s'annonce pas. Son lien de départ exige
-une invitation nominative : posé sur une carte lue par toute la maison, il ne
-mène personne nulle part.
+⚠️ A survey restricted to invited people is not announced. Its start link
+requires a personal invitation: posted on a card the whole company reads, it
+leads nobody anywhere.
 
-Et la séance en direct, avec son code
-=====================================
+And the live session, with its code
+===================================
 
-Un second bouton, qui ne paraît que lorsqu'une séance est OUVERTE : la carte
-porte alors le code de la séance et le lien court pour rejoindre. Sans lui, rien
-n'annonce une séance ouverte à la maison, et l'animateur écrit le code dans un
-message ou personne n'arrive.
+A second button, shown only while a session is OPEN: the card then carries the
+session code and the short join link. Without it, nothing announces an open
+session to the company, and the host writes the code in a message or nobody
+arrives.
 
-⚠️ Le babillard ne garde qu'une carte par source. La deuxième séance d'un même
-sondage réécrit donc la carte avec le code du jour et la remet en tête du fil :
-une carte qui garderait le code du mois dernier serait pire qu'absente. La
-republication remet aussi l'échéance à vide : sans ça, une carte échue le mois
-dernier et republiée ce matin retombait du fil au prochain passage du cron qui
-fait échoir les publications — pendant la séance.
+⚠️ The noticeboard keeps one card per source. The second session of the same
+survey therefore rewrites the card with today's code and lifts it back to the
+top of the feed: a card still showing last month's code would be worse than no
+card. The republication also clears the expiry date: otherwise a card that
+expired last month and was republished this morning dropped out of the feed at
+the next pass of the cron that expires posts, during the session.
 
-⚠️ Et une seule carte par sondage, toutes sociétés confondues : si la carte
-d'un sondage est déjà au babillard d'une AUTRE société, le bouton refuse et le
-dit, au lieu de déplacer cette carte-là. Un sondage Odoo ne porte aucune
-société, le fil en porte une.
+⚠️ And one card per survey, across all companies: if the survey's card already
+sits on ANOTHER company's noticeboard, the button refuses and says so, instead
+of moving that card. An Odoo survey carries no company; the feed does.
 
-⚠️ Deux refus de plus, qui sont ceux du cœur et non les nôtres : un code de
-séance ne mène nulle part sur une **certification**, ni sur un sondage réservé
-aux personnes **invitées**.
+⚠️ Two more refusals, which are Odoo's own and not ours: a session code leads
+nowhere on a **certification**, nor on a survey restricted to **invited**
+people.
 """,
 }

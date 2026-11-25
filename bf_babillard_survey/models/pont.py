@@ -17,17 +17,17 @@ class Survey(models.Model):
         """
         self.ensure_one()
         if not self.env.user.has_group("bf_babillard.group_babillard_redacteur"):
-            raise AccessError(_("Seule la rédaction publie au babillard."))
+            raise AccessError(_("Only the editors post on the noticeboard."))
         if not self.active:
-            raise UserError(_("Un sondage archivé ne s'annonce pas."))
+            raise UserError(_("An archived survey cannot be announced."))
         # 🔴 Le lien de départ d'un sondage « sur invitation » ne mène nulle
         # part sans le jeton personnel du répondant : la carte, elle, est lue
         # par toute l'audience. Mieux vaut refuser que publier un lien mort.
         if self.access_mode == "token":
             raise UserError(_(
-                "Ce sondage est réservé aux personnes invitées : son lien ne "
-                "fonctionne qu'avec l'invitation. Passez-le en « Toute personne "
-                "disposant du lien » pour l'annoncer au fil."))
+                "This survey is restricted to invited people: its link "
+                "only works with the invitation. Switch it to \"Anyone "
+                "with the link\" to announce it in the feed."))
 
         base = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
         lien = "%s%s" % (base, self.get_start_url())
@@ -35,9 +35,9 @@ class Survey(models.Model):
         moi = self.with_context(lang=langue)
 
         corps = Markup("<p>%s</p><p><a href=\"%s\" class=\"btn btn-primary\">%s</a></p>") % (
-            moi.env._("Un sondage vous attend : %(titre)s.", titre=self.title),
+            moi.env._("A survey is waiting for you: %(titre)s.", titre=self.title),
             lien,
-            moi.env._("Répondre au sondage"),
+            moi.env._("Take the survey"),
         )
         carte = self.env["bf.babillard.post"]._depuis_source(
             "survey.survey", self.id, {
@@ -74,13 +74,13 @@ class Survey(models.Model):
         """
         self.ensure_one()
         if not self.env.user.has_group("bf_babillard.group_babillard_redacteur"):
-            raise AccessError(_("Seule la rédaction publie au babillard."))
+            raise AccessError(_("Only the editors post on the noticeboard."))
         if not self.active:
-            raise UserError(_("Un sondage archivé ne s'annonce pas."))
+            raise UserError(_("An archived survey cannot be announced."))
         if self.session_state not in ("ready", "in_progress"):
             raise UserError(_(
-                "Aucune séance n'est ouverte sur « %(titre)s » : il n'y a pas de "
-                "code à annoncer. Ouvrez la séance, puis revenez.", titre=self.title))
+                "No session is open on \"%(titre)s\": there is no code to "
+                "announce. Open the session, then come back.", titre=self.title))
         # 🔴 Les deux refus du cœur lui-même, mesurés dans
         # `_fetch_from_session_code` et `_check_validity` : un code de séance ne
         # mène NULLE PART sur une certification, ni sur un sondage réservé aux
@@ -88,15 +88,15 @@ class Survey(models.Model):
         # jeton nominatif). Mieux vaut refuser que poser un code mort au fil.
         if self.certification:
             raise UserError(_(
-                "« %(titre)s » est une certification : le cœur refuse les codes "
-                "de séance sur une certification, et le code annoncé ne mènerait "
-                "personne nulle part.", titre=self.title))
+                "\"%(titre)s\" is a certification: Odoo refuses session "
+                "codes on a certification, and the announced code would "
+                "lead nobody anywhere.", titre=self.title))
         if self.access_mode == "token":
             raise UserError(_(
-                "Ce sondage est réservé aux personnes invitées : le code de la "
-                "séance renvoie au lien de départ, qui réclame l'invitation "
-                "nominative. Passez-le en « Toute personne disposant du lien » "
-                "pour annoncer la séance."))
+                "This survey is restricted to invited people: the session "
+                "code leads to the start link, which requires the "
+                "personal invitation. Switch it to \"Anyone with the "
+                "link\" to announce the session."))
 
         base = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
         lien = self.session_link or "%s/s/%s" % (base, self.session_code)
@@ -106,11 +106,11 @@ class Survey(models.Model):
         corps = Markup(
             "<p>%s</p><p>%s <strong>%s</strong></p>"
             "<p><a href=\"%s\" class=\"btn btn-primary\">%s</a></p>") % (
-            moi.env._("La séance « %(titre)s » est ouverte.", titre=self.title),
-            moi.env._("Code pour rejoindre :"),
+            moi.env._("The session \"%(titre)s\" is open.", titre=self.title),
+            moi.env._("Code to join:"),
             self.session_code,
             lien,
-            moi.env._("Rejoindre la séance"),
+            moi.env._("Join the session"),
         )
         valeurs = {
             "name": self.title,
@@ -147,9 +147,10 @@ class Survey(models.Model):
             ailleurs = Cartes.search(source, limit=1)
             if ailleurs:
                 raise UserError(_(
-                    "La séance de « %(titre)s » est déjà annoncée au babillard de "
-                    "« %(societe)s », et le fil ne garde qu'une carte par sondage. "
-                    "Passez dans cette société pour y annoncer la séance du jour.",
+                    "The session of \"%(titre)s\" is already announced on "
+                    "the noticeboard of \"%(societe)s\", and the feed "
+                    "keeps only one card per survey. Switch to that "
+                    "company to announce today's session there.",
                     titre=self.title, societe=ailleurs.company_id.display_name))
         if carte:
             # 🔴 L'échéance repart à vide, et ce n'est pas du ménage : le cron

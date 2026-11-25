@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "Babillard : sondage de disponibilités",
-    "summary": "Annoncer au fil qu'un sondage de dates cherche des réponses",
+    "name": "Noticeboard: availability poll",
+    "summary": "Announce in the feed that an availability poll is looking for answers",
     # 18.0.1.0.1: l'état du sondage cité dans le refus de publier se lit dans
     #   la langue de qui publie ; bf_appointment_poll 18.0.1.17.0 a passé sa
     #   source en anglais, et le libellé brut de la sélection était anglais.
-    "version": "18.0.1.0.1",
+    # 18.0.1.0.2: labels written in English in the source, French in fr_CA.po:
+    #   Odoo never translates into en_US, the source language.
+    "version": "18.0.1.0.2",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -15,21 +17,20 @@
     "auto_install": True,
     "installable": True,
     "description": """
-Pont Babillard ↔ Sondage de disponibilités
-==========================================
+Noticeboard ↔ Availability poll bridge
+======================================
 
-S'auto-installe quand `bf_babillard` et le sondage de disponibilités sont tous
-deux là.
+Installs itself when both `bf_babillard` and the availability poll are present.
 
-Un sondage de disponibilités s'adresse à des gens qui n'ont pas de compte :
-chacun y répond par un lien qui lui est propre. Le babillard, lui, s'adresse à
-la maison. Ce pont fait la seule chose qui traverse honnêtement cette frontière,
-c'est-à-dire annoncer au fil qu'un sondage cherche des réponses.
+An availability poll is addressed to people who have no account: each of them
+answers through a link of their own. The noticeboard is addressed to the
+company. This bridge does the one thing that honestly crosses that border: it
+announces in the feed that a poll is looking for answers.
 
-🔴 La carte ne porte JAMAIS le lien de vote d'un participant : ce lien est
-nominatif, et le poser sur une carte lue par toute la maison reviendrait à
-prêter à tout le monde la voix d'une seule personne. Quand le sondage offre
-l'inscription libre, c'est ce lien-là, public par construction, que la carte
-porte. Sinon, elle annonce sans lien, et c'est l'organisateur qui invite.
+🔴 The card NEVER carries a participant's voting link: that link is personal,
+and posting it on a card the whole company reads would lend one person's voice
+to everybody. When the poll offers open sign-up, that link, public by
+construction, is the one the card carries. Otherwise the card announces without
+a link, and the organiser sends the invitations.
 """,
 }

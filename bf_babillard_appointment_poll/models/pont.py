@@ -16,10 +16,11 @@ class AppointmentPoll(models.Model):
         """
         self.ensure_one()
         if not self.env.user.has_group("bf_babillard.group_babillard_redacteur"):
-            raise AccessError(_("Seule la rédaction publie au babillard."))
+            raise AccessError(_("Only the editors post on the noticeboard."))
         if self.state != "open":
             raise UserError(_(
-                "Seul un sondage en cours s'annonce : celui-ci est « %(etat)s ».",
+                "Only a poll in progress can be announced: this one is "
+                "\"%(etat)s\".",
                 # Le libellé dans la langue de qui publie : `selection` rend celui de la
                 # source du sondage, anglaise depuis bf_appointment_poll 18.0.1.17.0.
                 etat=dict(self._fields["state"]._description_selection(self.env)).get(
@@ -28,11 +29,11 @@ class AppointmentPoll(models.Model):
         langue = self.env["bf.babillard.post"]._langue_de_la_maison()
         moi = self.with_context(lang=langue)
         lignes = [Markup("<p>%s</p>") % moi.env._(
-            "Un sondage de disponibilités cherche des réponses : %(nom)s.",
+            "An availability poll is looking for answers: %(nom)s.",
             nom=self.name)]
         if self.close_date:
             lignes.append(Markup("<p>%s</p>") % moi.env._(
-                "Il ferme le %(quand)s.",
+                "It closes on %(quand)s.",
                 quand=fields.Datetime.context_timestamp(
                     self, self.close_date).strftime("%d/%m/%Y")))
         # 🔴 Le lien d'inscription libre est le SEUL lien public de ce module.
@@ -41,11 +42,11 @@ class AppointmentPoll(models.Model):
         if self.self_signup and self.signup_url:
             lignes.append(
                 Markup("<p><a href=\"%s\" class=\"btn btn-primary\">%s</a></p>") % (
-                    self.signup_url, moi.env._("Donner mes disponibilités")))
+                    self.signup_url, moi.env._("Give my availability")))
         else:
             lignes.append(Markup("<p>%s</p>") % moi.env._(
-                "Chaque personne répond par son propre lien : demandez le vôtre "
-                "à %(qui)s.", qui=self.user_id.name or self.create_uid.name))
+                "Each person answers through their own link: ask %(qui)s "
+                "for yours.", qui=self.user_id.name or self.create_uid.name))
 
         carte = self.env["bf.babillard.post"]._depuis_source(
             "appointment.poll", self.id, {

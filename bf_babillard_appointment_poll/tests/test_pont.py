@@ -101,7 +101,9 @@ class TestPontDisponibilites(TransactionCase):
         # « Brouillon » vient de fr_CA.po du sondage (sans effet là où il est déjà chargé).
         self.env["ir.module.module"]._load_module_terms(["bf_appointment_poll"], ["fr_CA"])
         poll = self._poll()
-        for lang, etat in (("fr_CA", "« Brouillon »"), ("en_US", "« Draft »")):
+        # Chevrons en français, guillemets droits en anglais : la phrase elle-même se
+        # traduit depuis 18.0.1.0.2 (source anglaise, français dans fr_CA.po).
+        for lang, etat in (("fr_CA", "« Brouillon »"), ("en_US", '"Draft"')):
             with self.assertRaises(UserError) as refus:
                 poll.with_user(self.u_redactrice).with_context(
                     lang=lang).action_annoncer_au_babillard()

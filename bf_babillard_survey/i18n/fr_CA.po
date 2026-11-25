@@ -1,0 +1,138 @@
+# Translation of Noticeboard: Odoo surveys - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_babillard_survey 18.0.1.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-25 00:10+0000\n"
+"PO-Revision-Date: 2026-11-25 00:10+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid ""
+"\"%(titre)s\" is a certification: Odoo refuses session codes on a "
+"certification, and the announced code would lead nobody anywhere."
+msgstr ""
+"« %(titre)s » est une certification : le cœur refuse les codes de séance sur"
+" une certification, et le code annoncé ne mènerait personne nulle part."
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid "A survey is waiting for you: %(titre)s."
+msgstr "Un sondage vous attend : %(titre)s."
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid "An archived survey cannot be announced."
+msgstr "Un sondage archivé ne s'annonce pas."
+
+#. module: bf_babillard_survey
+#: model_terms:ir.ui.view,arch_db:bf_babillard_survey.view_survey_form_babillard
+msgid "Announce on the noticeboard"
+msgstr "Annoncer au babillard"
+
+#. module: bf_babillard_survey
+#: model_terms:ir.ui.view,arch_db:bf_babillard_survey.view_survey_form_babillard
+msgid "Announce the session on the noticeboard"
+msgstr "Annoncer la séance au babillard"
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid "Code to join:"
+msgstr "Code pour rejoindre :"
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid "Join the session"
+msgstr "Rejoindre la séance"
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid ""
+"No session is open on \"%(titre)s\": there is no code to announce. Open the "
+"session, then come back."
+msgstr ""
+"Aucune séance n'est ouverte sur « %(titre)s » : il n'y a pas de code à "
+"annoncer. Ouvrez la séance, puis revenez."
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid "Only the editors post on the noticeboard."
+msgstr "Seule la rédaction publie au babillard."
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid "Take the survey"
+msgstr "Répondre au sondage"
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid "The session \"%(titre)s\" is open."
+msgstr "La séance « %(titre)s » est ouverte."
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid ""
+"The session of \"%(titre)s\" is already announced on the noticeboard of "
+"\"%(societe)s\", and the feed keeps only one card per survey. Switch to that"
+" company to announce today's session there."
+msgstr ""
+"La séance de « %(titre)s » est déjà annoncée au babillard de "
+"« %(societe)s », et le fil ne garde qu'une carte par sondage. Passez dans "
+"cette société pour y annoncer la séance du jour."
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid ""
+"This survey is restricted to invited people: its link only works with the "
+"invitation. Switch it to \"Anyone with the link\" to announce it in the "
+"feed."
+msgstr ""
+"Ce sondage est réservé aux personnes invitées : son lien ne fonctionne "
+"qu'avec l'invitation. Passez-le en « Toute personne disposant du lien » pour"
+" l'annoncer au fil."
+
+#. module: bf_babillard_survey
+#. odoo-python
+#: code:addons/bf_babillard_survey/models/pont.py:0
+msgid ""
+"This survey is restricted to invited people: the session code leads to the "
+"start link, which requires the personal invitation. Switch it to \"Anyone "
+"with the link\" to announce the session."
+msgstr ""
+"Ce sondage est réservé aux personnes invitées : le code de la séance renvoie"
+" au lien de départ, qui réclame l'invitation nominative. Passez-le en « "
+"Toute personne disposant du lien » pour annoncer la séance."
+
+#. module: bf_babillard_survey
+#: model:ir.module.module,shortdesc:base.module_bf_babillard_survey
+msgid "Noticeboard: Odoo surveys"
+msgstr "Babillard : sondages Odoo"
+
+#. module: bf_babillard_survey
+#: model:ir.module.module,summary:base.module_bf_babillard_survey
+msgid ""
+"Announce an Odoo survey in the feed, with its link; and its live session, "
+"with its code"
+msgstr ""
+"Annoncer un sondage Odoo au fil, avec son lien ; et sa séance en direct, "
+"avec son code"

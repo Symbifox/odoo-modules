@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="action_annoncer_au_babillard" type="object"
-                        string="Annoncer au babillard"
+                        string="Announce on the noticeboard"
                         invisible="state != 'open'"
                         groups="bf_babillard.group_babillard_redacteur"/>
             </xpath>
