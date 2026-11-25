@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- No cost (the rate gives the amount) and no tax (an allowance has no receipt). -->
+        <record id="product_travel_allowance" model="product.product">
+            <field name="name">Travel allowance</field>
+            <field name="default_code">ALLOW</field>
+            <field name="type">service</field>
+            <field name="can_be_expensed" eval="True"/>
+            <field name="standard_price">0.0</field>
+            <field name="list_price">0.0</field>
+            <field name="supplier_taxes_id" eval="[(5, 0, 0)]"/>
+            <field name="taxes_id" eval="[(5, 0, 0)]"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="sale_ok" eval="False"/>
+        </record>
+    </data>
+</odoo>

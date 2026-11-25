@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_employee_view_form_bf_trip" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.bf_trip</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_expense.hr_employee_view_form_inherit_expense"/>
+        <field name="arch" type="xml">
+            <field name="expense_manager_id" position="after">
+                <field name="bf_trip_assistant_user_ids" widget="many2many_avatar_user"
+                       groups="hr.group_hr_user"/>
+            </field>
+        </field>
+    </record>
+</odoo>

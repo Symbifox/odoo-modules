@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ⚠️ Not noupdate: a fix to a rule must reach the databases where the module is
+         installed. -->
+    <data>
+
+        <!-- Assistants: the same reach as the traveller on the traveller's expenses and
+             reports (Odoo's « Employee Expense » rules, with the assistant in place of the
+             employee). Rules of one group are OR-ed, so these add to Odoo's, they do not
+             replace them. -->
+        <record id="ir_rule_hr_expense_assistant" model="ir.rule">
+            <field name="name">Expense: travel assistant</field>
+            <field name="model_id" ref="hr_expense.model_hr_expense"/>
+            <field name="domain_force">[('employee_id.bf_trip_assistant_user_ids', 'in', user.id), ('state', 'in', ('draft', 'reported'))]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ir_rule_hr_expense_assistant_not_draft" model="ir.rule">
+            <field name="name">Expense: travel assistant, read only once submitted</field>
+            <field name="model_id" ref="hr_expense.model_hr_expense"/>
+            <field name="domain_force">[('employee_id.bf_trip_assistant_user_ids', 'in', user.id), ('state', 'not in', ('draft', 'reported'))]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="ir_rule_hr_expense_sheet_assistant" model="ir.rule">
+            <field name="name">Expense report: travel assistant</field>
+            <field name="model_id" ref="hr_expense.model_hr_expense_sheet"/>
+            <field name="domain_force">[('employee_id.bf_trip_assistant_user_ids', 'in', user.id), ('state', '=', 'draft')]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ir_rule_hr_expense_sheet_assistant_not_draft" model="ir.rule">
+            <field name="name">Expense report: travel assistant, read only once submitted</field>
+            <field name="model_id" ref="hr_expense.model_hr_expense_sheet"/>
+            <field name="domain_force">[('employee_id.bf_trip_assistant_user_ids', 'in', user.id), ('state', '!=', 'draft')]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Trips: the traveller and the assistants; the traveller's approvers read them;
+             the officers and administrators of Expenses see them all. -->
+        <record id="ir_rule_bf_expense_trip_employee" model="ir.rule">
+            <field name="name">Trip: traveller and assistants</field>
+            <field name="model_id" ref="model_bf_expense_trip"/>
+            <field name="domain_force">['|', ('employee_id.user_id', '=', user.id), ('employee_id.bf_trip_assistant_user_ids', 'in', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ir_rule_bf_expense_trip_approver" model="ir.rule">
+            <field name="name">Trip: team approver</field>
+            <field name="model_id" ref="model_bf_expense_trip"/>
+            <field name="domain_force">['|', '|', '|',
+                ('employee_id.user_id', '=', user.id),
+                ('employee_id.department_id.manager_id.user_id', '=', user.id),
+                ('employee_id.parent_id.user_id', '=', user.id),
+                ('employee_id.expense_manager_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('hr_expense.group_hr_expense_team_approver'))]"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="ir_rule_bf_expense_trip_officer" model="ir.rule">
+            <field name="name">Trip: all</field>
+            <field name="model_id" ref="model_bf_expense_trip"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hr_expense.group_hr_expense_user'))]"/>
+        </record>
+        <record id="ir_rule_bf_expense_trip_company" model="ir.rule">
+            <field name="name">Trip: multi-company</field>
+            <field name="model_id" ref="model_bf_expense_trip"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="ir_rule_bf_expense_trip_day_employee" model="ir.rule">
+            <field name="name">Trip day: traveller and assistants</field>
+            <field name="model_id" ref="model_bf_expense_trip_day"/>
+            <field name="domain_force">['|', ('trip_id.employee_id.user_id', '=', user.id), ('trip_id.employee_id.bf_trip_assistant_user_ids', 'in', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="ir_rule_bf_expense_trip_day_approver" model="ir.rule">
+            <field name="name">Trip day: team approver</field>
+            <field name="model_id" ref="model_bf_expense_trip_day"/>
+            <field name="domain_force">['|', '|', '|',
+                ('trip_id.employee_id.user_id', '=', user.id),
+                ('trip_id.employee_id.department_id.manager_id.user_id', '=', user.id),
+                ('trip_id.employee_id.parent_id.user_id', '=', user.id),
+                ('trip_id.employee_id.expense_manager_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('hr_expense.group_hr_expense_team_approver'))]"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="ir_rule_bf_expense_trip_day_officer" model="ir.rule">
+            <field name="name">Trip day: all</field>
+            <field name="model_id" ref="model_bf_expense_trip_day"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hr_expense.group_hr_expense_user'))]"/>
+        </record>
+        <record id="ir_rule_bf_expense_trip_day_company" model="ir.rule">
+            <field name="name">Trip day: multi-company</field>
+            <field name="model_id" ref="model_bf_expense_trip_day"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="ir_rule_bf_expense_allowance_rate_company" model="ir.rule">
+            <field name="name">Allowance rate: multi-company</field>
+            <field name="model_id" ref="model_bf_expense_allowance_rate"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+    </data>
+</odoo>

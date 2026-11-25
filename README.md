@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**323 modules are BUSL-1.1.** The source is published and auditable, and **you
+**324 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -233,6 +233,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_expense_mileage` | Mileage Tiers | 18.0.1.0.1 | BUSL-1.1 | Kilometres at the full rate up to a yearly threshold per employee, then at the reduced rate, as the CRA and Revenu Québec allow |
 | `bf_expense_ocr` | Lecture des reçus | 18.0.2.2.0 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
 | `bf_expense_tip` | Pourboire | 18.0.1.1.0 | BUSL-1.1 | The tip on a meal receipt, entered on the expense that carries it and removed from the tax base, so input tax credits are not overstated |
+| `bf_expense_trip` | Business Trips | 18.0.1.0.1 | BUSL-1.1 | A business trip gathers its receipts, its meal allowances, its mileage and its hotel folio into one expense report, and an assistant can prepare it |
 | `bf_federation` | Fédération | 18.0.1.5.4 | LGPL-3 | Federate two Odoo/Symbifox instances: share an object with the other side, messages and attachments following. The core carries tasks; satellites add deliverables, agendas, process maps and a Discuss channel |
 | `bf_federation_discuss` | Fédération : canal de discussion | 18.0.1.1.2 | BUSL-1.1 | Un canal Discuss par objet fédéré, adossé au chatter qui fait foi |
 | `bf_federation_document` | Fédération : livrables remis | 18.0.1.2.3 | BUSL-1.1 | Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu |
@@ -568,7 +569,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **323 modules: BUSL-1.1.** Production use for your own internal business
+- **324 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

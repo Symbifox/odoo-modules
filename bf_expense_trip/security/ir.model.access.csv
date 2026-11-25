@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_expense_trip_user,bf.expense.trip.user,model_bf_expense_trip,base.group_user,1,1,1,1
+access_bf_expense_trip_day_user,bf.expense.trip.day.user,model_bf_expense_trip_day,base.group_user,1,1,1,1
+access_bf_expense_allowance_rate_user,bf.expense.allowance.rate.user,model_bf_expense_allowance_rate,base.group_user,1,0,0,0
+access_bf_expense_allowance_rate_manager,bf.expense.allowance.rate.manager,model_bf_expense_allowance_rate,hr_expense.group_hr_expense_manager,1,1,1,1
+access_bf_expense_folio_wizard,bf.expense.folio.wizard,model_bf_expense_folio_wizard,base.group_user,1,1,1,1
+access_bf_expense_folio_line,bf.expense.folio.line,model_bf_expense_folio_line,base.group_user,1,1,1,1

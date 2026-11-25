@@ -1,0 +1,1168 @@
+# Translation of Symbifox Business Trips - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-25 04:56+0000\n"
+"PO-Revision-Date: 2026-11-25 04:56+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid ""
+"%(company)s has no rate for: %(kinds)s. Enter the rates in Expenses, "
+"Configuration, Allowance rates, or untick these boxes."
+msgstr ""
+"%(company)s n'a pas de taux pour : %(kinds)s. Inscrivez les taux dans "
+"Dépenses, Configuration, Taux des indemnités, ou décochez ces cases."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "%(count)s expense(s) attached to the trip."
+msgstr "%(count)s dépense(s) rattachée(s) au voyage."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid "%(expense)s: %(line)s"
+msgstr "%(expense)s : %(line)s"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "%(kind)s allowance: %(count)s × %(amount)s"
+msgstr "Indemnité, %(kind)s : %(count)s × %(amount)s"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/hr_expense_sheet.py:0
+msgid "%s: you prepare this employee's expenses"
+msgstr "%s : vous préparez les dépenses de cette personne"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "<i class=\"fa fa-long-arrow-right mx-2\" aria-label=\"to\" title=\"to\"/>"
+msgstr "<i class=\"fa fa-long-arrow-right mx-2\" aria-label=\"au\" title=\"au\"/>"
+
+#. module: bf_expense_trip
+#: model:ir.model.constraint,message:bf_expense_trip.constraint_bf_expense_allowance_rate_bf_rate_unique
+msgid "A company has one rate per allowance and start date."
+msgstr "Une société a un seul taux par indemnité et par date de début."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid ""
+"A line of the folio cannot be negative: enter a refund as its own expense."
+msgstr ""
+"Une ligne de la facture ne peut pas être négative : inscrivez un "
+"remboursement comme une dépense à part."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip_day__private_lodging
+msgid "A night with friends or family, without a hotel receipt."
+msgstr "Une nuit chez des proches, sans reçu d'hôtel."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_folio_line__personal
+msgid "A personal charge: not reimbursed."
+msgstr "Un frais personnel : il n'est pas remboursé."
+
+#. module: bf_expense_trip
+#: model_terms:ir.actions.act_window,help:bf_expense_trip.bf_expense_trip_action
+msgid ""
+"A trip gathers its receipts, its meal allowances, its mileage and its hotel\n"
+"                folio into one expense report. An assistant can prepare it for the traveller."
+msgstr ""
+"Un voyage réunit ses reçus, ses indemnités de repas, son kilométrage et sa facture\n"
+"                d'hôtel dans une seule note de frais. Une personne adjointe peut le préparer pour la personne qui voyage."
+
+#. module: bf_expense_trip
+#: model:ir.model.constraint,message:bf_expense_trip.constraint_bf_expense_trip_day_bf_day_unique
+msgid "A trip has one line per day."
+msgstr "Un voyage a une ligne par jour."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "A trip lasts at most %s days: split a longer stay into several trips."
+msgstr ""
+"Un voyage dure au plus %s jours : divisez un séjour plus long en plusieurs "
+"voyages."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "A trip with an expense report cannot be deleted."
+msgstr "Un voyage qui a une note de frais ne peut pas être supprimé."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d’exception d’activité"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__activity_state
+msgid "Activity State"
+msgstr "Statut de l'activité"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+#: model:ir.model,name:bf_expense_trip.model_bf_expense_mileage_wizard
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "Add mileage"
+msgstr "Ajouter du kilométrage"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__total_amount
+msgid "All the expenses of the trip, in the company's currency."
+msgstr "Toutes les dépenses du voyage, dans la devise de la société."
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_allowance_rate_view_search
+msgid "Allowance"
+msgstr "Indemnité"
+
+#. module: bf_expense_trip
+#: model:ir.model,name:bf_expense_trip.model_bf_expense_allowance_rate
+msgid "Allowance rate"
+msgstr "Taux d'indemnité"
+
+#. module: bf_expense_trip
+#: model:ir.actions.act_window,name:bf_expense_trip.bf_expense_allowance_rate_action
+#: model:ir.ui.menu,name:bf_expense_trip.bf_expense_allowance_rate_menu
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_allowance_rate_view_list
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_allowance_rate_view_search
+msgid "Allowance rates"
+msgstr "Taux des indemnités"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "Allowances"
+msgstr "Indemnités"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__amount
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__amount
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__amount
+msgid "Amount"
+msgstr "Montant"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid "An allowance is not a folio."
+msgstr "Une indemnité n'est pas une facture d'hôtel."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_allowance_rate.py:0
+msgid "An allowance rate cannot be negative."
+msgstr "Un taux d'indemnité ne peut pas être négatif."
+
+#. module: bf_expense_trip
+#: model_terms:ir.actions.act_window,help:bf_expense_trip.bf_expense_allowance_rate_action
+msgid ""
+"An amount per meal, for incidentals and for a night in private lodging, from a\n"
+"                start date. The federal rates can be loaded as a starting point."
+msgstr ""
+"Un montant par repas, pour les faux frais et pour une nuit chez un particulier, à\n"
+"                partir d'une date. Les taux fédéraux peuvent servir de point de départ."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid "An expense priced by its category (mileage) is not a folio."
+msgstr ""
+"Une dépense dont la catégorie fixe le prix (kilométrage) n'est pas une "
+"facture d'hôtel."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__analytic_distribution
+msgid "Analytic Distribution"
+msgstr "Répartition Analytique"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__analytic_precision
+msgid "Analytic Precision"
+msgstr "Précision analytique"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid ""
+"Attach the traveller's expenses dated within the trip that are not in a "
+"report yet."
+msgstr ""
+"Rattacher les dépenses de la personne qui voyage datées pendant le voyage et"
+" qui ne sont pas encore dans une note de frais."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_expense_trip
+#: model:ir.model,name:bf_expense_trip.model_hr_employee_base
+msgid "Basic Employee"
+msgstr "Employé de base"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_hr_expense__bf_trip_assists
+msgid "Bf Trip Assists"
+msgstr "Prépare des voyages"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__breakfast
+#: model:ir.model.fields.selection,name:bf_expense_trip.selection__bf_expense_allowance_rate__kind__breakfast
+msgid "Breakfast"
+msgstr "Déjeuner"
+
+#. module: bf_expense_trip
+#: model:ir.model,name:bf_expense_trip.model_bf_expense_trip
+msgid "Business trip"
+msgstr "Voyage d'affaires"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_folio_wizard_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__product_id
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_allowance_rate__product_id
+msgid ""
+"Category of the expenses this rate creates. It must not carry a cost of its "
+"own."
+msgstr ""
+"Catégorie des dépenses que ce taux crée. Elle ne doit pas porter de coût."
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "Collect receipts"
+msgstr "Rassembler les reçus"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__company_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__company_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__company_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__company_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "Create report"
+msgstr "Créer la note de frais"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__create_uid
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__create_uid
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__create_uid
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__create_date
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__create_date
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__create_date
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__create_date
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__currency_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__currency_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__currency_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__currency_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__partner_id
+msgid "Customer"
+msgstr "Compte client"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "Dates"
+msgstr "Dates"
+
+#. module: bf_expense_trip
+#: model:ir.model,name:bf_expense_trip.model_bf_expense_trip_day
+msgid "Day of a business trip"
+msgstr "Journée d'un voyage d'affaires"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__day_ids
+msgid "Days"
+msgstr "Jours"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__date_start
+msgid "Departure"
+msgstr "Départ"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__name
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__destination
+msgid "Destination"
+msgstr "Destination"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__difference
+msgid "Difference"
+msgstr "Écart"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__dinner
+#: model:ir.model.fields.selection,name:bf_expense_trip.selection__bf_expense_allowance_rate__kind__dinner
+msgid "Dinner"
+msgstr "Souper"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__display_name
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__display_name
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__display_name
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__display_name
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__distribution_analytic_account_ids
+msgid "Distribution Analytic Account"
+msgstr "Compte analytique de répartition"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields.selection,name:bf_expense_trip.selection__bf_expense_trip__state__done
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_search
+msgid "Done"
+msgstr "Terminé"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid "Each reimbursed line needs an expense category."
+msgstr "Chaque ligne remboursée a besoin d'une catégorie de dépense."
+
+#. module: bf_expense_trip
+#: model:ir.model,name:bf_expense_trip.model_hr_employee
+msgid "Employee"
+msgstr "Membre du personnel"
+
+#. module: bf_expense_trip
+#: model_terms:ir.actions.act_window,help:bf_expense_trip.bf_expense_allowance_rate_action
+msgid "Enter the company's allowance rates"
+msgstr "Inscrivez les taux d'indemnité de la société"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "Every expense of the trip is already in a report."
+msgstr "Toutes les dépenses du voyage sont déjà dans une note de frais."
+
+#. module: bf_expense_trip
+#: model:ir.model,name:bf_expense_trip.model_hr_expense
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__expense_id
+msgid "Expense"
+msgstr "Dépense"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__expense_count
+msgid "Expense Count"
+msgstr "Nombre de dépenses"
+
+#. module: bf_expense_trip
+#: model:ir.model,name:bf_expense_trip.model_hr_expense_sheet
+msgid "Expense Report"
+msgstr "Dépense"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__product_id
+msgid "Expense category"
+msgstr "Catégorie de dépense"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__sheet_ids
+msgid "Expense reports"
+msgstr "Notes de frais"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__expense_ids
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "Expenses"
+msgstr "Dépenses"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__total_folio
+msgid "Folio total"
+msgstr "Total de la facture"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__date_from
+msgid "From"
+msgstr "À partir du"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "Generate allowances"
+msgstr "Calculer les indemnités"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_allowance_rate_view_search
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_search
+msgid "Group By"
+msgstr "Regrouper par"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid "Hotel folio"
+msgstr "Facture d'hôtel"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid "Hotel folio split into %s expenses."
+msgstr "Facture d'hôtel ventilée en %s dépenses."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid "Hotel folio split. Personal charges set aside, not reimbursed:"
+msgstr ""
+"Facture d'hôtel ventilée. Frais personnels mis de côté, non remboursés :"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__bf_assisted_by_me
+msgid "I prepare it"
+msgstr "Je le prépare"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__message_has_error
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields.selection,name:bf_expense_trip.selection__bf_expense_trip__state__draft
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_search
+msgid "In preparation"
+msgstr "En préparation"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__state
+msgid ""
+"In preparation: an expense of the trip is not in a report yet. Done: every "
+"report of the trip is posted or paid."
+msgstr ""
+"En préparation : une dépense du voyage n'est pas encore dans une note de "
+"frais. Terminé : chaque note de frais du voyage est comptabilisée ou payée."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__incidentals
+#: model:ir.model.fields.selection,name:bf_expense_trip.selection__bf_expense_allowance_rate__kind__incidentals
+msgid "Incidentals"
+msgstr "Faux frais"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__write_uid
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__write_uid
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__write_uid
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__write_date
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__write_date
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__write_date
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__write_date
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_expense_trip
+#: model:ir.model,name:bf_expense_trip.model_bf_expense_folio_line
+msgid "Line of a hotel folio"
+msgstr "Ligne d'une facture d'hôtel"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__line_ids
+msgid "Lines"
+msgstr "Lignes"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_allowance_rate_view_list
+msgid "Load the federal rates (October 1, 2026)"
+msgstr "Charger les taux fédéraux (1er octobre 2026)"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__lunch
+#: model:ir.model.fields.selection,name:bf_expense_trip.selection__bf_expense_allowance_rate__kind__lunch
+msgid "Lunch"
+msgstr "Dîner"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_hr_expense__bf_trip_allowance
+msgid ""
+"Made by the trip from its days: generating the allowances again replaces it."
+msgstr ""
+"Créée par le voyage à partir de ses jours : calculer les indemnités de "
+"nouveau la remplace."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_search
+msgid "My trips"
+msgstr "Mes voyages"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_allowance_rate.py:0
+msgid ""
+"National Joint Council, Travel Directive, Appendix C (Canada), October 1, "
+"2026"
+msgstr ""
+"Conseil national mixte, Directive sur les voyages, appendice C (Canada), 1er"
+" octobre 2026"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_allowance_rate_view_list
+msgid ""
+"National Joint Council, Travel Directive, Appendix C, Canada. A starting "
+"point: the rates are the company's policy."
+msgstr ""
+"Conseil national mixte, Directive sur les voyages, appendice C, Canada. Un "
+"point de départ : les taux relèvent de la politique de la société."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de l'activité suivante"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type d'activités à venir"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid ""
+"No expense of %(employee)s dated within the trip is waiting outside a "
+"report."
+msgstr ""
+"Aucune dépense de %(employee)s datée pendant le voyage n'attend hors d'une "
+"note de frais."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid "Nothing on this folio is reimbursed: delete the expense instead."
+msgstr "Rien sur cette facture n'est remboursé : supprimez plutôt la dépense."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_folio_wizard_view_form
+msgid ""
+"One line per charge of the folio, as printed, taxes included: the room, the\n"
+"                    lodging tax, meals, parking. Tick personal for what the company does not\n"
+"                    reimburse (minibar, a movie). The receipt is copied on each expense."
+msgstr ""
+"Une ligne par frais de la facture, tel qu'imprimé, taxes incluses : la chambre, la\n"
+"                    taxe sur l'hébergement, les repas, le stationnement. Cochez Personnel\n"
+"                    pour ce que la société ne rembourse pas (minibar, un film). Le reçu est copié sur chaque dépense."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid "Only an expense that is not submitted yet can be split."
+msgstr "Seule une dépense qui n'est pas encore soumise peut être ventilée."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "Operation not supported"
+msgstr "Opération non prise en charge"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_hr_expense__bf_folio_personal_amount
+msgid "Part of the hotel folio the company does not reimburse."
+msgstr "Partie de la facture d'hôtel que la société ne rembourse pas."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__personal
+msgid "Personal"
+msgstr "Personnel"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__total_personal
+msgid "Personal charges"
+msgstr "Frais personnels"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_hr_expense__bf_folio_personal_amount
+msgid "Personal charges set aside"
+msgstr "Frais personnels mis de côté"
+
+#. module: bf_expense_trip
+#: model_terms:ir.actions.act_window,help:bf_expense_trip.bf_expense_trip_action
+msgid "Prepare a business trip"
+msgstr "Préparez un voyage d'affaires"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__private_lodging
+#: model:ir.model.fields.selection,name:bf_expense_trip.selection__bf_expense_allowance_rate__kind__private_lodging
+msgid "Private lodging"
+msgstr "Logement chez un particulier"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__purpose
+msgid "Purpose"
+msgstr "Objet"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "Purpose of the trip"
+msgstr "Objet du voyage"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid ""
+"Remove the tip of this expense before splitting the folio: a hotel folio "
+"carries its charges as lines."
+msgstr ""
+"Retirez le pourboire de cette dépense avant de ventiler la facture : une "
+"facture d'hôtel porte ses frais en lignes."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields.selection,name:bf_expense_trip.selection__bf_expense_trip__state__reported
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_search
+msgid "Reported"
+msgstr "En note de frais"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "Reports"
+msgstr "Notes de frais"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__date_end
+msgid "Return"
+msgstr "Retour"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid "Room"
+msgstr "Chambre"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__sheet_count
+msgid "Sheet Count"
+msgstr "Nombre de notes de frais"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_allowance_rate__source
+msgid "Source"
+msgstr "Source"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_folio_wizard_view_form
+msgid "Split"
+msgstr "Ventiler"
+
+#. module: bf_expense_trip
+#: model:ir.model,name:bf_expense_trip.model_bf_expense_folio_wizard
+msgid "Split a hotel folio"
+msgstr "Ventiler une facture d'hôtel"
+
+#. module: bf_expense_trip
+#: model:ir.actions.act_window,name:bf_expense_trip.bf_expense_folio_wizard_action
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_folio_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.hr_expense_view_form_bf_trip
+msgid "Split hotel folio"
+msgstr "Ventiler la facture d'hôtel"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__tax_ids
+msgid "Taxes"
+msgstr "Taxes"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_folio_line__amount
+msgid "Taxes included, as printed on the folio."
+msgstr "Taxes incluses, tel qu'imprimé sur la facture."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid ""
+"The \"%s\" category is priced by its cost (mileage, allowance): choose a "
+"category without a cost."
+msgstr ""
+"La catégorie « %s » fixe le prix par son coût (kilométrage, indemnité) : "
+"choisissez une catégorie sans coût."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_allowance_rate.py:0
+msgid ""
+"The \"%s\" expense category has a cost of its own, which would replace the "
+"allowance: choose a category without a cost."
+msgstr ""
+"La catégorie de dépense « %s » porte un coût, qui remplacerait l'indemnité :"
+" choisissez une catégorie sans coût."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid ""
+"The allowances of this trip are already in a report: take them out of the "
+"report before generating them again."
+msgstr ""
+"Les indemnités de ce voyage sont déjà dans une note de frais : retirez-les "
+"de la note avant de les calculer de nouveau."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid ""
+"The allowances of this trip are in a report: take them out of the report "
+"before changing the dates."
+msgstr ""
+"Les indemnités de ce voyage sont dans une note de frais : retirez-les de la "
+"note avant de changer les dates."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid ""
+"The company paid this folio: every charge stays on its expenses. Recover the"
+" personal charges from the employee instead of setting them aside."
+msgstr ""
+"La société a payé cette facture : chaque frais reste sur ses dépenses. "
+"Récupérez les frais personnels auprès de la personne au lieu de les mettre "
+"de côté."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_hr_expense__bf_trip_assists
+msgid "The current user prepares the expenses of at least one other employee."
+msgstr ""
+"La personne connectée prépare les dépenses d'au moins une autre personne."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__partner_id
+msgid "The customer the trip is made for, if any."
+msgstr "Le compte client pour lequel le voyage est fait, s'il y a lieu."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "The dates changed: the allowances were removed. Generate them again."
+msgstr ""
+"Les dates ont changé : les indemnités ont été retirées. Calculez-les de "
+"nouveau."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "The day %(day)s is not within the trip \"%(trip)s\"."
+msgstr "Le jour %(day)s n'est pas dans le voyage « %(trip)s »."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/hr_expense.py:0
+msgid ""
+"The expense \"%(expense)s\" and the trip \"%(trip)s\" belong to different "
+"companies."
+msgstr ""
+"La dépense « %(expense)s » et le voyage « %(trip)s » appartiennent à des "
+"sociétés différentes."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/hr_expense.py:0
+msgid ""
+"The expense \"%(expense)s\" is %(employee)s's, and the trip \"%(trip)s\" is "
+"%(traveller)s's."
+msgstr ""
+"La dépense « %(expense)s » est celle de %(employee)s, et le voyage « "
+"%(trip)s », celui de %(traveller)s."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_allowance_rate.py:0
+msgid ""
+"The federal rates are in Canadian dollars, and %(company)s keeps its books "
+"in %(currency)s: enter the company's own rates."
+msgstr ""
+"Les taux fédéraux sont en dollars canadiens, et %(company)s tient ses livres"
+" en %(currency)s : inscrivez les taux propres à la société."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/wizard/bf_expense_folio_wizard.py:0
+msgid ""
+"The lines add up to %(lines)s, the folio to %(folio)s: every charge of the "
+"folio goes on a line, personal ones included."
+msgstr ""
+"Les lignes totalisent %(lines)s, la facture %(folio)s : chaque frais de la "
+"facture va sur une ligne, frais personnels compris."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_allowance_rate__date_from
+msgid "The rate applies to the days from this date, until a later rate."
+msgstr ""
+"Le taux s'applique aux jours à partir de cette date, jusqu'à un taux plus "
+"récent."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/hr_expense_sheet.py:0
+msgid ""
+"The report \"%(report)s\" and the trip \"%(trip)s\" are not the same "
+"employee's."
+msgstr ""
+"La note de frais « %(report)s » et le voyage « %(trip)s » ne sont pas ceux "
+"de la même personne."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "The return cannot come before the departure."
+msgstr "Le retour ne peut pas précéder le départ."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip_day__amount
+msgid "The ticked boxes at the rates in force that day."
+msgstr "Les cases cochées, aux taux en vigueur ce jour-là."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "The trip has expenses of another employee or company: %s."
+msgstr ""
+"Le voyage a des dépenses d'une autre personne ou d'une autre société : %s."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__total_amount
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_list
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_wizard__total_reimbursed
+msgid "Total Reimbursed"
+msgstr "Total remboursé"
+
+#. module: bf_expense_trip
+#: model:product.template,name:bf_expense_trip.product_travel_allowance_product_template
+msgid "Travel allowance"
+msgstr "Indemnité de voyage"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_hr_employee__bf_trip_assistant_user_ids
+msgid "Travel assistants"
+msgstr "Personnes qui préparent ses voyages"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__employee_id
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_search
+msgid "Traveller"
+msgstr "Personne en voyage"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_mileage_wizard__bf_trip_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__name
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip_day__trip_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_hr_expense__trip_id
+#: model:ir.model.fields,field_description:bf_expense_trip.field_hr_expense_sheet__trip_id
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.hr_expense_view_search_bf_trip
+msgid "Trip"
+msgstr "Voyage"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_hr_expense__bf_trip_allowance
+msgid "Trip allowance"
+msgstr "Indemnité du voyage"
+
+#. module: bf_expense_trip
+#: model:ir.actions.act_window,name:bf_expense_trip.bf_expense_trip_action
+#: model:ir.ui.menu,name:bf_expense_trip.bf_expense_trip_menu
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_list
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_search
+msgid "Trips"
+msgstr "Voyages"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_search
+msgid "Trips I prepare"
+msgstr "Voyages que je prépare"
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid ""
+"Turn the ticked boxes of the days into expenses, at the company's rates."
+msgstr ""
+"Transformer les cases cochées des jours en dépenses, aux taux de la société."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid ""
+"Untick a meal that was provided (a conference lunch, a meal on the\n"
+"                                plane). Tick private lodging for a night with friends or family,\n"
+"                                without a hotel receipt."
+msgstr ""
+"Décochez un repas fourni (un dîner de colloque, un repas dans\n"
+"                                l'avion). Cochez Logement chez un particulier pour une nuit chez des proches,\n"
+"                                sans reçu d'hôtel."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_hr_employee__bf_trip_assistant_user_ids
+msgid ""
+"Users who prepare this employee's trips and expenses: they can create, "
+"attach, split and submit them, never approve them."
+msgstr ""
+"Les personnes qui préparent les voyages et les dépenses de cette personne : "
+"elles peuvent les créer, les rattacher, les ventiler et les soumettre, "
+"jamais les approuver."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_trip__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_folio_wizard__difference
+msgid "What the lines leave out of the folio's total."
+msgstr "Ce que les lignes laissent hors du total de la facture."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_allowance_rate__source
+msgid "Where the rate comes from: a policy, a directive, a date."
+msgstr "D'où vient le taux : une politique, une directive, une date."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,help:bf_expense_trip.field_bf_expense_trip__purpose
+msgid "Why the trip is made: what the employer must be able to show."
+msgstr ""
+"Pourquoi le voyage est fait : ce que l'employeur doit pouvoir montrer."
+
+#. module: bf_expense_trip
+#: model:ir.model.fields,field_description:bf_expense_trip.field_bf_expense_folio_line__wizard_id
+msgid "Wizard"
+msgstr "Assistant"
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/bf_expense_trip.py:0
+msgid "You cannot prepare a trip for %s."
+msgstr "Vous ne pouvez pas préparer de voyage pour %s."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/hr_expense_sheet.py:0
+msgid "You prepare %s's expenses: you cannot approve them."
+msgstr "Vous préparez les dépenses de %s : vous ne pouvez pas les approuver."
+
+#. module: bf_expense_trip
+#. odoo-python
+#: code:addons/bf_expense_trip/models/hr_expense_sheet.py:0
+msgid "You prepare %s's expenses: you cannot be the manager of their report."
+msgstr ""
+"Vous préparez les dépenses de %s : vous ne pouvez pas être responsable de sa"
+" note de frais."
+
+#. module: bf_expense_trip
+#: model_terms:ir.ui.view,arch_db:bf_expense_trip.bf_expense_trip_view_form
+msgid "e.g. Trade show in Toronto"
+msgstr "ex. Salon à Toronto"

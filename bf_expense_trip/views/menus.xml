@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="bf_expense_trip_menu" action="bf_expense_trip_action"
+              parent="hr_expense.menu_hr_expense_my_expenses" sequence="3"/>
+    <menuitem id="bf_expense_allowance_rate_menu" action="bf_expense_allowance_rate_action"
+              parent="hr_expense.menu_hr_expense_configuration" sequence="15"
+              groups="hr_expense.group_hr_expense_manager"/>
+</odoo>

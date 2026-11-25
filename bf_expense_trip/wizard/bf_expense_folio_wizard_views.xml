@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_expense_folio_wizard_view_form" model="ir.ui.view">
+        <field name="name">bf.expense.folio.wizard.form</field>
+        <field name="model">bf.expense.folio.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Split hotel folio">
+                <p class="text-muted">
+                    One line per charge of the folio, as printed, taxes included: the room, the
+                    lodging tax, meals, parking. Tick personal for what the company does not
+                    reimburse (minibar, a movie). The receipt is copied on each expense.
+                </p>
+                <field name="expense_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="name"/>
+                        <field name="product_id" required="not personal" invisible="personal"
+                               options="{'no_create': True}"/>
+                        <field name="company_id" column_invisible="1"/>
+                        <field name="tax_ids" widget="many2many_tags" invisible="personal"
+                               options="{'no_create': True}"/>
+                        <field name="currency_id" column_invisible="1"/>
+                        <field name="amount"/>
+                        <field name="personal"/>
+                    </list>
+                </field>
+                <group class="oe_subtotal_footer">
+                    <field name="total_folio"/>
+                    <field name="total_reimbursed"/>
+                    <field name="total_personal"/>
+                    <field name="difference" decoration-danger="difference != 0"/>
+                </group>
+                <footer>
+                    <button name="action_split" type="object" string="Split" class="btn-primary"/>
+                    <button special="cancel" string="Cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_expense_folio_wizard_action" model="ir.actions.act_window">
+        <field name="name">Split hotel folio</field>
+        <field name="res_model">bf.expense.folio.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

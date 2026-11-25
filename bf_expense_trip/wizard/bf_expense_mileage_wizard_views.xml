@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_expense_mileage_wizard_view_form_bf_trip" model="ir.ui.view">
+        <field name="name">bf.expense.mileage.wizard.form.bf_trip</field>
+        <field name="model">bf.expense.mileage.wizard</field>
+        <field name="inherit_id" ref="bf_expense_mileage.bf_expense_mileage_wizard_view_form"/>
+        <field name="arch" type="xml">
+            <field name="distance_km" position="after">
+                <field name="bf_trip_id" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+</odoo>

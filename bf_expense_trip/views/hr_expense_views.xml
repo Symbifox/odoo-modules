@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_expense_view_form_bf_trip" model="ir.ui.view">
+        <field name="name">hr.expense.view.form.bf_trip</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_split_wizard']" position="after">
+                <button name="%(bf_expense_trip.bf_expense_folio_wizard_action)d" type="action"
+                        string="Split hotel folio"
+                        invisible="state not in ('draft', 'reported') or not is_editable or product_has_cost"
+                        context="{'default_expense_id': id}"/>
+            </xpath>
+            <!-- Odoo shows the employee only to approvers; an assistant chooses it too. -->
+            <xpath expr="//label[@id='lo']" position="before">
+                <field name="bf_trip_assists" invisible="1"/>
+                <field name="employee_id" groups="!hr_expense.group_hr_expense_team_approver"
+                       invisible="not bf_trip_assists"
+                       context="{'default_company_id': company_id}" widget="many2one_avatar_employee"
+                       options="{'relation': 'hr.employee.public', 'no_create': True}"
+                       readonly="not is_editable"/>
+            </xpath>
+            <xpath expr="//field[@name='date'][hasclass('w-50')]" position="after">
+                <field name="trip_id" options="{'no_create': True}" readonly="not is_editable"/>
+                <field name="bf_folio_personal_amount" invisible="not bf_folio_personal_amount"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_expense_view_list_bf_trip" model="ir.ui.view">
+        <field name="name">hr.expense.list.bf_trip</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_expenses_analysis_tree"/>
+        <field name="arch" type="xml">
+            <field name="date" position="after">
+                <field name="trip_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_expense_view_search_bf_trip" model="ir.ui.view">
+        <field name="name">hr.expense.search.bf_trip</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="trip_id"/>
+                <filter name="bf_group_trip" string="Trip" context="{'group_by': 'trip_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_expense_sheet_view_form_bf_trip" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.view.form.bf_trip</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+        <field name="arch" type="xml">
+            <field name="payment_mode" position="after">
+                <field name="trip_id" invisible="not trip_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>
