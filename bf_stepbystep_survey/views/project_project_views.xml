@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Dans l'onglet « Portail client » du cœur : quel questionnaire, et à
+         quelle étape le bouton se montre. -->
+    <record id="bf_stepbystep_survey_project_form" model="ir.ui.view">
+        <field name="name">project.project.form.bf_stepbystep_survey</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="bf_stepbystep_clients.bf_stepbystep_project_form_portal"/>
+        <field name="arch" type="xml">
+            <!-- ⚠️ Odoo 18 refuse `string` comme sélecteur d'héritage : le groupe
+                 du cœur porte un `name` pour qu'un pont s'y accroche. -->
+            <xpath expr="//group[@name='bf_stepbystep_mandate_texts']" position="after">
+                <!-- Le même groupe que le champ `progression_survey_id` : un champ
+                     restreint affiché dans une vue qui ne porte pas le même groupe
+                     bloquerait l'ouverture de la fiche pour les autres. -->
+                <group string="Questionnaire" groups="project.group_project_manager">
+                    <!-- ⚠️ Déclaré, invisible : Odoo valide les noms employés dans
+                         un `domain` contre les champs PRÉSENTS dans la vue, et
+                         `type_ids` n'est dans aucune vue formulaire de `project.project`.
+                         Même forme que `bf_calendar_address`. -->
+                    <field name="type_ids" invisible="1"/>
+                    <field name="progression_survey_id"
+                           options="{'no_create': True}"/>
+                    <field name="progression_survey_stage_id"
+                           invisible="not progression_survey_id"
+                           domain="[('id', 'in', type_ids)]"
+                           options="{'no_create': True}"/>
+                    <!-- La réponse du mandat, en lecture : sans elle, le conseiller
+                         n'a aucun chemin du mandat vers le questionnaire rempli, et
+                         rien ne dit comment en détacher une (la supprimer). -->
+                    <field name="progression_survey_answer_id" readonly="1"
+                           invisible="not progression_survey_answer_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

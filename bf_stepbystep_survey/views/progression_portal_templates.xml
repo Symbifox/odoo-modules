@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le bouton, à un seul endroit : dans l'étape qui le demande quand la
+         fiche en nomme une, sinon une fois sous le chapeau de la page.
+         🔴 Un formulaire POST, et non un lien : ouvrir le questionnaire CRÉE la
+         réponse du mandat, et rien ne doit la créer en suivant une adresse. -->
+    <template id="progression_portal_questionnaire_button" name="Progression: questionnaire button">
+        <form t-if="survey_url" method="post" t-att-action="survey_url" class="d-inline">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <button type="submit" class="btn btn-primary btn-sm">Fill in the questionnaire</button>
+        </form>
+        <span t-elif="survey_done" class="badge text-bg-success">Questionnaire received</span>
+    </template>
+
+    <template id="progression_portal_questionnaire"
+              inherit_id="bf_stepbystep_clients.progression_portal_page">
+
+        <xpath expr="//div[@name='step_extra']" position="inside">
+            <!-- `step` n'existe que là, dans la boucle des étapes. -->
+            <!-- 🔴 L'état de l'étape compte autant que son identité : sur une étape
+                 À VENIR, la route refuse (comme le dépôt de pièces) et le bouton ne
+                 doit donc pas s'afficher. Mesuré : il s'affichait. -->
+            <!-- `survey_url or survey_done` : sans ça, un mandat sans questionnaire
+                 posait un bloc VIDE sur la page du client — du markup mort et une
+                 marge en trop. Vu sur des pages en service. -->
+            <div t-if="(survey_url or survey_done) and survey_stage_id
+                       and survey_stage_id in step['stage_ids']
+                       and step['state'] in ('done', 'current')"
+                 class="o_progression_portal_survey ms-5 mt-2">
+                <t t-call="bf_stepbystep_survey.progression_portal_questionnaire_button"/>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@name='page_extra']" position="inside">
+            <div t-if="(survey_url or survey_done) and not survey_stage_id"
+                 class="o_progression_portal_survey mb-4">
+                <t t-call="bf_stepbystep_survey.progression_portal_questionnaire_button"/>
+            </div>
+        </xpath>
+
+    </template>
+
+</odoo>

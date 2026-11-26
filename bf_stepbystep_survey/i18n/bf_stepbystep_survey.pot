@@ -1,0 +1,144 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_stepbystep_survey
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-26 00:11+0000\n"
+"PO-Revision-Date: 2026-11-26 00:11+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_stepbystep_survey
+#: model:ir.model.fields,field_description:bf_stepbystep_survey.field_project_project__progression_survey_answer_id
+msgid "Client's answer"
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_survey.progression_portal_questionnaire_button
+msgid "Fill in the questionnaire"
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#: model:ir.model,name:bf_stepbystep_survey.model_project_project
+msgid "Project"
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_survey.bf_stepbystep_survey_project_form
+msgid "Questionnaire"
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/survey_user_input.py:0
+msgid "Questionnaire closed by its time limit: %(survey)s"
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/survey_user_input.py:0
+msgid "Questionnaire completed: %(survey)s"
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#: model:ir.model.fields,field_description:bf_stepbystep_survey.field_project_project__progression_survey_id
+msgid "Questionnaire on the client page"
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_survey.progression_portal_questionnaire_button
+msgid "Questionnaire received"
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#: model:ir.model.fields,help:bf_stepbystep_survey.field_project_project__progression_survey_id
+msgid ""
+"Questionnaire the client opens from the progression page. The answer is tied"
+" to this mandate."
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#: model:ir.model.fields,help:bf_stepbystep_survey.field_project_project__progression_survey_stage_id
+msgid ""
+"Stage of the progression where the button appears. The stage must belong to "
+"this project, carry a progression step number and be visible on the client "
+"portal. Leave empty to show the button once, under the heading of the page."
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#: model:ir.model.fields,field_description:bf_stepbystep_survey.field_project_project__progression_survey_stage_id
+msgid "Stage that asks the questionnaire"
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#: model:ir.model,name:bf_stepbystep_survey.model_survey_user_input
+msgid "Survey User Input"
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#: model:ir.model.fields,help:bf_stepbystep_survey.field_project_project__progression_survey_answer_id
+msgid ""
+"The answer of this mandate. Created the first time the client opens the "
+"questionnaire."
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/survey_user_input.py:0
+msgid ""
+"The client completed the questionnaire %(survey)s from the progress page of "
+"the mandate %(project)s. The answers are in Odoo."
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/survey_user_input.py:0
+msgid ""
+"The client completed the questionnaire %(survey)s from the progress page."
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/project_project.py:0
+msgid ""
+"The questionnaire \"%(nom)s\" requires a login. The client of a progression "
+"page has no account: untick \"Require Login\" on the questionnaire, or "
+"choose another one."
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/project_project.py:0
+msgid ""
+"The stage that asks the questionnaire must be one of this project's stages."
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/survey_user_input.py:0
+msgid ""
+"The time limit of the questionnaire %(survey)s was reached on the progress "
+"page of the mandate %(project)s; the client's answer is closed. It is in "
+"Odoo."
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/survey_user_input.py:0
+msgid ""
+"The time limit of the questionnaire %(survey)s was reached; the client's "
+"answer is closed."
+msgstr ""
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/survey_user_input.py:0
+msgid "the questionnaire"
+msgstr ""
