@@ -6,8 +6,8 @@ class ProjectTask(models.Model):
 
     state = fields.Selection(
         selection_add=[
-            ("05_waiting_client", "Attente - Client"),
-            ("06_waiting_external", "Attente - Externe"),
+            ("05_waiting_client", "Waiting on Client"),
+            ("06_waiting_external", "Waiting on External"),
         ],
         ondelete={
             "05_waiting_client": "set default",

@@ -1,0 +1,36 @@
+# Translation of Task Waiting States - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_task_waiting_states 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-26 04:40+0000\n"
+"PO-Revision-Date: 2026-11-26 04:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_task_waiting_states
+#: model:ir.model.fields.selection,name:bf_task_waiting_states.selection__project_task__state__05_waiting_client
+msgid "Waiting on Client"
+msgstr "Attente - Client"
+
+#. module: bf_task_waiting_states
+#: model:ir.model.fields.selection,name:bf_task_waiting_states.selection__project_task__state__06_waiting_external
+msgid "Waiting on External"
+msgstr "Attente - Externe"
+
+#. module: bf_task_waiting_states
+#: model:ir.module.module,shortdesc:base.module_bf_task_waiting_states
+msgid "Task Waiting States"
+msgstr "États d'attente des tâches"
+
+#. module: bf_task_waiting_states
+#: model:ir.module.module,summary:base.module_bf_task_waiting_states
+msgid "Add Waiting on Client / Waiting on External task states"
+msgstr "Ajoute les états de tâche Attente - Client et Attente - Externe"
