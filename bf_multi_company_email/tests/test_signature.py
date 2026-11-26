@@ -646,6 +646,92 @@ class SignatureLinkProvisionCase(TransactionCase):
         self.assertEqual(manual.target_url, "https://exemple.test/a-moi")
         self.assertFalse(manual.auto_managed)
 
+    # -- les deux langues ----------------------------------------------
+    def test_le_nom_provisionne_se_lit_dans_la_langue_de_qui_le_porte(self):
+        """Deux personnes, deux langues, un seul provisionnement.
+
+        🔴 Tous les essais au-dessus ne prouvent que la SOURCE : on pourrait
+        livrer un `fr_CA.po` vide ou cassé et ils passeraient en vert. Celui-ci
+        lit le français, et il fixe en plus la langue dans laquelle le nom se
+        rend — celle de la personne à qui le lien appartient, jamais celle de
+        qui lance le provisionnement.
+
+        Le nom est un champ STOCKÉ, non traduisible : il se rend UNE fois, à la
+        création, et reste tel quel. Passer la constante `_lt` au `create` sans
+        la rendre laisserait l'ORM la rendre dans la langue du lanceur : un
+        administrateur francophone nommerait « Prendre rendez-vous » le lien
+        d'une personne anglophone.
+        """
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["res.lang"]._activate_lang("en_US")
+        # Le catalogue est rechargé ici : l'essai ne suppose pas qu'une montée
+        # l'a déjà posé, et il échoue si le `fr_CA.po` livré ne porte pas ces
+        # deux libellés.
+        self.env["ir.module.module"]._load_module_terms(
+            ["bf_multi_company_email"], ["fr_CA"], overwrite=True)
+        francophone = self.env["res.users"].with_context(
+            no_reset_password=True).create({
+                "name": "Camille Deux-Langues",
+                "login": "camille.fr@test.invalid",
+                "lang": "fr_CA",
+                "company_id": self.company.id,
+                "company_ids": [(6, 0, [self.company.id])],
+                "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+            })
+        anglophone = self.env["res.users"].with_context(
+            no_reset_password=True).create({
+                "name": "Robin Two-Tongues",
+                "login": "robin.en@test.invalid",
+                "lang": "en_US",
+                "company_id": self.company.id,
+                "company_ids": [(6, 0, [self.company.id])],
+                "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+            })
+        Link = self.env["bf.signature.link"]
+        # Lancé par un environnement ANGLOPHONE, exprès : c'est la langue qui
+        # déciderait si le rendu se faisait au mauvais endroit.
+        with self._patched_booking("https://exemple.test/rdv/deux-langues"):
+            Link.with_context(lang="en_US")._provision(
+                users=francophone + anglophone, sources=("booking",))
+        nom_fr = Link.search([("user_id", "=", francophone.id)]).name
+        nom_en = Link.search([("user_id", "=", anglophone.id)]).name
+        self.assertEqual(nom_fr, "Prendre rendez-vous")
+        self.assertEqual(nom_en, "Book an appointment")
+
+    def test_les_libelles_livres_se_lisent_en_francais(self):
+        """Le catalogue rend les écrans, pas seulement les constantes.
+
+        Un libellé de champ, un texte d'aide et une valeur de liste : trois
+        chemins de chargement différents (`ir.model.fields`,
+        `ir.model.fields.selection`), et l'anglais est refusé explicitement —
+        sans quoi un `fr_CA.po` tronqué passerait pour bon.
+        """
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(
+            ["bf_multi_company_email"], ["fr_CA"], overwrite=True)
+        champs = self.env["ir.model.fields"]
+        verrou = champs.search([("model", "=", "res.users"),
+                                ("name", "=", "bf_signature_locked")], limit=1)
+        self.assertTrue(verrou, "le champ témoin a disparu : l'essai ne mesure rien")
+        self.assertEqual(verrou.with_context(lang="fr_CA").field_description,
+                         "Signature verrouillée")
+        self.assertEqual(verrou.with_context(lang="en_US").field_description,
+                         "Signature locked")
+
+        couleur = champs.search([("model", "=", "res.company"),
+                                 ("name", "=", "bf_signature_text_color")], limit=1)
+        aide_fr = couleur.with_context(lang="fr_CA").help or ""
+        self.assertIn("Couleur du texte principal", aide_fr)
+        self.assertNotIn("main text", aide_fr)
+
+        societe = self.env["res.company"]
+        for langue, attendu in (("fr_CA", "Très petit (9 px)"),
+                                ("en_US", "Very small (9 px)")):
+            vue = societe.with_context(lang=langue)
+            libelles = dict(vue._fields["bf_signature_disclaimer_size"]
+                            ._description_selection(vue.env))
+            self.assertEqual(libelles["tiny"], attendu)
+
     def test_a_link_with_no_address_is_not_rendered(self):
         """Une source automatique non résolue ne doit pas produire de lien mort."""
         link = self.env["bf.signature.link"].create({

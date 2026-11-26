@@ -100,7 +100,7 @@
     -->
 
     <record id="bf_signature_card" model="mail.template">
-        <field name="name">Carte — logo, barre d'accent et liens</field>
+        <field name="name">Card — logo, accent bar and links</field>
         <field name="model_id" ref="base.model_res_users"/>
         <field name="bf_is_signature" eval="True"/>
         <field name="body_html" type="html">
@@ -191,7 +191,7 @@
     </record>
 
     <record id="bf_signature_plain" model="mail.template">
-        <field name="name">Classique — texte seul, sans logo</field>
+        <field name="name">Classic — text only, no logo</field>
         <field name="model_id" ref="base.model_res_users"/>
         <field name="bf_is_signature" eval="True"/>
         <field name="body_html" type="html">

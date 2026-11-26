@@ -30,7 +30,7 @@
          où une carte de 520 px répétée vingt fois devient du bruit.
          ================================================================ -->
     <record id="bf_signature_compact" model="mail.template">
-        <field name="name">Compacte — une seule ligne</field>
+        <field name="name">Compact — a single line</field>
         <field name="model_id" ref="base.model_res_users"/>
         <field name="bf_is_signature" eval="True"/>
         <field name="body_html" type="html">
@@ -84,7 +84,7 @@
          chez chaque locataire, où il s'ouvre dans l'éditeur de code.
          ================================================================ -->
     <record id="bf_signature_banner" model="mail.template">
-        <field name="name">Bandeau — filet coloré à gauche</field>
+        <field name="name">Banner — coloured rule on the left</field>
         <field name="model_id" ref="base.model_res_users"/>
         <field name="bf_is_signature" eval="True"/>
         <field name="body_html" type="html">
@@ -148,7 +148,7 @@
          clients redessinent le <hr> à leur façon.
          ================================================================ -->
     <record id="bf_signature_minimal" model="mail.template">
-        <field name="name">Minimaliste — nom, filet, coordonnées</field>
+        <field name="name">Minimal — name, rule, contact details</field>
         <field name="model_id" ref="base.model_res_users"/>
         <field name="bf_is_signature" eval="True"/>
         <field name="body_html" type="html">
@@ -199,7 +199,7 @@
          chez chaque locataire, où il s'ouvre dans l'éditeur de code.
          ================================================================ -->
     <record id="bf_signature_two_columns" model="mail.template">
-        <field name="name">Deux colonnes — logo et coordonnées</field>
+        <field name="name">Two columns — logo and contact details</field>
         <field name="model_id" ref="base.model_res_users"/>
         <field name="bf_is_signature" eval="True"/>
         <field name="body_html" type="html">

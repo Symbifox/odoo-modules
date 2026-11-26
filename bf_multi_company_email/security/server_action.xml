@@ -8,7 +8,7 @@
       users.
     -->
     <record id="action_bf_regen_signatures" model="ir.actions.server">
-        <field name="name">Régénérer les signatures courriel</field>
+        <field name="name">Regenerate the email signatures</field>
         <field name="model_id" ref="base.model_res_users"/>
         <field name="binding_model_id" ref="base.model_res_users"/>
         <field name="binding_view_types">list,form</field>

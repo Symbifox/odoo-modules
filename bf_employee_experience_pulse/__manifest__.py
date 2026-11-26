@@ -2,7 +2,11 @@
     "name": "Expérience employé : pulse",
     "summary": "Sondage d'humeur anonyme, eNPS, seuils d'affichage et scores "
                "par axe",
-    "version": "18.0.1.2.3",
+    # 18.0.1.2.4: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.2.4",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

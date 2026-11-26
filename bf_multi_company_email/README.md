@@ -246,6 +246,10 @@ The bridge `bf_preferred_name_signature` (installed automatically with
 `bf_preferred_name`) makes the signature pronouns those of the person's
 contact.
 
+## Languages (v18.0.5.1.1)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md).

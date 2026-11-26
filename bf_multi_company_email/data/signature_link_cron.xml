@@ -9,7 +9,7 @@
           signatures de tout le monde est une décision, pas un défaut.
         -->
         <record id="ir_cron_signature_link_provision" model="ir.cron">
-            <field name="name">Signatures : provisionner et repointer les liens rapides</field>
+            <field name="name">Signatures: provision and repoint the quick links</field>
             <field name="model_id" ref="model_bf_signature_link"/>
             <field name="state">code</field>
             <field name="code">model._cron_provision()</field>

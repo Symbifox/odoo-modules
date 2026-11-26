@@ -14,73 +14,73 @@ class ResConfigSettings(models.TransientModel):
 
     bf_signature_template_id = fields.Many2one(
         related="company_id.bf_signature_template_id",
-        string="Gabarit de signature courriel",
+        string="Email signature template",
         domain="[('bf_is_signature', '=', True)]",
         readonly=False,
     )
     bf_signature_enforce = fields.Boolean(
         related="company_id.bf_signature_enforce",
-        string="Imposer la signature",
+        string="Enforce the signature",
         readonly=False,
     )
     bf_signature_auto_apply = fields.Boolean(
         related="company_id.bf_signature_auto_apply",
-        string="Propager les changements de gabarit",
+        string="Propagate template changes",
         readonly=False,
     )
     bf_signature_logo_url = fields.Char(
         related="company_id.bf_signature_logo_url",
-        string="Logo de signature (URL)",
+        string="Signature logo (URL)",
         readonly=False,
     )
     bf_signature_logo_width = fields.Integer(
         related="company_id.bf_signature_logo_width",
-        string="Largeur du logo (px)",
+        string="Logo width (px)",
         readonly=False,
     )
     bf_signature_accent_color = fields.Char(
         related="company_id.bf_signature_accent_color",
-        string="Couleur d'accent",
+        string="Accent colour",
         readonly=False,
     )
     bf_signature_text_color = fields.Char(
         related="company_id.bf_signature_text_color",
-        string="Couleur du texte",
+        string="Text colour",
         readonly=False,
     )
     bf_signature_muted_color = fields.Char(
         related="company_id.bf_signature_muted_color",
-        string="Couleur secondaire",
+        string="Secondary colour",
         readonly=False,
     )
     bf_signature_font = fields.Char(
         related="company_id.bf_signature_font",
-        string="Police",
+        string="Font",
         readonly=False,
     )
     bf_signature_tollfree = fields.Char(
         related="company_id.bf_signature_tollfree",
-        string="Numéro sans frais",
+        string="Toll-free number",
         readonly=False,
     )
     bf_signature_tagline = fields.Char(
         related="company_id.bf_signature_tagline",
-        string="Signature de marque",
+        string="Brand signature",
         readonly=False,
     )
     bf_signature_disclaimer = fields.Html(
         related="company_id.bf_signature_disclaimer",
-        string="Avis de confidentialité",
+        string="Confidentiality notice",
         readonly=False,
     )
     bf_signature_disclaimer_size = fields.Selection(
         related="company_id.bf_signature_disclaimer_size",
-        string="Taille de l'avis",
+        string="Notice size",
         readonly=False,
     )
     bf_signature_user_count = fields.Integer(
         related="company_id.bf_signature_user_count",
-        string="Signatures pilotées",
+        string="Driven signatures",
     )
 
     def action_bf_apply_signatures(self):
@@ -91,7 +91,7 @@ class ResConfigSettings(models.TransientModel):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Liens rapides de signature"),
+            "name": _("Signature quick links"),
             "res_model": "bf.signature.link",
             "view_mode": "list,form",
             "domain": [("company_id", "=", self.company_id.id)],

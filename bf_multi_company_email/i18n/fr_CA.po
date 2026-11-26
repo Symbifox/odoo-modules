@@ -1,0 +1,1922 @@
+# Translation of Courriels multi-sociétés Blue Fox - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_multi_company_email 18.0.5.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-19 04:07+0000\n"
+"PO-Revision-Date: 2026-11-19 04:07+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid ""
+"\"%(tpl)s\" is now the model for %(company)s. %(count)s signature(s) "
+"regenerated."
+msgstr ""
+"« %(tpl)s » est maintenant le modèle de %(company)s. %(count)s signature(s) "
+"régénérée(s)."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid "\"%s\" has no address."
+msgstr "« %s » n'a pas d'adresse."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid "\"%s\" is not marked as a signature model."
+msgstr "« %s » n'est pas marqué comme modèle de signature."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid "\"%s\" is now your signature model."
+msgstr "« %s » est maintenant votre modèle de signature."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.actions.act_window,help:bf_multi_company_email.action_bf_signature_link
+msgid ""
+"\"Provision the quick links\", in the Action menu (administrators), creates "
+"one per person from their booking page and their secure drop page, each "
+"behind a <code>/r/</code> short link that can be redirected later."
+msgstr ""
+"« Provisionner les liens rapides », au menu Action\n"
+"                (administrateurs), en crée un par personne à partir de sa page de rendez-vous et\n"
+"                de sa page de dépôt sécurisée, chacun derrière un raccourci\n"
+"                <code>/r/</code> que l'on peut rediriger plus tard."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid ""
+"%s enforces its signature: the personal choice is closed. Ask an "
+"administrator."
+msgstr ""
+"%s impose sa signature : le choix personnel est fermé. Demandez à une "
+"personne administratrice."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid "%s link(s) created"
+msgstr "%s lien(s) créé(s)"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid "%s repointed"
+msgstr "%s repointé(s)"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/res_company.py:0
+msgid "%s signature(s) regenerated."
+msgstr "%s signature(s) régénérée(s)."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid "%s with no page to link"
+msgstr "%s sans page à relier"
+
+#. module: bf_multi_company_email
+#: model:mail.template,body_html:bf_multi_company_email.bf_signature_plain
+msgid ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"                <div t-attf-style=\"font-family: {{ sig['font'] }}; color: {{ sig['text_color'] }}; font-size: 13px; line-height: 1.5;\">\n"
+"                    <p t-attf-style=\"margin: 0; font-size: 16px; font-weight: 600; color: {{ sig['text_color'] }};\">\n"
+"                        <t t-out=\"sig['name']\"/> <span t-if=\"sig['pronouns']\" t-attf-style=\"font-weight: 400; font-size: 9pt; color: {{ sig['muted'] }};\">(<t t-out=\"sig['pronouns']\"/>)</span>\n"
+"                    </p>\n"
+"                    <p t-if=\"sig['title']\" t-attf-style=\"margin: 0; color: {{ sig['muted'] }};\">\n"
+"                        <t t-out=\"sig['title']\"/>\n"
+"                    </p>\n"
+"                    <p t-attf-style=\"margin: 10px 0 0 0; font-weight: 600; color: {{ sig['text_color'] }};\"><t t-out=\"sig['company_name']\"/></p>\n"
+"                    <p t-if=\"sig['phone']\" style=\"margin: 0;\">\n"
+"                        <a t-att-href=\"sig['phone_href']\" t-attf-style=\"color: {{ sig['text_color'] }}; text-decoration: none;\"><t t-out=\"sig['phone']\"/></a>\n"
+"                    </p>\n"
+"                    <p t-if=\"sig['mobile']\" style=\"margin: 0;\">Mobile&nbsp;: <a t-att-href=\"sig['mobile_href']\" t-attf-style=\"color: {{ sig['text_color'] }}; text-decoration: none;\"><t t-out=\"sig['mobile']\"/></a></p>\n"
+"                    <p t-if=\"sig['email']\" style=\"margin: 0;\">\n"
+"                        <a t-attf-href=\"mailto:{{ sig['email'] }}\" t-attf-style=\"color: {{ sig['accent'] }}; text-decoration: none;\"><t t-out=\"sig['email']\"/></a>\n"
+"                    </p>\n"
+"                    <p t-if=\"sig['website']\" style=\"margin: 0;\">\n"
+"                        <a t-att-href=\"sig['website_href']\" t-attf-style=\"color: {{ sig['accent'] }}; text-decoration: none;\"><t t-out=\"sig['website']\"/></a>\n"
+"                    </p>\n"
+"                    <p t-if=\"sig['tagline']\" t-attf-style=\"margin: 6px 0 0 0; font-size: 11px; color: {{ sig['muted'] }};\"><t t-out=\"sig['tagline']\"/></p>\n"
+"                    <div t-if=\"sig['disclaimer']\" t-attf-style=\"margin-top:10px;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"                        <t t-out=\"sig['disclaimer']\"/>\n"
+"                    </div>\n"
+"                </div>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"                <div t-attf-style=\"font-family: {{ sig['font'] }}; color: {{ sig['text_color'] }}; font-size: 13px; line-height: 1.5;\">\n"
+"                    <p t-attf-style=\"margin: 0; font-size: 16px; font-weight: 600; color: {{ sig['text_color'] }};\">\n"
+"                        <t t-out=\"sig['name']\"/> <span t-if=\"sig['pronouns']\" t-attf-style=\"font-weight: 400; font-size: 9pt; color: {{ sig['muted'] }};\">(<t t-out=\"sig['pronouns']\"/>)</span>\n"
+"                    </p>\n"
+"                    <p t-if=\"sig['title']\" t-attf-style=\"margin: 0; color: {{ sig['muted'] }};\">\n"
+"                        <t t-out=\"sig['title']\"/>\n"
+"                    </p>\n"
+"                    <p t-attf-style=\"margin: 10px 0 0 0; font-weight: 600; color: {{ sig['text_color'] }};\"><t t-out=\"sig['company_name']\"/></p>\n"
+"                    <p t-if=\"sig['phone']\" style=\"margin: 0;\">\n"
+"                        <a t-att-href=\"sig['phone_href']\" t-attf-style=\"color: {{ sig['text_color'] }}; text-decoration: none;\"><t t-out=\"sig['phone']\"/></a>\n"
+"                    </p>\n"
+"                    <p t-if=\"sig['mobile']\" style=\"margin: 0;\">Mobile&nbsp;: <a t-att-href=\"sig['mobile_href']\" t-attf-style=\"color: {{ sig['text_color'] }}; text-decoration: none;\"><t t-out=\"sig['mobile']\"/></a></p>\n"
+"                    <p t-if=\"sig['email']\" style=\"margin: 0;\">\n"
+"                        <a t-attf-href=\"mailto:{{ sig['email'] }}\" t-attf-style=\"color: {{ sig['accent'] }}; text-decoration: none;\"><t t-out=\"sig['email']\"/></a>\n"
+"                    </p>\n"
+"                    <p t-if=\"sig['website']\" style=\"margin: 0;\">\n"
+"                        <a t-att-href=\"sig['website_href']\" t-attf-style=\"color: {{ sig['accent'] }}; text-decoration: none;\"><t t-out=\"sig['website']\"/></a>\n"
+"                    </p>\n"
+"                    <p t-if=\"sig['tagline']\" t-attf-style=\"margin: 6px 0 0 0; font-size: 11px; color: {{ sig['muted'] }};\"><t t-out=\"sig['tagline']\"/></p>\n"
+"                    <div t-if=\"sig['disclaimer']\" t-attf-style=\"margin-top:10px;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"                        <t t-out=\"sig['disclaimer']\"/>\n"
+"                    </div>\n"
+"                </div>\n"
+"            </div>\n"
+"        "
+
+#. module: bf_multi_company_email
+#: model:mail.template,body_html:bf_multi_company_email.bf_signature_compact
+msgid ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"                <table cellpadding=\"0\" cellspacing=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};font-size:12px;line-height:1.5;color:{{ sig['text_color'] }};\">\n"
+"                    <tbody><tr>\n"
+"                        <td t-attf-style=\"padding:0;color:{{ sig['text_color'] }};\">\n"
+"                            <span t-attf-style=\"font-weight:700;color:{{ sig['text_color'] }};\"><t t-out=\"sig['name']\"/></span>\n"
+"                            <span t-if=\"sig['pronouns']\" t-attf-style=\"font-weight:400;font-size:9pt;color:{{ sig['muted'] }};\">&nbsp;(<t t-out=\"sig['pronouns']\"/>)</span>\n"
+"                            <t t-if=\"sig['title']\">\n"
+"                                <span t-attf-style=\"color:{{ sig['accent'] }};\">&nbsp;·&nbsp;</span>\n"
+"                                <span t-attf-style=\"color:{{ sig['muted'] }};\"><t t-out=\"sig['title']\"/></span>\n"
+"                            </t>\n"
+"                            <t t-if=\"sig['company_name']\">\n"
+"                                <span t-attf-style=\"color:{{ sig['accent'] }};\">&nbsp;·&nbsp;</span>\n"
+"                                <span t-attf-style=\"font-weight:600;color:{{ sig['text_color'] }};\"><t t-out=\"sig['company_name']\"/></span>\n"
+"                            </t>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr t-if=\"sig['email'] or sig['phone'] or sig['tollfree']\">\n"
+"                        <td t-attf-style=\"padding:2px 0 0 0;color:{{ sig['muted'] }};\">\n"
+"                            <a t-if=\"sig['email']\" t-attf-href=\"mailto:{{ sig['email'] }}\" t-attf-style=\"color:{{ sig['accent'] }};text-decoration:none;\"><t t-out=\"sig['email']\"/></a>\n"
+"                            <t t-if=\"sig['email'] and sig['phone']\"><span style=\"color:#ccc;\">&nbsp;|&nbsp;</span></t>\n"
+"                            <a t-if=\"sig['phone']\" t-att-href=\"sig['phone_href']\" t-attf-style=\"color:{{ sig['muted'] }};text-decoration:none;\"><t t-out=\"sig['phone']\"/></a>\n"
+"                            <t t-if=\"sig['tollfree'] and (sig['email'] or sig['phone'])\"><span style=\"color:#ccc;\">&nbsp;|&nbsp;</span></t>\n"
+"                            <a t-if=\"sig['tollfree']\" t-att-href=\"sig['tollfree_href']\" t-attf-style=\"color:{{ sig['muted'] }};text-decoration:none;\"><t t-out=\"sig['tollfree']\"/></a>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr t-if=\"sig['disclaimer']\">\n"
+"                        <td colspan=\"3\" t-attf-style=\"padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"                            <t t-out=\"sig['disclaimer']\"/>\n"
+"                        </td>\n"
+"                    </tr></tbody>\n"
+"                </table>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"                <table cellpadding=\"0\" cellspacing=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};font-size:12px;line-height:1.5;color:{{ sig['text_color'] }};\">\n"
+"                    <tbody><tr>\n"
+"                        <td t-attf-style=\"padding:0;color:{{ sig['text_color'] }};\">\n"
+"                            <span t-attf-style=\"font-weight:700;color:{{ sig['text_color'] }};\"><t t-out=\"sig['name']\"/></span>\n"
+"                            <span t-if=\"sig['pronouns']\" t-attf-style=\"font-weight:400;font-size:9pt;color:{{ sig['muted'] }};\">&nbsp;(<t t-out=\"sig['pronouns']\"/>)</span>\n"
+"                            <t t-if=\"sig['title']\">\n"
+"                                <span t-attf-style=\"color:{{ sig['accent'] }};\">&nbsp;·&nbsp;</span>\n"
+"                                <span t-attf-style=\"color:{{ sig['muted'] }};\"><t t-out=\"sig['title']\"/></span>\n"
+"                            </t>\n"
+"                            <t t-if=\"sig['company_name']\">\n"
+"                                <span t-attf-style=\"color:{{ sig['accent'] }};\">&nbsp;·&nbsp;</span>\n"
+"                                <span t-attf-style=\"font-weight:600;color:{{ sig['text_color'] }};\"><t t-out=\"sig['company_name']\"/></span>\n"
+"                            </t>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr t-if=\"sig['email'] or sig['phone'] or sig['tollfree']\">\n"
+"                        <td t-attf-style=\"padding:2px 0 0 0;color:{{ sig['muted'] }};\">\n"
+"                            <a t-if=\"sig['email']\" t-attf-href=\"mailto:{{ sig['email'] }}\" t-attf-style=\"color:{{ sig['accent'] }};text-decoration:none;\"><t t-out=\"sig['email']\"/></a>\n"
+"                            <t t-if=\"sig['email'] and sig['phone']\"><span style=\"color:#ccc;\">&nbsp;|&nbsp;</span></t>\n"
+"                            <a t-if=\"sig['phone']\" t-att-href=\"sig['phone_href']\" t-attf-style=\"color:{{ sig['muted'] }};text-decoration:none;\"><t t-out=\"sig['phone']\"/></a>\n"
+"                            <t t-if=\"sig['tollfree'] and (sig['email'] or sig['phone'])\"><span style=\"color:#ccc;\">&nbsp;|&nbsp;</span></t>\n"
+"                            <a t-if=\"sig['tollfree']\" t-att-href=\"sig['tollfree_href']\" t-attf-style=\"color:{{ sig['muted'] }};text-decoration:none;\"><t t-out=\"sig['tollfree']\"/></a>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr t-if=\"sig['disclaimer']\">\n"
+"                        <td colspan=\"3\" t-attf-style=\"padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"                            <t t-out=\"sig['disclaimer']\"/>\n"
+"                        </td>\n"
+"                    </tr></tbody>\n"
+"                </table>\n"
+"            </div>\n"
+"        "
+
+#. module: bf_multi_company_email
+#: model:mail.template,body_html:bf_multi_company_email.bf_signature_minimal
+msgid ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"                <table cellpadding=\"0\" cellspacing=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};font-size:12px;line-height:1.5;color:{{ sig['text_color'] }};\">\n"
+"                    <tbody><tr>\n"
+"                        <td t-attf-style=\"padding:0;font-size:14px;font-weight:600;letter-spacing:0.3px;color:{{ sig['text_color'] }};\">\n"
+"                            <t t-out=\"sig['name']\"/>\n"
+"                            <span t-if=\"sig['title']\" t-attf-style=\"font-weight:400;color:{{ sig['muted'] }};\">,&nbsp;<t t-out=\"sig['title']\"/></span>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr>\n"
+"                        <td t-attf-style=\"padding:5px 0;height:1px;line-height:1px;font-size:1px;background-color:{{ sig['accent'] }};background-clip:content-box;\">&nbsp;</td>\n"
+"                    </tr>\n"
+"                    <tr>\n"
+"                        <td t-attf-style=\"padding:3px 0 0 0;color:{{ sig['muted'] }};\">\n"
+"                            <span t-if=\"sig['company_name']\" t-attf-style=\"color:{{ sig['text_color'] }};font-weight:600;\"><t t-out=\"sig['company_name']\"/></span>\n"
+"                            <t t-if=\"sig['company_name'] and sig['email']\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                            <a t-if=\"sig['email']\" t-attf-href=\"mailto:{{ sig['email'] }}\" t-attf-style=\"color:{{ sig['accent'] }};text-decoration:none;\"><t t-out=\"sig['email']\"/></a>\n"
+"                            <t t-if=\"sig['phone']\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                            <a t-if=\"sig['phone']\" t-att-href=\"sig['phone_href']\" t-attf-style=\"color:{{ sig['muted'] }};text-decoration:none;\"><t t-out=\"sig['phone']\"/></a>\n"
+"                            <t t-if=\"sig['website']\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                            <a t-if=\"sig['website']\" t-att-href=\"sig['website_href']\" t-attf-style=\"color:{{ sig['muted'] }};text-decoration:none;\"><t t-out=\"sig['website']\"/></a>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr t-if=\"sig['disclaimer']\">\n"
+"                        <td colspan=\"3\" t-attf-style=\"padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"                            <t t-out=\"sig['disclaimer']\"/>\n"
+"                        </td>\n"
+"                    </tr></tbody>\n"
+"                </table>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"                <table cellpadding=\"0\" cellspacing=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};font-size:12px;line-height:1.5;color:{{ sig['text_color'] }};\">\n"
+"                    <tbody><tr>\n"
+"                        <td t-attf-style=\"padding:0;font-size:14px;font-weight:600;letter-spacing:0.3px;color:{{ sig['text_color'] }};\">\n"
+"                            <t t-out=\"sig['name']\"/>\n"
+"                            <span t-if=\"sig['title']\" t-attf-style=\"font-weight:400;color:{{ sig['muted'] }};\">,&nbsp;<t t-out=\"sig['title']\"/></span>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr>\n"
+"                        <td t-attf-style=\"padding:5px 0;height:1px;line-height:1px;font-size:1px;background-color:{{ sig['accent'] }};background-clip:content-box;\">&nbsp;</td>\n"
+"                    </tr>\n"
+"                    <tr>\n"
+"                        <td t-attf-style=\"padding:3px 0 0 0;color:{{ sig['muted'] }};\">\n"
+"                            <span t-if=\"sig['company_name']\" t-attf-style=\"color:{{ sig['text_color'] }};font-weight:600;\"><t t-out=\"sig['company_name']\"/></span>\n"
+"                            <t t-if=\"sig['company_name'] and sig['email']\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                            <a t-if=\"sig['email']\" t-attf-href=\"mailto:{{ sig['email'] }}\" t-attf-style=\"color:{{ sig['accent'] }};text-decoration:none;\"><t t-out=\"sig['email']\"/></a>\n"
+"                            <t t-if=\"sig['phone']\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                            <a t-if=\"sig['phone']\" t-att-href=\"sig['phone_href']\" t-attf-style=\"color:{{ sig['muted'] }};text-decoration:none;\"><t t-out=\"sig['phone']\"/></a>\n"
+"                            <t t-if=\"sig['website']\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                            <a t-if=\"sig['website']\" t-att-href=\"sig['website_href']\" t-attf-style=\"color:{{ sig['muted'] }};text-decoration:none;\"><t t-out=\"sig['website']\"/></a>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr t-if=\"sig['disclaimer']\">\n"
+"                        <td colspan=\"3\" t-attf-style=\"padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"                            <t t-out=\"sig['disclaimer']\"/>\n"
+"                        </td>\n"
+"                    </tr></tbody>\n"
+"                </table>\n"
+"            </div>\n"
+"        "
+
+#. module: bf_multi_company_email
+#: model:mail.template,body_html:bf_multi_company_email.bf_signature_banner
+msgid ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"                <table cellpadding=\"0\" cellspacing=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};font-size:13px;line-height:1.5;color:{{ sig['text_color'] }};\">\n"
+"                    <tbody><tr>\n"
+"                        <td width=\"3\" t-attf-style=\"width:3px;padding:0;background-color:{{ sig['accent'] }};\">&nbsp;</td>\n"
+"                        <td t-attf-style=\"padding:0 0 0 12px;color:{{ sig['text_color'] }};\">\n"
+"                            <div t-attf-style=\"font-size:15px;font-weight:700;color:{{ sig['text_color'] }};\">\n"
+"                                <t t-out=\"sig['name']\"/>\n"
+"                                <span t-if=\"sig['pronouns']\" t-attf-style=\"font-weight:400;font-size:9pt;color:{{ sig['muted'] }};\">&nbsp;(<t t-out=\"sig['pronouns']\"/>)</span>\n"
+"                            </div>\n"
+"                            <div t-if=\"sig['title'] or sig['company_name']\" t-attf-style=\"font-size:12px;color:{{ sig['muted'] }};\">\n"
+"                                <t t-out=\"sig['title']\"/>\n"
+"                                <t t-if=\"sig['title'] and sig['company_name']\">,&nbsp;</t>\n"
+"                                <span t-if=\"sig['company_name']\" t-attf-style=\"color:{{ sig['text_color'] }};font-weight:600;\"><t t-out=\"sig['company_name']\"/></span>\n"
+"                            </div>\n"
+"                            <div t-if=\"sig['email'] or sig['phone'] or sig['tollfree'] or sig['website']\" style=\"margin-top:6px;font-size:12px;\">\n"
+"                                <a t-if=\"sig['email']\" t-attf-href=\"mailto:{{ sig['email'] }}\" t-attf-style=\"color:{{ sig['accent'] }};text-decoration:none;\"><t t-out=\"sig['email']\"/></a>\n"
+"                                <t t-if=\"sig['email'] and sig['phone']\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                                <a t-if=\"sig['phone']\" t-att-href=\"sig['phone_href']\" t-attf-style=\"color:{{ sig['text_color'] }};text-decoration:none;\"><t t-out=\"sig['phone']\"/></a>\n"
+"                                <t t-if=\"sig['tollfree'] and (sig['email'] or sig['phone'])\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                                <a t-if=\"sig['tollfree']\" t-att-href=\"sig['tollfree_href']\" t-attf-style=\"color:{{ sig['text_color'] }};text-decoration:none;\"><t t-out=\"sig['tollfree']\"/></a>\n"
+"                                <t t-if=\"sig['website'] and (sig['email'] or sig['phone'] or sig['tollfree'])\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                                <a t-if=\"sig['website']\" t-att-href=\"sig['website_href']\" t-attf-style=\"color:{{ sig['accent'] }};text-decoration:none;\"><t t-out=\"sig['website']\"/></a>\n"
+"                            </div>\n"
+"                            <!-- Boutons : un lien = une cellule &#224; fond, libell&#233; blanc de 9 pt gras.\n"
+"                                 Pourquoi : commentaire du record, au-dessus de ce gabarit. -->\n"
+"                            <table t-if=\"sig['links']\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};\">\n"
+"                                <tbody><tr>\n"
+"                                    <t t-foreach=\"sig['links']\" t-as=\"link\">\n"
+"                                    <td style=\"padding:6px 8px 0 0;\">\n"
+"                                        <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\">\n"
+"                                            <tbody><tr>\n"
+"                                                <td t-att-bgcolor=\"sig['text_color']\" align=\"center\" t-attf-style=\"background-color:{{ sig['text_color'] }};padding:8px 12px;mso-line-height-rule:exactly;line-height:1;\">\n"
+"                                                    <a t-att-href=\"link['url']\" t-attf-style=\"font-family:{{ sig['font'] }};font-size:9pt;font-weight:700;line-height:1;color:#FFFFFF;text-decoration:none;\"><font style=\"color:#FFFFFF;\"><t t-out=\"link['label']\"/></font></a>\n"
+"                                                </td>\n"
+"                                            </tr></tbody>\n"
+"                                        </table>\n"
+"                                    </td>\n"
+"                                    </t>\n"
+"                                </tr></tbody>\n"
+"                            </table>\n"
+"                            <div t-if=\"sig['tagline']\" t-attf-style=\"margin-top:6px;font-size:11px;color:{{ sig['muted'] }};\"><t t-out=\"sig['tagline']\"/></div>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr t-if=\"sig['disclaimer']\">\n"
+"                        <td colspan=\"3\" t-attf-style=\"padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"                            <t t-out=\"sig['disclaimer']\"/>\n"
+"                        </td>\n"
+"                    </tr></tbody>\n"
+"                </table>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"                <table cellpadding=\"0\" cellspacing=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};font-size:13px;line-height:1.5;color:{{ sig['text_color'] }};\">\n"
+"                    <tbody><tr>\n"
+"                        <td width=\"3\" t-attf-style=\"width:3px;padding:0;background-color:{{ sig['accent'] }};\">&nbsp;</td>\n"
+"                        <td t-attf-style=\"padding:0 0 0 12px;color:{{ sig['text_color'] }};\">\n"
+"                            <div t-attf-style=\"font-size:15px;font-weight:700;color:{{ sig['text_color'] }};\">\n"
+"                                <t t-out=\"sig['name']\"/>\n"
+"                                <span t-if=\"sig['pronouns']\" t-attf-style=\"font-weight:400;font-size:9pt;color:{{ sig['muted'] }};\">&nbsp;(<t t-out=\"sig['pronouns']\"/>)</span>\n"
+"                            </div>\n"
+"                            <div t-if=\"sig['title'] or sig['company_name']\" t-attf-style=\"font-size:12px;color:{{ sig['muted'] }};\">\n"
+"                                <t t-out=\"sig['title']\"/>\n"
+"                                <t t-if=\"sig['title'] and sig['company_name']\">,&nbsp;</t>\n"
+"                                <span t-if=\"sig['company_name']\" t-attf-style=\"color:{{ sig['text_color'] }};font-weight:600;\"><t t-out=\"sig['company_name']\"/></span>\n"
+"                            </div>\n"
+"                            <div t-if=\"sig['email'] or sig['phone'] or sig['tollfree'] or sig['website']\" style=\"margin-top:6px;font-size:12px;\">\n"
+"                                <a t-if=\"sig['email']\" t-attf-href=\"mailto:{{ sig['email'] }}\" t-attf-style=\"color:{{ sig['accent'] }};text-decoration:none;\"><t t-out=\"sig['email']\"/></a>\n"
+"                                <t t-if=\"sig['email'] and sig['phone']\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                                <a t-if=\"sig['phone']\" t-att-href=\"sig['phone_href']\" t-attf-style=\"color:{{ sig['text_color'] }};text-decoration:none;\"><t t-out=\"sig['phone']\"/></a>\n"
+"                                <t t-if=\"sig['tollfree'] and (sig['email'] or sig['phone'])\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                                <a t-if=\"sig['tollfree']\" t-att-href=\"sig['tollfree_href']\" t-attf-style=\"color:{{ sig['text_color'] }};text-decoration:none;\"><t t-out=\"sig['tollfree']\"/></a>\n"
+"                                <t t-if=\"sig['website'] and (sig['email'] or sig['phone'] or sig['tollfree'])\"><span style=\"color:#ccc;\">&nbsp;·&nbsp;</span></t>\n"
+"                                <a t-if=\"sig['website']\" t-att-href=\"sig['website_href']\" t-attf-style=\"color:{{ sig['accent'] }};text-decoration:none;\"><t t-out=\"sig['website']\"/></a>\n"
+"                            </div>\n"
+"                            <!-- Boutons : un lien = une cellule &#224; fond, libell&#233; blanc de 9 pt gras.\n"
+"                                 Pourquoi : commentaire du record, au-dessus de ce gabarit. -->\n"
+"                            <table t-if=\"sig['links']\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};\">\n"
+"                                <tbody><tr>\n"
+"                                    <t t-foreach=\"sig['links']\" t-as=\"link\">\n"
+"                                    <td style=\"padding:6px 8px 0 0;\">\n"
+"                                        <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\">\n"
+"                                            <tbody><tr>\n"
+"                                                <td t-att-bgcolor=\"sig['text_color']\" align=\"center\" t-attf-style=\"background-color:{{ sig['text_color'] }};padding:8px 12px;mso-line-height-rule:exactly;line-height:1;\">\n"
+"                                                    <a t-att-href=\"link['url']\" t-attf-style=\"font-family:{{ sig['font'] }};font-size:9pt;font-weight:700;line-height:1;color:#FFFFFF;text-decoration:none;\"><font style=\"color:#FFFFFF;\"><t t-out=\"link['label']\"/></font></a>\n"
+"                                                </td>\n"
+"                                            </tr></tbody>\n"
+"                                        </table>\n"
+"                                    </td>\n"
+"                                    </t>\n"
+"                                </tr></tbody>\n"
+"                            </table>\n"
+"                            <div t-if=\"sig['tagline']\" t-attf-style=\"margin-top:6px;font-size:11px;color:{{ sig['muted'] }};\"><t t-out=\"sig['tagline']\"/></div>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr t-if=\"sig['disclaimer']\">\n"
+"                        <td colspan=\"3\" t-attf-style=\"padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"                            <t t-out=\"sig['disclaimer']\"/>\n"
+"                        </td>\n"
+"                    </tr></tbody>\n"
+"                </table>\n"
+"            </div>\n"
+"        "
+
+#. module: bf_multi_company_email
+#: model:mail.template,body_html:bf_multi_company_email.bf_signature_two_columns
+msgid ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"                <table cellpadding=\"0\" cellspacing=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};font-size:13px;line-height:1.6;color:{{ sig['text_color'] }};\">\n"
+"                    <tbody><tr>\n"
+"                        <td t-if=\"sig['logo_url']\" valign=\"top\" t-attf-style=\"padding:0 18px 0 0;vertical-align:top;\">\n"
+"                            <a t-att-href=\"sig['website_href'] or '#'\" target=\"_blank\" style=\"text-decoration:none;\">\n"
+"                                <img t-att-src=\"sig['logo_url']\" t-att-alt=\"sig['company_name']\" t-attf-style=\"display:block;width:{{ sig['logo_width'] }}px;height:auto;border:0;\" t-att-width=\"sig['logo_width']\"/>\n"
+"                            </a>\n"
+"                        </td>\n"
+"                        <td valign=\"top\" t-attf-style=\"vertical-align:top;color:{{ sig['text_color'] }};\">\n"
+"                            <div t-attf-style=\"font-size:15px;font-weight:700;color:{{ sig['text_color'] }};\">\n"
+"                                <t t-out=\"sig['name']\"/>\n"
+"                                <span t-if=\"sig['pronouns']\" t-attf-style=\"font-weight:400;font-size:9pt;color:{{ sig['muted'] }};\">&nbsp;(<t t-out=\"sig['pronouns']\"/>)</span>\n"
+"                            </div>\n"
+"                            <div t-if=\"sig['title']\" t-attf-style=\"font-size:12px;color:{{ sig['muted'] }};\"><t t-out=\"sig['title']\"/></div>\n"
+"                            <div t-if=\"sig['company_name']\" t-attf-style=\"font-size:12px;font-weight:600;color:{{ sig['accent'] }};\"><t t-out=\"sig['company_name']\"/></div>\n"
+"                            <div t-if=\"sig['email']\" style=\"margin-top:8px;\">\n"
+"                                <a t-attf-href=\"mailto:{{ sig['email'] }}\" t-attf-style=\"color:{{ sig['accent'] }};text-decoration:none;\"><t t-out=\"sig['email']\"/></a>\n"
+"                            </div>\n"
+"                            <div t-if=\"sig['phone']\">\n"
+"                                <a t-att-href=\"sig['phone_href']\" t-attf-style=\"color:{{ sig['text_color'] }};text-decoration:none;\"><t t-out=\"sig['phone']\"/></a>\n"
+"                                <t t-if=\"sig['tollfree']\"><span style=\"color:#ccc;\">&nbsp;|&nbsp;</span>\n"
+"                                    <a t-att-href=\"sig['tollfree_href']\" t-attf-style=\"color:{{ sig['text_color'] }};text-decoration:none;\"><t t-out=\"sig['tollfree']\"/></a>\n"
+"                                </t>\n"
+"                            </div>\n"
+"                            <div t-if=\"sig['website']\">\n"
+"                                <a t-att-href=\"sig['website_href']\" t-attf-style=\"color:{{ sig['muted'] }};text-decoration:none;\"><t t-out=\"sig['website']\"/></a>\n"
+"                            </div>\n"
+"                            <!-- Boutons : un lien = une cellule &#224; fond, libell&#233; blanc de 9 pt gras.\n"
+"                                 Pourquoi : commentaire du record, au-dessus de ce gabarit. -->\n"
+"                            <table t-if=\"sig['links']\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};\">\n"
+"                                <tbody><tr>\n"
+"                                    <t t-foreach=\"sig['links']\" t-as=\"link\">\n"
+"                                    <td style=\"padding:8px 8px 0 0;\">\n"
+"                                        <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\">\n"
+"                                            <tbody><tr>\n"
+"                                                <td t-att-bgcolor=\"sig['text_color']\" align=\"center\" t-attf-style=\"background-color:{{ sig['text_color'] }};padding:8px 12px;mso-line-height-rule:exactly;line-height:1;\">\n"
+"                                                    <a t-att-href=\"link['url']\" t-attf-style=\"font-family:{{ sig['font'] }};font-size:9pt;font-weight:700;line-height:1;color:#FFFFFF;text-decoration:none;\"><font style=\"color:#FFFFFF;\"><t t-out=\"link['label']\"/></font></a>\n"
+"                                                </td>\n"
+"                                            </tr></tbody>\n"
+"                                        </table>\n"
+"                                    </td>\n"
+"                                    </t>\n"
+"                                </tr></tbody>\n"
+"                            </table>\n"
+"                            <div t-if=\"sig['tagline']\" t-attf-style=\"margin-top:6px;font-size:11px;color:{{ sig['muted'] }};\"><t t-out=\"sig['tagline']\"/></div>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr t-if=\"sig['disclaimer']\">\n"
+"                        <td colspan=\"3\" t-attf-style=\"padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"                            <t t-out=\"sig['disclaimer']\"/>\n"
+"                        </td>\n"
+"                    </tr></tbody>\n"
+"                </table>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"                <table cellpadding=\"0\" cellspacing=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};font-size:13px;line-height:1.6;color:{{ sig['text_color'] }};\">\n"
+"                    <tbody><tr>\n"
+"                        <td t-if=\"sig['logo_url']\" valign=\"top\" t-attf-style=\"padding:0 18px 0 0;vertical-align:top;\">\n"
+"                            <a t-att-href=\"sig['website_href'] or '#'\" target=\"_blank\" style=\"text-decoration:none;\">\n"
+"                                <img t-att-src=\"sig['logo_url']\" t-att-alt=\"sig['company_name']\" t-attf-style=\"display:block;width:{{ sig['logo_width'] }}px;height:auto;border:0;\" t-att-width=\"sig['logo_width']\"/>\n"
+"                            </a>\n"
+"                        </td>\n"
+"                        <td valign=\"top\" t-attf-style=\"vertical-align:top;color:{{ sig['text_color'] }};\">\n"
+"                            <div t-attf-style=\"font-size:15px;font-weight:700;color:{{ sig['text_color'] }};\">\n"
+"                                <t t-out=\"sig['name']\"/>\n"
+"                                <span t-if=\"sig['pronouns']\" t-attf-style=\"font-weight:400;font-size:9pt;color:{{ sig['muted'] }};\">&nbsp;(<t t-out=\"sig['pronouns']\"/>)</span>\n"
+"                            </div>\n"
+"                            <div t-if=\"sig['title']\" t-attf-style=\"font-size:12px;color:{{ sig['muted'] }};\"><t t-out=\"sig['title']\"/></div>\n"
+"                            <div t-if=\"sig['company_name']\" t-attf-style=\"font-size:12px;font-weight:600;color:{{ sig['accent'] }};\"><t t-out=\"sig['company_name']\"/></div>\n"
+"                            <div t-if=\"sig['email']\" style=\"margin-top:8px;\">\n"
+"                                <a t-attf-href=\"mailto:{{ sig['email'] }}\" t-attf-style=\"color:{{ sig['accent'] }};text-decoration:none;\"><t t-out=\"sig['email']\"/></a>\n"
+"                            </div>\n"
+"                            <div t-if=\"sig['phone']\">\n"
+"                                <a t-att-href=\"sig['phone_href']\" t-attf-style=\"color:{{ sig['text_color'] }};text-decoration:none;\"><t t-out=\"sig['phone']\"/></a>\n"
+"                                <t t-if=\"sig['tollfree']\"><span style=\"color:#ccc;\">&nbsp;|&nbsp;</span>\n"
+"                                    <a t-att-href=\"sig['tollfree_href']\" t-attf-style=\"color:{{ sig['text_color'] }};text-decoration:none;\"><t t-out=\"sig['tollfree']\"/></a>\n"
+"                                </t>\n"
+"                            </div>\n"
+"                            <div t-if=\"sig['website']\">\n"
+"                                <a t-att-href=\"sig['website_href']\" t-attf-style=\"color:{{ sig['muted'] }};text-decoration:none;\"><t t-out=\"sig['website']\"/></a>\n"
+"                            </div>\n"
+"                            <!-- Boutons : un lien = une cellule &#224; fond, libell&#233; blanc de 9 pt gras.\n"
+"                                 Pourquoi : commentaire du record, au-dessus de ce gabarit. -->\n"
+"                            <table t-if=\"sig['links']\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" t-attf-style=\"border-collapse:collapse;font-family:{{ sig['font'] }};\">\n"
+"                                <tbody><tr>\n"
+"                                    <t t-foreach=\"sig['links']\" t-as=\"link\">\n"
+"                                    <td style=\"padding:8px 8px 0 0;\">\n"
+"                                        <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;\">\n"
+"                                            <tbody><tr>\n"
+"                                                <td t-att-bgcolor=\"sig['text_color']\" align=\"center\" t-attf-style=\"background-color:{{ sig['text_color'] }};padding:8px 12px;mso-line-height-rule:exactly;line-height:1;\">\n"
+"                                                    <a t-att-href=\"link['url']\" t-attf-style=\"font-family:{{ sig['font'] }};font-size:9pt;font-weight:700;line-height:1;color:#FFFFFF;text-decoration:none;\"><font style=\"color:#FFFFFF;\"><t t-out=\"link['label']\"/></font></a>\n"
+"                                                </td>\n"
+"                                            </tr></tbody>\n"
+"                                        </table>\n"
+"                                    </td>\n"
+"                                    </t>\n"
+"                                </tr></tbody>\n"
+"                            </table>\n"
+"                            <div t-if=\"sig['tagline']\" t-attf-style=\"margin-top:6px;font-size:11px;color:{{ sig['muted'] }};\"><t t-out=\"sig['tagline']\"/></div>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                    <tr t-if=\"sig['disclaimer']\">\n"
+"                        <td colspan=\"3\" t-attf-style=\"padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"                            <t t-out=\"sig['disclaimer']\"/>\n"
+"                        </td>\n"
+"                    </tr></tbody>\n"
+"                </table>\n"
+"            </div>\n"
+"        "
+
+#. module: bf_multi_company_email
+#: model:mail.template,body_html:bf_multi_company_email.bf_signature_card
+msgid ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"<table cellpadding=\"0\" cellspacing=\"0\" t-attf-style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-collapse:collapse;caption-side:bottom;font-family: {{ sig['font'] }}; width: 520px; max-width: 100%;\" width=\"520\" data-oe-version=\"1.2\">\n"
+"<tbody style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\"><tr style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\">\n"
+"\n"
+"  <td t-if=\"sig['logo_url']\" t-attf-style=\"border-radius:0px;border-style:none;padding:0 0px 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;width: 120px; padding-right: 0px; vertical-align: middle; color: {{ sig['text_color'] }};\" width=\"120\">\n"
+"    <a t-att-href=\"sig['website_href'] or '#'\" target=\"_blank\" style=\"text-decoration:none;border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#008f8c;border-bottom-color:#008f8c;border-right-color:#008f8c;border-top-color:#008f8c;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;color:#008f8c;\">\n"
+"      <img t-att-src=\"sig['logo_url']\" t-att-alt=\"sig['company_name']\" t-attf-style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#008f8c;border-bottom-color:#008f8c;border-right-color:#008f8c;border-top-color:#008f8c;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;vertical-align:middle;display: block; width: {{ sig['logo_width'] }}px; height: auto;\" t-att-width=\"sig['logo_width']\"/>\n"
+"    </a>\n"
+"  </td>\n"
+"\n"
+"\n"
+"  <td t-if=\"sig['logo_url']\" t-attf-style=\"border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;width: 2px; padding: 0px 16px; color: {{ sig['text_color'] }};\" width=\"2\">\n"
+"    <div t-attf-style=\"width: 2px; height: 80px; background-color: {{ sig['accent'] }}; border-radius: 1px;\"><br/></div>\n"
+"  </td>\n"
+"\n"
+"\n"
+"  <td t-attf-style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;vertical-align: middle; line-height: 1.5; color: {{ sig['text_color'] }};\">\n"
+"    <div t-attf-style=\"font-size: 16px; font-weight: 700; color: {{ sig['text_color'] }}; letter-spacing: 0.2px;\">\n"
+"      <t t-out=\"sig['name']\"/> <span t-if=\"sig['pronouns']\" t-attf-style=\"font-weight: 400; font-size: 9pt; color: {{ sig['muted'] }};\">(<t t-out=\"sig['pronouns']\"/>)</span>\n"
+"    </div>\n"
+"    <div t-if=\"sig['title']\" t-attf-style=\"font-size: 12px; color: {{ sig['muted'] }}; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;\">\n"
+"      <t t-out=\"sig['title']\"/>\n"
+"    </div>\n"
+"    <div t-if=\"sig['email']\" style=\"margin-top: 8px; font-size: 13px;\">\n"
+"      <a t-attf-href=\"mailto:{{ sig['email'] }}\" style=\"border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-top-color:#008f8c;border-right-color:#008f8c;border-bottom-color:#008f8c;border-left-color:#008f8c;color:#008f8c;border-radius: 0px;border-style:none; padding: 0px; margin: 0px; box-sizing: border-box; border-color: #008f8c; border-width: 0px; text-decoration: none;\"><font t-attf-style=\"color: {{ sig['accent'] }};\">\n"
+"        <t t-out=\"sig['email']\"/>&nbsp;</font></a>\n"
+"    </div>\n"
+"    <div t-if=\"sig['phone'] or sig['tollfree']\" style=\"font-size: 13px; margin-top: 2px;\">\n"
+"      <a t-if=\"sig['phone']\" t-att-href=\"sig['phone_href']\" style=\"border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-top-color:#008f8c;border-right-color:#008f8c;border-bottom-color:#008f8c;border-left-color:#008f8c;color:#008f8c;border-radius: 0px;border-style:none; padding: 0px; margin: 0px; box-sizing: border-box; border-color: #008f8c; border-width: 0px; text-decoration: none;\"><font t-attf-style=\"color: {{ sig['accent'] }};\">\n"
+"        <t t-out=\"sig['phone']\"/>\n"
+"      </font></a>\n"
+"      <span t-if=\"sig['phone'] and sig['tollfree']\" style=\"color: #ccc; font-size: 10px;\">&nbsp;|&nbsp;</span>\n"
+"      <a t-if=\"sig['tollfree']\" t-att-href=\"sig['tollfree_href']\" style=\"border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-top-color:#008f8c;border-right-color:#008f8c;border-bottom-color:#008f8c;border-left-color:#008f8c;color:#008f8c;border-radius: 0px;border-style:none; padding: 0px; margin: 0px; box-sizing: border-box; border-color: #008f8c; border-width: 0px; text-decoration: none;\"><font t-attf-style=\"color: {{ sig['accent'] }};\"><t t-out=\"sig['tollfree']\"/>&nbsp;</font></a>\n"
+"    </div>\n"
+"  </td>\n"
+"</tr>\n"
+"\n"
+"\n"
+"<tr t-if=\"sig['links'] or sig['tagline']\" style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\">\n"
+"  <td colspan=\"3\" t-attf-style=\"border-radius:0px;border-style:none;padding:14px 0 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding-top: 14px; color: {{ sig['text_color'] }};\">\n"
+"    <!-- Filet : repli en couleur unie, plus 1 px de line-height/font-size.\n"
+"         Pourquoi : commentaire du record, au-dessus de ce gabarit. -->\n"
+"    <div t-attf-style=\"height: 1px; line-height: 1px; font-size: 1px; background-color: {{ sig['accent'] }}; background-image: linear-gradient(to right, {{ sig['accent'] }}, {{ sig['text_color'] }}); border: 0;\"><br/></div>\n"
+"  </td>\n"
+"</tr>\n"
+"\n"
+"\n"
+"<tr t-if=\"sig['links']\" style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\">\n"
+"  <td colspan=\"3\" t-attf-style=\"border-radius:0px;border-style:none;padding:10px 0 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding-top: 10px; color: {{ sig['text_color'] }};\">\n"
+"    <!-- Boutons : un lien = une cellule &#224; fond, libell&#233; blanc de 9 pt gras.\n"
+"         Pourquoi, et ce que l'assainissement emporte : commentaire du record. -->\n"
+"    <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" t-attf-style=\"border-collapse: collapse; font-family: {{ sig['font'] }};\">\n"
+"      <tbody><tr>\n"
+"        <t t-foreach=\"sig['links']\" t-as=\"link\">\n"
+"        <td style=\"padding: 0 8px 0 0;\">\n"
+"          <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse: collapse;\">\n"
+"            <tbody><tr>\n"
+"              <td t-att-bgcolor=\"sig['text_color']\" align=\"center\" t-attf-style=\"background-color: {{ sig['text_color'] }}; padding: 8px 12px; mso-line-height-rule: exactly; line-height: 1;\">\n"
+"                <a t-att-href=\"link['url']\" t-attf-style=\"font-family: {{ sig['font'] }}; font-size: 9pt; font-weight: 700; line-height: 1; color: #FFFFFF; text-decoration: none;\"><font style=\"color: #FFFFFF;\"><t t-out=\"link['label']\"/></font></a>\n"
+"              </td>\n"
+"            </tr></tbody>\n"
+"          </table>\n"
+"        </td>\n"
+"        </t>\n"
+"      </tr></tbody>\n"
+"    </table>\n"
+"  </td>\n"
+"</tr>\n"
+"\n"
+"\n"
+"<tr t-if=\"sig['tagline']\" style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\">\n"
+"  <td colspan=\"3\" t-attf-style=\"padding-top: 8px; font-size: 10px; color: {{ sig['muted'] }};\">\n"
+"    <t t-out=\"sig['tagline']\"/>\n"
+"  </td>\n"
+"</tr>\n"
+"<tr t-if=\"sig['disclaimer']\" style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\">\n"
+"  <td colspan=\"3\" t-attf-style=\"padding:10px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"    <t t-out=\"sig['disclaimer']\"/>\n"
+"  </td>\n"
+"</tr>\n"
+"</tbody></table>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div>\n"
+"                <t t-set=\"sig\" t-value=\"object.bf_signature_data()\"/>\n"
+"<table cellpadding=\"0\" cellspacing=\"0\" t-attf-style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-collapse:collapse;caption-side:bottom;font-family: {{ sig['font'] }}; width: 520px; max-width: 100%;\" width=\"520\" data-oe-version=\"1.2\">\n"
+"<tbody style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\"><tr style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\">\n"
+"\n"
+"  <td t-if=\"sig['logo_url']\" t-attf-style=\"border-radius:0px;border-style:none;padding:0 0px 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;width: 120px; padding-right: 0px; vertical-align: middle; color: {{ sig['text_color'] }};\" width=\"120\">\n"
+"    <a t-att-href=\"sig['website_href'] or '#'\" target=\"_blank\" style=\"text-decoration:none;border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#008f8c;border-bottom-color:#008f8c;border-right-color:#008f8c;border-top-color:#008f8c;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;color:#008f8c;\">\n"
+"      <img t-att-src=\"sig['logo_url']\" t-att-alt=\"sig['company_name']\" t-attf-style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#008f8c;border-bottom-color:#008f8c;border-right-color:#008f8c;border-top-color:#008f8c;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;vertical-align:middle;display: block; width: {{ sig['logo_width'] }}px; height: auto;\" t-att-width=\"sig['logo_width']\"/>\n"
+"    </a>\n"
+"  </td>\n"
+"\n"
+"\n"
+"  <td t-if=\"sig['logo_url']\" t-attf-style=\"border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;width: 2px; padding: 0px 16px; color: {{ sig['text_color'] }};\" width=\"2\">\n"
+"    <div t-attf-style=\"width: 2px; height: 80px; background-color: {{ sig['accent'] }}; border-radius: 1px;\"><br/></div>\n"
+"  </td>\n"
+"\n"
+"\n"
+"  <td t-attf-style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;vertical-align: middle; line-height: 1.5; color: {{ sig['text_color'] }};\">\n"
+"    <div t-attf-style=\"font-size: 16px; font-weight: 700; color: {{ sig['text_color'] }}; letter-spacing: 0.2px;\">\n"
+"      <t t-out=\"sig['name']\"/> <span t-if=\"sig['pronouns']\" t-attf-style=\"font-weight: 400; font-size: 9pt; color: {{ sig['muted'] }};\">(<t t-out=\"sig['pronouns']\"/>)</span>\n"
+"    </div>\n"
+"    <div t-if=\"sig['title']\" t-attf-style=\"font-size: 12px; color: {{ sig['muted'] }}; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;\">\n"
+"      <t t-out=\"sig['title']\"/>\n"
+"    </div>\n"
+"    <div t-if=\"sig['email']\" style=\"margin-top: 8px; font-size: 13px;\">\n"
+"      <a t-attf-href=\"mailto:{{ sig['email'] }}\" style=\"border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-top-color:#008f8c;border-right-color:#008f8c;border-bottom-color:#008f8c;border-left-color:#008f8c;color:#008f8c;border-radius: 0px;border-style:none; padding: 0px; margin: 0px; box-sizing: border-box; border-color: #008f8c; border-width: 0px; text-decoration: none;\"><font t-attf-style=\"color: {{ sig['accent'] }};\">\n"
+"        <t t-out=\"sig['email']\"/>&nbsp;</font></a>\n"
+"    </div>\n"
+"    <div t-if=\"sig['phone'] or sig['tollfree']\" style=\"font-size: 13px; margin-top: 2px;\">\n"
+"      <a t-if=\"sig['phone']\" t-att-href=\"sig['phone_href']\" style=\"border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-top-color:#008f8c;border-right-color:#008f8c;border-bottom-color:#008f8c;border-left-color:#008f8c;color:#008f8c;border-radius: 0px;border-style:none; padding: 0px; margin: 0px; box-sizing: border-box; border-color: #008f8c; border-width: 0px; text-decoration: none;\"><font t-attf-style=\"color: {{ sig['accent'] }};\">\n"
+"        <t t-out=\"sig['phone']\"/>\n"
+"      </font></a>\n"
+"      <span t-if=\"sig['phone'] and sig['tollfree']\" style=\"color: #ccc; font-size: 10px;\">&nbsp;|&nbsp;</span>\n"
+"      <a t-if=\"sig['tollfree']\" t-att-href=\"sig['tollfree_href']\" style=\"border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-top-color:#008f8c;border-right-color:#008f8c;border-bottom-color:#008f8c;border-left-color:#008f8c;color:#008f8c;border-radius: 0px;border-style:none; padding: 0px; margin: 0px; box-sizing: border-box; border-color: #008f8c; border-width: 0px; text-decoration: none;\"><font t-attf-style=\"color: {{ sig['accent'] }};\"><t t-out=\"sig['tollfree']\"/>&nbsp;</font></a>\n"
+"    </div>\n"
+"  </td>\n"
+"</tr>\n"
+"\n"
+"\n"
+"<tr t-if=\"sig['links'] or sig['tagline']\" style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\">\n"
+"  <td colspan=\"3\" t-attf-style=\"border-radius:0px;border-style:none;padding:14px 0 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding-top: 14px; color: {{ sig['text_color'] }};\">\n"
+"    <!-- Filet : repli en couleur unie, plus 1 px de line-height/font-size.\n"
+"         Pourquoi : commentaire du record, au-dessus de ce gabarit. -->\n"
+"    <div t-attf-style=\"height: 1px; line-height: 1px; font-size: 1px; background-color: {{ sig['accent'] }}; background-image: linear-gradient(to right, {{ sig['accent'] }}, {{ sig['text_color'] }}); border: 0;\"><br/></div>\n"
+"  </td>\n"
+"</tr>\n"
+"\n"
+"\n"
+"<tr t-if=\"sig['links']\" style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\">\n"
+"  <td colspan=\"3\" t-attf-style=\"border-radius:0px;border-style:none;padding:10px 0 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding-top: 10px; color: {{ sig['text_color'] }};\">\n"
+"    <!-- Boutons : un lien = une cellule &#224; fond, libell&#233; blanc de 9 pt gras.\n"
+"         Pourquoi, et ce que l'assainissement emporte : commentaire du record. -->\n"
+"    <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" t-attf-style=\"border-collapse: collapse; font-family: {{ sig['font'] }};\">\n"
+"      <tbody><tr>\n"
+"        <t t-foreach=\"sig['links']\" t-as=\"link\">\n"
+"        <td style=\"padding: 0 8px 0 0;\">\n"
+"          <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse: collapse;\">\n"
+"            <tbody><tr>\n"
+"              <td t-att-bgcolor=\"sig['text_color']\" align=\"center\" t-attf-style=\"background-color: {{ sig['text_color'] }}; padding: 8px 12px; mso-line-height-rule: exactly; line-height: 1;\">\n"
+"                <a t-att-href=\"link['url']\" t-attf-style=\"font-family: {{ sig['font'] }}; font-size: 9pt; font-weight: 700; line-height: 1; color: #FFFFFF; text-decoration: none;\"><font style=\"color: #FFFFFF;\"><t t-out=\"link['label']\"/></font></a>\n"
+"              </td>\n"
+"            </tr></tbody>\n"
+"          </table>\n"
+"        </td>\n"
+"        </t>\n"
+"      </tr></tbody>\n"
+"    </table>\n"
+"  </td>\n"
+"</tr>\n"
+"\n"
+"\n"
+"<tr t-if=\"sig['tagline']\" style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\">\n"
+"  <td colspan=\"3\" t-attf-style=\"padding-top: 8px; font-size: 10px; color: {{ sig['muted'] }};\">\n"
+"    <t t-out=\"sig['tagline']\"/>\n"
+"  </td>\n"
+"</tr>\n"
+"<tr t-if=\"sig['disclaimer']\" style=\"border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;\">\n"
+"  <td colspan=\"3\" t-attf-style=\"padding:10px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;\">\n"
+"    <t t-out=\"sig['disclaimer']\"/>\n"
+"  </td>\n"
+"</tr>\n"
+"</tbody></table>\n"
+"            </div>\n"
+"        "
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid ""
+"<span>Enforce the signature (the field becomes read-only in "
+"preferences)</span>"
+msgstr ""
+"<span>Imposer la signature (le champ devient\n"
+"                            non modifiable dans les préférences)</span>"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid ""
+"<span>Regenerate automatically when the template or the branding "
+"changes</span>"
+msgstr ""
+"<span>Régénérer automatiquement quand le gabarit\n"
+"                            ou la marque changent</span>"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid "<span>signature(s) driven by this company.</span>"
+msgstr "<span>signature(s) pilotée(s) par cette société.</span>"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_disclaimer_size
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_config_settings__bf_signature_disclaimer_size
+msgid ""
+"A legal notice is rarely read and takes up all the room. Organisations that "
+"include one set it small."
+msgstr ""
+"Un avis légal se lit rarement et prend toute la place. Les organisations qui"
+" en mettent un le composent petit."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+msgid ""
+"A link belongs to a person <em>or</em> to a company, never to both. Personal"
+" for what aims at one calendar or one mailbox, company for what holds for "
+"everyone."
+msgstr ""
+"Un lien appartient à une personne <em>ou</em> à une\n"
+"                        société, jamais aux deux. Personnel pour ce qui vise un\n"
+"                        agenda ou une boîte en particulier, société pour ce qui\n"
+"                        vaut pour tout le monde."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid ""
+"A short link code contains only letters, digits, a dot, a dash or an "
+"underscore — received: %s"
+msgstr ""
+"Un code de raccourci ne contient que des lettres, des chiffres, un point, un"
+" tiret ou un souligné — reçu : %s"
+
+#. module: bf_multi_company_email
+#: model:ir.model.constraint,message:bf_multi_company_email.constraint_bf_signature_link_owner_exclusive
+msgid ""
+"A signature link belongs either to a company or to a person — never to both,"
+" never to neither."
+msgstr ""
+"Un lien de signature appartient soit à une société, soit à une personne — "
+"jamais aux deux, jamais à aucune."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+msgid ""
+"A signature stays in people's mailboxes for years, and the address it "
+"carries is frozen the moment it is pasted. The short link moves that fixed "
+"point to the server side: change \"Leads to\" and everyone follows, with "
+"nothing to re-paste."
+msgstr ""
+"Une signature reste des années dans la boîte des gens\n"
+"                        et l'adresse qu'elle contient est figée au collage. Le\n"
+"                        raccourci déplace ce point fixe côté serveur :\n"
+"                        changez « Mène à » et tout le monde suit,\n"
+"                        sans recoller quoi que ce soit."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_link__icon
+msgid ""
+"A single emoji character, kept with the link. ⚠ No shipped template renders "
+"it since 18.0.5.1.0: links are buttons there, and three 9 pt buttons with an"
+" emoji come to 533 px where the card is 520. A home-made template can still "
+"read it."
+msgstr ""
+"Un seul caractère émoji, gardé avec le lien. ⚠ Aucun gabarit livré ne le "
+"rend depuis la 18.0.5.1.0 : les liens y sont des boutons, et trois boutons "
+"de 9 pt avec émoji font 533 px là où la carte en fait 520. Il reste lisible "
+"par un gabarit maison."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.actions.act_window,help:bf_multi_company_email.action_bf_signature_templates
+msgid ""
+"A template is written on the res.users model and reads "
+"<code>object.bf_signature_data()</code>. Saving it regenerates the "
+"signatures it drives."
+msgstr ""
+"Un gabarit s'écrit sur le modèle res.users et lit\n"
+"                <code>object.bf_signature_data()</code>. L'enregistrer\n"
+"                régénère les signatures qu'il pilote."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_accent_color
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_accent_color
+msgid "Accent colour"
+msgstr "Couleur d'accent"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields.selection,name:bf_multi_company_email.selection__bf_signature_link__source__manual
+msgid "Address entered"
+msgstr "Adresse saisie"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_link__source
+msgid ""
+"An automatic destination recomputes itself: renaming your booking page does "
+"not break the link."
+msgstr ""
+"Une destination automatique se recalcule : renommer sa page de rendez-vous "
+"ne casse pas le lien."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__scope
+msgid "Apply"
+msgstr "Appliquer"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid "Apply to everyone"
+msgstr "Appliquer à tout le monde"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/res_company.py:0
+msgid ""
+"Applying the signature to the whole company is reserved to administrators."
+msgstr ""
+"Appliquer la signature à toute la société est réservé aux administrateurs."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+msgid "Automatic"
+msgstr "Automatique"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid "Back to the company model"
+msgstr "Retour au modèle de la société"
+
+#. module: bf_multi_company_email
+#: model:mail.template,name:bf_multi_company_email.bf_signature_banner
+msgid "Banner — coloured rule on the left"
+msgstr "Bandeau — filet coloré à gauche"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+msgid "Belongs to"
+msgstr "À qui"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_preferences_bf_signature
+msgid "Book an appointment"
+msgstr "Prendre rendez-vous"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_bounce_alias
+msgid "Bounce alias (company)"
+msgstr "Alias bounce (société)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_tagline
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_tagline
+msgid "Brand signature"
+msgstr "Signature de marque"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_font
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_config_settings__bf_signature_font
+msgid ""
+"CSS font stack. Always end with a universal font: no brand font is installed"
+" on the recipient's side."
+msgstr ""
+"Pile de polices CSS. Toujours terminer par une police universelle : aucune "
+"police de marque n'est installée chez le destinataire."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__can_set_company
+msgid "Can Set Company"
+msgstr "Can Set Company"
+
+#. module: bf_multi_company_email
+#: model:mail.template,name:bf_multi_company_email.bf_signature_card
+msgid "Card — logo, accent bar and links"
+msgstr "Carte — logo, barre d'accent et liens"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_catchall_alias
+msgid "Catchall alias (company)"
+msgstr "Alias catchall (société)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_catchall_domain
+msgid "Catchall domain (company)"
+msgstr "Domaine catchall (société)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__selected
+msgid "Choose"
+msgstr "Choisir"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_gallery_view_form
+msgid "Choose a signature model"
+msgstr "Choisir un modèle de signature"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid "Choose exactly one model (%s ticked)."
+msgstr "Choisissez exactement un modèle (%s coché(s))."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid ""
+"Choosing the template for the whole company is reserved to administrators."
+msgstr ""
+"Choisir le modèle de toute la société est réservé aux administrateurs."
+
+#. module: bf_multi_company_email
+#: model:mail.template,name:bf_multi_company_email.bf_signature_plain
+msgid "Classic — text only, no logo"
+msgstr "Classique — texte seul, sans logo"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_link__name
+msgid "Clickable text, short: \"Book an appointment\", not a sentence."
+msgstr "Texte cliquable, court : « Prendre rendez-vous », pas une phrase."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__click_count
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+msgid "Clicks"
+msgstr "Clics"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_gallery_view_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_text_color
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_config_settings__bf_signature_text_color
+msgid ""
+"Colour of the signature's main text. ⚠ It is also the background of the "
+"quick-link buttons, whose labels are white: a light colour here would make "
+"those labels unreadable. Keep a dark colour — WCAG AA asks for 4.5:1 "
+"contrast against white for normal text."
+msgstr ""
+"Couleur du texte principal de la signature. ⚠ C'est aussi le fond des "
+"boutons de liens rapides, dont le libellé est blanc : une couleur claire ici"
+" rendrait ces libellés illisibles. Garder une couleur foncée — WCAG AA "
+"demande 4,5:1 de contraste contre le blanc pour du texte normal."
+
+#. module: bf_multi_company_email
+#: model:mail.template,name:bf_multi_company_email.bf_signature_compact
+msgid "Compact — a single line"
+msgstr "Compacte — une seule ligne"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__company_id
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_disclaimer
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_disclaimer
+msgid "Confidentiality notice"
+msgstr "Avis de confidentialité"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+msgid "Confidentiality notice (whole company)"
+msgstr "Avis de confidentialité (toute la société)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__create_uid
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__create_uid
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_link__auto_managed
+msgid ""
+"Created by provisioning. Its destination is resynchronised; its label, its "
+"emoji and its order stay yours."
+msgstr ""
+"Créé par le provisionnement. Sa destination est resynchronisée ; son "
+"libellé, son émoji et son ordre restent à vous."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__create_date
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__create_date
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__is_current
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_gallery_view_form
+msgid "Current"
+msgstr "Actuel"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_default_from
+msgid "Default sender (company)"
+msgstr "Expéditeur par défaut (société)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__source
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+msgid "Destination"
+msgstr "Destination"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+msgid "Display"
+msgstr "Affichage"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__display_name
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__display_name
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_users__bf_signature_job_title
+msgid "Displayed title"
+msgstr "Titre affiché"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_user_count
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_user_count
+msgid "Driven signatures"
+msgstr "Signatures pilotées"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+msgid "Email routing (company)"
+msgstr "Routage courriel (société)"
+
+#. module: bf_multi_company_email
+#: model:ir.model,name:bf_multi_company_email.model_bf_signature_link
+msgid "Email signature quick link"
+msgstr "Lien rapide de signature courriel"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_template_id
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_template_id
+msgid "Email signature template"
+msgstr "Gabarit de signature courriel"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__icon
+msgid "Emoji"
+msgstr "Émoji"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_enforce
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_enforce
+msgid "Enforce the signature"
+msgstr "Imposer la signature"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_gallery_view_form
+msgid ""
+"Every preview is rendered with <b>your</b> data: your name, your title, your"
+" phone numbers, your links. Nothing is saved until you choose."
+msgstr ""
+"Chaque aperçu est rendu avec <b>vos</b> données :\n"
+"                        votre nom, votre titre, vos téléphones, vos liens.\n"
+"                        Rien n'est enregistré tant que vous n'avez pas choisi."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_font
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_font
+msgid "Font"
+msgstr "Police"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields.selection,name:bf_multi_company_email.selection__bf_signature_gallery__scope__user
+msgid "For me only"
+msgstr "Pour moi seulement"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields.selection,name:bf_multi_company_email.selection__bf_signature_gallery__scope__company
+msgid "For the whole company"
+msgstr "Pour toute la société"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__gallery_id
+msgid "Gallery"
+msgstr "Gallery"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__use_tracker
+msgid "Go through a traceable short link"
+msgstr "Passer par un raccourci traçable"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__id
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__id
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__name
+msgid "Label"
+msgstr "Libellé"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__write_uid
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__write_uid
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__write_date
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__write_date
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_list
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_preferences_bf_signature
+msgid "Leads to"
+msgstr "Mène à"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_link__user_id
+msgid "Link belonging to one person. Takes precedence over the company's."
+msgstr "Lien propre à une personne. Prime sur ceux de la société."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_link__company_id
+msgid "Link offered to the whole company."
+msgstr "Lien proposé à toute la société."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_logo_url
+msgid "Logo (URL)"
+msgstr "Logo (URL)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_logo_width
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_logo_width
+msgid "Logo width (px)"
+msgstr "Largeur du logo (px)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__auto_managed
+msgid "Maintained automatically"
+msgstr "Entretenu automatiquement"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_mail_template__bf_is_signature
+msgid ""
+"Marks this template as an email signature block. Without this box it appears"
+" neither in the gallery nor in the signature pickers. The marker is explicit"
+" rather than inferred from the res.users model: Odoo ships templates on "
+"res.users itself (2FA invitation, portal account creation), and offering "
+"them as signatures would make a 2FA invitation somebody's footer."
+msgstr ""
+"Marque ce gabarit comme un bloc de signature courriel. Sans cette case, il n'apparaît ni dans la galerie ni dans les sélecteurs de signature.\n"
+"\n"
+"Le marqueur est explicite plutôt que déduit du modèle res.users : Odoo livre lui-même des gabarits sur res.users (invitation 2FA, création de compte portail), et les proposer comme signatures ferait d'une invitation 2FA le pied de page de quelqu'un."
+
+#. module: bf_multi_company_email
+#: model:mail.template,name:bf_multi_company_email.bf_signature_minimal
+msgid "Minimal — name, rule, contact details"
+msgstr "Minimaliste — nom, filet, coordonnées"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__name
+msgid "Model"
+msgstr "Modèle"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__line_ids
+msgid "Models"
+msgstr "Modèles"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_form_bf_mce
+msgid "Multi-company emails"
+msgstr "Courriels multi-sociétés"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields.selection,name:bf_multi_company_email.selection__bf_signature_link__source__booking
+msgid "My booking page"
+msgstr "Ma page de rendez-vous"
+
+#. module: bf_multi_company_email
+#: model:ir.actions.server,name:bf_multi_company_email.action_bf_my_signature
+#: model:ir.ui.menu,name:bf_multi_company_email.menu_bf_my_signature
+msgid "My email signature"
+msgstr "Ma signature courriel"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_users__bf_signature_link_ids
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_preferences_bf_signature
+msgid "My quick links"
+msgstr "Mes liens rapides"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields.selection,name:bf_multi_company_email.selection__bf_signature_link__source__drop_page
+msgid "My secure drop page"
+msgstr "Ma page de dépôt sécurisée"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.actions.act_window,help:bf_multi_company_email.action_bf_signature_link
+msgid "No quick link"
+msgstr "Aucun lien rapide"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.actions.act_window,help:bf_multi_company_email.action_bf_signature_templates
+msgid "No signature template"
+msgstr "Aucun gabarit de signature"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_enforce
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_config_settings__bf_signature_enforce
+msgid ""
+"Nobody can edit their signature by hand any more: the field is locked in "
+"preferences and any write is replaced by the rendered template. "
+"Administrators (Settings) stay free."
+msgstr ""
+"Personne ne peut plus modifier sa signature à la main : le champ est "
+"verrouillé dans les préférences et toute écriture est remplacée par le rendu"
+" du gabarit. Les administrateurs (Paramètres) restent libres."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields.selection,name:bf_multi_company_email.selection__res_company__bf_signature_disclaimer_size__normal
+msgid "Normal (12 px)"
+msgstr "Normal (12 px)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_disclaimer_size
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_disclaimer_size
+msgid "Notice size"
+msgstr "Taille de l'avis"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_tagline
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_config_settings__bf_signature_tagline
+msgid "One line under the block, optional."
+msgstr "Une ligne sous le bloc, facultative."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid ""
+"One signature for everyone, rendered from a template and each person's own "
+"data."
+msgstr ""
+"Une signature identique pour tout le monde, rendue depuis un gabarit et les "
+"données de chaque personne."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/mail_template.py:0
+msgid "Only an administrator can create a signature model."
+msgstr "Seule une personne administratrice peut créer un modèle de signature."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/mail_template.py:0
+msgid "Only an administrator can edit a signature model."
+msgstr ""
+"Seule une personne administratrice peut modifier un modèle de signature."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_bounce_alias
+msgid "Overrides mail.bounce.alias when this company is active."
+msgstr "Surcharge mail.bounce.alias lorsque cette société est active."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_catchall_alias
+msgid "Overrides mail.catchall.alias when this company is active."
+msgstr "Surcharge mail.catchall.alias lorsque cette société est active."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_catchall_domain
+msgid "Overrides mail.catchall.domain when this company is active."
+msgstr "Surcharge mail.catchall.domain lorsque cette société est active."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_default_from
+msgid "Overrides mail.default.from when this company is active."
+msgstr "Surcharge mail.default.from lorsque cette société est active."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__user_id
+msgid "Person"
+msgstr "Personne"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__preview
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_gallery_view_form
+msgid "Preview"
+msgstr "Aperçu"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__user_id
+msgid "Preview for"
+msgstr "Aperçu pour"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_users__bf_signature_pronouns
+msgid "Pronouns (from the contact)"
+msgstr "Pronoms (de la fiche)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_auto_apply
+msgid "Propagate template changes"
+msgstr "Propager les changements de gabarit"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_auto_apply
+msgid "Propagate the changes"
+msgstr "Propager les changements"
+
+#. module: bf_multi_company_email
+#: model:ir.actions.server,name:bf_multi_company_email.action_bf_signature_link_provision
+msgid "Provision the quick links"
+msgstr "Provisionner les liens rapides"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid "Provisioned quick links"
+msgstr "Liens rapides provisionnés"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid "Provisioning everyone's quick links is reserved to administrators."
+msgstr ""
+"Provisionner les liens rapides de tout le monde est réservé aux "
+"administrateurs."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_logo_url
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_config_settings__bf_signature_logo_url
+msgid ""
+"Public address of the logo. An image sent as an attachment or as a data: URI"
+" is blocked or degraded by most clients; a stable URL survives, and "
+"overwriting the file behind it updates every signature already pasted "
+"elsewhere."
+msgstr ""
+"Adresse publique du logo. Une image en pièce jointe ou en data: est bloquée "
+"ou dégradée par la plupart des clients ; une URL stable survit, et écraser "
+"le fichier derrière elle met à jour toutes les signatures déjà collées "
+"ailleurs."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__url
+msgid "Published address"
+msgstr "Adresse publiée"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_list
+msgid "Published as"
+msgstr "Publié comme"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_link__use_tracker
+msgid ""
+"Publishes the address as /r/<code>. Two effects: you can redirect later "
+"without anyone re-pasting their signature, and you know how many times the "
+"link was followed."
+msgstr ""
+"Publie l'adresse sous la forme /r/<code>. Deux effets : on peut rediriger "
+"plus tard sans que personne recolle sa signature, et on sait combien de fois"
+" le lien a été suivi."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_link_ids
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid "Quick links"
+msgstr "Liens rapides"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+msgid "Quick links (signature footer)"
+msgstr "Liens rapides (pied de signature)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__target_url
+msgid "Real address"
+msgstr "Adresse réelle"
+
+#. module: bf_multi_company_email
+#: model:ir.actions.server,name:bf_multi_company_email.action_bf_regen_signatures
+msgid "Regenerate the email signatures"
+msgstr "Régénérer les signatures courriel"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+msgid ""
+"Regenerate the signature of every person attached to this company? "
+"Signatures edited by hand will be overwritten."
+msgstr ""
+"Régénérer la signature de chaque personne rattachée à cette société ? Les "
+"signatures modifiées à la main seront écrasées."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_auto_apply
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_config_settings__bf_signature_auto_apply
+msgid ""
+"Regenerates the signatures as soon as the template or the branding elements "
+"change. Cleared, you have to click \"Apply to everyone\"."
+msgstr ""
+"Régénère les signatures dès que le gabarit ou les éléments de marque "
+"changent. Décoché, il faut cliquer « Appliquer à tout le monde »."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_users__bf_signature_rendered
+msgid "Rendered signature (active company)"
+msgstr "Signature rendue (société active)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_gallery_line__preview
+msgid "Rendered with your own data, not a generic example."
+msgstr "Rendu avec vos propres données, pas un exemple générique."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_users__bf_signature_job_title
+msgid ""
+"Replaces the job title from the employee record in the signature, when the "
+"HR title is not the one shown to the client."
+msgstr ""
+"Remplace le titre de la fiche employé dans la signature, quand le titre RH "
+"n'est pas celui qu'on montre au client."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_gallery_view_form
+msgid "Return to the company model"
+msgstr "Revenir au modèle de la société"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_muted_color
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_muted_color
+msgid "Secondary colour"
+msgstr "Couleur secondaire"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid "Send me a file"
+msgstr "M'envoyer un fichier"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_form_bf_mce
+msgid ""
+"Sending address used for emails sent under the active company. A per-company"
+" value: pick the company in the switcher at the top right before entering "
+"it. It never overwrites the partner's email."
+msgstr ""
+"Adresse d'expédition utilisée pour les courriels\n"
+"                            envoyés sous la société active. Valeur par société —\n"
+"                            sélectionnez la société dans le sélecteur en haut à\n"
+"                            droite avant de la saisir. N'écrase jamais le\n"
+"                            courriel du partenaire."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_users__bf_company_email
+msgid ""
+"Sending address used for emails sent under this company. It never overwrites"
+" the partner's email."
+msgstr ""
+"Adresse d'expédition utilisée pour les courriels envoyés sous cette société."
+" N'écrase jamais le courriel du partenaire."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_users__bf_company_email
+msgid "Sending email (company)"
+msgstr "Courriel d'envoi (société)"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_form_bf_mce
+msgid "Senior consultant"
+msgstr "Consultant principal"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__tracker_id
+msgid "Short link"
+msgstr "Raccourci"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_link__tracker_code
+msgid "Short link code"
+msgstr "Code du raccourci"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_link_ids
+msgid "Shown in the signature footer for the whole company."
+msgstr "Affichés en pied de signature pour toute la société."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_users__bf_signature_pronouns
+msgid ""
+"Shown next to the name in the email signature. The same field as the "
+"pronouns on the person's contact."
+msgstr ""
+"Affichés à côté du nom dans la signature de courriel. Le même champ que les "
+"pronoms de la fiche de la personne."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_tollfree
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_config_settings__bf_signature_tollfree
+msgid "Shown next to the person's direct phone."
+msgstr "Affiché à côté du téléphone direct de la personne."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_preferences_bf_signature
+msgid "Signature"
+msgstr "Signature"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid "Signature branding"
+msgstr "Marque de la signature"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+msgid "Signature branding elements"
+msgstr "Éléments de marque de la signature"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery__is_locked
+msgid "Signature enforced"
+msgstr "Signature imposée"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_users__bf_signature_locked
+msgid "Signature locked"
+msgstr "Signature verrouillée"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_logo_url
+msgid "Signature logo (URL)"
+msgstr "Logo de signature (URL)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_mail_template__bf_is_signature
+msgid "Signature model"
+msgstr "Modèle de signature"
+
+#. module: bf_multi_company_email
+#: model:ir.model,name:bf_multi_company_email.model_bf_signature_gallery
+msgid "Signature model gallery"
+msgstr "Galerie de modèles de signature"
+
+#. module: bf_multi_company_email
+#: model:ir.actions.act_window,name:bf_multi_company_email.action_bf_signature_gallery
+#: model:ir.ui.menu,name:bf_multi_company_email.menu_bf_signature_gallery
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_gallery_view_form
+msgid "Signature models"
+msgstr "Modèles de signature"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/res_config_settings.py:0
+#: model:ir.actions.act_window,name:bf_multi_company_email.action_bf_signature_link
+#: model:ir.ui.menu,name:bf_multi_company_email.menu_bf_signature_links
+msgid "Signature quick links"
+msgstr "Liens rapides de signature"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_users__bf_signature_template_id
+msgid "Signature template"
+msgstr "Gabarit de signature"
+
+#. module: bf_multi_company_email
+#: model:ir.actions.act_window,name:bf_multi_company_email.action_bf_signature_templates
+#: model:ir.ui.menu,name:bf_multi_company_email.menu_bf_signature_templates
+msgid "Signature templates"
+msgstr "Gabarits de signature"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid "Signature updated"
+msgstr "Signature mise à jour"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/res_company.py:0
+msgid "Signatures applied"
+msgstr "Signatures appliquées"
+
+#. module: bf_multi_company_email
+#: model:ir.actions.server,name:bf_multi_company_email.ir_cron_signature_link_provision_ir_actions_server
+msgid "Signatures: provision and repoint the quick links"
+msgstr "Signatures : provisionner et repointer les liens rapides"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields.selection,name:bf_multi_company_email.selection__res_company__bf_signature_disclaimer_size__small
+msgid "Small (10 px)"
+msgstr "Petit (10 px)"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid "Standardised email signatures"
+msgstr "Signatures courriel normalisées"
+
+#. module: bf_multi_company_email
+#: model:ir.model,name:bf_multi_company_email.model_bf_signature_gallery_line
+msgid "Suggested signature model"
+msgstr "Modèle de signature proposé"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_users__bf_signature_use_company_links
+msgid "Take back the company's links"
+msgstr "Reprendre les liens de la société"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_users__bf_signature_template_id
+msgid ""
+"Takes precedence over the company template. To be left empty in the vast "
+"majority of cases — it is the exception, not the setting."
+msgstr ""
+"Prime sur le gabarit de la société. À laisser vide dans l'immense majorité "
+"des cas — c'est l'exception, pas le réglage."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_bf_signature_gallery_line__template_id
+msgid "Template"
+msgstr "Gabarit"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_template_id
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_config_settings__bf_signature_template_id
+msgid ""
+"Template rendered on the profile of every person in this company to produce "
+"a uniform HTML signature. The template is written on the res.users model "
+"(object = the user)."
+msgstr ""
+"Gabarit rendu sur le profil de chaque personne de cette société pour "
+"produire une signature HTML uniforme. Le gabarit s'écrit sur le modèle "
+"res.users (object = l'utilisateur)."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_text_color
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_text_color
+msgid "Text colour"
+msgstr "Couleur du texte"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid ""
+"The address must start with https://, http://, mailto: or tel: — received: "
+"%s"
+msgstr ""
+"L'adresse doit commencer par https://, http://, mailto: ou tel: — reçu : %s"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid "The code \"%s\" is already taken by another short link."
+msgstr "Le code « %s » est déjà pris par un autre raccourci."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_gallery__is_locked
+msgid "The company enforces its signature: the personal choice is closed."
+msgstr "La société impose sa signature : le choix personnel est fermé."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_users__bf_signature_locked
+msgid ""
+"The company enforces its signature; the field cannot be edited by hand."
+msgstr ""
+"La société impose sa signature ; le champ n'est pas modifiable à la main."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_company__bf_signature_disclaimer
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_config_settings__bf_signature_disclaimer
+msgid ""
+"The legal block some organisations add to the foot of every email: "
+"confidentiality, unintended recipient, duty to destroy. ⚠️ It travels WITH "
+"the signature, so it appears wherever the signature appears. Products that "
+"add it to all outgoing mail, including short replies with no signature, do "
+"so at the gateway — that is neither the same place nor the same tool. The "
+"field is translatable: each correspondent receives the version of the "
+"language recorded on their record."
+msgstr ""
+"Le bloc légal que certaines organisations ajoutent au pied de chaque courriel : confidentialité, destinataire non voulu, obligation de détruire.\n"
+"\n"
+"⚠️ Il voyage AVEC la signature, donc il apparaît là où la signature apparaît. Les produits qui l'ajoutent à tout le courrier sortant, y compris les réponses courtes sans signature, le font à la passerelle — ce n'est pas le même endroit ni le même outil.\n"
+"\n"
+"Le champ est traduisible : chaque correspondant reçoit la version de la langue enregistrée sur sa fiche."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.actions.act_window,help:bf_multi_company_email.action_bf_signature_link
+msgid ""
+"The links appear in the signature footer: booking an appointment, dropping a"
+" file, a meeting room."
+msgstr ""
+"Les liens s'affichent en pied de signature : prise de\n"
+"                rendez-vous, dépôt de fichier, salle de rencontre."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid ""
+"The notice travels with the signature: it appears wherever the signature "
+"appears."
+msgstr ""
+"L'avis voyage avec la signature : il\n"
+"                                apparaît là où elle apparaît."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_link__tracker_code
+msgid ""
+"The part after /r/. Left empty, a code is proposed from the link type and "
+"the login."
+msgstr ""
+"La partie après /r/. Laissé vide, un code est proposé à partir du type de "
+"lien et du login."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_res_users__bf_signature_rendered
+msgid ""
+"The template rendered for THIS company. `signature`, the standard field, can"
+" hold only one: it receives the one of the person's main company. "
+"Notifications going out from a record of another company come and fetch the "
+"right value here — see mail_thread.py."
+msgstr ""
+"Rendu du gabarit pour CETTE société. `signature`, le champ standard, ne peut"
+" en porter qu'un seul : il reçoit celui de la société principale de la "
+"personne. Les notifications partant d'une fiche d'une autre société vont "
+"chercher la bonne valeur ici — voir mail_thread.py."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+msgid ""
+"These links are added to each person's own. A link aimed at one person's "
+"calendar belongs on their record, not here: otherwise the whole team sends "
+"its prospects to the same calendar."
+msgstr ""
+"Ces liens s'ajoutent à ceux de chaque personne. Un lien\n"
+"                        qui vise l'agenda de quelqu'un en particulier va sur sa\n"
+"                        fiche, pas ici : sinon toute l'équipe envoie ses\n"
+"                        prospects au même calendrier."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/models/bf_signature_link.py:0
+msgid "This link has no short link."
+msgstr "Ce lien n'a pas de raccourci."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid "This message and the documents attached to it are confidential…"
+msgstr "Ce message et les documents qui l'accompagnent sont confidentiels…"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid "This template renders nothing for your record."
+msgstr "Ce gabarit ne rend rien pour votre fiche."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_company__bf_signature_tollfree
+#: model:ir.model.fields,field_description:bf_multi_company_email.field_res_config_settings__bf_signature_tollfree
+msgid "Toll-free number"
+msgstr "Numéro sans frais"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+msgid "Traceable short link"
+msgstr "Raccourci traçable"
+
+#. module: bf_multi_company_email
+#: model:mail.template,name:bf_multi_company_email.bf_signature_two_columns
+msgid "Two columns — logo and contact details"
+msgstr "Deux colonnes — logo et coordonnées"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_gallery_view_form
+msgid "Use this model"
+msgstr "Utiliser ce modèle"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields.selection,name:bf_multi_company_email.selection__res_company__bf_signature_disclaimer_size__tiny
+msgid "Very small (9 px)"
+msgstr "Très petit (9 px)"
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_link__url
+msgid ""
+"What actually goes out in the signature: the short link when there is one, "
+"the real address otherwise."
+msgstr ""
+"Ce qui part réellement dans la signature : le raccourci quand il y en a un, "
+"l'adresse réelle sinon."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid "What the template reads to take the company's colours."
+msgstr "Ce que le gabarit lit pour se mettre aux couleurs de la société."
+
+#. module: bf_multi_company_email
+#: model:ir.model.fields,help:bf_multi_company_email.field_bf_signature_link__target_url
+msgid ""
+"Where the link really leads. With a short link, this is the address you "
+"change to redirect everyone — the signature already pasted in people's "
+"mailboxes keeps pointing at the short link, which follows."
+msgstr ""
+"Là où le lien mène vraiment. Avec un raccourci, c'est cette adresse qu'on "
+"change pour rediriger tout le monde — la signature déjà collée chez les gens"
+" continue de pointer sur le raccourci, qui suit."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid "You only choose your own signature."
+msgstr "On ne choisit que sa propre signature."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_gallery_view_form
+msgid ""
+"Your company enforces its signature: you can look, not change. Your "
+"pronouns, your title and your links stay editable and fall back into place "
+"on their own."
+msgstr ""
+"Votre société impose sa signature : vous pouvez\n"
+"                    regarder, pas changer. Vos pronoms, votre titre et vos\n"
+"                    liens restent modifiables et se replacent tout seuls."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_preferences_bf_signature
+msgid ""
+"Your organisation enforces the signature. Fill in your pronouns, your title "
+"and your links in the \"Signature\" tab and it regenerates on its own."
+msgstr ""
+"Votre organisation impose la signature. Renseignez vos\n"
+"                    pronoms, votre titre et vos liens dans l'onglet\n"
+"                    « Signature » et elle se régénère toute seule."
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid "Your signature follows \"%s\" again."
+msgstr "Votre signature suit de nouveau « %s »."
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_preferences_bf_signature
+msgid "https://…"
+msgstr "https://…"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_config_settings_view_form_bf_signature
+msgid "https://…/logo.png"
+msgstr "https://…/logo.png"
+
+#. module: bf_multi_company_email
+#. odoo-python
+#: code:addons/bf_multi_company_email/wizard/bf_signature_gallery.py:0
+msgid "no model"
+msgstr "aucun modèle"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.bf_signature_link_view_form
+msgid "rdv-firstname"
+msgstr "rdv-prenom"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_form_bf_mce
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_users_preferences_bf_signature
+msgid "they/them"
+msgstr "il/lui"
+
+#. module: bf_multi_company_email
+#: model_terms:ir.ui.view,arch_db:bf_multi_company_email.res_company_form_bf_mce
+msgid ""
+"⚠️ The notice travels <b>with the signature</b>: it appears wherever the "
+"signature appears, not on a short reply that carries none. Products that add"
+" it to all outgoing mail do so at the gateway; that is neither the same "
+"place nor the same tool."
+msgstr ""
+"⚠️ L'avis voyage <b>avec la signature</b> : il\n"
+"                        apparaît là où la signature apparaît, pas sur une\n"
+"                        réponse courte qui n'en porte pas. Les produits qui\n"
+"                        l'ajoutent à tout le courrier sortant le font à la\n"
+"                        passerelle ; ce n'est ni le même endroit ni le\n"
+"                        même outil."

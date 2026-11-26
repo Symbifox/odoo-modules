@@ -36,9 +36,12 @@ import logging
 import re
 
 from odoo import _, api, fields, models
+from odoo.tools import LazyTranslate
 from odoo.exceptions import AccessError, ValidationError
 
 _logger = logging.getLogger(__name__)
+
+_lt = LazyTranslate(__name__)
 
 # Logins qui sentent la machine. Un compte de service n'a pas de page de
 # rendez-vous et personne ne dépose un fichier pour lui.
@@ -49,15 +52,20 @@ _SERVICE_LOGIN = re.compile(
 )
 
 # À quoi ressemble un lien provisionné, par source.
+# 🔴 `_lt` et non une chaîne nue : ce nom est ÉCRIT EN BASE sur le lien d'une
+# personne. Une constante nue n'est pas extraite au catalogue, donc elle sort
+# dans la langue de qui a écrit le code — avant la bascule, « Prendre
+# rendez-vous » partait chez les lecteurs anglophones. Marqué
+# ici, `self.env._()` le rend à l'usage, dans la langue de la personne.
 PROVISION_SPECS = {
     "booking": {
-        "name": "Prendre rendez-vous",
+        "name": _lt("Book an appointment"),
         "icon": "📅",
         "sequence": 20,
         "code_prefix": "rdv",
     },
     "drop_page": {
-        "name": "M'envoyer un fichier",
+        "name": _lt("Send me a file"),
         "icon": "📎",
         "sequence": 30,
         "code_prefix": "depot",
@@ -67,7 +75,7 @@ PROVISION_SPECS = {
 
 class BfSignatureLink(models.Model):
     _name = "bf.signature.link"
-    _description = "Lien rapide de signature courriel"
+    _description = "Email signature quick link"
     _order = "sequence, id"
 
     # Les liens se modifient aussi depuis la fiche de l'usager (`bf_signature_link_ids`
@@ -86,33 +94,35 @@ class BfSignatureLink(models.Model):
     _PROTECTED_FIELDS = ("tracker_id", "auto_managed", "url", "click_count")
 
     name = fields.Char(
-        string="Libellé",
+        string="Label",
         required=True,
-        help="Texte cliquable, court : « Prendre rendez-vous », pas une phrase.",
+        help="Clickable text, short: \"Book an appointment\", not a sentence.",
     )
     icon = fields.Char(
-        string="Émoji",
-        help="Un seul caractère émoji, gardé avec le lien. ⚠ Aucun gabarit "
-             "livré ne le rend depuis la 18.0.5.1.0 : les liens y sont des "
-             "boutons, et trois boutons de 9 pt avec émoji font 533 px là où "
-             "la carte en fait 520. Il reste lisible par un gabarit maison.",
+        string="Emoji",
+        help="A single emoji character, kept with the link. ⚠ No shipped "
+             "template renders it since 18.0.5.1.0: links are buttons "
+             "there, and three 9 pt buttons with an emoji come to 533 px "
+             "where the card is 520. A home-made template can still read "
+             "it.",
     )
-    sequence = fields.Integer(string="Séquence", default=10)
-    active = fields.Boolean(string="Actif", default=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
 
     company_id = fields.Many2one(
         comodel_name="res.company",
-        string="Société",
+        string="Company",
         ondelete="cascade",
         index=True,
-        help="Lien proposé à toute la société.",
+        help="Link offered to the whole company.",
     )
     user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Personne",
+        string="Person",
         ondelete="cascade",
         index=True,
-        help="Lien propre à une personne. Prime sur ceux de la société.",
+        help="Link belonging to one person. Takes precedence over the "
+             "company's.",
     )
 
     # Exclusive ownership is a DATABASE check, not an @api.constrains. Odoo
@@ -125,8 +135,8 @@ class BfSignatureLink(models.Model):
         (
             "owner_exclusive",
             "CHECK ((company_id IS NULL) <> (user_id IS NULL))",
-            "Un lien de signature appartient soit à une société, soit à une "
-            "personne — jamais aux deux, jamais à aucune.",
+            "A signature link belongs either to a company or to a person "
+            "— never to both, never to neither.",
         ),
     ]
 
@@ -135,60 +145,60 @@ class BfSignatureLink(models.Model):
     # ------------------------------------------------------------------
     source = fields.Selection(
         selection=[
-            ("manual", "Adresse saisie"),
-            ("booking", "Ma page de rendez-vous"),
-            ("drop_page", "Ma page de dépôt sécurisée"),
+            ("manual", "Address entered"),
+            ("booking", "My booking page"),
+            ("drop_page", "My secure drop page"),
         ],
         string="Destination",
         required=True,
         default="manual",
-        help="Une destination automatique se recalcule : renommer sa page de "
-             "rendez-vous ne casse pas le lien.",
+        help="An automatic destination recomputes itself: renaming your "
+             "booking page does not break the link.",
     )
     target_url = fields.Char(
-        string="Adresse réelle",
-        help="Là où le lien mène vraiment. Avec un raccourci, c'est cette "
-             "adresse qu'on change pour rediriger tout le monde — la "
-             "signature déjà collée chez les gens continue de pointer sur le "
-             "raccourci, qui suit.",
+        string="Real address",
+        help="Where the link really leads. With a short link, this is the "
+             "address you change to redirect everyone — the signature "
+             "already pasted in people's mailboxes keeps pointing at the "
+             "short link, which follows.",
     )
     auto_managed = fields.Boolean(
-        string="Entretenu automatiquement",
+        string="Maintained automatically",
         readonly=True,
-        help="Créé par le provisionnement. Sa destination est resynchronisée ; "
-             "son libellé, son émoji et son ordre restent à vous.",
+        help="Created by provisioning. Its destination is resynchronised; "
+             "its label, its emoji and its order stay yours.",
     )
 
     use_tracker = fields.Boolean(
-        string="Passer par un raccourci traçable",
-        help="Publie l'adresse sous la forme /r/<code>. Deux effets : on peut "
-             "rediriger plus tard sans que personne recolle sa signature, et "
-             "on sait combien de fois le lien a été suivi.",
+        string="Go through a traceable short link",
+        help="Publishes the address as /r/<code>. Two effects: you can "
+             "redirect later without anyone re-pasting their signature, "
+             "and you know how many times the link was followed.",
     )
     tracker_code = fields.Char(
-        string="Code du raccourci",
-        help="La partie après /r/. Laissé vide, un code est proposé à partir "
-             "du type de lien et du login.",
+        string="Short link code",
+        help="The part after /r/. Left empty, a code is proposed from the "
+             "link type and the login.",
     )
     tracker_id = fields.Many2one(
         comodel_name="link.tracker",
-        string="Raccourci",
+        string="Short link",
         readonly=True,
         ondelete="set null",
     )
     click_count = fields.Integer(
-        string="Clics",
+        string="Clicks",
         related="tracker_id.count",
         readonly=True,
     )
 
     url = fields.Char(
-        string="Adresse publiée",
+        string="Published address",
         compute="_compute_url",
         store=True,
         readonly=True,
-        help="Ce qui part réellement dans la signature : le raccourci quand "
-             "il y en a un, l'adresse réelle sinon.",
+        help="What actually goes out in the signature: the short link "
+             "when there is one, the real address otherwise.",
     )
 
     # ------------------------------------------------------------------
@@ -214,7 +224,7 @@ class BfSignatureLink(models.Model):
             if not value:
                 if link.source == "manual":
                     raise ValidationError(_(
-                        "« %s » n'a pas d'adresse.", link.name))
+                        "\"%s\" has no address.", link.name))
                 # An automatic source with nothing resolved yet is legitimate:
                 # the drop page may simply not exist for this person. The
                 # renderer skips a link with no address rather than emitting a
@@ -222,8 +232,8 @@ class BfSignatureLink(models.Model):
                 continue
             if not value.startswith(("http://", "https://", "mailto:", "tel:")):
                 raise ValidationError(_(
-                    "L'adresse doit commencer par https://, http://, mailto: "
-                    "ou tel: — reçu : %s", link.target_url))
+                    "The address must start with https://, http://, "
+                    "mailto: or tel: — received: %s", link.target_url))
 
     @api.constrains("tracker_code")
     def _check_tracker_code(self):
@@ -231,8 +241,8 @@ class BfSignatureLink(models.Model):
             if link.tracker_code and not re.fullmatch(
                     r"[A-Za-z0-9._-]{2,60}", link.tracker_code):
                 raise ValidationError(_(
-                    "Un code de raccourci ne contient que des lettres, des "
-                    "chiffres, un point, un tiret ou un souligné — reçu : %s",
+                    "A short link code contains only letters, digits, a "
+                    "dot, a dash or an underscore — received: %s",
                     link.tracker_code))
 
     # ------------------------------------------------------------------
@@ -424,7 +434,7 @@ class BfSignatureLink(models.Model):
                 continue
             if link.tracker_id or not link._may_adopt(existing, explicit=True):
                 raise ValidationError(_(
-                    "Le code « %s » est déjà pris par un autre raccourci.",
+                    "The code \"%s\" is already taken by another short link.",
                     link.tracker_code))
 
     def _free_tracker_code(self, code):
@@ -457,8 +467,8 @@ class BfSignatureLink(models.Model):
                     other = link._tracker_for_code(link.tracker_code)
                     if other and other != tracker:
                         raise ValidationError(_(
-                            "Le code « %s » est déjà pris par un autre "
-                            "raccourci.", link.tracker_code))
+                            "The code \"%s\" is already taken by another "
+                            "short link.", link.tracker_code))
                     vals["code"] = link.tracker_code
                 if vals:
                     tracker.write(vals)
@@ -480,7 +490,8 @@ class BfSignatureLink(models.Model):
                     continue
                 if explicit:
                     raise ValidationError(_(
-                        "Le code « %s » est déjà pris par un autre raccourci.",
+                        "The code \"%s\" is already taken by another "
+                        "short link.",
                         code))
                 # Code proposé d'office (deux logins au même début, par
                 # exemple) : on en prend un libre plutôt que de reprendre
@@ -541,7 +552,7 @@ class BfSignatureLink(models.Model):
     def action_open_tracker(self):
         self.ensure_one()
         if not self.tracker_id:
-            raise ValidationError(_("Ce lien n'a pas de raccourci."))
+            raise ValidationError(_("This link has no short link."))
         return {
             "type": "ir.actions.act_window",
             "res_model": "link.tracker",
@@ -672,9 +683,21 @@ class BfSignatureLink(models.Model):
                         link._sync_tracker()
                         updated |= link
                     continue
+                # Le nom part en base : on le rend UNE fois, dans la langue
+                # de la personne à qui le lien appartient, pas dans celle de
+                # qui lance le provisionnement — et c'est ce rendu-là qui va au
+                # `create` plus bas. Y passer `spec["name"]` tel quel écrirait
+                # l'objet paresseux, que l'ORM rend dans la langue du
+                # provisionneur : un admin francophone nommerait « Prendre
+                # rendez-vous » le lien d'une personne anglophone.
+                # Le libellé sort du `spec` AVANT l'appel : dans
+                # `env._(spec["name"])`, l'extracteur de Babel prend le premier
+                # littéral vu entre les parenthèses et ajoute au catalogue un
+                # msgid « name » qui n'est le libellé de rien.
+                etiquette = spec["name"]
+                etiquette = self.with_context(lang=user.lang).env._(etiquette)
                 probe = self.sudo().new({
-                    "user_id": user.id, "source": source,
-                    "name": spec["name"]})
+                    "user_id": user.id, "source": source, "name": etiquette})
                 target = (probe._resolve_drop_page() if source == "drop_page"
                           else probe._resolve_booking_page())
                 if not target:
@@ -692,7 +715,7 @@ class BfSignatureLink(models.Model):
                 created |= self.sudo().create({
                     "user_id": user.id,
                     "source": source,
-                    "name": spec["name"],
+                    "name": etiquette,
                     "icon": spec["icon"],
                     "sequence": spec["sequence"],
                     "target_url": target,
@@ -721,20 +744,20 @@ class BfSignatureLink(models.Model):
         # planifiée est inactive par défaut pour la même raison).
         if not self.env.user.has_group("base.group_system"):
             raise AccessError(_(
-                "Provisionner les liens rapides de tout le monde est réservé "
-                "aux administrateurs."))
+                "Provisioning everyone's quick links is reserved to "
+                "administrators."))
         created, updated, skipped = self._provision()
         parts = [
-            _("%s lien(s) créé(s)", len(created)),
-            _("%s repointé(s)", len(updated)),
+            _("%s link(s) created", len(created)),
+            _("%s repointed", len(updated)),
         ]
         if skipped:
-            parts.append(_("%s sans page à relier", len(skipped)))
+            parts.append(_("%s with no page to link", len(skipped)))
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Liens rapides provisionnés"),
+                "title": _("Provisioned quick links"),
                 "message": " · ".join(parts),
                 "type": "success",
                 "sticky": bool(skipped),

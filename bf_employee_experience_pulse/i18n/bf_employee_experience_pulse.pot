@@ -1,71 +1,123 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_employee_experience_pulse
-#
+# Translation template for Expérience employé : pulse.
+# The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: bf_employee_experience_pulse 18.0.1.2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 00:11+0000\n"
-"PO-Revision-Date: 2026-09-14 00:11+0000\n"
+"POT-Creation-Date: 2026-11-19 08:41+0000\n"
+"PO-Revision-Date: 2026-11-19 08:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 
 #. module: bf_employee_experience_pulse
 #: model:bf.ex.pulse.question,hint:bf_employee_experience_pulse.question_enps
-msgid "0 signifie jamais, 10 signifie sans hésiter."
+msgid "0 means never, 10 means without hesitation."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_formulaire
+msgid "<span>0, not at all</span><span>10, completely</span>"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_layout
+msgid "<span>Your pulse</span>"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:mail.template,body_html:bf_employee_experience_pulse.mail_template_pulse_invite
 msgid ""
-"<div style=\"font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; color: #2e3132;\">\n"
-"                    <p>Bonjour,</p>\n"
-"                    <p>\n"
-"                        Voici votre lien pour la vague\n"
-"                        <t t-out=\"object.campaign_id.name or ''\"/>.\n"
-"                        Ça prend deux minutes.\n"
-"                    </p>\n"
-"                    <p style=\"margin: 1.5rem 0;\">\n"
-"                        <a t-attf-href=\"{{ object.campaign_id.get_base_url() }}/pulse/{{ object.token }}\" style=\"background:#29abe2;color:#fff;padding:.7rem 1.4rem;border-radius:.35rem;text-decoration:none;\">\n"
-"                            Répondre\n"
-"                        </a>\n"
-"                    </p>\n"
-"                    <p style=\"font-size:.9rem;color:#5b6163;\">\n"
-"                        Vos réponses ne portent pas votre nom. Le lien sait que\n"
-"                        vous avez répondu, pour ne pas vous relancer pour rien,\n"
-"                        et il ne retient ni l'heure ni le contenu de votre\n"
-"                        réponse. Un résultat ne s'affiche qu'au-dessus de\n"
-"                        <t t-out=\"object.campaign_id.score_threshold or 3\"/>\n"
-"                        répondants.\n"
-"                    </p>\n"
-"                    <p style=\"font-size:.9rem;color:#5b6163;\">\n"
-"                        Ce lien est personnel : il ne sert qu'une fois, et\n"
-"                        c'est ce qui empêche une même personne de peser deux\n"
-"                        fois dans le résultat. Ne le transférez pas.\n"
-"                    </p>\n"
-"                </div>\n"
-"            "
+"<t t-set=\"societe\" t-value=\"object.campaign_id.company_id or user.company_id\"/>\n"
+"<t t-set=\"marque\" t-value=\"object.env['bf.ex.pulse.marque'].couleurs(societe)\"/>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background-color:#F8FAFC;\">\n"
+"  <tbody><tr><td align=\"center\" style=\"padding:24px;\">\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:0 auto; background-color:#FFFFFF; border-radius:12px; border:1px solid #E5E7EB; border-collapse:collapse;\">\n"
+"      <tbody>\n"
+"        <tr>\n"
+"          <td t-attf-style=\"background-color:{{ marque['sombre'] }}; padding:16px 24px; border-radius:12px 12px 0 0;\">\n"
+"            <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody><tr>\n"
+"              <td align=\"left\">\n"
+"                <img t-att-src=\"marque['logo']\" alt=\"\" style=\"height:40px; width:auto; display:block; border:0;\"/>\n"
+"              </td>\n"
+"              <td align=\"right\" t-attf-style=\"color:{{ marque['texte_sur_sombre'] }}; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:800; letter-spacing:0.2px;\">\n"
+"                Your pulse\n"
+"              </td>\n"
+"            </tr></tbody></table>\n"
+"          </td>\n"
+"        </tr>\n"
+"        <tr><td t-attf-style=\"height:4px; line-height:4px; background-color:{{ marque['accent'] }};\">&amp;#160;</td></tr>\n"
+"        <tr>\n"
+"          <td style=\"padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;\">\n"
+"            <p style=\"font-size:15px; margin:0 0 12px 0;\">Hello,</p>\n"
+"            <p style=\"font-size:15px; margin:0 0 12px 0;\">\n"
+"              Here is your link for the\n"
+"              <b t-out=\"object.campaign_id.name or ''\"/> wave. It takes two minutes.\n"
+"            </p>\n"
+"            <div style=\"text-align:center; margin:28px 0;\">\n"
+"              <a t-attf-href=\"{{ object.campaign_id.get_base_url() }}/pulse/{{ object.token }}\" t-attf-style=\"background-color:{{ marque['bouton'] }}; color:#FFFFFF; text-decoration:none; padding:12px 28px; border-radius:6px; font-size:15px; font-weight:600; display:inline-block;\">\n"
+"                Answer\n"
+"              </a>\n"
+"            </div>\n"
+"            <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" t-attf-style=\"border-left:3px solid {{ marque['accent'] }}; background-color:#F8FAFC; border-radius:0 6px 6px 0;\">\n"
+"              <tbody><tr><td style=\"padding:12px 16px; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#4B5563;\">\n"
+"                Your answers do not carry your name. The link knows that you have\n"
+"                answered, so nobody chases you for nothing, and it keeps neither\n"
+"                the time nor the content of your answer. A result only appears\n"
+"                above <t t-out=\"object.campaign_id.score_threshold or 3\"/>\n"
+"                respondents.\n"
+"              </td></tr></tbody>\n"
+"            </table>\n"
+"            <p style=\"font-size:13px; color:#6B7280; margin:16px 0 0 0;\">\n"
+"              This link is personal: it works once only, and that is what\n"
+"              stops the same person weighing twice in the result. Do not\n"
+"              forward it.\n"
+"            </p>\n"
+"          </td>\n"
+"        </tr>\n"
+"        <tr>\n"
+"          <td style=\"padding:16px 24px 20px 24px; border-top:1px solid #E5E7EB;\">\n"
+"            <p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;\">\n"
+"              <t t-if=\"societe.name\"><b t-out=\"societe.name\"/><br/></t>\n"
+"              Automatic message, sent when a pulse wave opens.\n"
+"            </p>\n"
+"          </td>\n"
+"        </tr>\n"
+"      </tbody>\n"
+"    </table>\n"
+"  </td></tr></tbody>\n"
+"</table>"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_formulaire
-msgid "<span>0, pas du tout</span><span>10, tout à fait</span>"
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_deja_repondu
+msgid ""
+"A link is good for one use only. That is what guarantees that\n"
+"                    the same person does not weigh twice in the result."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_invitation__used
-msgid "A répondu"
+#. odoo-python
+#: code:addons/bf_employee_experience_pulse/models/pulse_campaign.py:0
+msgid ""
+"A score threshold does not go below five respondents. Under that number, a "
+"department de-anonymises itself by subtraction."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_metric__active
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_question__active
-msgid "Actif"
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_metric__code
+msgid ""
+"A stable identifier, used by the aggregates. Renaming it breaks the "
+"continuity of historical scores."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__is_displayable
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
+msgid "Above the threshold"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -74,13 +126,31 @@ msgid "Action Needed"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_alignment
-msgid "Alignement"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_metric__active
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_question__active
+msgid "Active"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_growth
-msgid "Apprendre, monter en compétence, voir un chemin devant soi."
+#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_alignment
+msgid "Alignment"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_satisfaction_1
+msgid "All things considered, you are glad to work here."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_layout
+msgid "Anonymous responses, flushed as batches and out of order."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_feedback
+msgid ""
+"Are you told where you stand, often enough and clearly enough for it to be "
+"of use?"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -89,110 +159,68 @@ msgid "Attachment Count"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__is_displayable
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
-msgid "Au-dessus du seuil"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
 #: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_autonomy
-msgid "Autonomie"
+msgid "Autonomy"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_answer__metric_id
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_metric__name
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__metric_id
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__score_publie
+msgid "Average score"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__pending_flush_count
+msgid "Awaiting flush"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
 #: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
-msgid "Axe"
+msgid "Below the threshold"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_metric_form
-msgid "Axe de mesure"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__segment_mode
+msgid "Breakdown"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_metric
-msgid "Axe de mesure du pulse"
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__segment_mode
+msgid ""
+"Breaking results down by department only makes sense above the threshold: "
+"below it, every segment stays silent and the table is empty."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__is_enps_metric
-msgid "Axe eNPS"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_question__metric_id
-msgid "Axe mesuré"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.actions.act_window,name:bf_employee_experience_pulse.action_pulse_metric
-#: model:ir.ui.menu,name:bf_employee_experience_pulse.menu_pulse_metric
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_metric_list
-msgid "Axes de mesure"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.actions.act_window,name:bf_employee_experience_pulse.action_pulse_question
-#: model:ir.ui.menu,name:bf_employee_experience_pulse.menu_pulse_question
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_question_list
-msgid "Banque de questions"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_campaign__state__draft
-msgid "Brouillon"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_merci
-msgid "C'est envoyé. Merci."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.constraint,message:bf_employee_experience_pulse.constraint_bf_ex_pulse_metric_code_uniq
-msgid "Ce code d'axe existe déjà."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.constraint,message:bf_employee_experience_pulse.constraint_bf_ex_pulse_invitation_token_uniq
-msgid "Ce jeton existe déjà."
+#: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_campaign__segment_mode__department
+msgid "By department"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_lien_invalide
-msgid "Ce lien n'est pas valide."
+msgid "Check that you copied the whole address."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_metric__description
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_metric_form
-msgid "Ce que l'axe mesure"
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
+msgid "Close the wave"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_campaign__state__closed
+msgid "Closed"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__date_close
+msgid "Closed on"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
 msgid ""
-"Ce registre sait qui a répondu, pour ne pas relancer\n"
-"                                pour rien. Il ne sait ni quand ni quoi : les réponses\n"
-"                                vivent dans une autre table, sans lien vers une personne."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.constraint,message:bf_employee_experience_pulse.constraint_bf_ex_pulse_invitation_one_per_person
-msgid "Cette personne est déjà invitée à cette vague."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_vague_fermee
-msgid "Cette vague est fermée."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_workload
-msgid "Charge et bien-être"
+"Closing the wave flushes to the register everything still in the staging "
+"area, even if the threshold is not reached. Scores below the threshold will "
+"stay silent."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -201,51 +229,54 @@ msgid "Code"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_formulaire
-msgid "Comment ça va, vraiment?"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_answer__value_text
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_staging__value_text
-msgid "Commentaire"
+msgid "Comment"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_question__question_kind__text
-msgid "Commentaire libre"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__text_threshold
+msgid "Comment threshold"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__verbatim_html
 #: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_form
-msgid "Commentaires"
+msgid "Comments"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_form
+msgid ""
+"Comments have been received and are not shown:\n"
+"                        more are needed before none of them can be traced back\n"
+"                        to its author by style."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__verbatims_displayable
-msgid "Commentaires lisibles"
+msgid "Comments readable"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_alignment
-msgid ""
-"Comprendre où va l'entreprise, et voir en quoi son propre travail y "
-"contribue."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_answer__metric_id
-msgid ""
-"Copié au versement. Une question déplacée d'un axe à l'autre ne réécrit pas "
-"les scores déjà publiés."
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_answer__company_id
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__company_id
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__company_id
+msgid "Company"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_invitation__segment_key
 msgid ""
-"Copié sur l'invitation au moment de l'envoi, pour qu'un changement de "
-"département après coup ne réécrive pas le passé."
+"Copied onto the invitation when it is sent, so that a later change of "
+"department does not rewrite the past."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_answer__metric_id
+msgid ""
+"Copied when the batch is flushed. Moving a question from one dimension to "
+"another does not rewrite scores already published."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -265,21 +296,23 @@ msgid "Created on"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__period_start
-msgid "Depuis"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_form
+#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_peers
 msgid ""
-"Des commentaires ont été reçus et ne s'affichent pas :\n"
-"                        il en faut davantage pour qu'aucun ne se reconnaisse à\n"
-"                        la plume."
+"Day-to-day mutual support, and the climate between the people who work "
+"together."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:mail.template,subject:bf_employee_experience_pulse.mail_template_pulse_invite
-msgid "Deux minutes pour dire comment ça va"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_answer__metric_id
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_metric__name
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__metric_id
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
+msgid "Dimension"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_question__metric_id
+msgid "Dimension measured"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -294,69 +327,24 @@ msgid "Display Name"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__segment_mode
-msgid "Découpage"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__segment_mode
+#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_recognition
 msgid ""
-"Découper par département n'a de sens qu'au-dessus du seuil : sous le seuil, "
-"chaque segment reste muet et le tableau est vide."
+"Does good work get noticed, and does it get noticed by the right people?"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__pending_flush_count
-msgid "En attente de versement"
+#: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_campaign__state__draft
+msgid "Draft"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_formulaire
-msgid "Envoyer"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__failed_message_ids
+msgid "Failed Messages"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid "Envoyer les liens"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_feedback
-msgid ""
-"Est-ce qu'on vous dit où vous en êtes, assez souvent et assez clairement "
-"pour que ça serve?"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__window_days
-msgid "Fenêtre glissante (jours)"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid "Fermer la vague"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid ""
-"Fermer la vague verse au registre tout ce qui reste au sas, même si le seuil"
-" n'est pas atteint. Les scores sous le seuil resteront muets."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_campaign__state__closed
-msgid "Fermée"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__date_close
-msgid "Fermée le"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_ambassador
-msgid "Fierté et recommandation"
+#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_feedback
+msgid "Feedback"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -371,12 +359,47 @@ msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_question__question_kind
-msgid "Forme"
+msgid "Format"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_question__question_kind__text
+msgid "Free-text comment"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__period_start
+msgid "From"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
+msgid "Group By"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_growth
+msgid "Growth"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__has_message
 msgid "Has Message"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_invitation__used
+msgid "Has responded"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_question__hint
+msgid "Hint"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_formulaire
+msgid "How are things, really?"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -391,13 +414,6 @@ msgid "ID"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_metric__code
-msgid ""
-"Identifiant stable, employé par les agrégats. Le renommer coupe la "
-"continuité des scores historiques."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
 #: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr ""
@@ -409,13 +425,8 @@ msgid "If checked, some messages have a delivery error."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_vague_fermee
-msgid "Il n'y a plus rien à répondre ici."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_invitation
-msgid "Invitation au pulse"
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
+msgid "Invitation register"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -424,74 +435,13 @@ msgid "Invitations"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__invitation_count
-msgid "Invitées"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_invitation__employee_id
+msgid "Invited person"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__message_is_follower
 msgid "Is Follower"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_invitation__token
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_staging__token
-msgid "Jeton"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__period_end
-msgid "Jusqu'au"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_peers
-msgid ""
-"L'entraide au quotidien et le climat entre les personnes qui travaillent "
-"ensemble."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_workload
-msgid ""
-"La charge de travail, le rythme et ce qu'ils laissent d'énergie. C'est l'axe"
-" qui touche aux risques psychosociaux."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_answer__period
-msgid "La date d'ouverture de la vague, pas celle de la réponse."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_autonomy
-msgid ""
-"La latitude de décider comment le travail se fait, et les moyens qui vont "
-"avec."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_manager
-msgid ""
-"La qualité du lien avec la personne à qui l'on se rapporte : disponibilité, "
-"confiance, franchise dans les deux sens."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_question__is_enps
-msgid ""
-"La question de recommandation, lue sur la grille promoteurs, passifs et "
-"détracteurs plutôt qu'en moyenne."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_feedback_2
-msgid "La rétroaction que vous recevez vous sert à quelque chose."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.actions.act_window,help:bf_employee_experience_pulse.action_pulse_campaign
-msgid "Lancez une première vague"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -511,51 +461,55 @@ msgid "Last Updated on"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_peers_2
-msgid "Le climat dans votre équipe vous convient."
+#: model_terms:ir.actions.act_window,help:bf_employee_experience_pulse.action_pulse_campaign
+msgid "Launch a first wave"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_satisfaction
-msgid "Le contentement général, conditions comprises."
+#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_growth
+msgid "Learning, building skills, and seeing a path ahead."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_staging__token
-msgid "Le lien avec la personne. Détruit au versement."
+#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_manager
+msgid "Manager relationship"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__response_count
-msgid ""
-"Le nombre de personnes qui ont répondu. Jamais lesquelles, jamais quand."
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_metric_form
+msgid "Measurement dimension"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_recognition
-msgid ""
-"Le travail bien fait se remarque-t-il, et se remarque-t-il auprès des bonnes"
-" personnes?"
+#: model:ir.actions.act_window,name:bf_employee_experience_pulse.action_pulse_metric
+#: model:ir.ui.menu,name:bf_employee_experience_pulse.menu_pulse_metric
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_metric_list
+msgid "Measurement dimensions"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__window_days
-msgid ""
-"Les scores agrègent les vagues des N derniers jours. C'est ce qui permet à "
-"une petite équipe d'atteindre le seuil sur le trimestre plutôt que jamais "
-"sur la semaine."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_metric__description
-msgid ""
-"Lisible par la personne qui répond. Un axe qu'on ne sait pas définir produit"
-" des réponses qui ne veulent rien dire."
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__message_content
+msgid "Message Content"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__message_has_error
 msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__message_search
+msgid "Message search, to be used only in searches"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -565,57 +519,44 @@ msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_sans_journal
-msgid "Modèle sans colonnes de journal"
+msgid "Model without log columns"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_score__verbatim_html
+#. odoo-python
+#: code:addons/bf_employee_experience_pulse/controllers/main.py:0
+msgid "No answer was received. Answer at least one question."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_invitation__used
 msgid ""
-"Ne rend quelque chose qu'au-dessus du seuil des commentaires. Le seuil est "
-"appliqué ici parce que le registre des réponses n'est lisible par aucun "
-"rôle."
+"No date. The module knows that you have responded, so it does not chase you "
+"for nothing. It does not know when, and it will never know what."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__verbatim_count
-msgid "Nombre de commentaires"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_metric__question_count
-msgid "Nombre de questions"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__text_threshold
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_form
 msgid ""
-"Nombre de répondants sous lequel les commentaires écrits ne s'affichent pas."
-" Plus élevé que le seuil d'un score, parce qu'un verbatim se reconnaît à la "
-"plume."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__score_threshold
-msgid ""
-"Nombre de répondants sous lequel un score chiffré ne s'affiche pas. Trois "
-"est la pratique du marché."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_score__respondent_count
-msgid ""
-"Nombre de réponses distinctes derrière ce score, sur la fenêtre glissante."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_answer__value_scale
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_staging__value_scale
-msgid "Note"
+"Not enough responses to show a score. The module shows\n"
+"                        neither zero nor an approximation: below the threshold, a\n"
+"                        number would read as one individual response."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__message_needaction_counter
 msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__verbatim_count
+msgid "Number of comments"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_score__respondent_count
+msgid ""
+"Number of distinct responses behind this score, over the rolling window."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -634,61 +575,76 @@ msgid "Number of messages with delivery error"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_metric__question_count
+msgid "Number of questions"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__score_threshold
+msgid ""
+"Number of respondents below which a numeric score is not shown. Five: "
+"stricter than the three the market uses, and never to be lowered."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__text_threshold
+msgid ""
+"Number of respondents below which written comments are not shown. Higher "
+"than the score threshold, because a verbatim comment gives its author away "
+"by their style."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_question__hint
+msgid ""
+"One line under the question. It is there to frame what is being asked, never"
+" to steer the answer."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
 #: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_campaign__state__open
-msgid "Ouverte"
+msgid "Open"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
+msgid "Open the wave"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__date_open
-msgid "Ouverte le"
+msgid "Opened on"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_satisfaction
+msgid "Overall contentment, working conditions included."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid "Ouvrir la vague"
+msgid "Participation"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_campaign__segment_mode__department
-msgid "Par département"
+#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_peers
+msgid "Peer relationships"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_form
-msgid ""
-"Pas assez de réponses pour afficher un score. Le module\n"
-"                        n'affiche ni zéro ni approximation : sous le seuil, un\n"
-"                        chiffre se lirait comme une réponse individuelle."
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__invitation_count
+msgid "People invited"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,hint:bf_employee_experience_pulse.question_workload_1
-msgid "Pensez aux huit dernières semaines, pas à hier."
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_answer__period
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
+msgid "Period"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_invitation__employee_id
-msgid "Personne invitée"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid "Portée"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid "Pouls de septembre"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_growth
-msgid "Progression"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_question__hint
-msgid "Précision"
+#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_ambassador
+msgid "Pride and recommendation"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -697,29 +653,65 @@ msgid "Pulse"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:mail.template,name:bf_employee_experience_pulse.mail_template_pulse_invite
-msgid "Pulse : invitation"
+#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_marque
+msgid "Pulse brand colours"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_invitation
+msgid "Pulse invitation"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_metric
+msgid "Pulse measurement dimension"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_question
+msgid "Pulse question"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_answer
+msgid "Pulse response (no respondent)"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_staging
+msgid "Pulse response awaiting flush"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_score
+msgid "Pulse score by dimension and segment"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.actions.act_window,name:bf_employee_experience_pulse.action_pulse_score
+msgid "Pulse scores"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_campaign
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
+msgid "Pulse wave"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.actions.act_window,name:bf_employee_experience_pulse.action_pulse_campaign
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_list
+msgid "Pulse waves"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.actions.server,name:bf_employee_experience_pulse.cron_pulse_flush_ir_actions_server
-msgid "Pulse : verser le sas et recalculer les scores"
+msgid "Pulse: flush the staging area and recompute the scores"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_answer__period
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
-msgid "Période"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_recognition_2
-msgid "Qu'est-ce qui mériterait d'être reconnu et ne l'est pas?"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_workload_3
-msgid "Qu'est-ce qui pèse le plus, ces temps-ci?"
+#: model:mail.template,name:bf_employee_experience_pulse.mail_template_pulse_invite
+msgid "Pulse: invitation"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -731,13 +723,10 @@ msgid "Question"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_question
-msgid "Question de pulse"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_question__is_enps
-msgid "Question eNPS"
+#: model:ir.actions.act_window,name:bf_employee_experience_pulse.action_pulse_question
+#: model:ir.ui.menu,name:bf_employee_experience_pulse.menu_pulse_question
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_question_list
+msgid "Question bank"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -748,79 +737,79 @@ msgstr ""
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__question_ids
 #: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid "Questions posées"
+msgid "Questions asked"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_enps
-msgid "Recommanderiez-vous cet employeur à quelqu'un que vous estimez?"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_answer__value_scale
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_staging__value_scale
+msgid "Rating"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_ambassador
-msgid "Recommanderiez-vous cet employeur? C'est l'axe qui porte l'eNPS."
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__enps
+msgid "Raw eNPS"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__score
+msgid "Raw score"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_metric__description
+msgid ""
+"Read by the person answering. A dimension you cannot define produces answers"
+" that mean nothing."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_recognition
-msgid "Reconnaissance"
+msgid "Recognition"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid "Registre des invitations"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
-msgid "Regrouper par"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_manager
-msgid "Relation avec le gestionnaire"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_peers
-msgid "Relation avec les collègues"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid "Réception"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__campaign_id
+msgid "Reference wave"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__respondent_count
-msgid "Répondants"
+msgid "Respondents"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_answer
-msgid "Réponse de pulse (sans répondant)"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_staging
-msgid "Réponse de pulse en attente de versement"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__response_rate
+msgid "Response rate (%)"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__pending_flush_count
 msgid ""
-"Réponses au sas, qui ne sont pas encore comptées dans les scores. Elles se "
-"versent en lot, dans un ordre tiré au hasard."
+"Responses in the staging area, not yet counted in the scores. They are "
+"flushed as a batch, in a randomly drawn order."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__response_count
-msgid "Réponses reçues"
+msgid "Responses received"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_feedback
-msgid "Rétroaction"
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_score__verbatim_html
+msgid ""
+"Returns something only above the comment threshold. The threshold is applied"
+" here because the response register is readable by no role."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__window_days
+msgid "Rolling window (days)"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -829,15 +818,18 @@ msgid "SMS Delivery error"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_invitation__used
-msgid ""
-"Sans date. Le module sait que vous avez répondu, pour ne pas vous relancer "
-"pour rien. Il ne sait pas quand, et il ne saura jamais quoi."
+#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_satisfaction
+msgid "Satisfaction"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_satisfaction
-msgid "Satisfaction"
+#: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_question__question_kind__scale
+msgid "Scale of 0 to 10"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
+msgid "Scope"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -847,13 +839,8 @@ msgid "Score"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__score
-msgid "Score brut"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_score
-msgid "Score de pulse par axe et par segment"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__score_threshold
+msgid "Score threshold"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -865,8 +852,10 @@ msgid "Scores"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.actions.act_window,name:bf_employee_experience_pulse.action_pulse_score
-msgid "Scores du pulse"
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__window_days
+msgid ""
+"Scores aggregate the waves of the last N days. That is what lets a small "
+"team reach the threshold over the quarter instead of never over the week."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -878,80 +867,195 @@ msgid "Segment"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__score_threshold
-msgid "Seuil d'un score"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__text_threshold
-msgid "Seuil des commentaires"
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_formulaire
+msgid "Send"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid "Seuils"
+msgid "Send the links"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_answer__company_id
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__company_id
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__company_id
-msgid "Société"
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_merci
+msgid "Sent. Thank you."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
-msgid "Sous le seuil"
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
+msgid "September pulse"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_metric__sequence
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_question__sequence
-msgid "Séquence"
+msgid "Sequence"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__response_rate
-msgid "Taux de réponse (%)"
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__state
+msgid "Status"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_satisfaction_1
-msgid "Tout compte fait, vous êtes content d'y travailler."
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__segment_label
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
+msgid "Team"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_peers_2
+msgid "The climate in your team suits you."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#. odoo-python
+#: code:addons/bf_employee_experience_pulse/models/pulse_campaign.py:0
+msgid ""
+"The comment threshold cannot be lower than a score's: a verbatim comment "
+"says more than a number."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_answer__period
+msgid "The date the wave opened, not the date of the response."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_feedback_2
+msgid "The feedback you receive is of use to you."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_autonomy
+msgid ""
+"The latitude to decide how the work gets done, and the means that go with "
+"it."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_staging__token
+msgid "The link to the person. Destroyed when the batch is flushed."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__response_count
+msgid "The number of people who have responded. Never which ones, never when."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_manager
+msgid ""
+"The quality of the relationship with the person you report to: availability,"
+" trust, and candour in both directions."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_score__enps_publie
+msgid "The raw eNPS when the segment clears the threshold, zero otherwise."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_score__score_publie
+msgid "The raw score when the segment clears the threshold, zero otherwise."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_question__is_enps
+msgid ""
+"The recommendation question, read on the promoters, passives and detractors "
+"scale rather than as an average."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_campaign__segment_mode__company
-msgid "Toute la société"
+msgid "The whole company"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_vague_fermee
+msgid "There is nothing left to answer here."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,hint:bf_employee_experience_pulse.question_workload_1
+msgid "Think about the last eight weeks, not about yesterday."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.constraint,message:bf_employee_experience_pulse.constraint_bf_ex_pulse_metric_code_uniq
+msgid "This dimension code already exists."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_lien_invalide
+msgid "This link is not valid."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.constraint,message:bf_employee_experience_pulse.constraint_bf_ex_pulse_invitation_one_per_person
+msgid "This person is already invited to this wave."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
+msgid ""
+"This register knows who has responded, so no one is chased\n"
+"                                for nothing. It knows neither when nor what: the responses\n"
+"                                live in another table, with no link to a person."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.constraint,message:bf_employee_experience_pulse.constraint_bf_ex_pulse_invitation_token_uniq
+msgid "This token already exists."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_vague_fermee
+msgid "This wave is closed."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__question_ids
 msgid ""
-"Trois à cinq questions suffisent. Un questionnaire long se répond une fois."
+"Three to five questions are enough. A long questionnaire gets answered once."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model_terms:ir.actions.act_window,help:bf_employee_experience_pulse.action_pulse_campaign
 msgid ""
-"Trois à cinq questions, une fois par mois ou par trimestre.\n"
-"                Le score d'un segment reste muet tant qu'il n'a pas assez de\n"
-"                répondants, ce qui est la seule façon de promettre l'anonymat\n"
-"                sans mentir."
+"Three to five questions, once a month or once a quarter.\n"
+"                A segment's score stays silent until it has enough\n"
+"                respondents, which is the only way to promise anonymity\n"
+"                without lying."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_deja_repondu
-msgid ""
-"Un lien ne sert qu'une fois. C'est ce qui garantit qu'une\n"
-"                    même personne ne pèse pas deux fois dans le résultat."
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
+msgid "Thresholds"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,help:bf_employee_experience_pulse.field_bf_ex_pulse_question__hint
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_invitation__token
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_staging__token
+msgid "Token"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:mail.template,subject:bf_employee_experience_pulse.mail_template_pulse_invite
+msgid "Two minutes to say how things are going"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_alignment
 msgid ""
-"Une ligne sous la question. Sert à borner ce qu'on demande, jamais à "
-"orienter la réponse."
+"Understanding where the organisation is going, and seeing how your own work "
+"contributes to it."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__period_end
+msgid "Until"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -959,127 +1063,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__name
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_invitation__campaign_id
 #: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_staging__campaign_id
-msgid "Vague"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model,name:bf_employee_experience_pulse.model_bf_ex_pulse_campaign
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_form
-msgid "Vague de pulse"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__campaign_id
-msgid "Vague de référence"
+msgid "Wave"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model:ir.ui.menu,name:bf_employee_experience_pulse.menu_pulse_campaign
-msgid "Vagues"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.actions.act_window,name:bf_employee_experience_pulse.action_pulse_campaign
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_campaign_list
-msgid "Vagues de pulse"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_peers_1
-msgid "Vos collègues vous donnent un coup de main quand ça compte."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_satisfaction_2
-msgid "Vos conditions de travail vous paraissent justes."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_formulaire
-msgid ""
-"Vos réponses ne portent pas votre nom. Le lien sait que vous\n"
-"                avez répondu, pour ne pas vous relancer pour rien. Il ne\n"
-"                retient ni l'heure ni le contenu de votre réponse, et les\n"
-"                réponses sont versées en lot, dans le désordre.\n"
-"                Un résultat ne s'affiche qu'au-dessus de"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_workload_1
-msgid "Votre charge de travail est tenable sur la durée."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_manager_1
-msgid "Votre gestionnaire est disponible quand vous en avez besoin."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_merci
-msgid ""
-"Votre réponse attend d'autres réponses avant d'être\n"
-"                    comptée, puis elle rejoint le lot dans le désordre. Vous\n"
-"                    pouvez fermer cette page."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_recognition_1
-msgid "Votre travail est reconnu à sa juste valeur."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_growth_1
-msgid "Vous apprenez des choses utiles dans votre poste."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_deja_repondu
-msgid "Vous avez déjà répondu à cette vague."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_autonomy_2
-msgid "Vous avez les outils qu'il faut pour bien faire ce travail."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_alignment_1
-msgid "Vous comprenez où l'entreprise s'en va."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_autonomy_1
-msgid "Vous décidez de la façon dont votre travail se fait."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_workload_2
-msgid "Vous décrochez du travail en dehors des heures."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_manager_2
-msgid "Vous pouvez dire à votre gestionnaire ce qui ne va pas."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_feedback_1
-msgid "Vous savez où vous en êtes dans votre travail."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_alignment_2
-msgid "Vous voyez en quoi votre travail y contribue."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_growth_2
-msgid "Vous voyez un chemin possible pour la suite."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_lien_invalide
-msgid "Vérifiez que vous avez copié l'adresse au complet."
+msgid "Waves"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
@@ -1093,34 +1082,162 @@ msgid "Website communication history"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__enps
-msgid "eNPS"
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_recognition_2
+msgid "What deserves to be recognised and is not?"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_workload_3
+msgid "What is weighing on you most these days?"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_metric__description
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_metric_form
+msgid "What this dimension measures"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.metric,name:bf_employee_experience_pulse.metric_workload
+msgid "Workload and wellbeing"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_workload
+msgid ""
+"Workload, pace, and the energy they leave behind. This is the dimension that"
+" touches on psychosocial risks."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_enps
+msgid ""
+"Would you recommend this employer to someone whose judgement you respect?"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.metric,description:bf_employee_experience_pulse.metric_ambassador
+msgid ""
+"Would you recommend this employer? This is the dimension that carries the "
+"eNPS."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_formulaire
+msgid "Write whatever you want. No one will know it was you."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_growth_1
+msgid "You are learning useful things in your role."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_growth_2
+msgid "You can see a possible path for what comes next."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_alignment_2
+msgid "You can see how your own work contributes to it."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_manager_2
+msgid "You can tell your manager what is not going well."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_autonomy_1
+msgid "You decide how your work gets done."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_deja_repondu
+msgid "You have already responded to this wave."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_autonomy_2
+msgid "You have the tools you need to do this work well."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_feedback_1
+msgid "You know where you stand in your work."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_workload_2
+msgid "You switch off from work outside working hours."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_alignment_1
+msgid "You understand where the organisation is heading."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_peers_1
+msgid "Your colleagues lend you a hand when it counts."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_manager_1
+msgid "Your manager is available when you need them."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_merci
+msgid ""
+"Your response is waiting for other responses before it is\n"
+"                    counted, then it joins the batch out of order. You can\n"
+"                    close this page."
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_formulaire
 msgid ""
-"répondants, et vos\n"
-"                commentaires écrits au-dessus de"
+"Your responses do not carry your name. The link knows that you\n"
+"                have responded, so you are not chased for nothing. It keeps\n"
+"                neither the time nor the content of your response, and the\n"
+"                responses are flushed as batches, out of order.\n"
+"                A result is shown only above"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
-#: model:ir.model.fields.selection,name:bf_employee_experience_pulse.selection__bf_ex_pulse_question__question_kind__scale
-msgid "Échelle de 0 à 10"
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_recognition_1
+msgid "Your work is recognised at its true worth."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_satisfaction_2
+msgid "Your working conditions seem fair to you."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:bf.ex.pulse.question,title:bf_employee_experience_pulse.question_workload_1
+msgid "Your workload is sustainable over time."
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__enps_publie
+msgid "eNPS"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__is_enps_metric
+msgid "eNPS dimension"
+msgstr ""
+
+#. module: bf_employee_experience_pulse
+#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_question__is_enps
+msgid "eNPS question"
 msgstr ""
 
 #. module: bf_employee_experience_pulse
 #: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.pulse_formulaire
-msgid "Écrivez ce que vous voulez. Personne ne saura que c'est vous."
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_score__segment_label
-#: model_terms:ir.ui.view,arch_db:bf_employee_experience_pulse.view_pulse_score_search
-msgid "Équipe"
-msgstr ""
-
-#. module: bf_employee_experience_pulse
-#: model:ir.model.fields,field_description:bf_employee_experience_pulse.field_bf_ex_pulse_campaign__state
-msgid "État"
+msgid ""
+"respondents, and your\n"
+"                written comments only above"
 msgstr ""

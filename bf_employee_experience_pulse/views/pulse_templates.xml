@@ -82,7 +82,7 @@
                 <body>
                     <div class="bf-bandeau">
                         <img t-att-src="marque['logo']" alt=""/>
-                        <span>Votre pouls</span>
+                        <span>Your pulse</span>
                     </div>
                     <div class="bf-filet"/>
                     <main>
@@ -90,7 +90,7 @@
                     </main>
                     <div class="pied">
                         <t t-if="societe and societe.name"><t t-out="societe.name"/> · </t>
-                        Réponses anonymes, versées en lot et dans le désordre.
+                        Anonymous responses, flushed as batches and out of order.
                     </div>
                 </body>
             </html>
@@ -98,15 +98,15 @@
 
     <template id="pulse_formulaire" name="Pulse : questionnaire">
         <t t-call="bf_employee_experience_pulse.pulse_layout">
-            <h1>Comment ça va, vraiment?</h1>
+            <h1>How are things, really?</h1>
             <p class="avis note">
-                Vos réponses ne portent pas votre nom. Le lien sait que vous
-                avez répondu, pour ne pas vous relancer pour rien. Il ne
-                retient ni l'heure ni le contenu de votre réponse, et les
-                réponses sont versées en lot, dans le désordre.
-                Un résultat ne s'affiche qu'au-dessus de
-                <t t-out="campaign.score_threshold"/> répondants, et vos
-                commentaires écrits au-dessus de
+                Your responses do not carry your name. The link knows that you
+                have responded, so you are not chased for nothing. It keeps
+                neither the time nor the content of your response, and the
+                responses are flushed as batches, out of order.
+                A result is shown only above
+                <t t-out="campaign.score_threshold"/> respondents, and your
+                written comments only above
                 <t t-out="campaign.text_threshold"/>.
             </p>
             <div t-if="erreur" class="erreur"><t t-out="erreur"/></div>
@@ -138,16 +138,16 @@
                                 </t>
                             </div>
                             <div class="bornes">
-                                <span>0, pas du tout</span><span>10, tout à fait</span>
+                                <span>0, not at all</span><span>10, completely</span>
                             </div>
                         </t>
                         <t t-else="">
                             <textarea t-attf-name="q#{question.id}"
-                                      placeholder="Écrivez ce que vous voulez. Personne ne saura que c'est vous."/>
+                                      placeholder="Write whatever you want. No one will know it was you."/>
                         </t>
                     </div>
                 </t>
-                <button type="submit">Envoyer</button>
+                <button type="submit">Send</button>
             </form>
         </t>
     </template>
@@ -155,11 +155,11 @@
     <template id="pulse_merci" name="Pulse : merci">
         <t t-call="bf_employee_experience_pulse.pulse_layout">
             <div class="carte">
-                <h1>C'est envoyé. Merci.</h1>
+                <h1>Sent. Thank you.</h1>
                 <p class="note">
-                    Votre réponse attend d'autres réponses avant d'être
-                    comptée, puis elle rejoint le lot dans le désordre. Vous
-                    pouvez fermer cette page.
+                    Your response is waiting for other responses before it is
+                    counted, then it joins the batch out of order. You can
+                    close this page.
                 </p>
             </div>
         </t>
@@ -168,10 +168,10 @@
     <template id="pulse_deja_repondu" name="Pulse : déjà répondu">
         <t t-call="bf_employee_experience_pulse.pulse_layout">
             <div class="carte">
-                <h1>Vous avez déjà répondu à cette vague.</h1>
+                <h1>You have already responded to this wave.</h1>
                 <p class="note">
-                    Un lien ne sert qu'une fois. C'est ce qui garantit qu'une
-                    même personne ne pèse pas deux fois dans le résultat.
+                    A link is good for one use only. That is what guarantees that
+                    the same person does not weigh twice in the result.
                 </p>
             </div>
         </t>
@@ -180,8 +180,8 @@
     <template id="pulse_vague_fermee" name="Pulse : vague fermée">
         <t t-call="bf_employee_experience_pulse.pulse_layout">
             <div class="carte">
-                <h1>Cette vague est fermée.</h1>
-                <p class="note">Il n'y a plus rien à répondre ici.</p>
+                <h1>This wave is closed.</h1>
+                <p class="note">There is nothing left to answer here.</p>
             </div>
         </t>
     </template>
@@ -189,9 +189,9 @@
     <template id="pulse_lien_invalide" name="Pulse : lien invalide">
         <t t-call="bf_employee_experience_pulse.pulse_layout">
             <div class="carte">
-                <h1>Ce lien n'est pas valide.</h1>
+                <h1>This link is not valid.</h1>
                 <p class="note">
-                    Vérifiez que vous avez copié l'adresse au complet.
+                    Check that you copied the whole address.
                 </p>
             </div>
         </t>

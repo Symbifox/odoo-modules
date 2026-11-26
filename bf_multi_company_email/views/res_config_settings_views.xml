@@ -13,41 +13,39 @@
         <field name="arch" type="xml">
             <xpath expr="//block[@id='emails']" position="inside">
                 <setting id="bf_signature_policy"
-                         string="Signatures courriel normalisées"
-                         help="Une signature identique pour tout le monde, rendue depuis un gabarit et les données de chaque personne.">
+                         string="Standardised email signatures"
+                         help="One signature for everyone, rendered from a template and each person's own data.">
                     <field name="bf_signature_template_id"/>
                     <div class="mt-2">
                         <field name="bf_signature_enforce"
                                class="me-2"/>
-                        <span>Imposer la signature (le champ devient
-                            non modifiable dans les préférences)</span>
+                        <span>Enforce the signature (the field becomes read-only in preferences)</span>
                     </div>
                     <div class="mt-2">
                         <field name="bf_signature_auto_apply"
                                class="me-2"/>
-                        <span>Régénérer automatiquement quand le gabarit
-                            ou la marque changent</span>
+                        <span>Regenerate automatically when the template or the branding changes</span>
                     </div>
                     <div class="mt-3">
                         <button name="action_bf_apply_signatures"
                                 type="object"
-                                string="Appliquer à tout le monde"
+                                string="Apply to everyone"
                                 class="btn-link"
                                 icon="fa-refresh"/>
                         <button name="action_bf_open_signature_links"
                                 type="object"
-                                string="Liens rapides"
+                                string="Quick links"
                                 class="btn-link"
                                 icon="fa-link"/>
                     </div>
                     <div class="text-muted mt-2">
                         <field name="bf_signature_user_count" class="me-1"/>
-                        <span>signature(s) pilotée(s) par cette société.</span>
+                        <span>signature(s) driven by this company.</span>
                     </div>
                 </setting>
                 <setting id="bf_signature_brand"
-                         string="Marque de la signature"
-                         help="Ce que le gabarit lit pour se mettre aux couleurs de la société.">
+                         string="Signature branding"
+                         help="What the template reads to take the company's colours.">
                     <div class="content-group">
                         <div class="row mt-2">
                             <label for="bf_signature_logo_url"
@@ -103,10 +101,9 @@
                             <label for="bf_signature_disclaimer"/>
                             <field name="bf_signature_disclaimer"
                                    widget="html"
-                                   placeholder="Ce message et les documents qui l'accompagnent sont confidentiels…"/>
+                                   placeholder="This message and the documents attached to it are confidential…"/>
                             <div class="text-muted">
-                                L'avis voyage avec la signature&#160;: il
-                                apparaît là où elle apparaît.
+                                The notice travels with the signature: it appears wherever the signature appears.
                             </div>
                         </div>
                     </div>

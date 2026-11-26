@@ -17,28 +17,28 @@ SOUS_LE_SEUIL = "Pas assez de réponses"
 
 class PulseScore(models.Model):
     _name = "bf.ex.pulse.score"
-    _description = "Score de pulse par axe et par segment"
+    _description = "Pulse score by dimension and segment"
     _order = "period_end desc, metric_id, segment_key"
 
     campaign_id = fields.Many2one(
-        "bf.ex.pulse.campaign", string="Vague de référence", required=True,
+        "bf.ex.pulse.campaign", string="Reference wave", required=True,
         ondelete="cascade", index=True,
     )
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True, index=True,
+        "res.company", string="Company", required=True, index=True,
     )
     metric_id = fields.Many2one(
-        "bf.ex.pulse.metric", string="Axe", required=True, ondelete="cascade",
+        "bf.ex.pulse.metric", string="Dimension", required=True, ondelete="cascade",
     )
     segment_key = fields.Char(string="Segment", index=True)
-    segment_label = fields.Char(string="Équipe")
-    period_start = fields.Date(string="Depuis", required=True)
-    period_end = fields.Date(string="Jusqu'au", required=True)
+    segment_label = fields.Char(string="Team")
+    period_start = fields.Date(string="From", required=True)
+    period_end = fields.Date(string="Until", required=True)
 
     respondent_count = fields.Integer(
-        string="Répondants", required=True, default=0,
-        help="Nombre de réponses distinctes derrière ce score, sur la "
-             "fenêtre glissante.",
+        string="Respondents", required=True, default=0,
+        help="Number of distinct responses behind this score, over the "
+             "rolling window.",
     )
     # 🔴 Les valeurs brutes ne se lisent pas hors de l'administration
     # technique, même sous le seuil. Sans `groups`, un agent RH
@@ -46,35 +46,37 @@ class PulseScore(models.Model):
     # réponse. Tout ce qui s'affiche passe par les valeurs publiées, qui
     # valent zéro sous le seuil du segment.
     score = fields.Float(
-        string="Score brut", digits=(3, 1), groups="base.group_system",
+        string="Raw score", digits=(3, 1), groups="base.group_system",
     )
-    is_displayable = fields.Boolean(string="Au-dessus du seuil")
+    is_displayable = fields.Boolean(string="Above the threshold")
     display_score = fields.Char(
         string="Score", compute="_compute_display", store=False,
     )
     score_publie = fields.Float(
-        string="Score moyen", digits=(3, 1), aggregator="avg",
+        string="Average score", digits=(3, 1), aggregator="avg",
         compute="_compute_publie", store=True,
-        help="Le score brut quand le segment passe le seuil, zéro sinon.",
+        help="The raw score when the segment clears the threshold, zero "
+             "otherwise.",
     )
 
     enps = fields.Float(
-        string="eNPS brut", digits=(4, 0), groups="base.group_system",
+        string="Raw eNPS", digits=(4, 0), groups="base.group_system",
     )
     enps_publie = fields.Float(
         string="eNPS", digits=(4, 0), aggregator="avg",
         compute="_compute_publie", store=True,
-        help="L'eNPS brut quand le segment passe le seuil, zéro sinon.",
+        help="The raw eNPS when the segment clears the threshold, zero "
+             "otherwise.",
     )
-    is_enps_metric = fields.Boolean(string="Axe eNPS")
+    is_enps_metric = fields.Boolean(string="eNPS dimension")
 
-    verbatim_count = fields.Integer(string="Nombre de commentaires", default=0)
-    verbatims_displayable = fields.Boolean(string="Commentaires lisibles")
+    verbatim_count = fields.Integer(string="Number of comments", default=0)
+    verbatims_displayable = fields.Boolean(string="Comments readable")
     verbatim_html = fields.Html(
-        string="Commentaires", compute="_compute_verbatims", sanitize=True,
-        help="Ne rend quelque chose qu'au-dessus du seuil des commentaires. "
-             "Le seuil est appliqué ici parce que le registre des réponses "
-             "n'est lisible par aucun rôle.",
+        string="Comments", compute="_compute_verbatims", sanitize=True,
+        help="Returns something only above the comment threshold. The "
+             "threshold is applied here because the response register is "
+             "readable by no role.",
     )
 
     @api.depends("score", "enps", "is_displayable")
@@ -246,7 +248,8 @@ class PulseScore(models.Model):
                 except ValueError:
                     labels[key] = key
             elif key.startswith("company-"):
-                labels[key] = "Toute la société"
+                labels[key] = dict(self.env["bf.ex.pulse.campaign"]._fields["segment_mode"]
+                                   ._description_selection(self.env)).get("company", key)
             else:
                 labels[key] = key
         return labels

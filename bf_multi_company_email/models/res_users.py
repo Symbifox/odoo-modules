@@ -13,10 +13,10 @@ class ResUsers(models.Model):
     # ous_multi_company_email). Consumed by the mail.thread override at send
     # time to set email_from for the active company.
     bf_company_email = fields.Char(
-        string="Courriel d'envoi (société)",
+        string="Sending email (company)",
         company_dependent=True,
-        help="Adresse d'expédition utilisée pour les courriels envoyés sous "
-             "cette société. N'écrase jamais le courriel du partenaire.",
+        help="Sending address used for emails sent under this company. It "
+             "never overwrites the partner's email.",
     )
 
     # ------------------------------------------------------------------
@@ -24,47 +24,49 @@ class ResUsers(models.Model):
     # ------------------------------------------------------------------
     bf_signature_template_id = fields.Many2one(
         comodel_name="mail.template",
-        string="Gabarit de signature",
+        string="Signature template",
         domain="[('bf_is_signature', '=', True)]",
         ondelete="set null",
-        help="Prime sur le gabarit de la société. À laisser vide dans "
-             "l'immense majorité des cas — c'est l'exception, pas le réglage.",
+        help="Takes precedence over the company template. To be left "
+             "empty in the vast majority of cases — it is the exception, "
+             "not the setting.",
     )
     bf_signature_pronouns = fields.Char(
-        string="Pronoms",
-        help="Affichés à côté du nom, en petit : « il/lui », « elle », "
-             "« iel ». Vide, rien n'est affiché.",
+        string="Pronouns",
+        help="Shown next to the name, in small type: \"he/him\", "
+             "\"she/her\", \"they/them\". Left empty, nothing is shown.",
     )
     bf_signature_job_title = fields.Char(
-        string="Titre affiché",
-        help="Remplace le titre de la fiche employé dans la signature, "
-             "quand le titre RH n'est pas celui qu'on montre au client.",
+        string="Displayed title",
+        help="Replaces the job title from the employee record in the "
+             "signature, when the HR title is not the one shown to the "
+             "client.",
     )
     bf_signature_use_company_links = fields.Boolean(
-        string="Reprendre les liens de la société",
+        string="Take back the company's links",
         default=True,
     )
     bf_signature_link_ids = fields.One2many(
         comodel_name="bf.signature.link",
         inverse_name="user_id",
-        string="Mes liens rapides",
+        string="My quick links",
     )
     bf_signature_rendered = fields.Html(
-        string="Signature rendue (société active)",
+        string="Rendered signature (active company)",
         company_dependent=True,
         readonly=True,
         sanitize=False,
-        help="Rendu du gabarit pour CETTE société. `signature`, le champ "
-             "standard, ne peut en porter qu'un seul : il reçoit celui de la "
-             "société principale de la personne. Les notifications partant "
-             "d'une fiche d'une autre société vont chercher la bonne valeur "
-             "ici — voir mail_thread.py.",
+        help="The template rendered for THIS company. `signature`, the "
+             "standard field, can hold only one: it receives the one of "
+             "the person's main company. Notifications going out from a "
+             "record of another company come and fetch the right value "
+             "here — see mail_thread.py.",
     )
     bf_signature_locked = fields.Boolean(
-        string="Signature verrouillée",
+        string="Signature locked",
         compute="_compute_bf_signature_locked",
-        help="La société impose sa signature ; le champ n'est pas "
-             "modifiable à la main.",
+        help="The company enforces its signature; the field cannot be "
+             "edited by hand.",
     )
 
     @property

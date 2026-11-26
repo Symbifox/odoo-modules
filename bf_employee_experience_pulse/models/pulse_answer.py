@@ -18,31 +18,32 @@ from odoo import fields, models
 
 class PulseAnswer(models.Model):
     _name = "bf.ex.pulse.answer"
-    _description = "Réponse de pulse (sans répondant)"
+    _description = "Pulse response (no respondent)"
     _inherit = ["bf.ex.pulse.sans.journal"]
     _log_access = False
     _order = "id"
 
     campaign_id = fields.Many2one(
-        "bf.ex.pulse.campaign", string="Vague", required=True,
+        "bf.ex.pulse.campaign", string="Wave", required=True,
         ondelete="cascade", index=True,
     )
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True, index=True,
+        "res.company", string="Company", required=True, index=True,
     )
     question_id = fields.Many2one(
         "bf.ex.pulse.question", string="Question", required=True,
         ondelete="restrict",
     )
     metric_id = fields.Many2one(
-        "bf.ex.pulse.metric", string="Axe", required=True, ondelete="restrict",
-        help="Copié au versement. Une question déplacée d'un axe à l'autre ne "
-             "réécrit pas les scores déjà publiés.",
+        "bf.ex.pulse.metric", string="Dimension", required=True, ondelete="restrict",
+        help="Copied when the batch is flushed. Moving a question from "
+             "one dimension to another does not rewrite scores already "
+             "published.",
     )
     segment_key = fields.Char(string="Segment", index=True)
     period = fields.Date(
-        string="Période", required=True, index=True,
-        help="La date d'ouverture de la vague, pas celle de la réponse.",
+        string="Period", required=True, index=True,
+        help="The date the wave opened, not the date of the response.",
     )
-    value_scale = fields.Integer(string="Note")
-    value_text = fields.Text(string="Commentaire")
+    value_scale = fields.Integer(string="Rating")
+    value_text = fields.Text(string="Comment")

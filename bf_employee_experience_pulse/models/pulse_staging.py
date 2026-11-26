@@ -19,13 +19,13 @@ from odoo import fields, models
 
 class PulseStaging(models.Model):
     _name = "bf.ex.pulse.staging"
-    _description = "Réponse de pulse en attente de versement"
+    _description = "Pulse response awaiting flush"
     _inherit = ["bf.ex.pulse.sans.journal"]
     _log_access = False
     _order = "id"
 
     campaign_id = fields.Many2one(
-        "bf.ex.pulse.campaign", string="Vague", required=True,
+        "bf.ex.pulse.campaign", string="Wave", required=True,
         ondelete="cascade", index=True,
     )
     question_id = fields.Many2one(
@@ -33,9 +33,9 @@ class PulseStaging(models.Model):
         ondelete="cascade",
     )
     token = fields.Char(
-        string="Jeton", required=True, index=True,
-        help="Le lien avec la personne. Détruit au versement.",
+        string="Token", required=True, index=True,
+        help="The link to the person. Destroyed when the batch is flushed.",
     )
     segment_key = fields.Char(string="Segment")
-    value_scale = fields.Integer(string="Note")
-    value_text = fields.Text(string="Commentaire")
+    value_scale = fields.Integer(string="Rating")
+    value_text = fields.Text(string="Comment")

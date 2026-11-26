@@ -12,31 +12,31 @@ from odoo.exceptions import ValidationError
 
 class PulseQuestion(models.Model):
     _name = "bf.ex.pulse.question"
-    _description = "Question de pulse"
+    _description = "Pulse question"
     _rec_name = "title"
     _order = "sequence, id"
 
     title = fields.Char(string="Question", required=True, translate=True)
     metric_id = fields.Many2one(
-        "bf.ex.pulse.metric", string="Axe mesuré", required=True,
+        "bf.ex.pulse.metric", string="Dimension measured", required=True,
         ondelete="restrict",
     )
     question_kind = fields.Selection(
-        [("scale", "Échelle de 0 à 10"), ("text", "Commentaire libre")],
-        string="Forme", required=True, default="scale",
+        [("scale", "Scale of 0 to 10"), ("text", "Free-text comment")],
+        string="Format", required=True, default="scale",
     )
     is_enps = fields.Boolean(
-        string="Question eNPS",
-        help="La question de recommandation, lue sur la grille "
-             "promoteurs, passifs et détracteurs plutôt qu'en moyenne.",
+        string="eNPS question",
+        help="The recommendation question, read on the promoters, "
+             "passives and detractors scale rather than as an average.",
     )
     hint = fields.Char(
-        string="Précision", translate=True,
-        help="Une ligne sous la question. Sert à borner ce qu'on demande, "
-             "jamais à orienter la réponse.",
+        string="Hint", translate=True,
+        help="One line under the question. It is there to frame what is "
+             "being asked, never to steer the answer.",
     )
-    sequence = fields.Integer(string="Séquence", default=10)
-    active = fields.Boolean(string="Actif", default=True)
+    sequence = fields.Integer(string="Sequence", default=10)
+    active = fields.Boolean(string="Active", default=True)
 
     @api.constrains("question_kind", "is_enps")
     def _check_enps_is_a_scale(self):

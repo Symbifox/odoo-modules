@@ -5,7 +5,7 @@
         <field name="name">bf.ex.pulse.campaign.list</field>
         <field name="model">bf.ex.pulse.campaign</field>
         <field name="arch" type="xml">
-            <list string="Vagues de pulse">
+            <list string="Pulse waves">
                 <field name="name"/>
                 <field name="date_open"/>
                 <field name="date_close"/>
@@ -27,38 +27,38 @@
         <field name="name">bf.ex.pulse.campaign.form</field>
         <field name="model">bf.ex.pulse.campaign</field>
         <field name="arch" type="xml">
-            <form string="Vague de pulse">
+            <form string="Pulse wave">
                 <header>
-                    <button name="action_open" type="object" string="Ouvrir la vague"
+                    <button name="action_open" type="object" string="Open the wave"
                             class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_send_invitations" type="object"
-                            string="Envoyer les liens" class="btn-primary"
+                            string="Send the links" class="btn-primary"
                             invisible="state != 'open'"/>
-                    <button name="action_close" type="object" string="Fermer la vague"
+                    <button name="action_close" type="object" string="Close the wave"
                             invisible="state != 'open'"
-                            confirm="Fermer la vague verse au registre tout ce qui reste au sas, même si le seuil n'est pas atteint. Les scores sous le seuil resteront muets."/>
+                            confirm="Closing the wave flushes to the register everything still in the staging area, even if the threshold is not reached. Scores below the threshold will stay silent."/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,open,closed"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Pouls de septembre"/></h1>
+                        <h1><field name="name" placeholder="September pulse"/></h1>
                     </div>
                     <group>
-                        <group string="Portée">
+                        <group string="Scope">
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="segment_mode" readonly="state != 'draft'"/>
                             <field name="date_open" readonly="1"/>
                             <field name="date_close" readonly="1"/>
                         </group>
-                        <group string="Seuils">
+                        <group string="Thresholds">
                             <field name="score_threshold"/>
                             <field name="text_threshold"/>
                             <field name="window_days"/>
                         </group>
                     </group>
-                    <group string="Réception">
+                    <group string="Participation">
                         <group>
                             <field name="invitation_count"/>
                             <field name="response_count"/>
@@ -69,7 +69,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Questions posées" name="questions">
+                        <page string="Questions asked" name="questions">
                             <field name="question_ids" readonly="state != 'draft'">
                                 <list>
                                     <field name="sequence" widget="handle"/>
@@ -80,12 +80,12 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Registre des invitations" name="invitations"
+                        <page string="Invitation register" name="invitations"
                               invisible="state == 'draft'">
                             <div class="alert alert-info" role="status">
-                                Ce registre sait qui a répondu, pour ne pas relancer
-                                pour rien. Il ne sait ni quand ni quoi : les réponses
-                                vivent dans une autre table, sans lien vers une personne.
+                                This register knows who has responded, so no one is chased
+                                for nothing. It knows neither when nor what: the responses
+                                live in another table, with no link to a person.
                             </div>
                             <field name="invitation_ids" readonly="1">
                                 <list>
@@ -103,16 +103,16 @@
     </record>
 
     <record id="action_pulse_campaign" model="ir.actions.act_window">
-        <field name="name">Vagues de pulse</field>
+        <field name="name">Pulse waves</field>
         <field name="res_model">bf.ex.pulse.campaign</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Lancez une première vague</p>
+            <p class="o_view_nocontent_smiling_face">Launch a first wave</p>
             <p>
-                Trois à cinq questions, une fois par mois ou par trimestre.
-                Le score d'un segment reste muet tant qu'il n'a pas assez de
-                répondants, ce qui est la seule façon de promettre l'anonymat
-                sans mentir.
+                Three to five questions, once a month or once a quarter.
+                A segment's score stays silent until it has enough
+                respondents, which is the only way to promise anonymity
+                without lying.
             </p>
         </field>
     </record>

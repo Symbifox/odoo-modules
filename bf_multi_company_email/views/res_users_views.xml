@@ -6,24 +6,20 @@
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='preferences']" position="after">
-                <page string="Courriels multi-sociétés" name="bf_multi_company_email">
+                <page string="Multi-company emails" name="bf_multi_company_email">
                     <group>
                         <field name="bf_company_email"/>
                         <div colspan="2" class="text-muted">
-                            Adresse d'expédition utilisée pour les courriels
-                            envoyés sous la société active. Valeur par société —
-                            sélectionnez la société dans le sélecteur en haut à
-                            droite avant de la saisir. N'écrase jamais le
-                            courriel du partenaire.
+                            Sending address used for emails sent under the active company. A per-company value: pick the company in the switcher at the top right before entering it. It never overwrites the partner's email.
                         </div>
                     </group>
                     <separator string="Signature"/>
                     <group>
                         <group>
                             <field name="bf_signature_pronouns"
-                                   placeholder="il/lui"/>
+                                   placeholder="they/them"/>
                             <field name="bf_signature_job_title"
-                                   placeholder="Consultant principal"/>
+                                   placeholder="Senior consultant"/>
                         </group>
                         <group>
                             <field name="bf_signature_use_company_links"/>
@@ -32,15 +28,15 @@
                             <field name="bf_signature_locked"/>
                         </group>
                     </group>
-                    <separator string="Mes liens rapides"/>
+                    <separator string="My quick links"/>
                     <field name="bf_signature_link_ids"
                            context="{'default_user_id': id}">
                         <list editable="bottom">
                             <field name="sequence" widget="handle"/>
                             <field name="icon" placeholder="📅"/>
-                            <field name="name" placeholder="Prendre rendez-vous"/>
+                            <field name="name" placeholder="Book an appointment"/>
                             <field name="source"/>
-                            <field name="target_url" string="Mène à"
+                            <field name="target_url" string="Leads to"
                                    placeholder="https://…"
                                    readonly="source != 'manual'"/>
                             <field name="use_tracker" widget="boolean_toggle"/>
@@ -71,25 +67,23 @@
                 <field name="bf_signature_locked" invisible="1"/>
                 <div colspan="2" class="text-muted"
                      invisible="not bf_signature_locked">
-                    Votre organisation impose la signature. Renseignez vos
-                    pronoms, votre titre et vos liens dans l'onglet
-                    « Signature » et elle se régénère toute seule.
+                    Your organisation enforces the signature. Fill in your pronouns, your title and your links in the "Signature" tab and it regenerates on its own.
                 </div>
             </xpath>
             <xpath expr="//field[@name='signature']" position="after">
                 <group string="Signature" col="2">
-                    <field name="bf_signature_pronouns" placeholder="il/lui"/>
+                    <field name="bf_signature_pronouns" placeholder="they/them"/>
                     <field name="bf_signature_job_title"/>
                     <field name="bf_signature_use_company_links"/>
                 </group>
-                <separator string="Mes liens rapides"/>
+                <separator string="My quick links"/>
                 <field name="bf_signature_link_ids">
                     <list editable="bottom">
                         <field name="sequence" widget="handle"/>
                         <field name="icon" placeholder="📅"/>
-                        <field name="name" placeholder="Prendre rendez-vous"/>
+                        <field name="name" placeholder="Book an appointment"/>
                         <field name="source"/>
-                        <field name="target_url" string="Mène à"
+                        <field name="target_url" string="Leads to"
                                placeholder="https://…"
                                readonly="source != 'manual'"/>
                         <field name="use_tracker" widget="boolean_toggle"/>

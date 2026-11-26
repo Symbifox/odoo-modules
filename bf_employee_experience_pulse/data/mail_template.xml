@@ -14,9 +14,9 @@
         -->
 
         <record id="mail_template_pulse_invite" model="mail.template">
-            <field name="name">Pulse : invitation</field>
+            <field name="name">Pulse: invitation</field>
             <field name="model_id" ref="model_bf_ex_pulse_invitation"/>
-            <field name="subject">Deux minutes pour dire comment ça va</field>
+            <field name="subject">Two minutes to say how things are going</field>
             <field name="email_from">{{ object.campaign_id.company_id.email_formatted or user.email_formatted }}</field>
             <field name="email_to">{{ object.employee_id.work_email }}</field>
             <field name="auto_delete" eval="True"/>
@@ -34,7 +34,7 @@
                 <img t-att-src="marque['logo']" alt="" style="height:40px; width:auto; display:block; border:0;"/>
               </td>
               <td align="right" t-attf-style="color:{{ marque['texte_sur_sombre'] }}; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:800; letter-spacing:0.2px;">
-                Votre pouls
+                Your pulse
               </td>
             </tr></tbody></table>
           </td>
@@ -42,31 +42,31 @@
         <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ marque['accent'] }};">&amp;#160;</td></tr>
         <tr>
           <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;">
-            <p style="font-size:15px; margin:0 0 12px 0;">Bonjour,</p>
+            <p style="font-size:15px; margin:0 0 12px 0;">Hello,</p>
             <p style="font-size:15px; margin:0 0 12px 0;">
-              Voici votre lien pour la vague
-              <b t-out="object.campaign_id.name or ''"/>. Ça prend deux minutes.
+              Here is your link for the
+              <b t-out="object.campaign_id.name or ''"/> wave. It takes two minutes.
             </p>
             <div style="text-align:center; margin:28px 0;">
               <a t-attf-href="{{ object.campaign_id.get_base_url() }}/pulse/{{ object.token }}"
                  t-attf-style="background-color:{{ marque['bouton'] }}; color:#FFFFFF; text-decoration:none; padding:12px 28px; border-radius:6px; font-size:15px; font-weight:600; display:inline-block;">
-                Répondre
+                Answer
               </a>
             </div>
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
                    t-attf-style="border-left:3px solid {{ marque['accent'] }}; background-color:#F8FAFC; border-radius:0 6px 6px 0;">
               <tbody><tr><td style="padding:12px 16px; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#4B5563;">
-                Vos réponses ne portent pas votre nom. Le lien sait que vous avez
-                répondu, pour ne pas vous relancer pour rien, et il ne retient ni
-                l'heure ni le contenu de votre réponse. Un résultat ne s'affiche
-                qu'au-dessus de <t t-out="object.campaign_id.score_threshold or 3"/>
-                répondants.
+                Your answers do not carry your name. The link knows that you have
+                answered, so nobody chases you for nothing, and it keeps neither
+                the time nor the content of your answer. A result only appears
+                above <t t-out="object.campaign_id.score_threshold or 3"/>
+                respondents.
               </td></tr></tbody>
             </table>
             <p style="font-size:13px; color:#6B7280; margin:16px 0 0 0;">
-              Ce lien est personnel&#160;: il ne sert qu'une fois, et c'est ce qui
-              empêche une même personne de peser deux fois dans le résultat. Ne le
-              transférez pas.
+              This link is personal: it works once only, and that is what
+              stops the same person weighing twice in the result. Do not
+              forward it.
             </p>
           </td>
         </tr>
@@ -74,7 +74,7 @@
           <td style="padding:16px 24px 20px 24px; border-top:1px solid #E5E7EB;">
             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
               <t t-if="societe.name"><b t-out="societe.name"/><br/></t>
-              Message automatique, envoyé à l'ouverture d'une vague de pouls.
+              Automatic message, sent when a pulse wave opens.
             </p>
           </td>
         </tr>

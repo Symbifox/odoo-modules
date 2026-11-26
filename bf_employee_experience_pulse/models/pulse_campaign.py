@@ -5,94 +5,97 @@ import random
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools.misc import get_lang
 
 _logger = logging.getLogger(__name__)
 
 
 class PulseCampaign(models.Model):
     _name = "bf.ex.pulse.campaign"
-    _description = "Vague de pulse"
+    _description = "Pulse wave"
     _inherit = ["mail.thread"]
     _order = "date_open desc, id desc"
 
-    name = fields.Char(string="Vague", required=True, tracking=True)
+    name = fields.Char(string="Wave", required=True, tracking=True)
     company_id = fields.Many2one(
-        "res.company", string="Société", required=True,
+        "res.company", string="Company", required=True,
         default=lambda self: self.env.company,
     )
     state = fields.Selection(
-        [("draft", "Brouillon"), ("open", "Ouverte"), ("closed", "Fermée")],
-        string="État", default="draft", required=True, tracking=True,
+        [("draft", "Draft"), ("open", "Open"), ("closed", "Closed")],
+        string="Status", default="draft", required=True, tracking=True,
     )
-    date_open = fields.Date(string="Ouverte le", tracking=True)
-    date_close = fields.Date(string="Fermée le", tracking=True)
+    date_open = fields.Date(string="Opened on", tracking=True)
+    date_close = fields.Date(string="Closed on", tracking=True)
     question_ids = fields.Many2many(
-        "bf.ex.pulse.question", string="Questions posées",
-        help="Trois à cinq questions suffisent. Un questionnaire long se "
-             "répond une fois.",
+        "bf.ex.pulse.question", string="Questions asked",
+        help="Three to five questions are enough. A long questionnaire "
+             "gets answered once.",
     )
     segment_mode = fields.Selection(
-        [("company", "Toute la société"), ("department", "Par département")],
-        string="Découpage", default="company", required=True,
-        help="Découper par département n'a de sens qu'au-dessus du seuil : "
-             "sous le seuil, chaque segment reste muet et le tableau est vide.",
+        [("company", "The whole company"), ("department", "By department")],
+        string="Breakdown", default="company", required=True,
+        help="Breaking results down by department only makes sense above "
+             "the threshold: below it, every segment stays silent and the "
+             "table is empty.",
     )
 
     score_threshold = fields.Integer(
-        string="Seuil d'un score", default=5, required=True,
-        help="Nombre de répondants sous lequel un score chiffré ne s'affiche "
-             "pas. Cinq : plus sévère que les trois du marché, et jamais "
-             "abaissable.",
+        string="Score threshold", default=5, required=True,
+        help="Number of respondents below which a numeric score is not "
+             "shown. Five: stricter than the three the market uses, and "
+             "never to be lowered.",
     )
     text_threshold = fields.Integer(
-        string="Seuil des commentaires", default=5, required=True,
-        help="Nombre de répondants sous lequel les commentaires écrits ne "
-             "s'affichent pas. Plus élevé que le seuil d'un score, parce "
-             "qu'un verbatim se reconnaît à la plume.",
+        string="Comment threshold", default=5, required=True,
+        help="Number of respondents below which written comments are not "
+             "shown. Higher than the score threshold, because a verbatim "
+             "comment gives its author away by their style.",
     )
     window_days = fields.Integer(
-        string="Fenêtre glissante (jours)", default=90, required=True,
-        help="Les scores agrègent les vagues des N derniers jours. C'est ce "
-             "qui permet à une petite équipe d'atteindre le seuil sur le "
-             "trimestre plutôt que jamais sur la semaine.",
+        string="Rolling window (days)", default=90, required=True,
+        help="Scores aggregate the waves of the last N days. That is what "
+             "lets a small team reach the threshold over the quarter "
+             "instead of never over the week.",
     )
 
     invitation_ids = fields.One2many(
         "bf.ex.pulse.invitation", "campaign_id", string="Invitations",
     )
     invitation_count = fields.Integer(
-        string="Invitées", compute="_compute_counters",
+        string="People invited", compute="_compute_counters",
     )
     response_count = fields.Integer(
-        string="Réponses reçues", compute="_compute_counters",
-        help="Le nombre de personnes qui ont répondu. Jamais lesquelles, "
-             "jamais quand.",
+        string="Responses received", compute="_compute_counters",
+        help="The number of people who have responded. Never which ones, "
+             "never when.",
     )
     # ⚠️ Échelle 0 à 100 : une vue ne lui met jamais `widget="percentage"`,
     # qui attend 0 à 1 et multiplie par cent.
     response_rate = fields.Float(
-        string="Taux de réponse (%)", compute="_compute_counters",
+        string="Response rate (%)", compute="_compute_counters",
     )
     pending_flush_count = fields.Integer(
-        string="En attente de versement", compute="_compute_counters",
-        help="Réponses au sas, qui ne sont pas encore comptées dans les "
-             "scores. Elles se versent en lot, dans un ordre tiré au hasard.",
+        string="Awaiting flush", compute="_compute_counters",
+        help="Responses in the staging area, not yet counted in the "
+             "scores. They are flushed as a batch, in a randomly drawn "
+             "order.",
     )
 
     @api.constrains("score_threshold", "text_threshold")
     def _check_thresholds(self):
         for rec in self:
             if rec.score_threshold < 5:
-                raise ValidationError(
-                    "Le seuil d'un score ne descend pas sous cinq "
-                    "répondants. Sous ce nombre, un département se "
-                    "désanonymise par soustraction."
-                )
+                raise ValidationError(rec.env._(
+                    "A score threshold does not go below five respondents. "
+                    "Under that number, a department de-anonymises itself by "
+                    "subtraction."
+                ))
             if rec.text_threshold < rec.score_threshold:
-                raise ValidationError(
-                    "Le seuil des commentaires ne peut pas être plus bas que "
-                    "celui d'un score : un verbatim en dit plus qu'un chiffre."
-                )
+                raise ValidationError(rec.env._(
+                    "The comment threshold cannot be lower than a score's: a "
+                    "verbatim comment says more than a number."
+                ))
 
     @api.constrains("window_days")
     def _check_window(self):
@@ -142,7 +145,7 @@ class PulseCampaign(models.Model):
             if rec.state != "draft":
                 raise UserError(
                     "Une vague ne s'ouvre qu'une fois. Celle-ci est déjà %s."
-                    % dict(rec._fields["state"].selection)[rec.state].lower()
+                    % dict(rec._fields["state"]._description_selection(rec.env))[rec.state].lower()
                 )
             if not rec.question_ids:
                 raise UserError(
@@ -234,6 +237,10 @@ class PulseCampaign(models.Model):
     @api.model
     def _cron_flush_and_score(self):
         """Passe périodique : verse ce qui peut l'être, recalcule les scores."""
+        # Sans langue au contexte (travail planifié, passerelle de courriel), le suivi au fil et
+        # les libellés stockés sortaient en anglais depuis la bascule de la source.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         campaigns = self.search([("state", "in", ("open", "closed"))])
         versees = campaigns._flush_staged()
         campaigns._rebuild_scores()
@@ -292,7 +299,13 @@ class PulseCampaign(models.Model):
             for invitation in rec.invitation_ids.filtered(lambda i: not i.used):
                 if not invitation.employee_id.work_email:
                     continue
-                template.send_mail(invitation.id, force_send=False)
+                # Le gabarit n'a pas de langue : sans elle, l'invitation sortait dans la langue de qui
+                # l'envoie (un appel sans langue la mettait en anglais pour tout le personnel). La
+                # langue de la personne invitée, sinon celle de la société.
+                emp = invitation.employee_id
+                lang = get_lang(rec.env, emp.user_id.lang or emp.work_contact_id.lang
+                                or rec.company_id.partner_id.lang).code
+                template.with_context(lang=lang).send_mail(invitation.id, force_send=False)
                 envoyes += 1
             rec.message_post(body="%s invitations mises à la file." % envoyes)
         return envoyes

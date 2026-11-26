@@ -10,33 +10,33 @@ from odoo import fields, models
 
 class PulseMetric(models.Model):
     _name = "bf.ex.pulse.metric"
-    _description = "Axe de mesure du pulse"
+    _description = "Pulse measurement dimension"
     _order = "sequence, id"
 
-    name = fields.Char(string="Axe", required=True, translate=True)
+    name = fields.Char(string="Dimension", required=True, translate=True)
     code = fields.Char(
         string="Code",
         required=True,
-        help="Identifiant stable, employé par les agrégats. Le renommer coupe "
-             "la continuité des scores historiques.",
+        help="A stable identifier, used by the aggregates. Renaming it "
+             "breaks the continuity of historical scores.",
     )
-    sequence = fields.Integer(string="Séquence", default=10)
+    sequence = fields.Integer(string="Sequence", default=10)
     description = fields.Text(
-        string="Ce que l'axe mesure",
+        string="What this dimension measures",
         translate=True,
-        help="Lisible par la personne qui répond. Un axe qu'on ne sait pas "
-             "définir produit des réponses qui ne veulent rien dire.",
+        help="Read by the person answering. A dimension you cannot define "
+             "produces answers that mean nothing.",
     )
     question_ids = fields.One2many(
         "bf.ex.pulse.question", "metric_id", string="Questions",
     )
     question_count = fields.Integer(
-        string="Nombre de questions", compute="_compute_question_count",
+        string="Number of questions", compute="_compute_question_count",
     )
-    active = fields.Boolean(string="Actif", default=True)
+    active = fields.Boolean(string="Active", default=True)
 
     _sql_constraints = [
-        ("code_uniq", "UNIQUE(code)", "Ce code d'axe existe déjà."),
+        ("code_uniq", "UNIQUE(code)", "This dimension code already exists."),
     ]
 
     def _compute_question_count(self):

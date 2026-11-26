@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='general_info']" position="after">
-                <page string="Courriels multi-sociétés" name="bf_multi_company_email">
+                <page string="Multi-company emails" name="bf_multi_company_email">
                     <group>
                         <group string="Signature">
                             <field name="bf_signature_template_id"/>
@@ -15,19 +15,19 @@
                             <field name="bf_signature_user_count"/>
                             <button name="action_bf_apply_signatures"
                                     type="object"
-                                    string="Appliquer à tout le monde"
+                                    string="Apply to everyone"
                                     class="btn-secondary"
                                     colspan="2"
-                                    confirm="Régénérer la signature de chaque personne rattachée à cette société ? Les signatures modifiées à la main seront écrasées."/>
+                                    confirm="Regenerate the signature of every person attached to this company? Signatures edited by hand will be overwritten."/>
                         </group>
-                        <group string="Routage courriel (société)">
+                        <group string="Email routing (company)">
                             <field name="bf_catchall_domain"/>
                             <field name="bf_catchall_alias"/>
                             <field name="bf_bounce_alias"/>
                             <field name="bf_default_from"/>
                         </group>
                     </group>
-                    <group string="Éléments de marque de la signature">
+                    <group string="Signature branding elements">
                         <group>
                             <field name="bf_signature_logo_url"
                                    placeholder="https://…/logo.png"/>
@@ -46,30 +46,25 @@
                             <field name="bf_signature_font"/>
                         </group>
                     </group>
-                    <separator string="Avis de confidentialité (toute la société)"/>
+                    <separator string="Confidentiality notice (whole company)"/>
                     <group>
                         <field name="bf_signature_disclaimer_size"/>
                     </group>
                     <field name="bf_signature_disclaimer" widget="html"
-                           placeholder="Ce message et les documents qui l'accompagnent sont confidentiels…"/>
+                           placeholder="This message and the documents attached to it are confidential…"/>
                     <p class="text-muted">
-                        ⚠️ L'avis voyage <b>avec la signature</b>&#160;: il
-                        apparaît là où la signature apparaît, pas sur une
-                        réponse courte qui n'en porte pas. Les produits qui
-                        l'ajoutent à tout le courrier sortant le font à la
-                        passerelle&#160;; ce n'est ni le même endroit ni le
-                        même outil.
+                        ⚠️ The notice travels <b>with the signature</b>: it appears wherever the signature appears, not on a short reply that carries none. Products that add it to all outgoing mail do so at the gateway; that is neither the same place nor the same tool.
                     </p>
 
-                    <separator string="Liens rapides (pied de signature)"/>
+                    <separator string="Quick links (signature footer)"/>
                     <field name="bf_signature_link_ids"
                            context="{'default_company_id': id}">
                         <list editable="bottom">
                             <field name="sequence" widget="handle"/>
                             <field name="icon" placeholder="📅"/>
-                            <field name="name" placeholder="Prendre rendez-vous"/>
+                            <field name="name" placeholder="Book an appointment"/>
                             <field name="source"/>
-                            <field name="target_url" string="Mène à"
+                            <field name="target_url" string="Leads to"
                                    placeholder="https://…"
                                    readonly="source != 'manual'"/>
                             <field name="use_tracker" widget="boolean_toggle"/>
@@ -77,10 +72,7 @@
                         </list>
                     </field>
                     <p class="text-muted">
-                        Ces liens s'ajoutent à ceux de chaque personne. Un lien
-                        qui vise l'agenda de quelqu'un en particulier va sur sa
-                        fiche, pas ici&#160;: sinon toute l'équipe envoie ses
-                        prospects au même calendrier.
+                        These links are added to each person's own. A link aimed at one person's calendar belongs on their record, not here: otherwise the whole team sends its prospects to the same calendar.
                     </p>
                 </page>
             </xpath>

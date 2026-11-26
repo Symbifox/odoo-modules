@@ -8,7 +8,7 @@
     -->
 
     <record id="bf_signature_link_rule_own" model="ir.rule">
-        <field name="name">Lien de signature : le mien</field>
+        <field name="name">Signature link: my own</field>
         <field name="model_id" ref="model_bf_signature_link"/>
         <field name="domain_force">[('user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
@@ -19,7 +19,7 @@
     </record>
 
     <record id="bf_signature_link_rule_company_read" model="ir.rule">
-        <field name="name">Lien de signature : ceux de ma société sont visibles</field>
+        <field name="name">Signature link: my company's are visible</field>
         <field name="model_id" ref="model_bf_signature_link"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
@@ -30,7 +30,7 @@
     </record>
 
     <record id="bf_signature_link_rule_company_manage" model="ir.rule">
-        <field name="name">Lien de signature : l'administrateur gère ceux de la société</field>
+        <field name="name">Signature link: an administrator manages the company's</field>
         <field name="model_id" ref="model_bf_signature_link"/>
         <field name="domain_force">[('company_id', '!=', False)]</field>
         <field name="groups" eval="[(4, ref('base.group_system'))]"/>

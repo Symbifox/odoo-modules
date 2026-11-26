@@ -44,11 +44,11 @@
                     </group>
                     <div class="alert alert-warning" role="status"
                          invisible="is_displayable">
-                        Pas assez de réponses pour afficher un score. Le module
-                        n'affiche ni zéro ni approximation : sous le seuil, un
-                        chiffre se lirait comme une réponse individuelle.
+                        Not enough responses to show a score. The module shows
+                        neither zero nor an approximation: below the threshold, a
+                        number would read as one individual response.
                     </div>
-                    <group string="Commentaires">
+                    <group string="Comments">
                         <field name="verbatim_count"/>
                         <field name="verbatims_displayable"/>
                     </group>
@@ -56,9 +56,9 @@
                            invisible="not verbatims_displayable"/>
                     <div class="alert alert-info" role="status"
                          invisible="verbatims_displayable or verbatim_count == 0">
-                        Des commentaires ont été reçus et ne s'affichent pas :
-                        il en faut davantage pour qu'aucun ne se reconnaisse à
-                        la plume.
+                        Comments have been received and are not shown:
+                        more are needed before none of them can be traced back
+                        to its author by style.
                     </div>
                 </sheet>
             </form>
@@ -83,21 +83,21 @@
             <search string="Scores">
                 <field name="metric_id"/>
                 <field name="segment_label"/>
-                <filter name="filtre_affichables" string="Au-dessus du seuil"
+                <filter name="filtre_affichables" string="Above the threshold"
                         domain="[('is_displayable', '=', True)]"/>
-                <filter name="filtre_muets" string="Sous le seuil"
+                <filter name="filtre_muets" string="Below the threshold"
                         domain="[('is_displayable', '=', False)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="par_axe" string="Axe" context="{'group_by': 'metric_id'}"/>
-                    <filter name="par_segment" string="Équipe" context="{'group_by': 'segment_label'}"/>
-                    <filter name="par_periode" string="Période" context="{'group_by': 'period_end'}"/>
+                <group expand="0" string="Group By">
+                    <filter name="par_axe" string="Dimension" context="{'group_by': 'metric_id'}"/>
+                    <filter name="par_segment" string="Team" context="{'group_by': 'segment_label'}"/>
+                    <filter name="par_periode" string="Period" context="{'group_by': 'period_end'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_pulse_score" model="ir.actions.act_window">
-        <field name="name">Scores du pulse</field>
+        <field name="name">Pulse scores</field>
         <field name="res_model">bf.ex.pulse.score</field>
         <field name="view_mode">list,graph,form</field>
         <field name="context">{'search_default_filtre_affichables': 1}</field>

@@ -4,6 +4,16 @@ Notable changes to `bf_multi_company_email`.
 The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow `18.0.MAJOR.MINOR.PATCH`.
 
+## [18.0.5.1.1] — labels written in English
+
+### Changed
+
+**Source language.** Labels, messages and views are written in English in the
+source; the French ships in `i18n/fr_CA.po`. Before this version they read in
+French for every user, including users set to English. The upgrade renames the
+scheduled job to its English name and keeps the French in the catalogue; it
+writes the French only on a database where French is installed.
+
 ## [18.0.5.1.0] — quick links render as buttons
 
 ### Fixed

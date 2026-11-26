@@ -24,15 +24,14 @@ class MailTemplate(models.Model):
     _inherit = "mail.template"
 
     bf_is_signature = fields.Boolean(
-        string="Modèle de signature",
-        help="Marque ce gabarit comme un bloc de signature courriel. Sans "
-             "cette case, il n'apparaît ni dans la galerie ni dans les "
-             "sélecteurs de signature.\n\n"
-             "Le marqueur est explicite plutôt que déduit du modèle "
-             "res.users : Odoo livre lui-même des gabarits sur res.users "
-             "(invitation 2FA, création de compte portail), et les proposer "
-             "comme signatures ferait d'une invitation 2FA le pied de page "
-             "de quelqu'un.",
+        string="Signature model",
+        help="Marks this template as an email signature block. Without "
+             "this box it appears neither in the gallery nor in the "
+             "signature pickers. The marker is explicit rather than "
+             "inferred from the res.users model: Odoo ships templates on "
+             "res.users itself (2FA invitation, portal account creation), "
+             "and offering them as signatures would make a 2FA invitation "
+             "somebody's footer.",
     )
 
     def _bf_signature_admin(self):
@@ -49,8 +48,7 @@ class MailTemplate(models.Model):
                 self.env.context.get("default_bf_is_signature")
                 or any(vals.get("bf_is_signature") for vals in vals_list)):
             raise AccessError(_(
-                "Seule une personne administratrice peut créer un modèle de "
-                "signature."))
+                "Only an administrator can create a signature model."))
         return super().create(vals_list)
 
     def write(self, vals):
@@ -58,8 +56,7 @@ class MailTemplate(models.Model):
                 "bf_is_signature" in vals
                 or any(self.sudo().mapped("bf_is_signature"))):
             raise AccessError(_(
-                "Seule une personne administratrice peut modifier un modèle "
-                "de signature."))
+                "Only an administrator can edit a signature model."))
         res = super().write(vals)
         if "body_html" in vals and not self.env.context.get("install_mode"):
             self._bf_refresh_signatures()

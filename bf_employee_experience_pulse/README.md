@@ -170,7 +170,17 @@ from the config file, so the module would load from a neighbouring tree while it
 data files came from the right one. A mutation pass on a hybrid tree measures
 nothing.
 
+## Languages (v18.0.1.2.4)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The invitation goes out in the employee's language (their user's, otherwise their work contact's, otherwise the company's). The "whole company" segment label and the refusal message follow the reader's language. What a scheduled job writes without anyone at the screen (status changes in the chatter, creation messages) is written in the company's language.
+
 ## Changelog
+
+### 18.0.1.2.4
+
+- **Source language.** Labels, messages, views and data are written in English;
+  the French ships in `i18n/fr_CA.po`. The invitation goes out in the employee's language,
+  and the scheduled scoring job writes in the company's. See Languages.
 
 ### 18.0.1.2.3
 

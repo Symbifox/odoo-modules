@@ -20,27 +20,27 @@ _logger = logging.getLogger(__name__)
 
 class BfSignatureGallery(models.TransientModel):
     _name = "bf.signature.gallery"
-    _description = "Galerie de modèles de signature"
+    _description = "Signature model gallery"
 
     user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Aperçu pour",
+        string="Preview for",
         required=True,
         default=lambda self: self.env.user,
         readonly=True,
     )
     company_id = fields.Many2one(
         comodel_name="res.company",
-        string="Société",
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
     scope = fields.Selection(
         selection=[
-            ("user", "Pour moi seulement"),
-            ("company", "Pour toute la société"),
+            ("user", "For me only"),
+            ("company", "For the whole company"),
         ],
-        string="Appliquer",
+        string="Apply",
         required=True,
         default="user",
     )
@@ -49,14 +49,15 @@ class BfSignatureGallery(models.TransientModel):
         readonly=True,
     )
     is_locked = fields.Boolean(
-        string="Signature imposée",
+        string="Signature enforced",
         compute="_compute_is_locked",
-        help="La société impose sa signature : le choix personnel est fermé.",
+        help="The company enforces its signature: the personal choice is "
+             "closed.",
     )
     line_ids = fields.One2many(
         comodel_name="bf.signature.gallery.line",
         inverse_name="gallery_id",
-        string="Modèles",
+        string="Models",
     )
 
     @api.depends("user_id")
@@ -80,7 +81,7 @@ class BfSignatureGallery(models.TransientModel):
         is_admin = self.env.user.has_group("base.group_system")
         if self.user_id != self.env.user and not is_admin:
             raise AccessError(_(
-                "On ne choisit que sa propre signature."))
+                "You only choose your own signature."))
         return is_admin
 
     # ------------------------------------------------------------------
@@ -100,9 +101,12 @@ class BfSignatureGallery(models.TransientModel):
             lines.append((0, 0, {
                 "template_id": template.id,
                 "name": template.name,
+                # La phrase passe par le catalogue, le balisage reste dehors :
+                # elle etait en francais ET hors de tout `_()`, donc ni
+                # traduisible ni anglaise — un anglophone la lisait en francais.
                 "preview": user._bf_render_with(template, company)
-                           or "<p class='text-muted'>Ce gabarit ne rend rien "
-                              "pour votre fiche.</p>",
+                           or "<p class='text-muted'>%s</p>" % self.env._(
+                               "This template renders nothing for your record."),
                 "is_current": template == current,
             }))
         values["line_ids"] = lines
@@ -115,7 +119,7 @@ class BfSignatureGallery(models.TransientModel):
         chosen = self.line_ids.filtered("selected")
         if len(chosen) != 1:
             raise UserError(_(
-                "Choisissez exactement un modèle (%s coché(s)).", len(chosen)))
+                "Choose exactly one model (%s ticked).", len(chosen)))
         template = chosen.template_id
 
         # The wizard is the gate. Writing bf_signature_template_id through
@@ -127,34 +131,34 @@ class BfSignatureGallery(models.TransientModel):
         # at any template at all.
         if not template.sudo().bf_is_signature or template.sudo().model != "res.users":
             raise UserError(_(
-                "« %s » n'est pas marqué comme modèle de signature.",
+                "\"%s\" is not marked as a signature model.",
                 template.name))
 
         if self.scope == "company":
             if not is_admin or self.company_id not in self.env.user.company_ids:
                 raise AccessError(_(
-                    "Choisir le modèle de toute la société est réservé aux "
-                    "administrateurs."))
+                    "Choosing the template for the whole company is "
+                    "reserved to administrators."))
             self.company_id.sudo().bf_signature_template_id = template.id
             targets = self.company_id.sudo()._bf_signature_users()
             targets._bf_apply_company_signature(force=True)
             message = _(
-                "« %(tpl)s » est maintenant le modèle de %(company)s. "
-                "%(count)s signature(s) régénérée(s).",
+                "\"%(tpl)s\" is now the model for %(company)s. %(count)s "
+                "signature(s) regenerated.",
                 tpl=template.name, company=self.company_id.name,
                 count=len(targets),
             )
         else:
             if self.user_id.company_id.bf_signature_enforce and not is_admin:
                 raise UserError(_(
-                    "%s impose sa signature : le choix personnel est fermé. "
-                    "Demandez à une personne administratrice.",
+                    "%s enforces its signature: the personal choice is "
+                    "closed. Ask an administrator.",
                     self.user_id.company_id.name))
             self.user_id.sudo().write(
                 {"bf_signature_template_id": template.id})
             self.user_id.sudo()._bf_apply_company_signature(force=True)
             message = _(
-                "« %s » est maintenant votre modèle de signature.",
+                "\"%s\" is now your signature model.",
                 template.name)
 
         _logger.info(
@@ -165,7 +169,7 @@ class BfSignatureGallery(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Signature mise à jour"),
+                "title": _("Signature updated"),
                 "message": message,
                 "type": "success",
                 "sticky": False,
@@ -182,11 +186,11 @@ class BfSignatureGallery(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Retour au modèle de la société"),
+                "title": _("Back to the company model"),
                 "message": _(
-                    "Votre signature suit de nouveau « %s ».",
+                    "Your signature follows \"%s\" again.",
                     self.company_id.bf_signature_template_id.name
-                    or _("aucun modèle")),
+                    or _("no model")),
                 "type": "success",
                 "sticky": False,
                 "next": {"type": "ir.actions.act_window_close"},
@@ -196,7 +200,7 @@ class BfSignatureGallery(models.TransientModel):
 
 class BfSignatureGalleryLine(models.TransientModel):
     _name = "bf.signature.gallery.line"
-    _description = "Modèle de signature proposé"
+    _description = "Suggested signature model"
     _order = "is_current desc, name, id"
 
     gallery_id = fields.Many2one(
@@ -206,19 +210,19 @@ class BfSignatureGalleryLine(models.TransientModel):
     )
     template_id = fields.Many2one(
         comodel_name="mail.template",
-        string="Gabarit",
+        string="Template",
         required=True,
         readonly=True,
     )
-    name = fields.Char(string="Modèle", readonly=True)
+    name = fields.Char(string="Model", readonly=True)
     preview = fields.Html(
-        string="Aperçu",
+        string="Preview",
         readonly=True,
         sanitize=False,
-        help="Rendu avec vos propres données, pas un exemple générique.",
+        help="Rendered with your own data, not a generic example.",
     )
-    is_current = fields.Boolean(string="Actuel", readonly=True)
-    selected = fields.Boolean(string="Choisir")
+    is_current = fields.Boolean(string="Current", readonly=True)
+    selected = fields.Boolean(string="Choose")
 
     @api.onchange("selected")
     def _onchange_selected(self):

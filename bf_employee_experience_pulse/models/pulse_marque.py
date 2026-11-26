@@ -69,7 +69,7 @@ def sur_fond_blanc(accent):
 
 class PulseMarque(models.AbstractModel):
     _name = "bf.ex.pulse.marque"
-    _description = "Couleurs de marque du pulse"
+    _description = "Pulse brand colours"
 
     @api.model
     def couleurs(self, company=None):

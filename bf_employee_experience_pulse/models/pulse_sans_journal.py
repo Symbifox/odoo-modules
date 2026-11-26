@@ -30,7 +30,7 @@ class SansJournal(models.AbstractModel):
     """À mêler à tout modèle qui porte `_log_access = False`."""
 
     _name = "bf.ex.pulse.sans.journal"
-    _description = "Modèle sans colonnes de journal"
+    _description = "Model without log columns"
     # 🔴 Indispensable ici aussi. Un mixin abstrait qui garde le défaut
     # `_log_access = True` porte les quatre champs magiques et les transmet à
     # qui l'hérite : le garde créait lui-même la colonne qu'il retire ensuite.

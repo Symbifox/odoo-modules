@@ -141,8 +141,12 @@ class PulseController(http.Controller):
                 "bf_employee_experience_pulse.pulse_formulaire",
                 dict(self._habillage(campaign), campaign=campaign,
                      questions=campaign.question_ids, token=token,
-                     erreur="Aucune réponse n'a été reçue. Répondez à au "
-                            "moins une question."),
+                     # 🔴 Montré à la personne qui répond, et pourtant hors de
+                     # tout `_()` : ni anglais, ni traduisible. Il passe par le
+                     # catalogue comme le reste de l'écran.
+                     erreur=request.env._(
+                         "No answer was received. Answer at least one "
+                         "question.")),
             )
 
         # Le drapeau d'abord : si la création échoue, la personne peut

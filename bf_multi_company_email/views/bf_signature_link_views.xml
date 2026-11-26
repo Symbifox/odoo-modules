@@ -11,8 +11,8 @@
                 <field name="icon"/>
                 <field name="name"/>
                 <field name="source"/>
-                <field name="target_url" string="Mène à" optional="show"/>
-                <field name="url" string="Publié comme" optional="show"/>
+                <field name="target_url" string="Leads to" optional="show"/>
+                <field name="url" string="Published as" optional="show"/>
                 <field name="use_tracker" optional="show"
                        widget="boolean_toggle"/>
                 <field name="click_count" optional="show"/>
@@ -36,13 +36,13 @@
                                 class="oe_stat_button" icon="fa-link"
                                 invisible="not tracker_id">
                             <field name="click_count" widget="statinfo"
-                                   string="Clics"/>
+                                   string="Clicks"/>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Automatique"
+                    <widget name="web_ribbon" title="Automatic"
                             bg_color="text-bg-info" invisible="not auto_managed"/>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Prendre rendez-vous"/></h1>
+                        <h1><field name="name" placeholder="Book an appointment"/></h1>
                     </div>
                     <group>
                         <group string="Destination">
@@ -53,38 +53,31 @@
                                    required="source == 'manual'"/>
                             <field name="auto_managed" invisible="1"/>
                         </group>
-                        <group string="Raccourci traçable">
+                        <group string="Traceable short link">
                             <field name="use_tracker"/>
                             <field name="tracker_code"
                                    invisible="not use_tracker"
-                                   placeholder="rdv-prenom"/>
-                            <field name="url" string="Publié comme"/>
+                                   placeholder="rdv-firstname"/>
+                            <field name="url" string="Published as"/>
                             <field name="tracker_id" invisible="1"/>
                         </group>
                     </group>
                     <group>
-                        <group string="Affichage">
+                        <group string="Display">
                             <field name="icon" placeholder="📅"/>
                             <field name="sequence"/>
                             <field name="active"/>
                         </group>
-                        <group string="À qui">
+                        <group string="Belongs to">
                             <field name="user_id"/>
                             <field name="company_id"/>
                         </group>
                     </group>
                     <p class="text-muted">
-                        Un lien appartient à une personne <em>ou</em> à une
-                        société, jamais aux deux. Personnel pour ce qui vise un
-                        agenda ou une boîte en particulier, société pour ce qui
-                        vaut pour tout le monde.
+                        A link belongs to a person <em>or</em> to a company, never to both. Personal for what aims at one calendar or one mailbox, company for what holds for everyone.
                     </p>
                     <p class="text-muted" invisible="not use_tracker">
-                        Une signature reste des années dans la boîte des gens
-                        et l'adresse qu'elle contient est figée au collage. Le
-                        raccourci déplace ce point fixe côté serveur&#160;:
-                        changez «&#160;Mène à&#160;» et tout le monde suit,
-                        sans recoller quoi que ce soit.
+                        A signature stays in people's mailboxes for years, and the address it carries is frozen the moment it is pasted. The short link moves that fixed point to the server side: change "Leads to" and everyone follows, with nothing to re-paste.
                     </p>
                 </sheet>
             </form>
@@ -92,7 +85,7 @@
     </record>
 
     <record id="action_bf_signature_link_provision" model="ir.actions.server">
-        <field name="name">Provisionner les liens rapides</field>
+        <field name="name">Provision the quick links</field>
         <field name="model_id" ref="model_bf_signature_link"/>
         <field name="binding_model_id" ref="model_bf_signature_link"/>
         <field name="binding_view_types">list</field>
@@ -102,22 +95,18 @@
     </record>
 
     <record id="action_bf_signature_link" model="ir.actions.act_window">
-        <field name="name">Liens rapides de signature</field>
+        <field name="name">Signature quick links</field>
         <field name="res_model">bf.signature.link</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucun lien rapide
+                No quick link
             </p>
             <p>
-                Les liens s'affichent en pied de signature&#160;: prise de
-                rendez-vous, dépôt de fichier, salle de rencontre.
+                The links appear in the signature footer: booking an appointment, dropping a file, a meeting room.
             </p>
             <p>
-                «&#160;Provisionner les liens rapides&#160;», au menu Action
-                (administrateurs), en crée un par personne à partir de sa page de rendez-vous et
-                de sa page de dépôt sécurisée, chacun derrière un raccourci
-                <code>/r/</code> que l'on peut rediriger plus tard.
+                "Provision the quick links", in the Action menu (administrators), creates one per person from their booking page and their secure drop page, each behind a <code>/r/</code> short link that can be redirected later.
             </p>
         </field>
     </record>
@@ -128,7 +117,7 @@
       whoever clicks it.
     -->
     <record id="action_bf_my_signature" model="ir.actions.server">
-        <field name="name">Ma signature courriel</field>
+        <field name="name">My email signature</field>
         <field name="model_id" ref="base.model_res_users"/>
         <field name="state">code</field>
         <field name="code">
@@ -145,7 +134,7 @@ action = {
     </record>
 
     <record id="action_bf_signature_templates" model="ir.actions.act_window">
-        <field name="name">Gabarits de signature</field>
+        <field name="name">Signature templates</field>
         <field name="res_model">mail.template</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('bf_is_signature', '=', True)]</field>
@@ -159,12 +148,10 @@ action = {
                eval="{'default_bf_is_signature': True, 'default_model_id': ref('base.model_res_users')}"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucun gabarit de signature
+                No signature template
             </p>
             <p>
-                Un gabarit s'écrit sur le modèle res.users et lit
-                <code>object.bf_signature_data()</code>. L'enregistrer
-                régénère les signatures qu'il pilote.
+                A template is written on the res.users model and reads <code>object.bf_signature_data()</code>. Saving it regenerates the signatures it drives.
             </p>
         </field>
     </record>
@@ -175,19 +162,19 @@ action = {
       workspace: no application tile, no root menu of their own.
     -->
     <menuitem id="menu_bf_my_signature"
-              name="Ma signature courriel"
+              name="My email signature"
               parent="bf_email_management.menu_bf_email_config"
               action="action_bf_my_signature"
               sequence="20"/>
 
     <menuitem id="menu_bf_signature_links"
-              name="Liens rapides de signature"
+              name="Signature quick links"
               parent="bf_email_management.menu_bf_email_config"
               action="action_bf_signature_link"
               sequence="21"/>
 
     <menuitem id="menu_bf_signature_templates"
-              name="Gabarits de signature"
+              name="Signature templates"
               parent="bf_email_management.menu_bf_email_config"
               action="action_bf_signature_templates"
               groups="base.group_system"
