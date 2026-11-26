@@ -14,7 +14,9 @@ you are writing to.
   whether or not they have a persona. Bcc recipients and companies are left
   out.
 - Each line reads the recipient's name, then the pronouns and the grammatical
-  gender, for example "**Sam Exemple** : they/them · Neutral (epicene)".
+  gender, for example "**Sam Exemple**: they/them · Neutral (epicene)". The
+  colon follows the reader's language ("**Sam Exemple** : …" in French), as in
+  the banner of `bf_persona`.
 - Everything entered by people is escaped.
 - Beyond five people, the rest is counted ("… and 2 more"), in the user's
   language.
@@ -35,9 +37,11 @@ Installs itself when both are present.
 
 ## Changelog
 
+- **18.0.1.0.1**: The colon after each name follows the reader's language, like
+  the rest of the banner (`bf_persona` 18.0.3.3.2).
 - **18.0.1.0.0**: First release.
 
 ## Licence
 
 Business Source License 1.1 (`LICENSE`). Each version converts to
-LGPL-3.0-or-later on its Change Date: 2030-10-29 for this version.
+LGPL-3.0-or-later on its Change Date: 2030-11-25 for this version.

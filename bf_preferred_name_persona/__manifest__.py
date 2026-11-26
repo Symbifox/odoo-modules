@@ -4,7 +4,9 @@
     # 18.0.1.0.0: premier jet. Le bandeau du
     #   composeur de bf_persona dit, pour chaque destinataire en À et en Cc, les
     #   pronoms et le genre grammatical qu'il a donnés, avant qu'on lui écrive.
-    "version": "18.0.1.0.0",
+    # 18.0.1.0.1: le « : » après chaque nom se traduit, comme dans le bandeau
+    #   de bf_persona.
+    "version": "18.0.1.0.1",
     "category": "Productivity/Discuss",
     "summary": "Les pronoms des destinataires dans le bandeau du composeur",
     "description": """

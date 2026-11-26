@@ -40,7 +40,10 @@ class MailComposeMessage(models.TransientModel):
         lines = []
         for person in people[:MAX_LINES]:
             bits = [b for b in (person.bf_pronouns, labels.get(person.bf_grammatical_gender)) if b]
-            lines.append(Markup("<b>%s</b> : %s") % (person.name, " · ".join(bits)))
+            # Le séparateur se traduit, comme dans le bandeau de bf_persona :
+            # le français met une espace avant le deux-points, l'anglais non.
+            lines.append(Markup("<b>%s</b>%s%s") % (
+                person.name, self.env._(": "), " · ".join(bits)))
         if len(people) > MAX_LINES:
             # Texte brut : `Markup("<br/>").join` l'échappe.
             lines.append(self.env._("… and %(count)s more", count=len(people) - MAX_LINES))

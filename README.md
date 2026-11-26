@@ -347,7 +347,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_preferred_name_linkpage` | Symbifox Noms d'usage et pronoms — pont Page de liens | 18.0.1.1.0 | BUSL-1.1 | Pronouns and the preferred name on a person's link page; renaming offers to change the addresses that carry the name |
 | `bf_preferred_name_nextcloud` | Symbifox Noms d'usage et pronoms — pont Contacts Nextcloud | 18.0.1.0.0 | BUSL-1.1 | Pronouns and grammatical gender in the cards pushed to Nextcloud Contacts |
 | `bf_preferred_name_partner_legal_name` | Symbifox Noms d'usage et pronoms — pont Partner Legal Name | 18.0.1.0.0 | BUSL-1.1 | One legal name on a person's contact: the protected one; the company legal name stays for companies |
-| `bf_preferred_name_persona` | Symbifox Noms d'usage et pronoms — pont Persona | 18.0.1.0.0 | BUSL-1.1 | The recipients' pronouns in the email composer banner |
+| `bf_preferred_name_persona` | Symbifox Noms d'usage et pronoms — pont Persona | 18.0.1.0.1 | BUSL-1.1 | The recipients' pronouns in the email composer banner |
 | `bf_preferred_name_receipt` | Symbifox Noms d'usage et pronoms — pont Reçus de dons | 18.0.1.0.0 | BUSL-1.1 | The official donation receipt carries the donor's legal name |
 | `bf_preferred_name_sign` | Symbifox Noms d'usage et pronoms — pont Signature | 18.0.1.0.0 | BUSL-1.1 | The signer's legal name on the signed act, their preferred name everywhere else |
 | `bf_preferred_name_sign_sale` | Symbifox Noms d'usage et pronoms — pont Signature des devis | 18.0.1.0.0 | BUSL-1.1 | A quotation's "Signed by" carries the frozen legal name of the signer |

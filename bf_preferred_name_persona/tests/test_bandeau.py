@@ -18,6 +18,14 @@ class TestBandeauPronoms(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Le bandeau traduit son séparateur et le registre de
+        # bf_persona. Ces essais lisent le FRANÇAIS : sans amorce, une base anglaise
+        # (CI publique) rendait « </b>: formal (vous) » et ils tombaient à tort.
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_persona", "bf_preferred_name_persona"], ["fr_CA"], overwrite=True)
+        cls.env.user.lang = "fr_CA"
+        cls.env = cls.env(context=dict(cls.env.context, lang="fr_CA"))
         Partner = cls.env["res.partner"]
         cls.societe = Partner.create({"name": "Société Témoin", "is_company": True})
         cls.env["contact.persona"].create({
@@ -100,3 +108,26 @@ class TestBandeauPronoms(TransactionCase):
         if self.env["res.lang"]._lang_get("fr_CA"):
             self.assertIn("… et 2 autre(s)",
                           str(composer.with_context(lang="fr_CA")._bf_pronoun_lines()[-1]))
+
+
+@tagged("post_install", "-at_install", "bf_preferred_name")
+class TestBandeauPronomsAnglais(TransactionCase):
+    """Le lecteur anglais lit la ligne des pronoms sans « : » à la française."""
+
+    def test_separateur_dans_les_deux_langues(self):
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["res.lang"]._activate_lang("en_US")
+        self.env["ir.module.module"]._load_module_terms(
+            ["bf_preferred_name_persona"], ["fr_CA"], overwrite=True)
+        alex = self.env["res.partner"].create({
+            "name": "Alex Exemple", "email": "alex@exemple.example", "bf_pronouns": "iel"})
+
+        def bandeau(lang):
+            env = self.env(context=dict(self.env.context, lang=lang))
+            return str(env["mail.compose.message"].create({
+                "composition_mode": "comment", "model": "res.partner",
+                "res_ids": str([alex.id]), "partner_ids": [(6, 0, alex.ids)], "body": "<p>x</p>",
+            }).persona_hint_html)
+
+        self.assertIn("<b>Alex Exemple</b>: iel", bandeau("en_US"))
+        self.assertIn("<b>Alex Exemple</b> : iel", bandeau("fr_CA"))
