@@ -9,9 +9,10 @@ incident, pas une commodité.
 """
 
 from odoo import fields
-from odoo.addons.mail.tests.common import MailCommon
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import Form, tagged
+
+from odoo.addons.mail.tests.common import MailCommon
 
 
 class RecipientGroupCase(MailCommon):

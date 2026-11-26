@@ -138,6 +138,6 @@ class BfEmailWritebackPending(models.Model):
                         "type": "warning",
                         "sticky": True,
                     })
-            except Exception:  # noqa: BLE001 - un avis manqué ne casse rien
+            except Exception:
                 _logger.warning("bf.email : avis de remise en boîte en échec",
                                 exc_info=True)

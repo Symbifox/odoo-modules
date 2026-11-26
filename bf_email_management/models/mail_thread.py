@@ -58,7 +58,7 @@ class MailThread(models.AbstractModel):
                 partner_bcc_ids=vide,
                 bf_copies_programmees=False,
             )
-        return super(MailThread, self).message_notify(**kwargs)
+        return super().message_notify(**kwargs)
 
     def _notify_thread(self, message, msg_vals=False, **kwargs):
         """Faire suivre la portée de la garde jusqu'au RENVOI différé.
@@ -89,6 +89,32 @@ class MailThread(models.AbstractModel):
         if retrait and "bf_abonnes_retires" not in kwargs:
             kwargs["bf_abonnes_retires"] = list(retrait)
         return super()._notify_thread(message, msg_vals=msg_vals, **kwargs)
+
+    def _notify_thread_by_inbox(self, message, recipients_data, msg_vals=False,
+                                **kwargs):
+        """Le courriel qu'on ne reçoit plus, rangé quand même.
+
+        Ce point d'accroche est exactement le bon, et c'est ce qui fait la
+        définition du lot : le noyau passe ici les destinataires dont l'avis
+        reste **dans Odoo**, c'est-à-dire précisément ceux qui auraient reçu un
+        courriel si leur préférence était « par courriel ». Le dépôt range donc
+        ce qui ne part plus, et rien d'autre.
+
+        ⚠️ On met en FILE, on ne dépose pas : un `APPEND` est un aller-retour
+        réseau, et le faire ici ferait attendre l'auteur du message, voire
+        échouer un commentaire au chatter si le serveur IMAP se tait.
+        """
+        res = super()._notify_thread_by_inbox(
+            message, recipients_data, msg_vals=msg_vals, **kwargs)
+        try:
+            ids = [r["id"] for r in recipients_data
+                   if r.get("notif") == "inbox" and not r.get("ushare")]
+            if ids:
+                self.env["bf.email.depot"]._bf_mettre_en_file(
+                    message, self.env["res.partner"].browse(ids))
+        except Exception as e:  # noqa: BLE001 - journalisé, jamais bloquant
+            _logger.warning("Dépôt IMAP non mis en file : %s", e)
+        return res
 
     def _notify_get_recipients(self, message, msg_vals, **kwargs):
         """Sous ``bf_notify_explicit_only``, ne garder que les destinataires

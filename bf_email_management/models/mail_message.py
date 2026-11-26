@@ -431,7 +431,7 @@ class MailMessage(models.Model):
         BfEmail = self.env["bf.email"].sudo()
         date_part = self.date.strftime("%Y-%m-%d") if self.date else "undated"
         from email.utils import parseaddr
-        _, bare = parseaddr(self.email_from or "")
+        _nom, bare = parseaddr(self.email_from or "")
         local = (bare.split("@", 1)[0] if bare else "") or "unknown"
         local = BfEmail._eml_slug(local)
         subject = BfEmail._eml_slug(self.subject or "")

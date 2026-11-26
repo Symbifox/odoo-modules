@@ -88,11 +88,11 @@ class TestIsolationMessageId(TransactionCase):
             corps="Bonjour"))
         tache = self.env["project.task"].browse(rid)
         self.assertEqual(tache.name, "Neuve (passerelle)")
-        reponse = ("From: quelqu.un@exterieur.invalid\r\nTo: projet@banc.invalid\r\n"
-                   "Subject: Re: Neuve (passerelle)\r\nMessage-ID: <rep@exterieur.invalid>\r\n"
-                   "In-Reply-To: <neuf@exterieur.invalid>\r\n"
-                   "References: <neuf@exterieur.invalid>\r\n"
-                   "Date: Tue, 22 Sep 2026 22:05:00 +0000\r\n\r\nSuite\r\n").encode()
+        reponse = (b"From: quelqu.un@exterieur.invalid\r\nTo: projet@banc.invalid\r\n"
+                   b"Subject: Re: Neuve (passerelle)\r\nMessage-ID: <rep@exterieur.invalid>\r\n"
+                   b"In-Reply-To: <neuf@exterieur.invalid>\r\n"
+                   b"References: <neuf@exterieur.invalid>\r\n"
+                   b"Date: Tue, 22 Sep 2026 22:05:00 +0000\r\n\r\nSuite\r\n")
         rid2 = Thread.message_process("project.task", reponse)
         self.assertEqual(rid2, tache.id)
         self.assertTrue(self.env["mail.message"].search([

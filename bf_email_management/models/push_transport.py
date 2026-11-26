@@ -367,7 +367,7 @@ class BfEmailUnifiedPush(models.AbstractModel):
                                     resp.status_code, resp.text[:150])
                 else:
                     recus += 1
-            except Exception:  # noqa: BLE001
+            except Exception:
                 _logger.warning("bf.email push: erreur d'envoi.", exc_info=True)
         return recus
 

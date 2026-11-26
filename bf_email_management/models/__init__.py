@@ -28,6 +28,7 @@ from . import bf_email_mobile_send
 from . import push_transport
 from . import popup_transport
 from . import bf_email_mobile
+from . import bf_email_extension
 from . import calendar_alarm_manager
 from . import calendar_attendee
 from . import calendar_event
@@ -69,3 +70,5 @@ from . import bf_email_writeback_pending
 from . import bf_email_avis
 # Le rattrapage des en-têtes bruts (après bf_email).
 from . import bf_email_entetes
+# Le dépôt IMAP des avis qu'on ne reçoit plus par courriel.
+from . import bf_email_depot

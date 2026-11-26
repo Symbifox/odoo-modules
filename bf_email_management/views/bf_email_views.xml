@@ -558,11 +558,14 @@
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_content">
-                            <div class="o_kanban_record_top mb-1">
+                            <!-- La troncature se pose sur le bloc : sur la carte, le champ
+                                 sort en <span> en ligne, et un text-truncate en ligne ne
+                                 tronque rien (l'expéditeur débordait de la carte). -->
+                            <div class="o_kanban_record_top mb-1 text-truncate">
                                 <strong>
                                     <t t-if="record.direction.raw_value == 'in'">&#8592; </t>
                                     <t t-else="">&#8594; </t>
-                                    <field name="email_from" class="text-truncate"/>
+                                    <field name="email_from"/>
                                 </strong>
                             </div>
                             <div class="text-truncate mb-1">

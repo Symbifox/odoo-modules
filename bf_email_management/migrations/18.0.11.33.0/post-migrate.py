@@ -18,7 +18,7 @@ LOT = 500
 def migrate(cr, version):
     if not version:
         return
-    from odoo import api, SUPERUSER_ID
+    from odoo import SUPERUSER_ID, api
     env = api.Environment(cr, SUPERUSER_ID, {})
     BfEmail = env["bf.email"]
     champ = BfEmail._fields["is_late_night"]

@@ -157,7 +157,6 @@ class BfEmailBrowser(models.TransientModel):
             except Exception:
                 pass
         self.available_folders = "\n".join(folders)
-        return None
 
     # ------------------------------------------------------------------
     # Load a page of messages from ``folder``
@@ -235,7 +234,6 @@ class BfEmailBrowser(models.TransientModel):
         if line_vals:
             self.env["bf.email.browser.line"].create(line_vals)
         self.folder_message_count = total
-        return None
 
     def action_next_page(self):
         self.ensure_one()

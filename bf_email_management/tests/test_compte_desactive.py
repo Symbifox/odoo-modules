@@ -17,8 +17,8 @@ from unittest.mock import patch
 
 from odoo.tests import tagged
 
-from .common import MobileApiCase
 from ..models import bf_email_imap
+from .common import MobileApiCase
 
 IMAP = "odoo.addons.bf_email_management.models.bf_email_imap"
 

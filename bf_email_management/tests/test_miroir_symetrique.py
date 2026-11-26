@@ -381,11 +381,11 @@ class TestCaptureQuandOdooPorteDejaLeMessage(MobileApiCase):
 
     def _ingest(self, folder):
         raw = (
-            "Message-ID: <avis-juin@test.invalid>\r\n"
-            "From: avis@interne.test\r\nTo: owner@test.invalid\r\n"
-            "Subject: Avis d'activite de juin\r\n"
-            "Date: Tue, 30 Jun 2026 12:00:00 +0000\r\n\r\nCorps.\r\n"
-        ).encode()
+            b"Message-ID: <avis-juin@test.invalid>\r\n"
+            b"From: avis@interne.test\r\nTo: owner@test.invalid\r\n"
+            b"Subject: Avis d'activite de juin\r\n"
+            b"Date: Tue, 30 Jun 2026 12:00:00 +0000\r\n\r\nCorps.\r\n"
+        )
         self.env["bf.email"].with_user(self.owner)._ingest_rfc822(
             raw, 7007, folder, self.account)
         return self.env["bf.email"].with_context(active_test=False).search([

@@ -62,6 +62,18 @@ msgstr "N'autorisez que si vous venez de lancer la connexion depuis l'applicatio
 #. module: bf_email_management
 #. odoo-python
 #: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "Only allow this if you yourself just opened the app you are connecting. Never allow it, and never copy the code shown next, because someone asked you to: whoever gets that code can read your email."
+msgstr "N'autorisez que si vous venez vous-même d'ouvrir l'application que vous connectez. N'autorisez jamais, et ne recopiez jamais le code qui suit, parce que quelqu'un vous le demande : qui obtient ce code peut lire vos courriels."
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "Copy it only into the app you yourself just opened to connect it. Never give it to someone who asks for it."
+msgstr "Ne le recopiez que dans l'application que vous venez vous-même d'ouvrir pour la connecter. Ne le donnez jamais à quelqu'un qui vous le demande."
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
 msgid "Allow"
 msgstr "Autoriser"
 
@@ -76,3 +88,141 @@ msgstr "Refuser"
 #: code:addons/bf_email_management/controllers/mobile_api.py:0
 msgid "Your email"
 msgstr "Votre courriel"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "A Symbifox client wants to access your account"
+msgstr "Un client Symbifox demande l'accès à votre compte"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "Pairing code"
+msgstr "Code d'appariement"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "Not paired"
+msgstr "Pas d'appariement"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "Unknown refusal"
+msgstr "Refus inconnu"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "Pairing"
+msgstr "Appariement"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "Nothing was paired"
+msgstr "Aucun appariement"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "Copy this code into the client that asked for it. It is good for three minutes and works once."
+msgstr "Recopiez ce code dans le client qui l'a demandé. Il vaut trois minutes et ne sert qu'une fois."
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "You can close this page."
+msgstr "Vous pouvez fermer cette page."
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "This account is not an internal user."
+msgstr "Ce compte n'est pas un usager interne."
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "This account has no active mailbox to show."
+msgstr "Ce compte n'a aucune boîte active à afficher."
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "The client did not send a valid PKCE challenge."
+msgstr "Le client n'a pas envoyé de défi PKCE valide."
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/controllers/mobile_api.py:0
+msgid "Pairing refused."
+msgstr "Appariement refusé."
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "Tentative until you confirm it."
+msgstr "Provisoire jusqu'à ce que vous la confirmiez."
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "Organizer:"
+msgstr "Organisateur :"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "Participants (%s):"
+msgstr "Participants (%s) :"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "Video conference:"
+msgstr "Visioconférence :"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "has accepted"
+msgstr "a accepté"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "has declined"
+msgstr "a refusé"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "maybe"
+msgstr "peut-être"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "no reply"
+msgstr "sans réponse"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "has delegated"
+msgstr "a délégué"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "a guest at %s"
+msgstr "un invité chez %s"
+
+#. module: bf_email_management
+#. odoo-python
+#: code:addons/bf_email_management/models/bf_email.py:0
+msgid "a guest"
+msgstr "un invité"

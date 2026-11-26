@@ -64,8 +64,8 @@ class TestGardeVieuxCourriel(MobileApiCase):
         self.assertTrue(self._ligne(mid))
 
     def test_sans_date_passe(self):
-        raw = ("Message-ID: <sans-date@test.invalid>\r\nFrom: x@y.test\r\n"
-               "Subject: s\r\n\r\nCorps.\r\n").encode()
+        raw = (b"Message-ID: <sans-date@test.invalid>\r\nFrom: x@y.test\r\n"
+               b"Subject: s\r\n\r\nCorps.\r\n")
         self.assertTrue(self._ingerer(raw))
 
     def test_message_id_connu_n_est_jamais_retenu(self):
@@ -319,8 +319,8 @@ class TestPourriel(MobileApiCase):
     # -- la règle ----------------------------------------------------------
     def test_regle_une_par_adresse(self):
         lot = self.spam | self.with_attachment
-        self.assertEqual(lot.with_user(self.owner)._report_block_senders(), (2, 0))
-        self.assertEqual(lot.with_user(self.owner)._report_block_senders(), (0, 0))
+        self.assertEqual(lot.with_user(self.owner)._report_block_senders(), (2, 0, 0))
+        self.assertEqual(lot.with_user(self.owner)._report_block_senders(), (0, 0, 0))
         regle = self.env["bf.email.rule"].search([("name", "ilike", "promo@spam.test")])
         self.assertEqual(regle.set_folder, "{JUNK}")
         self.assertEqual(regle._resolve_folder(self.spam), "Junk")
@@ -354,12 +354,12 @@ class TestPourriel(MobileApiCase):
             "set_handled": True, "forward_to": "comptable@externe.test",
             "forward_allow_external": True,
         })
-        self.assertEqual(self.spam.with_user(self.owner)._report_block_senders(), (1, 0))
+        self.assertEqual(self.spam.with_user(self.owner)._report_block_senders(), (1, 0, 0))
         self.assertFalse(manuelle.active)
 
     def test_sans_junk_pas_de_regle(self):
         self.account.folder_cache = json.dumps([{"name": "INBOX", "special": []}])
-        self.assertEqual(self.spam.with_user(self.owner)._report_block_senders(), (0, 1))
+        self.assertEqual(self.spam.with_user(self.owner)._report_block_senders(), (0, 1, 0))
 
     def test_pourriel_sur_un_envoi_refuse(self):
         with self.assertRaises(Exception):

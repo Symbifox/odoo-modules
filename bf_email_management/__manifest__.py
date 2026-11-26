@@ -3,7 +3,7 @@
     "summary": "Inbox unifiée IMAP + chatters Odoo, avec re-routage UI",
     # 18.0.11.60.1: bf_email.last_sync_date ne passe plus par set_param, qui vidait le
     #   cache de tous les processus à chaque courriel synchronisé.
-    "version": "18.0.11.64.2",
+    "version": "18.0.11.77.2",
     "category": "Productivity",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -45,6 +45,7 @@
         "data/bf_email_held_cron.xml",
         "data/bf_email_writeback_pending_cron.xml",
         "data/bf_email_entetes_cron.xml",
+        "data/bf_email_depot_cron.xml",
         "wizard/bf_email_initial_sync_views.xml",
         "wizard/bf_email_reroute_views.xml",
         "wizard/bf_email_imap_backfill_views.xml",
@@ -102,6 +103,9 @@
             # Do-not-disturb toggle in the user menu. After the popup:
             # the service reads the same `bf_dnd/state` channel.
             "bf_email_management/static/src/js/bf_dnd_usermenu.js",
+            # User-menu toggle: keep a copy of the Odoo notices one no longer
+            # receives by email in an IMAP folder (18.0.11.67.0).
+            "bf_email_management/static/src/js/bf_depot_usermenu.js",
             "bf_email_management/static/src/xml/bf_dnd_usermenu.xml",
             "bf_email_management/static/src/scss/bf_dnd_usermenu.scss",
             "bf_email_management/static/src/scss/bf_email_popup.scss",

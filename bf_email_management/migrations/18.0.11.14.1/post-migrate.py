@@ -25,7 +25,7 @@ def migrate(cr, version):
            AND scheduled_date > (now() AT TIME ZONE 'UTC') + INTERVAL '4 years'
     """)
     if cr.rowcount:
-        from odoo import api, SUPERUSER_ID
+        from odoo import SUPERUSER_ID, api
         env = api.Environment(cr, SUPERUSER_ID, {})
         env['ir.logging'].create({
             'name': 'bf_email_management',

@@ -27,8 +27,9 @@ from datetime import timedelta
 
 from odoo import fields
 from odoo.exceptions import UserError
-from odoo.addons.mail.tests.common import MockEmail
 from odoo.tests import new_test_user, tagged
+
+from odoo.addons.mail.tests.common import MockEmail
 
 from .common import MobileApiCase
 
@@ -465,10 +466,9 @@ class TestCompositeurMobile(MobileApiCase, MockEmail):
         for quand in (maintenant - timedelta(hours=1),
                       maintenant + timedelta(seconds=10),
                       maintenant + timedelta(days=400)):
-            with self.subTest(quand=quand):
-                with self.assertRaises(UserError):
-                    record.mobile_reply(mode="reply", body="X",
-                                        scheduled_ms=_ms(quand))
+            with self.subTest(quand=quand), self.assertRaises(UserError):
+                record.mobile_reply(mode="reply", body="X",
+                                    scheduled_ms=_ms(quand))
 
     def test_programmer_avec_une_adresse_interdite_est_refuse(self):
         record = self.as_owner().browse(self.recu_boite2.id)

@@ -10,8 +10,8 @@ import codecs
 import email
 import email.header
 import email.parser
-import email.quoprimime
 import email.policy
+import email.quoprimime
 import fnmatch
 import html as html_mod
 import imaplib
@@ -623,7 +623,7 @@ def headers_text(msg):
             "%s: %s" % (name, header_value(name, raw))
             for name, raw in msg.raw_items()
         )
-    except Exception:  # noqa: BLE001
+    except Exception:
         _logger.debug("bf.email : en-têtes illisibles", exc_info=True)
         return ""
 
@@ -639,7 +639,7 @@ def first_header(msg, name):
         for key, raw in msg.raw_items():
             if key.lower() == wanted:
                 return header_value(key, raw)
-    except Exception:  # noqa: BLE001
+    except Exception:
         _logger.debug("bf.email : en-tête %s illisible", name, exc_info=True)
     return ""
 

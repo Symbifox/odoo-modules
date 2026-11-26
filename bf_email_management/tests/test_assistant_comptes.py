@@ -23,8 +23,8 @@ from unittest.mock import patch
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 
-from ..models import bf_email_imap
 from ..models import bf_email_autoconfig as autoconf
+from ..models import bf_email_imap
 
 CHEMIN = "odoo.addons.bf_email_management.models.bf_email_autoconfig.BfEmailAutoconfig"
 

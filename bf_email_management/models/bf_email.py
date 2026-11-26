@@ -4,29 +4,25 @@ import email.message
 import email.parser
 import email.policy
 import email.utils
-import logging
-import mimetypes
 import html
 import imaplib
+import logging
+import mimetypes
 import re
 import time
 import unicodedata
-from datetime import datetime, timedelta, timezone
-
-import pytz
+from datetime import timedelta, timezone
 from email.utils import getaddresses, parseaddr
 
+import pytz
 from markupsafe import Markup
 
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import AccessError, UserError
-from odoo.osv import expression
 from odoo.http import request
+from odoo.osv import expression
 
-from . import bf_email_imap
-from . import imip
-from . import bf_email_image_sender
-from . import bf_email_images
+from . import bf_email_image_sender, bf_email_images, bf_email_imap, imip
 from .subject_utils import dedup_subject_prefix
 
 
@@ -179,7 +175,32 @@ _NON_FILING_MODELS = frozenset({
 _MAX_ANCHOR_HOPS = 5
 # ``References`` se replie sur plusieurs lignes ; on capture la valeur entière,
 # lignes de continuation comprises, avant d'en extraire les Message-ID.
-_REFERENCES_RE = re.compile(r"^References:[ \t]*(.*(?:\n[ \t]+.*)*)$", re.M | re.I)
+# La marque d'une description que NOUS avons ecrite sur un
+# evenement ne d'une invitation. Une relance de l'organisateur ne
+# reecrit le corps que s'il la porte encore (voir
+# `_imip_description_est_la_notre`).
+#
+# 🔴 Cette chaine reste NON traduite, et ce n'est pas un oubli : tout le
+# reste de la description passe par `_()`, celle-ci jamais. Une marque
+# traduite changerait avec la langue du processus qui ecrit la description —
+# le cron de collecte, une rejouee a la main, un locataire anglophone — et la
+# reconnaissance ci-dessous se casserait a la premiere traduction. Une
+# relance effacerait alors les notes qu'elle pretend preserver. C'est une
+# phrase francaise visible chez un locataire anglophone : le prix d'une
+# marque qui ne bouge pas.
+IMIP_MARQUE = (
+    "Ajout\u00e9e automatiquement depuis une invitation re\u00e7ue par courriel"
+)
+# 🔴 La reconnaissance se fait sur ce NOYAU, pas sur la marque entiere.
+# L'historique ne dit pas « Ajoutee » : les descriptions posees avant ce lot
+# disent « Ajoute automatiquement depuis une invitation recue par courriel
+# (a confirmer). », au masculin. Sur une base reelle, presque tous les
+# evenements nes d'une invitation portent le noyau, et ZERO portait la marque
+# entiere — donc aucune relance n'aurait jamais rafraichi une seule des
+# descriptions deja posees.
+IMIP_MARQUE_NOYAU = "automatiquement depuis une invitation re\u00e7ue par courriel"
+
+_REFERENCES_RE = re.compile(r"^References:[ \t]*(.*(?:\n[ \t]+.*)*)$", re.MULTILINE | re.IGNORECASE)
 _MESSAGE_ID_RE = re.compile(r"<[^>]+>")
 
 _DIRECTION_LABELS = {
@@ -565,7 +586,7 @@ class BfEmail(models.Model):
         try:
             raw = base64.b64decode(raw_b64)
             parsed = email_mod.message_from_bytes(raw, policy=email.policy.default)
-        except Exception:  # noqa: BLE001
+        except Exception:
             _logger.warning(
                 "bf.email #%s: message brut illisible pour le listing des "
                 "pi\u00e8ces jointes", self.id, exc_info=True,
@@ -2094,7 +2115,7 @@ class BfEmail(models.Model):
         for partner in partners:
             try:
                 Bus._sendone(partner, BUS_CHANNEL, {"reason": reason})
-            except Exception:  # noqa: BLE001 - never break ingestion
+            except Exception:
                 _logger.warning(
                     "bf.email: bus tick failed for partner %s", partner.id,
                     exc_info=True,
@@ -3687,7 +3708,7 @@ class BfEmail(models.Model):
             if not payload:
                 continue
             mimetype = att.mimetype or mimetypes.guess_type(att.name or "")[0] or "application/octet-stream"
-            maintype, _, subtype = mimetype.partition("/")
+            maintype, _sep, subtype = mimetype.partition("/")
             if not subtype:
                 maintype, subtype = "application", "octet-stream"
             msg.add_attachment(payload, maintype=maintype, subtype=subtype,
@@ -3730,7 +3751,7 @@ class BfEmail(models.Model):
         """Build a safe filename: YYYY-MM-DD_from_subject.eml."""
         self.ensure_one()
         date_part = self.date.strftime("%Y-%m-%d") if self.date else "undated"
-        _, bare = parseaddr(self.email_from or "")
+        _nom, bare = parseaddr(self.email_from or "")
         local = (bare.split("@", 1)[0] if bare else "") or "unknown"
         local = self._eml_slug(local)
         subject = self._eml_slug(self.subject or "")
@@ -4269,8 +4290,7 @@ class BfEmail(models.Model):
 
         for msg in messages:
             msg_date_str = fields.Datetime.to_string(msg.create_date)
-            if msg_date_str > latest_date:
-                latest_date = msg_date_str
+            latest_date = max(latest_date, msg_date_str)
 
             for target in self._route_target_users(msg):
                 # Run dedup + vals + create in the target's environment so
@@ -4601,7 +4621,7 @@ class BfEmail(models.Model):
         try:
             headers = bf_email_imap.headers_text_from_bytes(
                 self._bf_tete_de_piece(first))
-        except Exception:  # noqa: BLE001 - fichier absent du filestore
+        except Exception:
             _logger.debug("bf.email : original illisible (pièce %s)",
                           first.id, exc_info=True)
             return ""
@@ -4834,7 +4854,7 @@ class BfEmail(models.Model):
         for account in accounts:
             try:
                 self._sync_account(account)
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 account.write({"state": "error", "last_error": str(exc)})
                 _logger.warning(
                     "bf.email manual sync, account %s failed: %s",
@@ -4865,7 +4885,7 @@ class BfEmail(models.Model):
             try:
                 with self.env.cr.savepoint():
                     handled += self._imap_mirror_account(account)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 _logger.warning(
                     "bf.email manual mirror, account %s failed",
                     account.display_name, exc_info=True,
@@ -5167,7 +5187,7 @@ class BfEmail(models.Model):
             try:
                 with self.env.cr.savepoint():
                     self._imap_mirror_account(account)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 _logger.warning(
                     "bf.email IMAP mirror (%s): passe annulée",
                     account.display_name, exc_info=True,
@@ -5490,7 +5510,7 @@ class BfEmail(models.Model):
             chunk = uids[start:start + 200]
             try:
                 fetched = bf_email_imap.fetch_full_headers_bulk(conn, chunk)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 _logger.warning(
                     "bf.email (%s) : en-têtes complets illisibles pour %s UID",
                     account.display_name, len(chunk), exc_info=True)
@@ -5661,8 +5681,7 @@ class BfEmail(models.Model):
                     uid, folder, exc_info=True,
                 )
                 skipped += 1
-            if uid > latest_uid:
-                latest_uid = uid
+            latest_uid = max(latest_uid, uid)
 
         if latest_uid > (int(last_uid) if last_uid else 0):
             account.sudo().set_watermark(folder, latest_uid)
@@ -5988,18 +6007,39 @@ class BfEmail(models.Model):
                 dont_notify=True,
             )
 
+            dmarc_failed = imip.dmarc_failed(msg)
             for ev in events:
                 if ev["method"] == "REPLY":
                     if apply_replies:
                         self._imip_apply_reply_safely(
                             ev, owner, sender, self_addrs,
-                            dmarc_failed=imip.dmarc_failed(msg),
+                            dmarc_failed=dmarc_failed,
                             received_at=imip.received_at(msg),
                         )
                     continue
                 if not add_invites:
                     continue
                 if ev["method"] not in imip.ACTIONABLE_METHODS:
+                    continue
+
+                # 🔴 Même règle que REPLY : un message dont notre serveur de
+                # réception a noté l'échec DMARC n'agit pas sur l'agenda, ni
+                # pour modifier, ni pour annuler, ni pour créer. Toutes les
+                # gardes qui suivent reposent sur l'expéditeur (« l'expéditeur
+                # EST l'organisateur »), et l'échec DMARC dit justement que ce
+                # `From:` n'est pas prouvé. Créer resterait dangereux : un
+                # événement neuf porte le même bouton « Rejoindre » et le même
+                # lien poussé au téléphone qu'une modification, et il
+                # estamperait un organisateur usurpé dans `x_imip_organizer`,
+                # qui autoriserait ensuite les relances de ce même nom. REPLY
+                # ne crée jamais rien et ignore tout message en échec DMARC ;
+                # l'invitation reste lisible dans la boîte, d'où la personne
+                # peut l'ajouter elle-même.
+                if dmarc_failed:
+                    _logger.info(
+                        "bf_email iMIP: %s %s ignoré, échec DMARC pour %r",
+                        ev["method"], ev.get("uid"), sender,
+                    )
                     continue
                 # Skip echoes of our own Odoo-originated events: the owner is
                 # the organizer, so it already lives in their calendar.
@@ -6063,10 +6103,13 @@ class BfEmail(models.Model):
                     continue
 
                 if existing:
-                    existing.write(self._imip_update_vals(ev))
+                    existing.write(self._imip_update_vals(ev, existing))
+                    cible = existing
                 else:
-                    CalendarEvent.create(self._imip_create_vals(ev, owner))
-        except Exception:  # noqa: BLE001 - must never break ingestion
+                    cible = CalendarEvent.create(
+                        self._imip_create_vals(ev, owner))
+                self._imip_attach_ics(cible, msg, ev)
+        except Exception:
             _logger.exception(
                 "bf_email: calendar invite ingestion failed (non-fatal)"
             )
@@ -6084,7 +6127,7 @@ class BfEmail(models.Model):
                     ev, owner, sender, self_addrs,
                     dmarc_failed=dmarc_failed, received_at=received_at,
                 )
-        except Exception:  # noqa: BLE001 - must never break ingestion
+        except Exception:
             _logger.exception(
                 "bf_email iMIP: réponse %s de %s non appliquée (non fatal)",
                 ev.get("uid"), sender,
@@ -6326,7 +6369,7 @@ class BfEmail(models.Model):
                         body=Markup.escape(body),
                         author_id=partner.id,
                     )
-            except Exception:  # noqa: BLE001 - the answer is already written
+            except Exception:
                 _logger.warning(
                     "bf_email iMIP: note de réponse non postée sur %s",
                     event.id, exc_info=True,
@@ -6383,7 +6426,8 @@ class BfEmail(models.Model):
 
     def _imip_create_vals(self, ev, owner):
         """Build calendar.event vals for a freshly received invitation."""
-        return {
+        Event = self.env["calendar.event"]
+        vals = {
             "name": self._imip_event_name(ev),
             "start": ev["start"],
             "stop": ev["stop"],
@@ -6393,20 +6437,36 @@ class BfEmail(models.Model):
             # Routes to the owner's default Nextcloud calendar via
             # calendar_nextcloud_sync's create() (organizer-based routing).
             "user_id": owner.id,
-            # Owner-only attendee: makes the event show in the owner's Odoo
-            # calendar (that view filters by attendee) while staying safe — the
-            # owner is also the organizer, so there is no EXTERNAL party for
-            # Nextcloud's CalDAV plugin to re-invite.
-            "partner_ids": [(6, 0, [owner.partner_id.id])] if owner.partner_id else [],
+            "partner_ids": [(6, 0, self._imip_partner_ids(ev, owner))],
             # Tentative == non-blocking until the owner confirms.
             "show_as": "free",
             "x_imip_uid": ev["uid"],
             "x_imip_organizer": ev["organizer"],
         }
+        lien = (ev.get("conference") or "").strip()
+        if lien and "videocall_location" in Event._fields:
+            vals["videocall_location"] = lien
+        # Lien mou vers bf_calendar_invite, et la CLÉ doit être
+        # PRÉSENTE : son `create()` estampe « confirmée » tout événement neuf
+        # qui n'arme pas le rappel de confirmation. Sans cette ligne,
+        # l'invitation naissait confirmée au champ et provisoire au titre —
+        # la plupart des événements d'une base réelle se
+        # contredisaient ainsi.
+        if "bf_event_status" in Event._fields:
+            vals["bf_event_status"] = "tentative"
+        return vals
 
-    def _imip_update_vals(self, ev):
-        """Vals for an updated invitation (reschedule / edited details)."""
-        return {
+    def _imip_update_vals(self, ev, event=None):
+        """Vals for an updated invitation (reschedule / edited details).
+
+        ⚠️ La description n'est réécrite que si elle est encore la NÔTRE. Une
+        relance de l'organisateur rafraîchit volontiers la liste des invités et
+        le lien de visio, mais si l'usager a écrit ses propres notes dans le
+        corps, elles ne sont pas à l'organisateur de les effacer. La marque se
+        cherche en texte, pas en HTML : la description traverse l'assainisseur
+        et la lecture CalDAV, qui en retouchent les balises.
+        """
+        vals = {
             "name": self._imip_event_name(ev),
             "start": ev["start"],
             "stop": ev["stop"],
@@ -6414,25 +6474,265 @@ class BfEmail(models.Model):
             "location": ev["location"] or "",
             "active": True,
         }
+        if event is None or self._imip_description_est_la_notre(event.description):
+            vals["description"] = self._imip_description(ev)
+        if "videocall_location" in self.env["calendar.event"]._fields:
+            # 🔴 Écrit MÊME VIDE, exactement comme `location` juste au-dessus :
+            # une relance qui ne porte plus de lien doit effacer celui d'avant.
+            # Sinon le bouton « Rejoindre » garde l'adresse d'une salle
+            # fermée, et c'est le pire des deux états — un lien périmé se
+            # clique, un lien absent se demande.
+            vals["videocall_location"] = (ev.get("conference") or "").strip()
+        return vals
+
+    @api.model
+    def _imip_description_est_la_notre(self, description):
+        """La description porte-t-elle encore la marque qu'on y met ?
+
+        Vide compte comme la nôtre : il n'y a rien à préserver.
+
+        🔴 Cherchée au NOYAU (`IMIP_MARQUE_NOYAU`), parce que l'historique
+        est au masculin : « Ajouté automatiquement… » posé par le code
+        d'avant ce lot contre « Ajoutée… » posé par celui-ci. Comparer la
+        marque entière rendait FAUX sur toutes les descriptions déjà en base, donc
+        une relance de l'organisateur n'y aurait jamais rien rafraîchi, pour
+        toujours. Le noyau est la plus longue sous-chaîne que les deux formes
+        partagent.
+        """
+        if not description:
+            return True
+        return IMIP_MARQUE_NOYAU in str(description)
+
+    def _imip_partner_ids(self, ev, owner):
+        """Le propriétaire, et personne d'autre.
+
+        🔴 Choix assumé : AUCUN invité d'une invitation
+        reçue ne devient participant, même quand il a déjà une fiche et même
+        quand il n'a aucun compte chez nous. Ce choix-là ferme d'un coup les
+        cinq chemins repérés — le bouton
+        « Envoyer un courriel aux participants », le POKE, les alarmes de type
+        courriel, la pré-sélection du composeur, et la lecture par la règle du
+        portail — au lieu de les garder ouverts derrière des gardes.
+
+        Le propriétaire reste inscrit, et il doit l'être : la vue agenda
+        d'Odoo filtre par participant, donc un événement sans lui
+        n'apparaîtrait dans l'agenda de personne.
+
+        La liste des invités, elle, ne disparaît pas : elle vit dans la
+        DESCRIPTION, avec la réponse de chacun (`_imip_description`), et dans
+        le `.ics` gardé en pièce jointe. C'est de la lecture, pas une
+        adresse à qui quelque chose peut partir.
+
+        ⚠️ Les deux gardes d'envoi restent en place — celle de
+        `calendar.attendee._send_mail_to_attendees` ici, celles de
+        `_bf_notice_recipients` et du rappel de confirmation dans
+        bf_calendar_invite. Elles ne protègent plus l'ingestion, qui n'inscrit
+        plus personne : elles protègent le cas où le propriétaire ajoute un invité À
+        LA MAIN sur l'une de ces rencontres, et c'est pour ça qu'elles ne
+        partent pas avec l'appariement.
+        """
+        return [owner.partner_id.id] if owner.partner_id else []
 
     @staticmethod
     def _imip_event_name(ev):
-        summary = (ev.get("summary") or "").strip() or "(sans titre)"
-        return "[Tentatif] %s" % summary
+        """Le titre de l'invitation, tel que l'organisateur l'a écrit.
 
-    @staticmethod
-    def _imip_description(ev):
-        """Compose the event body: a clear tentative note + original details."""
-        lines = [
-            "Ajouté automatiquement depuis une invitation reçue par courriel "
-            "(à confirmer).",
+        🔴 Rendait « [Tentatif] <titre> » jusqu'ici, et c'était le défaut :
+        la marque vivait dans le seul champ que tout le monde lit, et
+        la lever demandait d'éditer le titre à la main. C'était un geste à
+        la main, et répété. Le provisoire se dit
+        maintenant par `bf_event_status`, qui se renverse d'un clic dans la
+        bulle du calendrier et voyage dans le `.ics` (`STATUS:TENTATIVE`).
+        """
+        return (ev.get("summary") or "").strip() or "(sans titre)"
+
+    @api.model
+    def _imip_partstat_libelles(self):
+        """RFC 5545 §3.2.12 PARTSTAT -> ce qu'on en dit à l'écran.
+
+        🔴 Une MÉTHODE, et pas le dictionnaire de module qu'était
+        `imip.PARTSTAT_LIBELLES` : un `_()` évalué à l'import fige la langue du
+        premier processus qui charge le fichier, pour tout le monde et pour
+        toujours. Les libellés se construisent donc à l'appel, dans la langue
+        de l'environnement qui écrit la description.
+
+        ⚠️ Source anglaise, français au catalogue (`i18n/fr.po`,
+        `i18n/fr_CA.po`) : sans ça, une base qui n'a
+        pas de français lisait une description en français.
+        """
+        return {
+            "ACCEPTED": _("has accepted"),
+            "DECLINED": _("has declined"),
+            "TENTATIVE": _("maybe"),
+            "NEEDS-ACTION": _("no reply"),
+            "DELEGATED": _("has delegated"),
+        }
+
+    @api.model
+    def _imip_nom_d_invite(self, invite):
+        """Comment on NOMME un invité, sans jamais écrire son adresse.
+
+        🔴 Choix assumé : la description nomme les
+        invités, elle ne donne pas leur adresse. Des liens de partage au
+        niveau « détails » servent déjà cette description — un client de
+        courriel, un abonnement Nextcloud, un agenda partagé — et s'ouvrent avec leur
+        seule adresse. Les adresses complètes restent dans le `.ics` joint, que
+        le portail refuse.
+
+        Faute de `CN`, l'invité est nommé par son DOMAINE (« un invité chez
+        exemple.com ») : ça dit au propriétaire d'où vient la personne sans
+        livrer de quoi lui écrire.
+
+        ⚠️ Un `CN` qui contient un « @ » est traité comme absent. Beaucoup de
+        clients écrivent `CN=alex@exemple.test` quand ils n'ont pas de nom,
+        et le prendre au mot aurait reversé l'adresse par la porte du nom.
+        """
+        nom = (invite.get("cn") or "").strip()
+        if nom and "@" not in nom:
+            return nom
+        adresse = (invite.get("email") or "").strip()
+        domaine = adresse.rsplit("@", 1)[-1].strip().lower() if "@" in adresse else ""
+        if domaine:
+            return _("a guest at %s", domaine)
+        return _("a guest")
+
+    @api.model
+    def _imip_description(self, ev):
+        """Le corps de l'événement : ce que le `.ics` disait, lisible.
+
+        🔴 En HTML, et c'est la moitié du défaut : le champ EST du HTML, et le
+        texte plat qu'on y mettait était enveloppé dans UN SEUL `<p>` par
+        l'assainisseur. Les sauts de ligne tombaient au rendu, donc la note,
+        l'organisateur et le lien de visio se collaient en un paragraphe —
+        constaté sur une invitation réelle.
+
+        🔴 Les invités sont NOMMÉS, jamais adressés (`_imip_nom_d_invite`).
+        L'organisateur, lui, garde nom ET adresse : c'est le vis-à-vis de la
+        rencontre, et c'est par là qu'on lui répond.
+
+        ⚠️ Le texte de l'organisateur est rendu tel qu'il l'a écrit, et il
+        peut lui-même nommer ou adresser qui il veut : ce n'est pas à nous de
+        le censurer, et il était déjà servi ainsi avant ce lot.
+
+        Il est déséchappé puis réchappé : Google livre son `DESCRIPTION` avec
+        des `&nbsp;` et des `&amp;` en clair, qu'un échappement seul
+        afficherait tels quels.
+
+        ⚠️ Tous les textes passent par `_()` À L'APPEL, sauf `IMIP_MARQUE`,
+        dont le commentaire dit pourquoi.
+        """
+        esc = html.escape
+        note = esc(_("Tentative until you confirm it."))
+        parts = [f"<p><i>{IMIP_MARQUE}. {note}</i></p>"]
+        orga = (ev.get("organizer") or "").strip()
+        if orga:
+            cn = (ev.get("organizer_cn") or "").strip()
+            libelle = f"{cn} <{orga}>" if cn and cn.lower() != orga else orga
+            parts.append(
+                f"<p><b>{esc(_('Organizer:'))}</b> {esc(libelle)}</p>")
+        invites = [inv for inv in (ev.get("invites") or []) if inv.get("email")]
+        if invites:
+            libelles = self._imip_partstat_libelles()
+            lignes = []
+            for invite in invites:
+                reponse = libelles.get(invite.get("partstat") or "")
+                suffixe = f" — {esc(reponse)}" if reponse else ""
+                lignes.append(f"• {esc(self._imip_nom_d_invite(invite))}{suffixe}")
+            # ⚠️ Des lignes séparées par <br/>, et NON une <ul> : le téléphone
+            # ne lit pas ce HTML, il lit la version aplatie par
+            # `html2plaintext` que sert `bf_dav_server`, et cette fonction
+            # colle TOUS les <li> sur une seule ligne. Constaté :
+            # « Propriétaire <p@x.test> — sans réponse Connue <c@x.test> — a
+            # accepté », en un seul paragraphe.
+            titre = esc(_("Participants (%s):", len(invites)))
+            parts.append(
+                f"<p><b>{titre}</b><br/>{'<br/>'.join(lignes)}</p>")
+        lien = (ev.get("conference") or "").strip()
+        if lien:
+            parts.append(
+                f'<p><b>{esc(_("Video conference:"))}</b> '
+                f'<a href="{esc(lien, quote=True)}">{esc(lien)}</a></p>')
+        texte = (ev.get("description") or "").strip()
+        if texte:
+            corps = esc(html.unescape(texte)).replace("\n", "<br/>")
+            parts.append(f"<p>{corps}</p>")
+        return "".join(parts)
+
+    # Plafonds des pièces jointes d'invitation. ⚠️ Le `.ics` vient d'un
+    # inconnu, et l'ingestion le garde à CHAQUE révision reçue : sans borne,
+    # un organisateur qui déplace sa rencontre cinquante fois — ou qui envoie
+    # un fichier de dix mégaoctets — écrit autant de fois dans notre magasin
+    # de fichiers, sans qu'aucun écran ne le montre.
+    #
+    # Les deux valeurs sont des bornes, pas une mesure : les bases d'épreuve
+    # n'ont pas les messages bruts d'une base réelle (une copie allégée les
+    # laisse tomber), donc le vrai maximum reçu n'a pas pu être relu ici. Un
+    # demi-mégaoctet et dix pièces sont deux ordres de grandeur au-dessus de
+    # tout ce que l'ingestion a produit jusqu'ici, et le journal dit quand une
+    # invitation les touche : c'est ce qui rendra la borne mesurable.
+    IMIP_ICS_MAX_OCTETS = 512 * 1024
+    IMIP_ICS_MAX_PIECES = 10
+
+    def _imip_attach_ics(self, event, msg, ev):
+        """Le `.ics` reçu, gardé en pièce sur l'événement.
+
+        Une pièce par révision reçue, nommée par le DTSTAMP : la collecte
+        rejoue un dossier IMAP de temps en temps, et une relivraison du même
+        message ne doit pas empiler vingt copies du même fichier.
+
+        🔴 Et la partie attachée est celle qui porte VRAIMENT l'UID analysé.
+        Un message qui porte deux parties calendrier — deux invitations dans
+        le même courriel, ou un `REQUEST` suivi de son annulation — voyait son
+        second événement recevoir le fichier du premier
+        (`calendar_payload_for_uid`).
+
+        Deux plafonds, parce que la source est un inconnu : la taille du
+        fichier et le nombre de pièces déjà gardées sur l'événement. Au-delà,
+        on n'attache pas et on l'écrit au journal — un `.ics` manquant se
+        voit, un magasin de fichiers qui gonfle en silence non.
+        """
+        if not event:
+            return
+        texte = imip.calendar_payload_for_uid(msg, ev.get("uid"))
+        if not texte:
+            _logger.info(
+                "bf_email iMIP: aucune partie calendrier ne porte l'UID %s; "
+                "rien n'est attaché à l'événement %s.",
+                ev.get("uid"), event.id,
+            )
+            return
+        octets = texte.encode("utf-8", "replace")
+        if len(octets) > self.IMIP_ICS_MAX_OCTETS:
+            _logger.warning(
+                "bf_email iMIP: le .ics de l'invitation %s pèse %s octets "
+                "(plafond %s); il n'est pas gardé en pièce.",
+                ev.get("uid"), len(octets), self.IMIP_ICS_MAX_OCTETS,
+            )
+            return
+        stamp = re.sub(r"[^0-9]", "", str(ev.get("dtstamp") or ""))
+        nom = f"invitation-{stamp or 'sans-date'}.ics"
+        Attachment = self.env["ir.attachment"].sudo()
+        base = [
+            ("res_model", "=", "calendar.event"),
+            ("res_id", "=", event.id),
         ]
-        if ev.get("organizer"):
-            lines.append("Organisateur : %s" % ev["organizer"])
-        if ev.get("description"):
-            lines.append("")
-            lines.append(ev["description"])
-        return "\n".join(lines)
+        if Attachment.search_count(base + [("name", "=", nom)]):
+            return
+        deja = Attachment.search_count(base + [("mimetype", "=", "text/calendar")])
+        if deja >= self.IMIP_ICS_MAX_PIECES:
+            _logger.warning(
+                "bf_email iMIP: l'événement %s porte déjà %s invitations en "
+                "pièce (plafond %s); %s n'est pas gardé.",
+                event.id, deja, self.IMIP_ICS_MAX_PIECES, nom,
+            )
+            return
+        Attachment.create({
+            "name": nom,
+            "res_model": "calendar.event",
+            "res_id": event.id,
+            "mimetype": "text/calendar",
+            "datas": base64.b64encode(octets),
+        })
 
     # ------------------------------------------------------------------
     # Manual sync trigger
@@ -6449,7 +6749,7 @@ class BfEmail(models.Model):
         before_count = self.search_count([])
 
         max_iterations = 50
-        for _ in range(max_iterations):
+        for _tour in range(max_iterations):
             last_before = (_read_watermark(self.env, "bf_email.last_sync_date")
                            or "2000-01-01 00:00:00")
             self._cron_sync_emails()

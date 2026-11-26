@@ -24,7 +24,9 @@ from odoo.tests import HttpCase, TransactionCase, tagged
 
 from odoo.addons.bf_email_management.models import push_transport
 from odoo.addons.bf_email_management.models.push_transport import (
-    parse_push_keys, push_request, webpush_encrypt,
+    parse_push_keys,
+    push_request,
+    webpush_encrypt,
 )
 
 BASE = "/bf_email_management/mobile/v1"
@@ -83,7 +85,7 @@ class TestWebpushEncryption(TransactionCase):
         body, headers = push_request(payload, p256dh, auth)
         self.assertEqual(headers, {"Content-Type": "application/octet-stream",
                                    "Content-Encoding": "aes128gcm", "TTL": "86400"})
-        self.assertNotIn("Soumission".encode(), body)
+        self.assertNotIn(b"Soumission", body)
         self.assertEqual(struct.unpack("!L", body[16:20])[0], 4096)
         self.assertEqual((body[20], body[21]), (65, 0x04))
         plain = http_ece.decrypt(body, private_key=private,
@@ -228,7 +230,7 @@ class TestWebpushDevice(TransactionCase):
         self.assertEqual(headers["Content-Encoding"], "aes128gcm")
         self.assertEqual(headers["Authorization"], "Bearer tk-courriel")
         self.assertIs(kw["allow_redirects"], False)
-        self.assertNotIn("Contrat".encode(), body)
+        self.assertNotIn(b"Contrat", body)
         plain = http_ece.decrypt(body, private_key=sub[0],
                                  auth_secret=_unb64(sub[2]), version="aes128gcm")
         self.assertEqual(json.loads(plain), payload)

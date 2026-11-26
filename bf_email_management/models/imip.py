@@ -26,6 +26,7 @@ import logging
 import re
 from datetime import date, datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
+from urllib.parse import urlsplit
 
 _logger = logging.getLogger(__name__)
 
@@ -44,6 +45,91 @@ REPLY_PARTSTATS = {
     "DECLINED": "declined",
     "NEEDS-ACTION": "needsAction",
 }
+
+# Les hôtes chez qui une adresse de visioconférence est une SALLE. La liste
+# ne vaut que par la façon dont on la lit : voir `_est_une_salle_de_visio`.
+_VISIO_HOTES = (
+    "teams.microsoft.com", "teams.live.com", "meet.google.com", "zoom.us",
+    "webex.com", "whereby.com", "meet.jit.si", "chime.aws", "8x8.vc",
+    "gotomeeting.com", "bluejeans.com",
+)
+
+_URL_RE = re.compile(r"""https?://[^\s<>"']+""", re.IGNORECASE)
+
+
+def _est_une_salle_de_visio(adresse):
+    """L'adresse est-elle une salle chez un fournisseur reconnu ?
+
+    🔴 L'hôte est ANALYSÉ, puis comparé par égalité ou par vrai sous-domaine.
+    La version d'avant cherchait la liste en SOUS-CHAÎNE dans l'URL entière,
+    et son commentaire prétendait déjà faire mieux : un hôte connu posé dans
+    la REQUÊTE (`https://phishing.test/go?r=https://meet.google.com/x`) ou
+    dans le CHEMIN (`https://phishing.test/meet.google.com/abc`) suffisait
+    alors à décrocher un bouton « Rejoindre » et un lien cliquable vers le
+    site de l'inconnu qui a écrit l'invitation.
+
+    Trois choses que seule l'analyse donne :
+
+    * `urlsplit().hostname` écarte le `userinfo` — l'hôte de
+      `https://meet.google.com@phishing.test/x` est `phishing.test` ;
+    * `endswith("." + hote)` et non `hote in` : un vrai sous-domaine
+      (`us02web.zoom.us`, `societe.webex.com`) passe, `monzoom.us.ailleurs.test`
+      non ;
+    * le schéma est vérifié : `startswith("http")` admettait `httpx://`, et
+      `javascript:` n'a pas d'hôte mais reste cliquable.
+    """
+    if not adresse:
+        return False
+    try:
+        morceaux = urlsplit(adresse.strip())
+    except ValueError:
+        return False
+    if morceaux.scheme.lower() not in ("http", "https"):
+        return False
+    hote = (morceaux.hostname or "").lower().rstrip(".")
+    if not hote:
+        return False
+    return any(hote == connu or hote.endswith("." + connu)
+               for connu in _VISIO_HOTES)
+
+
+def _conference_url(vevent, location, description):
+    """L'adresse de visioconférence que porte le VEVENT, ou "".
+
+    Trois sources, dans l'ordre où elles sont fiables : les propriétés que les
+    fournisseurs posent exprès, l'`URL` du VEVENT quand c'en est une, puis une
+    adresse reconnue dans le lieu ou la description — c'est là que Teams et
+    Meet la mettent vraiment (mesuré sur une base réelle : la grande majorité des
+    invitations externes portent un lien, presque toutes dans la description).
+
+    🔴 La liste d'hôtes s'applique aux TROIS, et pas seulement à la dernière.
+    Le `.ics` vient d'un inconnu : `X-GOOGLE-CONFERENCE` et `URL` sont des
+    champs comme les autres, que rien n'empêche de porter l'adresse de son
+    choix, et ce qu'on en fait est un bouton « Rejoindre » plus un lien
+    cliquable dans la description.
+
+    ⚠️ Conséquence assumée : une salle chez un fournisseur hors liste (un
+    Jitsi auto-hébergé, par exemple) n'est plus retenue même quand elle arrive
+    par `URL`. Le lien reste lisible dans le texte de l'organisateur, qui est
+    rendu tel quel ; c'est le champ `videocall_location` et son bouton qui
+    exigent un hôte connu.
+    """
+    for nom in ("x-google-conference", "x-microsoft-skypeteamsmeetingurl"):
+        for ligne in vevent.contents.get(nom, []):
+            valeur = str(getattr(ligne, "value", "") or "").strip()
+            if _est_une_salle_de_visio(valeur):
+                return valeur
+    for ligne in vevent.contents.get("url", []):
+        valeur = str(getattr(ligne, "value", "") or "").strip()
+        if _est_une_salle_de_visio(valeur):
+            return valeur
+    for texte in (location or "", description or ""):
+        for trouve in _URL_RE.findall(texte):
+            adresse = trouve.rstrip(".,;)>]")
+            if _est_une_salle_de_visio(adresse):
+                return adresse
+    return ""
+
 
 # Google rewrites the UID of an invitation it received from elsewhere once the
 # series is split on its side: ``_<base32hex(original UID)>_R<start>@google.com``.
@@ -69,6 +155,52 @@ def _iter_calendar_payloads(msg):
             yield payload.decode(charset, errors="replace")
         except (LookupError, UnicodeDecodeError):
             yield payload.decode("utf-8", errors="replace")
+
+
+def calendar_payload_for_uid(msg, uid):
+    """La partie ``text/calendar`` qui porte VRAIMENT cet UID, ou "".
+
+    Le fichier reçu est gardé en pièce sur l'événement : la source
+    exacte — fuseau, SEQUENCE, X-propriétés — ne se reconstruit pas depuis les
+    champs qu'on a retenus.
+
+    ⚠️ Un message peut porter plusieurs parties calendrier, et l'ingestion
+    traite un VEVENT à la fois : garder « la première » attachait, sur
+    l'événement de la seconde invitation, le fichier de la première. Le
+    rapprochement se fait sur l'UID, lu par vobject plutôt qu'au motif, parce
+    qu'un UID se replie sur plusieurs lignes aussi volontiers que les autres
+    propriétés.
+
+    Faute de vobject ou de correspondance, on rend la SEULE partie quand il
+    n'y en a qu'une, et "" quand il y en a plusieurs : attacher le mauvais
+    fichier est pire que n'en attacher aucun.
+    """
+    parties = list(_iter_calendar_payloads(msg))
+    if not parties:
+        return ""
+    cible = (uid or "").strip()
+    if cible:
+        try:
+            import vobject
+        except Exception:  # noqa: BLE001  # pragma: no cover
+            vobject = None
+        if vobject is not None:
+            for texte in parties:
+                try:
+                    for cal in vobject.readComponents(
+                            texte, ignoreUnreadable=True):
+                        for vevent in cal.contents.get("vevent", []):
+                            prop = _get(vevent, "uid")
+                            valeur = (prop.value or "").strip() if prop else ""
+                            if valeur == cible:
+                                return texte
+                except Exception as exc:  # noqa: BLE001
+                    _logger.warning(
+                        "bf_email iMIP: partie calendrier illisible au "
+                        "rapprochement d'UID : %s", exc,
+                    )
+                    continue
+    return parties[0] if len(parties) == 1 else ""
 
 
 def message_has_calendar_part(msg):
@@ -188,16 +320,42 @@ def _parse_vevent(vevent, method):
 
     organizer_prop = _get(vevent, "organizer")
     organizer = _addr(organizer_prop.value) if organizer_prop else ""
+    organizer_cn = ""
+    if organizer_prop is not None:
+        params = getattr(organizer_prop, "params", None) or {}
+        organizer_cn = str((params.get("CN") or [""])[0] or "").strip()
 
     attendees = []
     partstats = {}
+    # Les invités, avec de quoi les NOMMER. `attendees` reste la
+    # liste d'adresses nues que lisent les gardes de l'ingestion, et ne change
+    # ni de forme ni d'ordre ; `invites` porte en plus le nom affiché, le rôle
+    # et la réponse, pour que l'événement puisse les montrer.
+    invites = []
     for att in vevent.contents.get("attendee", []):
         addr = _addr(att.value)
         if addr and addr not in attendees:
             attendees.append(addr)
-        values = (getattr(att, "params", None) or {}).get("PARTSTAT") or []
+        params = (getattr(att, "params", None) or {})
+        values = params.get("PARTSTAT") or []
         if addr and values:
             partstats[addr] = str(values[0]).strip().upper()
+        if not addr or any(inv["email"] == addr for inv in invites):
+            continue
+        invites.append({
+            "email": addr,
+            "cn": str((params.get("CN") or [""])[0] or "").strip(),
+            "role": str((params.get("ROLE") or [""])[0] or "").strip().upper(),
+            "partstat": str((values or [""])[0] or "").strip().upper(),
+        })
+
+    sequence = 0
+    seq_prop = _get(vevent, "sequence")
+    if seq_prop is not None and seq_prop.value is not None:
+        try:
+            sequence = int(str(seq_prop.value).strip())
+        except (TypeError, ValueError):
+            sequence = 0
 
     recurrence_id = None
     rid_prop = _get(vevent, "recurrence_id")
@@ -230,6 +388,12 @@ def _parse_vevent(vevent, method):
         # when it answers for the whole event or series.
         "recurrence_id": recurrence_id,
         "dtstamp": dtstamp,
+        # Ce que l'invitation disait et qu'on jetait.
+        "invites": invites,
+        "organizer_cn": organizer_cn,
+        "conference": _conference_url(
+            vevent, _val("location"), _val("description")),
+        "sequence": sequence,
     }
 
 

@@ -67,7 +67,7 @@ class BfEmailEntetes(models.Model):
         try:
             with self.env.cr.savepoint():
                 self.write(vals)
-        except Exception:  # noqa: BLE001
+        except Exception:
             _logger.warning("bf.email #%s : en-têtes non écrits", self.id,
                             exc_info=True)
             return False
@@ -189,7 +189,7 @@ class BfEmailEntetes(models.Model):
                         if uid not in rates and row.raw_headers:
                             trouvees |= row
                     self._bf_valider_le_lot()
-            except Exception:  # noqa: BLE001 - réseau : le compte suivant
+            except Exception:
                 _logger.warning("bf.email en-têtes (%s) : passe par UID "
                                 "interrompue", account.display_name,
                                 exc_info=True)
@@ -251,7 +251,7 @@ class BfEmailEntetes(models.Model):
                             par_mid.pop(bf_email_imap.normalize_message_id(
                                 row.message_id_header), None)
                     self._bf_valider_le_lot()
-            except Exception:  # noqa: BLE001
+            except Exception:
                 _logger.warning("bf.email en-têtes (%s) : balayage "
                                 "interrompu", account.display_name,
                                 exc_info=True)
@@ -310,7 +310,7 @@ class BfEmailEntetes(models.Model):
                 with self.env.cr.savepoint():
                     row.write(vals)
                 n += 1
-            except Exception:  # noqa: BLE001
+            except Exception:
                 _logger.warning("bf.email #%s : objet non réparé", row.id,
                                 exc_info=True)
         _logger.info("bf.email objets réparés : %s", n)

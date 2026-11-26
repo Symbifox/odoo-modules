@@ -43,7 +43,7 @@
 
     <!-- Admin zone: read-only view of every user's emails (group-gated) -->
     <record id="bf_email_action_admin_all" model="ir.actions.act_window">
-        <field name="name">Tous les courriels &#8212; admin</field>
+        <field name="name">Tous les courriels (admin)</field>
         <field name="res_model">bf.email</field>
         <field name="view_mode">list,kanban,form,graph,pivot</field>
         <field name="search_view_id" ref="bf_email_view_search"/>
@@ -52,7 +52,7 @@
     </record>
 
     <menuitem id="menu_bf_email_admin_all"
-              name="Tous les courriels &#8212; admin"
+              name="Tous les courriels (admin)"
               parent="menu_bf_email_emails"
               action="bf_email_action_admin_all"
               groups="group_email_admin"

@@ -4,6 +4,429 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.77.2] - 2026-11-26
+
+### Security
+
+- **The extension's batch lookup only returns the caller's own emails.**
+  `extension_resolve` searched by Message-ID without restricting the search to
+  the caller. The same email received by two people exists twice, and the
+  read-all rule of the "Administrator, all emails" group then served an
+  administrator their colleague's copy. The search now carries the same
+  `user_id` filter as opening an email: your own copy only, and nothing when
+  only a colleague has the message. **Upgrade recommended.**
+- **An invitation failing DMARC no longer touches the calendar.** A reply
+  (`METHOD:REPLY`) whose `dmarc=fail` was noted by the receiving server was
+  already ignored. Invitations (`REQUEST`) and cancellations (`CANCEL`) now
+  follow the same rule: such a message does not change an existing meeting (no
+  video link, no time, no cancellation) and does not create a new one. Every
+  guard on this path relies on the sender, and a DMARC failure says precisely
+  that this `From:` is not proven; a new meeting would carry the same "Join"
+  button and the same link pushed to the phone. Only the first
+  `Authentication-Results` header counts. The email stays in the inbox, from
+  where the meeting can be added by hand. **Upgrade recommended.**
+- **Code mode warns against copying the code on request.** In code mode,
+  anyone can build the pairing link with their own PKCE challenge and then ask
+  someone to copy back the displayed code. The code-mode consent page, and the
+  page that shows the code, now warn to only copy it into an application one
+  has just opened oneself to connect it, never at someone's request. The
+  phone app's page, PKCE and the CSRF token are unchanged.
+
+### Fixed
+
+- **The notice drop queue no longer clogs.** The drop cron took the first 200
+  pending rows in id order, with no attempt cap. A mailbox that became
+  unreachable (password changed, token expired) kept its rows queued forever;
+  once it had 200, every pass only saw them, nobody received a copy any more,
+  and the table grew without end. Rows never tried now go first, then the
+  least tried. Each row counts its own attempts, and after 12 passes that find
+  the mailbox unreachable (about two hours at the cron's pace) it moves to
+  "Failed" and leaves the queue, keeping the reason of the last failure. The
+  cron also deletes finished rows (dropped, skipped, failed) older than 30
+  days, at most 1,000 per pass, without relying on Odoo's general clean-up,
+  which is not active everywhere. A row still pending never leaves that way.
+
+### Changed
+
+- The quoted-thread refusal says what to do in the interface: reply from the
+  received email ("Reply" or "Reply all" in the chatter's "…" menu), or untick
+  "Quoted thread expected" on the draft.
+- The admin zone's menu and action are named "Tous les courriels (admin)".
+- No function rebinds `_` (the translation function) as a local variable any
+  more: a `for _ in range(...)` shadowed it in the whole manual sync method,
+  and three `_, x = ...` unpackings did the same elsewhere.
+- The transient-wizard tests no longer assume `bf_securetransfer` or
+  `bf_dav_server` is installed: their clean-up touched those modules' tables
+  unconditionally, which broke on an install without them.
+
+## [18.0.11.77.1] - 2026-11-22
+
+### Fixed
+
+- Kanban view of emails: a long sender ("Managers' club
+  <letter@managers.example>") overflowed its card and left the direction
+  arrow alone on its line. `text-truncate` sat on the field, which Odoo 18
+  renders as an inline `<span>` on a card, where it truncates nothing. It now
+  sits on the top block of the card: the arrow and the sender share one line,
+  cut with "…" at the edge. View only, no data touched.
+
+## [18.0.11.77.0] - 2026-11-18
+
+### Security
+
+- **Invitation guests no longer become attendees**, even when they match an
+  existing contact: `_imip_partner_ids` returns the owner alone. The portal
+  rule grants read access through the attendee field, and the outgoing paths
+  started from that same field (the "Email attendees" button, reminders of
+  type email, the composer's pre-selection). The guest list lives in the
+  description and in the attached `.ics`, which the portal refuses.
+- The description **names guests without writing their address** ("Jane Doe:
+  accepted", or "a guest at example.test" when the invitation carries no
+  `CN`): calendar share links at the "details" level already serve that field.
+  The organiser keeps name and address.
+- `_conference_url` compares the URL's **real host** on all three of its
+  branches. The host list used to be matched as a substring, so
+  `https://phishing.test/go?r=https://meet.google.com/x` earned a "Join"
+  button, and `X-GOOGLE-CONFERENCE` and `URL` passed without any check.
+
+### Fixed
+
+- Our own descriptions are recognised by their core text: an older wording
+  and the new one differ by one letter, and the whole-string comparison never
+  matched, so a re-sent invitation never refreshed them.
+- New texts go through `_()` at run time (English source, `i18n/fr.po`), except
+  the marker, which must not move. `videocall_location` is cleared when an
+  update no longer carries a link, and the `.ics` kept as an attachment is the
+  one carrying the parsed UID, under a size and count cap.
+
+## [18.0.11.76.0] - 2026-11-18
+
+### Changed
+
+- **A received invitation arrives under its own title.** The "[Tentative]"
+  prefix this module put in front of the title lived in the one field
+  everyone reads, and removing it meant editing the title by hand: most
+  events created from an invitation still carried it. Tentative is now said
+  by `bf_event_status` (soft link to `bf_calendar_invite`), flipped with one
+  click in the event bubble, and carried in the `.ics`. The key is passed at
+  creation: without it, `bf_calendar_invite` stamps "confirmed", and many
+  events said "confirmed" in the field and "[Tentative]" in the title.
+
+### Added
+
+- What the `.ics` said and was thrown away: the named organiser, guests with
+  their answer, the video link in `videocall_location`, the received file as
+  an attachment (one per `DTSTAMP`), and a real HTML description. Plain text
+  used to be wrapped in a single `<p>`, so every line break fell at render
+  time.
+
+## [18.0.11.75.0] - 2026-11-17
+
+### Fixed
+
+- **On a phone, an opened email can be read.** Below 767.98 px, opening an
+  email showed its subject and its action ribbon, and not one line of the
+  message: at 390 × 844 the ribbon took fourteen rows and the message frame
+  started below the bottom of the screen, with no ancestor able to scroll it
+  back. Below that width there is now **one panel at a time**: once an email
+  is selected, the list, the splitter and the folder rail give way, the form
+  takes the full width, and a **"‹ List"** button brings the list back with
+  its folders and selection intact. The ribbon lays out on one scrolling row
+  whatever the stored preference, and the preference is not touched.
+
+  | At 390 × 844, an email open, "preview below" | 11.74.0 | **11.75.0** |
+  |---|---|---|
+  | Visible message height | 0 px | **522 px** |
+  | Ribbon rows | 14 (822 px) | **1** (37 px) |
+  | Ribbon commands reachable by touch | 3 / 15 | **7 / 15** |
+  | Message body width | 130 px | **390 px** |
+  | Folder rail | 260 px | **hidden, restored on return** |
+
+- With nothing selected, the empty form no longer eats the list (394 → 798 px
+  high at 390 px), and the thirteen-key shortcut cheat sheet is no longer
+  rendered on a device without a keyboard. In "preview on the right" at
+  390 px, the form no longer runs 196 px off screen.
+- Selected rows keep their **count visible** in the return bar: the hidden
+  list takes its "N selected" banner with it, and a bulk action would still
+  target them.
+- Closing the form while a preview is **in flight** no longer repaints
+  anything: `_fetchPreview` carries a sequence token, like the list load
+  always has, and closing invalidates it.
+- **Above 767.98 px nothing changes**, measured against the previous release
+  at 768, 1,024 and 1,440 px: same visible message height to the pixel, same
+  ribbon rows. The back button is rendered and hidden (`d-md-none`, Odoo's own
+  convention).
+
+### Not touched
+
+- The **systray panel** keeps its exact behaviour; its 0 px message body on a
+  narrow screen is a separate, pre-existing defect, now diagnosed.
+- The **IMAP Folder Browser** does not take the rule (it goes through
+  `.o_bf_email_duo`, which the browser template does not carry), nor the
+  folder rail's automatic collapse.
+
+## [18.0.11.74.0] - 2026-11-14
+
+### Added
+
+- `POST /bf_email_management/mobile/v1/extension/resolve` takes up to 200
+  Message-IDs and returns, for each, the gist of the email (subject, state,
+  direction, handled) and the number of **overdue items of its customer**.
+  About two hundred bytes per email, one round trip. A separate route from
+  `/extension/open` on purpose: the full context of a large customer weighs
+  kilobytes, and the desktop mail client needs this twice where it wants none
+  of that: the button's badge, painted for every displayed email, and
+  gestures on a selection of messages.
+- Overdue items are counted **once per customer**. A count refused by access
+  rights returns `null` and raises `partial`, never zero: the badge is a
+  warning, and showing "0" for "I could not look" would be worse here than
+  elsewhere.
+- Snooze deadlines travel with the answer, recomputed on every call: they are
+  absolute, and a cached list would offer "in 1 hour" for an hour already
+  past.
+- Read-only: it marks nothing as read and changes nothing. The `bf.email`
+  ownership guard applies in bulk too: a colleague's email is never matched.
+  Capped at 200 headers, the rest silently ignored.
+
+## [18.0.11.73.0] - 2026-11-14
+
+### Fixed
+
+- **The count of invoices and tasks no longer lies.** The Thunderbird
+  extension's panel showed "5" as a customer's number of unpaid invoices when
+  there were many more: the count was the length of the list truncated by
+  `limit=5`, and the ascending due-date sort finished the illusion (the five
+  oldest filled the list, all "in payment"). A wrong number is worse than a
+  missing one, because it is believed.
+- Three separate caps where there was one: `LIGNES_ENVOYEES` (20) for what
+  travels, `LIGNES_MAX` (5) for what the panel shows before expanding, and
+  **totals counted in the database** that depend on no cap.
+- New key `context.totals` in `/extension/open`, with `count`,
+  `overdue_count`, `in_payment_count` and one entry **per currency** for
+  invoices. Amounts are never summed across currencies.
+- Each line carries `overdue` and `in_payment`: "in payment" is paid but not
+  reconciled, and chasing it is the worst email this panel could prompt.
+- The overdue threshold is **midnight today in the caller's time zone**, the
+  same for a line's flag and for the count. `date_deadline` is a timestamp:
+  comparing it with "now" would turn a task due today red early in the
+  morning.
+- `totals` is a new key **beside** the lists, never in their place, so an
+  older extension ignores what it does not know.
+
+## [18.0.11.72.0] - 2026-11-13
+
+### Added
+
+- `GET /bf_email_management/mobile/v1/extension/identities` returns the
+  caller's usable identities with, for each, the signature to apply
+  (`_signature_for`, so with its fallback to `res.users.signature`). The
+  server is authoritative and the desktop client follows: the Thunderbird
+  extension matches on the normalised address and copies the signature into
+  the matching identity.
+- A separate route from `/extension/open` on purpose: that one is called for
+  every displayed email, this one once at client start-up.
+- Only **verified**, active identities are returned (`_usable_for`), and no
+  secret is in the payload: the model also carries `mail_server_id`, and only
+  keys shown in an email go out.
+
+## [18.0.11.71.0] - 2026-11-13
+
+### Added
+
+- **The Thunderbird extension talks to the API that already serves the
+  phone.** `GET /bf_email_management/mobile/v1/extension/open?header=<Message-ID>`
+  returns in **one round trip** the email, its customer context (contact,
+  record it is filed on, open tasks, unpaid invoices, hour bank) and the
+  current settings.
+- Matching is by the **Message-ID** header in both spellings (Thunderbird
+  returns it without angle brackets, Odoo stores it with them), never by the
+  IMAP UID, which archiving leaves stale.
+- A context block refused by the caller's rights is **named** in `restricted`:
+  "no open task" and "I may not look" are not the same answer.
+- Device pairing **without a redirect** (`?mode=code`): the consent page shows
+  the code and the client copies it. A Gecko extension's origin is random per
+  profile, so it cannot be registered, and allowing any `moz-extension://`
+  would reopen a hole closed earlier. PKCE and the CSRF token are still
+  required, and nothing redirects.
+- Nothing new for "Send to Gen": `bf_claude_chat` already accepts the
+  mailbox's device token, and the extension calls its `/mobile/v1/ask` with
+  the email's record.
+
+## [18.0.11.70.0] - 2026-11-13
+
+### Added
+
+- Autodiscover: `controllers/autoconfig.py` serves
+  `/.well-known/autoconfig/mail/config-v1.1.xml`, so a mail client set up
+  with an address finds its IMAP and SMTP servers, for the domains the
+  instance lists.
+
+## [18.0.11.68.3] - 2026-11-13
+
+### Security
+
+- **The fourteen transient wizards of the module had no owner rule.** One
+  **global** `ir.rule` per transient model, fourteen in all,
+  `[('create_uid', '=', user.id)]` on all four permissions. None had one, and
+  their ACL opens them to every employee: a colleague could read another's
+  form with a plain `web_search_read`. Odoo 18 no longer applies any implicit
+  creator restriction to a transient model. What it exposed: the IMAP
+  password in clear and the address (`bf.email.account.setup`), the full body
+  of an email previewed in the diagnostic window (`bf.email.browser`), the
+  sender and subject of every message of a page (`bf.email.browser.line`),
+  which emails go to which record, which are reported and to whom, which
+  threads are muted, the chosen out-of-office text, the proposed mailbox
+  rules. **Upgrade recommended.**
+- The rules are **global, without a group**: they combine by AND with
+  everything else, so the email administrator sees someone else's form no
+  more than their IMAP account or mobile tokens. They are **outside
+  `noupdate`**, like the module's other rules.
+- Same shape as core on its own transients (`mail.compose.message`,
+  `change.password.user`, `res.users.identitycheck`), with one deliberate
+  difference: ours cover all four permissions, because an employee creates
+  and deletes these rows, and a rule that leaves `unlink` open lets someone
+  delete a colleague's draft.
+- **The transient clean-up does not run everywhere, and the module no longer
+  relies on it.** In Odoo 18 the only caller of `_transient_vacuum` is the
+  `base.autovacuum_job` cron; with that cron off, wizard rows stayed for
+  weeks. Opening the add-mailbox wizard now deletes stale rows itself,
+  **its author's only**: Odoo's own clean-up takes everyone's rows older than
+  a quarter of an hour, and this wizard sends people off to create an app
+  password at their provider, which often takes longer.
+- **A pre-migration empties the fourteen wizard tables on upgrade.** The rules
+  close reading; they do not erase what already sits there. These are drafts
+  by definition, and an upgrade restarts Odoo anyway.
+- **The password leaves the row on every path that raises, through the right
+  cursor.** A path that continues erases it in the transaction; a path that is
+  about to raise erases it through a separate cursor (`_oublier`, three-second
+  `lock_timeout`), the only one that survives the rollback. A failure that
+  `retrying` will replay (serialisation, deadlock) does not erase it, or the
+  replay would die without the secret. Remaining case, named: a
+  non-retryable error raised when the *last* write is flushed escapes both
+  paths, and the committed row keeps the password until the same user's next
+  action or the next upgrade.
+- Tests: `tests/test_transitoires_proprietaire.py`, fifteen tests: the
+  fourteen models one by one, the `web_search_read` case, the administrator
+  excluded too, the list of fourteen compared with `ir.model` (it will catch a
+  fifteenth wizard added without a rule), the password paths, and a clean-up
+  that spares a colleague's row.
+
+## [18.0.11.68.2] - 2026-11-13
+
+### Added
+
+- The "Quoted thread expected" box on the phone. The previous release refused
+  to **save** a phone edit that would have erased the quoted thread, but the
+  box that unblocks it only existed in the desktop form. It now travels in the
+  draft payload, and `mobile_draft_save` can toggle it. The guard judges on
+  the **new** value, otherwise unticking and saving in one call would unblock
+  nothing. The HTTP route `/draft/save` lists its parameters explicitly, and
+  the value is coerced at the edge (`bool("false")` is true in Python). The
+  capability is announced by `draft_citation_api`.
+
+## [18.0.11.68.0] - 2026-11-12
+
+### Added
+
+- **The quoted-thread gate.** A reply to a received email must carry the
+  quoted message below the signature, as "Reply all" does. The rule used to
+  live only in instructions that one client read, so other writers posted
+  replies without it. The field `bf_citation_attendue`, set by the
+  integration that recognises the email a draft answers, is checked at
+  **send** time: every path (button, phone, forced send, cron) goes through
+  `_post_message`.
+- The quote is applied after the draft exists, so refusing at creation would
+  refuse everything. The invariant is "at least one quote marker, the first
+  below the signature": the quoted email carries one too. The signature is
+  read as a tree (lxml), not as characters, because incoming emails can
+  already carry our signature class quoted from our own reply.
+- A batch of sends is validated **whole** before the first send: core commits
+  each posted message but only deletes the drafts at the end, so a refusal in
+  the middle left drafts both posted and sendable again, that is a duplicate
+  at the customer's. The cron never raises: it drops the row from the batch,
+  and only counts what is allowed to leave before re-triggering itself. An
+  internal note does not go through the gate.
+
+## [18.0.11.67.2] - 2026-11-05
+
+### Fixed
+
+- The drop-queue cron runs under the system account. Odoo checks that a
+  cron's user may write on `bf.email.depot` before running its code; only the
+  email administrator may, and a cron user without that group failed every
+  pass before reaching its `sudo()`. Migration included (the block is
+  `noupdate`).
+
+## [18.0.11.67.1] - 2026-11-04
+
+### Security
+
+- The drop queue gets its record rules. Without them every internal user
+  could read it whole, and a row says **who** receives **which** notice. Same
+  pattern as the rest of the module: your own rows for everyone, everything
+  read-only for the email administrator.
+
+## [18.0.11.67.0] - 2026-11-04
+
+### Added
+
+- **The email you no longer receive, filed in your mailbox anyway.** Someone
+  who reads their notices in Odoo stops getting them by email, and then
+  cannot search them in their mail client. A toggle in the user menu, and a
+  copy written directly by IMAP `APPEND` into a folder ("Odoo" by default),
+  already read: no SMTP, no external hop, no bounce possible. The hook is the
+  definition itself: `_notify_thread_by_inbox` receives exactly those who
+  would have had an email if their preference were "by email". Never in the
+  writer's transaction: an `APPEND` is a network round trip, so it goes
+  through the `bf.email.depot` queue and a cron.
+
+## [18.0.11.66.0] - 2026-11-03
+
+### Added
+
+- **Report spam from Symbifox Mobile.** Two mobile API routes: `POST
+  /report/options` says what the gesture can offer on given emails (the
+  account's Junk folder, blocking, complaints and authorities by kind,
+  phishing available or not), and `POST /report` performs it. `GET /config`
+  carries `report_api: 1`, so an app served by an older instance does not
+  offer the gesture.
+- The phone goes through the desktop wizard (`bf.email.report.wizard`),
+  created and confirmed: same order of evidence (complaint and `.eml` read
+  before filing), same refusal of an authority outside the list, same absence
+  of blocking on phishing. The guards moved to `bf.email._report_refus()`,
+  shared by the wizard and the app. Form-based authorities return their text,
+  so the phone offers it to copy.
+
+### Fixed
+
+- The guards are replayed at the **point of action** (`action_confirm`), not
+  only when the wizard opens: a desktop wizard left open while the phone
+  reported the same email used to file it again. An email in the trash can no
+  longer be reported, on both sides. The "always file" box no longer stays
+  ticked, invisibly, when switching to phishing. The blocking offer checks
+  that there is an address to block. A boolean is no longer taken for an id
+  (`isinstance(True, int)` is true in Python), and the authority list is
+  capped like `email_ids`.
+
+## [18.0.11.65.1] - 2026-11-01
+
+### Fixed
+
+- The sender lookup of a spam report escapes `_` and `%` before its `=ilike`:
+  they are wildcards, and "jean_paul@example.test" also matched
+  "jeanXpaul@example.test".
+
+## [18.0.11.65.0] - 2026-10-25
+
+### Added
+
+- Phone reminders: two hooks, `calendar.attendee._bf_reminder_candidate_events(now)`
+  and `_bf_reminder_triggers(event)`, the meetings and times that ring
+  Symbifox Mobile (or ntfy). By default nothing changes: the meeting's
+  "notification" alarms. With `bf_dav_server` installed, they read
+  `bf.dav.user.data` (through the model, not by inheritance) to ring the
+  reminders a guest sets in Thunderbird or Apple Calendar.
+
 ## [18.0.11.64.2] - 2026-10-25
 
 ### Fixed

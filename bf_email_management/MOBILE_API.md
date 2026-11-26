@@ -15,6 +15,82 @@ tokens, separate push registrations, separate installs.
 
 ---
 
+## Thunderbird extension (11.71+)
+
+### `GET /extension/open?header=<Message-ID>` (auth)
+One round trip, three blocks:
+```json
+{"email": Message, "context": Context, "config": PanelConfig}
+```
+`header` is the RFC `Message-ID`, with or without angle brackets: Thunderbird
+renders it bare, Odoo stores it wrapped, and both forms are searched. Never the
+IMAP UID, which archiving leaves stale.
+
+404 `{"error":"not_found"}` when no row of **the caller's own** mailbox carries
+that header; 400 `{"error":"missing_header"}` when the parameter is empty.
+
+`Context` = `{partner, linked, tasks[], invoices[], hour_bank, restricted[]}`.
+A block the caller may not read is named in `restricted` and left empty: an
+empty list and a forbidden list must not look alike.
+
+`PanelConfig` = `{user_name, snooze_presets, routable_models, spawn_kinds}`,
+recomputed on every call. `snooze_presets` carry ABSOLUTE `until_ms`: a client
+caching them would offer "in 1 hour" for an hour already past.
+
+### `GET /extension/identities` (auth)
+The caller's sending identities, with the signature to apply to each:
+```json
+{"identities": [{"id": 4, "email": "…", "email_normalized": "…",
+                 "name": "…", "signature_html": "<p>…</p>", "is_default": true}]}
+```
+Symbifox is the authority, the desktop follows: the extension matches on
+`email_normalized` and copies `signature_html` into the Thunderbird identity
+carrying that address.
+
+Only **verified** and active identities are returned (`_usable_for`): an
+unverified one would place, on the desktop, a signature for an address the
+server refuses to send from. `signature_html` comes from `_signature_for`, so it
+falls back to `res.users.signature` when the identity has none.
+
+Separate from `/extension/open` on purpose: that one is called for every
+displayed message, this one once at client startup. Merging them would ship an
+8 KB signature on every panel opening, for data that does not change all day.
+
+Nothing secret is returned: the model also carries `mail_server_id`, and an
+outgoing server drags credentials along.
+
+Everything else the extension does goes through the routes below (`/handle`,
+`/snooze`, `/spawn`, `/route`, `/report`, `/records`, `/logout`), and "send to
+Gen" through `bf_claude_chat`'s own `/mobile/v1/ask`, which already accepts this
+module's device token.
+
+### `POST /extension/resolve` (auth), 11.74+
+Body: `{"headers": ["<id1@host>", "id2@host", …]}`, up to 200 Message-IDs,
+the rest silently ignored. A read: nothing is marked read, nothing changes. POST
+because it takes a list, which URL parameters would truncate silently.
+```jsonc
+{"emails": [{"header": "<id1@host>", "id": 12, "subject": "…", "status": "…",
+             "direction": "in", "is_handled": false, "partner_name": "…",
+             "overdue_invoices": 2, "overdue_tasks": null, "partial": true}],
+ "snooze_presets": [...]}
+```
+Overdue items are counted once per customer. A count the caller may not read is
+`null` with `partial: true`, never `0`. Only the caller's own mailbox is matched.
+400 `{"error":"missing_headers"}` when `headers` is not a list.
+
+### Pairing without a deep link: `GET /auth/start?mode=code&…`
+`mode=code` drops the `redirect` requirement: the consent page's « Allow »
+renders the pairing code for the person to copy instead of bouncing to a scheme.
+For a desktop client there is nothing to bounce to (a Gecko extension's origin
+is random per profile), and whitelisting `moz-extension://` wholesale would hand
+a live code to any extension in that profile. PKCE and the CSRF token stay
+mandatory; `redirect` is ignored when `mode=code` is present. Since 11.77.2
+the code-mode consent page and the page showing the code warn to only copy
+the code into an application one has just opened oneself, never at
+someone's request.
+
+---
+
 ## Discovery
 
 ### `GET /ping` (public)
@@ -102,7 +178,8 @@ Deactivates the device and clears its push endpoint. → `{"ok": true}`
   "spawn_kinds": ["task", "ticket", "lead", "bill", "invoice", "expense"],
   "compose_api": 2,         // 11.37+; absent or 1 on older servers
   "identities": [...],      // 11.37+; verified sending addresses
-  "recipient_groups": [...] // 11.37+
+  "recipient_groups": [...], // 11.37+
+  "report_api": 1           // 11.66+; absent on older servers
 }
 ```
 `counts.by_account` repeats the totals per mailbox (key: account id as text), for
@@ -118,6 +195,11 @@ colour the desk inbox paints the mailbox with, as `#RRGGBB`: the company's
 has installed and the user may read, so the app can build its menus from the
 response instead of hardcoding Odoo apps.
 `snooze_presets` are already resolved in the user's timezone.
+`report_api` says the instance can report spam from the phone (**1**: file,
+block the sender, file a complaint, and the spam/phishing choice). Absent on an
+older instance: the app does not offer the gesture. What is offered for GIVEN
+emails is asked from `POST /report/options`, since the Junk folder and the
+authorities depend on the email's account and company, not on the instance.
 
 ---
 
@@ -186,8 +268,9 @@ folding on (the default) a conversation is one row and therefore counts once;
 `grouped=0` counts messages, matching the flat view it serves. Sending the flag
 on `/threads` but not here is what produced "Inbox · 6" over five rows.
 
-The same flag is accepted on the three triage routes below, so the numbers they
-return match the view the app is currently in.
+The same flag is accepted on the three triage routes below and on
+`POST /report`, so the numbers they return match the view the app is currently
+in.
 
 ---
 
@@ -215,6 +298,104 @@ An IMAP write-back that fails (server unreachable) is logged and does **not**
 fail the request — the Odoo-side state still moved.
 
 ---
+
+## Spam reports (11.66+)
+
+### `POST /report/options` (auth)
+
+Body: `{"email_ids": [12]}`. Changes nothing; POST because it takes a list.
+
+```jsonc
+{
+  "ok": true,
+  "count": 1,
+  "senders": ["promo@spam.test"],  // ALL distinct addresses of the batch
+  "junk_folder": "Junk",        // "": no known folder, nothing will move
+  "phish_available": true,      // bf_security_awareness is installed
+  "block_offered": true,        // an "always to Junk" rule is possible
+                                //  (spam ONLY)
+  "complaints_enabled": true,   // company allowed, complaints project set,
+                                //  right (ACL) to create a task, AND a single email
+  "authorities": {
+    "spam":  [{"id": 1, "name": "Spam Reporting Centre",
+               "channel": "email", "url": ""}],
+    "phish": [{"id": 3, "name": "APWG", "channel": "email", "url": ""}]
+  }
+}
+```
+
+`senders` carries **every** distinct address of the batch, untruncated:
+`POST /report` creates one rule **per address**, and the sheet must announce
+everything it will sign for. They are the REAL addresses (parsed `From`), not
+the display name's: `"service@paypal.com" <x@phish.example>` returns
+`x@phish.example`, the address the rule will target. The list is bounded by the
+number of emails (100 at most).
+
+`junk_folder` is the Junk folder's name **per account**, joined by commas when
+the batch spans accounts (`"Junk, Spam"` is possible). A batch mixing an account
+with a folder and one without therefore returns a non-empty value although one
+email will not move on the server: the app should say "filed" without promising
+a specific folder for a batch.
+
+`block_offered` only applies to **spam**. On phishing the server never creates a
+rule (security removes the copies, and blocking would send the next exercises to
+Junk): `block_sender` is then ignored, and the `POST /report` summary SAYS so.
+
+⚠️ `complaints_enabled` true does not guarantee the complaint: a record rule on
+`project.task` can still refuse the task to someone who is not a member of the
+complaints project, and that refusal cancels the whole gesture (it can only be
+measured after the write). The app shows the summary, or the 400.
+
+Refusal: `{"ok": false, "blocked": "…"}` for an email filed on a record, a sent
+email, or an email **already reported** ("Undo" puts it back in the inbox
+before trying again). The same guards as the desk wizard (`_report_refus`), so
+the sheet does not open on a gesture that would fail.
+
+### `POST /report` (auth)
+
+```jsonc
+{"email_ids": [12], "kind": "spam",        // or "phish"
+ "block_sender": true,                      // ignored on "phish"
+ "authority_ids": [1],                      // ignored when complaints_enabled is false,
+                                            //  like those of the other kind and
+                                            //  those that do not exist
+ "grouped": false}                          // optional, default `true`: see `counts`
+```
+
+```jsonc
+{
+  "ok": true,
+  "message": "1 email(s) filed in Junk. 1 rule(s) created. 1 draft complaint(s): …",
+  "ids": [12],
+  "forms": [{"name": "FTC", "url": "https://reportfraud.ftc.gov/",
+             "text": "…"}],                 // form-based authorities: text to paste
+  "counts": {…}
+}
+```
+
+The email goes to the **server's** Junk folder (no folder is ever created), the
+rule is personal, and the complaint is a DRAFT on a task of the configured
+project: nothing reaches an authority without "Send now". Undo: `POST /handle`
+with `handled: false` on the same `ids`, that is `action_unhandle`, which
+reverts the folder, the report and the visibility.
+
+⚠️ "Undo" reverts ONLY that. The mailbox rule (`bf.email.rule`) created by
+`block_sender` stays active, and the prepared complaint stays a draft on its
+task (`mail.scheduled.message`); a phishing report handed to security stays
+filed too. The rule is removed from the mailbox rules, the draft is discarded
+from its task.
+
+`counts` follows `grouped`, like `GET /counts` and the triage routes: badges
+count what the view **shows**, one conversation per line when folding is on.
+
+`message` is the summary to display **as is**: only it knows whether the folder
+moved, the rule was born, the complaint is drafted, and, on phishing where
+`block_sender` was asked, it says that no rule was created.
+
+**400** refusals (`{"error": "…"}`, readable): the `/report/options` guards, an
+unknown kind, and `kind: "phish"` when `phish_available` is false: phishing
+reports need `bf_security_awareness`, without which the gesture would file a
+phishing email as spam while answering `ok: true`.
 
 ## Sending
 

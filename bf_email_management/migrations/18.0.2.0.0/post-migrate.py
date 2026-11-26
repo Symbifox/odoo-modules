@@ -18,7 +18,7 @@ Six things, in order:
 
 import logging
 
-from odoo import SUPERUSER_ID, api, fields
+from odoo import SUPERUSER_ID, api
 
 _logger = logging.getLogger(__name__)
 

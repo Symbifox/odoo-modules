@@ -34,16 +34,16 @@ _LOCAL_PREFIXES = ("cid:", "data:", "#")
 _SCHEME_RE = re.compile(r"^[a-z][a-z0-9+.\-]*:")
 # Ce qu'un navigateur retire d'une URL avant de la lire : blancs et contrôles.
 _URL_STRIP_RE = re.compile(r"[\x00-\x20\x7f]+")
-_CSS_ESCAPE_RE = re.compile(r"\\(?:([0-9a-fA-F]{1,6})[ \t\r\n\f]?|(.))", re.S)
-_CSS_COMMENT_RE = re.compile(r"/\*.*?(?:\*/|$)", re.S)
+_CSS_ESCAPE_RE = re.compile(r"\\(?:([0-9a-fA-F]{1,6})[ \t\r\n\f]?|(.))", re.DOTALL)
+_CSS_COMMENT_RE = re.compile(r"/\*.*?(?:\*/|$)", re.DOTALL)
 # Dans une valeur CSS déjà décodée : l'argument d'un url(...) (fermé ou non),
 # et toute chaîne entre guillemets (image-set('…'), @import "…").
-_CSS_URL_ARG_RE = re.compile(r"url\s*\(\s*(['\"]?)([^'\")]*)", re.I)
+_CSS_URL_ARG_RE = re.compile(r"url\s*\(\s*(['\"]?)([^'\")]*)", re.IGNORECASE)
 # Un document entier (`<html>`, `<head>`, `<body background=…>`) : le parseur
 # de fragments jette ces enveloppes ET leurs attributs. On resérialise alors
 # toujours, sinon l'original repartirait avec son `<body background>`.
-_DOCUMENT_TAG_RE = re.compile(r"<\s*(?:html|head|body)\b", re.I)
-_CSS_STRING_RE = re.compile(r"(['\"])(.*?)(?:\1|$)", re.S)
+_DOCUMENT_TAG_RE = re.compile(r"<\s*(?:html|head|body)\b", re.IGNORECASE)
+_CSS_STRING_RE = re.compile(r"(['\"])(.*?)(?:\1|$)", re.DOTALL)
 # Les attributs qu'on ne juge pas comme du CSS : du texte, un lien qu'il faut
 # toucher pour suivre, ou un attribut que le navigateur ne charge jamais.
 _TEXT_ATTRS = frozenset({"alt", "title", "href", "name", "id", "class",

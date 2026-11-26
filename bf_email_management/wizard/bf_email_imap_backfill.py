@@ -9,7 +9,7 @@ on Message-ID protects against duplicates).
 
 import logging
 
-from odoo import _, api, fields, models
+from odoo import fields, models
 
 from ..models import bf_email_imap
 

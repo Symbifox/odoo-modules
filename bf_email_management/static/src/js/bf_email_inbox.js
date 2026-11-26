@@ -1041,6 +1041,11 @@ export class BfEmailInbox extends Component {
     }
 
     async _fetchPreview(id, loadImages = false) {
+        // Seule la DERNIÈRE demande d'aperçu écrit l'état : même jeton de séquence
+        // que `loadMessages` (plus haut), pour la même raison. Sans lui, une réponse
+        // en retard repeignait l'aperçu d'un message qu'on venait de fermer — sans
+        // sélection, donc sans bouton de retour.
+        const jeton = (this._previewSeq = (this._previewSeq || 0) + 1);
         this.state.loadingPreview = true;
         // Un résumé appartient au message qu'on vient de quitter.
         this.state.genText = null;
@@ -1048,15 +1053,22 @@ export class BfEmailInbox extends Component {
         this.state.preview = null;
         try {
             if (this.isDraftFolder) {
-                this.state.preview = await this.orm.call(
+                const brouillon = await this.orm.call(
                     "bf.email", "inbox_get_draft_body", [], { draft_id: id }
                 );
+                if (jeton !== this._previewSeq) {
+                    return;
+                }
+                this.state.preview = brouillon;
                 return;
             }
             const preview = await this.orm.call(
                 "bf.email", "inbox_get_body", [],
                 { email_id: id, load_images: !!loadImages }
             );
+            if (jeton !== this._previewSeq) {
+                return;
+            }
             this.state.preview = preview;
             const row = this.state.messages.find((m) => m.id === id);
             if (row && preview.seen) {
@@ -1068,12 +1080,17 @@ export class BfEmailInbox extends Component {
                 this._refreshSoon();
             }
         } catch (err) {
+            if (jeton !== this._previewSeq) {
+                return;
+            }
             this.notification.add(
                 _t("Aperçu impossible : ") + (err.message || err),
                 { type: "danger" }
             );
         } finally {
-            this.state.loadingPreview = false;
+            if (jeton === this._previewSeq) {
+                this.state.loadingPreview = false;
+            }
         }
     }
 
@@ -1131,6 +1148,37 @@ export class BfEmailInbox extends Component {
         this._searchTimer = setTimeout(() => {
             this.loadMessages(this.state.currentFolder, 0);
         }, 300);
+    }
+
+    /**
+     * Revenir à la liste depuis la fiche, sous 768 px.
+     *
+     * Rien d'autre que défaire la sélection : c'est une lecture, et c'est le même
+     * geste que `openFolder` fait déjà (l. 593-594). Le CSS se charge de rendre la
+     * liste et de cacher la fiche — le JS ne connaît aucune largeur, exprès.
+     *
+     * 🔴 Mais défaire la sélection ne suffit pas : une demande d'aperçu peut être
+     * EN VOL. Reproduit sur une base d'essai à 390 px en
+     * retenant la réponse de `inbox_get_body` et en la relâchant APRÈS le clic sur
+     * « Liste » — deux taps, sur le geste même que ce lot installe. Mesuré :
+     *
+     *   juste après le clic ... le tourniquet de chargement reste ALLUMÉ
+     *   quand la réponse arrive  l'objet, l'en-tête et le ruban du courriel FERMÉ
+     *                            se repeignent, sans sélection — donc sans bouton
+     *                            de retour, et `state.preview` vit sous un
+     *                            `selectedId` nul : un état que rien ne décrit
+     *
+     * On incrémente donc le jeton de séquence de `_fetchPreview` AVANT tout le
+     * reste : la réponse en retard ne pourra plus rien écrire, et comme elle
+     * n'éteindra plus le témoin de chargement, on l'éteint ici.
+     */
+    fermerFiche() {
+        this._previewSeq = (this._previewSeq || 0) + 1;
+        this.state.selectedId = null;
+        this.state.preview = null;
+        this.state.loadingPreview = false;
+        this.state.genText = null;
+        this.state.genKind = null;
     }
 
     onEscape() {

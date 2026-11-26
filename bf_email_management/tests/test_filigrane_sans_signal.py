@@ -3,7 +3,10 @@ from unittest.mock import patch
 from odoo import fields
 from odoo.tests import TransactionCase, tagged
 
-from odoo.addons.bf_email_management.models.bf_email import _read_watermark, _write_watermark
+from odoo.addons.bf_email_management.models.bf_email import (
+    _read_watermark,
+    _write_watermark,
+)
 
 KEY = "bf_email.last_sync_date"
 

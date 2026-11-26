@@ -45,6 +45,7 @@ import pytz
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import format_date, formataddr, html_escape
+
 from .owner_guard import garder_proprietaire
 
 _logger = logging.getLogger(__name__)
@@ -297,7 +298,7 @@ class BfEmailAbsence(models.Model):
         for absence in self:
             if absence.is_template:
                 continue
-            absence.date_to = now if absence.date_from < now else absence.date_from
+            absence.date_to = max(absence.date_from, now)
         return True
 
     def action_view_logs(self):
@@ -788,15 +789,7 @@ class BfEmailAbsence(models.Model):
                         "bf.email.absence %s: période reprise de l'agenda "
                         "(%s → %s)", absence.id, start, stop)
                 continue
-            vals = dict(seed, **{
-                "name": event.name or _("Absence"),
-                "user_id": user.id,
-                "company_id": user.company_id.id,
-                "source": "calendar",
-                "calendar_event_id": event.id,
-                "date_from": start,
-                "date_to": stop,
-            })
+            vals = dict(seed, name=event.name or _("Absence"), user_id=user.id, company_id=user.company_id.id, source="calendar", calendar_event_id=event.id, date_from=start, date_to=stop)
             created = self.sudo().create(vals)
             touched += 1
             _logger.info(

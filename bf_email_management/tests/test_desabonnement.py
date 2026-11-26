@@ -112,9 +112,8 @@ class TestDesabonnement(MobileApiCase):
                    return_value=True), \
              patch("odoo.addons.bf_email_management.models."
                    "bf_email_unsubscribe.requests.post",
-                   return_value=Refus()):
-            with self.assertRaises(UserError):
-                rec.with_user(self.owner).action_unsubscribe()
+                   return_value=Refus()), self.assertRaises(UserError):
+            rec.with_user(self.owner).action_unsubscribe()
         self.assertFalse(rec.is_handled)
 
     def test_sans_clic_unique_on_ecrit_un_courriel(self):

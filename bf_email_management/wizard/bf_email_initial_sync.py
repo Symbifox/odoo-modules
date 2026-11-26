@@ -1,6 +1,6 @@
 import logging
 
-from odoo import _, api, fields, models
+from odoo import _, fields, models
 from odoo.exceptions import AccessError
 
 from ..models.bf_email import _read_watermark, _write_watermark

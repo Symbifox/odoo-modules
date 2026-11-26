@@ -21,6 +21,7 @@ ferait un pisteur qui voudrait passer. La décision vit dans
 """
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError, ValidationError
+
 from .bf_email_images import strict_sender
 from .owner_guard import garder_proprietaire
 

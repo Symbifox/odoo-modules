@@ -310,6 +310,7 @@ class TestRelectureEnvois(MobileApiCase):
 
     def test_la_migration_vise_le_dernier_message_traite(self):
         import importlib.util
+
         from odoo.modules.module import get_module_path
         chemin = get_module_path("bf_email_management") + "/migrations/18.0.11.52.0/post-migrate.py"
         spec = importlib.util.spec_from_file_location("bf_email_migration_11_52", chemin)

@@ -360,7 +360,7 @@ class BfDnd(models.AbstractModel):
         try:
             self.env["bus.bus"].sudo()._sendone(
                 partner, DND_STATE_CHANNEL, payload)
-        except Exception:  # noqa: BLE001 - ne jamais casser l'appelant
+        except Exception:
             _logger.warning(
                 "bf.dnd : envoi bus en échec pour le partenaire %s",
                 partner.id, exc_info=True,

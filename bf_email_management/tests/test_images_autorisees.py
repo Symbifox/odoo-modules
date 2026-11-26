@@ -360,11 +360,13 @@ class TestParcageParLArbre(MobileApiCase):
 
     def _park(self, html):
         from odoo.tools import html_sanitize
+
         from ..models.bf_email_images import park_remote_images
         return park_remote_images(html_sanitize(html))
 
     def _no_live_remote(self, html):
         from lxml import html as lxml_html
+
         from ..models.bf_email_images import css_is_remote, is_remote_url
         root = lxml_html.fragment_fromstring(html or "<p></p>", create_parent="div")
         for el in root.iter():
@@ -470,6 +472,7 @@ class TestFormesCssEtSvg(MobileApiCase):
 
     def _park(self, html):
         from odoo.tools import html_sanitize
+
         from ..models.bf_email_images import park_remote_images
         return park_remote_images(html_sanitize(html))
 

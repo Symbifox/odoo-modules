@@ -486,7 +486,7 @@ class BfEmailAccountIdentity(models.Model):
             try:
                 self.env["bf.email.identity"]._sync_from_accounts(
                     account.user_id)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 # Un compte doit pouvoir se créer même si le semis échoue :
                 # l'identité se rattrape, la configuration IMAP non.
                 _logger.exception(

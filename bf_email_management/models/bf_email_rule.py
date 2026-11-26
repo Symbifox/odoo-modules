@@ -29,6 +29,7 @@ import re
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import formataddr
+
 from .owner_guard import garder_proprietaire
 
 _logger = logging.getLogger(__name__)

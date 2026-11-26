@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Dépose dans la boîte IMAP de chacun les avis qu'il
+             ne reçoit plus par courriel, parce qu'il les lit dans Odoo. Une
+             connexion par personne, 200 lignes au plus par passe : c'est la
+             connexion qui coûte, pas la ligne.
+             18.0.11.67.2 : sous le compte système, pas sous l'admin. Avant de
+             lancer le code, Odoo vérifie que l'usager du cron peut ÉCRIRE sur
+             le modèle, et seul l'admin courriel le peut : le sudo() du code
+             n'était jamais atteint. Bloc noupdate : la base suit par la
+             migration, pas par ce fichier. -->
+        <record id="ir_cron_bf_email_depot" model="ir.cron">
+            <field name="name">Courriels : dépôt des avis dans la boîte</field>
+            <field name="model_id" ref="model_bf_email_depot"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_deposer()</field>
+            <field name="interval_number">10</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+    </data>
+</odoo>

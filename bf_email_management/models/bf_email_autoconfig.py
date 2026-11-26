@@ -561,8 +561,8 @@ class BfEmailAutoconfig(models.AbstractModel):
     # ------------------------------------------------------------------
     _RE_IN = re.compile(
         r"<incomingServer[^>]*type=\"(?P<type>imap|pop3)\"[^>]*>(?P<corps>.*?)"
-        r"</incomingServer>", re.S | re.I)
-    _RE_OUT = re.compile(r"<outgoingServer.*?</outgoingServer>", re.S | re.I)
+        r"</incomingServer>", re.DOTALL | re.IGNORECASE)
+    _RE_OUT = re.compile(r"<outgoingServer.*?</outgoingServer>", re.DOTALL | re.IGNORECASE)
 
     @classmethod
     def _analyser_clientconfig(cls, xml):
@@ -571,7 +571,7 @@ class BfEmailAutoconfig(models.AbstractModel):
 
         def champs(corps):
             def lire(balise):
-                m = re.search(rf"<{balise}>(.*?)</{balise}>", corps, re.S | re.I)
+                m = re.search(rf"<{balise}>(.*?)</{balise}>", corps, re.DOTALL | re.IGNORECASE)
                 return (m.group(1).strip() if m else "")
             port = lire("port")
             return {

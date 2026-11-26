@@ -168,13 +168,13 @@ class BfEmailHeld(models.Model):
                 try:
                     if self.env["bf.dnd"].sudo()._active_for(owner):
                         return
-                except Exception:  # noqa: BLE001 - un DND illisible n'empêche rien
+                except Exception:
                     _logger.debug("bf.email held : état DND illisible", exc_info=True)
             lots = self._groups(domaine)
             neufs.write({"announced": True})
             self.env["bus.bus"].sudo()._sendone(
                 owner.partner_id, HELD_CHANNEL, {"lots": lots})
-        except Exception:  # noqa: BLE001 - ne jamais casser l'ingestion
+        except Exception:
             _logger.warning("bf.email held : avis en échec", exc_info=True)
 
     # ------------------------------------------------------------------
@@ -294,7 +294,7 @@ class BfEmailHeld(models.Model):
                             "bf.email held : ajout en échec (UID %s, %r)",
                             uid, dossier, exc_info=True)
                         ligne.state = "pending"
-            except Exception:  # noqa: BLE001 - un lot ne fait pas tomber les autres
+            except Exception:
                 _logger.warning("bf.email held (%s, %r) : passe interrompue",
                                 compte.display_name, dossier, exc_info=True)
                 lignes.filtered(lambda l: l.state == "queued").write({"state": "pending"})

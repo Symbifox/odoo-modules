@@ -1012,6 +1012,11 @@ class BfEmail(models.Model):
             }
         # send_now — ``post_message`` est unitaire et refuse ce qui n'a pas été
         # créé par l'usager ; on boucle et on laisse remonter le refus.
+        # 🔴 Comme `action_send_now` : le lot entier se valide avant le premier
+        # envoi, sinon un refus en milieu de boucle rend renvoyables des
+        # brouillons dont le message est déjà parti.
+        drafts._bf_garde_du_fil_cite(raise_exception=True)
+        drafts._bf_garde_du_droit_d_envoyer()
         count = 0
         for draft in drafts:
             draft.post_message()

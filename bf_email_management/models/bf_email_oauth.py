@@ -23,6 +23,7 @@ import base64
 import json
 import logging
 import time
+from hmac import compare_digest as hmac_compare
 from urllib.parse import urlencode
 
 import requests
@@ -30,7 +31,6 @@ import requests
 from odoo import _, api, models
 from odoo.exceptions import UserError
 from odoo.tools.misc import hmac
-from hmac import compare_digest as hmac_compare
 
 _logger = logging.getLogger(__name__)
 

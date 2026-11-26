@@ -18,7 +18,7 @@ déjà à la main, et c'est exactement ce qui les rend rentables.
 """
 import logging
 
-from odoo import _, api, fields, models
+from odoo import _, api, models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)

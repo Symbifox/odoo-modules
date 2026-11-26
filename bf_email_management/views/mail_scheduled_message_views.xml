@@ -23,6 +23,8 @@
                        string="Note interne" optional="hide"/>
                 <field name="bf_is_draft" widget="boolean"
                        string="Brouillon" optional="show"/>
+                <field name="bf_citation_attendue" widget="boolean"
+                       string="Fil cit&#233; attendu" optional="hide"/>
                 <button name="action_open_record"
                         type="object"
                         icon="fa-external-link"
@@ -70,6 +72,7 @@
                             <field name="author_id"/>
                             <field name="is_note"/>
                             <field name="bf_is_draft"/>
+                            <field name="bf_citation_attendue"/>
                         </group>
                         <group>
                             <field name="record_name" readonly="1"/>
@@ -118,6 +121,10 @@
                 <filter name="filter_note"
                         string="Notes internes"
                         domain="[('is_note', '=', True)]"/>
+                <separator/>
+                <filter name="filter_citation_attendue"
+                        string="Fil cit&#233; attendu"
+                        domain="[('bf_citation_attendue', '=', True)]"/>
                 <separator/>
                 <filter name="filter_is_draft"
                         string="Brouillons"

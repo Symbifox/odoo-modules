@@ -176,7 +176,7 @@ class BfEmailPopup(models.AbstractModel):
         try:
             self.env["bus.bus"].sudo()._sendone(
                 partner, POPUP_CHANNEL, payload)
-        except Exception:  # noqa: BLE001 - ne jamais casser l'ingestion
+        except Exception:
             _logger.warning(
                 "bf.email popup: envoi bus en échec pour le partenaire %s",
                 partner.id, exc_info=True,

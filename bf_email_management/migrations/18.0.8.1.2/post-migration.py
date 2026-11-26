@@ -11,7 +11,7 @@ Mesuré avant correction : 3 798 aperçus avec `&nbsp;`, 499 avec `&#xA0;`,
 """
 import logging
 
-from odoo import api, SUPERUSER_ID
+from odoo import SUPERUSER_ID, api
 
 _logger = logging.getLogger(__name__)
 

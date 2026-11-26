@@ -81,7 +81,7 @@ class BfEmailGen(models.Model):
         }
         try:
             reponse = pont.call("/chat", charge, timeout=timeout)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             _logger.info("bf_email gen : pont muet (%s)", type(exc).__name__)
             raise UserError(_(
                 "Gen n'a pas répondu (%s). Rien n'a été écrit.",

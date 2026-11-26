@@ -7,7 +7,6 @@ avis de deux modules et n'appartient à aucun compte.
 """
 
 import logging
-
 from datetime import timedelta
 
 from odoo import _, api, fields, models
@@ -94,6 +93,20 @@ class ResUsers(models.Model):
     # La préférence est PAR USAGER, et le
     # réglage d'instance reste le défaut de qui n'a rien choisi. Une valeur
     # absente vaut « instance » : un `-u` ne change rien pour personne.
+    # ------------------------------------------------------------------
+    # Le dépôt des avis dans sa propre boîte
+    # ------------------------------------------------------------------
+    bf_depot_imap_avis = fields.Boolean(
+        string="Ranger mes avis Odoo dans ma boîte",
+        default=False,
+        help="Vous lisez vos avis dans Odoo et ne recevez donc plus de "
+             "courriel pour eux. Cochez ceci pour qu'une copie soit rangée "
+             "quand même dans un dossier de votre boîte, déjà lue : rien ne "
+             "sonne, mais vous retrouvez l'avis là où vous cherchez d'habitude. "
+             "Aucun courriel n'est envoyé : la copie est écrite directement "
+             "dans le dossier.",
+    )
+
     bf_email_remote_images = fields.Selection(
         selection=[
             ("instance", "Selon le réglage de l'entreprise"),
@@ -122,6 +135,44 @@ class ResUsers(models.Model):
                  "bf_dnd_manual_forever",
                  "bf_dnd_manual_off_until", "bf_dnd_quiet_enabled",
                  "bf_dnd_quiet_tz", "bf_dnd_quiet_start", "bf_dnd_quiet_end")
+    # ------------------------------------------------------------------
+
+    @api.model
+    def bf_depot_avis_state(self):
+        """Ce que le menu usager a besoin de savoir, en un appel.
+
+        ⚠️ `enabled` est faux quand la personne n'a aucune boîte IMAP propre :
+        lui montrer un interrupteur qui ne rangerait rien serait pire que de ne
+        rien montrer (même décision que « Ne pas déranger », qui se cache chez
+        un locataire qui ne l'a pas allumé).
+        """
+        usager = self.env.user
+        compte = self.env["bf.email.account"].sudo().search_count([
+            ("user_id", "=", usager.id),
+            ("own_inbox", "=", True),
+            ("active", "=", True),
+        ])
+        return {
+            "enabled": bool(compte) and not usager.share,
+            "active": bool(usager.bf_depot_imap_avis),
+            "inbox": usager.notification_type == "inbox",
+        }
+
+    def action_bf_depot_avis_toggle(self):
+        """Bascule le dépôt pour SOI, et rend le nouvel état.
+
+        ⚠️ `sudo` sur l'écriture, mais jamais sur le choix de la cible : on ne
+        bascule que son propre compte. Un champ de préférence que son
+        propriétaire ne peut pas écrire serait un interrupteur décoratif, et
+        l'écrire pour quelqu'un d'autre serait une porte ouverte.
+        """
+        for usager in self:
+            if usager.id != self.env.uid:
+                raise AccessError(
+                    _("On ne change que ses propres préférences."))
+            usager.sudo().bf_depot_imap_avis = not usager.bf_depot_imap_avis
+        return self.bf_depot_avis_state()
+
     def _compute_bf_dnd_now(self):
         """L'état, à l'instant où l'écran s'affiche.
 
@@ -275,6 +326,7 @@ class ResUsers(models.Model):
             "bf_dnd_active", "bf_dnd_reason", "bf_dnd_until",
             "bf_dnd_last_state",
             "bf_email_remote_images",
+            "bf_depot_imap_avis",
         ] + self.BF_DND_SELF_FIELDS
 
     @property
@@ -282,6 +334,7 @@ class ResUsers(models.Model):
         return super().SELF_WRITEABLE_FIELDS + [
             "bf_absence_from_calendar",
             "bf_email_remote_images",
+            "bf_depot_imap_avis",
         ] + self.BF_DND_SELF_FIELDS
 
     # ------------------------------------------------------------------
@@ -343,6 +396,6 @@ class ResUsers(models.Model):
         try:
             self.env["bf.email.unifiedpush"].sudo()\
                 ._reveiller_les_appareils_de(bascule)
-        except Exception:  # noqa: BLE001
+        except Exception:
             _logger.warning("Coupe-circuit : réveil raté à l'archivage de %s.",
                             bascule.ids, exc_info=True)

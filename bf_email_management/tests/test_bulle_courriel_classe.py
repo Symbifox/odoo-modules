@@ -31,6 +31,7 @@ class TestBulleCourrielClasse(MobileApiCase):
     def test_le_classement_reste_une_note(self):
         """Le geste de « Lier à un dossier » pose toujours une note interne."""
         import inspect
+
         from odoo.addons.bf_email_management.models.bf_email import BfEmail
         defaut = inspect.signature(BfEmail._import_into_chatter).parameters["subtype_xmlid"].default
         self.assertEqual(defaut, "mail.mt_note")

@@ -722,6 +722,89 @@ attributes, and remote CSS declarations, after normalising each URL the way a
 browser reads it (whitespace and control characters dropped, `\` read as `/`,
 CSS escapes decoded). `cid:`, `data:` and relative URLs stay.
 
+### Notices you no longer receive, filed in your mailbox (11.67+)
+Someone who reads their Odoo notices in Odoo stops receiving them by email, and
+then cannot search them from their mail client. A toggle in the user menu keeps
+a copy anyway: written directly by IMAP `APPEND` into a folder of the user's own
+mailbox ("Odoo" by default), already marked read. No SMTP, no external hop, no
+bounce possible. The hook is `_notify_thread_by_inbox`, so the copy reaches
+exactly those who would have had an email with the "by email" preference. The
+`APPEND` never runs in the writer's transaction: it goes through the
+`bf.email.depot` queue and a cron, and each user only sees their own rows.
+
+### Quoted thread on replies (11.68+)
+A reply to a received email must carry the quoted message below the signature,
+as "Reply all" does. When an integration drafts a reply and recognises the
+email it answers, it sets `bf_citation_attendue` on the draft, and the check
+runs at **send** time on every path (button, phone, forced send, cron). A batch
+of sends is validated whole before the first one leaves, so a refusal halfway
+cannot leave drafts both posted and sendable again. The box "Quoted thread
+expected" unblocks a deliberate exception, on the desktop form and from the
+phone (`draft_citation_api`, 11.68.2). Internal notes are not gated.
+
+### Received invitations (11.76+)
+A calendar invitation that arrives by email becomes an event under **its own
+title**: "tentative" is carried by `bf_event_status` (from
+`bf_calendar_invite`, soft dependency), flipped with one click in the event
+bubble and carried in the `.ics`, instead of a "[Tentative]" prefix written
+into the title. The event also keeps what the `.ics` said: the named
+organiser, the guests with their answers, the video link in
+`videocall_location`, the received file as an attachment, and a real HTML
+description.
+
+Guests never become attendees, even when they match a contact (11.77):
+attendees are what the portal rule and the outgoing paths read, and nothing may
+ever be sent to someone else's guests. The description names guests without
+writing their address; the organiser keeps both. A "Join" button is only
+offered when the URL's real host is a known conference host.
+An invitation or cancellation whose DMARC check failed at the receiving
+server is ignored, like a reply (11.77.2): it neither changes nor creates a
+meeting, and stays in the inbox.
+
+### Desktop mail client extension API (11.71+)
+The Thunderbird extension talks to the same `/bf_email_management/mobile/v1/`
+API as the phone, with the same device pairing and bearer token:
+
+- `GET extension/open?header=<Message-ID>`: in one round trip, the email, its
+  customer context (contact, record it is filed on, open tasks, unpaid
+  invoices, hour bank) and the current settings. Matching is by Message-ID in
+  both spellings, never by IMAP UID. A block the caller may not read is named
+  in `restricted` rather than returned empty. `context.totals` (11.73) carries
+  the real counts, counted in the database, with invoices per currency and
+  never summed across currencies; lines carry `overdue` and `in_payment`.
+- `GET extension/identities` (11.72): the caller's verified, active sending
+  identities with the signature each one applies, so the desktop client can
+  copy them. No secret is in the payload.
+- `POST extension/resolve` (11.74): up to 200 Message-IDs at once, the gist of
+  each email and its customer's overdue count, for the toolbar badge and for
+  gestures on a selection. Read-only, and only the caller's own mailbox is
+  matched; a count refused by access rights is `null` with `partial`, never
+  zero.
+- Pairing without a redirect (`?mode=code`): the consent page shows the code
+  and the client copies it, since an extension origin cannot be registered.
+  PKCE and the CSRF token remain required, and both pages warn never to copy
+  the code at someone's request (11.77.2).
+
+### Mail client autoconfiguration (11.70+)
+`/.well-known/autoconfig/mail/config-v1.1.xml` serves the Mozilla
+autoconfiguration file, so a mail client set up with an address finds its IMAP
+and SMTP servers. It answers **only** for the domains listed in
+`bf_email_management.autoconfig_domaines`, and the module ships none: an
+instance that does not set the parameter publishes nothing. Each entry is
+`domain` or `domain=provider`, the provider being a key of the same provider
+table the add-mailbox wizard uses; `bf_email_management.autoconfig_fournisseur`
+sets the default provider and `bf_email_management.autoconfig_nom` the display
+name (one value for the whole instance, so only set it when it publishes a
+single mail domain). The `?emailaddress=` sent by the client is never echoed
+back: the file carries `%EMAILADDRESS%`, which the client fills in itself.
+
+### The web inbox on a phone screen (11.75+)
+Below 768 px, the inbox shows **one panel at a time**: opening an email hides
+the list, the splitter and the folder rail, the form takes the full width, and
+a "‹ List" button brings the list back with its folders and selection intact.
+The action ribbon lays out on one scrolling row. Above that width nothing
+changes.
+
 ### IMAP Folder Browser (3.5+, OWL client action)
 A mail-client-style view of any IMAP folder, no permanent ingestion required.
 
@@ -962,6 +1045,11 @@ A REST/JSON surface under `/bf_email_management/mobile/v1/`, consumed by the **O
   `POST /scheduled/unschedule` puts it back in drafts without losing anything.
   A reply sent without `identity_id` now leaves from the mailbox that received
   the message, as the desk does.
+- **Spam reports from the phone (11.66+).** `POST /report/options` says what
+  the gesture can offer on given emails (Junk folder, blocking, complaints and
+  authorities by kind, phishing), and `POST /report` performs it through the
+  same wizard as the desk (`bf.email.report.wizard`), with the same guards,
+  replayed at the point of action. `/config` advertises `report_api: 1`.
 - **Badges have their own cheap route (11.7+).** `GET /counts?grouped=` returns the mailbox counters alone, light enough to be re-read on every refresh; `grouped` (default true) also rides on `/mark_read`, `/handle` and `/snooze`. Without it the totals only came down when the screen opened, or inside the answer to a mutation made from the phone. `inbox_unread` (11.36) counts the unread of the inbox alone, which is what the tab badge shows; `counts.by_account` (11.36.1) repeats the totals per mailbox, and `config.accounts[].color` gives each mailbox its desk notification colour.
 - **Push has an instance kill switch** — `ir.config_parameter` `bf_email.push_enabled`, default `"1"`. Clearing a device's `push_endpoint` does stop the push, but the app re-registers on its next launch and it all comes back; the parameter is the durable off. The in-Odoo notice has its own, separate switch — see *Arrival notice*.
 
@@ -971,7 +1059,7 @@ A REST/JSON surface under `/bf_email_management/mobile/v1/`, consumed by the **O
 ```bash
 odoo -d <base> -u bf_email_management --test-enable --test-tags /bf_email_management
 ```
-794 tests in `tests/`: device-token lifecycle, thread folding and filters, opening a thread, sending and its anti-duplicate guard, the four security boundaries, the routes under `HttpCase`, the inbox RPC surface (scope, action allow-list, `views` key), the IMAP write-back loop, the chatter indicator, and the arrival notice with its thirty-second cap.
+About 1,500 tests in `tests/`: device-token lifecycle, thread folding and filters, opening a thread, sending and its anti-duplicate guard, the four security boundaries, the routes under `HttpCase`, the inbox RPC surface (scope, action allow-list, `views` key), the IMAP write-back loop, the chatter indicator, and the arrival notice with its thirty-second cap.
 
 ⚠️ On a test bench, `--db-filter` **and** `--addons-path` are both mandatory: without the first, `HttpCase` requests land on another database; without the second (together with `ODOO_RC=/dev/null`) the module is not even found and the run reports "0 tests" with no error.
 
@@ -997,6 +1085,15 @@ odoo -d <base> -u bf_email_management --test-enable --test-tags /bf_email_manage
 - **No raw email HTML rendered with active content (5.7+)** — inbound HTML is stored raw (`body_html`, only NUL-stripped) but the form Body tab renders a sanitized projection (`body_html_display` = `html_sanitize(body_html)`) and the IMAP-browser preview field is `sanitize=True`. `body_html` is kept raw only for the reply/forward builders, which `html_sanitize` at their own use sites. The OWL browser preview additionally renders inside a scriptless sandboxed `<iframe>`.
 - **Mobile devices are outside the admin zone (6.8+)** — `bf.email.mobile.device` stores live bearer tokens, so `group_email_admin` gets no read-all rule on it, the same reasoning that removed `bf.email.account` from the admin zone in 6.0. `device_token` and `pending_code` additionally carry `groups="group_email_admin"` to stay out of ordinary RPC reads, and no group has create rights — only the `auth/start` controller mints devices, in `sudo`. Mobile writes also refuse rows owned by another user: the owner rule alone would not stop an admin's phone from archiving somebody else's inbox, since the admin rule grants read on every mailbox.
 - **Mobile redirect allowlist (6.8+)** — `auth/start` only redirects to a scheme listed in `bf_email_management.mobile_redirect_schemes`; anything else is a flat 400. Without it the route is an open redirect handing a live exchange code to an arbitrary URL. Registered UnifiedPush endpoints are checked against private/loopback/link-local resolution **at registration and again at send time**, since DNS can be repointed after the fact.
+- **Wizards are owner-only (11.68.3+).** Each of the module's fourteen transient
+  models carries a global `ir.rule` `[('create_uid', '=', user.id)]` on all four
+  permissions: Odoo 18 applies no implicit creator restriction to transient
+  models, and their ACL opens them to every employee, so a colleague could read
+  another's form, IMAP password included. The upgrade empties those tables, the
+  add-mailbox wizard clears its own author's stale rows itself, and the password
+  leaves the row on every path that raises. The notice drop queue
+  (`bf.email.depot`, 11.67.1) follows the same owner pattern, read-only for the
+  email admin.
 - All SQL uses parameterized placeholders.
 - `sudo()` calls are scoped to cross-model display-name lookups, partner resolution by email, and the IMAP cron loop (which fetches each active account in admin context, then runs `_ingest_rfc822` via `with_user(account.user_id)` so created rows inherit the account owner's `user_id`).
 - IMAP body preview in the OWL browser renders inside `<iframe sandbox="allow-same-origin">` — no `allow-scripts`, so JS embedded in inbound mail is neutralised.
@@ -1011,7 +1108,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-25, this version converts automatically to
+- **Change Date**: on 2030-11-26, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog

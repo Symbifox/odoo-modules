@@ -11,8 +11,8 @@ inherit ``user_id`` from the account.
 """
 
 import json
-import re
 import logging
+import re
 import socket
 import ssl
 import time
@@ -319,6 +319,15 @@ class BfEmailAccount(models.Model):
     # ------------------------------------------------------------------
     # Sync configuration
     # ------------------------------------------------------------------
+    # Où ranger les avis Odoo qu'on ne reçoit plus par
+    # courriel. Un dossier à part, pas l'INBOX : le but est d'archiver sans
+    # faire sonner. Vide, le dépôt vise « Odoo ».
+    bf_depot_imap_folder = fields.Char(
+        string="Dossier des avis Odoo",
+        default="Odoo",
+        help="Dossier IMAP où ranger les avis Odoo quand vous avez demandé "
+             "qu'ils soient rangés dans votre boîte. Créé s'il n'existe pas.")
+
     archive_folder = fields.Char(
         string="Dossier d'archives IMAP",
         default="Archives/{YYYY}",

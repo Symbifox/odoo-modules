@@ -14,7 +14,7 @@ mauvais marché.
 Là où il gagne, c'est sur les 42 fils actifs de la boîte, ceux qui portent la
 conversation qui compte, et qu'on relisait message par message.
 """
-from odoo import _, api, fields, models
+from odoo import api, models
 
 MAX_PAGE = 500
 

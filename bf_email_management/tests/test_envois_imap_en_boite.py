@@ -219,6 +219,7 @@ class TestEnvoiImapEnBoite(MobileApiCase):
     # ------------------------------------------------------------------
     def _migration_11541(self):
         import importlib.util
+
         from odoo.modules.module import get_module_path
         chemin = (get_module_path("bf_email_management")
                   + "/migrations/18.0.11.54.1/post-migrate.py")
@@ -434,6 +435,7 @@ class TestEnvoiImapEnBoite(MobileApiCase):
     def test_the_systray_javascript_carries_the_leaf(self):
         import os
         import re
+
         from odoo.modules.module import get_module_path
         module_path = get_module_path("bf_email_systray", display_warning=False)
         if not module_path:

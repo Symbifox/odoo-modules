@@ -19,7 +19,6 @@ Ce que ces tests éprouvent, dans l'ordre où ça peut casser :
    à chaque battement est pire que pas de résumé du tout.
 """
 from datetime import timedelta
-from unittest.mock import patch
 
 from odoo import fields
 from odoo.exceptions import AccessError
@@ -649,8 +648,9 @@ class TestBfDnd(MobileApiCase):
         construit sans le fichier, et le témoin ne s'affiche jamais sans que
         rien ne le dise. C'est le seul défaut de ce lot qui serait muet.
         """
-        from odoo.modules.module import get_module_path
         import os
+
+        from odoo.modules.module import get_module_path
 
         racine = get_module_path("bf_email_management")
         manifeste = self.env["ir.module.module"].sudo().search(

@@ -164,8 +164,9 @@ class TestMobileConversation(MobileApiCase):
 
     def test_snooze_presets_land_in_the_users_timezone(self):
         """« Ce soir (18 h) » doit être 18 h à Montréal, pas 18 h UTC."""
-        import pytz
         from datetime import datetime
+
+        import pytz
         config = self.as_owner().get_mobile_config()
         tz = pytz.timezone("America/Montreal")
         presets = {p["key"]: p for p in config["snooze_presets"]}

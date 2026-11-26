@@ -3,7 +3,7 @@
 
     <t t-name="bf_email_management.Inbox">
         <div class="o_bf_email_browser o_bf_email_inbox d-flex flex-grow-1"
-             t-att-class="state.dragging ? 'o_bf_email_dragging' : ''"
+             t-att-class="(state.dragging ? 'o_bf_email_dragging ' : '') + (state.selectedId ? 'o_bf_email_fiche_ouverte' : '')"
              t-ref="root"
              style="height: 100%;">
 
@@ -215,12 +215,12 @@
 
             <!-- DROITE : liste et aperçu, empilés ou côte à côte selon la
                  préférence de disposition. -->
-            <div class="d-flex flex-grow-1"
-                 t-att-class="pane.wrapClass"
+            <div class="d-flex flex-grow-1 o_bf_email_duo"
+                 t-att-class="pane.wrapClass + (state.selectedId ? ' o_bf_email_fiche_ouverte' : '')"
                  style="min-width: 0; min-height: 0;">
 
                 <!-- Liste -->
-                <div class="d-flex flex-column"
+                <div class="d-flex flex-column o_bf_email_liste"
                      t-att-class="pane.layout === 'right' ? 'border-end' : 'border-bottom'"
                      t-att-style="pane.listStyle">
                     <div class="px-3 py-2 d-flex justify-content-between align-items-center bg-white border-bottom gap-2 position-relative">
@@ -733,7 +733,35 @@
                      t-on-mousedown="onSplitterMouseDown"/>
 
                 <!-- Aperçu -->
-                <div class="d-flex flex-column" t-att-style="pane.paneStyle">
+                <div class="d-flex flex-column o_bf_email_fiche" t-att-style="pane.paneStyle">
+                    <!-- Le retour à la liste. DEUX bornes, pas une :
+                         `d-md-none` borne la FENÊTRE (convention d'Odoo lui-même,
+                         ses `o_user_menu` et `o_switch_company_menu` la portent),
+                         et `!props.inPanel` borne la SURFACE. Dans le panneau du
+                         systray, la liste ne disparaît jamais : mesuré PEINT dans
+                         un panneau de 332 px, où il ne ramenait rien et prenait sa
+                         barre à une fiche déjà trop courte (remesuré).
+
+                         Le compte de la sélection vit ici pour la même raison que
+                         le bouton : sous la borne, la liste cachée emporte son
+                         bandeau « N sélectionné(s) », et une action de masse
+                         viserait des lignes cochées qu'on ne voit plus. On le REND,
+                         au lieu de vider la sélection : vider écrirait un état que
+                         personne n'a demandé, et le bandeau de la liste — avec son
+                         « Effacer la sélection » — revient avec elle. -->
+                    <div t-if="state.selectedId and !props.inPanel"
+                         class="d-md-none px-2 py-1 border-bottom bg-light flex-shrink-0 d-flex align-items-center gap-2">
+                        <button class="btn btn-sm btn-link px-1 text-decoration-none"
+                                t-on-click="fermerFiche"
+                                title="Revenir à la liste des courriels">
+                            <i class="fa fa-angle-left me-1"/>Liste
+                        </button>
+                        <span t-if="selectedCount"
+                              class="badge text-bg-info ms-auto"
+                              t-att-title="selectedCount + ' ligne(s) cochée(s) dans la liste, que les actions groupées viseraient. Reviens à la liste pour les voir ou les décocher.'">
+                            <t t-esc="selectedCount"/> sélectionné(s)
+                        </span>
+                    </div>
                     <t t-if="state.loadingPreview">
                         <div class="p-4 text-center text-muted">
                             <i class="fa fa-spinner fa-spin fa-2x"/>
@@ -869,7 +897,8 @@
                                 <button t-else=""
                                         class="btn btn-sm btn-secondary"
                                         t-att-disabled="state.acting"
-                                        t-on-click="markUnhandled">
+                                        t-on-click="markUnhandled"
+                                        title="Remettre ce courriel en boîte de réception">
                                     <i class="fa fa-inbox me-1"/><span class="o_bf_ribbon_label"> Remettre en boîte</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"

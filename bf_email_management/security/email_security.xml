@@ -457,4 +457,227 @@
         <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
 
+    <!--
+      La file des dépôts dit QUI reçoit QUEL avis : sans règle,
+      tout usager interne la lisait en entier. Même patron que le reste du
+      module : la mienne pour chacun, tout en lecture seule pour l'admin
+      courriel (les règles de groupes différents se combinent en OU).
+    -->
+    <record id="bf_email_depot_rule_owner" model="ir.rule">
+        <field name="name">Dépôt des avis : les miens</field>
+        <field name="model_id" ref="model_bf_email_depot"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="bf_email_depot_rule_admin_all" model="ir.rule">
+        <field name="name">Dépôt des avis : admin voit tout (lecture seule)</field>
+        <field name="model_id" ref="model_bf_email_depot"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_email_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!--
+      LES QUATORZE ASSISTANTS.
+
+      Aucun des quatorze modèles transitoires du module n'avait de règle
+      d'enregistrement, et leur ACL les ouvre à tout employé en lecture,
+      écriture, création et suppression. Odoo 18 n'impose plus aucune
+      restriction implicite au créateur sur un transitoire : un collègue lisait
+      donc le formulaire d'un autre par un simple `web_search_read`, jusqu'au
+      passage du ménage.
+
+      Ce que ça donnait à lire, mesuré sur le code :
+        - `bf.email.account.setup` : l'adresse, le serveur et le MOT DE PASSE
+          IMAP en clair, le temps d'un branchement de boîte ;
+        - `bf.email.browser` : le CORPS COMPLET d'un courriel
+          (`preview_body_html`), son expéditeur, son sujet, et la liste des
+          dossiers IMAP de la boîte. ⚠️ Le navigateur OWL ne passe plus par ce
+          modèle (il appelle `bf.email.imap_browser_get_*`) : ce transitoire
+          est le formulaire HÉRITÉ de diagnostic. Contenu le plus sensible des
+          quatorze, chemin le moins fréquenté ;
+        - `bf.email.browser.line` : expéditeur, sujet, date et Message-ID de
+          chaque message de la page affichée ;
+        - les douze autres : quels courriels partent vers quelle fiche, lesquels
+          sont signalés et à qui, quels fils sont mis en veille, le texte
+          d'absence retenu, les règles de boîte proposées.
+
+      🔴 « Jusqu'au passage du ménage » n'est PAS une borne. Dans Odoo 18, le
+      seul appelant de `_transient_vacuum` est le cron `base.autovacuum_job`
+      (`@api.autovacuum`) : il n'y a plus de ménage au `create`. Ce cron peut
+      être désactivé sur une instance, et des lignes vieilles de plusieurs
+      semaines y dorment alors. `_transient_max_hours` n'y vaut rien.
+      L'assistant des comptes efface donc les vieilles lignes de son auteur à
+      chaque ouverture (voir `wizard/bf_email_account_setup.py`), une
+      `pre-migration` vide les quatorze tables à la pose, et ces règles-ci
+      ferment la lecture partout, ménage ou pas.
+
+      ⚠️ Règles GLOBALES, sans `groups` — comme le cœur le fait sur
+      `mail.compose.message`, `change.password.user` et
+      `res.users.identitycheck` (vérifié : les trois portent
+      `[('create_uid', '=', user.id)]` et `global = vrai`), et comme la règle
+      écrite pour `bf_security_awareness`. Une règle globale
+      s'AJOUTE à toutes les autres par ET : aucune zone d'administration
+      future ne pourra rouvrir ces formulaires par mégarde. C'est voulu — un
+      administrateur courriel ne voit pas le formulaire d'autrui, pas plus
+      qu'il ne voit son compte IMAP (18.0.6.0.0) ni ses jetons mobiles.
+
+      ⚠️ `create_uid`, et non `user_id` : un transitoire n'a pas de
+      propriétaire déclaré. C'est la seule colonne qui dise à qui le formulaire
+      appartient, et elle n'est jamais écrite par le module (aucun chemin ne
+      crée un de ces quatorze modèles en `sudo` ni en `with_user` — vérifié
+      ligne par ligne ; l'API mobile elle-même tourne sous l'usager de
+      l'appareil, `request.update_env(user=device.user_id.id)`).
+
+      ⚠️ HORS `noupdate`, comme les trente-cinq autres règles de ce fichier
+      (quarante-neuf `ir.rule` en tout, celles-ci comprises) : un
+      domaine trop étroit ou trop large se corrige alors par une montée de
+      version, sans migration. (Un bloc `noupdate="1"` par
+      mimétisme avec `bf_security_awareness` a été écarté : ce module suit
+      sa propre convention.)
+    -->
+    <record id="bf_email_account_setup_rule_owner" model="ir.rule">
+        <field name="name">Ajout d'une bo&#238;te : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_account_setup"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_browser_rule_owner" model="ir.rule">
+        <field name="name">Navigateur IMAP : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_browser"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_browser_line_rule_owner" model="ir.rule">
+        <field name="name">Ligne du navigateur IMAP : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_browser_line"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_reroute_rule_owner" model="ir.rule">
+        <field name="name">R&#233;acheminement : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_reroute"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_guess_route_rule_owner" model="ir.rule">
+        <field name="name">Classement devin&#233; : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_guess_route"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_guess_route_line_rule_owner" model="ir.rule">
+        <field name="name">Ligne de classement devin&#233; : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_guess_route_line"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_report_wizard_rule_owner" model="ir.rule">
+        <field name="name">Signalement : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_report_wizard"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_snooze_rule_owner" model="ir.rule">
+        <field name="name">Mise en veille : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_snooze"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_absence_preview_rule_owner" model="ir.rule">
+        <field name="name">Aper&#231;u d'absence : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_absence_preview"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_rule_quick_rule_owner" model="ir.rule">
+        <field name="name">R&#232;gle rapide : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_rule_quick"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_rule_quick_line_rule_owner" model="ir.rule">
+        <field name="name">Ligne de r&#232;gle rapide : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_rule_quick_line"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_cleanup_rule_owner" model="ir.rule">
+        <field name="name">M&#233;nage de la bo&#238;te : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_cleanup"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_initial_sync_rule_owner" model="ir.rule">
+        <field name="name">Import initial : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_initial_sync"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_imap_backfill_rule_owner" model="ir.rule">
+        <field name="name">Rattrapage IMAP : son auteur seul</field>
+        <field name="model_id" ref="model_bf_email_imap_backfill"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
 </odoo>

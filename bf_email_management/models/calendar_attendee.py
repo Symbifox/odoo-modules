@@ -217,6 +217,46 @@ class CalendarAttendee(models.Model):
     # ------------------------------------------------------------------
 
     @api.model
+    def _bf_reminder_candidate_events(self, now):
+        """Les rencontres à venir dont un rappel peut sonner au téléphone.
+
+        Les rappels qu'un invité règle dans Thunderbird ou Apple ne sont pas
+        dans `alarm_ids` : `bf_dav_server` les garde par personne
+        dans `bf.dav.user.data` et ajoute leurs rencontres.
+        """
+        events = self.env["calendar.event"].search([
+            ("active", "=", True),
+            ("stop", ">", now),
+            ("alarm_ids.alarm_type", "=", "notification"),
+            ("start", ">", now),
+        ])
+        # 🔴 Par le modèle, pas par héritage : `bf_dav_server` ne dépend pas de
+        # ce module, et s'il se chargeait avant, cette méthode masquerait la
+        # sienne sans bruit.
+        ud = self.env.get("bf.dav.user.data")
+        if ud is not None and hasattr(ud, "_bf_reminder_events"):
+            events |= ud.sudo()._bf_reminder_events(now)
+        return events
+
+    def _bf_reminder_triggers(self, event):
+        """Les couples (heure du rappel, rappel) qui font sonner le téléphone de
+        ce participant pour ``event`` : les rappels « notification » de la
+        rencontre, ou ceux que la personne a réglés elle-même dans son
+        application (`bf_dav_server`). Le rappel n'a besoin que de
+        ``duration_minutes``."""
+        self.ensure_one()
+        ud = self.env.get("bf.dav.user.data")
+        if ud is not None and hasattr(ud, "_bf_reminder_triggers"):
+            own = ud.sudo()._bf_reminder_triggers(self, event)
+            if own is not None:
+                return own
+        return [
+            (event.start - timedelta(minutes=alarm.duration_minutes), alarm)
+            for alarm in event.alarm_ids
+            if alarm.alarm_type == "notification"
+        ]
+
+    @api.model
     def _bf_push_ntfy_for_imminent_alarms(self):
         """Push a ntfy notification for each attendee whose notification alarm
         fires in the next minute, unless they have snoozed/dismissed it or it
@@ -236,24 +276,13 @@ class CalendarAttendee(models.Model):
         # Catch alarms that fire in the next ~70s OR fired up to 60s ago
         # (in case the previous cron tick missed them).
         floor = now - timedelta(seconds=60)
-        events = self.env["calendar.event"].search([
-            ("active", "=", True),
-            ("stop", ">", now),
-            ("alarm_ids.alarm_type", "=", "notification"),
-            ("start", ">", now),
-        ])
+        events = self._bf_reminder_candidate_events(now)
         for event in events:
-            notif_alarms = event.alarm_ids.filtered(
-                lambda a: a.alarm_type == "notification"
-            )
-            if not notif_alarms:
-                continue
-            for alarm in notif_alarms:
-                notify_at = event.start - timedelta(minutes=alarm.duration_minutes)
-                if not (floor <= notify_at <= horizon):
+            for attendee in event.attendee_ids:
+                if attendee.state == "declined":
                     continue
-                for attendee in event.attendee_ids:
-                    if attendee.state == "declined":
+                for notify_at, alarm in attendee._bf_reminder_triggers(event):
+                    if not (floor <= notify_at <= horizon):
                         continue
                     # L'accusé durable rattrape ce que la fiche participant a
                     # perdu quand la série récurrente a été rasée et recréée :
@@ -357,7 +386,7 @@ class CalendarAttendee(models.Model):
             # un envoi échoué ne doit pas compter comme parti (relevé à l'audit).
             recus = push._envoyer_a(appareils, payload) or 0
             return recus > 0 and not anciens_actifs
-        except Exception:  # noqa: BLE001
+        except Exception:
             _logger.warning("Rappel vers Mobile : envoi échoué (participant %s).",
                             self.id, exc_info=True)
             return False
@@ -409,3 +438,55 @@ class CalendarAttendee(models.Model):
         pushed_at = fields.Datetime.now()
         attendee.write({"bf_ntfy_pushed_at": pushed_at})
         attendee._bf_record_reminder_ack(ntfy_pushed_at=pushed_at)
+
+    # ------------------------------------------------------------------
+    # Rien ne part jamais vers les invités d'une invitation qu'on a REÇUE
+    # ------------------------------------------------------------------
+
+    def _send_mail_to_attendees(self, mail_template, force_send=False):
+        """Écarte tout destinataire d'un événement né d'une invitation reçue.
+
+        🔴 C'est la garde qui rend l'ajout des invités possible. Jusqu'ici,
+        `_imip_create_vals` n'inscrivait QUE le propriétaire, et son commentaire
+        disait pourquoi : un invité externe sur un événement dont le propriétaire est
+        l'organisateur ferait ré-inviter tout le monde par le greffon iMIP de
+        Nextcloud. La peur était fondée, et elle tient : les invités ne sont pas
+        inscrits (ils vivent dans la description), et la garde protège
+        celui qu'on ajoute à la main.
+
+        Un seul point de passage couvre l'invitation, l'avis de déplacement du
+        cœur, le rappel par courriel et le bouton « Envoyer un courriel aux
+        participants » : ils appellent tous cette méthode. L'avis de changement
+        de `bf_calendar_invite`, qui ne passe pas par ici, a sa garde jumelle
+        dans `_bf_notice_recipients`.
+
+        Le propriétaire de la boîte, lui, reste joignable : c'est SON agenda, et
+        un rappel par courriel qu'il s'est posé doit lui arriver.
+        """
+        if "x_imip_uid" not in self.env["calendar.event"]._fields:
+            return super()._send_mail_to_attendees(
+                mail_template, force_send=force_send)
+        recues = self.filtered(lambda a: a.event_id.x_imip_uid)
+        if not recues:
+            return super()._send_mail_to_attendees(
+                mail_template, force_send=force_send)
+        proprietaires = recues.filtered(
+            lambda a: a.partner_id
+            and a.partner_id == a.event_id.user_id.partner_id
+        )
+        ecartes = recues - proprietaires
+        if ecartes:
+            # Écrit au journal plutôt que tombé en silence : le jour où
+            # quelqu'un cherche pourquoi un invité n'a rien reçu, la réponse
+            # doit se trouver dans le journal de la requête qui l'a écarté.
+            _logger.info(
+                "bf_email_management: %s destinataire(s) écarté(s) sur une "
+                "invitation reçue (événements %s) : ses invités sont ceux de "
+                "son organisateur, pas les nôtres.",
+                len(ecartes), recues.event_id.ids,
+            )
+        garder = (self - recues) | proprietaires
+        if not garder:
+            return False
+        return super(CalendarAttendee, garder)._send_mail_to_attendees(
+            mail_template, force_send=force_send)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Device tokens after the 2026-09-08 audit (S-M2, S-M3, S-M5). Same rules as
 the SMS half; each test carries the value that would pass the old code."""
 from datetime import timedelta

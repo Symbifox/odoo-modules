@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Rappels posés d'office sur les événements créés dans Odoo (11.11.0).
 
 Le réglage ``bf_email_management.default_alarm_minutes`` acceptait un seul

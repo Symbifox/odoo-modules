@@ -17,7 +17,6 @@ serveur créé pour un employé avec un filtre vide deviendrait candidat pour
 lui-même, à l'adresse du compte, et jamais depuis un formulaire.
 """
 
-import base64
 import logging
 
 from odoo import _, api, fields, models

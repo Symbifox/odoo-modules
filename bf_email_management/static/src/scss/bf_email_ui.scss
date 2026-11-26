@@ -138,3 +138,126 @@
         pointer-events: none;
     }
 }
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sous 768 px, un courriel ouvert est LISIBLE.
+//
+// 🔴 Mesuré sur une base d'essai à 390 x 844, réglages d'usine, un courriel ouvert, sur le
+// code LIVRÉ (18.0.11.74.0) — donc un défaut qui vit déjà chez le
+// client, pas une régression :
+//
+//   ruban d'actions .......... 14 rangées, 822 px, et 3 de ses 15 commandes
+//                              seulement atteignables au doigt
+//   iframe du corps .......... posée à y = 1 580 dans une fenêtre de 844
+//   corps du message VISIBLE . 0 px
+//   ancêtres capables de défiler pour le ramener : AUCUN
+//
+// On voyait l'objet, quatorze rangées de boutons, et pas une ligne du message,
+// sans un seul ancêtre capable de défiler pour la ramener.
+//
+// La correction suit le motif déjà retenu dans Gen : **un panneau à la fois**. Et
+// comme là-bas, c'est le CSS qui décide à quel pixel — le JS ne porte qu'une
+// classe d'état, posée dès qu'un message est sélectionné, et ne connaît AUCUNE
+// largeur. Rien à mesurer en JS, rien à désynchroniser d'avec cette requête
+// média.
+//
+// ⚠️ Les `!important` ne sont pas décoratifs, et c'est la cinquième fois que
+// cette famille mord dans ce module : la liste porte `d-flex` (Bootstrap :
+// `display: flex !important`) et la fiche porte sa taille dans un `style=`
+// EN LIGNE, que `paneStyles()` calcule (`flex: 0 0 50%`, `min-width: 320px`,
+// `overflow: hidden`). Ni une classe ni une requête média ne les battent sans
+// `!important`.
+//
+// ⛔ PORTÉE. Trois surfaces portent ces classes, et une seule est visée :
+//
+//   action pleine page ... VISÉE : sa surface EST la fenêtre, la requête média
+//                          la décrit exactement.
+//   panneau du systray ... INTOUCHÉ, et hors de `.o_action_manager`. Choix
+//                          assumé : il garde le comportement EXACT de la
+//                          version livrée. Son corps de message à 0 px est un
+//                          défaut pré-existant, diagnostiqué, qui part au
+//                          dossier pour un lot qui pourra être relu.
+//   Navigateur IMAP ...... INTOUCHÉ, mais il est DANS `.o_action_manager` et
+//                          `bf_email_browser.js` y fabrique les mêmes classes
+//                          de ruban. Seul `.o_bf_email_duo`, que son gabarit ne
+//                          porte pas, l'écarte : c'est pour lui que la règle du
+//                          ruban est imbriquée sous la fiche ouverte au lieu
+//                          d'être ancrée à la racine. Vérifié par un nœud témoin
+//                          posé dans son sous-arbre, qui ne reçoit plus la règle.
+@media (max-width: 767.98px) {
+
+    // Le volet des dossiers cède sa place au courriel (choix assumé).
+    // Mesuré sur la version précédente de ce lot : il gardait ses 260 px des 390
+    // de l'écran, la fiche n'en avait que 130, et le corps du courriel y
+    // demandait 656 px : 526 px rognés EN SILENCE, parce que la fiche porte
+    // `overflow: hidden`. Du ruban, 2 commandes sur 15 restaient atteignables.
+    //
+    // ⚠️ Le volet est le FRÈRE du couple liste/fiche, pas son descendant :
+    // aucun sélecteur parti de `.o_bf_email_duo` ne l'atteint, d'où la classe
+    // d'état posée aussi sur la racine, par la MÊME condition.
+    //
+    // ⛔ Ni le rail ni le repli d'office des dossiers ne sont touchés : le volet est
+    // seulement CACHÉ le temps d'un courriel ouvert, et le retour à la liste le
+    // ramène intact, avec son état et sa largeur.
+    .o_action_manager .o_bf_email_inbox.o_bf_email_fiche_ouverte > .o_bf_email_folders {
+        display: none !important;
+    }
+
+    .o_action_manager .o_bf_email_duo.o_bf_email_fiche_ouverte {
+
+        // La liste cède toute la place, et le séparateur n'a plus rien à séparer.
+        > .o_bf_email_liste,
+        > .o_bf_email_splitter {
+            display: none !important;
+        }
+
+        // La fiche prend la surface. `100%` et non `100vh` : la hauteur à
+        // remplir est celle du conteneur, pas celle de l'écran — la barre du
+        // haut d'Odoo est au-dessus et n'appartient pas à ce cadre.
+        > .o_bf_email_fiche {
+            flex: 1 1 100% !important;
+            // Le `min-width: 320px` du style en ligne : en « aperçu à droite »
+            // à 390 px, il poussait la fiche 196 px hors de l'écran (mesuré),
+            // rognés sans recours, et la liste n'y gardait qu'un pixel.
+            min-width: 0 !important;
+            min-height: 0 !important;
+            // Un en-tête plus haut que la fiche (beaucoup de pièces jointes,
+            // bandeau d'images bloquées) ne doit plus pouvoir rendre le corps
+            // INATTEIGNABLE : il défile, au lieu d'être coupé sans recours.
+            //
+            // ⚠️ LES DEUX AXES, et non `overflow-y` seul : face à un axe `auto`,
+            // un axe `visible` devient `auto`. Tant que le style en ligne écrit
+            // `overflow: hidden`, c'est lui qui tient X ; s'il cessait un jour,
+            // un `overflow-y: auto` solitaire ferait apparaître une barre de
+            // défilement HORIZONTALE. La règle doit tenir seule.
+            overflow: hidden auto !important;
+        }
+
+        // Le ruban se range sur UNE rangée qui défile, quel que soit le réglage
+        // mémorisé — sans toucher à la préférence, que `toggleRibbon()` continue
+        // d'écrire dans sa clé partagée. Mesuré : quatorze rangées
+        // et 822 px de boutons, pour un corps de message qui n'en recevait aucun.
+        // `flex-wrap` vient d'un utilitaire Bootstrap, donc `!important`.
+        .o_bf_email_ribbon {
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            scrollbar-width: thin;
+
+            .o_bf_ribbon_label {
+                display: none;
+            }
+        }
+    }
+
+    // Le MIROIR : rien de sélectionné, la fiche VIDE ne mange pas la liste.
+    // Mesuré sans sélection à 390 px : la liste n'avait que 394 px de haut et la
+    // fiche vide en prenait 399, pour y montrer un pense-bête de treize touches
+    // de raccourci — sur un appareil sans clavier.
+    .o_action_manager .o_bf_email_duo:not(.o_bf_email_fiche_ouverte) {
+        > .o_bf_email_fiche,
+        > .o_bf_email_splitter {
+            display: none !important;
+        }
+    }
+}

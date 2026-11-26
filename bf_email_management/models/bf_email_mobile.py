@@ -33,11 +33,10 @@ import json
 import logging
 import mimetypes
 import re
+import threading
 from datetime import datetime, time, timedelta
 
 import pytz
-
-import threading
 
 from odoo import SUPERUSER_ID, _, api, fields, models, tools
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -74,6 +73,17 @@ MAX_RECIPIENTS = 50
 # L'app lit ce nombre plutôt que de sonder chaque route : un 404 ne dit pas si
 # l'instance est trop vieille ou si le réseau vient de tomber.
 COMPOSE_API = 2
+# Le signalement de pourriel servi au téléphone. 1 : les trois gestes
+# de la fenêtre du bureau — ranger, bloquer l'expéditeur, porter plainte — et le
+# choix Pourriel/Hameçonnage. Absent (0) d'une instance plus ancienne : l'appli
+# n'offre alors pas le geste du tout, au lieu de l'offrir et d'échouer.
+REPORT_API = 1
+
+# La case « Fil cité attendu » servie au téléphone. 1 : lue dans la charge
+# utile du brouillon, et basculable par `/draft/save`. Absent (0) d'une instance plus
+# ancienne, ou d'un locataire sans la porte : l'app n'offre alors pas la case, au lieu
+# de l'offrir et de jeter le geste en silence.
+DRAFT_CITATION_API = 1
 
 # Bornes d'un envoi programmé. La minute d'avance absorbe l'horloge du
 # téléphone et le temps de la requête : une heure « tout de suite » devient un
@@ -180,7 +190,7 @@ class BfEmailMobile(models.Model):
         ):
             try:
                 sweep()
-            except Exception:  # noqa: BLE001
+            except Exception:
                 # Never let housekeeping stop the mail from syncing.
                 _logger.warning("bf.email: une purge mobile a échoué",
                                 exc_info=True)
@@ -325,7 +335,7 @@ class BfEmailMobile(models.Model):
         try:
             raw = base64.b64decode(self.raw_rfc822)
             parsed = email_mod.message_from_bytes(raw, policy=email.policy.default)
-        except Exception:  # noqa: BLE001
+        except Exception:
             _logger.warning("bf.email #%s: raw_rfc822 unparseable for "
                             "attachment listing", self.id, exc_info=True)
             return []
@@ -707,6 +717,13 @@ class BfEmailMobile(models.Model):
             "compose_api": COMPOSE_API,
             "identities": self._mobile_identities(),
             "recipient_groups": self.env["bf.recipient.group"]._groups_enabled(),
+            # Voir REPORT_API. Ce que le geste offre pour DES courriels donnés
+            # se demande à `/report/options` : le dossier Indésirables et les
+            # autorités dépendent du compte et de la société du courriel, pas
+            # de l'instance.
+            "report_api": REPORT_API,
+            # Voir DRAFT_CITATION_API. Absent : pas de case au téléphone.
+            "draft_citation_api": DRAFT_CITATION_API,
         }
 
     # ------------------------------------------------------------------
@@ -1005,9 +1022,19 @@ class BfEmailMobile(models.Model):
         """
         # Coerced defensively: a malformed email_ids from a buggy or hostile
         # client must come back as a 400, not blow up into a 500.
+        # 🔴 Un booléen N'EST PAS un identifiant :
+        # `isinstance(True, int)` vaut vrai en Python, donc `email_ids: true`
+        # passait la garde du scalaire et devenait `[1]` — le courriel n° 1 de
+        # la base. Préexistant, mais ce lot met une écriture IMAP, une règle de
+        # boîte et une plainte à une autorité derrière cette coercition.
+        # Refusé aux deux niveaux : le drapeau nu et le drapeau dans la liste.
+        if isinstance(email_ids, bool):
+            raise UserError(_("Liste de courriels invalide."))
         if isinstance(email_ids, (int, str)):
             email_ids = [email_ids]
         if not isinstance(email_ids, (list, tuple)):
+            raise UserError(_("Liste de courriels invalide."))
+        if any(isinstance(i, bool) for i in email_ids):
             raise UserError(_("Liste de courriels invalide."))
         try:
             ids = [int(i) for i in email_ids]
@@ -1102,7 +1129,7 @@ class BfEmailMobile(models.Model):
                     if morts:
                         env = push.env
                         env["bf.email.mobile.device"].browse(list(morts)).write({"push_endpoint": False})
-            except Exception:  # noqa: BLE001 — une notification restée affichée ne casse rien
+            except Exception:
                 _logger.warning("Marquer lu : effacement des notifications du fil échoué.", exc_info=True)
 
         self.env.cr.postcommit.add(lambda: threading.Thread(target=_effacer, daemon=True).start())
@@ -1889,6 +1916,11 @@ class BfEmailMobile(models.Model):
             # au moment même où on le quittait.
             "saved_ms": self._ms(draft.write_date) or 0,
             "version": self._mobile_draft_version(draft),
+            # Le fil cité attendu, en lecture ET en bascule. Sans lui, un
+            # brouillon marqué dont une retouche effacerait la citation n'avait
+            # AUCUNE issue depuis le téléphone : la sauvegarde était refusée, et la
+            # case qui débloque n'existait qu'au formulaire du poste.
+            "citation_attendue": draft.bf_citation_attendue,
             "attachments": [
                 {"id": a.id, "name": a.name or _("(sans nom)"),
                  "size": a.file_size or 0, "mimetype": a.mimetype or ""}
@@ -1965,7 +1997,7 @@ class BfEmailMobile(models.Model):
     @api.model
     def mobile_draft_save(self, draft_id, device=None, base_version=None,
                           subject=None, body=None, body_is_html=False,
-                          to=None, attachment_ids=None):
+                          to=None, attachment_ids=None, citation_attendue=None):
         """Réécrire un brouillon du poste depuis le téléphone.
 
         **Écriture partielle, et c'est délibéré.** Chaque champ absent de la
@@ -1984,7 +2016,33 @@ class BfEmailMobile(models.Model):
         if conflict:
             return conflict
 
+        # 🔴 `attendue` se calcule AVANT `vals`, et la garde plus bas la lit telle
+        # quelle. C'est tout l'objet du lot : elle doit juger sur la valeur NOUVELLE,
+        # sinon décocher la case et réécrire le corps dans le même appel — le geste
+        # d'un téléphone qui décoche puis sauvegarde — serait encore refusé, et
+        # décocher ne débloquerait RIEN.
+        # ⚠️ Pas `vals.get(...)` quinze lignes plus bas : ça marchait, mais la
+        # justesse tenait alors à l'ORDRE de deux clauses, qu'un rangement casse en
+        # silence. Ici l'ordre est indifférent.
+        # `None` veut dire « je n'y touche pas », comme pour tous les autres champs
+        # de cette écriture partielle. La coercition, elle, est faite au bord par
+        # `_flag` : ce modèle attend un vrai booléen, comme toute écriture ORM.
+        attendue = (draft.bf_citation_attendue if citation_attendue is None
+                    else bool(citation_attendue))
         vals = {}
+        if citation_attendue is not None:
+            vals["bf_citation_attendue"] = attendue
+            if draft.bf_citation_attendue and not attendue:
+                # 🔴 La seule transition qui LÈVE la porte laisse une trace. Elle
+                # existe parce que quinze jours de réponses sont parties sans fil
+                # cité ; la lever est maintenant un geste à distance, sur un
+                # brouillon que l'intégration qui rédige a pu marquer sur un dossier CLIENT,
+                # et par une inférence de sujet qui peut se tromper. Sans ceci, rien
+                # ne dirait après coup laquelle a été levée.
+                _logger.info(
+                    "Fil cité attendu LEVÉ depuis le téléphone par %s sur le "
+                    "brouillon %s (%s %s)", self.env.user.login, draft.id,
+                    draft.model or "-", draft.res_id or 0)
         if subject is not None:
             vals["subject"] = (subject or "").strip()
         if body is not None:
@@ -1992,6 +2050,21 @@ class BfEmailMobile(models.Model):
             # être valide, c'est justement ce qui le distingue d'un envoi.
             vals["body"] = (self._mobile_compose_body(body, body_is_html)
                             if (body or "").strip() else "")
+            # 🔴 Sauf si cela EFFACE un fil cité attendu. En texte
+            # brut, `_mobile_compose_body` remplace tout le corps par des `<p>`
+            # échappés : la citation disparaîtrait, l'envoi serait refusé
+            # ensuite, et la case qui débloque n'existe pas au téléphone. Le
+            # refus porte ici, où rien n'est encore perdu.
+            # ⚠️ `attendue`, calculé plus haut, et non `draft.bf_citation_attendue` :
+            # la bascule n'est pas encore écrite, et c'est elle qui décide.
+            if (attendue
+                    and draft._bf_lire_le_fil_cite(draft.body or "")[0]
+                    and not draft._bf_lire_le_fil_cite(vals["body"])[0]):
+                raise UserError(_(
+                    "Ce brouillon répond à un courriel reçu et porte le message "
+                    "cité. La retouche l'effacerait, et l'envoi serait ensuite "
+                    "refusé. Décocher « Fil cité attendu » si la citation n'a pas "
+                    "lieu d'être, puis réessayer ; sinon, retoucher au poste."))
         if to is not None:
             addresses = [a for a in (to or []) if (a or "").strip()]
             if len(addresses) > MAX_RECIPIENTS:

@@ -21,9 +21,33 @@ et daté (`bf.email.initial.sync`).
 ⚠️ **Le serveur sortant est créé en sudo**, parce qu'un employé n'a pas le
 droit de créer un `ir.mail_server`, mais son `from_filter` est écrit par le
 code et vaut exactement l'adresse du compte.
+
+🔴 **Le ménage des transitoires ne tourne pas partout**. Dans Odoo 18,
+le seul appelant de `_transient_vacuum` est le cron `base.autovacuum_job`
+(`@api.autovacuum`) : il n'y a plus de ménage au `create` comme dans les
+versions anciennes. Ce cron peut être désactivé sur une
+instance, et des lignes de plusieurs semaines y dorment alors. `_transient_max_hours` n'y
+valait donc rien. Deux conséquences portées par cet assistant : ouvrir le
+formulaire efface les vieilles lignes de SON AUTEUR (voir `create`), et le mot
+de passe quitte la ligne sur TOUS les chemins de sortie, pas seulement sur le
+refus du serveur IMAP.
+
+🔴 **Et il en part par le bon curseur.** Un chemin qui CONTINUE efface dans sa
+propre transaction, par l'écriture de la ligne (`_terminer`,
+`action_lier_oauth`). Un chemin qui va LEVER efface par un curseur séparé
+(`_oublier`), seul moyen qu'un effacement survive à l'annulation qui vient.
+L'inverse ne marche pas : un curseur séparé qui valide au milieu d'une
+transaction qui continue fait rendre « could not serialize access due to
+concurrent update » à l'écriture suivante de la même ligne — le curseur d'Odoo
+est en REPEATABLE READ, et `retrying` rejoue alors la requête sans le mot de
+passe. Zéro compte créé, secret parti : c'était le défaut du premier tour.
 """
 
 import logging
+from datetime import timedelta
+
+import psycopg2
+from psycopg2 import errors as erreurs_pg
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -50,6 +74,18 @@ AIDE_MDP_APP = {
         "Zoho demande un mot de passe d'application pour les clients IMAP."),
 }
 
+# 🔴 Les trois échecs qu'Odoo REJOUE au lieu de les rendre : la même liste que
+# `PG_CONCURRENCY_EXCEPTIONS_TO_RETRY` dans `odoo/service/model.py`. Le mot de
+# passe doit leur survivre, parce que le rejeu repart de la ligne VALIDÉE : s'il
+# n'y trouve plus le secret, le branchement meurt sur « Il manque le mot de
+# passe. » — le même défaut, en plus rare. Recopiés plutôt qu'importés :
+# un module n'a pas à dépendre de la couche de service d'Odoo.
+ECHECS_REJOUES = (
+    erreurs_pg.LockNotAvailable,
+    erreurs_pg.SerializationFailure,
+    erreurs_pg.DeadlockDetected,
+)
+
 
 class BfEmailAccountSetup(models.TransientModel):
     _name = "bf.email.account.setup"
@@ -59,8 +95,12 @@ class BfEmailAccountSetup(models.TransientModel):
     # un mot de passe en clair. Le ménage d'Odoo la garde une heure par défaut
     # (`transient_age_limit`), donc un mot de passe saisi puis refusé dormait
     # une heure de plus, et se retrouvait dans toute sauvegarde prise entre
-    # les deux. Le champ est effacé à chaque sortie (voir `_oublier`), et la
-    # ligne elle-même ne survit pas plus d'un quart d'heure.
+    # les deux. Le champ est effacé à chaque sortie (voir `_oublier`).
+    #
+    # ⚠️ Ce plafond-ci ne PROMET rien tout seul : son seul lecteur est
+    # `base.autovacuum_job`, qui ne tourne pas sur tous les locataires. C'est
+    # `create` ci-dessous qui l'applique — un quart d'heure, et sur les lignes
+    # de son auteur seulement.
     _transient_max_hours = 0.25
 
     state = fields.Selection(
@@ -112,6 +152,63 @@ class BfEmailAccountSetup(models.TransientModel):
     message = fields.Html(string="Message", readonly=True)
     duree_ms = fields.Integer(string="Détection (ms)", readonly=True)
     account_id = fields.Many2one("bf.email.account", string="Compte", readonly=True)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Ouvrir l'assistant efface les vieilles lignes de SON AUTEUR.
+
+        🔴 Sans ça, `_transient_max_hours` est décoratif : son seul lecteur est
+        le cron `base.autovacuum_job`, qui peut être
+        désactivé sur une instance : une ligne abandonnée y dort alors des semaines.
+
+        ⚠️ Ce n'est PAS `_transient_vacuum` (choix assumé). Le ménage
+        d'Odoo emporte les lignes de TOUT LE MONDE, et son seuil effectif n'est
+        pas les cinq minutes de son plancher : `_transient_clean_rows_older_than`
+        reçoit `_transient_max_hours * 3600` et fait `max(secondes, 300)`, donc
+        le seuil reste d'un quart d'heure. Or cet assistant envoie justement la
+        personne créer un mot de passe d'application chez Google, Yahoo ou
+        Apple, ce qui dépasse couramment quinze minutes : l'ouverture du
+        formulaire par un collègue détruisait le sien — « cet enregistrement
+        n'existe plus », et tout à refaire. Borné à ses propres lignes, le même
+        quart d'heure ne coûte que ses propres brouillons abandonnés, comme le
+        ménage nocturne le faisait déjà.
+
+        ⚠️ Ni `sudo` ni `ir.cron` : la purge d'Odoo en avait besoin pour son
+        dernier geste (le cron de ménage, au-delà de cent mille lignes). Celle
+        d'ici est un `unlink` de ses propres lignes, que l'ACL et la règle de
+        propriétaire autorisent déjà.
+
+        ⚠️ Une seule table, la sienne. Le ménage d'Odoo est lui aussi par
+        modèle : `_transient_vacuum` ne vide jamais « les tables des
+        assistants », seulement celle du modèle appelé. Les treize autres
+        transitoires du module gardent donc leurs lignes là où le cron est
+        désactivé ; c'est hors de la portée de ce correctif.
+        """
+        self._effacer_mes_lignes_perimees()
+        return super().create(vals_list)
+
+    @api.model
+    def _effacer_mes_lignes_perimees(self):
+        """Les lignes de l'usager courant qui n'ont pas bougé depuis le plafond.
+
+        ⚠️ Le domaine nomme `create_uid` au lieu de s'en remettre à la seule
+        règle de propriétaire : un appel en `sudo` — il n'en existe aucun dans
+        le module, mais rien ne l'interdit au suivant — ne verrait aucune règle
+        et emporterait les lignes de tout le monde.
+        """
+        if not self._transient_max_hours:
+            return
+        limite = fields.Datetime.now() - timedelta(hours=self._transient_max_hours)
+        perimees = self.search([
+            ("create_uid", "=", self.env.uid),
+            ("write_date", "<", fields.Datetime.to_string(limite)),
+        ])
+        if perimees:
+            _logger.info(
+                "bf.email.account.setup : %s ligne(s) périmée(s) de l'usager "
+                "%s effacée(s) à l'ouverture d'un formulaire neuf",
+                len(perimees), self.env.uid)
+            perimees.unlink()
 
     # ------------------------------------------------------------------
     # Étape 1 : détecter
@@ -219,35 +316,68 @@ class BfEmailAccountSetup(models.TransientModel):
     # Étape 2 : brancher
     # ------------------------------------------------------------------
     def action_brancher(self):
-        """Essaie la connexion, puis n'écrit QUE si elle a réussi."""
+        """Essaie la connexion, puis n'écrit QUE si elle a réussi.
+
+        🔴 Un seul endroit efface le mot de passe par un curseur
+        séparé, et c'est la branche d'erreur — celle qui va ANNULER cette
+        transaction. L'annulation ne défait pas le `web_save` du client, qui a
+        validé le mot de passe dans sa propre transaction : sans ce curseur,
+        un refus laisserait le secret en base jusqu'au ménage, c'est-à-dire
+        pour toujours là où le cron est désactivé.
+
+        Sur le chemin qui réussit, c'est l'écriture de la ligne par `_terminer`
+        qui emporte le secret, dans la transaction. Un curseur séparé y
+        validerait au milieu d'une transaction en REPEATABLE READ, et
+        l'écriture suivante de la même ligne rendrait « could not serialize
+        access due to concurrent update » ; `retrying` rejouerait la requête,
+        le mot de passe serait déjà parti, et la garde ci-dessous lèverait :
+        zéro compte créé, mesuré sur 100 % des branchements.
+        """
         self.ensure_one()
         if self.auth_mode == "oauth":
             return self.action_lier_oauth()
         if not self.password:
+            # Rien à effacer, et rien d'écrit : on lève sans détour.
             raise UserError(_("Il manque le mot de passe."))
-        if not self.imap_host:
-            raise UserError(_("Il manque le serveur IMAP."))
+        try:
+            if not self.imap_host:
+                raise UserError(_("Il manque le serveur IMAP."))
 
-        extra = {}
-        if self.env["ir.config_parameter"].sudo().get_param(
-                "bf_email.autoriser_hotes_internes") in ("1", "True", "true"):
-            extra["autoriser_hote_interne"] = True
-        try:
-            conn = bf_email_imap.open_connection(
-                self.imap_host, self.imap_port or 993, self.email, self.password,
-                timeout=20, **extra)
-        except bf_email_imap.ImapConnectionError as exc:
-            # ⚠️ Effacer AVANT de lever : sinon le mot de passe refusé reste
-            # en base tant que le ménage des transitoires ne passe pas.
-            self._oublier()
-            raise UserError(self._diagnostiquer(exc)) from exc
-        try:
-            conn.logout()
+            extra = {}
+            if self.env["ir.config_parameter"].sudo().get_param(
+                    "bf_email.autoriser_hotes_internes") in ("1", "True", "true"):
+                extra["autoriser_hote_interne"] = True
+            try:
+                conn = bf_email_imap.open_connection(
+                    self.imap_host, self.imap_port or 993, self.email,
+                    self.password, timeout=20, **extra)
+            except bf_email_imap.ImapConnectionError as exc:
+                raise UserError(self._diagnostiquer(exc)) from exc
+            try:
+                conn.logout()
+            except Exception:
+                pass
+
+            compte = self._creer_le_compte()
+            return self._terminer(compte)
+        except ECHECS_REJOUES:
+            # 🔴 Odoo rejoue la requête : le secret doit rester en base pour
+            # que le rejeu ait de quoi brancher la boîte (voir ECHECS_REJOUES).
+            raise
         except Exception:
-            pass
-
-        compte = self._creer_le_compte()
-        return self._terminer(compte)
+            # Tout ce qui lève ici annule la transaction : le refus du serveur,
+            # la création du compte, l'identité d'expédition, le serveur
+            # sortant. Le secret a pu servir, il ne doit pas survivre.
+            #
+            # ⚠️ Un seul cas où ce curseur ne peut rien : si c'est la dernière
+            # écriture de `_terminer` qui a levé, cette transaction tient le
+            # verrou de la ligne et `_oublier` renoncera au bout de trois
+            # secondes. Sans dommage — l'annulation rétablit la ligne, mot de
+            # passe compris, et le rejeu de `retrying` repart avec ce qu'il lui
+            # faut. C'est le seul ordre qui tienne : le verrou qui bloque
+            # l'effacement est aussi celui qui protège le rejeu.
+            self._oublier()
+            raise
 
     def _oublier(self):
         """Retirer le mot de passe de la ligne d'assistant, quoi qu'il arrive.
@@ -262,31 +392,79 @@ class BfEmailAccountSetup(models.TransientModel):
         propre compte. Il ne voit que ce qui est déjà validé, ce qui est
         exactement le cas visé : un mot de passe saisi à une étape qui a
         réussi, puis abandonné à l'étape suivante.
+
+        🔴 **À n'appeler que sur un chemin qui va ANNULER la transaction**,
+        juste avant un `raise`. Sur un chemin qui continue, ce
+        curseur-ci valide au milieu de la transaction appelante : l'instantané
+        de celle-ci est plus vieux (REPEATABLE READ), et l'écriture suivante de
+        la même ligne rend « could not serialize access due to concurrent
+        update ». `retrying` rejoue alors la requête, le mot de passe est déjà
+        parti, et la garde du mot de passe lève : zéro compte créé. Un chemin
+        qui continue efface donc DANS la transaction, par l'écriture de la
+        ligne elle-même (`_terminer`, `action_lier_oauth`).
+
+        ⚠️ Et si la transaction a déjà écrit la ligne, elle en tient le verrou :
+        ce curseur-ci l'attendrait jusqu'à ce qu'elle finisse, ce qu'elle ne
+        fera pas avant le retour d'ici. Un travailleur pendu est pire qu'un mot
+        de passe oublié : il se donne trois secondes, puis renonce en le DISANT
+        au journal. Tous les appels du module respectent la règle ; le
+        garde-fou est là pour le prochain.
         """
         if not self.id:
             return
-        with self.pool.cursor() as autre_curseur:
-            autre_curseur.execute(
-                "UPDATE bf_email_account_setup SET password = NULL "
-                "WHERE id = %s AND password IS NOT NULL", (self.id,))
+        try:
+            with self.pool.cursor() as autre_curseur:
+                autre_curseur.execute("SET LOCAL lock_timeout = '3s'")
+                autre_curseur.execute(
+                    "UPDATE bf_email_account_setup SET password = NULL "
+                    "WHERE id = %s AND password IS NOT NULL", (self.id,))
+        except psycopg2.Error:
+            _logger.exception(
+                "bf.email.account.setup %s : le mot de passe n'a PAS pu être "
+                "effacé de la ligne d'assistant", self.id)
+            return
         self.invalidate_recordset(["password"])
 
     def action_lier_oauth(self):
-        """Crée le compte en attente, puis ouvre l'écran de consentement."""
+        """Crée le compte en attente, puis ouvre l'écran de consentement.
+
+        ⚠️ Une personne peut arriver ici avec un mot de passe saisi —
+        `action_brancher` route vers OAuth AVANT la garde du mot de passe —, et
+        un mot de passe n'a rien à faire sur une ligne OAuth : le champ est
+        caché dans cet état, mais un appel RPC direct n'a pas de vue. Il part
+        donc des deux manières : par l'écriture de la ligne quand le chemin
+        continue, par `_oublier` quand il va annuler.
+
+        🔴 L'effacement ne peut PAS passer par un `_oublier` en tête, comme au
+        premier tour : cette méthode écrit la ligne plus bas, et le curseur
+        séparé, en validant avant, ferait rendre « could not serialize access »
+        à cette écriture-là (voir `_oublier`).
+        """
         self.ensure_one()
-        if not self.oauth_provider:
-            raise UserError(_("Aucun fournisseur OAuth pour cette adresse."))
-        if not self.env["bf.email.oauth"].est_configure(self.oauth_provider):
-            raise UserError(_(
-                "Cette instance n'a pas d'inscription d'application chez ce "
-                "fournisseur. Sans elle, aucune boîte Microsoft ne peut être "
-                "branchée : leur serveur refuse tout mot de passe."))
-        compte = self.account_id or self._creer_le_compte(oauth=True)
-        self.account_id = compte.id
+        try:
+            if not self.oauth_provider:
+                raise UserError(_("Aucun fournisseur OAuth pour cette adresse."))
+            if not self.env["bf.email.oauth"].est_configure(self.oauth_provider):
+                raise UserError(_(
+                    "Cette instance n'a pas d'inscription d'application chez "
+                    "ce fournisseur. Sans elle, aucune boîte Microsoft ne peut "
+                    "être branchée : leur serveur refuse tout mot de passe."))
+            compte = self.account_id or self._creer_le_compte(oauth=True)
+            # ⚠️ L'adresse de consentement se calcule AVANT l'écriture de la
+            # ligne, et pas dans le dictionnaire de retour : elle lève quand
+            # l'inscription d'application manque, et après l'écriture plus rien
+            # ne pourrait effacer le mot de passe (verrou de la ligne).
+            adresse = self.env["bf.email.oauth"].url_de_consentement(compte)
+        except ECHECS_REJOUES:
+            raise
+        except Exception:
+            self._oublier()
+            raise
+        self.write({"account_id": compte.id, "password": False})
         return {
             "type": "ir.actions.act_url",
             "target": "self",
-            "url": self.env["bf.email.oauth"].url_de_consentement(compte),
+            "url": adresse,
         }
 
     def _diagnostiquer(self, exc):
@@ -325,7 +503,14 @@ class BfEmailAccountSetup(models.TransientModel):
         return compte
 
     def _terminer(self, compte):
-        """Identité d'expédition, serveur sortant, et on montre le compte."""
+        """Identité d'expédition, serveur sortant, et on montre le compte.
+
+        ⚠️ L'écriture de la ligne est le DERNIER geste, et c'est elle
+        qui emporte le mot de passe (`password: False`), dans la transaction.
+        Rien ne doit s'ajouter après : à partir d'elle, cette transaction tient
+        le verrou de la ligne et plus aucun curseur ne peut en effacer le
+        secret si un geste lève (voir `_oublier`).
+        """
         self.env["bf.email.identity"]._sync_from_accounts(users=self.env.user)
         if self.smtp_host:
             self.env["ir.mail_server"]._bf_assurer_pour_compte(

@@ -46,8 +46,14 @@ class BfEmailReportWizard(models.TransientModel):
             wiz.email_count = len(emails)
             adresses = []
             for rec in emails:
-                adresse = rec._external_address()
-                if adresse and adresse not in adresses:
+                # 🔴 L'adresse qui sera BLOQUÉE (parseaddr), pas celle du nom
+                # affiché : `_external_address()` prend la première chaîne qui
+                # ressemble à une adresse, et « service@paypal.com »
+                # <x@phish.ru> faisait annoncer paypal.com au-dessus d'une
+                # règle sur phish.ru. Même méthode que
+                # `_report_block_senders`.
+                adresse = rec._report_sender_address()
+                if adresse and "@" in adresse and adresse not in adresses:
                     adresses.append(adresse)
             wiz.sender_summary = ", ".join(adresses[:3]) + (
                 _(" et %s autre(s)", len(adresses) - 3) if len(adresses) > 3 else "")
@@ -64,12 +70,15 @@ class BfEmailReportWizard(models.TransientModel):
     def _compute_offres(self):
         Authority = self.env["bf.email.report.authority"]
         for wiz in self:
-            wiz.phish_available = "bf.reported.phish" in self.env
+            BfEmail = self.env["bf.email"]
+            wiz.phish_available = BfEmail._report_phish_available()
             company = (wiz.email_ids[:1].company_id or self.env.company)
             # Une plainte vise UN courriel : sur un lot, on range et on bloque,
-            # on ne fabrique pas quinze plaintes d'un clic.
-            wiz.complaints_enabled = bool(
-                company.bf_email_complaints_enabled and len(wiz.email_ids) == 1)
+            # on ne fabrique pas quinze plaintes d'un clic. Le projet et le
+            # droit d'y créer une tâche sont exigés là aussi : sinon la
+            # fenêtre offrait une plainte dont l'échec annulait le rangement.
+            wiz.complaints_enabled = BfEmail._report_complaints_enabled(
+                company, len(wiz.email_ids))
             if not wiz.complaints_enabled:
                 wiz.available_authority_ids = Authority
                 continue
@@ -82,6 +91,15 @@ class BfEmailReportWizard(models.TransientModel):
     @api.onchange("kind")
     def _onchange_kind(self):
         self.authority_ids = self.authority_ids & self.available_authority_ids
+        # 🔴 La vue MASQUE la case sur un hameçonnage
+        # (`invisible="kind == 'phish'"`), elle ne la dépique pas : invisible
+        # ≠ non posé. Elle restait cochée, et depuis la
+        # phrase neuve du lot le compte rendu annonçait « Aucune règle de
+        # blocage… » pour un blocage que la personne avait visuellement
+        # dé-demandé. L'appli, elle, oublie la case en basculant : le bureau
+        # fait pareil.
+        if self.kind != "spam":
+            self.block_sender = False
 
     @api.depends("authority_ids", "kind", "email_ids")
     def _compute_form_help(self):
@@ -107,6 +125,17 @@ class BfEmailReportWizard(models.TransientModel):
         emails = self.email_ids.with_context(active_test=False).exists()
         if not emails:
             raise UserError(_("Aucun courriel à signaler."))
+        # 🔴 La garde est rejouée ICI, pas seulement à
+        # l'ouverture (`action_report_spam`) et dans `mobile_report` : une
+        # fenêtre du bureau restée ouverte pendant que le téléphone signale le
+        # même courriel reposait TOUT en confirmant — une deuxième plainte en
+        # brouillon sur la même tâche, un deuxième `bf.reported.phish` avec son
+        # alerte. Le point d'action est le seul endroit que rien ne contourne,
+        # et c'est aussi lui qui refuse une ligne sortie de la boîte entre
+        # l'ouverture et le clic.
+        refus = emails._report_refus()
+        if refus:
+            raise UserError(refus)
         emails.check_access("write")
         autorites = self.authority_ids & self.available_authority_ids
         if autorites and not self.complaints_enabled:
@@ -119,12 +148,12 @@ class BfEmailReportWizard(models.TransientModel):
         signalements = 0
         if self.kind == "phish":
             signalements = emails._report_to_awareness()
-        regles = sans_dossier = 0
+        regles = sans_dossier = sans_adresse = 0
         # Pas de blocage sur un hameçonnage : un exercice signalé enverrait
         # les exercices suivants dans Indésirables, et la sécurité, elle,
         # retire les copies.
         if self.block_sender and self.kind == "spam":
-            regles, sans_dossier = emails._report_block_senders()
+            regles, sans_dossier, sans_adresse = emails._report_block_senders()
         emails._report_mark(self.kind)
         morceaux = [_("%s courriel(s) rangé(s) dans Indésirables.", len(emails))]
         if regles:
@@ -133,6 +162,22 @@ class BfEmailReportWizard(models.TransientModel):
             morceaux.append(_(
                 "%s adresse(s) sans règle : leur compte n'a pas de dossier "
                 "Indésirables connu.", sans_dossier))
+        if sans_adresse:
+            # 🔴 Demandé et pas fait se DIT : un `From`
+            # vide ou illisible n'a aucune adresse à bloquer, et le compte
+            # rendu se taisait là où il parle pour le hameçonnage.
+            morceaux.append(_(
+                "%s courriel(s) sans adresse d'expéditeur lisible : aucune "
+                "règle de blocage possible.", sans_adresse))
+        if self.block_sender and self.kind != "spam":
+            # 🔴 Demandé et pas fait : le compte rendu se taisait, et
+            # le client qui envoie `{kind:"phish", block_sender:true}` recevait
+            # `ok:true` en croyant l'expéditeur bloqué. L'appli affiche ce
+            # compte rendu tel quel : c'est ici que ça se dit.
+            morceaux.append(_(
+                "Aucune règle de blocage : on ne bloque pas l'expéditeur d'un "
+                "hameçonnage (la sécurité retire les copies, et bloquer "
+                "enverrait les exercices suivants dans Indésirables)."))
         if signalements:
             morceaux.append(_("%s signalement(s) d'hameçonnage.", signalements))
         if brouillons:

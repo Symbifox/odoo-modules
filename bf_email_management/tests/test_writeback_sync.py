@@ -11,8 +11,9 @@ qui a échappé aux deux.
 from unittest.mock import patch
 
 from odoo import fields
-from odoo.addons.mail.tools.discuss import Store
 from odoo.tests import tagged
+
+from odoo.addons.mail.tools.discuss import Store
 
 from .common import MobileApiCase
 

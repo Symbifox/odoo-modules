@@ -34,14 +34,16 @@ import pytz
 from markupsafe import Markup
 from werkzeug.utils import redirect as wz_redirect
 
-from odoo import fields, http
+from odoo import http
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
 from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
 
 from ..models.bf_email_mobile import TOO_LARGE, UPLOAD_SINGLE_MAX
 from ..models.push_transport import (
-    parse_push_keys, safe_push_endpoint, webpush_available,
+    parse_push_keys,
+    safe_push_endpoint,
+    webpush_available,
 )
 
 _logger = logging.getLogger(__name__)
@@ -155,6 +157,24 @@ def _allowed_redirect(redirect):
     return bool(redirect) and bool(allowed) and redirect.startswith(allowed)
 
 
+def _mode_code(kw):
+    """Appariement SANS redirection : le code s'affiche, la personne le recopie.
+
+    🔴 Pourquoi un mode plutôt qu'un schéma de plus dans la liste blanche :
+    l'origine d'une extension Gecko (``moz-extension://<uuid>``) est tirée au
+    hasard PAR PROFIL, donc impossible à inscrire ; et autoriser
+    « moz-extension:// » en entier remettrait un code vivant à n'importe quelle
+    extension installée dans le même profil, c'est-à-dire exactement le trou que
+    l'audit S-M1 a fermé côté téléphone. Ici rien ne redirige : il n'y a aucune
+    cible à détourner, et le code ne vaut rien sans le vérificateur PKCE que le
+    demandeur n'a jamais envoyé.
+
+    ⚠️ Le mode gagne sur ``redirect`` : les deux ensemble n'ouvrent pas de
+    redirection, le paramètre est simplement ignoré.
+    """
+    return str(kw.get("mode") or "").strip().lower() == "code"
+
+
 # ── Pairing consent page (S-M1) ───────────────────────────────────────────────
 # Duplicated in ``bf_sms_archive`` rather than shared: the two modules install
 # independently of each other.
@@ -184,6 +204,8 @@ _CONSENT_STYLE = Markup(
     "dd{margin:0 0 .75rem;overflow-wrap:anywhere}"
     "small{color:#57606a}"
     "p{margin:0 0 1.5rem;color:#3d444d}"
+    ".warn{background:#fff8c5;border:1px solid #d4a72c;border-radius:.5rem;"
+    "padding:.75rem 1rem;color:#1f2328}"
     "button{display:block;width:100%;font:inherit;font-weight:600;"
     "padding:.8rem;border-radius:.5rem;margin-bottom:.75rem;cursor:pointer}"
     ".yes{background:#1f2328;color:#fff;border:1px solid #1f2328}"
@@ -197,6 +219,9 @@ def _bounce(ask, **params):
     303 after the consent page's POST, so the browser does not resubmit the
     form.
     """
+    if not ask["redirect"]:
+        # Mode code : il n'y a nulle part où rebondir, la réponse est une page.
+        return _code_page(ask, **params)
     redirect = ask["redirect"]
     sep = "&" if "?" in redirect else "?"
     query = urllib.parse.urlencode({**params, "state": ask["state"]})
@@ -215,7 +240,7 @@ def _consent_page(ask):
     user = env.user
     hidden = Markup("").join(
         Markup('<input type="hidden" name="%s" value="%s"/>') % (name, ask[name])
-        for name in ("redirect", "state", "code_challenge",
+        for name in ("mode", "redirect", "state", "code_challenge",
                      "code_challenge_method", "device_name"))
     device = Markup("")
     if ask["device_name"]:
@@ -230,7 +255,7 @@ def _consent_page(ask):
         "<dl><dt>%(l_account)s</dt><dd>%(name)s<br/><small>%(login)s</small></dd>"
         "%(device)s"
         "<dt>%(l_access)s</dt><dd>%(access)s</dd></dl>"
-        "<p>%(notice)s</p>"
+        "%(notice)s"
         '<form method="post" action="%(action)s">'
         '<input type="hidden" name="csrf_token" value="%(csrf)s"/>%(hidden)s'
         '<button class="yes" type="submit" name="decision" value="allow">%(allow)s</button>'
@@ -239,20 +264,90 @@ def _consent_page(ask):
     ) % {
         "lang": (env.lang or "en_US").split("_")[0],
         "style": _CONSENT_STYLE,
-        "title": env._("Symbifox Mobile wants to access your account"),
+        # Le titre nomme ce qui demande. « Symbifox Mobile » sur la page
+        # qu'un Thunderbird a ouverte ferait douter la personne au moment
+        # précis où on lui demande de faire confiance.
+        "title": (env._("A Symbifox client wants to access your account")
+                  if ask.get("mode") == "code"
+                  else env._("Symbifox Mobile wants to access your account")),
         "l_account": env._("Account"),
         "name": user.name or "",
         "login": user.login or "",
         "device": device,
         "l_access": env._("Access requested"),
         "access": env._("Your email"),
-        "notice": env._("Only allow this if you just started signing in from the "
-                        "app on your phone."),
+        # 🔴 En mode code, n'importe qui peut fabriquer ce lien avec SON propre
+        # défi PKCE, l'envoyer à quelqu'un, puis lui demander de recopier le
+        # code affiché : celui qui détient le vérificateur reçoit alors un
+        # jeton sur la boîte d'autrui. PKCE et CSRF n'y peuvent rien, la
+        # personne autorise elle-même. Seul l'avertissement s'interpose, au
+        # moment où elle décide. La phrase du téléphone ne vaut pas ici : elle
+        # parle d'une application sur le téléphone.
+        "notice": (Markup('<p class="warn" role="alert">%s</p>') % env._(
+                       "Only allow this if you yourself just opened the app you "
+                       "are connecting. Never allow it, and never copy the code "
+                       "shown next, because someone asked you to: whoever gets "
+                       "that code can read your email.")
+                   if ask.get("mode") == "code"
+                   else Markup("<p>%s</p>") % env._(
+                       "Only allow this if you just started signing in from the "
+                       "app on your phone.")),
         "action": f"{BASE}/auth/consent",
         "csrf": request.csrf_token(),
         "hidden": hidden,
         "allow": env._("Allow"),
         "deny": env._("Deny"),
+    }
+    return request.make_response(page, headers=_CONSENT_HEADERS)
+
+
+def _code_page(ask, **params):
+    """Le code d'appariement, affiché pour être recopié (mode code).
+
+    La page remplace le rebond vers le lien profond quand il n'y a pas de lien
+    profond. Elle porte le nom de l'appareil demandeur : c'est ce qui permet de
+    reconnaître qu'on apparie bien SON client de courriel. Mêmes en-têtes que la
+    page de consentement, donc ni cadre, ni cache, ni référent.
+    """
+    env = request.env
+    code = params.get("code") or ""
+    erreur = params.get("error") or ""
+    raisons = {
+        "no_access": env._("This account is not an internal user."),
+        "no_mailbox": env._("This account has no active mailbox to show."),
+        "pkce_required": env._("The client did not send a valid PKCE challenge."),
+        "access_denied": env._("Pairing refused."),
+    }
+    corps = Markup("<dt>%s</dt><dd><strong>%s</strong></dd>") % (
+        env._("Pairing code"), code) if code else Markup("<dt>%s</dt><dd>%s</dd>") % (
+        env._("Not paired"), raisons.get(erreur, erreur or env._("Unknown refusal")))
+    device = Markup("")
+    if ask.get("device_name"):
+        device = Markup("<dt>%s</dt><dd>%s</dd>") % (env._("Device"), ask["device_name"])
+    page = Markup(
+        '<!DOCTYPE html><html lang="%(lang)s"><head><meta charset="utf-8"/>'
+        '<meta name="viewport" content="width=device-width, initial-scale=1"/>'
+        '<meta name="robots" content="noindex"/>'
+        "<title>Symbifox</title><style>%(style)s</style></head>"
+        "<body><main><h1>%(title)s</h1><dl>%(device)s%(corps)s</dl>"
+        "<p>%(notice)s</p>%(warn)s</main></body></html>"
+    ) % {
+        "lang": (env.lang or "en_US").split("_")[0],
+        "style": _CONSENT_STYLE,
+        "title": env._("Pairing") if code else env._("Nothing was paired"),
+        "device": device,
+        "corps": corps,
+        # Le délai et l'unicité viennent du modèle (`_issue_pending`) : les
+        # écrire ici évite la question « combien de temps ai-je ? ».
+        "notice": (env._("Copy this code into the client that asked for it. It is "
+                         "good for three minutes and works once.") if code
+                   else env._("You can close this page.")),
+        # Même avertissement que la page de consentement, là où le code se lit :
+        # « le client qui l'a demandé » peut être celui qui a fabriqué le lien.
+        "warn": (Markup('<p class="warn" role="alert">%s</p>') % env._(
+                     "Copy it only into the app you yourself just opened to "
+                     "connect it. Never give it to someone who asks for it.")
+                 if code else Markup("")),
     }
     return request.make_response(page, headers=_CONSENT_HEADERS)
 
@@ -295,7 +390,7 @@ def _authed(fn):
             request.env.cr.rollback()
             _logger.info("Mobile mail API: bad request — %s", exc)
             return _json({"error": "bad_request"}, 400)
-        except Exception:  # noqa: BLE001
+        except Exception:
             request.env.cr.rollback()
             _logger.exception("Mobile mail API: unexpected error")
             return _json({"error": "server_error"}, 500)
@@ -389,12 +484,14 @@ class BfEmailMobileApi(http.Controller):
         """Validate a pairing request: ``(error response, None)`` or
         ``(None, request)``. ONE definition for the GET and the POST, or the
         consent page would end up accepting what the start page refuses."""
-        redirect = kw.get("redirect") or ""
-        if not _allowed_redirect(redirect):
+        mode = "code" if _mode_code(kw) else ""
+        redirect = "" if mode else (kw.get("redirect") or "")
+        if not mode and not _allowed_redirect(redirect):
             return request.make_response(
                 "Redirection non autorisée.", status=400,
                 headers=[("Content-Type", "text/plain; charset=utf-8")]), None
         ask = {
+            "mode": mode,
             "redirect": redirect,
             "state": kw.get("state") or "",
             "code_challenge": (kw.get("code_challenge") or "").strip(),
@@ -586,7 +683,11 @@ class BfEmailMobileApi(http.Controller):
     def handle(self, device, **kw):
         data = _body(**kw)
         counts = request.env["bf.email"].mobile_set_handled(
-            data.get("email_ids"), handled=bool(data.get("handled", True)),
+            # 🔴 `_flag` et non `bool` : voir /report. Form-encodé,
+            # `handled=false` valait `True` — et c'est par ici que l'appli
+            # ANNULE un signalement (`action_unhandle`) : le geste d'annulation
+            # rangeait de nouveau au lieu de défaire.
+            data.get("email_ids"), handled=_flag(data.get("handled", True)),
             grouped=_grouped(data))
         return _json({"ok": True, "counts": counts})
 
@@ -757,6 +858,20 @@ class BfEmailMobileApi(http.Controller):
             to=data.get("to") if "to" in data else None,
             attachment_ids=(data.get("attachment_ids")
                             if "attachment_ids" in data else None),
+            # 🔴 `_flag` et non la valeur brute, et c'est la DEUXIÈME fois dans ce
+            # fichier : `_body` retombe sur `kw` quand le Content-Type est mauvais —
+            # chemin SUPPORTÉ et documenté — et tout arrive alors en CHAÎNE.
+            # `bool("false")` vaut True, donc décocher aurait RECOCHÉ la case, puis
+            # fait refuser la sauvegarde à quelqu'un qui venait de la décocher.
+            # `/handle` et `/report` ont payé exactement ça, et le
+            # module porte deux essais de non-régression pour ce défaut.
+            # ⚠️ `is not None` et non `in data` : un client qui sérialise un booléen
+            # nul émet `"citation_attendue": null`, et `_flag(None)` rendrait False —
+            # la porte se lèverait TOUTE SEULE sur un brouillon posé par l'intégration
+            # qui rédige, sur un dossier client. Ici, l'échec va du côté sûr.
+            citation_attendue=(_flag(data["citation_attendue"])
+                               if data.get("citation_attendue") is not None
+                               else None),
         )
         # 200 et non 409, comme le doublon d'envoi juste au-dessus : le client
         # lit l'issue dans la charge utile, et `ApiClient` ne remonte d'un
@@ -828,6 +943,111 @@ class BfEmailMobileApi(http.Controller):
         if not record or record.user_id.id != request.env.uid:
             return _json({"error": "not_found"}, 404)
         return _json(record.mobile_spawn(data["kind"]))
+
+    # ── Extension Thunderbird ────────────────────────────────
+    @http.route(f"{BASE}/extension/open", type="http", auth="public",
+                methods=["GET"], csrf=False, save_session=False)
+    @_authed
+    def extension_open(self, device, **kw):
+        """Le courriel affiché dans un client de courriel, et son contexte.
+
+        🔴 Un seul aller-retour pour trois blocs (le courriel, le contexte
+        client, les réglages du moment). Trois routes feraient trois allers-
+        retours EN SÉRIE, et depuis un poste lointain chacun peut coûter plus de
+        200 ms : le panneau s'ouvrirait en deux tiers de seconde de
+        latence pure, pour rien.
+
+        L'en-tête ``Message-ID`` est la clé, jamais l'UID IMAP : l'archivage le
+        laisse périmé derrière lui, et le miroir du module le sait déjà.
+
+        ⛔ Ne marque PAS le courriel lu, contrairement à ``/message`` : le
+        panneau s'ouvre sur un clic, pas sur l'affichage, et c'est le drapeau
+        ``Seen`` d'IMAP qui porte déjà la lecture. Marquer ici rendrait « lu » un
+        courriel dont on a seulement regardé le dossier client.
+        """
+        # `str()` et non la valeur brute : un paramètre répété ou mal formé
+        # ferait lever `AttributeError` ici, que le décorateur ne traduit pas en
+        # 400 mais en 500, c'est-à-dire « réessaie indéfiniment ».
+        header = str(kw.get("header") or "")
+        # ⚠️ « <> » n'est pas un en-tête : sans ce contrôle il tombait en 404,
+        # et le client aurait lu « ce courriel n'est pas dans Symbifox » sur ce
+        # qui est une requête fautive.
+        if not "".join(header.split()).strip("<>"):
+            return _json({"error": "missing_header"}, 400)
+        data = request.env["bf.email"].extension_open(header)
+        if not data:
+            # 404 et non 200 avec un corps vide : le panneau doit pouvoir dire
+            # « ce courriel n'est pas dans Symbifox » sans deviner.
+            return _json({"error": "not_found"}, 404)
+        return _json(data)
+
+    @http.route(f"{BASE}/extension/identities", type="http", auth="public",
+                methods=["GET"], csrf=False, save_session=False)
+    @_authed
+    def extension_identities(self, device, **kw):
+        """Les identités d'envoi et leur signature, pour le poste.
+
+        Route séparée de ``/extension/open`` à dessein : celle-là s'appelle à
+        CHAQUE courriel affiché, celle-ci une fois au démarrage du client. Les
+        coller ensemble ferait voyager huit kilo-octets de signature à chaque
+        ouverture du panneau, pour une donnée qui ne change pas de la journée.
+        """
+        return _json(request.env["bf.email"].extension_identities())
+
+    @http.route(f"{BASE}/extension/resolve", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authed
+    def extension_resolve(self, device, **kw):
+        """Apparier plusieurs Message-ID d'un coup, sans leur contexte client.
+
+        POST et non GET bien que ce soit une lecture : elle prend une LISTE,
+        comme /handle et /snooze, et une liste en paramètres d'URL se tronque
+        sans le dire. Un Message-ID fait souvent cent caractères ; vingt d'un
+        coup dépassent ce que des serveurs mandataires acceptent en ligne de
+        requête.
+
+        ⛔ Ne marque rien comme lu, ne change rien.
+        """
+        data = _body(**kw)
+        entetes = data.get("headers")
+        if not isinstance(entetes, list):
+            return _json({"error": "missing_headers"}, 400)
+        return _json(request.env["bf.email"].extension_resolve(entetes))
+
+    # ── Pourriel ─────────────────────────────────────────────
+    @http.route(f"{BASE}/report/options", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authed
+    def report_options(self, device, **kw):
+        """Ce que la feuille « Signaler » peut offrir sur ces courriels.
+
+        POST et non GET bien qu'elle ne change rien : elle prend une LISTE
+        d'identifiants, comme /handle et /snooze, et une liste en paramètres
+        d'URL se tronque sans le dire.
+        """
+        data = _body(**kw)
+        return _json(request.env["bf.email"].mobile_report_options(
+            data.get("email_ids")))
+
+    @http.route(f"{BASE}/report", type="http", auth="public", methods=["POST"],
+                csrf=False, save_session=False)
+    @_authed
+    def report(self, device, **kw):
+        data = _body(**kw)
+        return _json(request.env["bf.email"].mobile_report(
+            data.get("email_ids"),
+            kind=data.get("kind") or "spam",
+            # 🔴 `_flag`, pas `bool` : `_body` retombe volontairement sur `kw`
+            # quand le Content-Type est mauvais, et toute valeur est alors une
+            # CHAÎNE. `block_sender=false` en form-encodé donnait `True` et
+            # créait une règle de boîte que la personne avait décochée — et
+            # qu'`action_unhandle` ne retire pas.
+            block_sender=_flag(data.get("block_sender")),
+            authority_ids=data.get("authority_ids") or [],
+            # Comme /mark_read, /handle et /snooze : les pastilles rendues
+            # comptent ce que la vue de l'appli AFFICHE.
+            grouped=_grouped(data),
+        ))
 
     # ── Push ──────────────────────────────────────────────────────────
     @http.route(f"{BASE}/register_push", type="http", auth="public",

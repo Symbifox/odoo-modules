@@ -67,6 +67,7 @@ class TestMobileBlastRadius(MobileApiCase):
 
     def test_the_quota_window_rolls_over(self):
         from datetime import timedelta
+
         from odoo import fields
         record = self.as_owner().browse(self.inbound.id)
         self.device.sudo().write({

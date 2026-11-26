@@ -67,3 +67,13 @@ from . import test_avis
 from . import test_filigrane_sans_signal
 from . import test_synchroniser_miroir
 from . import test_entetes_bruts
+from . import test_mobile_pourriel
+from . import test_depot_avis_imap
+from . import test_porte_fil_cite
+from . import test_case_telephone
+from . import test_transitoires_proprietaire
+from . import test_autoconfig_servie
+from . import test_extension
+from . import test_fiche_telephone
+from . import test_imip_tentative
+from . import test_libelles_et_traduction

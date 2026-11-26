@@ -59,7 +59,7 @@ class BfEmailMobileSend(models.Model):
             _logger.info("bf.email mobile: envoi %s déjà effectué, rejoué en vain.",
                          str(token)[:12])
             return False
-        except Exception:  # noqa: BLE001
+        except Exception:
             # Never let bookkeeping block a legitimate send.
             _logger.warning("bf.email mobile: réservation du jeton d'envoi "
                             "impossible, envoi autorisé.", exc_info=True)

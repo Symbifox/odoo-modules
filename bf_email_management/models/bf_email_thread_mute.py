@@ -19,7 +19,7 @@ est justement en copie.
 import logging
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+
 from .owner_guard import garder_proprietaire
 
 _logger = logging.getLogger(__name__)
