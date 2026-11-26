@@ -82,7 +82,9 @@ relationship: a project that ends well ends quietly too.
 
 A kanban view at **Contacts → Personas → Dashboard** groups personas by
 relationship state, with the reason, the unanswered count and the length of our
-messages.
+messages. The reason is rebuilt in the reader's language from the same signals the
+daily measure uses (the stored `health_reason` is written once, in the company's
+language, for notifications and bridge modules).
 
 ### AI context
 
@@ -116,7 +118,13 @@ who holds the persona role.
 
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The name of a CC rule shows its type in the reader's language (one cached name per language).
 
+Since 18.0.3.3.2 the composer banner (register, greeting, sign-off, wrong-register warning, copy rules, "… and N more", and the colon after each name) and the reason on the dashboard cards also follow the reader's language. The French reads exactly as before.
+
 ## Changelog
+
+### 18.0.3.3.2
+- **Banner and dashboard in the reader's language.** The composer banner still wrote some sentences in French for every user; they now go through the translation, and the French reads exactly as before. The dashboard cards, the form and the list show a new non-stored field, *Reason* (`health_reason_display`), rebuilt in the reader's language; a bridge whose signals fail falls back to the stored reason instead of breaking the board.
+- **Gen no longer hears the unanswered emails twice** when the reader is set to English: the duplicate was told apart by French words, now by its condition.
 
 ### 18.0.3.3.1
 - **Source language.** Labels and messages are written in English; the French ships in `i18n/fr_CA.po`. A CC rule's name shows its type in the reader's language. See Languages.

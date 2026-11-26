@@ -27,8 +27,8 @@
                         </h1>
                     </div>
                     <div class="alert alert-warning py-2" role="status"
-                         invisible="not health_reason or relationship_health not in ('watch', 'degraded')">
-                        <field name="health_reason" nolabel="1"/>
+                         invisible="not health_reason_display or relationship_health not in ('watch', 'degraded')">
+                        <field name="health_reason_display" nolabel="1"/>
                     </div>
                     <div class="alert alert-info py-2" role="status" invisible="not suggested_rule_count">
                         <field name="suggested_rule_count" invisible="1"/>
@@ -142,7 +142,7 @@
                 <field name="partner_id"/>
                 <field name="addressing_style"/>
                 <field name="relationship_health"/>
-                <field name="health_reason" optional="show"/>
+                <field name="health_reason_display" optional="show"/>
                 <field name="last_interaction_date" optional="show"/>
                 <field name="unanswered_count" optional="show"/>
                 <field name="our_words_median" optional="hide"/>

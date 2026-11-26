@@ -4,3 +4,4 @@ from . import test_measure
 from . import test_couleur_libre
 from . import test_vie_privee
 from . import test_deux_langues
+from . import test_bandeau_et_motif_langue

@@ -319,6 +319,14 @@ class ContactPersona(models.Model):
     health_reason = fields.Char(
         string="Why", copy=False, readonly=True,
     )
+    # `health_reason` is written by the daily measure, in ONE language
+    # (the company's): an English reader saw it in French on the board cards. The
+    # screens read this one, rebuilt in the reader's language from the same signals.
+    # Its own label: two fields labelled "Why" would show twice in custom
+    # filters and groupings, and Odoo warns about it at each registry load.
+    health_reason_display = fields.Char(
+        string="Reason", compute="_compute_health_reason_display",
+    )
     facts_refreshed_at = fields.Datetime(copy=False, readonly=True, string="Measured "
                                                                            "on")
     # Kept for existing data and reports; no longer written since 18.0.3.0.0.
@@ -415,6 +423,35 @@ class ContactPersona(models.Model):
                     dates.append(move.date)
         return min(dates) if dates else False
 
+    @api.depends("relationship_health", "unanswered_count", "unanswered_since")
+    @api.depends_context("lang")
+    def _compute_health_reason_display(self):
+        for rec in self:
+            if rec.relationship_health not in ("watch", "degraded"):
+                rec.health_reason_display = False
+                continue
+            # Bridge modules add their signals here: one that fails must not take
+            # the board down. The composer banner is guarded the same way.
+            try:
+                rec.health_reason_display = rec._health_reason_text(rec._health_signals())
+            except Exception as e:  # noqa: BLE001
+                _logger.warning("persona %s: health reason not rebuilt: %s", rec.id, e)
+                rec.health_reason_display = rec.health_reason
+
+    def _health_reason_text(self, signals):
+        """The reason given for a relationship's level, most severe signals first."""
+        ordered = [r for level, r in signals if level == "degraded"]
+        ordered += [r for level, r in signals if level != "degraded"]
+        return _("; ").join(ordered) or False
+
+    def _unanswered_is_signal(self):
+        """True when the unanswered messages are already one of the health signals."""
+        self.ensure_one()
+        return bool(
+            self.unanswered_count >= 2 and self.unanswered_since
+            and (fields.Date.context_today(self) - self.unanswered_since).days >= 14
+        )
+
     def _compute_claude_context_summary(self):
         for rec in self:
             rec.claude_context_summary = rec._build_claude_summary()
@@ -428,16 +465,14 @@ class ContactPersona(models.Model):
         """
         self.ensure_one()
         signals = []
-        if self.unanswered_count >= 2 and self.unanswered_since:
-            age = (fields.Date.context_today(self) - self.unanswered_since).days
-            if age >= 14:
-                signals.append((
-                    "watch",
-                    _("%(count)s emails unanswered since %(date)s") % {
-                        "count": self.unanswered_count,
-                        "date": self.unanswered_since.isoformat(),
-                    },
-                ))
+        if self._unanswered_is_signal():
+            signals.append((
+                "watch",
+                _("%(count)s emails unanswered since %(date)s") % {
+                    "count": self.unanswered_count,
+                    "date": self.unanswered_since.isoformat(),
+                },
+            ))
         return signals
 
     def _hint_facts(self):
@@ -495,7 +530,9 @@ class ContactPersona(models.Model):
                 f"Nos derniers courriels à ce contact font {self.our_words_median} mots "
                 f"de médiane : ne pas dépasser cette longueur."
             )
-        if self.unanswered_count and not any("sans réponse" in r for _l, r in signals):
+        # The signal is told apart by its condition, not by its words: in English
+        # the words were never "sans réponse" and Gen was told it twice.
+        if self.unanswered_count and not self._unanswered_is_signal():
             lines.append(
                 f"{self.unanswered_count} courriel(s) envoyé(s) sans réponse depuis le "
                 f"{self.unanswered_since}."
@@ -1137,9 +1174,9 @@ class ContactPersona(models.Model):
                 and persona.last_interaction_date >= today - timedelta(days=90)
             )
             if degraded:
-                health, reason = "degraded", " ; ".join(degraded + watch)
+                health, reason = "degraded", persona._health_reason_text(signals)
             elif watch:
-                health, reason = "watch", " ; ".join(watch)
+                health, reason = "watch", persona._health_reason_text(signals)
             elif recently_active:
                 health, reason = "healthy", False
             else:

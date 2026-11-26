@@ -152,11 +152,13 @@ class MailComposeMessage(models.TransientModel):
         bits = []
         addressing = persona.addressing_style or "auto"
         if addressing != "auto":
-            bits.append(Markup("%s") % ("tu" if addressing == "tu" else "vous"))
+            # The register is named the way the reader would: "tu" or "vous" in
+            # French, a word an English reader understands otherwise.
+            bits.append(Markup("%s") % (_("informal (tu)") if addressing == "tu" else _("formal (vous)")))
         if persona.preferred_salutation:
-            bits.append(Markup("« %s »") % persona.preferred_salutation)
+            bits.append(Markup("%s") % (_("“%s”") % persona.preferred_salutation))
         if persona.closing_formula:
-            bits.append(Markup("clôture « %s »") % persona.closing_formula)
+            bits.append(Markup("%s") % (_("sign-off “%s”") % persona.closing_formula))
         for level, fact in persona._hint_facts():
             if level == "info":
                 bits.append(Markup("%s") % fact)
@@ -168,13 +170,16 @@ class MailComposeMessage(models.TransientModel):
             tu_ct = len(TU_RX.findall(plain))
             vous_ct = len(VOUS_RX.findall(plain))
             if addressing == "tu" and vous_ct > tu_ct + 1:
-                bits.append(Markup('<b style="%s">⚠ Le brouillon utilise « vous » alors que ce contact préfère le tutoiement.</b>') % AMBER)
+                bits.append(Markup('<b style="%s">⚠ %s</b>') % (
+                    AMBER, _("The draft says “vous” but this contact prefers “tu”.")))
             elif addressing == "vous" and tu_ct > vous_ct + 1:
-                bits.append(Markup('<b style="%s">⚠ Le brouillon utilise « tu » alors que ce contact préfère le vouvoiement.</b>') % AMBER)
+                bits.append(Markup('<b style="%s">⚠ %s</b>') % (
+                    AMBER, _("The draft says “tu” but this contact prefers “vous”.")))
         head = Markup("<b>%s</b>") % persona.partner_id.name
         if not bits:
             return head
-        return head + Markup(" : ") + Markup(" · ").join(escape(b) for b in bits)
+        # The separator is translated: French puts a space before the colon.
+        return head + escape(_(": ")) + Markup(" · ").join(escape(b) for b in bits)
 
     def _render_persona_hint(self, pairs):
         to, _cc, _bcc = self._persona_recipients()
@@ -185,7 +190,7 @@ class MailComposeMessage(models.TransientModel):
             for recipient, persona in pairs[:MAX_PERSONA_LINES]
         ]
         if len(pairs) > MAX_PERSONA_LINES:
-            lines.append(Markup("… et %s autre(s)") % (len(pairs) - MAX_PERSONA_LINES))
+            lines.append(escape(_("… and %s more") % (len(pairs) - MAX_PERSONA_LINES)))
 
         missing, usual, forbidden = self._persona_rule_findings(personas.sudo())
 
@@ -193,11 +198,13 @@ class MailComposeMessage(models.TransientModel):
             return ", ".join(sorted({p.name for p, _persona in findings}))
 
         if missing:
-            lines.append(Markup('<b style="%s">Copie obligatoire manquante :</b> %s') % (RED, names(missing)))
+            lines.append(Markup('<b style="%s">%s</b> %s') % (
+                RED, _("Mandatory copy missing:"), names(missing)))
         if forbidden:
-            lines.append(Markup('<b style="%s">Ne pas mettre en copie :</b> %s') % (RED, names(forbidden)))
+            lines.append(Markup('<b style="%s">%s</b> %s') % (
+                RED, _("Do not copy:"), names(forbidden)))
         if usual:
-            lines.append(Markup("<b>Habituellement inclus :</b> %s") % names(usual))
+            lines.append(Markup("<b>%s</b> %s") % (_("Usually included:"), names(usual)))
         return Markup("<div>") + Markup("<br/>").join(lines) + Markup("</div>")
 
     # ------------------------------------------------------------------

@@ -1573,3 +1573,82 @@ msgstr "clôture ajoutée"
 #: model_terms:ir.ui.view,arch_db:bf_persona.view_contact_persona_kanban
 msgid "words"
 msgstr "mots"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "informal (tu)"
+msgstr "tu"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "formal (vous)"
+msgstr "vous"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "“%s”"
+msgstr "« %s »"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "sign-off “%s”"
+msgstr "clôture « %s »"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "The draft says “vous” but this contact prefers “tu”."
+msgstr ""
+"Le brouillon utilise « vous » alors que ce contact préfère le tutoiement."
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "The draft says “tu” but this contact prefers “vous”."
+msgstr ""
+"Le brouillon utilise « tu » alors que ce contact préfère le vouvoiement."
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid ": "
+msgstr " : "
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "… and %s more"
+msgstr "… et %s autre(s)"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "Mandatory copy missing:"
+msgstr "Copie obligatoire manquante :"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "Do not copy:"
+msgstr "Ne pas mettre en copie :"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/mail_compose_message.py:0
+msgid "Usually included:"
+msgstr "Habituellement inclus :"
+
+#. module: bf_persona
+#. odoo-python
+#: code:addons/bf_persona/models/contact_persona.py:0
+msgid "; "
+msgstr " ; "
+
+#. module: bf_persona
+#: model:ir.model.fields,field_description:bf_persona.field_contact_persona__health_reason_display
+msgid "Reason"
+msgstr "Motif"

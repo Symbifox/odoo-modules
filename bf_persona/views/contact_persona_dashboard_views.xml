@@ -16,7 +16,7 @@
                 <field name="payer_quality" groups="bf_persona.group_persona_manager"/>
                 <field name="avg_payment_delay_days" groups="bf_persona.group_persona_manager"/>
                 <field name="last_interaction_date"/>
-                <field name="health_reason"/>
+                <field name="health_reason_display"/>
                 <field name="unanswered_count"/>
                 <field name="our_words_median"/>
                 <templates>
@@ -45,8 +45,8 @@
                         <div class="text-muted small mt-1" t-if="record.last_interaction_date.raw_value">
                             Last exchange: <field name="last_interaction_date" widget="date"/>
                         </div>
-                        <div t-if="record.health_reason.raw_value" class="small mt-1 text-warning-emphasis">
-                            <field name="health_reason"/>
+                        <div t-if="record.health_reason_display.raw_value" class="small mt-1 text-warning-emphasis">
+                            <field name="health_reason_display"/>
                         </div>
                         <div t-if="record.our_words_median.raw_value >= 120" class="small mt-1">
                             <span class="badge text-bg-warning">
