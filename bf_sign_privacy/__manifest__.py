@@ -2,7 +2,8 @@
     "name": "Symbifox — Signature des consentements (Loi 25)",
     "summary": "Faire signer un consentement Loi 25 avec la signature électronique "
                "maison, plutôt que par DocuSeal ou LibreSign",
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1 : boutons de signature réservés au groupe Signature.
+    "version": "18.0.1.1.1",
     "category": "Services/Privacy",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

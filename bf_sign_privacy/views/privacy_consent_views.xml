@@ -14,6 +14,7 @@
             -->
             <button name="action_send_libresign" position="after">
                 <button name="action_send_bf_sign"
+                        groups="bf_sign.group_sign_user"
                         string="Signature maison"
                         type="object"
                         class="btn-primary"
@@ -22,7 +23,10 @@
             </button>
 
             <div name="button_box" position="inside">
+                <!-- ⚠️ `groups=` : le compteur lit `bf.sign.request`, réservé au groupe
+                     Signature. Sans lui, le consentement ne s'enregistre plus. -->
                 <button name="action_view_sign_requests"
+                        groups="bf_sign.group_sign_user"
                         type="object"
                         class="oe_stat_button"
                         icon="fa-pencil-square-o"
