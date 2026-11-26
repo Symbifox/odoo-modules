@@ -9,7 +9,9 @@
     #   recevait sortent (retirés s'ils sont intacts, détachés sinon), un générateur
     #   dépose les événements d'un exercice par société, et le calendrier couvre la
     #   société par actions, l'OBNL, la coopérative, le fiscal et la SST.
-    'version': '18.0.2.0.0',
+    # 18.0.2.0.1 : le générateur propose d'abord les obligations de la forme choisie,
+    #   et sa liste montre le nom entier de chaque obligation (fenêtre plus large).
+    'version': '18.0.2.0.1',
     'category': 'Services/Project',
     'summary': 'Résolutions, registres corporatifs et calendrier de conformité',
     'description': """

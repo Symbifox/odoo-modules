@@ -95,7 +95,10 @@ class CorporateComplianceGenerate(models.TransientModel):
         portees = ['corporate'] + (['tax'] if self.include_tax else []) \
             + (['ohs'] if self.include_ohs else [])
         domaine.append(('scope', 'in', portees))
-        return self.env['corporate.compliance.template'].search(domaine)
+        # Dans l'ordre des séquences : les obligations propres à la forme choisie
+        # (assemblée, états financiers, vérificateur) d'abord, puis celles de toute
+        # forme. L'ordre du modèle trie par forme, et « any » passait devant.
+        return self.env['corporate.compliance.template'].search(domaine, order='sequence, id')
 
     def _domaine_existant(self, tpl):
         """L'obligation existe déjà pour cette société et cet exercice : même fin d'exercice,

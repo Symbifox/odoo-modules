@@ -115,12 +115,12 @@
                           decoration-muted="already_generated">
                         <field name="sequence" column_invisible="1"/>
                         <field name="selected" readonly="already_generated" force_save="1" widget="boolean_toggle"/>
-                        <field name="template_id" readonly="1" force_save="1"/>
-                        <field name="scope" optional="show"/>
-                        <field name="due_date" readonly="already_generated" force_save="1"/>
+                        <field name="template_id" readonly="1" force_save="1" width="320px"/>
+                        <field name="scope" optional="show" width="150px"/>
+                        <field name="due_date" readonly="already_generated" force_save="1" width="110px"/>
                         <field name="legal_basis" optional="show"/>
                         <field name="condition" optional="show"/>
-                        <field name="already_generated" force_save="1"/>
+                        <field name="already_generated" force_save="1" column_invisible="True"/>
                     </list>
                 </field>
                 <footer>
@@ -137,6 +137,7 @@
         <field name="res_model">corporate.compliance.generate</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
+        <field name="context">{'dialog_size': 'extra-large'}</field>
     </record>
 
     <!-- Le profil corporatif, sur la fiche de la société -->

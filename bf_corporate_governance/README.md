@@ -322,6 +322,10 @@ the record rules.
 
 ## Changelog
 
+- **18.0.2.0.1**: the generator offers the obligations of the chosen legal form
+  first, then those of every form, and its list shows each obligation's full
+  name (wider window, technical column hidden).
+
 - **18.0.2.0.0**: templates instead of dated events. Until 18.0.1.2.0 the module
   created five compliance events dated 2026-06-30 — the publisher's own — in
   every database it was installed in, where they showed as overdue obligations

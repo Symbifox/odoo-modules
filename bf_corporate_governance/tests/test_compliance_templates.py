@@ -213,6 +213,13 @@ class TestGenerator(_Base):
             f.legal_form = 'qc_nonprofit'
             self.assertEqual(set(self._lignes(f)), {self.obnl.id, self.t4.id})
 
+    def test_the_legal_form_comes_before_any_form(self):
+        """Les obligations de la forme choisie d'abord : l'ordre du modèle (par forme)
+        mettait « Toute forme » devant, et l'AGA tombait au bas de la liste."""
+        self.aga.sequence, self.t4.sequence, self.sst.sequence = 100, 400, 410
+        ordre = [v['template_id'] for v in self._assistant()._line_values()]
+        self.assertEqual(ordre[0], self.aga.id)
+
     def test_generate_once_then_never_twice(self):
         self._assistant().action_generate()
         evenements = self._evenements()
