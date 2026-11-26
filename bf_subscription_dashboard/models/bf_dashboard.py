@@ -15,6 +15,14 @@ class BfDashboard(models.AbstractModel):
     @api.model
     def get_dashboard_data(self):
         data = super().get_dashboard_data()
+        # le registre ne s'ouvre qu'à qui on l'attribue. Sans lui, pas
+        # de carte, et pas d'erreur d'accès journalisée à chaque ouverture du
+        # tableau de bord (le try ci-dessous l'avalerait, mais l'écrirait).
+        # ⚠️ False, pas None : None est l'ERREUR de calcul, que la carte montre
+        # (« Data not available ») ; False retire la carte entière.
+        if not self.env.user.has_group('bf_subscription.group_subscription_user'):
+            data['subscription'] = False
+            return data
         try:
             data['subscription'] = self._get_subscription_summary()
         except Exception:

@@ -26,6 +26,11 @@ and count this one twice. The module refuses that link and never suggests it.
 The subscription must belong to the expense's company: the link is refused
 otherwise, including through the API.
 
+The **Subscription** field of an expense shows, and can be written, only for
+holders of the subscription register (assigned since `bf_subscription`
+18.0.1.10.0): an employee cannot link an expense to a subscription they cannot
+read, which would count it in that subscription's cost.
+
 The totals are read with full rights: someone who manages subscriptions but
 cannot see other people's expenses still reads the right amount.
 
@@ -51,10 +56,15 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-25, this version converts automatically to
+- **Change Date**: on 2030-11-26, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.1.0.2
+
+- The Subscription field of an expense is reserved to holders of the
+  subscription register, now that `bf_subscription` 18.0.1.10.0 assigns it.
 
 ### 18.0.1.0.1
 

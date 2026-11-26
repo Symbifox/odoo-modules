@@ -7,7 +7,10 @@
         <field name="inherit_id" ref="hosting_management.hosting_domain_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
+                <!-- 18.0.1.0.1 : le registre des abonnements s'attribue (bf_subscription
+                     18.0.1.10.0). Sans lui, ces boutons mèneraient à une erreur d'accès. -->
                 <button name="action_view_subscription" type="object"
+                        groups="bf_subscription.group_subscription_user"
                         class="oe_stat_button" icon="fa-refresh"
                         invisible="not subscription_id">
                     <div class="o_stat_info">
@@ -17,6 +20,7 @@
             </xpath>
             <xpath expr="//header" position="inside">
                 <button name="action_create_subscription" type="object"
+                        groups="bf_subscription.group_subscription_user"
                         string="Créer un abonnement"
                         invisible="subscription_id"/>
             </xpath>

@@ -19,6 +19,10 @@ class DailyDigestConfig(models.Model):
         self.ensure_one()
         if not self.include_subscription_renewals:
             return ""
+        # la liste se relève en sudo ; elle ne part qu'à qui peut lire
+        # le registre, sinon le résumé la livrerait à tout employé abonné.
+        if not user.has_group("bf_subscription.group_subscription_user"):
+            return ""
         Sub = self.env['subscription.subscription'].sudo()
         today = fields.Date.context_today(self)
         horizon = today + relativedelta(days=self.subscription_renewal_days or 30)

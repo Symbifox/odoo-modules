@@ -28,6 +28,11 @@ class BfDashboard(models.AbstractModel):
         if not res:
             return res
         res["revenue_at_risk"] = 0.0
+        # la somme se lit dans le registre des abonnements, qui ne
+        # s'ouvre qu'à qui on l'attribue. Sans lui, l'indicateur reste à zéro
+        # (la tuile ne le montre pas) au lieu d'une erreur d'accès journalisée.
+        if not self.env.user.has_group("bf_subscription.group_subscription_user"):
+            return res
         try:
             res["revenue_at_risk"] = self._get_cx_revenue_at_risk()
         except Exception:

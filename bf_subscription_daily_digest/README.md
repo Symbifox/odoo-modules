@@ -13,6 +13,11 @@ subscriptions, cost per managed client, periodic send), while this bridge just
 slips a reminder of imminent renewals into the daily digest email you already
 receive.
 
+The section goes only to digest recipients who hold the subscription register
+(assigned since `bf_subscription` 18.0.1.10.0, v18.0.1.1.1): the renewals are
+listed with elevated rights, so without this check every subscribed employee
+would receive them.
+
 ## Dependencies
 
 `bf_subscription`, `daily_todo_digest`.
@@ -30,5 +35,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-11-26, this version converts automatically to
   **LGPL-3.0-or-later**.

@@ -5,7 +5,9 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1: le revenu à risque ne se calcule que pour qui a le
+    #   registre des abonnements (bf_subscription 18.0.1.10.0).
+    "version": "18.0.1.1.1",
     "category": "Marketing/Customer Experience",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

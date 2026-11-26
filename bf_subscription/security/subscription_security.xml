@@ -11,10 +11,13 @@
             <field name="sequence">90</field>
         </record>
 
-        <!-- Universal user group: auto-granted to every internal employee.
-             No category_id → stays hidden; access is implicit for all staff. -->
+        <!-- 18.0.1.10.0 : le groupe Utilisateur se DONNE, il ne vient
+             plus avec le statut d'employé. Le registre nomme des fournisseurs, des
+             montants et des cycles : il ne s'ouvre qu'à qui on l'attribue dans les
+             droits d'accès (catégorie Abonnements : Utilisateur ou Gestionnaire). -->
         <record id="group_subscription_user" model="res.groups">
-            <field name="name">Subscriptions / User</field>
+            <field name="name">User</field>
+            <field name="category_id" ref="module_category_bf_subscription"/>
         </record>
 
         <!-- Manager: extra rights (unlink + cross-company). Selectable in Access Rights. -->
@@ -24,10 +27,9 @@
             <field name="implied_ids" eval="[(4, ref('bf_subscription.group_subscription_user')), (4, ref('account.group_account_invoice'))]"/>
         </record>
 
-        <!-- Grant the user-level group to all internal users so the app is visible to staff. -->
-        <record id="base.group_user" model="res.groups">
-            <field name="implied_ids" eval="[(4, ref('bf_subscription.group_subscription_user'))]"/>
-        </record>
+        <!-- ⛔ Plus d'implication par base.group_user : tout employé
+             lisait, créait et modifiait le registre sans qu'aucun droit ne lui soit
+             accordé. La migration 18.0.1.10.0 retire le lien des bases existantes. -->
 
         <!-- Grant the manager level to Settings administrators (config + reports + digests). -->
         <record id="base.group_system" model="res.groups">

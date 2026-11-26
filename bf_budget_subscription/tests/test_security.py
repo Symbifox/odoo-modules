@@ -14,46 +14,38 @@ class TestSubscriptionBudgetSecurity(BfBudgetSubscriptionCommon):
     resservi tel quel au compte sans droits et l'essai passerait sans rien
     prouver.
 
-    🔴 MESURÉ EN BASE, ET C'EST CE QUI DONNE SA FORME À CET ESSAI :
-    `base.group_user` IMPLIQUE `bf_subscription.group_subscription_user`
-    (`res_groups_implied_rel`). Sur une base de série, AUCUN usager interne
-    n'est donc refusé par ces gardes : l'écran d'une ligne budgétaire
-    n'explose pour personne aujourd'hui, et le garde ne retire rien à
-    personne. Le rôle refusé se construit À LA MAIN — un porteur du seul
-    `bf_budget.group_bf_budget_user`, sans type d'usager (la contrainte du
-    cœur `_check_one_user_type` n'en interdit qu'un DEUXIÈME, pas l'absence).
-    Ce rôle-là existe pour une raison : le jour où `bf_subscription` resserre
-    l'accès à son registre — il nomme des fournisseurs et des montants — ces
-    deux gardes sont déjà en place, et c'est ce que cet essai fige.
+    🔴 Depuis bf_subscription 18.0.1.10.0, `base.group_user`
+    N'IMPLIQUE PLUS le registre. Le rôle refusé n'a donc plus à se construire
+    à la main : c'est l'employé ordinaire qui lit les budgets, sans qu'on lui
+    ait attribué les abonnements. Le témoin positif, lui, reçoit le registre
+    explicitement, comme dans les droits d'accès.
     """
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Le témoin POSITIF : le lecteur de budget ORDINAIRE, qui porte le
-        # registre par l'implication du cœur. Rien ne doit lui être retiré.
+        # Le témoin POSITIF : un lecteur de budget à qui l'on a attribué le
+        # registre. Rien ne doit lui être retiré.
         cls.reader = new_test_user(
             cls.env,
             login="budget_subscription_reader",
-            groups="base.group_user,bf_budget.group_bf_budget_user",
+            groups="base.group_user,bf_budget.group_bf_budget_user,"
+                   "bf_subscription.group_subscription_user",
             company_id=cls.company.id,
             company_ids=[Command.set([cls.company.id])],
         )
-        assert cls.reader._has_group("bf_subscription.group_subscription_user"), (
-            "l'implication base.group_user → group_subscription_user a changé : "
-            "relire la docstring de cette classe avant de toucher aux essais"
-        )
-        # Le rôle que les gardes refusent : budget, et rien d'autre.
+        # Le rôle que les gardes refusent : un employé qui lit les budgets, et
+        # à qui personne n'a attribué le registre.
         cls.no_register = new_test_user(
             cls.env,
             login="budget_sans_registre",
-            groups="bf_budget.group_bf_budget_user",
+            groups="base.group_user,bf_budget.group_bf_budget_user",
             company_id=cls.company.id,
             company_ids=[Command.set([cls.company.id])],
         )
         assert not cls.no_register._has_group(
             "bf_subscription.group_subscription_user"
-        )
+        ), "base.group_user implique de nouveau le registre : relire bf_subscription 18.0.1.10.0"
 
     def _budgeted_line(self):
         """Une ligne nue sur un poste qui porte un abonnement mensuel."""
@@ -89,18 +81,40 @@ class TestSubscriptionBudgetSecurity(BfBudgetSubscriptionCommon):
         aurait l'air d'un poste sans engagement. C'est aussi ce qui prouve que
         l'essai suivant mesure un garde de CHAMP et non un refus de modèle :
         cette ligne-là, ce rôle la lit.
-
-        ⚠️ Pas les MONETARY ici, et ce n'est pas un manque du module : l'ACL
-        de lecture de `res.currency` vient de `base.group_user`, que ce rôle
-        construit à la main n'a pas, et l'arrondi d'un Monetary la demande.
-        La stabilité des MONTANTS par rôle est éprouvée sur le lecteur de
-        budget ordinaire (essai ci-dessus) et, pour le réalisé, au socle.
         """
         line = self._budgeted_line()
         self.env.invalidate_all()
         as_role = line.with_user(self.no_register)
         self.assertEqual(as_role.subscription_count, 1)
         self.assertEqual(as_role.position_subscription_count, 1)
+
+    def test_the_amounts_stay_the_same_without_the_register(self):
+        """🔴 les MONTANTS aussi sont stables par rôle.
+
+        Le calcul n'est pas stocké, il tourne sous le compte de qui regarde.
+        Lire le calendrier d'un abonnement sans le registre levait une erreur
+        d'accès : la ligne d'un budget ne s'ouvrait plus pour l'employé
+        ordinaire. Le témoin le lit en premier, le rôle refusé ensuite, cache
+        vidé entre les deux (sinon le second lirait le chiffre du premier).
+        """
+        line = self._budgeted_line()
+        self.env.invalidate_all()
+        attendu = line.with_user(self.reader).subscription_period_total
+        self.assertEqual(attendu, 1200.0)
+        self.env.invalidate_all()
+        as_role = line.with_user(self.no_register)
+        # 🔴 Le relevé des ids filtre les abonnements en sudo et PRÉCHARGE leurs
+        # colonnes : le calcul des sommes les lirait du cache, sans contrôle, même
+        # sans son propre sudo, et l'essai passerait sans rien mesurer. On relève
+        # les ids, on vide le cache du SEUL
+        # registre, puis on calcule les sommes : elles doivent relire le registre.
+        self.assertEqual(as_role.subscription_count, 1)
+        self.env["subscription.subscription"].invalidate_model()
+        as_role.invalidate_recordset([
+            "subscription_due_to_date", "subscription_upcoming", "subscription_period_total"])
+        self.assertEqual(as_role.subscription_period_total, attendu)
+        self.assertEqual(as_role.subscription_upcoming,
+                         line.with_user(self.reader).subscription_upcoming)
 
     def test_the_register_stays_behind_subscription_rights(self):
         """Le bouton caché ne protège que l'écran : la méthode, appelable par

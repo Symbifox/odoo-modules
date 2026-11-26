@@ -150,10 +150,18 @@ class BfBudgetLine(models.Model):
         for line in self:
             due = total = 0.0
             budget = line.budget_id
-            if line.subscription_ids and budget.date_start and budget.date_end:
+            # 🔴 le CHAMP se lit en sudo, pas seulement la boucle. Lire
+            # `line.subscription_ids` sous le compte de qui regarde relit `active`
+            # de chaque abonnement (filtre des archivés d'un x2many), et lève
+            # sans le registre — mesuré, cache du registre vidé.
+            subscriptions = line.sudo().subscription_ids
+            if subscriptions and budget.date_start and budget.date_end:
                 company = budget.company_id
                 currency = line.currency_id
-                for sub in line.subscription_ids:
+                # Le calcul n'est pas stocké : il tourne sous le compte de qui
+                # regarde. La somme reste libre, le détail reste fermé (`groups`
+                # au champ, plus haut).
+                for sub in subscriptions:
                     if today >= budget.date_start:
                         due += sub._budget_amount_between(
                             budget.date_start, min(today, budget.date_end), currency, company

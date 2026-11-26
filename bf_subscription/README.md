@@ -16,6 +16,49 @@ infrastructure, certificates, domain names, recurring professional services.
 - Smart buttons on the partner record (managed / billed subscriptions).
 - Subscription tags take a free color (`bf_color`), shown on the
   subscription's tags in the form and the kanban.
+- Billing cycles: every 4 weeks (13 renewals a year, for prepaid plans renewed
+  every 28 days), monthly, quarterly, half-yearly, yearly, every 2 or 3 years,
+  one-off or on demand.
+
+## Who sees the register (18.0.1.10.0)
+
+The register names vendors, amounts and billing cycles, so it opens only to the
+people it is assigned to. In a user's access rights, under **Subscriptions**:
+
+- **User**: reads, creates and edits the subscriptions of their companies;
+- **Manager**: also deletes, configures, sends the recaps and sees every
+  company. Settings administrators are managers.
+
+Before this version every internal user was a subscription user, through
+`base.group_user`, and the group appeared on no access-rights screen. Without
+one of the two levels, an employee sees neither the menu, nor the subscription
+counters of the contact form, nor the field that links a vendor bill to its
+subscription, and is offered neither as the responsible person of a
+subscription nor as a recap recipient. Vendor bills can still be entered by
+anyone: the automatic link to a subscription still happens, and the
+price-increase alert goes to the subscription's responsible person, never to a
+buyer without the register. A recap skips a recipient who no longer has the
+register, and says so in the server log.
+
+**On upgrade**, the user group stays with whoever holds the billing rights
+(`account.group_account_invoice`), since they already read the same amounts on
+vendor bills, and with subscription managers. Everybody else loses it,
+including the template of new users (`base.default_user`), so that a user
+created later does not receive it by default. The upgrade log names who lost
+it, and which of them are still a subscription's responsible person, a
+follower, a recap recipient or the assignee of an open activity: the upgrade
+does not unplug them, that is a decision per person.
+
+⚠️ **Do not give the register back to the template of new users** (default
+access rights) so that new users get it by default: Odoo then adds any group
+given to the template to **every** existing internal user, and the state before
+18.0.1.10.0 comes back silently.
+
+⚠️ What the restriction does not close: the **name** of a subscription linked to
+a vendor bill the employee can open. The link is guarded on the screen and not
+on the field, so that the automatic link works for every buyer; its name stays
+readable through the API and in the bill's history. No amount or cycle is shown
+there.
 
 ## Report and dashboard
 
@@ -58,10 +101,20 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-25, this version converts automatically to
+- **Change Date**: on 2030-11-26, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.1.10.0
+
+- **The register is assigned, not granted to every employee.** `base.group_user` no longer implies the subscription user group, which now sits in the Subscriptions category of the access rights. The upgrade keeps it for billing-rights holders and subscription managers only (see *Who sees the register*).
+- **Screens every employee opens stay open.** The contact form's subscription counters and buttons are guarded on the field; the vendor bill's subscription link and rebill button on the view; the price-increase alert reads the register with elevated rights, so a bill entered by a buyer without the register is still linked and still alerts.
+- **Nothing about the register goes to someone who cannot read it.** The responsible person and the recap recipients are picked among register holders; the recap skips a recipient who lost it; the price-increase activity is never assigned to a buyer without it.
+
+### 18.0.1.9.0
+
+- **Every 4 weeks.** A new billing cycle for prepaid plans renewed every 28 days: 13 renewals a year, a monthly-equivalent cost of 13/12 of the cycle amount, dormancy and renewal alerts on 28 days.
 
 ### 18.0.1.8.2
 

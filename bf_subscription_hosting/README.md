@@ -39,6 +39,12 @@ and the subscription stays a **draft** for review before activation.
 > prefilled with the domain's `partner_id` (or the company); adjust it as needed
 > before activating the subscription.
 
+## Who sees the buttons (18.0.1.0.1)
+
+The **Create a subscription** button and the smart button show only to holders
+of the subscription register, which `bf_subscription` 18.0.1.10.0 makes
+assignable. A hosting manager without it would otherwise reach an access error.
+
 ## Installation
 
 Auto-installs when `hosting_management` **and** `bf_subscription` are both
@@ -57,5 +63,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-11-26, this version converts automatically to
   **LGPL-3.0-or-later**.

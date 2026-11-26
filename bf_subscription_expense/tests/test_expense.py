@@ -76,9 +76,11 @@ class TestSubscriptionExpense(TransactionCase):
         self._expense(30.0, fields.Date.today(), 'done')
         lecteur = self.env['res.users'].with_context(no_reset_password=True).create({
             'name': 'Lecteur abonnements', 'login': 'lecteur_sub_exp',
-            # Facturation, sans droits sur les notes de frais.
+            # Facturation et registre (il ne vient plus avec base.group_user),
+            # sans droits sur les notes de frais.
             'groups_id': [(6, 0, [self.env.ref('base.group_user').id,
-                                  self.env.ref('account.group_account_invoice').id])],
+                                  self.env.ref('account.group_account_invoice').id,
+                                  self.env.ref('bf_subscription.group_subscription_user').id])],
         })
         sub = self.sub.with_user(lecteur)
         sub.invalidate_recordset()

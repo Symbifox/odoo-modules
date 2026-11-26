@@ -560,6 +560,11 @@ msgid "Enter the amount per cycle before activating the subscription \"%s\"."
 msgstr "Renseignez le montant par cycle avant d'activer l'abonnement « %s »."
 
 #. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__cycle__four_weekly
+msgid "Every 4 weeks"
+msgstr "Aux 4 semaines"
+
+#. module: bf_subscription
 #: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__state__expired
 msgid "Expired"
 msgstr "Expiré"
@@ -1560,8 +1565,8 @@ msgstr "Abonnements"
 
 #. module: bf_subscription
 #: model:res.groups,name:bf_subscription.group_subscription_user
-msgid "Subscriptions / User"
-msgstr "Abonnements / Utilisateur"
+msgid "User"
+msgstr "Utilisateur"
 
 #. module: bf_subscription
 #: model:ir.model.fields,field_description:bf_subscription.field_res_partner__own_subscription_ids

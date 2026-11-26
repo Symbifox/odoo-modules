@@ -3,7 +3,7 @@
 
     <t t-inherit="bf_dashboard.Dashboard" t-inherit-mode="extension">
         <xpath expr="//div[@class='col-lg-4 mb-3'][.//*[@t-on-click='openPrivacyPending']]" position="after">
-            <div class="col-lg-4 mb-3">
+            <div class="col-lg-4 mb-3" t-if="state.data.subscription !== false">
                 <t t-if="state.data.subscription">
                     <div class="card h-100 cursor-pointer" t-on-click="openSubscriptionDashboard">
                         <div class="card-header bg-light">

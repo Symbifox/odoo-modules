@@ -27,9 +27,11 @@ class TestRecapitulatif(TransactionCase):
         super().setUpClass()
         cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
         cls.company = cls.env.company
+        # Le registre ne vient plus avec base.group_user (18.0.1.10.0) ; ce compte joue un
+        # usager du registre, il le reçoit donc comme dans les droits d'accès.
         cls.user = cls.env['res.users'].with_context(no_reset_password=True).create({
             'name': 'Rita Recap', 'login': 'rita_recap_essai', 'email': 'rita@recap.invalid',
-            'groups_id': [Command.set([cls.env.ref('base.group_user').id])],
+            'groups_id': [Command.set([cls.env.ref('base.group_user').id, cls.env.ref('bf_subscription.group_subscription_user').id])],
         })
         cls.vendor = cls.env['res.partner'].create({'name': 'Fournisseur essai', 'supplier_rank': 1})
         cls.client = cls.env['res.partner'].create({'name': 'Client géré essai', 'is_company': True})

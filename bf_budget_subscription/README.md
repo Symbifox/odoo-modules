@@ -70,13 +70,14 @@ not only on the screen — a field hidden from the form still answers an RPC
 `read`. Sums, counts and the calendar stay readable by every budget user: the
 figure is stable by role, the detail is not.
 
-⚠️ **Nobody is refused today, and that is on purpose.** `base.group_user`
-implies `bf_subscription.group_subscription_user`, so every internal user may
-read the register: no existing role loses anything to this restriction, and no
-screen was breaking. The guard is there for the day the register's access is
-tightened — it names vendors and amounts — and so that this module's shape
-matches its sibling `bf_budget_purchase`. Who may read the register stays
-`bf_subscription`'s decision, not the budget's.
+**Since v18.0.1.4.1 these guards refuse real users.** Since `bf_subscription` 18.0.1.10.0 the subscription register is assigned rather than granted to every employee (`base.group_user` no
+longer implies it). A budget user without the register now reads the same sums
+and counters, and none of the subscriptions behind them. The committed amounts
+are computed with elevated rights: computed on the reader's account, reading a
+subscription's schedule raised an access error and the budget line no longer
+opened. The **Link subscriptions** assistant shows each subscription by name
+and writes into the register, so it now asks for the register too, and so does
+its menu.
 
 ## One calendar among others (v18.0.1.3.0)
 
@@ -96,5 +97,5 @@ Labels and messages are written in English in the source; the French ships in `i
 ## Licence
 
 Business Source License 1.1 (see `LICENSE`). Each version converts to LGPL-3 on
-its Change Date: 2030-11-10 for this one. In the meantime, use in production for
+its Change Date: 2030-11-26 for this one. In the meantime, use in production for
 your own internal business operations is permitted.

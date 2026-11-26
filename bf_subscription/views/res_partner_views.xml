@@ -9,6 +9,7 @@
             <div name="button_box" position="inside">
                 <button class="oe_stat_button" type="object"
                         name="action_view_managed_subscriptions"
+                        groups="bf_subscription.group_subscription_user"
                         icon="fa-repeat"
                         invisible="managed_subscription_count == 0">
                     <field name="managed_subscription_count" widget="statinfo"
@@ -16,6 +17,7 @@
                 </button>
                 <button class="oe_stat_button" type="object"
                         name="action_view_own_subscriptions"
+                        groups="bf_subscription.group_subscription_user"
                         icon="fa-credit-card"
                         invisible="own_subscription_count == 0">
                     <field name="own_subscription_count" widget="statinfo"

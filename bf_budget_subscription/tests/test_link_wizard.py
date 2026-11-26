@@ -1,5 +1,5 @@
 from odoo import Command
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import tagged
 
 from .common import BfBudgetSubscriptionCommon
@@ -106,8 +106,32 @@ class TestLinkWizardAsARealRole(BfBudgetSubscriptionCommon):
             company_id=cls.company.id,
             company_ids=[(6, 0, [cls.company.id])],
         )
+        # l'assistant écrit dans le registre, il demande donc le registre.
+        cls.budget_manager_registre = new_test_user(
+            cls.env,
+            login="qa_budget_abo_registre",
+            groups="base.group_user,bf_budget.group_bf_budget_manager,"
+                   "bf_subscription.group_subscription_user",
+            company_id=cls.company.id,
+            company_ids=[(6, 0, [cls.company.id])],
+        )
 
     def test_the_wizard_runs_under_a_budget_manager(self):
+        sub = self._make_subscription("monthly", 100.0)
+        self._vendor_bill(sub, self.account_software, 100.0, self.date_start)
+        wizard = (
+            self.env["bf.budget.subscription.link.wizard"]
+            .with_user(self.budget_manager_registre)
+            .create({"company_id": self.company.id, "only_unassigned": True})
+        )
+        self.assertIn("✅", wizard.preview)
+        wizard.action_apply()
+        self.assertEqual(sub.budget_position_id, self.position_software)
+
+    def test_the_wizard_refuses_a_budget_manager_without_the_register(self):
+        """🔴 l'aperçu nomme chaque abonnement et l'application écrit
+        dans le registre, le tout en sudo. Sans le registre, l'assistant
+        refuse avant de rien relever, et son menu n'apparaît pas."""
         sub = self._make_subscription("monthly", 100.0)
         self._vendor_bill(sub, self.account_software, 100.0, self.date_start)
         wizard = (
@@ -115,29 +139,41 @@ class TestLinkWizardAsARealRole(BfBudgetSubscriptionCommon):
             .with_user(self.budget_manager)
             .create({"company_id": self.company.id, "only_unassigned": True})
         )
-        self.assertIn("✅", wizard.preview)
-        wizard.action_apply()
-        self.assertEqual(sub.budget_position_id, self.position_software)
+        with self.assertRaises(AccessError):
+            wizard.preview  # noqa: B018
+        with self.assertRaises(AccessError):
+            wizard.action_apply()
+        self.assertFalse(sub.budget_position_id)
+        menu = self.env.ref("bf_budget_subscription.menu_bf_budget_subscription_link")
+        visibles = self.env["ir.ui.menu"].with_user(self.budget_manager)._visible_menu_ids()
+        self.assertNotIn(menu.id, visibles)
 
     def test_a_budget_manager_reads_the_line_without_accounting_rights(self):
-        """Le champ affiché sur la ligne ne doit pas casser le formulaire."""
+        """Le formulaire ne casse pas, et les sommes sont là, sans le registre.
+
+        🔴 Ce gestionnaire n'a ni la comptabilité ni le registre (`base.group_user`
+        ne l'implique plus). Le montant des engagements se
+        calcule quand même : hors sudo, lire le calendrier de l'abonnement
+        levait une erreur d'accès et la ligne ne s'ouvrait plus."""
         sub = self._make_subscription("monthly", 100.0)
         sub.budget_position_id = self.position_software
         budget = self._make_budget(planned=1200.0)
         line = budget.line_ids.with_user(self.budget_manager)
         line.invalidate_recordset()
         self.assertEqual(line.subscription_count, 1)
-        self.assertEqual(line.subscription_ids.mapped("name"), sub.mapped("name"))
-        self.assertGreater(line.subscription_period_total, 0.0)
+        self.assertEqual(line.subscription_period_total, 1200.0)
 
-    def test_every_internal_user_already_reads_the_subscription_register(self):
-        """⚠️ Constat mesuré, pas une hypothèse : `bf_subscription` fait
-        impliquer son groupe « Utilisateur » par `base.group_user`. Tout
-        utilisateur interne lit donc les abonnements, et ce module n'a AUCUNE
-        règle d'accès à ajouter. Le test existe pour que la redondance ne soit
-        pas réintroduite par réflexe."""
+    def test_the_register_no_longer_comes_with_employee_status(self):
+        """`base.group_user` n'implique plus le registre. Ce module a
+        donc enfin des usagers que ses gardes refusent — ce gestionnaire en
+        est un, et le registre lui reste fermé."""
         sub = self._make_subscription("monthly", 100.0)
-        self.assertTrue(
+        self.assertNotIn(
+            self.env.ref("bf_subscription.group_subscription_user"),
+            self.env.ref("base.group_user").implied_ids,
+        )
+        self.assertFalse(
             self.budget_manager.has_group("bf_subscription.group_subscription_user")
         )
-        self.assertEqual(sub.with_user(self.budget_manager).name, sub.name)
+        with self.assertRaises(AccessError):
+            sub.with_user(self.budget_manager).read(["name"])

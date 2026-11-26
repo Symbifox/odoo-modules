@@ -21,6 +21,10 @@ class SubscriptionDigest(models.Model):
     user_ids = fields.Many2many(
         'res.users', 'subscription_digest_user_rel', 'digest_id', 'user_id',
         string="Recipients",
+        domain=lambda self: [
+            ('share', '=', False),
+            ('groups_id', 'in', self.env.ref('bf_subscription.group_subscription_user').ids),
+        ],
     )
     auto_send = fields.Boolean(
         string="Automatic sending", default=True,
@@ -131,7 +135,18 @@ class SubscriptionDigest(models.Model):
 
     def _send_digest(self, test_user=None):
         self.ensure_one()
+        # sommes, marge par client et PDF du registre ne partent qu'à
+        # qui peut le lire. Un destinataire qui a perdu le groupe est sauté et
+        # le journal le nomme, plutôt que de recevoir ce qu'il ne verrait plus.
         recipients = test_user or self.user_ids
+        if not test_user:
+            sans_registre = recipients.filtered(
+                lambda u: not u.has_group('bf_subscription.group_subscription_user'))
+            if sans_registre:
+                _logger.warning(
+                    "subscription digest %s: skipped %d recipient(s) without the register: %s",
+                    self.name, len(sans_registre), ", ".join(sans_registre.mapped("login")))
+            recipients -= sans_registre
         data = self._gather_data()
         if not data['has_content']:
             _logger.info("subscription digest %s: nothing to report", self.name)

@@ -1,6 +1,8 @@
 {
     'name': "Hébergement — pont vers les abonnements",
-    'version': '18.0.1.0.0',
+    # 18.0.1.0.1 : les deux boutons d'abonnement ne s'affichent qu'à qui a le
+    #   registre des abonnements (bf_subscription 18.0.1.10.0 le rend attribuable).
+    'version': '18.0.1.0.1',
     'category': 'Services',
     'summary': "Créer un abonnement à partir d'un domaine d'hébergement (évite la double saisie des coûts récurrents).",
     'description': """

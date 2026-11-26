@@ -4,7 +4,9 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    'version': '18.0.1.1.0',
+    # 18.0.1.1.1: pas de carte pour qui n'a pas le registre des
+    #   abonnements (bf_subscription 18.0.1.10.0).
+    'version': '18.0.1.1.1',
     'category': 'Accounting/Accounting',
     'summary': "Ajoute une carte Abonnements au tableau de bord Blue Fox",
     'description': """

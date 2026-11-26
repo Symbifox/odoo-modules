@@ -33,19 +33,16 @@ class BfBudgetSubscriptionLinkWizard(models.TransientModel):
     preview = fields.Text(string="What will be done", compute="_compute_preview")
 
     def _candidates(self):
-        """⚠️ En `sudo` par prudence, pas par nécessité de droits.
+        """En `sudo`, APRÈS avoir vérifié que l'usager lit le registre.
 
-        Sur une installation standard, `bf_subscription` fait impliquer son
-        groupe « Utilisateur » par `base.group_user` : tout utilisateur interne
-        lit donc déjà les abonnements, et aucune règle d'accès n'est à ajouter
-        ici. ⛔ Ne pas en redéclarer une : une liste de contrôle qui répète ce
-        qu'une dépendance garantit déjà finit par mentir le jour où l'une des
-        deux change.
-
-        Le `sudo` couvre le cas où cette implication n'existerait pas, et le
-        module n'écrit de toute façon qu'un seul champ : celui qu'il ajoute.
+        🔴 `base.group_user` n'implique plus le registre. L'assistant
+        montre le nom de chaque abonnement et son compte dominant, puis écrit
+        dans le registre : un gestionnaire de budget sans le registre ne l'ouvre
+        plus. Le `sudo` reste pour les lectures comptables (`_dominant_account`)
+        et pour n'écrire que le champ que ce module ajoute.
         """
         self.ensure_one()
+        self.env["subscription.subscription"].check_access("read")
         domain = [("company_id", "in", (self.company_id.id, False))]
         if self.only_unassigned:
             domain.append(("budget_position_id", "=", False))
@@ -129,6 +126,7 @@ class BfBudgetSubscriptionLinkWizard(models.TransientModel):
             raise UserError(
                 _("No certain link to apply. The details are in the preview.")
             )
+        self.env["subscription.subscription"].check_access("write")
         for subscription, _account, position in matched:
             subscription.sudo().budget_position_id = position
         return {

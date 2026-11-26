@@ -10,6 +10,10 @@ class BfBudgetForecastLine(models.Model):
         "subscription.subscription",
         string="Subscriptions on this line",
         compute="_compute_forecast_subscriptions",
+        # relevé en sudo, donc gardé AU CHAMP, comme son jumeau de
+        # bf_budget_subscription : sans le registre, un `read` par RPC
+        # rendrait les ids des abonnements. Les montants restent libres.
+        groups="bf_subscription.group_subscription_user",
     )
 
     @api.depends("position_id", "company_id")
@@ -29,13 +33,16 @@ class BfBudgetForecastLine(models.Model):
     def _dated_amount(self, date_from, date_to):
         """Ce que le calendrier des abonnements explique sur une fenêtre."""
         self.ensure_one()
-        if not self.subscription_ids:
+        # 🔴 le CHAMP se lit en sudo. Sous le compte de qui regarde, le
+        # x2many relit `active` de chaque abonnement et lève sans le registre.
+        subscriptions = self.sudo().subscription_ids
+        if not subscriptions:
             return 0.0
         currency = self.currency_id
         company = self.forecast_id.company_id
         return sum(
             sub._budget_amount_between(date_from, date_to, currency, company)
-            for sub in self.subscription_ids
+            for sub in subscriptions
         )
 
     def _seed_value_for(self, period):
@@ -48,7 +55,7 @@ class BfBudgetForecastLine(models.Model):
         partie la mieux connue du budget.
         """
         self.ensure_one()
-        if not self.subscription_ids:
+        if not self.sudo().subscription_ids:
             return super()._seed_value_for(period)
         clos = self.period_ids.filtered("is_closed")
         if not clos:

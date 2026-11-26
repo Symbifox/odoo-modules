@@ -123,9 +123,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget_digest` | Budgets opérationnels — digest quotidien | 18.0.1.0.1 | BUSL-1.1 | Daily digest section: the flagged lines of the open budgets the recipient is responsible for |
 | `bf_budget_expense` | Budgets opérationnels — notes de frais | 18.0.1.1.0 | BUSL-1.1 | Approved expense reports count as committed before they are posted |
 | `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.1.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
-| `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.1.0 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |
+| `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.1.1 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |
 | `bf_budget_purchase` | Budgets opérationnels — bons de commande | 18.0.1.1.0 | BUSL-1.1 | Confirmed purchase orders count as committed until a posted bill carries them, and their planned dates feed the calendar |
-| `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.4.0 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
+| `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.4.1 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.2 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calculator` | BF Calculatrice | 18.0.1.3.1 | LGPL-3 | Top-bar calculator: history, labels in the math, reverse tax, hours, dates, Bank of Canada rates, post to chatter |
 | `bf_calendar_address` | BF Calendar — the address comes from the address book | 18.0.1.0.0 | LGPL-3 | A meeting with a customer gets the customer's address as its place, taken from the address book, on one line a phone can turn into directions. Suggested, never imposed: the picker lists the addresses already on file, and a place typed or picked by hand is never overwritten. |
@@ -187,7 +187,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_privacy` | Expérience client - pont Vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Formal Law 25 consent flow for testimonials through the privacy module |
 | `bf_cx_sign` | Expérience client : feedback post-signature | 18.0.1.2.0 | BUSL-1.1 | Three-smiley feedback request when a signature is completed (opt-in) |
 | `bf_cx_sms` | Expérience client : invitation de sondage par SMS | 18.0.1.1.0 | BUSL-1.1 | Survey link sent by SMS to contacts without an email address |
-| `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.1.0 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
+| `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.1.1 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.6.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
 | `bf_dav_server` | Calendar and contacts sync (CalDAV, CardDAV) | 18.0.1.2.2 | BUSL-1.1 | Thunderbird, Apple Calendar and Contacts, and Android (DAVx5) read and write the Odoo agenda and contacts directly, reminders and their state included |
@@ -451,11 +451,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_stepbystep_securetransfer` | Progression: deposit through secure transfer storage | 18.0.1.0.2 | BUSL-1.1 | Client portal deposits go straight to the S3 storage of the secure transfer when it is configured; large files stay there. |
 | `bf_stepbystep_survey` | Step-by-Step — Questionnaire on the client page | 18.0.1.1.1 | BUSL-1.1 | A questionnaire button on the client's progression page, and the answer tied to the mandate itself. |
 | `bf_studio_light` | Symbifox — Forge | 18.0.7.1.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
-| `bf_subscription` | Abonnements | 18.0.1.8.2 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
-| `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.1.0 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
-| `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.1.0 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
-| `bf_subscription_expense` | Abonnements — notes de frais | 18.0.1.0.1 | BUSL-1.1 | A subscription paid through an expense report counts in the subscription's costs |
-| `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
+| `bf_subscription` | Abonnements | 18.0.1.10.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
+| `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.1.1 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
+| `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.1.1 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
+| `bf_subscription_expense` | Abonnements — notes de frais | 18.0.1.0.2 | BUSL-1.1 | A subscription paid through an expense report counts in the subscription's costs |
+| `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.1 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
 | `bf_survey_answer_sheet` | Survey Answer Sheet | 18.0.1.1.2 | LGPL-3 | Each completed response filed by itself: a branded PDF of the answers, password-protected, in the respondent's own folder |
 | `bf_survey_certificate` | Branded Course Certificates | 18.0.1.1.1 | BUSL-1.1 | Certification documents in the company's own brand: a branded PDF, a verifiable certificate number with its public page, and a branded success email |
 | `bf_survey_export` | BF Survey Export | 18.0.1.1.0 | LGPL-3 | Export a survey's questions to an Excel workbook or a PDF, and one response to a PDF, in the colours of a theme chosen on the survey |

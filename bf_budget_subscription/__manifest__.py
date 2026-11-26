@@ -37,7 +37,14 @@
     #   en français.
     # 18.0.1.2.0: le cycle aux 4 semaines de bf_subscription 18.0.1.9.0 donne
     #   13 échéances par année au calendrier d'engagements.
-    "version": "18.0.1.4.0",
+    # 18.0.1.4.1: `base.group_user` n'implique plus le registre
+    #   (bf_subscription 18.0.1.10.0) : les gardes posées en 1.4.0 refusent
+    #   désormais de vrais usagers. Les montants des engagements se
+    #   calculent en sudo, sinon un lecteur de budget sans le registre
+    #   recevait une erreur d'accès au lieu de ses sommes. L'assistant
+    #   « Link subscriptions » (aperçu nominatif, écriture dans le registre en
+    #   sudo) demande désormais le registre, et son menu aussi.
+    "version": "18.0.1.4.1",
     "category": "Accounting/Accounting",
     "summary": "Les abonnements deviennent un calendrier d'engagements datés, et le théorique s'y appuie",
     "author": "Les services de consultation Blue Fox, Inc.",

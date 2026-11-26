@@ -544,6 +544,11 @@ msgid "Enter the amount per cycle before activating the subscription \"%s\"."
 msgstr ""
 
 #. module: bf_subscription
+#: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__cycle__four_weekly
+msgid "Every 4 weeks"
+msgstr ""
+
+#. module: bf_subscription
 #: model:ir.model.fields.selection,name:bf_subscription.selection__subscription_subscription__state__expired
 msgid "Expired"
 msgstr ""
@@ -1517,7 +1522,7 @@ msgstr ""
 
 #. module: bf_subscription
 #: model:res.groups,name:bf_subscription.group_subscription_user
-msgid "Subscriptions / User"
+msgid "User"
 msgstr ""
 
 #. module: bf_subscription

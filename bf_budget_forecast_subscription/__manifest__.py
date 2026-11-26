@@ -4,7 +4,10 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1: les abonnements d'une ligne de prévision ne se
+    #   lisent qu'avec le registre (`groups` au champ, relevé en sudo) ; le
+    #   montant daté se calcule en sudo et reste le même pour tous.
+    "version": "18.0.1.1.1",
     "category": "Accounting/Accounting",
     "summary": "La prévision s'amorce sur le calendrier des abonnements, pas sur une moyenne plate",
     "author": "Les services de consultation Blue Fox, Inc.",

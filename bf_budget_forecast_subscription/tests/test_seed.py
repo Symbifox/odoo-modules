@@ -114,3 +114,51 @@ class TestSeedFromCalendar(BfBudgetSubscriptionCommon):
         line._seed_open_months()
         ouverts = line.period_ids.sorted("date_start")
         self.assertAlmostEqual(ouverts[0].amount_forecast, 100.0, places=2)
+
+
+@tagged("post_install", "-at_install")
+class TestForecastWithoutTheRegister(BfBudgetSubscriptionCommon):
+    """`base.group_user` n'implique plus le registre des abonnements.
+
+    Le lecteur de prévision ordinaire n'a donc pas le registre. Le montant
+    daté reste le même pour lui (calculé en sudo), le détail lui reste fermé.
+    Sous un VRAI compte, et le cache du registre vidé avant le calcul : sinon
+    un montant lu d'abord en sudo lui serait resservi et l'essai ne prouverait
+    rien.
+    """
+
+    # Le décor de la classe voisine, sans hériter de ses essais (ils tourneraient deux fois).
+    _forecast_line = TestSeedFromCalendar._forecast_line
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        today = fields.Date.context_today(cls.env.user)
+        cls.h_start = (today - relativedelta(months=6)).replace(day=1)
+        cls.h_end = cls.h_start + relativedelta(months=18, days=-1)
+        cls.through = today.replace(day=1) - relativedelta(days=1)
+        from odoo import Command
+        from odoo.tests import new_test_user
+        cls.lecteur = new_test_user(
+            cls.env,
+            login="prevision_sans_registre",
+            groups="base.group_user,bf_budget.group_bf_budget_user",
+            company_id=cls.company.id,
+            company_ids=[Command.set([cls.company.id])],
+        )
+        assert not cls.lecteur._has_group("bf_subscription.group_subscription_user")
+
+    def test_the_dated_amount_is_the_same_without_the_register(self):
+        from odoo.exceptions import AccessError
+        sub = self._make_subscription("monthly", 100.0, start=self.h_start)
+        sub.budget_position_id = self.position_software
+        f, line = self._forecast_line()
+        attendu = line._dated_amount(self.h_start, self.h_end)
+        self.assertGreater(attendu, 0.0)
+        self.env.invalidate_all()
+        as_role = line.with_user(self.lecteur)
+        self.assertTrue(as_role.sudo().subscription_ids)  # relevé en sudo : le pont voit le registre
+        self.env["subscription.subscription"].invalidate_model()
+        self.assertEqual(as_role._dated_amount(self.h_start, self.h_end), attendu)
+        with self.assertRaises(AccessError):
+            as_role.read(["subscription_ids"])

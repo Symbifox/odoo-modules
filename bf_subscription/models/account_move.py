@@ -9,6 +9,12 @@ _logger = logging.getLogger(__name__)
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
+    # une facture fournisseur se saisit aussi par qui n'a pas le
+    # registre (achats, lecture comptable). Le lien est gardé à la VUE, pas au
+    # champ : ⛔ un `groups` ici ferait lever l'accrochage automatique de
+    # `create` (Odoo 18 vérifie le champ à l'écriture Python) et chaque
+    # facture saisie par un acheteur échouerait. Ce que le lien lit du
+    # registre (l'alerte de hausse) se lit en sudo, plus bas.
     subscription_id = fields.Many2one(
         'subscription.subscription',
         string="Subscription",
@@ -76,7 +82,7 @@ class AccountMove(models.Model):
                         move.name or move.id, suggested,
                     )
             if move.subscription_id and move.move_type == 'in_invoice':
-                move.subscription_id._maybe_alert_price_increase(move)
+                move.subscription_id.sudo()._maybe_alert_price_increase(move)
         return moves
 
     def write(self, vals):
@@ -85,7 +91,7 @@ class AccountMove(models.Model):
         if 'subscription_id' in vals and vals.get('subscription_id'):
             for move in self:
                 if move.move_type == 'in_invoice' and move.subscription_id:
-                    move.subscription_id._maybe_alert_price_increase(move)
+                    move.subscription_id.sudo()._maybe_alert_price_increase(move)
         return res
 
     def action_open_rebill_wizard(self):

@@ -10,6 +10,7 @@
             <field name="invoice_payment_term_id" position="after">
                 <field name="subscription_id"
                        options="{'no_create': True}"
+                       groups="bf_subscription.group_subscription_user"
                        invisible="move_type not in ('in_invoice', 'in_refund', 'out_invoice', 'out_refund')"/>
             </field>
         </field>
@@ -23,6 +24,7 @@
         <field name="arch" type="xml">
             <header position="inside">
                 <button name="action_open_rebill_wizard" type="object"
+                        groups="bf_subscription.group_subscription_user"
                         string="Rebill to client" class="btn-secondary"
                         invisible="move_type not in ('in_invoice', 'in_refund') or not subscription_id"/>
             </header>
@@ -36,7 +38,7 @@
         <field name="inherit_id" ref="account.view_invoice_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_partner_display_name'][1]" position="after">
-                <field name="subscription_id" optional="hide"/>
+                <field name="subscription_id" optional="hide" groups="bf_subscription.group_subscription_user"/>
             </xpath>
         </field>
     </record>

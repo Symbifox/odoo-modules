@@ -12,7 +12,19 @@
     #   gestionnaire l'envoie à ses destinataires.
     # 18.0.1.8.2: le sommaire donne aussi la dépense de la société seule, sans les
     #   abonnements tenus pour un client, et le sujet porte le jour du corps.
-    'version': '18.0.1.8.2',
+    # 18.0.1.9.0: cycle aux 4 semaines (13 renouvellements par année), pour les
+    #   forfaits prépayés renouvelés aux 28 jours.
+    # 18.0.1.10.0: le registre ne vient plus avec le statut d'employé.
+    #   `base.group_user` n'implique plus le groupe Utilisateur, qui entre dans
+    #   la catégorie Abonnements et s'attribue dans les droits d'accès. La
+    #   migration le laisse aux porteurs des droits de facturation et aux
+    #   gestionnaires. Fiche contact : compteurs et boutons gardés au champ;
+    #   facture : lien et refacturation gardés à la vue, alerte de hausse lue
+    #   en sudo (une facture se saisit aussi sans le registre). Responsable et
+    #   destinataires du récapitulatif se choisissent parmi qui a le registre ;
+    #   le récapitulatif saute qui l'a perdu, l'alerte de hausse n'assigne plus
+    #   rien à l'acheteur qui en est privé.
+    'version': '18.0.1.10.0',
     'category': 'Accounting/Accounting',
     'summary': "Gestion des abonnements payants et corrélation avec la facturation fournisseur",
     'description': """

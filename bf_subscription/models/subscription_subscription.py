@@ -12,6 +12,7 @@ _logger = logging.getLogger(__name__)
 RENEWAL_ACTIVITY_XMLID = 'bf_subscription.mail_activity_type_renewal'
 
 CYCLE_MONTHS = {
+    'four_weekly': 12 / 13,
     'monthly': 1,
     'quarterly': 3,
     'semi_annual': 6,
@@ -19,6 +20,27 @@ CYCLE_MONTHS = {
     'biennial': 24,
     'triennial': 36,
 }
+
+# Cycles counted in weeks rather than months: 13 renewals a year, not 12, so
+# the gap between two renewals is not a whole number of months.
+CYCLE_WEEKS = {
+    'four_weekly': 4,
+}
+
+
+def cycle_step(cycle):
+    """Gap between two renewals of a cycle, or None for a cycle without one."""
+    if cycle in CYCLE_WEEKS:
+        return relativedelta(weeks=CYCLE_WEEKS[cycle])
+    months = CYCLE_MONTHS.get(cycle)
+    return relativedelta(months=months) if months else None
+
+
+def cycle_days(cycle):
+    """Length of one cycle in days (30 per month), or 0 for a cycle without one."""
+    if cycle in CYCLE_WEEKS:
+        return CYCLE_WEEKS[cycle] * 7
+    return int((CYCLE_MONTHS.get(cycle) or 0) * 30)
 
 
 class Subscription(models.Model):
@@ -58,10 +80,16 @@ class Subscription(models.Model):
     is_managed_for_client = fields.Boolean(
         compute='_compute_is_managed_for_client', store=True,
     )
+    # le responsable reçoit les relances (activité, courriel « assigné
+    # à vous », abonnement au fil), qui portent fournisseur, date et montant.
+    # Il se choisit donc parmi qui a le registre.
     responsible_id = fields.Many2one(
         'res.users', string="Assignee", tracking=True,
         default=lambda self: self.env.user,
-        domain="[('share', '=', False)]",
+        domain=lambda self: [
+            ('share', '=', False),
+            ('groups_id', 'in', self.env.ref('bf_subscription.group_subscription_user').ids),
+        ],
     )
 
     # ---- Classification ----
@@ -88,6 +116,7 @@ class Subscription(models.Model):
 
     # ---- Cycle & Amount ----
     cycle = fields.Selection([
+        ('four_weekly', "Every 4 weeks"),
         ('monthly', "Monthly"),
         ('quarterly', "Quarterly"),
         ('semi_annual', "Semiannual"),
@@ -273,14 +302,14 @@ class Subscription(models.Model):
                 # one_time: next billing = start_date if in future, else nothing
                 rec.next_billing_date = rec.start_date if rec.start_date >= today else False
                 continue
-            months = CYCLE_MONTHS.get(rec.cycle, 1)
+            step = cycle_step(rec.cycle) or relativedelta(months=1)
             # advance start_date by full cycles until we land on or after today
             nbd = rec.start_date
             # cap iterations to prevent runaway loops on bad data
             for _ in range(120):
                 if nbd >= today:
                     break
-                nbd = nbd + relativedelta(months=months)
+                nbd = nbd + step
             # respect end_date if set
             if rec.end_date and nbd > rec.end_date:
                 rec.next_billing_date = False
@@ -361,11 +390,10 @@ class Subscription(models.Model):
     def _dormancy_cutoff(self):
         """Date before which a missing bill marks the subscription as dormant."""
         self.ensure_one()
-        months = CYCLE_MONTHS.get(self.cycle)
-        if not months:
+        if not cycle_days(self.cycle):
             return None  # one_time / on_demand never dormant
         # One full cycle + a fixed grace window, expressed in whole days.
-        days = int(months * 30) + self._DORMANCY_GRACE_DAYS
+        days = cycle_days(self.cycle) + self._DORMANCY_GRACE_DAYS
         return fields.Date.context_today(self) - relativedelta(days=days)
 
     @api.depends('state', 'cycle', 'last_vendor_bill_date', 'start_date')
@@ -548,13 +576,20 @@ class Subscription(models.Model):
             subtype_xmlid='mail.mt_note',
         )
         ActivityType = self.env.ref('mail.mail_activity_data_todo', raise_if_not_found=False)
-        if ActivityType:
+        # l'alerte part en sudo depuis la facture, que n'importe quel
+        # acheteur saisit. L'activité (et le courriel qui l'annonce) va au
+        # responsable, ou à qui a saisi la facture S'IL a le registre ; sinon,
+        # seule la note du fil reste.
+        assignee = self.responsible_id
+        if not assignee and self.env.user.has_group('bf_subscription.group_subscription_user'):
+            assignee = self.env.user
+        if ActivityType and assignee:
             try:
                 lu.activity_schedule(
                     activity_type_id=ActivityType.id,
                     date_deadline=fields.Date.context_today(self),
                     summary=lu.env._("Check the price increase: %s") % self.name,
-                    user_id=(self.responsible_id or self.env.user).id,
+                    user_id=assignee.id,
                 )
             except Exception:
                 _logger.exception("bf_subscription: price-alert activity failed for %s", self.name)
@@ -595,8 +630,8 @@ class Subscription(models.Model):
             # back at every run, usually already overdue, with nothing left to
             # decide. A monthly subscription with 30 days' notice is the textbook
             # case -- it renews inside the horizon no matter what day it is.
-            cycle_days = int((CYCLE_MONTHS.get(sub.cycle) or 0) * 30)
-            if cycle_days and (sub.notice_period_days or 0) + horizon_days >= cycle_days:
+            length = cycle_days(sub.cycle)
+            if length and (sub.notice_period_days or 0) + horizon_days >= length:
                 continue
             cutoff = sub.next_billing_date - relativedelta(days=sub.notice_period_days or 0)
             if cutoff > today + relativedelta(days=horizon_days):

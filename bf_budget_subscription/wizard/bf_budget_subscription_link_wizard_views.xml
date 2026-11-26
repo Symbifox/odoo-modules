@@ -32,5 +32,6 @@
               name="Link subscriptions"
               parent="bf_budget.menu_bf_budget_config"
               action="bf_budget_subscription_link_wizard_action"
+              groups="bf_subscription.group_subscription_user"
               sequence="30"/>
 </odoo>

@@ -42,14 +42,16 @@ class TestLangue(TransactionCase):
             cls.env['res.lang']._activate_lang(code)
         cls.env['ir.module.module']._load_module_terms(
             ['bf_subscription'], ['fr_CA'], overwrite=True)
+        # Le registre ne vient plus avec base.group_user (18.0.1.10.0) ; ce compte joue un
+        # usager du registre, il le reçoit donc comme dans les droits d'accès.
         Users = cls.env['res.users'].with_context(no_reset_password=True)
         cls.anglo = Users.create({
             'name': 'Ann Langue', 'login': 'ann_sub_essai', 'email': 'ann.sub@langue.invalid',
-            'lang': 'en_CA', 'groups_id': [Command.set([cls.env.ref('base.group_user').id])],
+            'lang': 'en_CA', 'groups_id': [Command.set([cls.env.ref('base.group_user').id, cls.env.ref('bf_subscription.group_subscription_user').id])],
         })
         cls.franco = Users.create({
             'name': 'Fanny Langue', 'login': 'fanny_sub_essai', 'email': 'fanny.sub@langue.invalid',
-            'lang': 'fr_CA', 'groups_id': [Command.set([cls.env.ref('base.group_user').id])],
+            'lang': 'fr_CA', 'groups_id': [Command.set([cls.env.ref('base.group_user').id, cls.env.ref('bf_subscription.group_subscription_user').id])],
         })
         cls.vendor = cls.env['res.partner'].create({
             'name': 'Fournisseur Langue L7', 'supplier_rank': 1,

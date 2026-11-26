@@ -24,13 +24,17 @@ class TestRecapitulatifAcces(TransactionCase):
         cls.autre = cls.env['res.company'].create({'name': 'Autre société essai'})
         Users = cls.env['res.users'].with_context(no_reset_password=True)
         interne = cls.env.ref('base.group_user').id
+        # le registre ne vient plus avec base.group_user. Ces comptes jouent
+        # des usagers du registre : sans lui, les refus mesurés ici viendraient de
+        # l'ACL du modèle et non de la règle multisociété ni du garde d'envoi.
+        registre = cls.env.ref('bf_subscription.group_subscription_user').id
         cls.destinataire = Users.create({
             'name': 'Destinataire récap', 'login': 'destinataire_recap_acces',
-            'email': 'destinataire@recap.invalid', 'groups_id': [Command.set([interne])],
+            'email': 'destinataire@recap.invalid', 'groups_id': [Command.set([interne, registre])],
         })
         cls.lecteur = Users.create({
             'name': 'Lecteur récap', 'login': 'lecteur_recap_acces',
-            'email': 'lecteur@recap.invalid', 'groups_id': [Command.set([interne])],
+            'email': 'lecteur@recap.invalid', 'groups_id': [Command.set([interne, registre])],
         })
         cls.gestionnaire = Users.create({
             'name': 'Gestionnaire récap', 'login': 'gestionnaire_recap_acces',
@@ -39,7 +43,7 @@ class TestRecapitulatifAcces(TransactionCase):
         })
         cls.ailleurs = Users.create({
             'name': 'Interne ailleurs', 'login': 'interne_ailleurs_recap_acces',
-            'email': 'ailleurs@recap.invalid', 'groups_id': [Command.set([interne])],
+            'email': 'ailleurs@recap.invalid', 'groups_id': [Command.set([interne, registre])],
             'company_id': cls.autre.id, 'company_ids': [Command.set([cls.autre.id])],
         })
         cls.digest = cls.env['subscription.digest'].create({

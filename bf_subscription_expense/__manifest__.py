@@ -1,6 +1,8 @@
 {
     "name": "Abonnements — notes de frais",
-    "version": "18.0.1.0.1",
+    # 18.0.1.0.2 : le lien d'une dépense vers son abonnement ne se
+    #   montre et ne s'écrit qu'avec le registre (bf_subscription 18.0.1.10.0).
+    "version": "18.0.1.0.2",
     "category": "Accounting/Accounting",
     "summary": "Un abonnement payé en note de frais compte dans les coûts de l'abonnement",
     "author": "Les services de consultation Blue Fox, Inc.",
