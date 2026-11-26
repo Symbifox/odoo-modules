@@ -5,7 +5,18 @@
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
     # 18.0.2.1.1 : le pied ne se pose plus sur la signature ; adresse au format du pays.
-    'version': '18.0.2.1.1',
+    # 18.0.2.1.2 : l'adresse du destinataire s'écrit comme son pays l'écrit
+    #   (`_display_address`), au lieu d'un `code postal ville province` bâti à la
+    #   main. L'en-tête de la société, sur la même lettre, le faisait déjà.
+    # 18.0.2.2.0 : bibliothèque de gestion courante, 12 modèles et 12 textes rapides
+    #   par langue (FR, EN), en noupdate=0 : Symbifox les tient, le client duplique
+    #   pour adapter. Champ Langue sur les modèles et les textes rapides ; une lettre
+    #   n'offre que ceux de sa langue. Les champs de fusion de la légende sont déclarés
+    #   à `mail.render.mixin` : sept sur huit levaient chez un usager qui n'est pas
+    #   éditeur de modèles.
+    # 18.0.2.2.1 : le corps de la lettre n'est plus suivi (tracking). Odoo 18 ne suit
+    #   pas un champ HTML : chaque écriture du corps levait au flush.
+    'version': '18.0.2.2.1',
     'category': 'Tools',
     'summary': "Rédaction de lettres officielles brandées : en-tête, fusion de champs, modèles et blocs réutilisables",
     'description': """
@@ -46,6 +57,8 @@ Fonctionnalités
         # Starter data
         'data/letter_quicktext_data.xml',
         'data/letter_template_data.xml',
+        'data/letter_library_fr.xml',
+        'data/letter_library_en.xml',
         'data/bf_onboarding.xml',
         # Wizards
         'wizard/letter_merge_wizard_views.xml',

@@ -6,11 +6,29 @@ from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools.misc import format_date
 
-from .letter_template import LETTERHEAD_MODES
+from .letter_template import LETTER_MERGE_TOKENS, LETTERHEAD_MODES
 
 # Flags un-rendered merge syntax left over in a letter body.
 _RESIDUAL_TOKEN_RE = re.compile(r"{{|t-out=|t-field=|t-esc=")
+# The bracketed placeholders the shipped templates leave for the writer to
+# fill ("[date limite]", "[amount]"): no tag inside, and at least two letters
+# in a row, so "[...]", "[12]" and "[sic]" in a real letter are not flagged.
+_PLACEHOLDER_RE = re.compile(r"\[([^\[\]<>\n]{2,200})\]")
+_WORD_RE = re.compile(r"[^\W\d_]{2}")
+
+
+def _has_placeholder(text):
+    return any(
+        _WORD_RE.search(inner) and inner.strip().lower() != "sic"
+        for inner in _PLACEHOLDER_RE.findall(str(text or ""))
+    )
+
+# Bare paths of the legend, as `mail.render.mixin` compares them.
+_PALETTE = tuple(
+    token.strip("{} ") for token, _label in LETTER_MERGE_TOKENS
+)
 
 _DEFAULT_NAME = "New letter"
 # Titles given before the labels went English: still recognised as automatic.
@@ -63,8 +81,12 @@ class LetterDocument(models.Model):
     salutation = fields.Char(string="Salutation", help="E.g.: Dear Sir or Madam,")
     # Corps saisi par tout usager interne et relu par les autres (écran, PDF,
     # courriel) : on le nettoie, en gardant les styles en ligne permis.
+    # ⛔ Pas de tracking : Odoo 18 ne sait pas suivre un champ HTML et lève
+    # « Unsupported tracking on field body_html (type html) » au flush, en
+    # precommit. Toute écriture du corps à l'écran échouait, appliquer un modèle
+    # compris (18.0.2.2.1).
     body_html = fields.Html(
-        string="Body", sanitize=True, sanitize_style=True, tracking=True,
+        string="Body", sanitize=True, sanitize_style=True,
     )
     closing = fields.Char(
         string="Complimentary close",
@@ -90,6 +112,10 @@ class LetterDocument(models.Model):
     claude_available = fields.Boolean(compute="_compute_integrations")
     persona_available = fields.Boolean(compute="_compute_integrations")
     merge_warning = fields.Char(compute="_compute_merge_warning")
+    lang_family = fields.Char(compute="_compute_lang_family")
+    letter_date_display = fields.Char(
+        string="Date (written out)", compute="_compute_letter_date_display",
+    )
 
     # ------------------------------------------------------------------
     # CRUD
@@ -154,14 +180,51 @@ class LetterDocument(models.Model):
             letter.persona_available = has_persona
             letter.claude_available = persona_installed
 
-    @api.depends("body_html")
+    @api.depends("lang", "partner_id")
+    @api.depends_context("lang")
+    def _compute_lang_family(self):
+        """The language the letter will be read in, even before a recipient is
+        chosen: a new letter has no `lang` yet, and offering only the templates
+        without a language would hide the whole library."""
+        Template = self.env["letter.template"]
+        for letter in self:
+            letter.lang_family = Template._bf_language_of(
+                letter._bf_reader_lang(letter.partner_id, letter.lang)
+            )
+
+    @api.depends("letter_date", "lang")
+    def _compute_letter_date_display(self):
+        """The date as the reader writes it: "25 novembre 2026", "November 25, 2026".
+
+        A merge field on ``letter_date`` itself renders "2026-11-25"."""
+        for letter in self:
+            letter.letter_date_display = (
+                format_date(letter.env, letter.letter_date,
+                            lang_code=letter._bf_reader_lang(letter.partner_id, letter.lang),
+                            date_format="long")
+                if letter.letter_date else ""
+            )
+
+    def mail_allowed_qweb_expressions(self):
+        """The legend's merge fields, rendered for a user who is not a template editor.
+
+        The core allows seven expressions and compares the WHOLE string. Granting
+        « Mail Template Editor » would let the writer put code in every template,
+        and rendering in sudo would disarm the check for everyone: the palette is
+        named here, and nothing else passes."""
+        return tuple(dict.fromkeys(super().mail_allowed_qweb_expressions() + _PALETTE))
+
+    @api.depends("body_html", "name")
     def _compute_merge_warning(self):
+        """The title counts too: it is also the email subject."""
         for letter in self:
             body = str(letter.body_html or "")
-            if body and _RESIDUAL_TOKEN_RE.search(body):
+            if (body and _RESIDUAL_TOKEN_RE.search(body)) or _has_placeholder(body) \
+                    or _has_placeholder(letter.name):
                 letter.merge_warning = _(
-                    "Some merge fields seem to be unfilled. Apply the "
-                    "template or fix the body before finalizing."
+                    "Some merge fields or [bracketed placeholders] seem to be "
+                    "unfilled. Apply the template or complete the body before "
+                    "finalizing."
                 )
             else:
                 letter.merge_warning = False
@@ -232,6 +295,21 @@ class LetterDocument(models.Model):
     def _onchange_template_id(self):
         if self.template_id:
             self.letterhead_style = self.template_id.letterhead_style
+            self._bf_follow_template_language()
+
+    def _bf_follow_template_language(self):
+        """A letter written from an English template is an English letter.
+
+        Its language drives the automatic title, the written-out date and the
+        email; the template's own language wins over the recipient's."""
+        template = self.template_id
+        if not template.language or self.lang_family == template.language:
+            return
+        installed = [code for code, _name in self.env["res.lang"].get_installed()]
+        for code in installed:
+            if code.split("_")[0] == template.language:
+                self.lang = code
+                return
 
     # ------------------------------------------------------------------
     # Helpers
@@ -249,23 +327,15 @@ class LetterDocument(models.Model):
         lines = [partner.name]
         if partner.parent_id and partner.parent_id != partner:
             lines.append(partner.parent_id.name)
-        street = " ".join(filter(None, [partner.street, partner.street2]))
-        if street:
-            lines.append(street)
-        city_line = " ".join(
-            filter(
-                None,
-                [
-                    partner.zip,
-                    partner.city,
-                    partner.state_id.name if partner.state_id else None,
-                ],
-            )
-        )
-        if city_line:
-            lines.append(city_line)
-        if partner.country_id:
-            lines.append(partner.country_id.name)
+        # 🔴 L'adresse s'écrit comme le pays du DESTINATAIRE l'écrit, et Odoo
+        # le sait déjà : chaque `res.country` porte son `address_format`. Cette
+        # méthode la bâtissait à la main en `code postal, ville, province`, ce
+        # qui donnait « H2W 2R2 Montréal Quebec » pour une adresse québécoise —
+        # code postal en tête, province sans accent. L'en-tête de la société, sur
+        # la même lettre, passe par `_display_address` depuis son propre
+        # correctif : les deux blocs d'une lettre disent enfin la même chose.
+        lines += [ligne.strip()
+                  for ligne in partner._display_address(without_company=True).split("\n")]
         return "\n".join(line for line in lines if line)
 
     def _apply_persona_defaults(self):
@@ -350,6 +420,7 @@ class LetterDocument(models.Model):
         if not self.template_id:
             raise UserError(_("Select a letter template first."))
         template = self.template_id
+        self._bf_follow_template_language()
         self.body_html = self._render_body(template.body_html)
         self.letterhead_style = template.letterhead_style
         # Replace an auto-generated title (sentinel or "Lettre à X") with the

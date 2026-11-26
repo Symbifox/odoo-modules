@@ -13,11 +13,13 @@ class LetterQuicktextPicker(models.TransientModel):
     company_id = fields.Many2one(
         "res.company", related="letter_id.company_id",
     )
+    lang_family = fields.Char(related="letter_id.lang_family")
     quicktext_id = fields.Many2one(
         "letter.quicktext",
         string="Text block",
         required=True,
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id),"
+               " '|', ('language', '=', False), ('language', '=', lang_family)]",
     )
     position = fields.Selection(
         [("append", "At the end of the body"), ("prepend", "At the start of "

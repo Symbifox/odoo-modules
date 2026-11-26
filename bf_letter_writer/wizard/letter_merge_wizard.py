@@ -45,14 +45,19 @@ class LetterMergeWizard(models.TransientModel):
         Letter = self.env["letter.document"]
         letters = Letter.browse()
         for partner in self.recipient_ids:
+            # Each recipient gets the version of the letter in their language,
+            # when the template has one.
+            template = self.template_id._bf_variant_for(
+                Letter._bf_reader_lang(partner)
+            )
             letter = Letter.create(
                 {
-                    "name": self.template_id.name,
-                    "template_id": self.template_id.id,
+                    "name": template.name,
+                    "template_id": template.id,
                     "partner_id": partner.id,
                     "company_id": self.company_id.id,
                     "letter_date": self.letter_date,
-                    "letterhead_style": self.template_id.letterhead_style,
+                    "letterhead_style": template.letterhead_style,
                 }
             )
             letter._apply_persona_defaults()

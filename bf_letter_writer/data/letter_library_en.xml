@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Everyday business letter library, in English.
+
+    Same rules as letter_library_fr.xml, which explains them: noupdate="0" on
+    purpose (Symbifox maintains these, a tenant duplicates to adapt), one
+    template per language sharing a `code`, palette merge fields only, the
+    rest between square brackets for the writer to fill in.
+-->
+<odoo noupdate="0">
+
+    <!-- ============================== Text blocks ============================== -->
+
+    <record id="quicktext_en_opening_follow_up" model="letter.quicktext">
+        <field name="name">Opening: further to our discussions</field>
+        <field name="shortcut">::further</field>
+        <field name="category">Opening</field>
+        <field name="language">en</field>
+        <field name="sequence">10</field>
+        <field name="body_html" type="html"><p>Further to our recent discussions, please find below the information you requested.</p></field>
+    </record>
+
+    <record id="quicktext_en_opening_meeting" model="letter.quicktext">
+        <field name="name">Opening: following our meeting</field>
+        <field name="shortcut">::meeting</field>
+        <field name="category">Opening</field>
+        <field name="language">en</field>
+        <field name="sequence">20</field>
+        <field name="body_html" type="html"><p>Following our meeting on [date], we are writing to confirm what was agreed.</p></field>
+    </record>
+
+    <record id="quicktext_en_opening_received" model="letter.quicktext">
+        <field name="name">Opening: we have received</field>
+        <field name="shortcut">::received</field>
+        <field name="category">Opening</field>
+        <field name="language">en</field>
+        <field name="sequence">30</field>
+        <field name="body_html" type="html"><p>Thank you for your correspondence of [date], which we have received.</p></field>
+    </record>
+
+    <record id="quicktext_en_followup_first" model="letter.quicktext">
+        <field name="name">Follow-up: first reminder</field>
+        <field name="shortcut">::reminder</field>
+        <field name="category">Follow-up</field>
+        <field name="language">en</field>
+        <field name="sequence">10</field>
+        <field name="body_html" type="html"><p>We are following up on [subject], for which we have not yet received a reply.</p></field>
+    </record>
+
+    <record id="quicktext_en_followup_documents" model="letter.quicktext">
+        <field name="name">Follow-up: documents outstanding</field>
+        <field name="shortcut">::docs</field>
+        <field name="category">Follow-up</field>
+        <field name="language">en</field>
+        <field name="sequence">20</field>
+        <field name="body_html" type="html"><p>We have not yet received the documents requested on [date]. Could you please send them to us by [deadline]?</p></field>
+    </record>
+
+    <record id="quicktext_en_followup_final" model="letter.quicktext">
+        <field name="name">Follow-up: final reminder</field>
+        <field name="shortcut">::final</field>
+        <field name="category">Follow-up</field>
+        <field name="language">en</field>
+        <field name="sequence">30</field>
+        <field name="body_html" type="html"><p>If we do not hear from you by [deadline], we will proceed with the file.</p></field>
+    </record>
+
+    <record id="quicktext_en_closing_available" model="letter.quicktext">
+        <field name="name">Closing: available to discuss</field>
+        <field name="shortcut">::available</field>
+        <field name="category">Closing</field>
+        <field name="language">en</field>
+        <field name="sequence">10</field>
+        <field name="body_html" type="html"><p>We remain available should you need any further information, and thank you for your trust.</p></field>
+    </record>
+
+    <record id="quicktext_en_closing_questions" model="letter.quicktext">
+        <field name="name">Closing: for any questions</field>
+        <field name="shortcut">::questions</field>
+        <field name="category">Closing</field>
+        <field name="language">en</field>
+        <field name="sequence">20</field>
+        <field name="body_html" type="html"><p>For any questions, you can reach [contact name] at [phone number] or [email address].</p></field>
+    </record>
+
+    <record id="quicktext_en_closing_thanks" model="letter.quicktext">
+        <field name="name">Closing: thank you</field>
+        <field name="shortcut">::thanks</field>
+        <field name="category">Closing</field>
+        <field name="language">en</field>
+        <field name="sequence">30</field>
+        <field name="body_html" type="html"><p>Thank you for your cooperation.</p></field>
+    </record>
+
+    <record id="quicktext_en_notice_confidential" model="letter.quicktext">
+        <field name="name">Confidentiality notice</field>
+        <field name="shortcut">::confid</field>
+        <field name="category">Notices</field>
+        <field name="language">en</field>
+        <field name="sequence">10</field>
+        <field name="body_html" type="html"><p><em>The content of this letter is confidential and intended solely for its addressee.</em></p></field>
+    </record>
+
+    <record id="quicktext_en_notice_retention" model="letter.quicktext">
+        <field name="name">Retention notice</field>
+        <field name="shortcut">::retention</field>
+        <field name="category">Notices</field>
+        <field name="language">en</field>
+        <field name="sequence">20</field>
+        <field name="body_html" type="html"><p><em>Personal information you provide is kept only as long as needed to process your file and to meet our retention obligations, then securely destroyed.</em></p></field>
+    </record>
+
+    <record id="quicktext_en_notice_misdirected" model="letter.quicktext">
+        <field name="name">Notice: received in error</field>
+        <field name="shortcut">::error</field>
+        <field name="category">Notices</field>
+        <field name="language">en</field>
+        <field name="sequence">30</field>
+        <field name="body_html" type="html"><p><em>If you received this letter in error, please let us know and destroy it without copying or forwarding it.</em></p></field>
+    </record>
+
+    <!-- =============================== Templates =============================== -->
+
+    <record id="template_en_general" model="letter.template">
+        <field name="name">General letter</field>
+        <field name="code">general</field>
+        <field name="language">en</field>
+        <field name="subject">Letter to {{ object.partner_id.name }}</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_opening_follow_up'), ref('quicktext_en_closing_available'), ref('quicktext_en_notice_confidential')])]"/>
+        <field name="body_html" type="html">
+            <p>Further to our discussions, please find below the information you requested.</p>
+            <p>[Body of the letter: replace this paragraph with your content.]</p>
+            <p>We remain available should you need any further information.</p>
+        </field>
+    </record>
+
+    <record id="template_en_meeting_notice" model="letter.template">
+        <field name="name">Meeting notice</field>
+        <field name="code">meeting_notice</field>
+        <field name="language">en</field>
+        <field name="subject">Notice of meeting</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_closing_questions'), ref('quicktext_en_closing_available')])]"/>
+        <field name="body_html" type="html">
+            <p>We invite you to a meeting on [date] at [time], at [place or video call link].</p>
+            <p>The meeting will cover [purpose of the meeting]. Attending will be [names of attendees].</p>
+            <p>Please confirm your attendance by [deadline]. If this time does not suit you, we will gladly find another one with you.</p>
+        </field>
+    </record>
+
+    <record id="template_en_hiring_confirmation" model="letter.template">
+        <field name="name">Confirmation of employment</field>
+        <field name="code">hiring_confirmation</field>
+        <field name="language">en</field>
+        <field name="subject">Confirmation of employment</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.
+This template is not legal advice. Have the text checked against your own situation: employment contract, collective agreement, applicable employment standards.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_closing_questions'), ref('quicktext_en_notice_confidential')])]"/>
+        <field name="body_html" type="html">
+            <p>{{ object.company_id.name }} is pleased to confirm your employment as [job title].</p>
+            <p>Your start date is [start date], at [place of work]. Your schedule will be [work schedule] and your pay [pay].</p>
+            <p>[Name of the person in charge] will welcome you on arrival. Please return a signed copy of this letter by [deadline].</p>
+            <p>We look forward to welcoming you to the team.</p>
+        </field>
+    </record>
+
+    <record id="template_en_probation_end" model="letter.template">
+        <field name="name">Confirmation of end of probation</field>
+        <field name="code">probation_end</field>
+        <field name="language">en</field>
+        <field name="subject">End of your probationary period</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.
+This template is not legal advice. Have the text checked against your own situation: employment contract, collective agreement, applicable employment standards.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_closing_questions')])]"/>
+        <field name="body_html" type="html">
+            <p>We are pleased to confirm that your probationary period as [job title] ended on [end of probation date].</p>
+            <p>Your employment with {{ object.company_id.name }} continues under the terms of your contract. [If any, the terms that change at the end of probation]</p>
+            <p>Thank you for your commitment over the past months.</p>
+        </field>
+    </record>
+
+    <record id="template_en_employment_certificate" model="letter.template">
+        <field name="name">Employment verification letter</field>
+        <field name="code">employment_certificate</field>
+        <field name="language">en</field>
+        <field name="subject">Employment verification</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.
+This template is not legal advice. Include only what the person asked you to confirm: pay, for instance, appears only at their request.</field>
+        <field name="body_html" type="html">
+            <p>{{ object.company_id.name }} hereby confirms that [name of the person] has held the position of [job title] since [start date], on a [full-time or part-time] basis.</p>
+            <p>[Optional, at the person's request: pay or other details]</p>
+            <p>This letter is issued at the request of the person concerned.</p>
+        </field>
+    </record>
+
+    <record id="template_en_recommendation" model="letter.template">
+        <field name="name">Letter of recommendation</field>
+        <field name="code">recommendation</field>
+        <field name="language">en</field>
+        <field name="subject">Letter of recommendation</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.
+This template is not legal advice. Write a recommendation only with the person's consent, and include only facts you can support.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_closing_questions')])]"/>
+        <field name="body_html" type="html">
+            <p>I had the pleasure of working with [name of the person] from [start date] to [end date], in the position of [job title] at {{ object.company_id.name }}.</p>
+            <p>During that time, [name of the person] [notable achievement or responsibility]. I particularly appreciated [quality observed, with an example].</p>
+            <p>I recommend [name of the person] without reservation for [position or program sought].</p>
+        </field>
+    </record>
+
+    <record id="template_en_salary_increase" model="letter.template">
+        <field name="name">Notice of salary increase</field>
+        <field name="code">salary_increase</field>
+        <field name="language">en</field>
+        <field name="subject">Review of your pay</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.
+This template is not legal advice. Have the text checked against your own situation: employment contract, collective agreement, pay policy.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_notice_confidential')])]"/>
+        <field name="body_html" type="html">
+            <p>We are pleased to inform you that your pay will increase from [current pay] to [new pay], effective [effective date].</p>
+            <p>This review recognizes [reason: annual review, new responsibilities, adjustment].</p>
+            <p>Thank you for your contribution to {{ object.company_id.name }}.</p>
+        </field>
+    </record>
+
+    <record id="template_en_complaint_ack" model="letter.template">
+        <field name="name">Acknowledgement of a complaint</field>
+        <field name="code">complaint_ack</field>
+        <field name="language">en</field>
+        <field name="subject">Acknowledgement of your complaint</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.
+This template is not legal advice. If your company has a complaint handling policy, copy its steps and timelines into your own version.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_closing_questions'), ref('quicktext_en_notice_confidential')])]"/>
+        <field name="body_html" type="html">
+            <p>On [date received], we received your complaint about [subject of the complaint]. Its file number is {{ object.reference }}.</p>
+            <p>[Name of the person in charge] is handling it. We will review the facts and send you our answer by [expected answer date].</p>
+            <p>Please quote this file number in your correspondence with us.</p>
+        </field>
+    </record>
+
+    <record id="template_en_document_request" model="letter.template">
+        <field name="name">Request for documents</field>
+        <field name="code">document_request</field>
+        <field name="language">en</field>
+        <field name="subject">Request for documents</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_notice_retention'), ref('quicktext_en_closing_questions')])]"/>
+        <field name="body_html" type="html">
+            <p>To complete your file, we need the following documents:</p>
+            <ul>
+                <li>[first document]</li>
+                <li>[second document]</li>
+            </ul>
+            <p>You can send them to us by [deadline], by [means of sending].</p>
+        </field>
+    </record>
+
+    <record id="template_en_service_change" model="letter.template">
+        <field name="name">Notice of change of service</field>
+        <field name="code">service_change</field>
+        <field name="language">en</field>
+        <field name="subject">A change to your service</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.
+If the change affects the price or the terms of a contract, check the notice that contract requires before sending.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_closing_questions'), ref('quicktext_en_closing_available')])]"/>
+        <field name="body_html" type="html">
+            <p>We are writing to let you know about a change to [name of the service], taking effect on [effective date].</p>
+            <p>[Describe the change: what changes, what stays the same.]</p>
+            <p>[What you need to do, or that there is nothing to do]</p>
+        </field>
+    </record>
+
+    <record id="template_en_payment_reminder" model="letter.template">
+        <field name="name">Overdue payment reminder</field>
+        <field name="code">payment_reminder</field>
+        <field name="language">en</field>
+        <field name="subject">Reminder: invoice [invoice number]</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.
+This template is not legal advice. Mention late fees or a formal demand only if your contract or terms of sale provide for them.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_followup_final'), ref('quicktext_en_closing_questions')])]"/>
+        <field name="body_html" type="html">
+            <p>According to our records, invoice [invoice number] dated [invoice date], in the amount of [amount], remains unpaid. It was due on [due date].</p>
+            <p>We would appreciate your payment by [deadline]. If payment has already been made, please disregard this letter.</p>
+        </field>
+    </record>
+
+    <record id="template_en_agreement_termination" model="letter.template">
+        <field name="name">Notice of termination of agreement</field>
+        <field name="code">agreement_termination</field>
+        <field name="language">en</field>
+        <field name="subject">Notice of termination of the [name of the agreement]</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.
+This template is not legal advice. Read the agreement's termination clause again (notice, form, grounds) and have the text checked before sending.</field>
+        <field name="body_html" type="html">
+            <p>{{ object.company_id.name }} hereby gives notice of the termination of the [name of the agreement] entered into on [date of the agreement], in accordance with its clause [termination clause number].</p>
+            <p>The termination takes effect on [effective date]. Until then, [state what continues, and what remains to be invoiced or returned].</p>
+            <p>Thank you for our collaboration.</p>
+        </field>
+    </record>
+
+    <record id="template_en_deliverable_cover" model="letter.template">
+        <field name="name">Cover letter for a deliverable</field>
+        <field name="code">deliverable_cover</field>
+        <field name="language">en</field>
+        <field name="subject">Delivery of [name of the deliverable]</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Template maintained by Symbifox and refreshed on every upgrade: duplicate it to adapt it, archive it to remove it from the list.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_en_closing_questions'), ref('quicktext_en_closing_thanks')])]"/>
+        <field name="body_html" type="html">
+            <p>Please find attached [name of the deliverable], prepared as part of [name of the mandate or project].</p>
+            <p>[Summarize in one or two sentences what the deliverable contains and what it enables.]</p>
+            <p>We welcome your comments by [deadline].</p>
+        </field>
+    </record>
+
+</odoo>

@@ -36,8 +36,29 @@ The *image*, *PDF* and *pre-printed* modes use the company's configurable
 - Reusable templates (`letter.template`) with subject and body.
 - Merge fields: `{{ object.field }}` tokens (Word mail-merge style) and QWeb
   `<t t-out="object.field"/>` syntax for advanced cases.
-- A merge-field legend built into the template editor.
+- A merge-field legend built into the template editor. These fields render
+  for every internal user, even without the "Mail Template Editor" right.
 - Suggested text blocks attached to the template.
+- A **Language** field (French or English): a letter only offers the templates
+  and blocks of its own language, plus those that have none.
+
+### Everyday business letter library
+Twelve letters shipped, each in French and in English: meeting notice,
+confirmation of employment, end of probation, employment verification,
+recommendation, salary increase, acknowledgement of a complaint, request for
+documents, change of service, overdue payment reminder, termination of an
+agreement, cover letter for a deliverable. A "General letter" joins them as the
+English counterpart of "Lettre générale".
+
+- What is left to write sits between square brackets (`[deadline]`). The letter
+  warns while one remains.
+- Templates touching employment, a complaint, a payment or a termination carry
+  a note saying they are not legal advice.
+- Symbifox maintains these templates: every upgrade restores the shipped
+  version. To adapt one, **duplicate it**; your copy is never touched, and
+  neither is a letter already written.
+- The batch merge writes to each recipient in their language when the template
+  exists in both.
 
 ### Merge fields (mail merge)
 - Applying a template to a letter renders the body with the recipient's values.
@@ -50,7 +71,8 @@ The *image*, *PDF* and *pre-printed* modes use the company's configurable
   shortcut.
 - Inserted into the body through a picker (at the start or at the end).
 - Blocks can themselves contain merge fields.
-- Three starter blocks are provided.
+- Twelve blocks per language: openings, follow-ups, closings, confidentiality
+  and retention notices.
 
 ### Generation and sending
 - Native branded PDF (QWeb), US Letter format.
@@ -76,7 +98,7 @@ The *image*, *PDF* and *pre-printed* modes use the company's configurable
 ### Optional integrations (detected at runtime)
 - **`bf_persona`**: prefills the salutation and closing from the recipient's
   persona.
-- **`bf_claude_chat`**: a "Review with Gen" button that opens the assistant
+- **`bf_claude_chat`**: a "Review with Claude" button that opens the assistant
   with the letter in context.
 - No hard dependency: the module works on its own, and the buttons disappear
   when those modules are not installed.
@@ -98,10 +120,16 @@ The *image*, *PDF* and *pre-printed* modes use the company's configurable
 ## Available merge fields
 
 `{{ object.partner_id.name }}`, `{{ object.partner_id.parent_id.name }}`,
-`{{ object.recipient_name }}`, `{{ object.letter_date }}`,
-`{{ object.reference }}`, `{{ object.company_id.name }}`,
-`{{ object.signatory_id.name }}`, `{{ object.signatory_function }}` — plus any
-QWeb `<t t-out="..."/>` expression.
+`{{ object.recipient_name }}`, `{{ object.letter_date_display }}` (the date
+written out in the letter's language), `{{ object.reference }}`,
+`{{ object.company_id.name }}`, `{{ object.signatory_id.name }}`,
+`{{ object.signatory_function }}`.
+
+Odoo renders only seven expressions for a user who is not a "Mail Template
+Editor", compared on the whole string. The module declares these eight fields
+(`mail_allowed_qweb_expressions`); any other expression, `{{ object.x or "y" }}`
+included, stops the template from being applied for that user. QWeb
+`<t t-out="..."/>` expressions remain for template editors.
 
 ## Configuration
 

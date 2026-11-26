@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <list string="Letter templates">
                 <field name="name"/>
+                <field name="language"/>
                 <field name="subject"/>
                 <field name="letterhead_style"/>
             </list>
@@ -29,6 +30,8 @@
                         <group>
                             <field name="subject"/>
                             <field name="letterhead_style"/>
+                            <field name="language"/>
+                            <field name="code"/>
                         </group>
                         <group>
                             <field name="active" invisible="1"/>
@@ -46,13 +49,14 @@
                                     <li><code>{{ object.partner_id.name }}</code>: recipient name</li>
                                     <li><code>{{ object.partner_id.parent_id.name }}</code>: recipient organization</li>
                                     <li><code>{{ object.recipient_name }}</code>: recipient name (frozen on the letter)</li>
-                                    <li><code>{{ object.letter_date }}</code>: letter date</li>
+                                    <li><code>{{ object.letter_date_display }}</code>: letter date, written out in the letter's language</li>
                                     <li><code>{{ object.reference }}</code>: reference (LET-YYYY-NNN)</li>
                                     <li><code>{{ object.company_id.name }}</code>: sender name</li>
                                     <li><code>{{ object.signatory_id.name }}</code>: signatory name</li>
                                     <li><code>{{ object.signatory_function }}</code>: signatory title</li>
                                 </ul>
-                                <p>For advanced cases, QWeb syntax is also accepted, e.g. <code>&lt;t t-out="object.partner_id.name"/&gt;</code>.</p>
+                                <p>Only these fields can be used by someone who is not a template editor: any other expression stops the template from being applied.</p>
+                                <p>Text between square brackets, such as <code>[date and time]</code>, is left for the writer to fill in. The letter warns while one remains.</p>
                             </div>
                         </page>
                         <page string="Notes" name="notes">
@@ -61,6 +65,24 @@
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <record id="letter_template_view_search" model="ir.ui.view">
+        <field name="name">letter.template.search</field>
+        <field name="model">letter.template</field>
+        <field name="arch" type="xml">
+            <search string="Letter templates">
+                <field name="name"/>
+                <field name="subject"/>
+                <filter string="French" name="language_fr" domain="[('language', '=', 'fr')]"/>
+                <filter string="English" name="language_en" domain="[('language', '=', 'en')]"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Language" name="group_language" context="{'group_by': 'language'}"/>
+                </group>
+            </search>
         </field>
     </record>
 

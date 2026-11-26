@@ -3,6 +3,8 @@
 
     <record id="template_general" model="letter.template">
         <field name="name">Lettre générale</field>
+        <field name="code">general</field>
+        <field name="language">fr</field>
         <field name="subject">Lettre à {{ object.partner_id.name }}</field>
         <field name="letterhead_style">banner</field>
         <field name="note">Modèle de départ : corps neutre avec champs de fusion. À dupliquer et adapter.</field>

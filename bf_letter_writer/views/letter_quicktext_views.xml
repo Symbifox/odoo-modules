@@ -10,6 +10,7 @@
                 <field name="name"/>
                 <field name="shortcut"/>
                 <field name="category"/>
+                <field name="language"/>
                 <field name="company_id" optional="hide" groups="base.group_multi_company"/>
             </list>
         </field>
@@ -31,6 +32,7 @@
                         <group>
                             <field name="shortcut" placeholder="::shortcut"/>
                             <field name="category"/>
+                            <field name="language"/>
                         </group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company"/>

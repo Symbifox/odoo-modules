@@ -2,10 +2,10 @@
 # The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_letter_writer 18.0.2.1.0\n"
+"Project-Id-Version: bf_letter_writer 18.0.2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-11 00:01+0000\n"
-"PO-Revision-Date: 2026-10-11 00:01+0000\n"
+"POT-Creation-Date: 2026-11-26 03:37+0000\n"
+"PO-Revision-Date: 2026-11-26 03:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,9 @@ msgstr ""
 
 #. module: bf_letter_writer
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
-msgid "<code>{{ object.letter_date }}</code>: letter date"
+msgid ""
+"<code>{{ object.letter_date_display }}</code>: letter date, written out in "
+"the letter's language"
 msgstr ""
 
 #. module: bf_letter_writer
@@ -82,14 +84,11 @@ msgid ""
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_needaction
 msgid "Action Needed"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__active
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__active
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__active
@@ -97,25 +96,21 @@ msgid "Active"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_ids
 msgid "Activities"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_exception_decoration
 msgid "Activity Exception Decoration"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_state
 msgid "Activity State"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_type_icon
 msgid "Activity Type Icon"
 msgstr ""
@@ -126,10 +121,10 @@ msgid "Apply template"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_view_form
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
 msgid "Archived"
 msgstr ""
 
@@ -154,7 +149,6 @@ msgid "Attach PDF"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_attachment_count
 msgid "Attachment Count"
 msgstr ""
@@ -218,7 +212,6 @@ msgid "Can create and edit letter templates, text blocks and the letterhead."
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_merge_wizard_form
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_picker_form
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_send_wizard_form
@@ -236,9 +229,11 @@ msgid "Claude Available"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
-#. odoo-python
+#: model:ir.model,name:bf_letter_writer.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: bf_letter_writer
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__company_id
 msgid "Company"
 msgstr ""
@@ -249,7 +244,6 @@ msgid "Complimentary close"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_letter_writer, bf_music_licensing
 #: model:ir.ui.menu,name:bf_letter_writer.menu_letter_config
 msgid "Configuration"
 msgstr ""
@@ -286,8 +280,6 @@ msgid "Create your first reusable text block"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__create_uid
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__create_uid
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__create_uid
@@ -305,8 +297,6 @@ msgid "Created letters"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__create_date
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__create_date
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__create_date
@@ -338,6 +328,11 @@ msgid "Date"
 msgstr ""
 
 #. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__letter_date_display
+msgid "Date (written out)"
+msgstr ""
+
+#. module: bf_letter_writer
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_template__subject
 msgid "Default letter title. Can contain merge fields."
 msgstr ""
@@ -354,8 +349,6 @@ msgid "Default signatory"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__display_name
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__display_name
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__display_name
@@ -371,7 +364,6 @@ msgid "Download PDF"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer
 #: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_document__state__draft
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
 msgid "Draft"
@@ -393,7 +385,13 @@ msgid "Email subject"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_quicktext__language__en
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_template__language__en
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
+msgid "English"
+msgstr ""
+
+#. module: bf_letter_writer
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__failed_message_ids
 msgid "Failed Messages"
 msgstr ""
@@ -420,19 +418,16 @@ msgid "First letter written"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_follower_ids
 msgid "Followers"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_partner_ids
 msgid "Followers (Partners)"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
 msgstr ""
@@ -443,10 +438,10 @@ msgid "Footer content. If empty, the company name and address are used."
 msgstr ""
 
 #. module: bf_letter_writer
-#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
-msgid ""
-"For advanced cases, QWeb syntax is also accepted, e.g. <code>&lt;t "
-"t-out=\"object.partner_id.name\"/&gt;</code>."
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_quicktext__language__fr
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_template__language__fr
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
+msgid "French"
 msgstr ""
 
 #. module: bf_letter_writer
@@ -456,21 +451,21 @@ msgid "Full-page image used as the background in \"Uploaded image\" mode."
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_fundraising_core, bf_gantt, bf_letter_writer,
-#. bf_music_licensing
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
+msgid "Group By"
+msgstr ""
+
+#. module: bf_letter_writer
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
 msgid "Group by"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__has_message
 msgid "Has Message"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__id
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__id
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__id
@@ -481,25 +476,21 @@ msgid "ID"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_exception_icon
 msgid "Icon"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__activity_exception_icon
 msgid "Icon to indicate an exception activity."
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_has_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
@@ -540,19 +531,39 @@ msgid "Internal description of the template..."
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_is_follower
 msgid "Is Follower"
 msgstr ""
 
 #. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__lang_family
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__lang_family
+msgid "Lang Family"
+msgstr ""
+
+#. module: bf_letter_writer
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__lang
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__language
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__language
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
 msgid "Language"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_quicktext__language
+msgid ""
+"Language the block is written in. A letter only offers the blocks of its own"
+" language, plus those left without one."
+msgstr ""
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_template__language
+msgid ""
+"Language the template is written in. A letter only offers the templates of "
+"its own language, plus those left without one."
+msgstr ""
+
+#. module: bf_letter_writer
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__write_uid
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__write_uid
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__write_uid
@@ -563,8 +574,6 @@ msgid "Last Updated by"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__write_date
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_merge_wizard__write_date
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__write_date
@@ -630,6 +639,7 @@ msgstr ""
 #: model:ir.actions.act_window,name:bf_letter_writer.action_letter_template
 #: model:ir.ui.menu,name:bf_letter_writer.menu_letter_templates
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_list
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
 msgid "Letter templates"
 msgstr ""
 
@@ -642,6 +652,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_letter_writer/models/letter_document.py:0
 msgid "Letter to %s"
+msgstr ""
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__code
+msgid "Letter type"
 msgstr ""
 
 #. module: bf_letter_writer
@@ -725,7 +740,6 @@ msgid "Management of letter templates, text blocks and the letterhead."
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_letter_writer, bf_music_licensing
 #: model:res.groups,name:bf_letter_writer.group_letter_manager
 msgid "Manager"
 msgstr ""
@@ -751,37 +765,31 @@ msgid "Message"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_content
 msgid "Message Content"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_has_error
 msgid "Message Delivery error"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_search
 msgid "Message Search"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_content
 msgid "Message content, to be used only in searches"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_search
 msgid "Message search, to be used only in searches"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_ids
 msgid "Messages"
 msgstr ""
@@ -792,7 +800,6 @@ msgid "Moves each created letter to the \"Finalized\" state."
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__my_activity_date_deadline
 msgid "My Activity Deadline"
 msgstr ""
@@ -803,8 +810,6 @@ msgid "My letters"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_employee_experience_health, bf_gantt,
-#. bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__name
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__name
 msgid "Name"
@@ -817,25 +822,21 @@ msgid "New letter"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_date_deadline
 msgid "Next Activity Deadline"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_summary
 msgid "Next Activity Summary"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_type_id
 msgid "Next Activity Type"
 msgstr ""
@@ -854,42 +855,47 @@ msgid "None of the selected recipients has an email address."
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_fundraising_core, bf_gantt, bf_letter_writer,
-#. bf_music_licensing
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
 msgid "Notes"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_needaction_counter
 msgid "Number of Actions"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__message_has_error_counter
 msgid "Number of errors"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_needaction_counter
 msgid "Number of messages requiring action"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__message_has_error_counter
 msgid "Number of messages with delivery error"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_fundraising_core, bf_letter_writer
+#: model:ir.model,name:bf_letter_writer.model_onboarding_onboarding
+msgid "Onboarding"
+msgstr ""
+
+#. module: bf_letter_writer
 #: model:onboarding.onboarding.step,step_image_alt:bf_letter_writer.bf_onb_step_first_letter
 #: model:onboarding.onboarding.step,step_image_alt:bf_letter_writer.bf_onb_step_letterhead
 #: model:onboarding.onboarding.step,step_image_alt:bf_letter_writer.bf_onb_step_templates
 msgid "Onboarding Step Image"
+msgstr ""
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid ""
+"Only these fields can be used by someone who is not a template editor: any "
+"other expression stops the template from being applied."
 msgstr ""
 
 #. module: bf_letter_writer
@@ -953,7 +959,6 @@ msgid "Print"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__rating_ids
 msgid "Ratings"
 msgstr ""
@@ -982,7 +987,6 @@ msgid "Recipients"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__reference
 msgid "Reference"
 msgstr ""
@@ -993,13 +997,11 @@ msgid "Rendering Model"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_letter_writer
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
 msgid "Reset to draft"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__activity_user_id
 msgid "Responsible User"
 msgstr ""
@@ -1086,8 +1088,6 @@ msgid "Sent"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_employee_experience_health, bf_fundraising_core,
-#. bf_gantt, bf_letter_writer
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__sequence
 msgid "Sequence"
 msgstr ""
@@ -1095,6 +1095,13 @@ msgstr ""
 #. module: bf_letter_writer
 #: model:onboarding.onboarding.step,title:bf_letter_writer.bf_onb_step_letterhead
 msgid "Set up the letterhead"
+msgstr ""
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_template__code
+msgid ""
+"Shared by the versions of one letter in each language, so the bulk merge "
+"writes to each recipient in their own language."
 msgstr ""
 
 #. module: bf_letter_writer
@@ -1140,8 +1147,8 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_letter_writer/models/letter_document.py:0
 msgid ""
-"Some merge fields seem to be unfilled. Apply the template or fix the body "
-"before finalizing."
+"Some merge fields or [bracketed placeholders] seem to be unfilled. Apply the"
+" template or complete the body before finalizing."
 msgstr ""
 
 #. module: bf_letter_writer
@@ -1152,14 +1159,12 @@ msgid ""
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__state
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_search
 msgid "State"
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__activity_state
 msgid ""
 "Status based on activities\n"
@@ -1203,6 +1208,13 @@ msgid "Templates ready"
 msgstr ""
 
 #. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid ""
+"Text between square brackets, such as <code>[date and time]</code>, is left "
+"for the writer to fill in. The letter warns while one remains."
+msgstr ""
+
+#. module: bf_letter_writer
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__quicktext_id
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_view_form
 msgid "Text block"
@@ -1227,7 +1239,6 @@ msgid "The body of letter %s is empty."
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__name
 msgid "Title"
 msgstr ""
@@ -1240,7 +1251,6 @@ msgid ""
 msgstr ""
 
 #. module: bf_letter_writer
-#. modules: bf_budget, bf_gantt, bf_letter_writer, bf_music_licensing
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr ""

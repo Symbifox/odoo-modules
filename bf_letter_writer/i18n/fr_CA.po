@@ -3,7 +3,7 @@
 # the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_letter_writer 18.0.2.1.0\n"
+"Project-Id-Version: bf_letter_writer 18.0.2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-11 00:01+0000\n"
 "PO-Revision-Date: 2026-10-11 00:01+0000\n"
@@ -29,11 +29,6 @@ msgstr "::raccourci"
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
 msgid "<code>{{ object.company_id.name }}</code>: sender name"
 msgstr "<code>{{ object.company_id.name }}</code> — Nom de l'expéditeur"
-
-#. module: bf_letter_writer
-#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
-msgid "<code>{{ object.letter_date }}</code>: letter date"
-msgstr "<code>{{ object.letter_date }}</code> — Date de la lettre"
 
 #. module: bf_letter_writer
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
@@ -140,6 +135,7 @@ msgstr "Appliquer le modèle"
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_document_view_form
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_quicktext_view_form
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
 msgid "Archived"
 msgstr "Archivé"
 
@@ -461,15 +457,6 @@ msgstr ""
 "utilisés."
 
 #. module: bf_letter_writer
-#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
-msgid ""
-"For advanced cases, QWeb syntax is also accepted, e.g. <code>&lt;t "
-"t-out=\"object.partner_id.name\"/&gt;</code>."
-msgstr ""
-"Pour des cas avancés, la syntaxe QWeb est aussi acceptée,\n"
-"                                ex. <code>&lt;t t-out=\"object.partner_id.name\"/&gt;</code>."
-
-#. module: bf_letter_writer
 #: model:ir.model.fields,help:bf_letter_writer.field_letter_document__letterhead_image_preview
 #: model:ir.model.fields,help:bf_letter_writer.field_res_company__letterhead_image
 msgid "Full-page image used as the background in \"Uploaded image\" mode."
@@ -569,6 +556,9 @@ msgstr "Est un abonné"
 
 #. module: bf_letter_writer
 #: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__lang
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext__language
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__language
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
 msgid "Language"
 msgstr "Langue"
 
@@ -652,6 +642,7 @@ msgstr "Modèle de lettre"
 #: model:ir.actions.act_window,name:bf_letter_writer.action_letter_template
 #: model:ir.ui.menu,name:bf_letter_writer.menu_letter_templates
 #: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_list
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
 msgid "Letter templates"
 msgstr "Modèles de lettres"
 
@@ -1169,16 +1160,6 @@ msgid "Signature image"
 msgstr "Image de signature"
 
 #. module: bf_letter_writer
-#. odoo-python
-#: code:addons/bf_letter_writer/models/letter_document.py:0
-msgid ""
-"Some merge fields seem to be unfilled. Apply the template or fix the body "
-"before finalizing."
-msgstr ""
-"Des champs de fusion semblent non remplis. Appliquez le modèle ou corrigez "
-"le corps avant de finaliser."
-
-#. module: bf_letter_writer
 #: model:ir.model.fields,help:bf_letter_writer.field_res_company__letter_body_bottom_margin
 msgid ""
 "Space kept at the bottom of the page for modes without a generated "
@@ -1362,3 +1343,102 @@ msgstr ""
 #: code:addons/bf_letter_writer/models/letter_document.py:0
 msgid "letter"
 msgstr "lettre"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid ""
+"<code>{{ object.letter_date_display }}</code>: letter date, written out in "
+"the letter's language"
+msgstr ""
+"<code>{{ object.letter_date_display }}</code> : date de la lettre, en toutes"
+" lettres et dans la langue de la lettre"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__letter_date_display
+msgid "Date (written out)"
+msgstr "Date (en toutes lettres)"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_quicktext__language__en
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_template__language__en
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
+msgid "English"
+msgstr "Anglais"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_quicktext__language__fr
+#: model:ir.model.fields.selection,name:bf_letter_writer.selection__letter_template__language__fr
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
+msgid "French"
+msgstr "Français"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_search
+msgid "Group By"
+msgstr "Regrouper par"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_document__lang_family
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_quicktext_picker__lang_family
+msgid "Lang Family"
+msgstr "Famille de langue"
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_quicktext__language
+msgid ""
+"Language the block is written in. A letter only offers the blocks of its own"
+" language, plus those left without one."
+msgstr ""
+"Langue dans laquelle le bloc est écrit. Une lettre n'offre que les blocs de "
+"sa langue, et ceux qui n'en ont pas."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_template__language
+msgid ""
+"Language the template is written in. A letter only offers the templates of "
+"its own language, plus those left without one."
+msgstr ""
+"Langue dans laquelle le modèle est écrit. Une lettre n'offre que les modèles"
+" de sa langue, et ceux qui n'en ont pas."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,field_description:bf_letter_writer.field_letter_template__code
+msgid "Letter type"
+msgstr "Type de lettre"
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid ""
+"Only these fields can be used by someone who is not a template editor: any "
+"other expression stops the template from being applied."
+msgstr ""
+"Seuls ces champs peuvent servir à une personne qui n'est pas éditrice de "
+"modèles : toute autre expression empêche d'appliquer le modèle."
+
+#. module: bf_letter_writer
+#: model:ir.model.fields,help:bf_letter_writer.field_letter_template__code
+msgid ""
+"Shared by the versions of one letter in each language, so the bulk merge "
+"writes to each recipient in their own language."
+msgstr ""
+"Commun aux versions d'une même lettre dans chaque langue : la fusion en lot "
+"écrit ainsi à chaque destinataire dans sa langue."
+
+#. module: bf_letter_writer
+#. odoo-python
+#: code:addons/bf_letter_writer/models/letter_document.py:0
+msgid ""
+"Some merge fields or [bracketed placeholders] seem to be unfilled. Apply the"
+" template or complete the body before finalizing."
+msgstr ""
+"Des champs de fusion ou des [passages entre crochets] semblent ne pas être "
+"remplis. Appliquez le modèle ou complétez le corps avant de finaliser."
+
+#. module: bf_letter_writer
+#: model_terms:ir.ui.view,arch_db:bf_letter_writer.letter_template_view_form
+msgid ""
+"Text between square brackets, such as <code>[date and time]</code>, is left "
+"for the writer to fill in. The letter warns while one remains."
+msgstr ""
+"Le texte entre crochets, comme <code>[date et heure]</code>, est à compléter"
+" par la personne qui écrit. La lettre avertit tant qu'il en reste."

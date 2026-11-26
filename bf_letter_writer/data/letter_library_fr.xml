@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Bibliothèque de gestion courante, en français.
+
+    noupdate="0", voulu : Symbifox tient ces modèles, et chaque mise à niveau
+    les remet à la version livrée. Le client qui veut en adapter un le DUPLIQUE ;
+    sa copie n'a pas d'identifiant XML et aucune montée n'y touche. Une lettre
+    déjà écrite ne bouge pas non plus : elle copie le corps quand on applique
+    le modèle.
+
+    Le contenu ne passe pas par le catalogue .po : un modèle par langue, avec
+    sa version anglaise dans letter_library_en.xml (même `code`).
+
+    Champs de fusion : seulement ceux de la palette (LETTER_MERGE_TOKENS), qui
+    se rendent chez un usager qui n'est pas éditeur de modèles. Le reste est
+    entre crochets, à compléter par la personne qui écrit : la lettre l'avertit
+    tant qu'il en reste.
+
+    La formule d'appel, la formule de politesse et la signature sont des
+    champs de la lettre : les corps ne les répètent pas.
+-->
+<odoo noupdate="0">
+
+    <!-- ============================ Textes rapides ============================ -->
+
+    <record id="quicktext_fr_ouverture_rencontre" model="letter.quicktext">
+        <field name="name">Ouverture : à la suite de notre rencontre</field>
+        <field name="shortcut">::rencontre</field>
+        <field name="category">Ouverture</field>
+        <field name="language">fr</field>
+        <field name="sequence">20</field>
+        <field name="body_html" type="html"><p>À la suite de notre rencontre du [date], nous vous confirmons par la présente les éléments convenus.</p></field>
+    </record>
+
+    <record id="quicktext_fr_ouverture_reception" model="letter.quicktext">
+        <field name="name">Ouverture : nous avons bien reçu</field>
+        <field name="shortcut">::recu</field>
+        <field name="category">Ouverture</field>
+        <field name="language">fr</field>
+        <field name="sequence">30</field>
+        <field name="body_html" type="html"><p>Nous avons bien reçu votre envoi du [date] et nous vous en remercions.</p></field>
+    </record>
+
+    <record id="quicktext_fr_relance_premiere" model="letter.quicktext">
+        <field name="name">Relance : premier rappel</field>
+        <field name="shortcut">::rappel</field>
+        <field name="category">Relance</field>
+        <field name="language">fr</field>
+        <field name="sequence">10</field>
+        <field name="body_html" type="html"><p>Nous nous permettons de revenir vers vous au sujet de [objet], resté sans réponse à ce jour.</p></field>
+    </record>
+
+    <record id="quicktext_fr_relance_documents" model="letter.quicktext">
+        <field name="name">Relance : documents attendus</field>
+        <field name="shortcut">::docs</field>
+        <field name="category">Relance</field>
+        <field name="language">fr</field>
+        <field name="sequence">20</field>
+        <field name="body_html" type="html"><p>Nous n'avons pas encore reçu les documents demandés le [date]. Pourriez-vous nous les faire parvenir d'ici le [date limite]?</p></field>
+    </record>
+
+    <record id="quicktext_fr_relance_derniere" model="letter.quicktext">
+        <field name="name">Relance : dernier rappel</field>
+        <field name="shortcut">::dernier</field>
+        <field name="category">Relance</field>
+        <field name="language">fr</field>
+        <field name="sequence">30</field>
+        <field name="body_html" type="html"><p>Sans nouvelles de votre part d'ici le [date limite], nous donnerons suite au dossier.</p></field>
+    </record>
+
+    <record id="quicktext_fr_cloture_questions" model="letter.quicktext">
+        <field name="name">Clôture : pour toute question</field>
+        <field name="shortcut">::questions</field>
+        <field name="category">Clôture</field>
+        <field name="language">fr</field>
+        <field name="sequence">20</field>
+        <field name="body_html" type="html"><p>Pour toute question, vous pouvez joindre [nom de la personne] au [numéro de téléphone] ou à [adresse courriel].</p></field>
+    </record>
+
+    <record id="quicktext_fr_cloture_remerciement" model="letter.quicktext">
+        <field name="name">Clôture : remerciement</field>
+        <field name="shortcut">::merci</field>
+        <field name="category">Clôture</field>
+        <field name="language">fr</field>
+        <field name="sequence">30</field>
+        <field name="body_html" type="html"><p>Nous vous remercions de votre collaboration.</p></field>
+    </record>
+
+    <record id="quicktext_fr_mention_conservation" model="letter.quicktext">
+        <field name="name">Mention de conservation</field>
+        <field name="shortcut">::conservation</field>
+        <field name="category">Mentions</field>
+        <field name="language">fr</field>
+        <field name="sequence">20</field>
+        <field name="body_html" type="html"><p><em>Les renseignements personnels transmis sont conservés le temps nécessaire au traitement de votre dossier et selon nos obligations de conservation, puis détruits de façon sécuritaire.</em></p></field>
+    </record>
+
+    <record id="quicktext_fr_mention_erreur" model="letter.quicktext">
+        <field name="name">Mention : destinataire par erreur</field>
+        <field name="shortcut">::erreur</field>
+        <field name="category">Mentions</field>
+        <field name="language">fr</field>
+        <field name="sequence">30</field>
+        <field name="body_html" type="html"><p><em>Si cette lettre vous est parvenue par erreur, merci de nous en aviser et de la détruire sans la copier ni la transmettre.</em></p></field>
+    </record>
+
+    <!-- ================================ Modèles ================================ -->
+
+    <record id="template_fr_convocation_rencontre" model="letter.template">
+        <field name="name">Convocation à une rencontre</field>
+        <field name="code">meeting_notice</field>
+        <field name="language">fr</field>
+        <field name="subject">Convocation à une rencontre</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_fr_cloture_questions'), ref('quicktext_disponibilite')])]"/>
+        <field name="body_html" type="html">
+            <p>Nous vous invitons à une rencontre le [date] à [heure], à [lieu ou lien de la visioconférence].</p>
+            <p>Cette rencontre portera sur [objet de la rencontre]. Y prendront part [noms des personnes présentes].</p>
+            <p>Merci de nous confirmer votre présence d'ici le [date limite]. Si ce moment ne vous convient pas, nous trouverons volontiers une autre plage avec vous.</p>
+        </field>
+    </record>
+
+    <record id="template_fr_confirmation_embauche" model="letter.template">
+        <field name="name">Confirmation d'embauche</field>
+        <field name="code">hiring_confirmation</field>
+        <field name="language">fr</field>
+        <field name="subject">Confirmation d'embauche</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.
+Ce modèle n'est pas un avis juridique. Faites valider le texte selon votre situation : contrat de travail, convention collective, normes du travail applicables.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_fr_cloture_questions'), ref('quicktext_confidentialite')])]"/>
+        <field name="body_html" type="html">
+            <p>{{ object.company_id.name }} a le plaisir de vous confirmer votre embauche au poste de [titre du poste].</p>
+            <p>Votre entrée en fonction est prévue le [date d'entrée en fonction], à [lieu de travail]. Votre horaire sera [horaire de travail] et votre rémunération de [rémunération].</p>
+            <p>[Nom de la personne responsable] vous accueillera à votre arrivée. Merci de nous retourner une copie signée de la présente d'ici le [date limite].</p>
+            <p>C'est avec plaisir que nous vous accueillons dans l'équipe.</p>
+        </field>
+    </record>
+
+    <record id="template_fr_fin_probation" model="letter.template">
+        <field name="name">Confirmation de fin de période de probation</field>
+        <field name="code">probation_end</field>
+        <field name="language">fr</field>
+        <field name="subject">Fin de votre période de probation</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.
+Ce modèle n'est pas un avis juridique. Faites valider le texte selon votre situation : contrat de travail, convention collective, normes du travail applicables.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_fr_cloture_questions')])]"/>
+        <field name="body_html" type="html">
+            <p>Nous avons le plaisir de vous confirmer que votre période de probation au poste de [titre du poste] a pris fin le [date de fin de la probation].</p>
+            <p>Votre emploi au sein de {{ object.company_id.name }} se poursuit selon les conditions de votre contrat. [S'il y a lieu, les conditions qui changent à la fin de la probation]</p>
+            <p>Nous vous remercions de votre engagement des derniers mois.</p>
+        </field>
+    </record>
+
+    <record id="template_fr_attestation_emploi" model="letter.template">
+        <field name="name">Attestation d'emploi</field>
+        <field name="code">employment_certificate</field>
+        <field name="language">fr</field>
+        <field name="subject">Attestation d'emploi</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.
+Ce modèle n'est pas un avis juridique. N'y mettez que ce que la personne a demandé d'attester : la rémunération, par exemple, n'y figure qu'à sa demande.</field>
+        <field name="body_html" type="html">
+            <p>{{ object.company_id.name }} atteste par la présente que [nom de la personne] occupe le poste de [titre du poste] depuis le [date d'entrée en fonction], à [temps plein ou temps partiel].</p>
+            <p>[Facultatif, à la demande de la personne : rémunération ou autre précision]</p>
+            <p>Cette attestation est délivrée à la demande de la personne intéressée, pour servir à qui de droit.</p>
+        </field>
+    </record>
+
+    <record id="template_fr_recommandation" model="letter.template">
+        <field name="name">Lettre de recommandation</field>
+        <field name="code">recommendation</field>
+        <field name="language">fr</field>
+        <field name="subject">Lettre de recommandation</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.
+Ce modèle n'est pas un avis juridique. Ne rédigez une recommandation qu'avec l'accord de la personne, et n'y mettez que des faits que vous pouvez appuyer.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_fr_cloture_questions')])]"/>
+        <field name="body_html" type="html">
+            <p>J'ai eu le plaisir de travailler avec [nom de la personne] de [date de début] à [date de fin], alors que cette personne occupait le poste de [titre du poste] au sein de {{ object.company_id.name }}.</p>
+            <p>Durant cette période, [nom de la personne] a notamment [réalisation ou responsabilité marquante]. J'ai particulièrement apprécié [qualité observée, appuyée d'un exemple].</p>
+            <p>C'est sans réserve que je recommande [nom de la personne] pour [poste ou programme visé].</p>
+        </field>
+    </record>
+
+    <record id="template_fr_avis_augmentation" model="letter.template">
+        <field name="name">Avis d'augmentation de salaire</field>
+        <field name="code">salary_increase</field>
+        <field name="language">fr</field>
+        <field name="subject">Révision de votre rémunération</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.
+Ce modèle n'est pas un avis juridique. Faites valider le texte selon votre situation : contrat de travail, convention collective, politique de rémunération.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_confidentialite')])]"/>
+        <field name="body_html" type="html">
+            <p>Nous avons le plaisir de vous informer que votre rémunération passera de [rémunération actuelle] à [nouvelle rémunération] à compter du [date d'entrée en vigueur].</p>
+            <p>Cette révision reconnaît [motif : évaluation annuelle, nouvelles responsabilités, ajustement].</p>
+            <p>Nous vous remercions de votre contribution au sein de {{ object.company_id.name }}.</p>
+        </field>
+    </record>
+
+    <record id="template_fr_accuse_plainte" model="letter.template">
+        <field name="name">Accusé de réception d'une plainte</field>
+        <field name="code">complaint_ack</field>
+        <field name="language">fr</field>
+        <field name="subject">Accusé de réception de votre plainte</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.
+Ce modèle n'est pas un avis juridique. Si votre entreprise a une politique de traitement des plaintes, reprenez-en les étapes et les délais dans votre copie.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_fr_cloture_questions'), ref('quicktext_confidentialite')])]"/>
+        <field name="body_html" type="html">
+            <p>Nous avons bien reçu, le [date de réception], votre plainte concernant [objet de la plainte]. Elle porte le numéro de dossier {{ object.reference }}.</p>
+            <p>[Nom de la personne responsable] en assure le suivi. Nous examinerons les faits et vous communiquerons notre réponse d'ici le [date prévue de la réponse].</p>
+            <p>Merci de mentionner ce numéro de dossier dans vos échanges avec nous.</p>
+        </field>
+    </record>
+
+    <record id="template_fr_demande_documents" model="letter.template">
+        <field name="name">Demande de documents</field>
+        <field name="code">document_request</field>
+        <field name="language">fr</field>
+        <field name="subject">Demande de documents</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_fr_mention_conservation'), ref('quicktext_fr_cloture_questions')])]"/>
+        <field name="body_html" type="html">
+            <p>Afin de compléter votre dossier, nous avons besoin des documents suivants :</p>
+            <ul>
+                <li>[premier document]</li>
+                <li>[deuxième document]</li>
+            </ul>
+            <p>Vous pouvez nous les transmettre d'ici le [date limite] par [moyen de transmission].</p>
+        </field>
+    </record>
+
+    <record id="template_fr_changement_service" model="letter.template">
+        <field name="name">Avis de changement de service</field>
+        <field name="code">service_change</field>
+        <field name="language">fr</field>
+        <field name="subject">Changement à votre service</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.
+Si le changement touche le prix ou les conditions d'un contrat, vérifiez le préavis que ce contrat prévoit avant d'envoyer.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_fr_cloture_questions'), ref('quicktext_disponibilite')])]"/>
+        <field name="body_html" type="html">
+            <p>Nous souhaitons vous informer d'un changement à [nom du service], qui prendra effet le [date d'entrée en vigueur].</p>
+            <p>[Décrire le changement : ce qui change, ce qui reste pareil.]</p>
+            <p>[Ce qu'il faut faire de votre côté, ou préciser qu'il n'y a rien à faire]</p>
+        </field>
+    </record>
+
+    <record id="template_fr_rappel_paiement" model="letter.template">
+        <field name="name">Rappel de retard de paiement</field>
+        <field name="code">payment_reminder</field>
+        <field name="language">fr</field>
+        <field name="subject">Rappel : facture [numéro de facture]</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.
+Ce modèle n'est pas un avis juridique. N'y annoncez des frais de retard ou une mise en demeure que si votre contrat ou vos conditions de vente les prévoient.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_fr_relance_derniere'), ref('quicktext_fr_cloture_questions')])]"/>
+        <field name="body_html" type="html">
+            <p>Sauf erreur de notre part, la facture [numéro de facture] du [date de la facture], au montant de [montant], demeure impayée à ce jour. Son échéance était le [date d'échéance].</p>
+            <p>Nous vous saurions gré d'en effectuer le paiement d'ici le [date limite]. Si le paiement a déjà été fait, merci de ne pas tenir compte de cette lettre.</p>
+        </field>
+    </record>
+
+    <record id="template_fr_resiliation_entente" model="letter.template">
+        <field name="name">Avis de résiliation d'entente</field>
+        <field name="code">agreement_termination</field>
+        <field name="language">fr</field>
+        <field name="subject">Avis de résiliation de l'entente [nom de l'entente]</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.
+Ce modèle n'est pas un avis juridique. Relisez la clause de résiliation de l'entente (préavis, forme, motif) et faites valider le texte avant de l'envoyer.</field>
+        <field name="body_html" type="html">
+            <p>Par la présente, {{ object.company_id.name }} vous avise de la résiliation de l'entente [nom de l'entente] conclue le [date de l'entente], conformément à sa clause [numéro de la clause de résiliation].</p>
+            <p>La résiliation prendra effet le [date de prise d'effet]. D'ici là, [préciser ce qui se poursuit, ce qui reste à facturer ou à remettre].</p>
+            <p>Nous vous remercions de la collaboration qui a été la nôtre.</p>
+        </field>
+    </record>
+
+    <record id="template_fr_accompagnement_livrable" model="letter.template">
+        <field name="name">Lettre d'accompagnement d'un livrable</field>
+        <field name="code">deliverable_cover</field>
+        <field name="language">fr</field>
+        <field name="subject">Remise de [nom du livrable]</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle livré par Symbifox et remis à jour à chaque mise à niveau : dupliquez-le pour l'adapter, archivez-le pour le retirer de la liste.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [ref('quicktext_fr_cloture_questions'), ref('quicktext_fr_cloture_remerciement')])]"/>
+        <field name="body_html" type="html">
+            <p>Vous trouverez ci-joint [nom du livrable], réalisé dans le cadre de [nom du mandat ou du projet].</p>
+            <p>[Résumer en une ou deux phrases ce que contient le livrable et ce qu'il permet.]</p>
+            <p>Nous vous invitons à nous transmettre vos commentaires d'ici le [date limite].</p>
+        </field>
+    </record>
+
+</odoo>

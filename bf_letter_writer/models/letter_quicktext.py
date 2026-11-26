@@ -1,5 +1,7 @@
 from odoo import fields, models
 
+from .letter_template import LETTER_LANGUAGES
+
 
 class LetterQuicktext(models.Model):
     _name = "letter.quicktext"
@@ -23,6 +25,12 @@ class LetterQuicktext(models.Model):
         "res.company",
         string="Company",
         help="Leave empty to share the block across all companies.",
+    )
+    language = fields.Selection(
+        LETTER_LANGUAGES,
+        string="Language",
+        help="Language the block is written in. A letter only offers the "
+             "blocks of its own language, plus those left without one.",
     )
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)

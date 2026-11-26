@@ -74,8 +74,10 @@
                     </div>
                     <group>
                         <group>
+                            <field name="lang_family" invisible="1"/>
                             <field name="template_id"
-                                   options="{'no_create_edit': True}"/>
+                                   options="{'no_create_edit': True}"
+                                   domain="['|', ('language', '=', False), ('language', '=', lang_family)]"/>
                             <field name="partner_id"/>
                             <field name="letter_date"/>
                         </group>
