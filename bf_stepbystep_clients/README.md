@@ -277,6 +277,15 @@ portal. Internal projects, hour banks, templates and personal projects have no
 such stage and no longer appear in the cards or the counters. To bring a
 mandate onto the dashboard, number its stages (see *Configuration*).
 
+## Readable notice list (v18.0.2.8.3)
+
+**Progress > Configuration > Client action notices** shows what happened and how
+the manager was told, in the reader's language: the *Event* column reads
+"Document deposited", "Questionnaire completed" or "Wrong access codes", and
+*Sent by* reads "Activity, email", instead of the internal codes (`deposit`,
+`activity,email`). The codes stay on the record; a bridge module that adds its
+own event shows its code until it names it.
+
 ## Mandates without a budget (v18.0.2.4.3)
 
 The budget of a mandate is the project's allocated hours. A project without

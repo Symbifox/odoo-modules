@@ -550,6 +550,7 @@ msgstr ""
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__event
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__event_label
 msgid "Event"
 msgstr ""
 
@@ -1106,7 +1107,7 @@ msgid "Sent at"
 msgstr ""
 
 #. module: bf_stepbystep_clients
-#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__channels
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__channels_label
 msgid "Sent by"
 msgstr ""
 
@@ -1600,4 +1601,39 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "⏸️ Paused projects ("
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__channels
+msgid "Sent by (codes)"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "Document deposited"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "Questionnaire completed"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "Wrong access codes"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "Odoo notification"
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "email"
 msgstr ""

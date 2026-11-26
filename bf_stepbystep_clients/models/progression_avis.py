@@ -95,8 +95,44 @@ class ProgressionNotice(models.Model):
         [("pending", "Pending"), ("done", "Sent"), ("failed", "Failed")],
         string="Status", default="pending", required=True, index=True, readonly=True)
     attempts = fields.Integer(string="Attempts", readonly=True, default=0)
-    channels = fields.Char(string="Sent by", readonly=True)
+    channels = fields.Char(string="Sent by (codes)", readonly=True)
     error = fields.Text(string="Last error", readonly=True)
+    # Ce que la liste AFFICHE : `event` et `channels` gardent les codes internes.
+    event_label = fields.Char(string="Event", compute="_compute_libelles")
+    channels_label = fields.Char(string="Sent by", compute="_compute_libelles")
+
+    def _progression_libelles_evenements(self):
+        """Le libellé de chaque événement connu. `survey` vient du pont
+        questionnaire : son code est un contrat, nommé ici pour que le pont n'ait
+        pas à suivre. Un code inconnu s'affiche tel quel."""
+        return {
+            "deposit": _("Document deposited"),
+            "survey": _("Questionnaire completed"),
+            "otp_failures": _("Wrong access codes"),
+        }
+
+    def _progression_libelles_canaux(self):
+        return {
+            "activity": _("Activity"),
+            "inbox": _("Odoo notification"),
+            "email": _("email"),
+        }
+
+    @api.depends("event", "channels")
+    @api.depends_context("lang")
+    def _compute_libelles(self):
+        evenements = self._progression_libelles_evenements()
+        canaux = self._progression_libelles_canaux()
+        for avis in self:
+            avis.event_label = evenements.get(avis.event, avis.event)
+            libelle = ", ".join(
+                canaux.get(c, c) for c in (avis.channels or "").split(",") if c)
+            avis.channels_label = libelle[:1].upper() + libelle[1:] if libelle else False
+
+    @api.depends("event_label")
+    def _compute_display_name(self):
+        for avis in self:
+            avis.display_name = avis.event_label or avis.event
 
     # ------------------------------------------------------------------
     # La tâche planifiée

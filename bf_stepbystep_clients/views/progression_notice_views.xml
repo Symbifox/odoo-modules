@@ -11,10 +11,10 @@
                   decoration-danger="state == 'failed'" decoration-muted="state == 'done'">
                 <field name="create_date" string="Action at"/>
                 <field name="project_id"/>
-                <field name="event"/>
+                <field name="event_label"/>
                 <field name="state"/>
                 <field name="attempts"/>
-                <field name="channels"/>
+                <field name="channels_label"/>
                 <field name="error"/>
                 <button name="action_retry" type="object" string="Retry" icon="fa-repeat"
                         invisible="state != 'failed'"/>

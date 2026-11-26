@@ -527,6 +527,39 @@ class TestReglagesEtLangue(TransactionCase, _AvecResponsable):
         formulaire.save().execute()
         self.assertTrue(societe.progression_notify_email)
 
+    def test_la_liste_des_avis_affiche_des_libelles_pas_des_codes(self):
+        """« deposit » et « activity,email » sont des codes : la liste les
+        traduit, dans la langue de qui la lit."""
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(
+            ["bf_stepbystep_clients"], ["fr_CA"], overwrite=True)
+        projet = self._mandat(self.env)[0]
+        Avis = self.env["bf.progression.notice"].sudo()
+        un = Avis.create({"project_id": projet.id, "event": "deposit",
+                          "channels": "activity,email"})
+        autre = Avis.create({"project_id": projet.id, "event": "inconnu"})
+        fr = un.with_context(lang="fr_CA")
+        self.assertEqual(fr.event_label, "Pièce déposée")
+        self.assertEqual(fr.channels_label, "Activité, courriel")
+        self.assertEqual(fr.display_name, "Pièce déposée")
+        en = un.with_context(lang="en_US")
+        self.assertEqual(en.event_label, "Document deposited")
+        self.assertEqual(en.channels_label, "Activity, email")
+        seul = Avis.create({"project_id": projet.id, "event": "deposit",
+                            "channels": "email"})
+        self.assertEqual(seul.with_context(lang="fr_CA").channels_label, "Courriel")
+        self.assertEqual(autre.event_label, "inconnu")
+        self.assertFalse(autre.channels_label)
+        vue = self.env.ref("bf_stepbystep_clients.bf_progression_notice_view_list")
+        self.assertIn('name="event_label"', vue.arch_db)
+        self.assertIn('name="channels_label"', vue.arch_db)
+        self.assertNotIn('name="channels"', vue.arch_db)
+        # Les EN-TÊTES aussi : la traduction d'un libellé suit le champ, pas le texte.
+        champs = Avis.with_context(lang="fr_CA").fields_get(
+            ["event_label", "channels_label"], ["string"])
+        self.assertEqual(champs["event_label"]["string"], "Événement")
+        self.assertEqual(champs["channels_label"]["string"], "Envoyé par")
+
     def test_l_avis_parle_la_langue_du_responsable(self):
         """Libellés ET nom de la pièce : la copie `document_name` du dépôt est
         dans la langue du client, la pièce se relit dans celle du responsable."""

@@ -69,7 +69,7 @@
     #   Les actions du portail (copier l'adresse, régénérer le jeton, oublier les
     #   appareils) exigent en plus le droit d'écrire CE mandat : sur une base
     #   multi-société, le groupe seul laissait agir sur ceux d'une autre société.
-    "version": "18.0.2.8.2",
+    "version": "18.0.2.8.3",
     "category": "Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
