@@ -7,18 +7,18 @@
 
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="mb-0">Tableau de bord - Audit TI</h2>
+                <h2 class="mb-0">Dashboard - IT Audit</h2>
                 <div class="d-flex gap-2">
                     <button class="btn btn-outline-secondary" t-on-click="toggleDelivered">
                         <t t-if="state.includeDelivered">
-                            <i class="fa fa-eye-slash"/> Masquer livr&#233;s
+                            <i class="fa fa-eye-slash"/> Hide delivered
                         </t>
                         <t t-else="">
-                            <i class="fa fa-eye"/> Inclure livr&#233;s
+                            <i class="fa fa-eye"/> Include delivered
                         </t>
                     </button>
                     <button class="btn btn-primary" t-on-click="onRefresh">
-                        <i class="fa fa-refresh"/> Actualiser
+                        <i class="fa fa-refresh"/> Refresh
                     </button>
                 </div>
             </div>
@@ -27,7 +27,7 @@
             <t t-if="state.loading">
                 <div class="text-center py-5">
                     <i class="fa fa-spinner fa-spin fa-3x"/>
-                    <p class="mt-2">Chargement...</p>
+                    <p class="mt-2">Loading...</p>
                 </div>
             </t>
 
@@ -47,7 +47,7 @@
                         <div class="card bg-info text-white h-100" style="cursor:pointer" t-on-click="() => this.openAssessments([['status', '!=', 'pending']])">
                             <div class="card-body text-center">
                                 <h3 class="mb-0"><t t-esc="state.data.summary.pct_assessed"/>%</h3>
-                                <small>&#201;valu&#233;s (<t t-esc="state.data.summary.assessed_count"/>/<t t-esc="state.data.summary.total_assessments"/>)</small>
+                                <small>Assessed (<t t-esc="state.data.summary.assessed_count"/>/<t t-esc="state.data.summary.total_assessments"/>)</small>
                             </div>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                         <div class="card bg-success text-white h-100" style="cursor:pointer" t-on-click="() => this.openAssessments([['status', '=', 'adequate']])">
                             <div class="card-body text-center">
                                 <h3 class="mb-0"><t t-esc="state.data.summary.pct_adequate"/>%</h3>
-                                <small>Ad&#233;quats (<t t-esc="state.data.summary.adequate_count"/>)</small>
+                                <small>Adequate (<t t-esc="state.data.summary.adequate_count"/>)</small>
                             </div>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                         <div class="card text-white h-100" style="cursor:pointer;background-color:#6f42c1" t-on-click="() => this.openAssessments([['status', '=', 'adequate']])">
                             <div class="card-body text-center">
                                 <h3 class="mb-0"><t t-esc="state.data.summary.pct_covered"/>%</h3>
-                                <small>Couverture (<t t-esc="state.data.summary.covered_elements"/>/<t t-esc="state.data.summary.total_possible_elements"/>)</small>
+                                <small>Coverage (<t t-esc="state.data.summary.covered_elements"/>/<t t-esc="state.data.summary.total_possible_elements"/>)</small>
                             </div>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                         <div class="card bg-warning text-dark h-100" style="cursor:pointer" t-on-click="() => this.openWatchpoints()">
                             <div class="card-body text-center">
                                 <h3 class="mb-0" t-esc="state.data.summary.open_watchpoints"/>
-                                <small>Points de vigilance</small>
+                                <small>Watchpoints</small>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                 <!-- Actions rapides -->
                 <div class="mb-4">
                     <button class="btn btn-sm btn-outline-primary me-2" t-on-click="autoLinkProjects">
-                        <i class="fa fa-link"/> Lier les projets Odoo
+                        <i class="fa fa-link"/> Link Odoo projects
                     </button>
                 </div>
 
@@ -89,7 +89,7 @@
                     <div class="col-lg-8 mb-4">
                         <div class="card h-100">
                             <div class="card-header">
-                                <h5 class="mb-0">Progression par client</h5>
+                                <h5 class="mb-0">Progress by client</h5>
                             </div>
                             <div class="card-body" style="max-height:500px;overflow-y:auto">
                                 <t t-if="state.data.progress_by_client and state.data.progress_by_client.length">
@@ -100,7 +100,7 @@
                                                 <small class="fw-bold">
                                                     <t t-esc="client.name"/>
                                                     <t t-if="client.state === 'delivered'">
-                                                        <span class="badge bg-success ms-1" style="font-size:10px">Livr&#233;</span>
+                                                        <span class="badge bg-success ms-1" style="font-size:10px">Delivered</span>
                                                     </t>
                                                     <t t-elif="client.adequate == client.total and client.total > 0">
                                                         <span class="badge bg-success ms-1" style="font-size:10px">100%</span>
@@ -117,28 +117,28 @@
                                             <div class="progress" style="height:20px">
                                                 <div class="progress-bar bg-success"
                                                     t-attf-style="width: {{ client.pct_adequate }}%"
-                                                    t-att-title="'' + client.adequate + ' adéquats'"/>
+                                                    t-att-title="getBarTitle('adequate', client.adequate)"/>
                                                 <t t-if="client.partial > 0">
                                                     <div class="progress-bar bg-warning"
                                                         t-attf-style="width: {{ (client.partial / client.total * 100).toFixed(0) }}%"
-                                                        t-att-title="'' + client.partial + ' partiels'"/>
+                                                        t-att-title="getBarTitle('partial', client.partial)"/>
                                                 </t>
                                                 <t t-if="client.inadequate > 0">
                                                     <div class="progress-bar bg-danger"
                                                         t-attf-style="width: {{ (client.inadequate / client.total * 100).toFixed(0) }}%"
-                                                        t-att-title="'' + client.inadequate + ' inadéquats'"/>
+                                                        t-att-title="getBarTitle('inadequate', client.inadequate)"/>
                                                 </t>
                                                 <t t-if="client.other > 0">
                                                     <div class="progress-bar bg-info"
                                                         t-attf-style="width: {{ (client.other / client.total * 100).toFixed(0) }}%"
-                                                        t-att-title="'' + client.other + ' à valider/déclarés/N.A.'"/>
+                                                        t-att-title="getBarTitle('other', client.other)"/>
                                                 </t>
                                             </div>
                                         </div>
                                     </t>
                                 </t>
                                 <t t-else="">
-                                    <p class="text-muted text-center">Aucune donn&#233;e</p>
+                                    <p class="text-muted text-center">No data</p>
                                 </t>
                             </div>
                         </div>
@@ -148,7 +148,7 @@
                     <div class="col-lg-4 mb-4">
                         <div class="card h-100">
                             <div class="card-header">
-                                <h5 class="mb-0">Distribution des statuts</h5>
+                                <h5 class="mb-0">Status distribution</h5>
                             </div>
                             <div class="card-body">
                                 <t t-if="state.data.status_distribution and state.data.status_distribution.length">
@@ -162,7 +162,7 @@
                                     </t>
                                 </t>
                                 <t t-else="">
-                                    <p class="text-muted text-center">Aucune donn&#233;e</p>
+                                    <p class="text-muted text-center">No data</p>
                                 </t>
                             </div>
                         </div>
@@ -174,16 +174,16 @@
                     <div class="col-lg-6 mb-4">
                         <div class="card h-100">
                             <div class="card-header">
-                                <h5 class="mb-0">Fournisseurs</h5>
+                                <h5 class="mb-0">Suppliers</h5>
                             </div>
                             <div class="card-body" style="max-height:400px;overflow-y:auto">
                                 <t t-if="state.data.progress_by_supplier and state.data.progress_by_supplier.length">
                                     <table class="table table-sm">
                                         <thead>
                                             <tr>
-                                                <th>Fournisseur</th>
-                                                <th>Statut NC</th>
-                                                <th class="text-end">&#201;valu&#233;s</th>
+                                                <th>Supplier</th>
+                                                <th>NC status</th>
+                                                <th class="text-end">Assessed</th>
                                                 <th class="text-end">Total</th>
                                             </tr>
                                         </thead>
@@ -200,7 +200,7 @@
                                     </table>
                                 </t>
                                 <t t-else="">
-                                    <p class="text-muted text-center">Aucune donn&#233;e</p>
+                                    <p class="text-muted text-center">No data</p>
                                 </t>
                             </div>
                         </div>
@@ -210,7 +210,7 @@
                     <div class="col-lg-6 mb-4">
                         <div class="card h-100">
                             <div class="card-header">
-                                <h5 class="mb-0">&#201;valuations r&#233;centes</h5>
+                                <h5 class="mb-0">Recent assessments</h5>
                             </div>
                             <div class="card-body" style="max-height:400px;overflow-y:auto">
                                 <t t-if="state.data.recent_assessments and state.data.recent_assessments.length">
@@ -219,8 +219,8 @@
                                             <tr>
                                                 <th>Date</th>
                                                 <th>Client</th>
-                                                <th>N&#176;</th>
-                                                <th>Statut</th>
+                                                <th>No.</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -240,7 +240,7 @@
                                     </table>
                                 </t>
                                 <t t-else="">
-                                    <p class="text-muted text-center">Aucune &#233;valuation r&#233;cente</p>
+                                    <p class="text-muted text-center">No recent assessments</p>
                                 </t>
                             </div>
                         </div>
@@ -253,9 +253,9 @@
                         <div class="col-12 mb-4">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">Points de vigilance ouverts</h5>
+                                    <h5 class="mb-0">Open watchpoints</h5>
                                     <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openWatchpoints()">
-                                        Voir tout
+                                        View all
                                     </button>
                                 </div>
                                 <div class="card-body">
@@ -263,10 +263,10 @@
                                         <thead>
                                             <tr>
                                                 <th>Client</th>
-                                                <th>&#201;l&#233;ment</th>
+                                                <th>Element</th>
                                                 <th>Description</th>
-                                                <th>Priorit&#233;</th>
-                                                <th>&#201;tat</th>
+                                                <th>Priority</th>
+                                                <th>State</th>
                                             </tr>
                                         </thead>
                                         <tbody>

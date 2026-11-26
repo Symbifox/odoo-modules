@@ -61,25 +61,25 @@
                 <field name="client_id"/>
                 <field name="element_id"/>
                 <field name="description"/>
-                <filter name="open" string="Ouverts" domain="[('state', '=', 'open')]"/>
-                <filter name="in_progress" string="En cours" domain="[('state', '=', 'in_progress')]"/>
-                <filter name="high" string="Haute priorité" domain="[('priority', '=', 'high')]"/>
+                <filter name="open" string="Open" domain="[('state', '=', 'open')]"/>
+                <filter name="in_progress" string="In progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="high" string="High priority" domain="[('priority', '=', 'high')]"/>
                 <separator/>
-                <filter name="my_activities" string="Mes activités"
+                <filter name="my_activities" string="My activities"
                     domain="[('activity_ids.user_id', '=', uid)]"/>
-                <filter name="late_activities" string="En retard"
+                <filter name="late_activities" string="Overdue"
                     domain="[('activity_date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_client" string="Client" context="{'group_by': 'client_id'}"/>
-                    <filter name="group_priority" string="Priorité" context="{'group_by': 'priority'}"/>
-                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_priority" string="Priority" context="{'group_by': 'priority'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_audit_watchpoint" model="ir.actions.act_window">
-        <field name="name">Points de vigilance</field>
+        <field name="name">Watchpoints</field>
         <field name="res_model">audit.watchpoint</field>
         <field name="view_mode">list,form</field>
     </record>

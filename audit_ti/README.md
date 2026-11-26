@@ -37,6 +37,19 @@ Odoo 18 module for managing IT compliance audits under Quebec's **Loi 25** (Act 
 odoo -i audit_ti -d <database> --stop-after-init
 ```
 
+## Languages (v18.0.1.17.5)
+
+The interface is written in English and ships a complete `fr_CA` catalogue: a French-speaking
+user reads the module in French, an English-speaking one (`en_US`, `en_CA`) in English. The
+progress report, its recommendations and the dashboard follow the language of whoever opens
+them; a watchpoint's follow-up activity is written in the language of the person it is
+assigned to.
+
+The 14 audit elements (name, description, best practices) are translatable fields since this
+version. On upgrade, the migration switches an element to the English source only while it
+still carries the text the module shipped; an element edited by hand is left as it is, and its
+French stays readable.
+
 ## License
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
@@ -46,7 +59,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-11-06, this version converts automatically to
+- **Change Date**: on 2030-11-26, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Disclaimer

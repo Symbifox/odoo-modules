@@ -3,15 +3,17 @@ from odoo import fields, models
 
 class AuditElement(models.Model):
     _name = "audit.element"
-    _description = "Élément d'audit TI"
+    _description = "IT audit element"
     _order = "sequence, id"
 
-    num = fields.Integer(string="Numéro", required=True)
-    name = fields.Char(string="Nom", required=True)
-    description = fields.Text(string="Description")
-    best_practices = fields.Html(string="Meilleures pratiques Loi 25")
-    sequence = fields.Integer(string="Séquence", default=10)
+    num = fields.Integer(string="Number", required=True)
+    # Traduisibles depuis 18.0.1.17.5 : la grille livrée se lit dans la
+    # langue de qui l'ouvre (source anglaise, français au catalogue fr_CA).
+    name = fields.Char(string="Name", required=True, translate=True)
+    description = fields.Text(string="Description", translate=True)
+    best_practices = fields.Html(string="Law 25 best practices", translate=True)
+    sequence = fields.Integer(string="Sequence", default=10)
 
     _sql_constraints = [
-        ("num_unique", "unique(num)", "Le numéro d'élément doit être unique."),
+        ("num_unique", "unique(num)", "The element number must be unique."),
     ]

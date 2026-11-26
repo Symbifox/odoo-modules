@@ -2,8 +2,8 @@
 <odoo>
     <data noupdate="1">
         <record id="mail_activity_type_audit_watchpoint" model="mail.activity.type">
-            <field name="name">Point de vigilance Audit TI</field>
-            <field name="summary">Suivi d'un point de vigilance</field>
+            <field name="name">IT Audit watchpoint</field>
+            <field name="summary">Watchpoint follow-up</field>
             <field name="res_model">audit.watchpoint</field>
             <field name="icon">fa-exclamation-triangle</field>
             <field name="delay_count">7</field>

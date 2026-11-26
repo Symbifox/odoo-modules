@@ -3,7 +3,7 @@
 
     <!-- Custom paper format for audit progress report -->
     <record id="paperformat_audit_progress" model="report.paperformat">
-        <field name="name">Audit TI &#8212; Rapport d&#8217;avancement</field>
+        <field name="name">IT Audit &#8212; Progress report</field>
         <field name="format">A4</field>
         <field name="orientation">Portrait</field>
         <field name="margin_top">10</field>
@@ -18,11 +18,11 @@
 
     <!-- Report action -->
     <record id="action_report_audit_progress" model="ir.actions.report">
-        <field name="name">Rapport d&#8217;avancement</field>
+        <field name="name">Progress report</field>
         <field name="model">audit.client</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">audit_ti.report_audit_progress</field>
-        <field name="print_report_name">'Rapport_Avancement_Audit_TI_%s' % object.name</field>
+        <field name="print_report_name">'IT_Audit_Progress_Report_%s' % object.name</field>
         <field name="binding_model_id" ref="model_audit_client"/>
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="paperformat_audit_progress"/>
@@ -54,7 +54,7 @@
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr>
                             <td style="text-align: left; width: 33%;">
-                                Confidentiel &#8212; <t t-esc="doc.name"/>
+                                Confidential — <t t-esc="doc.name"/>
                             </td>
                             <td style="text-align: center; width: 34%;">
                                 <span t-if="data.get('brand_name')" t-att-style="'color: %s; font-weight: 600;' % data.get('brand_primary', '#0693e3')" t-esc="data['brand_name']"/>
@@ -78,12 +78,12 @@
                                 </td>
                                 <td style="vertical-align: top;">
                                     <div style="font-size: 20px; font-weight: 700; color: #344054; letter-spacing: -0.4px; line-height: 1.2;">
-                                        Rapport d&#8217;avancement &#8212; Audit TI
+                                        Progress report — IT Audit
                                     </div>
                                     <div style="font-size: 11px; color: #667085; margin-top: 2px;">
                                         <strong style="color: #344054;"><t t-esc="doc.name"/></strong>
                                         <span style="margin: 0 6px;">&#183;</span>
-                                        Conformit&#233; Loi 25
+                                        Law 25 compliance
                                         <span style="margin: 0 6px;">&#183;</span>
                                         <t t-esc="data['today']"/>
                                     </div>
@@ -94,7 +94,7 @@
                         <!-- ============ DELIVERED BANNER ============ -->
                         <t t-if="data.get('state') == 'delivered' and data.get('delivered_date')">
                             <div style="background: #ecfdf3; border-left: 3px solid #12b76a; padding: 10px 16px; margin-bottom: 20px; color: #027a48; font-size: 12px; border-radius: 0 4px 4px 0;">
-                                Audit livr&#233; le <strong><t t-esc="data['delivered_date']"/></strong>
+                                Audit delivered on <strong><t t-esc="data['delivered_date']"/></strong>
                             </div>
                         </t>
 
@@ -151,7 +151,7 @@
                         <!-- ============ SECTION: SOMMAIRE EX&#201;CUTIF ============ -->
                         <t t-set="s" t-value="2 if data.get('synthesis_html') else 1"/>
                         <div style="font-size: 13px; font-weight: 700; color: #0693e3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 12px;">
-                            <t t-esc="s"/>. Sommaire ex&#233;cutif
+                            <t t-esc="s"/>. Executive summary
                         </div>
 
                         <!-- Metrics -->
@@ -167,9 +167,9 @@
                                             <span style="color: #dc3545;"><t t-esc="data['rag_red']"/></span>
                                         </div>
                                         <div style="font-size: 10px; color: #667085; margin-top: 6px; letter-spacing: 0.3px;">
-                                            <span style="color: #28a745;">&#9632;</span> Couvert
-                                            <span style="margin-left: 4px; color: #ffc107;">&#9632;</span> Mitig&#233;
-                                            <span style="margin-left: 4px; color: #dc3545;">&#9632;</span> Non couvert
+                                            <span style="color: #28a745;">&#9632;</span> Covered
+                                            <span style="margin-left: 4px; color: #ffc107;">&#9632;</span> Mixed
+                                            <span style="margin-left: 4px; color: #dc3545;">&#9632;</span> Not covered
                                         </div>
                                     </div>
                                 </td>
@@ -178,7 +178,7 @@
                                         <div style="font-size: 26px; font-weight: 700; color: #7a5af8; line-height: 1;">
                                             <t t-esc="data['assessed']"/><span style="font-size: 14px; font-weight: 400; color: #667085;">&#8202;/&#8202;<t t-esc="data['total_assessments']"/></span>
                                         </div>
-                                        <div style="font-size: 10px; color: #667085; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px;">&#201;valuations</div>
+                                        <div style="font-size: 10px; color: #667085; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px;">Assessments</div>
                                     </div>
                                 </td>
                                 <td style="width: 33%; padding: 0 0 0 4px;">
@@ -186,7 +186,7 @@
                                         <div style="font-size: 26px; font-weight: 700; color: #f04438; line-height: 1;">
                                             <t t-esc="data['open_watchpoints']"/>
                                         </div>
-                                        <div style="font-size: 10px; color: #667085; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px;">Points de vigilance</div>
+                                        <div style="font-size: 10px; color: #667085; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px;">Watchpoints</div>
                                     </div>
                                 </td>
                             </tr>
@@ -195,7 +195,7 @@
                         <!-- Progress bar -->
                         <div style="margin-bottom: 24px;">
                             <div style="font-size: 11px; margin-bottom: 4px; color: #667085;">
-                                Progression : <strong style="color: #344054;"><t t-esc="data['progress_pct']"/> %</strong>
+                                Progress: <strong style="color: #344054;"><t t-esc="data['progress_pct']"/> %</strong>
                             </div>
                             <div style="background: #eaecf0; border-radius: 6px; height: 10px; overflow: hidden;">
                                 <div t-attf-style="background: linear-gradient(90deg, #0693e3, #12b76a); height: 10px; border-radius: 6px; width: {{ data['progress_pct'] }}%; min-width: 0;"/>
@@ -205,16 +205,16 @@
                         <!-- ============ SECTION 3: COUVERTURE ============ -->
                         <t t-set="s" t-value="s + 1"/>
                         <div style="font-size: 13px; font-weight: 700; color: #0693e3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">
-                            <t t-esc="s"/>. Couverture des 14 &#233;l&#233;ments
+                            <t t-esc="s"/>. Coverage of the 14 elements
                         </div>
 
                         <table class="audit-table" style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 11px;">
                             <thead>
                                 <tr>
-                                    <th style="padding: 8px 8px; text-align: left; width: 28px; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">N&#176;</th>
-                                    <th style="padding: 8px 8px; text-align: left; width: 140px; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">&#201;l&#233;ment</th>
-                                    <th style="padding: 8px 8px; text-align: center; width: 90px; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">Statut</th>
-                                    <th style="padding: 8px 8px; text-align: left; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">Recommandation</th>
+                                    <th style="padding: 8px 8px; text-align: left; width: 28px; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">No.</th>
+                                    <th style="padding: 8px 8px; text-align: left; width: 140px; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">Element</th>
+                                    <th style="padding: 8px 8px; text-align: center; width: 90px; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">Status</th>
+                                    <th style="padding: 8px 8px; text-align: left; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">Recommendation</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -243,14 +243,14 @@
                         <t t-if="data['suppliers']">
                             <t t-set="s" t-value="s + 1"/>
                             <div style="font-size: 13px; font-weight: 700; color: #0693e3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">
-                                <t t-esc="s"/>. Matrice fournisseurs
+                                <t t-esc="s"/>. Supplier matrix
                             </div>
 
                             <table class="audit-table" style="width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 10px;">
                                 <thead>
                                     <tr>
-                                        <th style="padding: 6px 6px; text-align: left; width: 28px; color: #667085; font-weight: 600; font-size: 9px; text-transform: uppercase;">N&#176;</th>
-                                        <th style="padding: 6px 6px; text-align: left; color: #667085; font-weight: 600; font-size: 9px; text-transform: uppercase;">&#201;l&#233;ment</th>
+                                        <th style="padding: 6px 6px; text-align: left; width: 28px; color: #667085; font-weight: 600; font-size: 9px; text-transform: uppercase;">No.</th>
+                                        <th style="padding: 6px 6px; text-align: left; color: #667085; font-weight: 600; font-size: 9px; text-transform: uppercase;">Element</th>
                                         <t t-foreach="data['suppliers']" t-as="sup">
                                             <th style="padding: 6px 6px; text-align: center; min-width: 60px; color: #667085; font-weight: 600; font-size: 9px;">
                                                 <div><t t-esc="sup.name"/></div>
@@ -284,38 +284,38 @@
 
                             <!-- Symbol legend -->
                             <div style="font-size: 9px; color: #98a2b3; margin-bottom: 6px; padding: 6px 0 0 0;">
-                                <span style="color: #28a745; font-weight: 700;">&#10003;</span>&#160;Ad&#233;quat
-                                <span style="margin-left: 10px; color: #fd7e14; font-weight: 700;">&#9680;</span>&#160;Partiel / D&#233;clar&#233;
-                                <span style="margin-left: 10px; color: #fd7e14; font-weight: 700;">?</span>&#160;&#192; valider
-                                <span style="margin-left: 10px; color: #dc3545; font-weight: 700;">&#10007;</span>&#160;Inad&#233;quat
-                                <span style="margin-left: 10px; color: #6c757d; font-weight: 700;">&#8230;</span>&#160;En attente
+                                <span style="color: #28a745; font-weight: 700;">&#10003;</span>&#160;Adequate
+                                <span style="margin-left: 10px; color: #fd7e14; font-weight: 700;">&#9680;</span>&#160;Partial / Declared
+                                <span style="margin-left: 10px; color: #fd7e14; font-weight: 700;">?</span>&#160;To validate
+                                <span style="margin-left: 10px; color: #dc3545; font-weight: 700;">&#10007;</span>&#160;Inadequate
+                                <span style="margin-left: 10px; color: #6c757d; font-weight: 700;">&#8230;</span>&#160;Pending
                                 <span style="margin-left: 10px; color: #d0d5dd; font-weight: 700;">&#8212;</span>&#160;N/A
                             </div>
                             <!-- Role legend -->
                             <div style="font-size: 9px; color: #98a2b3; margin-bottom: 24px; padding: 0 0 6px 0;">
-                                R&#244;les &#8212;
-                                <span style="font-weight: 600; color: #667085;">X</span>&#160;Prestataire TI
+                                Roles —
+                                <span style="font-weight: 600; color: #667085;">X</span>&#160;IT provider
                                 <span style="margin-left: 10px; font-weight: 600; color: #667085;">A</span>&#160;Application
                                 <span style="margin-left: 10px; font-weight: 600; color: #667085;">C</span>&#160;Cloud
-                                <span style="margin-left: 10px; font-weight: 600; color: #667085;">S</span>&#160;Sauvegarde
+                                <span style="margin-left: 10px; font-weight: 600; color: #667085;">S</span>&#160;Backup
                             </div>
                         </t>
 
                         <!-- ============ SECTION 5: POINTS DE VIGILANCE ============ -->
                         <t t-set="s" t-value="s + 1"/>
                         <div style="font-size: 13px; font-weight: 700; color: #0693e3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">
-                            <t t-esc="s"/>. Points de vigilance
+                            <t t-esc="s"/>. Watchpoints
                         </div>
 
                         <t t-if="not data['wp_high'] and not data['wp_medium'] and not data['wp_low']">
-                            <p style="color: #98a2b3; font-style: italic; font-size: 11px;">Aucun point de vigilance ouvert.</p>
+                            <p style="color: #98a2b3; font-style: italic; font-size: 11px;">No open watchpoints.</p>
                         </t>
 
                         <!-- High priority -->
                         <t t-if="data['wp_high']">
                             <div style="margin-bottom: 14px;">
                                 <div style="font-size: 11px; font-weight: 600; margin-bottom: 6px;">
-                                    <span style="display: inline-block; background: #fef3f2; color: #b42318; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;">Haute</span>
+                                    <span style="display: inline-block; background: #fef3f2; color: #b42318; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;">High</span>
                                 </div>
                                 <table class="audit-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
                                     <t t-foreach="data['wp_high']" t-as="wp">
@@ -330,8 +330,8 @@
                                                 <t t-esc="wp.description"/>
                                             </td>
                                             <td style="padding: 6px 8px; width: 70px; text-align: center; font-size: 10px; color: #667085;">
-                                                <t t-if="wp.state == 'open'">Ouvert</t>
-                                                <t t-elif="wp.state == 'in_progress'">En cours</t>
+                                                <t t-if="wp.state == 'open'">Open</t>
+                                                <t t-elif="wp.state == 'in_progress'">In progress</t>
                                                 <t t-else=""><t t-esc="wp.state"/></t>
                                             </td>
                                         </tr>
@@ -344,7 +344,7 @@
                         <t t-if="data['wp_medium']">
                             <div style="margin-bottom: 14px;">
                                 <div style="font-size: 11px; font-weight: 600; margin-bottom: 6px;">
-                                    <span style="display: inline-block; background: #fffaeb; color: #b54708; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;">Moyenne</span>
+                                    <span style="display: inline-block; background: #fffaeb; color: #b54708; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;">Medium</span>
                                 </div>
                                 <table class="audit-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
                                     <t t-foreach="data['wp_medium']" t-as="wp">
@@ -359,8 +359,8 @@
                                                 <t t-esc="wp.description"/>
                                             </td>
                                             <td style="padding: 6px 8px; width: 70px; text-align: center; font-size: 10px; color: #667085;">
-                                                <t t-if="wp.state == 'open'">Ouvert</t>
-                                                <t t-elif="wp.state == 'in_progress'">En cours</t>
+                                                <t t-if="wp.state == 'open'">Open</t>
+                                                <t t-elif="wp.state == 'in_progress'">In progress</t>
                                                 <t t-else=""><t t-esc="wp.state"/></t>
                                             </td>
                                         </tr>
@@ -373,7 +373,7 @@
                         <t t-if="data['wp_low']">
                             <div style="margin-bottom: 14px;">
                                 <div style="font-size: 11px; font-weight: 600; margin-bottom: 6px;">
-                                    <span style="display: inline-block; background: #f2f4f7; color: #475467; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;">Basse</span>
+                                    <span style="display: inline-block; background: #f2f4f7; color: #475467; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;">Low</span>
                                 </div>
                                 <table class="audit-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
                                     <t t-foreach="data['wp_low']" t-as="wp">
@@ -388,8 +388,8 @@
                                                 <t t-esc="wp.description"/>
                                             </td>
                                             <td style="padding: 6px 8px; width: 70px; text-align: center; font-size: 10px; color: #667085;">
-                                                <t t-if="wp.state == 'open'">Ouvert</t>
-                                                <t t-elif="wp.state == 'in_progress'">En cours</t>
+                                                <t t-if="wp.state == 'open'">Open</t>
+                                                <t t-elif="wp.state == 'in_progress'">In progress</t>
                                                 <t t-else=""><t t-esc="wp.state"/></t>
                                             </td>
                                         </tr>

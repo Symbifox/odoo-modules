@@ -1,7 +1,9 @@
 /** @odoo-module **/
 
 import { Component, useState, onWillStart } from "@odoo/owl";
+import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
+import { sprintf } from "@web/core/utils/strings";
 import { useService } from "@web/core/utils/hooks";
 
 class AuditDashboard extends Component {
@@ -41,13 +43,13 @@ class AuditDashboard extends Component {
 
     getStatusLabel(status) {
         const labels = {
-            adequate: "Adéquat",
-            inadequate: "Inadéquat",
-            partial: "Partiel",
-            to_validate: "À valider",
-            declared: "Déclaré",
-            pending: "En attente",
-            na: "N/A",
+            adequate: _t("Adequate"),
+            inadequate: _t("Inadequate"),
+            partial: _t("Partial"),
+            to_validate: _t("To validate"),
+            declared: _t("Declared"),
+            pending: _t("Pending"),
+            na: _t("N/A"),
         };
         return labels[status] || status;
     }
@@ -66,7 +68,7 @@ class AuditDashboard extends Component {
     }
 
     getPriorityLabel(priority) {
-        const labels = { high: "Haute", medium: "Moyenne", low: "Basse" };
+        const labels = { high: _t("High"), medium: _t("Medium"), low: _t("Low") };
         return labels[priority] || priority;
     }
 
@@ -80,20 +82,35 @@ class AuditDashboard extends Component {
     }
 
     getStateLabel(state) {
-        const labels = { open: "Ouvert", in_progress: "En cours", resolved: "Résolu" };
+        const labels = {
+            open: _t("Open"),
+            in_progress: _t("In progress"),
+            resolved: _t("Resolved"),
+        };
         return labels[state] || state;
     }
 
     getNcStatusLabel(status) {
         const labels = {
-            completed: "Complété",
-            wip: "En cours",
-            to_create: "À créer",
-            saas: "SaaS",
-            new: "Nouveau",
-            na: "N/A",
+            completed: _t("Completed"),
+            wip: _t("In progress"),
+            to_create: _t("To create"),
+            saas: _t("SaaS"),
+            new: _t("New"),
+            na: _t("N/A"),
         };
         return labels[status] || status;
+    }
+
+    // Infobulle d'une barre : un `t-att-title` concaténé ne se traduit pas.
+    getBarTitle(kind, count) {
+        const formats = {
+            adequate: _t("%s adequate"),
+            partial: _t("%s partial"),
+            inadequate: _t("%s inadequate"),
+            other: _t("%s to validate/declared/N/A"),
+        };
+        return sprintf(formats[kind], count);
     }
 
     getProgressWidth(row) {

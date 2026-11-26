@@ -1,0 +1,1963 @@
+# Translation of IT Audit - Law 25 - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: audit_ti 18.0.1.17.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-26 09:29+0000\n"
+"PO-Revision-Date: 2026-11-26 09:29+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "%(count)s client(s) linked to their Odoo project."
+msgstr "%(count)s client(s) lié(s) à leur projet Odoo."
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+msgid "%s adequate"
+msgstr "%s adéquats"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+msgid "%s inadequate"
+msgstr "%s inadéquats"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+msgid "%s partial"
+msgstr "%s partiels"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+msgid "%s to validate/declared/N/A"
+msgstr "%s à valider/déclarés/N.A."
+
+#. module: audit_ti
+#: model:ir.actions.report,print_report_name:audit_ti.action_report_audit_progress
+msgid "'IT_Audit_Progress_Report_%s' % object.name"
+msgstr "'Rapport_Avancement_Audit_TI_%s' % object.name"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ". Coverage of the 14 elements"
+msgstr ". Couverture des 14 éléments"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ". Executive summary"
+msgstr ". Sommaire exécutif"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ". Supplier matrix"
+msgstr ". Matrice fournisseurs"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ". Watchpoints"
+msgstr ". Points de vigilance"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_10
+msgid "3-2-1 rule (3 copies, 2 media, 1 off-site)"
+msgstr "Règle 3-2-1 (3 copies, 2 médias, 1 hors-site)"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid "<span class=\"page\"/> / <span class=\"topage\"/>"
+msgstr "<span class=\"page\"/> / <span class=\"topage\"/>"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ""
+"<span style=\"color: #28a745; font-weight: 700;\">✓</span> Adequate\n"
+"                                <span style=\"margin-left: 10px; color: #fd7e14; font-weight: 700;\">◐</span> Partial / Declared\n"
+"                                <span style=\"margin-left: 10px; color: #fd7e14; font-weight: 700;\">?</span> To validate\n"
+"                                <span style=\"margin-left: 10px; color: #dc3545; font-weight: 700;\">✗</span> Inadequate\n"
+"                                <span style=\"margin-left: 10px; color: #6c757d; font-weight: 700;\">…</span> Pending\n"
+"                                <span style=\"margin-left: 10px; color: #d0d5dd; font-weight: 700;\">—</span> N/A"
+msgstr ""
+"<span style=\"color: #28a745; font-weight: 700;\">✓</span> Adéquat\n"
+"                                <span style=\"margin-left: 10px; color: #fd7e14; font-weight: 700;\">◐</span> Partiel / Déclaré\n"
+"                                <span style=\"margin-left: 10px; color: #fd7e14; font-weight: 700;\">?</span> À valider\n"
+"                                <span style=\"margin-left: 10px; color: #dc3545; font-weight: 700;\">✗</span> Inadéquat\n"
+"                                <span style=\"margin-left: 10px; color: #6c757d; font-weight: 700;\">…</span> En attente\n"
+"                                <span style=\"margin-left: 10px; color: #d0d5dd; font-weight: 700;\">—</span> N/A"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ""
+"<span style=\"color: #28a745;\">■</span> Covered\n"
+"                                            <span style=\"margin-left: 4px; color: #ffc107;\">■</span> Mixed\n"
+"                                            <span style=\"margin-left: 4px; color: #dc3545;\">■</span> Not covered"
+msgstr ""
+"<span style=\"color: #28a745;\">■</span> Couvert\n"
+"                                            <span style=\"margin-left: 4px; color: #ffc107;\">■</span> Mitigé\n"
+"                                            <span style=\"margin-left: 4px; color: #dc3545;\">■</span> Non couvert"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ""
+"<span style=\"color: #667085; font-size: 13px; font-weight: "
+"400;\"> / </span>"
+msgstr ""
+"<span style=\"color: #667085; font-size: 13px; font-weight: "
+"400;\"> / </span>"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ""
+"<span style=\"display: inline-block; background: #f2f4f7; color: #475467; "
+"padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: "
+"600;\">Low</span>"
+msgstr ""
+"<span style=\"display: inline-block; background: #f2f4f7; color: #475467; "
+"padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: "
+"600;\">Basse</span>"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ""
+"<span style=\"display: inline-block; background: #fef3f2; color: #b42318; "
+"padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: "
+"600;\">High</span>"
+msgstr ""
+"<span style=\"display: inline-block; background: #fef3f2; color: #b42318; "
+"padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: "
+"600;\">Haute</span>"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ""
+"<span style=\"display: inline-block; background: #fffaeb; color: #b54708; "
+"padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: "
+"600;\">Medium</span>"
+msgstr ""
+"<span style=\"display: inline-block; background: #fffaeb; color: #b54708; "
+"padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: "
+"600;\">Moyenne</span>"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ""
+"<span style=\"margin: 0 6px;\">·</span>\n"
+"                                        Law 25 compliance\n"
+"                                        <span style=\"margin: 0 6px;\">·</span>"
+msgstr ""
+"<span style=\"margin: 0 6px;\">·</span>\n"
+"                                        Conformité Loi 25\n"
+"                                        <span style=\"margin: 0 6px;\">·</span>"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_9
+msgid "Access control, media destruction"
+msgstr "Contrôle accès, destruction supports"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_6
+msgid "Access controls (MFA)"
+msgstr "Contrôles d'accès (MFA)"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_6
+msgid "Access revocation process when people leave"
+msgstr "Processus de révocation des accès lors de départs"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__message_needaction
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__message_needaction
+msgid "Action Needed"
+msgstr "Action Needed"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__active
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__activity_ids
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__activity_ids
+msgid "Activities"
+msgstr "Activities"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__activity_exception_decoration
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Activity Exception Decoration"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__activity_state
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__activity_state
+msgid "Activity State"
+msgstr "Activity State"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__activity_type_icon
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Activity Type Icon"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__adequate_count
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_assessment__status__adequate
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_list
+msgid "Adequate"
+msgstr "Adéquat"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Adequate ("
+msgstr "Adéquats ("
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__alias_ids
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier_alias__name
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_supplier_form
+msgid "Alias"
+msgstr "Alias"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_1
+msgid "Annual policy review"
+msgstr "Revue annuelle des politiques"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Assess a replacement or require contractual cooperation."
+msgstr "Évaluer le remplacement ou exiger la coopération contractuelle."
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__assessed_count
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_list
+msgid "Assessed"
+msgstr "Évalués"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Assessed ("
+msgstr "Évalués ("
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__assessed_by
+msgid "Assessed by"
+msgstr "Évalué par"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__assessment_count
+msgid "Assessment count"
+msgstr "Nb évaluations"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__assessed_date
+msgid "Assessment date"
+msgstr "Date d'évaluation"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Assessment matrix"
+msgstr "Matrice d'évaluation"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__synthesis_html
+msgid "Assessment synthesis"
+msgstr "Synthèse de l'évaluation"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_dashboard.py:0
+#: model:ir.actions.act_window,name:audit_ti.action_audit_assessment
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__assessment_ids
+#: model:ir.ui.menu,name:audit_ti.menu_audit_assessment
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid "Assessments"
+msgstr "Évaluations"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__notes
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_form
+msgid "Assessor notes"
+msgstr "Notes de l'évaluateur"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_2
+msgid "Asset register"
+msgstr "Registre des actifs"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__assigned_to
+msgid "Assigned to"
+msgstr "Assigné à"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__message_attachment_count
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__message_attachment_count
+msgid "Attachment Count"
+msgstr "Attachment Count"
+
+#. module: audit_ti
+#: model:ir.model,name:audit_ti.model_audit_client_supplier
+msgid "Audit client-supplier relationship"
+msgstr "Relation client-fournisseur audit"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid "Audit delivered on"
+msgstr "Audit livré le"
+
+#. module: audit_ti
+#: model:ir.actions.act_window,name:audit_ti.action_audit_element
+#: model:ir.ui.menu,name:audit_ti.menu_audit_element
+msgid "Audit elements"
+msgstr "Éléments d'audit"
+
+#. module: audit_ti
+#: model:ir.model,name:audit_ti.model_audit_client
+msgid "Audited client"
+msgstr "Client audité"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_7
+msgid "Automatic alerts on anomalies"
+msgstr "Alertes automatiques pour les anomalies"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_11
+msgid "Automatic session lock"
+msgstr "Verrouillage automatique des sessions"
+
+#. module: audit_ti
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__supplier_type__backup
+msgid "Backup"
+msgstr "Sauvegarde"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_10
+msgid "Backups & recovery"
+msgstr "Sauvegardes & reprise"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__element_best_practices
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_form
+msgid "Best practices"
+msgstr "Meilleures pratiques"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_6
+msgid "Centralized identity management (IAM/SSO)"
+msgstr "Gestion centralisée des identités (IAM/SSO)"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_7
+msgid "Centralized security event logging"
+msgstr "Journalisation centralisée des événements de sécurité"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_12
+msgid "Clause for the return/destruction of data at the end of the contract"
+msgstr "Clause de restitution/destruction des données en fin de contrat"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__client_id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client_supplier__client_id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__client_id
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_watchpoint_search
+msgid "Client"
+msgstr "Client"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Client name"
+msgstr "Nom du client"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__client_supplier_ids
+msgid "Client relationships"
+msgstr "Relations clients"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.actions.act_window,name:audit_ti.action_audit_client
+#: model:ir.ui.menu,name:audit_ti.menu_audit_client
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_supplier_form
+msgid "Clients"
+msgstr "Clients"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_3
+msgid "Clients, employees, cameras, logs"
+msgstr "Clients, employés, caméras, journaux"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_2
+msgid "Complete inventory of systems and applications"
+msgstr "Inventaire complet des systèmes et applications"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Complete the assessment of:"
+msgstr "Compléter l'évaluation de :"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__nc_status__completed
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_supplier_search
+msgid "Completed"
+msgstr "Complété"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid "Confidential —"
+msgstr "Confidentiel —"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_12
+msgid "Confidentiality clause in every supplier contract"
+msgstr "Clause de confidentialité dans tous les contrats fournisseurs"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_12
+msgid "Confidentiality, incidents, return of data"
+msgstr "Confidentialité, incidents, restitution"
+
+#. module: audit_ti
+#: model:ir.ui.menu,name:audit_ti.menu_audit_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_12
+msgid "Contracts & SLA"
+msgstr "Contrats & SLA"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_14
+msgid "Contractual guarantee of data location and control"
+msgstr "Garantie contractuelle de localisation et de contrôle des données"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Coverage"
+msgstr "Couverture"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Coverage ("
+msgstr "Couverture ("
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__element_summary_html
+msgid "Coverage of the 14 elements"
+msgstr "Couverture des 14 éléments"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Covered"
+msgstr "Couvert"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_assessment.py:0
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_form
+msgid "Create a watchpoint"
+msgstr "Créer un point de vigilance"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__create_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__create_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client_supplier__create_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__create_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__create_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier_alias__create_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__create_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__create_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client_supplier__create_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__create_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__create_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier_alias__create_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: audit_ti
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_watchpoint__source__custom
+msgid "Custom"
+msgstr "Personnalisé"
+
+#. module: audit_ti
+#: model:ir.actions.client,name:audit_ti.action_audit_dashboard
+#: model:ir.ui.menu,name:audit_ti.menu_audit_dashboard
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Dashboard - IT Audit"
+msgstr "Tableau de bord - Audit TI"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_14
+msgid ""
+"Data hosted by a sovereign provider (not subject to the Cloud Act/FISA)"
+msgstr ""
+"Données hébergées par un fournisseur souverain (non soumis au Cloud "
+"Act/FISA)"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_14
+msgid "Data repatriation plan, if needed"
+msgstr "Plan de rapatriement des données si nécessaire"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_14
+msgid "Data sovereignty"
+msgstr "Souveraineté des données"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Date"
+msgstr "Date"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_assessment__status__declared
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+msgid "Declared"
+msgstr "Déclaré"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_client__state__delivered
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_search
+msgid "Delivered"
+msgstr "Livré"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__delivered_by
+msgid "Delivered by"
+msgstr "Livré par"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__delivered_date
+msgid "Delivery date"
+msgstr "Date de livraison"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__description
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__description
+msgid "Description"
+msgstr "Description"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_11
+msgid "Disk encryption, MDM, BYOD"
+msgstr "Chiffrement disque, MDM, BYOD"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__display_name
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__display_name
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client_supplier__display_name
+#: model:ir.model.fields,field_description:audit_ti.field_audit_dashboard__display_name
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__display_name
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__display_name
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier_alias__display_name
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_11
+msgid "Documented BYOD policy, if applicable"
+msgstr "Politique BYOD documentée si applicable"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_12
+msgid "Documented SLA with incident response times"
+msgstr "SLA documenté avec temps de réponse pour les incidents"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_10
+msgid "Documented and tested disaster recovery plan"
+msgstr "Plan de reprise après sinistre documenté et testé"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_2
+msgid "Documented data flows between systems"
+msgstr "Documentation des flux de données entre systèmes"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_1
+msgid "Documented incident response plan"
+msgstr "Plan de réponse aux incidents documenté"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_1
+msgid ""
+"Documented password policy (12-character minimum, complexity, rotation)"
+msgstr ""
+"Politique de mots de passe documentée (longueur min 12 car., complexité, "
+"rotation)"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_7
+msgid "EDR/antivirus on every workstation and server"
+msgstr "Solution EDR/antivirus sur tous les postes et serveurs"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__element_id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__element_id
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+msgid "Element"
+msgstr "Élément"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Element not applicable to the current suppliers."
+msgstr "Élément non applicable aux fournisseurs actuels."
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_10
+msgid "Encrypted backups"
+msgstr "Chiffrement des sauvegardes"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_5
+msgid "Encryption & key management"
+msgstr "Chiffrement & gestion des clefs"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_5
+msgid "Encryption of sensitive emails"
+msgstr "Chiffrement des courriels sensibles"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_1
+msgid "Encryption policy for data at rest and in transit"
+msgstr "Politique de chiffrement des données au repos et en transit"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_11
+msgid "Endpoints (PCs/mobile)"
+msgstr "Clients (PC/mobiles)"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_8
+msgid "Firewall configured with restrictive rules"
+msgstr "Pare-feu configuré avec règles restrictives"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Fix the gaps identified at:"
+msgstr "Corriger les lacunes identifiées chez :"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_watchpoint.py:0
+msgid "Follow-up: %(client)s%(element)s"
+msgstr "Suivi : %(client)s%(element)s"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__message_follower_ids
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__message_follower_ids
+msgid "Followers"
+msgstr "Followers"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__message_partner_ids
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Followers (Partners)"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__activity_type_icon
+#: model:ir.model.fields,help:audit_ti.field_audit_watchpoint__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome icon e.g. fa-tasks"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_11
+msgid "Full-disk encryption (BitLocker, FileVault)"
+msgstr "Chiffrement de disque complet (BitLocker, FileVault)"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__rag_green
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_list
+msgid "G"
+msgstr "V"
+
+#. module: audit_ti
+#: model:ir.actions.server,name:audit_ti.action_batch_print_progress_report
+msgid "Generate progress reports"
+msgstr "Générer rapports d'avancement"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Green elements"
+msgstr "Éléments verts"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__rag_green
+msgid "Green elements (all suppliers adequate)"
+msgstr "Éléments verts (tous fournisseurs adéquats)"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_search
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_supplier_search
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_watchpoint_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_5
+msgid "HTTPS required on every web portal"
+msgstr "HTTPS obligatoire sur tous les portails web"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_7
+msgid "Hardened configurations (CIS Benchmarks)"
+msgstr "Durcissement des configurations (CIS Benchmarks)"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__has_message
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__has_message
+msgid "Has Message"
+msgstr "Has Message"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Hide delivered"
+msgstr "Masquer livrés"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_watchpoint__priority__high
+msgid "High"
+msgstr "Haute"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_watchpoint_search
+msgid "High priority"
+msgstr "Haute priorité"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_7
+msgid "Hygiene & monitoring"
+msgstr "Hygiène & surveillance"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client_supplier__id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_dashboard__id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier_alias__id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__id
+msgid "ID"
+msgstr "ID"
+
+#. module: audit_ti
+#: model:ir.module.category,name:audit_ti.module_category_audit_ti
+#: model:ir.ui.menu,name:audit_ti.menu_audit_ti_root
+msgid "IT Audit"
+msgstr "Audit TI"
+
+#. module: audit_ti
+#: model:ir.model,name:audit_ti.model_audit_dashboard
+msgid "IT Audit Dashboard"
+msgstr "Tableau de bord Audit TI"
+
+#. module: audit_ti
+#: model:res.groups,name:audit_ti.group_audit_manager
+msgid "IT Audit Manager"
+msgstr "Gestionnaire Audit TI"
+
+#. module: audit_ti
+#: model:res.groups,name:audit_ti.group_audit_user
+msgid "IT Audit User"
+msgstr "Utilisateur Audit TI"
+
+#. module: audit_ti
+#: model:mail.activity.type,name:audit_ti.mail_activity_type_audit_watchpoint
+msgid "IT Audit watchpoint"
+msgstr "Point de vigilance Audit TI"
+
+#. module: audit_ti
+#: model:ir.model,name:audit_ti.model_audit_assessment
+msgid "IT audit assessment"
+msgstr "Évaluation d'audit TI"
+
+#. module: audit_ti
+#: model:ir.model,name:audit_ti.model_audit_element
+msgid "IT audit element"
+msgstr "Élément d'audit TI"
+
+#. module: audit_ti
+#: model:ir.model,name:audit_ti.model_audit_watchpoint
+msgid "IT audit watchpoint"
+msgstr "Point de vigilance audit TI"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_1
+msgid "IT policies & procedures"
+msgstr "Politiques & Procédures TI"
+
+#. module: audit_ti
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__supplier_type__it_provider
+msgid "IT provider"
+msgstr "Prestataire TI"
+
+#. module: audit_ti
+#: model:ir.model,name:audit_ti.model_audit_supplier
+msgid "IT supplier"
+msgstr "Fournisseur TI"
+
+#. module: audit_ti
+#: model:ir.model,name:audit_ti.model_audit_supplier_alias
+msgid "IT supplier alias"
+msgstr "Alias fournisseur TI"
+
+#. module: audit_ti
+#: model:ir.actions.act_window,name:audit_ti.action_audit_supplier
+#: model:ir.ui.menu,name:audit_ti.menu_audit_supplier
+msgid "IT suppliers"
+msgstr "Fournisseurs TI"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__activity_exception_icon
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__activity_exception_icon
+msgid "Icon"
+msgstr "Icon"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__activity_exception_icon
+#: model:ir.model.fields,help:audit_ti.field_audit_watchpoint__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icon to indicate an exception activity."
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__message_needaction
+#: model:ir.model.fields,help:audit_ti.field_audit_watchpoint__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "If checked, new messages require your attention."
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__message_has_error
+#: model:ir.model.fields,help:audit_ti.field_audit_client__message_has_sms_error
+#: model:ir.model.fields,help:audit_ti.field_audit_watchpoint__message_has_error
+#: model:ir.model.fields,help:audit_ti.field_audit_watchpoint__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "If checked, some messages have a delivery error."
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_14
+msgid ""
+"If the provider is American (Microsoft, Google, AWS): Cloud Act risk "
+"documented, PIA completed"
+msgstr ""
+"Si fournisseur US (Microsoft, Google, AWS) : risque Cloud Act documenté, "
+"EFVP réalisée"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_client__state__in_progress
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_watchpoint__state__in_progress
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_search
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_supplier_search
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_watchpoint_search
+msgid "In progress"
+msgstr "En cours"
+
+#. module: audit_ti
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__nc_status__wip
+msgid "In progress (WIP)"
+msgstr "En cours (WIP)"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_assessment__status__inadequate
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+msgid "Inadequate"
+msgstr "Inadéquat"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Include delivered"
+msgstr "Inclure livrés"
+
+#. module: audit_ti
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_watchpoint__source__audit_initial
+msgid "Initial audit"
+msgstr "Audit initial"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_3
+msgid ""
+"Inventory of personal information by category (clients, employees, children)"
+msgstr ""
+"Inventaire des renseignements personnels par catégorie (clients, employés, "
+"enfants)"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__message_is_follower
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__message_is_follower
+msgid "Is Follower"
+msgstr "Is Follower"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__write_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__write_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client_supplier__write_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__write_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__write_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier_alias__write_uid
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__write_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__write_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client_supplier__write_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__write_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__write_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier_alias__write_date
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__best_practices
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_element_form
+msgid "Law 25 best practices"
+msgstr "Meilleures pratiques Loi 25"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_4
+msgid "Least privilege"
+msgstr "Moindre privilège"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_4
+msgid "Least privilege applied to every account"
+msgstr "Principe du moindre privilège appliqué à tous les comptes"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Link Odoo projects"
+msgstr "Lier les projets Odoo"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_2
+msgid "List of the SaaS and cloud services in use"
+msgstr "Liste des services SaaS et cloud utilisés"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_13
+msgid "List of the subcontractors with access to the data"
+msgstr "Liste des sous-traitants ayant accès aux données"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Loading..."
+msgstr "Chargement..."
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_watchpoint__priority__low
+msgid "Low"
+msgstr "Basse"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_6
+msgid "MFA recommended for all users"
+msgstr "MFA recommandée pour tous les utilisateurs"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_6
+msgid "MFA, IAM/SSO, revocation"
+msgstr "MFA, IAM/SSO, révocation"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_13
+msgid "Mandatory notification of any incident involving PI"
+msgstr "Notification obligatoire en cas d'incident impliquant des RP"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_2
+msgid "Map of the databases holding PI"
+msgstr "Cartographie des bases de données contenant des RP"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Mark as delivered"
+msgstr "Marquer comme livré"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Mark this audit as delivered?"
+msgstr "Marquer cet audit comme livré ?"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_watchpoint__priority__medium
+msgid "Medium"
+msgstr "Moyenne"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__message_has_error
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__message_has_error
+msgid "Message Delivery error"
+msgstr "Message Delivery error"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__message_ids
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_4
+msgid "Minimal access rights, minimal data"
+msgstr "Droits d'accès minimaux, données minimales"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_4
+msgid "Minimal collection of personal data"
+msgstr "Collecte minimale de données personnelles"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_11
+msgid "Mobile device management (MDM), if applicable"
+msgstr "Gestion des appareils mobiles (MDM) si applicable"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_6
+msgid "Multi-factor authentication (MFA) required for administrator access"
+msgstr ""
+"Authentification multifacteur (MFA) obligatoire pour les accès "
+"administrateurs"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__my_activity_date_deadline
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "My Activity Deadline"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_watchpoint_search
+msgid "My activities"
+msgstr "Mes activités"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_assessment__status__na
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__nc_status__na
+msgid "N/A"
+msgstr "N/A"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__nc_status
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_supplier_search
+msgid "NC status"
+msgstr "Statut NC"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__name
+#: model:ir.model.fields,field_description:audit_ti.field_audit_dashboard__name
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__name
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__synthesis_html
+msgid ""
+"Narrative summary of the assessment, shown at the start of the PDF report."
+msgstr "Résumé narratif de l'évaluation, affiché en début de rapport PDF."
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_8
+msgid "Network"
+msgstr "Réseau"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_8
+msgid "Network segmentation (VLAN) to isolate sensitive data"
+msgstr "Segmentation réseau (VLAN) pour isoler les données sensibles"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__nc_status__new
+msgid "New"
+msgstr "Nouveau"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__activity_calendar_event_id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Next Activity Calendar Event"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__activity_date_deadline
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Next Activity Deadline"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__activity_summary
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__activity_summary
+msgid "Next Activity Summary"
+msgstr "Next Activity Summary"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__activity_type_id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__activity_type_id
+msgid "Next Activity Type"
+msgstr "Next Activity Type"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "No action required."
+msgstr "Aucune action requise."
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "No assessment completed — prioritize this element."
+msgstr "Aucune évaluation complétée — prioriser cet élément."
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "No data"
+msgstr "Aucune donnée"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid "No open watchpoints."
+msgstr "Aucun point de vigilance ouvert."
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "No recent assessments"
+msgstr "Aucune évaluation récente"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_14
+msgid "No transfer outside Quebec without a privacy impact assessment"
+msgstr ""
+"Pas de transfert hors Québec sans évaluation des facteurs relatifs à la vie "
+"privée"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__element_num
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_form
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_list
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "No."
+msgstr "N°"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Not assessed"
+msgstr "Non évalué"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Not covered"
+msgstr "Non couvert"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_form
+msgid "Notes, rationale for the assessment..."
+msgstr "Notes, justification de l'évaluation..."
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_12
+msgid "Notification clause for confidentiality incidents"
+msgstr "Clause de notification en cas d'incident de confidentialité"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_13
+msgid "Notification of any change of subcontractor"
+msgstr "Notification en cas de changement de sous-traitant"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__num
+msgid "Number"
+msgstr "Numéro"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__message_needaction_counter
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Number of Actions"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__message_has_error_counter
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__message_has_error_counter
+msgid "Number of errors"
+msgstr "Number of errors"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__message_needaction_counter
+#: model:ir.model.fields,help:audit_ti.field_audit_watchpoint__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Number of messages requiring action"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__message_has_error_counter
+#: model:ir.model.fields,help:audit_ti.field_audit_watchpoint__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Number of messages with delivery error"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_14
+msgid "OR on-premises hosting controlled by the organization"
+msgstr "OU hébergement on-prem contrôlé par l'organisation"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__partner_id
+msgid "Odoo contact"
+msgstr "Contact Odoo"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__project_id
+msgid "Odoo project"
+msgstr "Projet Odoo"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_watchpoint__state__open
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_watchpoint_search
+msgid "Open"
+msgstr "Ouvert"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Open watchpoints"
+msgstr "Points de vigilance ouverts"
+
+#. module: audit_ti
+#: model:ir.ui.menu,name:audit_ti.menu_audit_operations
+msgid "Operations"
+msgstr "Opérations"
+
+#. module: audit_ti
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__supplier_type__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_search
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_watchpoint_search
+msgid "Overdue"
+msgstr "En retard"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_3
+msgid "PI inventory"
+msgstr "Inventaire des RP"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_13
+msgid "PI protection by the supplier and its subcontractors"
+msgstr "Protection RP fournisseur et ses sous-traitants"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_assessment__status__partial
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+msgid "Partial"
+msgstr "Partiel"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Partial / Mixed"
+msgstr "Partiel / Mitigé"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_1
+msgid "Password, encryption and backup policies"
+msgstr "Politiques mots de passe, chiffrement, sauvegardes"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_form
+msgid "Paste the supplier's response from the alignment table..."
+msgstr ""
+"Copier/coller la réponse du fournisseur depuis le tableau d'alignement..."
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_7
+msgid "Patches, EDR/AV, hardening, logging, alerts"
+msgstr "Correctifs, EDR/AV, durcissement, journalisation, alertes"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_assessment__status__pending
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+msgid "Pending"
+msgstr "En attente"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_10
+msgid "Periodic restore tests (mock-restore)"
+msgstr "Tests de restauration périodiques (mock-restore)"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_4
+msgid "Periodic review of access rights"
+msgstr "Revue périodique des droits d'accès"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_5
+msgid "Periodic rotation of encryption keys"
+msgstr "Rotation périodique des clés de chiffrement"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_9
+msgid "Physical access control to server rooms"
+msgstr "Contrôle d'accès physique aux salles serveurs"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_9
+msgid "Physical access log"
+msgstr "Registre des accès physiques"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_9
+msgid "Physical security"
+msgstr "Sécurité physique"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_14
+msgid "Preference for Quebec/Canadian providers for sensitive PI"
+msgstr ""
+"Préférence pour les fournisseurs québécois/canadiens pour les RP sensibles"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__priority
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_watchpoint_search
+msgid "Priority"
+msgstr "Priorité"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid ""
+"Priority action: no supplier adequately covers this element. Require "
+"compliance or assess alternatives:"
+msgstr ""
+"Action prioritaire : aucun fournisseur ne couvre adéquatement cet élément. "
+"Exiger la conformité ou évaluer des alternatives :"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__progress_pct
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_list
+msgid "Progress %"
+msgstr "Progression %"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Progress by client"
+msgstr "Progression par client"
+
+#. module: audit_ti
+#: model:ir.actions.report,name:audit_ti.action_report_audit_progress
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Progress report"
+msgstr "Rapport d’avancement"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid "Progress report — IT Audit"
+msgstr "Rapport d’avancement — Audit TI"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid "Progress:"
+msgstr "Progression :"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_search
+msgid "Project"
+msgstr "Projet"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Project linking"
+msgstr "Liaison projets"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_9
+msgid "Protection against disasters (fire, flood)"
+msgstr "Protection contre les sinistres (incendie, inondation)"
+
+#. module: audit_ti
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__supplier_type__cloud
+msgid "Public cloud"
+msgstr "Cloud public"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__rag_red
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_list
+msgid "R"
+msgstr "R"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__rating_ids
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__rating_ids
+msgid "Ratings"
+msgstr "Ratings"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Recent assessments"
+msgstr "Évaluations récentes"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid "Recommendation"
+msgstr "Recommandation"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__recommendation
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_form
+msgid "Recommendation to the client"
+msgstr "Recommandation au client"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Red elements"
+msgstr "Éléments rouges"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__rag_red
+msgid "Red elements (not covered)"
+msgstr "Éléments rouges (non couverts)"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_10
+msgid "Redundancy, mock-restore, access"
+msgstr "Redondance, mock-restore, accès"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Refresh"
+msgstr "Actualiser"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_3
+msgid "Register of surveillance cameras and access logs"
+msgstr "Registre des caméras de surveillance et journaux d'accès"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_10
+msgid "Regular backups (daily at minimum)"
+msgstr "Sauvegardes régulières (quotidiennes minimum)"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_7
+msgid "Regular review of access logs"
+msgstr "Revue régulière des journaux d'accès"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Reopen"
+msgstr "Réouvrir"
+
+#. module: audit_ti
+#. odoo-javascript
+#. odoo-python
+#: code:addons/audit_ti/models/audit_watchpoint.py:0
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_watchpoint__state__resolved
+msgid "Resolved"
+msgstr "Résolu"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__response_received_date
+msgid "Response received on"
+msgstr "Date réception réponse"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__activity_user_id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__activity_user_id
+msgid "Responsible User"
+msgstr "Responsible User"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_3
+msgid "Retention period set for each category"
+msgstr "Durée de conservation définie pour chaque catégorie"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_13
+msgid "Right to audit the supplier's practices"
+msgstr "Droit d'audit sur les pratiques du fournisseur"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client_supplier__roles
+msgid "Roles"
+msgstr "Rôles"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+msgid ""
+"Roles —\n"
+"                                <span style=\"font-weight: 600; color: #667085;\">X</span> IT provider\n"
+"                                <span style=\"margin-left: 10px; font-weight: 600; color: #667085;\">A</span> Application\n"
+"                                <span style=\"margin-left: 10px; font-weight: 600; color: #667085;\">C</span> Cloud\n"
+"                                <span style=\"margin-left: 10px; font-weight: 600; color: #667085;\">S</span> Backup"
+msgstr ""
+"Rôles —\n"
+"                                <span style=\"font-weight: 600; color: #667085;\">X</span> Prestataire TI\n"
+"                                <span style=\"margin-left: 10px; font-weight: 600; color: #667085;\">A</span> Application\n"
+"                                <span style=\"margin-left: 10px; font-weight: 600; color: #667085;\">C</span> Cloud\n"
+"                                <span style=\"margin-left: 10px; font-weight: 600; color: #667085;\">S</span> Sauvegarde"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__message_has_sms_error
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS Delivery error"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__nc_status__saas
+msgid "SaaS"
+msgstr "SaaS"
+
+#. module: audit_ti
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__supplier_type__saas
+msgid "SaaS application"
+msgstr "Application SaaS"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_13
+msgid "Same security requirements imposed on subcontractors"
+msgstr "Mêmes exigences de sécurité imposées aux sous-traitants"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_9
+msgid "Secure destruction procedure for data media"
+msgstr "Procédure de destruction sécurisée des supports de données"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_8
+msgid "Secured Wi-Fi (WPA3 or WPA2-Enterprise)"
+msgstr "Wi-Fi sécurisé (WPA3 ou WPA2-Enterprise)"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_13
+msgid "Security measures proportionate to the sensitivity of the data"
+msgstr "Mesures de sécurité proportionnelles à la sensibilité des données"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_7
+msgid "Security patches applied within 30 days"
+msgstr "Correctifs de sécurité appliqués dans les 30 jours"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_8
+msgid "Segmentation, firewall, VPN"
+msgstr "Segmentation, pare-feu, VPN"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_3
+msgid "Sensitive data identified (health, financial)"
+msgstr "Identification des données sensibles (santé, financier)"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_4
+msgid "Separate administrator and user roles"
+msgstr "Séparation des rôles administrateurs et utilisateurs"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_5
+msgid "Separation of roles for key management"
+msgstr "Séparation des rôles pour la gestion des clés"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_element__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__source
+msgid "Source"
+msgstr "Source"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_14
+msgid "Sovereign storage, Cloud Act, data location"
+msgstr "Stockage souverain, Cloud Act, localisation données"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_form
+msgid "Specific recommendation to the client for this supplier/element..."
+msgstr ""
+"Recommandation spécifique pour le client concernant ce "
+"fournisseur/élément..."
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__state
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__state
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_search
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_watchpoint_search
+msgid "State"
+msgstr "État"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__status
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+msgid "Status"
+msgstr "Statut"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__activity_state
+#: model:ir.model.fields,help:audit_ti.field_audit_watchpoint__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__nc_status_detail
+msgid "Status detail"
+msgstr "Détail statut"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "Status distribution"
+msgstr "Distribution des statuts"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__supplier_id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client_supplier__supplier_id
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier_alias__supplier_id
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+msgid "Supplier"
+msgstr "Fournisseur"
+
+#. module: audit_ti
+#: model:audit.element,name:audit_ti.element_13
+msgid "Supplier & subcontractor compliance"
+msgstr "Conformité fournisseurs & sous-traitants"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_assessment__response
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_watchpoint__source__supplier_response
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_form
+msgid "Supplier response"
+msgstr "Réponse du fournisseur"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Supplier risk:"
+msgstr "Risque fournisseur :"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__client_supplier_ids
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Suppliers"
+msgstr "Fournisseurs"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Synthesis"
+msgstr "Synthèse"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_2
+msgid "Systems, databases, SaaS, data flows"
+msgstr "Systèmes, BDD, SaaS, flux de données"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_5
+msgid "TLS 1.2+ for all communications"
+msgstr "TLS 1.2+ pour toutes les communications"
+
+#. module: audit_ti
+#: model:audit.element,description:audit_ti.element_5
+msgid "TLS/HTTPS, key rotation, separation of roles"
+msgstr "TLS/HTTPS, rotation clefs, séparation rôles"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__target_date
+msgid "Target date"
+msgstr "Date cible"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Technical coverage provided by:"
+msgstr "Couverture technique assurée par :"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_1
+msgid "Tested backup and restore procedure"
+msgstr "Procédure de sauvegarde et restauration testée"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_dashboard.py:0
+msgid "The IT Audit dashboard is reserved for IT Audit users."
+msgstr "Le tableau de bord Audit TI est réservé aux utilisateurs Audit TI."
+
+#. module: audit_ti
+#: model:ir.model.constraint,message:audit_ti.constraint_audit_element_num_unique
+msgid "The element number must be unique."
+msgstr "Le numéro d'élément doit être unique."
+
+#. module: audit_ti
+#: model:ir.model.constraint,message:audit_ti.constraint_audit_assessment_client_supplier_element_unique
+msgid "This client/supplier/element combination already exists."
+msgstr "Cette combinaison client/fournisseur/élément existe déjà."
+
+#. module: audit_ti
+#: model:ir.model.constraint,message:audit_ti.constraint_audit_client_supplier_client_supplier_unique
+msgid "This supplier is already linked to this client."
+msgstr "Ce fournisseur est déjà associé à ce client."
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_supplier__nc_status__to_create
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_supplier_search
+msgid "To create"
+msgstr "À créer"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/js/audit_dashboard.js:0
+#: model:ir.model.fields.selection,name:audit_ti.selection__audit_assessment__status__to_validate
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_assessment_search
+msgid "To validate"
+msgstr "À valider"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_list
+msgid "Total"
+msgstr "Total"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_supplier__supplier_type
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_supplier_search
+msgid "Type"
+msgstr "Type"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__activity_exception_decoration
+#: model:ir.model.fields,help:audit_ti.field_audit_watchpoint__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type of the exception activity on record."
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_8
+msgid "VPN for remote access"
+msgstr "VPN pour les accès distants"
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_5
+msgid "Valid, automatically renewed certificates"
+msgstr "Certificats valides et renouvelés automatiquement"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_client.py:0
+msgid "Validate the declarations through independent verification:"
+msgstr "Valider les déclarations par vérification indépendante :"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+msgid "View all"
+msgstr "Voir tout"
+
+#. module: audit_ti
+#: model:mail.activity.type,summary:audit_ti.mail_activity_type_audit_watchpoint
+msgid "Watchpoint follow-up"
+msgstr "Suivi d'un point de vigilance"
+
+#. module: audit_ti
+#. odoo-javascript
+#: code:addons/audit_ti/static/src/xml/audit_dashboard.xml:0
+#: model:ir.actions.act_window,name:audit_ti.action_audit_watchpoint
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__watchpoint_ids
+#: model:ir.ui.menu,name:audit_ti.menu_audit_watchpoint
+#: model_terms:ir.ui.view,arch_db:audit_ti.report_audit_progress
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Watchpoints"
+msgstr "Points de vigilance"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__website_message_ids
+#: model:ir.model.fields,field_description:audit_ti.field_audit_watchpoint__website_message_ids
+msgid "Website Messages"
+msgstr "Website Messages"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__website_message_ids
+#: model:ir.model.fields,help:audit_ti.field_audit_watchpoint__website_message_ids
+msgid "Website communication history"
+msgstr "Website communication history"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_search
+msgid "With open watchpoints"
+msgstr "Avec points de vigilance ouverts"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid ""
+"Write the narrative synthesis of the assessment here. This text will appear "
+"as the first section of the PDF report."
+msgstr ""
+"Rédigez ici la synthèse narrative de l'évaluation. Ce texte apparaîtra en "
+"première section du rapport PDF."
+
+#. module: audit_ti
+#: model_terms:audit.element,best_practices:audit_ti.element_13
+msgid "Written commitment from the supplier to protect PI"
+msgstr "Engagement écrit du fournisseur à protéger les RP"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client_supplier__roles
+msgid "X=IT provider, A=Application, C=Cloud, S=Backup"
+msgstr "X=Prestataire TI, A=Application, C=Cloud, S=Sauvegarde"
+
+#. module: audit_ti
+#: model:ir.model.fields,field_description:audit_ti.field_audit_client__rag_yellow
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_list
+msgid "Y"
+msgstr "J"
+
+#. module: audit_ti
+#: model_terms:ir.ui.view,arch_db:audit_ti.view_audit_client_form
+msgid "Yellow elements"
+msgstr "Éléments jaunes"
+
+#. module: audit_ti
+#: model:ir.model.fields,help:audit_ti.field_audit_client__rag_yellow
+msgid "Yellow elements (mixed / partial)"
+msgstr "Éléments jaunes (mitigé / partiel)"
+
+#. module: audit_ti
+#. odoo-python
+#: code:addons/audit_ti/models/audit_assessment.py:0
+msgid "[%(supplier)s] Element %(num)s: %(name)s"
+msgstr "[%(supplier)s] Élément %(num)s : %(name)s"
+
+#. module: audit_ti
+#: model:ir.module.module,shortdesc:base.module_audit_ti
+msgid "IT Audit - Law 25"
+msgstr "Audit TI - Loi 25"
+
+#. module: audit_ti
+#: model:ir.module.module,summary:base.module_audit_ti
+msgid "IT security audits for Quebec Law 25 compliance"
+msgstr "Gestion des audits de sécurité informatique pour la conformité Loi 25"

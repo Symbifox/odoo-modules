@@ -65,19 +65,19 @@
             <search>
                 <field name="name"/>
                 <field name="supplier_type"/>
-                <filter name="completed" string="Complété" domain="[('nc_status', '=', 'completed')]"/>
-                <filter name="wip" string="En cours" domain="[('nc_status', '=', 'wip')]"/>
-                <filter name="to_create" string="À créer" domain="[('nc_status', '=', 'to_create')]"/>
-                <group expand="0" string="Regrouper par">
+                <filter name="completed" string="Completed" domain="[('nc_status', '=', 'completed')]"/>
+                <filter name="wip" string="In progress" domain="[('nc_status', '=', 'wip')]"/>
+                <filter name="to_create" string="To create" domain="[('nc_status', '=', 'to_create')]"/>
+                <group expand="0" string="Group by">
                     <filter name="group_type" string="Type" context="{'group_by': 'supplier_type'}"/>
-                    <filter name="group_status" string="Statut NC" context="{'group_by': 'nc_status'}"/>
+                    <filter name="group_status" string="NC status" context="{'group_by': 'nc_status'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_audit_supplier" model="ir.actions.act_window">
-        <field name="name">Fournisseurs TI</field>
+        <field name="name">IT suppliers</field>
         <field name="res_model">audit.supplier</field>
         <field name="view_mode">list,form</field>
     </record>

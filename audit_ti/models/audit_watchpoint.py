@@ -10,37 +10,37 @@ PRIORITY_DELAYS = {
 class AuditWatchpoint(models.Model):
     _name = "audit.watchpoint"
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "Point de vigilance audit TI"
+    _description = "IT audit watchpoint"
     _order = "priority desc, id"
 
     client_id = fields.Many2one(
         "audit.client", string="Client", required=True, ondelete="cascade"
     )
-    element_id = fields.Many2one("audit.element", string="Élément")
+    element_id = fields.Many2one("audit.element", string="Element")
     description = fields.Text(string="Description", required=True)
     priority = fields.Selection(
-        [("high", "Haute"), ("medium", "Moyenne"), ("low", "Basse")],
-        string="Priorité",
+        [("high", "High"), ("medium", "Medium"), ("low", "Low")],
+        string="Priority",
         default="medium",
         tracking=True,
     )
     source = fields.Selection(
         [
-            ("audit_initial", "Audit initial"),
-            ("supplier_response", "Réponse fournisseur"),
-            ("custom", "Personnalisé"),
+            ("audit_initial", "Initial audit"),
+            ("supplier_response", "Supplier response"),
+            ("custom", "Custom"),
         ],
         string="Source",
         default="custom",
     )
     state = fields.Selection(
-        [("open", "Ouvert"), ("in_progress", "En cours"), ("resolved", "Résolu")],
-        string="État",
+        [("open", "Open"), ("in_progress", "In progress"), ("resolved", "Resolved")],
+        string="State",
         default="open",
         tracking=True,
     )
     assigned_to = fields.Many2one(
-        "res.users", string="Assigné à", tracking=True
+        "res.users", string="Assigned to", tracking=True
     )
 
     # --- Activity helpers ---
@@ -61,15 +61,21 @@ class AuditWatchpoint(models.Model):
                 continue
             delay = PRIORITY_DELAYS.get(rec.priority, 7)
             deadline = fields.Date.add(fields.Date.today(), days=delay)
+            # Le résumé est ÉCRIT : dans la langue de l'assigné, pas de qui crée.
+            lu = rec.with_context(lang=rec.assigned_to.lang or rec.env.lang)
             elem_label = (
-                f" \u2014 {rec.element_id.display_name}"
+                f" \u2014 {lu.element_id.display_name}"
                 if rec.element_id
                 else ""
             )
             rec.activity_schedule(
                 "audit_ti.mail_activity_type_audit_watchpoint",
                 date_deadline=deadline,
-                summary=f"Suivi : {rec.client_id.name}{elem_label}",
+                summary=lu.env._(
+                    "Follow-up: %(client)s%(element)s",
+                    client=rec.client_id.name,
+                    element=elem_label,
+                ),
                 note=rec.description or "",
                 user_id=rec.assigned_to.id,
             )
@@ -102,7 +108,7 @@ class AuditWatchpoint(models.Model):
                         lambda a, at=activity_type: a.activity_type_id == at
                     )
                     if acts:
-                        acts.action_feedback(feedback="Résolu")
+                        acts.action_feedback(feedback=rec.env._("Resolved"))
         elif "assigned_to" in vals or "priority" in vals:
             self._cancel_watchpoint_activities()
             self.filtered(

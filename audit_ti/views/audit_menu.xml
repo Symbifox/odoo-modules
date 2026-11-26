@@ -3,13 +3,13 @@
 
     <!-- Root menu -->
     <menuitem id="menu_audit_ti_root"
-        name="Audit TI"
+        name="IT Audit"
         web_icon="audit_ti,static/description/icon.png"
         sequence="90"/>
 
     <!-- Dashboard -->
     <menuitem id="menu_audit_dashboard"
-        name="Tableau de bord"
+        name="Dashboard"
         parent="menu_audit_ti_root"
         action="action_audit_dashboard"
         groups="group_audit_user"
@@ -17,7 +17,7 @@
 
     <!-- Main operations -->
     <menuitem id="menu_audit_operations"
-        name="Opérations"
+        name="Operations"
         parent="menu_audit_ti_root"
         sequence="10"/>
 
@@ -28,13 +28,13 @@
         sequence="10"/>
 
     <menuitem id="menu_audit_assessment"
-        name="Évaluations"
+        name="Assessments"
         parent="menu_audit_operations"
         action="action_audit_assessment"
         sequence="20"/>
 
     <menuitem id="menu_audit_watchpoint"
-        name="Points de vigilance"
+        name="Watchpoints"
         parent="menu_audit_operations"
         action="action_audit_watchpoint"
         sequence="30"/>
@@ -47,13 +47,13 @@
         sequence="90"/>
 
     <menuitem id="menu_audit_element"
-        name="Éléments d'audit"
+        name="Audit elements"
         parent="menu_audit_config"
         action="action_audit_element"
         sequence="10"/>
 
     <menuitem id="menu_audit_supplier"
-        name="Fournisseurs TI"
+        name="IT suppliers"
         parent="menu_audit_config"
         action="action_audit_supplier"
         sequence="20"/>

@@ -9,7 +9,7 @@ _IN_PROGRESS = SQL("AND c.state = 'in_progress'")
 
 class AuditDashboard(models.Model):
     _name = "audit.dashboard"
-    _description = "Tableau de bord Audit TI"
+    _description = "IT Audit Dashboard"
     _auto = False
 
     name = fields.Char()
@@ -33,7 +33,8 @@ class AuditDashboard(models.Model):
         (sudo) passe.
         """
         if not self.env.su and not self.env.user.has_group("audit_ti.group_audit_user"):
-            raise AccessError(_("Le tableau de bord Audit TI est réservé aux utilisateurs Audit TI."))
+            raise AccessError(_("The IT Audit dashboard is reserved for "
+                                "IT Audit users."))
 
     @api.model
     def get_dashboard_data(self, include_delivered=False):
@@ -185,6 +186,11 @@ class AuditDashboard(models.Model):
         return self.env.cr.dictfetchall()
 
     @api.model
+    def _element_name_sql(self):
+        """Nom de l'élément (champ traduit, jsonb) dans la langue de qui lit, en SQL brut."""
+        return self.env["audit.element"]._field_to_sql("e", "name")
+
+    @api.model
     def _get_recent_assessments(self, include_delivered=False):
         state_filter = SQL() if include_delivered else _IN_PROGRESS
         self.env.cr.execute(SQL("""
@@ -193,7 +199,7 @@ class AuditDashboard(models.Model):
                 c.name AS client_name,
                 s.name AS supplier_name,
                 e.num AS element_num,
-                e.name AS element_name,
+                %(element_name)s AS element_name,
                 a.status,
                 a.assessed_date
             FROM audit_assessment a
@@ -205,7 +211,7 @@ class AuditDashboard(models.Model):
               AND c.active = true %(sf)s
             ORDER BY a.assessed_date DESC, a.write_date DESC
             LIMIT 20
-        """, sf=state_filter))
+        """, sf=state_filter, element_name=self._element_name_sql()))
         results = []
         for row in self.env.cr.dictfetchall():
             results.append({
@@ -226,7 +232,7 @@ class AuditDashboard(models.Model):
             SELECT
                 w.id,
                 c.name AS client_name,
-                e.name AS element_name,
+                %(element_name)s AS element_name,
                 w.description,
                 w.priority,
                 w.state
@@ -243,7 +249,7 @@ class AuditDashboard(models.Model):
                 END,
                 w.id
             LIMIT 20
-        """, sf=state_filter))
+        """, sf=state_filter, element_name=self._element_name_sql()))
         return self.env.cr.dictfetchall()
 
     @api.model
@@ -263,7 +269,7 @@ class AuditDashboard(models.Model):
         self._check_dashboard_access()
         return {
             "type": "ir.actions.act_window",
-            "name": "Évaluations",
+            "name": self.env._("Assessments"),
             "res_model": "audit.assessment",
             "views": [[False, "list"], [False, "form"]],
             "domain": domain or [],

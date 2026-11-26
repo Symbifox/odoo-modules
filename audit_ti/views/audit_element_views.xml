@@ -31,7 +31,7 @@
                         <field name="description"/>
                     </group>
                     <notebook>
-                        <page string="Meilleures pratiques Loi 25">
+                        <page string="Law 25 best practices">
                             <field name="best_practices"/>
                         </page>
                     </notebook>
@@ -41,7 +41,7 @@
     </record>
 
     <record id="action_audit_element" model="ir.actions.act_window">
-        <field name="name">Éléments d'audit</field>
+        <field name="name">Audit elements</field>
         <field name="res_model">audit.element</field>
         <field name="view_mode">list,form</field>
     </record>

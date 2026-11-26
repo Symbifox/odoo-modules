@@ -8,12 +8,12 @@ STATUS_HIERARCHY = [
 ]
 
 STATUS_LABELS = {
-    "adequate": "Adéquat",
-    "partial": "Partiel",
-    "declared": "Déclaré",
-    "to_validate": "À valider",
-    "inadequate": "Inadéquat",
-    "pending": "En attente",
+    "adequate": "Adequate",
+    "partial": "Partial",
+    "declared": "Declared",
+    "to_validate": "To validate",
+    "inadequate": "Inadequate",
+    "pending": "Pending",
     "na": "N/A",
 }
 
@@ -37,11 +37,12 @@ STATUS_COLORS = {
     "na": "#6c757d",
 }
 
+# Libellés : `_rag_label`, dans la langue de qui lit (une constante ne se traduit pas).
 RAG_CONFIG = {
-    "green":  {"color": "#28a745", "icon": "&#10003;", "label": "Couvert"},
-    "yellow": {"color": "#ffc107", "icon": "&#9680;",  "label": "Partiel / Mitigé"},
-    "red":    {"color": "#dc3545", "icon": "&#10007;", "label": "Non couvert"},
-    "grey":   {"color": "#6c757d", "icon": "&#8230;",  "label": "Non évalué"},
+    "green":  {"color": "#28a745", "icon": "&#10003;"},
+    "yellow": {"color": "#ffc107", "icon": "&#9680;"},
+    "red":    {"color": "#dc3545", "icon": "&#10007;"},
+    "grey":   {"color": "#6c757d", "icon": "&#8230;"},
 }
 
 
@@ -51,72 +52,73 @@ class AuditClient(models.Model):
     # (valider la synthèse, relancer un fournisseur) s'affichent sur sa
     # fiche, au chatter.
     _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "Client audité"
+    _description = "Audited client"
     _order = "name"
 
-    name = fields.Char(string="Nom", required=True)
-    partner_id = fields.Many2one("res.partner", string="Contact Odoo")
-    project_id = fields.Many2one("project.project", string="Projet Odoo")
-    active = fields.Boolean(string="Actif", default=True)
+    name = fields.Char(string="Name", required=True)
+    partner_id = fields.Many2one("res.partner", string="Odoo contact")
+    project_id = fields.Many2one("project.project", string="Odoo project")
+    active = fields.Boolean(string="Active", default=True)
     state = fields.Selection(
-        [("in_progress", "En cours"), ("delivered", "Livré")],
-        string="État",
+        [("in_progress", "In progress"), ("delivered", "Delivered")],
+        string="State",
         default="in_progress",
         required=True,
         tracking=True,
     )
     delivered_date = fields.Date(
-        string="Date de livraison", readonly=True, copy=False,
+        string="Delivery date", readonly=True, copy=False,
     )
     delivered_by = fields.Many2one(
-        "res.users", string="Livré par", readonly=True, copy=False,
+        "res.users", string="Delivered by", readonly=True, copy=False,
     )
-    target_date = fields.Date(string="Date cible")
+    target_date = fields.Date(string="Target date")
     progress_pct = fields.Float(
-        string="Progression %",
+        string="Progress %",
         compute="_compute_progress_pct",
         store=True,
         group_operator="avg",
     )
     client_supplier_ids = fields.One2many(
-        "audit.client.supplier", "client_id", string="Fournisseurs"
+        "audit.client.supplier", "client_id", string="Suppliers"
     )
     assessment_ids = fields.One2many(
-        "audit.assessment", "client_id", string="Évaluations"
+        "audit.assessment", "client_id", string="Assessments"
     )
     watchpoint_ids = fields.One2many(
-        "audit.watchpoint", "client_id", string="Points de vigilance"
+        "audit.watchpoint", "client_id", string="Watchpoints"
     )
     assessment_count = fields.Integer(
-        string="Nb évaluations", compute="_compute_assessment_stats"
+        string="Assessment count", compute="_compute_assessment_stats"
     )
     assessed_count = fields.Integer(
-        string="Évalués", compute="_compute_assessment_stats"
+        string="Assessed", compute="_compute_assessment_stats"
     )
     adequate_count = fields.Integer(
-        string="Adéquats", compute="_compute_assessment_stats"
+        string="Adequate", compute="_compute_assessment_stats"
     )
     rag_green = fields.Integer(
-        string="V", compute="_compute_assessment_stats",
-        help="Éléments verts (tous fournisseurs adéquats)",
+        string="G", compute="_compute_assessment_stats",
+        help="Green elements (all suppliers adequate)",
     )
     rag_yellow = fields.Integer(
-        string="J", compute="_compute_assessment_stats",
-        help="Éléments jaunes (mitigé / partiel)",
+        string="Y", compute="_compute_assessment_stats",
+        help="Yellow elements (mixed / partial)",
     )
     rag_red = fields.Integer(
         string="R", compute="_compute_assessment_stats",
-        help="Éléments rouges (non couverts)",
+        help="Red elements (not covered)",
     )
     element_summary_html = fields.Html(
-        string="Couverture des 14 éléments",
+        string="Coverage of the 14 elements",
         compute="_compute_element_summary",
         sanitize=False,
     )
     synthesis_html = fields.Html(
-        string="Synthèse de l'évaluation",
+        string="Assessment synthesis",
         sanitize=False,
-        help="Résumé narratif de l'évaluation, affiché en début de rapport PDF.",
+        help="Narrative summary of the assessment, shown at the start of "
+             "the PDF report.",
     )
 
     @api.depends("assessment_ids.status", "assessment_ids.element_id")
@@ -152,6 +154,7 @@ class AuditClient(models.Model):
             client.rag_red = rags.count("red")
 
     @api.depends("assessment_ids", "assessment_ids.status")
+    @api.depends_context("lang")
     def _compute_element_summary(self):
         elements = self.env["audit.element"].search([], order="num")
         for client in self:
@@ -165,7 +168,7 @@ class AuditClient(models.Model):
                 rag = self._element_rag(elem_statuses.get(e.num, []))
                 cfg = RAG_CONFIG[rag]
                 parts.append(
-                    f'<span title="{e.num}. {e.name} — {cfg["label"]}" '
+                    f'<span title="{e.num}. {e.name} — {self._rag_label(rag)}" '
                     f'style="display:inline-block;width:28px;height:28px;'
                     f'line-height:28px;text-align:center;margin:2px;'
                     f'border-radius:4px;color:white;font-weight:bold;'
@@ -220,8 +223,10 @@ class AuditClient(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Liaison projets",
-                "message": f"{linked} client(s) lié(s) à leur projet Odoo.",
+                "title": self.env._("Project linking"),
+                "message": self.env._(
+                    "%(count)s client(s) linked to their Odoo project.", count=linked
+                ),
                 "type": "success",
                 "sticky": False,
             },
@@ -262,8 +267,17 @@ class AuditClient(models.Model):
                 return s
         return "pending"
 
-    @staticmethod
-    def _build_recommendation(rag, assessments_for_elem):
+    def _rag_label(self, rag):
+        """Libellé RAG dans la langue du contexte (rapport, résumé de la fiche)."""
+        _ = self.env._
+        return {
+            "green": _("Covered"),
+            "yellow": _("Partial / Mixed"),
+            "red": _("Not covered"),
+            "grey": _("Not assessed"),
+        }[rag]
+
+    def _build_recommendation(self, rag, assessments_for_elem):
         """Build auto-generated recommendation for a report element.
 
         If any individual assessment has a manual recommendation, concatenate
@@ -278,10 +292,11 @@ class AuditClient(models.Model):
         if manual:
             return "\n".join(manual)
 
+        _ = self.env._
         if rag == "green":
-            return "Aucune action requise."
+            return _("No action required.")
         if rag == "grey":
-            return "Élément non applicable aux fournisseurs actuels."
+            return _("Element not applicable to the current suppliers.")
 
         # Classify suppliers by status
         adequate_names = [a.supplier_id.name for a in assessments_for_elem
@@ -298,41 +313,42 @@ class AuditClient(models.Model):
         parts = []
         if rag == "red":
             if inadequate_names:
-                parts.append(
-                    "Action prioritaire : aucun fournisseur ne couvre "
-                    "adéquatement cet élément. Exiger la conformité ou "
-                    "évaluer des alternatives :"
-                )
+                parts.append(_(
+                    "Priority action: no supplier adequately covers this "
+                    "element. Require compliance or assess alternatives:"
+                ))
                 for name in inadequate_names:
                     parts.append(f"  • {name}")
             else:
-                parts.append(
-                    "Aucune évaluation complétée — prioriser cet élément."
-                )
+                parts.append(_(
+                    "No assessment completed — prioritize this element."
+                ))
             return "\n".join(parts)
 
         # rag == "yellow"
         if inadequate_names and adequate_names:
-            parts.append("Couverture technique assurée par :")
+            parts.append(_("Technical coverage provided by:"))
             for name in adequate_names:
                 parts.append(f"  • {name}")
-            parts.append("Risque fournisseur :")
+            parts.append(_("Supplier risk:"))
             for name in inadequate_names:
                 parts.append(f"  • {name}")
-            parts.append("Évaluer le remplacement ou exiger la coopération contractuelle.")
+            parts.append(_("Assess a replacement or require contractual "
+                           "cooperation."))
         if partial_names:
-            parts.append("Corriger les lacunes identifiées chez :")
+            parts.append(_("Fix the gaps identified at:"))
             for name in partial_names:
                 parts.append(f"  • {name}")
         if declared_names:
-            parts.append("Valider les déclarations par vérification indépendante :")
+            parts.append(_("Validate the declarations through independent "
+                           "verification:"))
             for name in declared_names:
                 parts.append(f"  • {name}")
         if pending_names:
-            parts.append("Compléter l'évaluation de :")
+            parts.append(_("Complete the assessment of:"))
             for name in pending_names:
                 parts.append(f"  • {name}")
-        return "\n".join(parts) if parts else "Aucune action requise."
+        return "\n".join(parts) if parts else _("No action required.")
 
     def _get_report_data(self):
         """Prepare structured data for the progress report PDF."""
@@ -379,7 +395,7 @@ class AuditClient(models.Model):
                 "num": elem.num,
                 "name": elem.name,
                 "rag": rag,
-                "status_label": rag_cfg["label"],
+                "status_label": self._rag_label(rag),
                 "status_color": rag_cfg["color"],
                 "recommendation": recommendation,
                 "supplier_statuses": supplier_statuses,

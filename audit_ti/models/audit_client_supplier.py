@@ -10,25 +10,25 @@ SUPPLIER_ELEMENT_COVERAGE = {
 
 class AuditClientSupplier(models.Model):
     _name = "audit.client.supplier"
-    _description = "Relation client-fournisseur audit"
+    _description = "Audit client-supplier relationship"
     _order = "client_id, supplier_id"
 
     client_id = fields.Many2one(
         "audit.client", string="Client", required=True, ondelete="cascade"
     )
     supplier_id = fields.Many2one(
-        "audit.supplier", string="Fournisseur", required=True, ondelete="cascade"
+        "audit.supplier", string="Supplier", required=True, ondelete="cascade"
     )
     roles = fields.Char(
-        string="Rôles",
-        help="X=Prestataire TI, A=Application, C=Cloud, S=Sauvegarde",
+        string="Roles",
+        help="X=IT provider, A=Application, C=Cloud, S=Backup",
     )
 
     _sql_constraints = [
         (
             "client_supplier_unique",
             "unique(client_id, supplier_id)",
-            "Ce fournisseur est déjà associé à ce client.",
+            "This supplier is already linked to this client.",
         ),
     ]
 
