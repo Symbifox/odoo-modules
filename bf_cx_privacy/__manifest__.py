@@ -1,7 +1,10 @@
 {
     "name": "Expérience client - pont Vie privée (Loi 25)",
     "summary": "Consentement formel des témoignages via le module Vie privée",
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français ; la trace d'un consentement perdu s'écrit
+    #   dans la langue de la société et nomme le statut au lieu de sa clé.
+    "version": "18.0.1.1.1",
     "category": "Marketing/Customer Experience",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

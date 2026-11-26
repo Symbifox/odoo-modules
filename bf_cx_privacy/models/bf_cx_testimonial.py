@@ -10,6 +10,8 @@ import logging
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
+from odoo.addons.bf_cx.models.langue import langue_de
+
 _logger = logging.getLogger(__name__)
 
 
@@ -17,19 +19,19 @@ class BfCxTestimonial(models.Model):
     _inherit = "bf.cx.testimonial"
 
     consent_mode = fields.Selection(
-        selection_add=[("privacy", "Module Vie privée (Loi 25)")],
+        selection_add=[("privacy", "Privacy module (Law 25)")],
         ondelete={"privacy": "set null"},
     )
     privacy_consent_id = fields.Many2one(
         "privacy.consent",
-        string="Consentement (Loi 25)",
+        string="Consent (Law 25)",
         ondelete="set null",
         copy=False,
         tracking=True,
     )
     privacy_consent_status = fields.Selection(
         related="privacy_consent_id.status",
-        string="Statut du consentement",
+        string="Consent status",
         readonly=True,
     )
 
@@ -40,14 +42,14 @@ class BfCxTestimonial(models.Model):
         )
         if not notice:
             raise UserError(
-                _("L'avis de consentement « Utilisation de votre témoignage » "
-                  "est introuvable.")
+                _("The consent notice \"Use of your testimonial\" cannot "
+                  "be found.")
             )
         for rec in self:
             if not rec.partner_id.email:
                 raise UserError(
-                    _("%s n'a pas d'adresse courriel - impossible d'envoyer la "
-                      "demande de consentement.")
+                    _("%s has no email address - cannot send the consent "
+                      "request.")
                     % rec.partner_id.display_name
                 )
             if rec.privacy_consent_id and rec.privacy_consent_id.status in (
@@ -55,9 +57,9 @@ class BfCxTestimonial(models.Model):
                 "granted",
             ):
                 raise UserError(
-                    _("Une demande de consentement existe déjà pour ce "
-                      "témoignage (statut : %s).")
-                    % rec.privacy_consent_id.status
+                    _("A consent request already exists for this "
+                      "testimonial (status: %s).")
+                    % rec._bf_cx_status_label(rec.privacy_consent_id.status)
                 )
             consent = self.env["privacy.consent"].create(
                 {
@@ -79,7 +81,7 @@ class BfCxTestimonial(models.Model):
                 }
             )
             rec.message_post(
-                body=_("Demande de consentement Loi 25 envoyée à %s.")
+                body=_("Law 25 consent request sent to %s.")
                 % rec.partner_id.display_name
             )
         return True
@@ -89,7 +91,7 @@ class BfCxTestimonial(models.Model):
         for rec in self:
             consent = rec.privacy_consent_id
             if not consent:
-                raise UserError(_("Aucune demande de consentement liée."))
+                raise UserError(_("No linked consent request."))
             if consent.status == "granted":
                 rec.write(
                     {
@@ -111,10 +113,10 @@ class BfCxTestimonial(models.Model):
                 or rec.privacy_consent_id.status != "granted"
             ):
                 raise UserError(
-                    _("Mode « Vie privée » : le consentement lié doit être "
-                      "ACCORDÉ avant de déclarer le témoignage consenti "
-                      "(utiliser « Demander le consentement (Loi 25) » puis "
-                      "« Vérifier le consentement »).")
+                    _("\"Privacy\" mode: the linked consent must be "
+                      "GRANTED before the testimonial is declared "
+                      "consented (use \"Request consent (Law 25)\" then "
+                      "\"Check consent\").")
                 )
             if not rec.consent_note:
                 rec.consent_note = (
@@ -122,19 +124,35 @@ class BfCxTestimonial(models.Model):
                 )
         return super().action_set_consented()
 
+    def _bf_cx_status_label(self, status):
+        """The consent status as a reader sees it, not its technical key."""
+        labels = dict(
+            self.env["privacy.consent"]._fields["status"]
+            ._description_selection(self.env)
+        )
+        return labels.get(status, status)
+
     def _bf_cx_consent_lost(self, status):
-        """Consent gone (refused/withdrawn/expired): stop using the quote."""
+        """Consent gone (refused/withdrawn/expired): stop using the quote.
+
+        Reached from a consent write: the client's public page, the expiry
+        job, an officer. The trace is read by staff: in the company's
+        language, not the visitor's or the job's (the source is English
+        since bf_cx 18.0.1.13.2).
+        """
         for rec in self:
+            rec = rec.with_context(
+                lang=langue_de(rec.env, societe=rec.company_id))
             if rec.state in ("consented", "published"):
                 rec.action_retire()
             elif rec.state == "consent_pending":
                 rec.write({"state": "declined"})
             rec.message_post(
-                body=_(
-                    "Consentement Loi 25 « %s » - le témoignage ne peut plus "
-                    "être utilisé."
+                body=rec.env._(
+                    "Law 25 consent \"%s\" - the testimonial can no "
+                    "longer be used."
                 )
-                % status
+                % rec._bf_cx_status_label(status)
             )
         return True
 
@@ -150,7 +168,7 @@ class BfCxTestimonial(models.Model):
                 )
             ):
                 raise ValidationError(
-                    _("Mode « Vie privée » : impossible de marquer consenti ou "
-                      "publié sans un consentement Loi 25 ACCORDÉ lié au "
-                      "témoignage.")
+                    _("\"Privacy\" mode: cannot mark as consented or "
+                      "published without a GRANTED Law 25 consent linked "
+                      "to the testimonial.")
                 )

@@ -1,0 +1,124 @@
+# Translation template for Expérience client - pont Vie privée (Loi 25).
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_privacy 18.0.1.1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-26 18:31+0000\n"
+"PO-Revision-Date: 2026-11-26 18:31+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_cx_privacy
+#. odoo-python
+#: code:addons/bf_cx_privacy/models/bf_cx_testimonial.py:0
+msgid ""
+"\"Privacy\" mode: cannot mark as consented or published without a GRANTED "
+"Law 25 consent linked to the testimonial."
+msgstr ""
+
+#. module: bf_cx_privacy
+#. odoo-python
+#: code:addons/bf_cx_privacy/models/bf_cx_testimonial.py:0
+msgid ""
+"\"Privacy\" mode: the linked consent must be GRANTED before the testimonial "
+"is declared consented (use \"Request consent (Law 25)\" then \"Check "
+"consent\")."
+msgstr ""
+
+#. module: bf_cx_privacy
+#. odoo-python
+#: code:addons/bf_cx_privacy/models/bf_cx_testimonial.py:0
+msgid "%s has no email address - cannot send the consent request."
+msgstr ""
+
+#. module: bf_cx_privacy
+#. odoo-python
+#: code:addons/bf_cx_privacy/models/bf_cx_testimonial.py:0
+msgid "A consent request already exists for this testimonial (status: %s)."
+msgstr ""
+
+#. module: bf_cx_privacy
+#: model_terms:ir.ui.view,arch_db:bf_cx_privacy.view_cx_testimonial_form_privacy
+msgid "Check consent"
+msgstr ""
+
+#. module: bf_cx_privacy
+#: model:ir.model.fields,field_description:bf_cx_privacy.field_bf_cx_testimonial__privacy_consent_id
+msgid "Consent (Law 25)"
+msgstr ""
+
+#. module: bf_cx_privacy
+#: model:ir.model.fields,field_description:bf_cx_privacy.field_bf_cx_testimonial__consent_mode
+msgid "Consent method"
+msgstr ""
+
+#. module: bf_cx_privacy
+#: model:ir.model.fields,field_description:bf_cx_privacy.field_bf_cx_testimonial__privacy_consent_status
+msgid "Consent status"
+msgstr ""
+
+#. module: bf_cx_privacy
+#. modules: bf_cx, bf_cx_privacy
+#: model:ir.model,name:bf_cx_privacy.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: bf_cx_privacy
+#: model:ir.model,name:bf_cx_privacy.model_bf_cx_testimonial
+msgid "Customer testimonial"
+msgstr ""
+
+#. module: bf_cx_privacy
+#. odoo-python
+#: code:addons/bf_cx_privacy/models/bf_cx_testimonial.py:0
+msgid "Law 25 consent \"%s\" - the testimonial can no longer be used."
+msgstr ""
+
+#. module: bf_cx_privacy
+#. odoo-python
+#: code:addons/bf_cx_privacy/models/bf_cx_testimonial.py:0
+msgid "Law 25 consent request sent to %s."
+msgstr ""
+
+#. module: bf_cx_privacy
+#. odoo-python
+#: code:addons/bf_cx_privacy/models/bf_cx_testimonial.py:0
+msgid "No linked consent request."
+msgstr ""
+
+#. module: bf_cx_privacy
+#: model:ir.model.fields.selection,name:bf_cx_privacy.selection__bf_cx_testimonial__consent_mode__privacy
+msgid "Privacy module (Law 25)"
+msgstr ""
+
+#. module: bf_cx_privacy
+#: model:privacy.purpose,name:bf_cx_privacy.purpose_testimonial
+msgid "Publication of a client testimonial"
+msgstr ""
+
+#. module: bf_cx_privacy
+#: model_terms:ir.ui.view,arch_db:bf_cx_privacy.view_cx_testimonial_form_privacy
+msgid "Request consent (Law 25)"
+msgstr ""
+
+#. module: bf_cx_privacy
+#. odoo-python
+#: code:addons/bf_cx_privacy/models/bf_cx_testimonial.py:0
+msgid "The consent notice \"Use of your testimonial\" cannot be found."
+msgstr ""
+
+#. module: bf_cx_privacy
+#: model:privacy.notice,name:bf_cx_privacy.notice_testimonial
+msgid "Use of your testimonial"
+msgstr ""
+
+#. module: bf_cx_privacy
+#. odoo-python
+#: code:addons/bf_cx_privacy/models/bf_cx_testimonial.py:0
+msgid "privacy.consent #%s"
+msgstr ""

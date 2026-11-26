@@ -3,7 +3,7 @@
     <data noupdate="1">
         <record id="purpose_testimonial" model="privacy.purpose">
             <field name="code">testimonial</field>
-            <field name="name">Publication d'un témoignage client</field>
+            <field name="name">Publication of a client testimonial</field>
             <field name="plain_language_summary"><![CDATA[
                 <p>Nous publions vos commentaires comme témoignage, avec votre nom
                 et/ou celui de votre entreprise, sur notre site web, dans nos
@@ -20,7 +20,7 @@
         </record>
 
         <record id="notice_testimonial" model="privacy.notice">
-            <field name="name">Utilisation de votre témoignage</field>
+            <field name="name">Use of your testimonial</field>
             <field name="purpose_id" ref="purpose_testimonial"/>
             <field name="body_fr"><![CDATA[
                 <p>Vous avez partagé des commentaires sur nos services et accepté

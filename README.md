@@ -184,7 +184,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_meeting` | Expérience client - feedback post-rencontre | 18.0.1.3.0 | BUSL-1.1 | Three-smiley feedback request after a meeting report is sent to the client |
 | `bf_cx_onboarding` | Expérience client : panneau de mise en route | 18.0.1.1.0 | BUSL-1.1 | Onboarding panel to set up the Customer Experience module |
 | `bf_cx_portal` | Expérience client : feedback au portail | 18.0.1.1.0 | BUSL-1.1 | Clients view their feedback and submit a comment from the portal |
-| `bf_cx_privacy` | Expérience client - pont Vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Formal Law 25 consent flow for testimonials through the privacy module |
+| `bf_cx_privacy` | Expérience client - pont Vie privée (Loi 25) | 18.0.1.1.1 | BUSL-1.1 | Formal Law 25 consent flow for testimonials through the privacy module |
 | `bf_cx_sign` | Expérience client : feedback post-signature | 18.0.1.2.0 | BUSL-1.1 | Three-smiley feedback request when a signature is completed (opt-in) |
 | `bf_cx_sms` | Expérience client : invitation de sondage par SMS | 18.0.1.1.0 | BUSL-1.1 | Survey link sent by SMS to contacts without an email address |
 | `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.1.1 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
