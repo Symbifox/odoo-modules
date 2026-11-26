@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- L'avis au responsable du mandat quand le client agit sur sa page. -->
+    <data noupdate="1">
+        <record id="mail_activity_type_progression_client" model="mail.activity.type">
+            <field name="name">Client action on the progress page</field>
+            <field name="summary">Client action on the progress page</field>
+            <field name="icon">fa-inbox</field>
+            <field name="delay_count">0</field>
+            <field name="category">default</field>
+            <field name="sequence">50</field>
+        </record>
+    </data>
+
+    <!-- La tâche qui envoie les avis en file. Le geste du client la réveille
+         sur-le-champ ; le passage aux cinq minutes rattrape un réveil manqué.
+         ⚠️ Active à l'installation, hors `noupdate` : une montée la rallume si
+         quelqu'un l'a éteinte, et un avis en file qui ne part jamais ne se voit
+         pas. -->
+    <record id="ir_cron_progression_notices" model="ir.cron">
+        <field name="name">Progression: send the notices of client actions</field>
+        <field name="model_id" ref="model_bf_progression_notice"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_envoyer()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Le courriel de l'avis. Tous les textes arrivent par le CONTEXTE, déjà
+         traduits dans la langue du responsable : le gabarit n'en porte aucun.
+
+         🔴 Rien de ce que le client a écrit n'y paraît, et la pièce n'est jamais
+         jointe : le courriel dit quoi et où, la fiche Odoo porte le reste.
+
+         ⚠️ `bf_onboarding_base` n'est pas une dépendance : même convention que le
+         courriel du code d'accès, la mise en page se dégrade proprement.
+
+         ⚠️ Pas d'`auto_delete` : un courriel que le relais refuse doit rester
+         visible en « exception », pas disparaître. -->
+    <record id="mail_template_progression_notice" model="mail.template">
+        <field name="name">Progression: notice to the mandate manager</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="subject">{{ ctx.get('bf_avis_sujet') or '' }}</field>
+        <field name="email_from">{{ object.company_id.partner_id.email_formatted or object.company_id.email or '' }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="lang">{{ ctx.get('bf_avis_lang') }}</field>
+        <field name="body_html" type="html">
+<div style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:15px; line-height:24px; color:#374151;">
+    <t t-foreach="ctx.get('bf_avis_lignes') or []" t-as="ligne">
+        <p style="margin:0 0 12px 0; font-size:15px; line-height:24px; color:#374151;"><t t-out="ligne"/></p>
+    </t>
+    <p t-if="ctx.get('bf_avis_url')" style="margin:16px 0 0 0;">
+        <a t-att-href="ctx.get('bf_avis_url')" style="display:inline-block; padding:10px 18px; border-radius:6px; background-color:#212529; color:#FFFFFF; text-decoration:none; font-size:14px;"><t t-out="ctx.get('bf_avis_bouton') or ''"/></a>
+    </p>
+</div>
+        </field>
+    </record>
+
+</odoo>

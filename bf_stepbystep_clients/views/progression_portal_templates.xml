@@ -9,7 +9,11 @@
         <t t-call="web.frontend_layout">
             <t t-set="no_header" t-value="True"/>
             <t t-set="no_footer" t-value="True"/>
-            <t t-set="title"><t t-out="project.name"/></t>
+            <!-- Un titre NEUTRE, et non le nom du projet : ce nom sert au suivi
+                 interne, et il dit au client un raccourci de chantier ou le
+                 palier de l'offre qu'on lui a vendu. Le mandat se
+                 reconnaît à son client nommé plus bas et à ses étapes. -->
+            <t t-set="title">Progress of your mandate</t>
 
             <div id="wrap" class="o_progression_portal">
                 <div class="container py-4">
@@ -20,10 +24,51 @@
                         <span class="text-muted" t-out="company.name"/>
                     </header>
 
-                    <h1 class="h3 mb-1" t-out="project.name"/>
-                    <p t-if="partner" class="text-muted mb-4">
-                        Client: <span t-out="partner.commercial_partner_id.name"/>
+                    <!-- Le nom PUBLIC du programme (« Accélération Export »), que le
+                         mandat porte. Au-dessus du titre, il est discret ; dans la
+                         ligne du titre, il est impossible à manquer. Le choix est
+                         sur la fiche, parce que le client qui n'en suit qu'un ne
+                         regarde pas un surtitre. -->
+                    <p t-if="program_label and program_label_position == 'overline'"
+                       class="o_progression_portal_program text-uppercase small fw-semibold mb-1"
+                       t-out="program_label"/>
+
+                    <div class="d-flex flex-wrap align-items-baseline mb-1">
+                        <h1 class="h3 mb-0">Progress of your mandate</h1>
+                        <!-- Dans la LIGNE du titre, et non dans le `<h1>` : le libellé
+                             du titre est un terme du catalogue, et y glisser un enfant
+                             changerait le terme extrait, donc perdrait sa traduction. -->
+                        <!-- 🔴 Le séparateur est en CSS, pas un nœud de texte : un
+                             `<span>·</span>` en ligne entre au catalogue comme un
+                             msgid qui PORTE son markup et ses attributs, donc
+                             intraduisible et cassé au premier changement de classe. -->
+                        <span t-if="program_label and program_label_position == 'inline'"
+                              class="h3 mb-0 o_progression_portal_program o_progression_portal_program_inline"
+                              t-out="program_label"/>
+                    </div>
+                    <!-- Le BÉNÉFICIAIRE, pas le payeur : la page est lue par celui
+                         pour qui le travail est fait, et il n'a pas à se faire
+                         nommer le donneur d'ordre qui la finance. `portal_client`
+                         vaut le bénéficiaire quand il est nommé, le donneur
+                         d'ordre sinon ; le contrôleur le calcule, et un module
+                         pont peut le remplacer sans toucher au gabarit. -->
+                    <p t-if="portal_client" class="text-muted mb-4">
+                        Client: <span t-out="portal_client.name"/>
                     </p>
+
+                    <!-- La note de confidentialité du mandat, écrite par le
+                         conseiller. Rendue ÉCHAPPÉE (`t-out`) et en texte brut :
+                         une note collée depuis un courriel n'emporte pas son HTML
+                         sur une page publique. -->
+                    <div t-if="confidentiality_note" role="note"
+                         class="o_progression_portal_confidentiality border rounded p-3 mb-4">
+                        <strong>Confidentiality</strong>
+                        <div class="mt-1" t-out="confidentiality_note"/>
+                    </div>
+
+                    <!-- Où un module pont pose un bloc de PAGE (le `step_extra` de
+                         chaque étape, plus bas, est son équivalent par étape). -->
+                    <div name="page_extra"/>
 
                     <div t-if="message == 'received'" class="alert alert-success" role="status">
                         Thank you, your document has been received.
@@ -126,6 +171,52 @@
                         This page follows the progress of your mandate as it is updated.
                         Its address is personal: keep it private.
                     </p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+    <!-- Le formulaire du code, quand le mandat demande une double
+         authentification et que l'appareil ne l'a pas encore prouvée. La page
+         ne montre RIEN du mandat ici : ni client, ni étape, ni pièce. -->
+    <template id="progression_portal_otp" name="Progression: access code">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <t t-set="title">Progress of your mandate</t>
+
+            <div id="wrap" class="o_progression_portal">
+                <div class="container py-4">
+
+                    <header class="o_progression_portal_header d-flex align-items-center mb-4">
+                        <img t-attf-src="/web/binary/company_logo?company=#{company.id}"
+                             t-att-alt="company.name" class="o_progression_portal_logo me-3"/>
+                        <span class="text-muted" t-out="company.name"/>
+                    </header>
+
+                    <h1 class="h3 mb-3">Confirm that it is you</h1>
+
+                    <div t-if="message_texte" role="status"
+                         t-attf-class="alert alert-#{message_niveau}"
+                         t-out="message_texte"/>
+
+                    <form method="post" class="o_progression_portal_code"
+                          t-attf-action="/progression/#{project.id}/#{token}/code">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <label for="code" class="form-label">Access code</label>
+                        <input type="text" name="code" id="code" required="required"
+                               inputmode="numeric" autocomplete="one-time-code"
+                               maxlength="6" pattern="[0-9]{6}"
+                               class="form-control o_progression_portal_code_input"/>
+                        <button type="submit" class="btn btn-primary mt-3">Open my mandate</button>
+                    </form>
+
+                    <!-- ⚠️ Sur UNE ligne : un texte de vue réparti sur plusieurs
+                         lignes entre au catalogue avec ses sauts de ligne et son
+                         indentation, et sa traduction casse à la première
+                         réindentation du fichier. -->
+                    <p class="o_progression_portal_note text-muted small mt-5">We ask for this code once per device, to make sure that only the person who receives our emails opens this page.</p>
                 </div>
             </div>
         </t>

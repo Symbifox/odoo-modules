@@ -30,4 +30,27 @@
         <field name="groups" eval="[(4, ref('project.group_project_manager'))]"/>
     </record>
 
+
+    <!-- Les codes et les appareils d'un mandat se lisent comme le mandat. Sans
+         ces règles, un administrateur de projets lisait les adresses et les IP
+         des mandats de TOUTES les sociétés. Même motif que les dépôts. -->
+
+    <record id="bf_progression_otp_comp_rule" model="ir.rule">
+        <field name="name">Progression access code: multi-company</field>
+        <field name="model_id" ref="model_bf_progression_otp"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="bf_progression_notice_comp_rule" model="ir.rule">
+        <field name="name">Progression notice: multi-company</field>
+        <field name="model_id" ref="model_bf_progression_notice"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="bf_progression_device_comp_rule" model="ir.rule">
+        <field name="name">Progression device: multi-company</field>
+        <field name="model_id" ref="model_bf_progression_device"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
 </odoo>

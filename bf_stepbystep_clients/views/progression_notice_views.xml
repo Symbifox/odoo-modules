@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les avis en file. Un avis « En échec » veut dire que le
+         responsable n'a PAS été avisé : il doit se voir ailleurs qu'au journal. -->
+    <record id="bf_progression_notice_view_list" model="ir.ui.view">
+        <field name="name">bf.progression.notice.list</field>
+        <field name="model">bf.progression.notice</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false"
+                  decoration-danger="state == 'failed'" decoration-muted="state == 'done'">
+                <field name="create_date" string="Action at"/>
+                <field name="project_id"/>
+                <field name="event"/>
+                <field name="state"/>
+                <field name="attempts"/>
+                <field name="channels"/>
+                <field name="error"/>
+                <button name="action_retry" type="object" string="Retry" icon="fa-repeat"
+                        invisible="state != 'failed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_progression_notice_view_search" model="ir.ui.view">
+        <field name="name">bf.progression.notice.search</field>
+        <field name="model">bf.progression.notice</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="project_id"/>
+                <filter name="failed" string="Failed" domain="[('state', '=', 'failed')]"/>
+                <filter name="pending" string="Pending" domain="[('state', '=', 'pending')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_progression_notice_action" model="ir.actions.act_window">
+        <field name="name">Client action notices</field>
+        <field name="res_model">bf.progression.notice</field>
+        <field name="view_mode">list</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>

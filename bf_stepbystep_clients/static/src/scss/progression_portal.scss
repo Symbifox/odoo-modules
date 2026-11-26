@@ -40,4 +40,36 @@
     .o_progression_portal_hint div {
         white-space: pre-line;
     }
+
+    .o_progression_portal_program {
+        color: var(--bs-primary, #0d6efd);
+        letter-spacing: .06em;
+    }
+
+    // Dans la ligne du titre : le point médian est décoratif, donc en CSS — un
+    // nœud de texte serait un msgid de plus, avec son markup.
+    .o_progression_portal_program_inline {
+        letter-spacing: normal;
+
+        &::before {
+            content: "·";
+            margin: 0 .5rem;
+            color: var(--bs-secondary-color, #6c757d);
+        }
+    }
+
+    .o_progression_portal_code_input {
+        max-width: 10rem;
+        font-size: 1.5rem;
+        letter-spacing: .35em;
+        text-align: center;
+    }
+
+    .o_progression_portal_confidentiality {
+        background: var(--bs-tertiary-bg, #f8f9fa);
+
+        div {
+            white-space: pre-line;
+        }
+    }
 }

@@ -38,7 +38,7 @@ def _classify_sector(project_name):
 
 
 def _abbreviate(name):
-    """Abbreviate a full name: 'Marie Tremblay' → 'Marie T.'"""
+    """Abbreviate a full name: 'Marie Exemple' → 'Marie E.'"""
     if not name:
         return ""
     if ", " in name:
@@ -539,7 +539,13 @@ class BfStepbystepDashboard(models.AbstractModel):
 
     @api.model
     def _get_projects(self):
-        """Get active client projects."""
+        """Active client mandates: projects with a configured progression.
+
+        A project counts as a client mandate when at least one of its stages
+        carries a progression step number and is visible on the client portal.
+        Internal projects, hour banks, templates and personal projects have no
+        such stage and stay off the dashboard (18.0.2.4.6).
+        """
         self.env.cr.execute("""
             SELECT pp.id,
                    COALESCE(pp.name->>%(lang)s, pp.name->>'en_US',
@@ -562,6 +568,14 @@ class BfStepbystepDashboard(models.AbstractModel):
             WHERE pp.active = true
               AND (pp.date IS NULL OR pp.date >= CURRENT_DATE)
               AND (pp.company_id IS NULL OR pp.company_id = ANY(%(companies)s))
+              AND EXISTS (
+                  SELECT 1
+                  FROM project_task_type_rel rel_type
+                  JOIN project_task_type ptt ON ptt.id = rel_type.type_id
+                  WHERE rel_type.project_id = pp.id
+                    AND ptt.progression_step_number > 0
+                    AND ptt.progression_client_visible
+              )
             ORDER BY COALESCE(pp.name->>%(lang)s, pp.name->>'en_US')
         """, {
             "lang": self._display_lang(), "paused": f"%{PAUSED_TAG_FRAGMENT}%",

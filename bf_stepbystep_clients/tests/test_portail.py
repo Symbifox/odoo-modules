@@ -143,7 +143,13 @@ class TestRouteDuPortail(HttpCase, _Mandat):
         reponse = self._ouvrir(self.projet.id, self.jeton)
         self.assertEqual(reponse.status_code, 200)
         page = reponse.text
-        self.assertIn("Vente 123 rue des", page)
+        # 🔴 Le nom du projet ne sort PLUS : il sert au suivi interne et il dit
+        # au client le raccourci de chantier ou le palier qu'on lui a vendu. La
+        # page se présente par un titre neutre (vérifié dans les deux langues
+        # par `test_la_page_parle_la_langue_du_client`, parce que le titre de
+        # cet essai-ci dépendrait de la langue de la base) et par son client.
+        self.assertNotIn("Vente 123 rue des", page)
+        self.assertIn("Famille Essai", page)
         self.assertIn("Pièces du client", page)
         self.assertIn("Déposez votre certificat de localisation.", page)
         self.assertNotIn(NOM_INTERNE, page)
@@ -164,6 +170,14 @@ class TestRouteDuPortail(HttpCase, _Mandat):
             "jeton non ASCII": (self.projet.id, "%C3%A9"),
             "jeton trop long": (self.projet.id, "x" * 4000),
         }
+        # Le mandat archivé : la garde le refuse (`not projet.active`), et aucun
+        # essai ne le mesurait — un remaniement qui laisserait tomber cette
+        # ligne-là passait tout le reste.
+        archive, _ca = self._mandat(self.env)
+        archive.action_progression_portal_publish()
+        jeton_archive = archive.progression_portal_token
+        archive.active = False
+        cas["projet archivé"] = (archive.id, jeton_archive)
         for nom, (pid, jeton) in cas.items():
             with self.subTest(nom):
                 self.assertEqual(self._ouvrir(pid, jeton).status_code, 404)
@@ -192,11 +206,17 @@ class TestRouteDuPortail(HttpCase, _Mandat):
     def test_la_page_parle_la_langue_du_client(self):
         """Le client du mandat lit la page dans sa langue, pas celle du navigateur."""
         self.env["res.lang"]._activate_lang("fr_CA")
+        # 🔴 Les DEUX langues s'activent : `_progression_langue` ne bascule que
+        # vers une langue INSTALLÉE, et sur un locataire qui n'a que le français
+        # (comme sur certaines bases) la seconde moitié de l'essai tombait.
+        self.env["res.lang"]._activate_lang("en_US")
         self.env["ir.module.module"]._load_module_terms(["bf_stepbystep_clients"], ["fr_CA"])
         self.projet.partner_id.lang = "fr_CA"
         page = self._ouvrir(self.projet.id, self.jeton).text
         self.assertIn("Ce que nous attendons de vous", page)
         self.assertIn("Étape", page)
+        self.assertIn("Suivi de votre mandat", page)
         self.projet.partner_id.lang = "en_US"
         page = self._ouvrir(self.projet.id, self.jeton).text
         self.assertIn("What we need from you", page)
+        self.assertIn("Progress of your mandate", page)

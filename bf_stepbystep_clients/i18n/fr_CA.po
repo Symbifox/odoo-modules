@@ -1,11 +1,9 @@
-# Translation of Step-by-Step : Suivi d'accompagnement client - French (Canada).
-# The module's source strings are written in English: this catalogue carries
-# the French that users of fr_CA read.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_stepbystep_clients 18.0.2.4.2\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-16 09:19+0000\n"
+"POT-Creation-Date: 2026-11-26 00:11+0000\n"
 "PO-Revision-Date: 2026-10-10 08:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (Canada)\n"
@@ -22,6 +20,31 @@ msgid "% overall"
 msgstr "% global"
 
 #. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "%(channel)s: nothing to send."
+msgstr "%(channel)s : rien à envoyer."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid ""
+"%(count)s wrong access codes in a row were entered on the progress page of "
+"the mandate %(project)s."
+msgstr ""
+"%(count)s codes d'accès erronés ont été saisis à la suite sur la page de "
+"progression du mandat %(project)s."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid ""
+"%(count)s wrong access codes in a row were entered on the progress page."
+msgstr ""
+"%(count)s codes d'accès erronés ont été saisis à la suite sur la page de "
+"progression."
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/js/bf_stepbystep_dashboard.js:0
 msgid "%s d"
@@ -33,9 +56,123 @@ msgid "(optional)"
 msgstr "(facultatif)"
 
 #. module: bf_stepbystep_clients
+#: model:mail.template,body_html:bf_stepbystep_clients.mail_template_progression_notice
+msgid ""
+"<div style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:15px; line-height:24px; color:#374151;\">\n"
+"    <t t-foreach=\"ctx.get('bf_avis_lignes') or []\" t-as=\"ligne\">\n"
+"        <p style=\"margin:0 0 12px 0; font-size:15px; line-height:24px; color:#374151;\"><t t-out=\"ligne\"/></p>\n"
+"    </t>\n"
+"    <p t-if=\"ctx.get('bf_avis_url')\" style=\"margin:16px 0 0 0;\">\n"
+"        <a t-att-href=\"ctx.get('bf_avis_url')\" style=\"display:inline-block; padding:10px 18px; border-radius:6px; background-color:#212529; color:#FFFFFF; text-decoration:none; font-size:14px;\"><t t-out=\"ctx.get('bf_avis_bouton') or ''\"/></a>\n"
+"    </p>\n"
+"</div>\n"
+"        "
+msgstr ""
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_otp.py:0
+msgid ""
+"<p>Hello,</p><p>Your access code for the progress page of your mandate is "
+"<strong style=\"font-size:1.4em;letter-"
+"spacing:.1em\">%(code)s</strong></p><p>It expires in %(minutes)s minutes. If"
+" you did not ask for this code, you can ignore this message.</p>"
+msgstr ""
+"<p>Bonjour,</p><p>Votre code d'accès à la page de suivi de votre mandat est "
+"<strong style=\"font-size:1.4em;letter-"
+"spacing:.1em\">%(code)s</strong></p><p>Il expire dans %(minutes)s minutes. "
+"Si vous n'avez pas demandé ce code, vous pouvez ignorer ce message.</p>"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "<span class=\"mx-1\" aria-hidden=\"true\">·</span>"
+msgstr "<span class=\"mx-1\" aria-hidden=\"true\">·</span>"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "<strong>Confidentiality</strong>"
+msgstr "<strong>Confidentialité</strong>"
+
+#. module: bf_stepbystep_clients
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
 msgid "<strong>What we need from you</strong>"
 msgstr "<strong>Ce que nous attendons de vous</strong>"
+
+#. module: bf_stepbystep_clients
+#: model:mail.template,body_html:bf_stepbystep_clients.mail_template_progression_otp
+msgid ""
+"<t t-set=\"_champs\" t-value=\"object.company_id._fields\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"('report_brand_dark' in _champs and object.company_id.report_brand_dark) or '#212529'\"/>\n"
+"<div style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:15px; line-height:24px; color:#374151;\">\n"
+"    <p style=\"margin:0 0 12px 0; font-size:15px; line-height:24px; color:#374151;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 4px 0; font-size:15px; line-height:24px; color:#374151;\">Your access code for the progress page of your mandate:</p>\n"
+"    <p t-attf-style=\"margin:12px 0 16px 0; font-size:30px; line-height:38px; font-weight:600; letter-spacing:0.22em; color:{{ brand_dark }};\"><t t-out=\"ctx.get('bf_progression_code') or ''\"/></p>\n"
+"    <p style=\"margin:0 0 12px 0; font-size:15px; line-height:24px; color:#374151;\">It expires in <t t-out=\"ctx.get('bf_progression_minutes') or 30\"/> minutes, and it is asked once per device.</p>\n"
+"    <p style=\"margin:0; font-size:13px; line-height:20px; color:#6B7280;\">If you did not ask for this code, you can ignore this message.</p>\n"
+"</div>\n"
+"        "
+msgstr ""
+"<t t-set=\"_champs\" t-value=\"object.company_id._fields\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"('report_brand_dark' in _champs and object.company_id.report_brand_dark) or '#212529'\"/>\n"
+"<div style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:15px; line-height:24px; color:#374151;\">\n"
+"    <p style=\"margin:0 0 12px 0; font-size:15px; line-height:24px; color:#374151;\">Bonjour,</p>\n"
+"    <p style=\"margin:0 0 4px 0; font-size:15px; line-height:24px; color:#374151;\">Votre code d'accès à la page de suivi de votre mandat :</p>\n"
+"    <p t-attf-style=\"margin:12px 0 16px 0; font-size:30px; line-height:38px; font-weight:600; letter-spacing:0.22em; color:{{ brand_dark }};\"><t t-out=\"ctx.get('bf_progression_code') or ''\"/></p>\n"
+"    <p style=\"margin:0 0 12px 0; font-size:15px; line-height:24px; color:#374151;\">Il expire dans <t t-out=\"ctx.get('bf_progression_minutes') or 30\"/> minutes, et il n'est demandé qu'une fois par appareil.</p>\n"
+"    <p style=\"margin:0; font-size:13px; line-height:20px; color:#6B7280;\">Si vous n'avez pas demandé ce code, vous pouvez ignorer ce message.</p>\n"
+"</div>\n"
+"        "
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid ""
+"A document was deposited on the progress page of the mandate %(project)s: "
+"%(doc)s (%(size)s KB)."
+msgstr ""
+"Une pièce a été déposée sur la page de progression du mandat %(project)s : "
+"%(doc)s (%(size)s Ko)."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/controllers/portal.py:0
+msgid ""
+"A six-digit code has been sent to %(adresse)s. It expires in %(minutes)s "
+"minutes."
+msgstr ""
+"Un code à six chiffres a été envoyé à %(adresse)s. Il expire dans "
+"%(minutes)s minutes."
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields.selection,name:bf_stepbystep_clients.selection__project_project__progression_program_label_position__overline
+msgid "Above the title"
+msgstr "Au-dessus du titre"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "Access"
+msgstr "Accès"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_otp
+msgid "Access code"
+msgstr "Code d'accès"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model,name:bf_stepbystep_clients.model_bf_progression_otp
+msgid "Access code sent for a progression page"
+msgstr "Code d'accès envoyé pour une page de progression"
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "Access code: wrong attempts in a row"
+msgstr "Code d'accès : erreurs à la suite"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_progression_notice_view_list
+msgid "Action at"
+msgstr "Geste le"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__active
@@ -53,6 +190,11 @@ msgstr "Actif (7j)"
 #: code:addons/bf_stepbystep_clients/models/stepbystep_dashboard.py:0
 msgid "Activity"
 msgstr "Activité"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.res_config_settings_view_form_progression
+msgid "Activity to do"
+msgstr "Activité à faire"
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
@@ -76,6 +218,17 @@ msgstr "Tous les secteurs ("
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
 msgid "All steps of this mandate are completed."
 msgstr "Toutes les étapes de ce mandat sont terminées."
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_project__progression_otp_required
+msgid "Ask a code by email"
+msgstr "Demander un code par courriel"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__attempts
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__attempts
+msgid "Attempts"
+msgstr "Essais"
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
@@ -134,6 +287,23 @@ msgid "Clear filters"
 msgstr "Effacer les filtres"
 
 #. module: bf_stepbystep_clients
+#: model:ir.actions.act_window,name:bf_stepbystep_clients.bf_progression_notice_action
+#: model:ir.ui.menu,name:bf_stepbystep_clients.bf_stepbystep_clients_menu_notices
+msgid "Client action notices"
+msgstr "Avis des gestes des clients"
+
+#. module: bf_stepbystep_clients
+#: model:mail.activity.type,name:bf_stepbystep_clients.mail_activity_type_progression_client
+#: model:mail.activity.type,summary:bf_stepbystep_clients.mail_activity_type_progression_client
+msgid "Client action on the progress page"
+msgstr "Geste du client sur la page de progression"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.res_config_settings_view_form_progression
+msgid "Client actions on the progress page"
+msgstr "Gestes du client sur la page de progression"
+
+#. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_task_type__progression_client_action_hint
 msgid "Client instruction"
 msgstr "Consigne client"
@@ -165,7 +335,20 @@ msgid "Client:"
 msgstr "Client :"
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__code_hash
+msgid "Code fingerprint"
+msgstr "Empreinte du code"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model,name:bf_stepbystep_clients.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__company_id
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__company_id
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__company_id
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -188,6 +371,35 @@ msgid "Completed (100%)"
 msgstr "Terminé (100%)"
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_project__progression_confidentiality_note
+msgid "Confidentiality note"
+msgstr "Note de confidentialité"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,help:bf_stepbystep_clients.field_project_project__progression_confidentiality_note
+msgid ""
+"Confidentiality notice shown to the client on the progression page, for "
+"mandates where it is contractual. Leave empty to show nothing."
+msgstr ""
+"Avis de confidentialité affiché au client sur la page de progression, pour "
+"les mandats où il est contractuel. Laisser vide pour ne rien afficher."
+
+#. module: bf_stepbystep_clients
+#: model:ir.model,name:bf_stepbystep_clients.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: bf_stepbystep_clients
+#: model:ir.ui.menu,name:bf_stepbystep_clients.bf_stepbystep_clients_menu_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_otp
+msgid "Confirm that it is you"
+msgstr "Confirmez que c'est bien vous"
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Contributor"
@@ -206,13 +418,19 @@ msgstr "Impossible de charger les données. Veuillez réessayer."
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__create_uid
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__create_uid
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__create_uid
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__create_uid
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__create_date
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__create_date
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__create_date
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__create_date
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -227,6 +445,11 @@ msgstr "Critiques"
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Critical (90-100%)"
 msgstr "Critique (90-100%)"
+
+#. module: bf_stepbystep_clients
+#: model:ir.ui.menu,name:bf_stepbystep_clients.bf_stepbystep_clients_menu_dashboard
+msgid "Dashboard"
+msgstr "Tableau de bord"
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
@@ -246,8 +469,21 @@ msgid "Description"
 msgstr "Description"
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__token_hash
+msgid "Device fingerprint"
+msgstr "Empreinte de l'appareil"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model,name:bf_stepbystep_clients.model_bf_progression_device
+msgid "Device recognised for a progression page"
+msgstr "Appareil reconnu pour une page de progression"
+
+#. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__display_name
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__display_name
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__display_name
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__display_name
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__display_name
 msgid "Display Name"
 msgstr "Nom d'affichage"
 
@@ -270,6 +506,12 @@ msgstr ""
 #: model:ir.model,name:bf_stepbystep_clients.model_bf_progression_deposit
 msgid "Document deposited on the client portal"
 msgstr "Pièce déposée au portail client"
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "Document deposited: %(doc)s"
+msgstr "Pièce déposée : %(doc)s"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_project__progression_deposit_ids
@@ -296,6 +538,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
 msgid "Done"
 msgstr "Terminé"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.res_config_settings_view_form_progression
+msgid "E-mail"
+msgstr "Courriel"
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
@@ -329,6 +576,11 @@ msgid "Error while loading the client record."
 msgstr "Erreur lors du chargement de la fiche client."
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__event
+msgid "Event"
+msgstr "Événement"
+
+#. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__document_id
 msgid "Expected document"
 msgstr "Pièce attendue"
@@ -344,6 +596,18 @@ msgid "Expected documents"
 msgstr "Pièces attendues"
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__expires_at
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__expires_at
+msgid "Expires at"
+msgstr "Expire le"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields.selection,name:bf_stepbystep_clients.selection__bf_progression_notice__state__failed
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_progression_notice_view_search
+msgid "Failed"
+msgstr "En échec"
+
+#. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__attachment_id
 msgid "File"
 msgstr "Fichier"
@@ -352,6 +616,11 @@ msgstr "Fichier"
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__filename
 msgid "File name"
 msgstr "Nom du fichier"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "Forget the devices and codes"
+msgstr "Oublier les appareils et les codes"
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
@@ -367,14 +636,31 @@ msgstr "Heures consommées"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__id
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__id
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__id
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__id
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__id
 msgid "ID"
 msgstr "ID"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__ip_address
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__ip_address
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__ip_address
 msgid "IP address"
 msgstr "Adresse IP"
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid ""
+"If the client did not report any trouble, someone else may hold the link. On"
+" the Client portal tab of the project, \"Forget the devices and codes\" or "
+"\"New address\" closes the page to them."
+msgstr ""
+"Si le client n'a signalé aucune difficulté, quelqu'un d'autre détient peut-"
+"être le lien. Dans l'onglet Portail client du projet, « Oublier les "
+"appareils et les codes » ou « Nouvelle adresse » lui ferme la page."
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
@@ -394,6 +680,11 @@ msgstr "Inactifs"
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Inactive (15d+)"
 msgstr "Inactif (15j+)"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields.selection,name:bf_stepbystep_clients.selection__project_project__progression_program_label_position__inline
+msgid "Inside the title"
+msgstr "Dans le titre"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,help:bf_stepbystep_clients.field_project_task_type__progression_client_action_hint
@@ -429,15 +720,36 @@ msgstr "Interne ("
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__write_uid
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__write_uid
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__write_uid
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__write_uid
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__write_uid
 msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__write_date
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__write_date
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__write_date
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__write_date
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__write_date
 msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__error
+msgid "Last error"
+msgstr "Dernière erreur"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__last_seen
+msgid "Last seen"
+msgstr "Vu la dernière fois"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_project__progression_otp_failed_at
+msgid "Last wrong access code"
+msgstr "Dernier code d'accès erroné"
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
@@ -455,6 +767,13 @@ msgstr "Chargement..."
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
 msgid "MB)."
 msgstr "Mo)."
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__project_id
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__project_id
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__project_id
+msgid "Mandate"
+msgstr "Mandat"
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
@@ -475,6 +794,11 @@ msgid "Mandate timeline"
 msgstr "Échéancier"
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__mail_id
+msgid "Message"
+msgstr "Message"
+
+#. module: bf_stepbystep_clients
 #: model:ir.model.fields,help:bf_stepbystep_clients.field_bf_progression_deposit__document_name
 msgid "Name of the expected document when it was deposited."
 msgstr "Nom de la pièce attendue au moment du dépôt."
@@ -491,16 +815,16 @@ msgid "No activity"
 msgstr "Aucune activité"
 
 #. module: bf_stepbystep_clients
-#. odoo-python
-#: code:addons/bf_stepbystep_clients/models/stepbystep_dashboard.py:0
-msgid "The progression dashboard is reserved to project users."
-msgstr "Le tableau de progression est réservé aux usagers des projets."
-
-#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "No budget"
 msgstr "Sans budget"
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "No internal manager on the mandate."
+msgstr "Aucun responsable interne sur le mandat."
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
@@ -545,16 +869,38 @@ msgid "Note"
 msgstr "Note"
 
 #. module: bf_stepbystep_clients
+#: model:ir.model,name:bf_stepbystep_clients.model_bf_progression_notice
+msgid "Notice of a client action on a progression page"
+msgstr "Avis d'un geste du client sur une page de progression"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.res_config_settings_view_form_progression
+msgid "Notify the mandate manager"
+msgstr "Aviser le responsable du mandat"
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "OK (< 75%)"
 msgstr "OK (< 75%)"
 
 #. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.res_config_settings_view_form_progression
+msgid "Odoo notification (follows the user's preference)"
+msgstr "Notification Odoo (selon la préférence de l'usager)"
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Open in Odoo"
 msgstr "Ouvrir dans Odoo"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_otp
+msgid "Open my mandate"
+msgstr "Ouvrir mon mandat"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,help:bf_stepbystep_clients.field_project_project__progression_portal_published
@@ -599,13 +945,50 @@ msgstr "En pause"
 #. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/js/bf_stepbystep_dashboard.js:0
+#: model:ir.model.fields.selection,name:bf_stepbystep_clients.selection__bf_progression_notice__state__pending
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_progression_notice_view_search
 msgid "Pending"
-msgstr "En attente"
+msgstr "En file"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_project__progression_program_label
+msgid "Program name on the client page"
+msgstr "Nom du programme sur la page du client"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_project__progression_program_label_position
+msgid "Program name position"
+msgstr "Position du nom du programme"
 
 #. module: bf_stepbystep_clients
 #: model:ir.ui.menu,name:bf_stepbystep_clients.bf_stepbystep_clients_menu_root
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.res_config_settings_view_form_progression
 msgid "Progress"
 msgstr "Progression"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_otp
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
+msgid "Progress of your mandate"
+msgstr "Suivi de votre mandat"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_res_company__progression_notify_inbox
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_res_config_settings__progression_notify_inbox
+msgid "Progress page: Odoo notification"
+msgstr "Page de progression : notification Odoo"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_res_company__progression_notify_activity
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_res_config_settings__progression_notify_activity
+msgid "Progress page: activity for the mandate manager"
+msgstr "Page de progression : activité au responsable du mandat"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_res_company__progression_notify_email
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_res_config_settings__progression_notify_email
+msgid "Progress page: e-mail to the mandate manager"
+msgstr "Page de progression : courriel au responsable du mandat"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_task_type__progression_step_name
@@ -616,6 +999,21 @@ msgstr "Nom d'étape de progression"
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_task_type__progression_step_number
 msgid "Progression step number"
 msgstr "Numéro d'étape de progression"
+
+#. module: bf_stepbystep_clients
+#: model:mail.template,name:bf_stepbystep_clients.mail_template_progression_otp
+msgid "Progression: client access code"
+msgstr "Progression : code d'accès du client"
+
+#. module: bf_stepbystep_clients
+#: model:mail.template,name:bf_stepbystep_clients.mail_template_progression_notice
+msgid "Progression: notice to the mandate manager"
+msgstr "Progression : avis au responsable du mandat"
+
+#. module: bf_stepbystep_clients
+#: model:ir.actions.server,name:bf_stepbystep_clients.ir_cron_progression_notices_ir_actions_server
+msgid "Progression: send the notices of client actions"
+msgstr "Progression : envoyer les avis des gestes des clients"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model,name:bf_stepbystep_clients.model_project_project
@@ -634,6 +1032,22 @@ msgstr "Tâches du projet"
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Projects"
 msgstr "Projets"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_device__email
+msgid "Proved by"
+msgstr "Prouvé par"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,help:bf_stepbystep_clients.field_project_project__progression_program_label
+msgid ""
+"Public name of the program this mandate belongs to (e.g. \"Export Acceleration\")."
+" Shown to the client so they can tell one mandate from another. Leave empty "
+"to show nothing."
+msgstr ""
+"Nom public du programme auquel ce mandat appartient (p. ex. « Accélération Export "
+"»). Affiché au client, pour qu'il distingue un mandat d'un autre. Laisser "
+"vide pour ne rien afficher."
 
 #. module: bf_stepbystep_clients
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
@@ -663,6 +1077,16 @@ msgid "Recent activity"
 msgstr "Activité récente"
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__res_id
+msgid "Record"
+msgstr "Fiche"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__res_model
+msgid "Record model"
+msgstr "Modèle de la fiche"
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Reload"
@@ -672,6 +1096,11 @@ msgstr "Recharger"
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__required
 msgid "Required"
 msgstr "Obligatoire"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_progression_notice_view_list
+msgid "Retry"
+msgstr "Relancer"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_deposit__checksum
@@ -707,9 +1136,35 @@ msgid "Send another version"
 msgstr "Envoyer une autre version"
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields.selection,name:bf_stepbystep_clients.selection__bf_progression_notice__state__done
+msgid "Sent"
+msgstr "Envoyé"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__sent_at
+msgid "Sent at"
+msgstr "Envoyé le"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__channels
+msgid "Sent by"
+msgstr "Envoyé par"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_otp__email
+msgid "Sent to"
+msgstr "Envoyé à"
+
+#. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__sequence
 msgid "Sequence"
 msgstr "Séquence"
+
+#. module: bf_stepbystep_clients
+#: model:ir.actions.act_window,name:bf_stepbystep_clients.action_progression_settings
+#: model:ir.ui.menu,name:bf_stepbystep_clients.bf_stepbystep_clients_menu_settings
+msgid "Settings"
+msgstr "Paramètres"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,help:bf_stepbystep_clients.field_project_task_type__progression_step_name
@@ -782,6 +1237,11 @@ msgid "Stage"
 msgstr "Étape"
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__state
+msgid "Status"
+msgstr "État"
+
+#. module: bf_stepbystep_clients
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
 msgid "Step"
 msgstr "Étape"
@@ -836,6 +1296,28 @@ msgstr "Merci, votre pièce a bien été reçue."
 
 #. module: bf_stepbystep_clients
 #. odoo-python
+#: code:addons/bf_stepbystep_clients/controllers/portal.py:0
+msgid "That code does not match. Check the email and try again."
+msgstr "Ce code ne correspond pas. Vérifiez le courriel et réessayez."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/controllers/portal.py:0
+msgid "That code has expired. Reload this page to get a new one."
+msgstr "Ce code est expiré. Rechargez cette page pour en recevoir un nouveau."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid ""
+"The client deposited %(doc)s on the progress page (deposit no. %(ref)s, "
+"%(size)s KB)."
+msgstr ""
+"Le client a déposé %(doc)s sur la page de progression (dépôt n° %(ref)s, "
+"%(size)s Ko)."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
 #: code:addons/bf_stepbystep_clients/models/project_project.py:0
 msgid ""
 "The client portal token must be %(min)s to %(max)s printable ASCII "
@@ -845,25 +1327,73 @@ msgstr ""
 "ASCII imprimables, sans espace."
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,help:bf_stepbystep_clients.field_project_project__progression_otp_required
+msgid ""
+"The client proves once per device that they read the mandate's email: a six-"
+"digit code is sent to them, and the device is remembered for the length of "
+"the mandate. Use it for mandates where the link alone is not enough."
+msgstr ""
+"Le client prouve une fois par appareil qu'il lit le courriel du mandat : un "
+"code à six chiffres lui est envoyé, et l'appareil est retenu pour la durée "
+"du mandat. À utiliser pour les mandats où le lien seul ne suffit pas."
+
+#. module: bf_stepbystep_clients
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
 msgid ""
-"The client sees the name of the project, the stages marked\n"
+"The client sees a neutral heading, their own name, the stages marked\n"
 "                        \"Visible on client portal\", the progress of each one and the\n"
 "                        client instruction of the current stage, and deposits the documents\n"
 "                        expected at the current and completed stages. Each document becomes\n"
-"                        an attachment of the stage's task. No task name, assignee or\n"
-"                        timesheet is shown."
+"                        an attachment of the stage's task. The internal name of the project\n"
+"                        is never shown, and neither is a task name, an assignee or a\n"
+"                        timesheet."
 msgstr ""
-"Le client voit le nom du projet, les étapes cochées « Visible portail client"
-" », l’avancement de chacune et la consigne au client de l’étape en cours, et"
-" il dépose les pièces attendues aux étapes en cours et terminées. Chaque "
-"pièce devient une pièce jointe de la tâche de l’étape. Aucun nom de tâche, "
-"aucun responsable ni aucune feuille de temps n’y paraît."
+"Le client voit un titre neutre, son propre nom, les étapes cochées « Visible"
+" portail client », l’avancement de chacune et la consigne au client de "
+"l’étape en cours, et il dépose les pièces attendues aux étapes en cours et "
+"terminées. Chaque pièce devient une pièce jointe de la tâche de l’étape. Le "
+"nom interne du projet n’y paraît jamais, ni un nom de tâche, ni un "
+"responsable, ni une feuille de temps."
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "The client will have to ask for a new code on each device. Continue?"
+msgstr "Le client devra redemander un code sur chaque appareil. Continuer ?"
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/controllers/portal.py:0
+msgid ""
+"The code could not be sent. Contact us so we can open the page for you."
+msgstr ""
+"Le code n'a pas pu être envoyé. Écrivez-nous et nous vous ouvrirons la page."
 
 #. module: bf_stepbystep_clients
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
 msgid "The current address will stop working. Continue?"
 msgstr "L'adresse actuelle cessera de fonctionner. Continuer ?"
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "The deposit is no longer in Odoo."
+msgstr "Le dépôt n'est plus dans Odoo."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "The document is in Odoo. It is not attached to this e-mail."
+msgstr "La pièce est dans Odoo. Elle n'est pas jointe à ce courriel."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid ""
+"The document is in the secure storage, reachable from Odoo. It is not "
+"attached to this e-mail."
+msgstr ""
+"La pièce est dans le stockage sécurisé, accessible depuis Odoo. Elle n'est "
+"pas jointe à ce courriel."
 
 #. module: bf_stepbystep_clients
 #. odoo-python
@@ -884,9 +1414,25 @@ msgid "The file is too large (maximum %s MB)."
 msgstr "Le fichier est trop volumineux (maximum %s Mo)."
 
 #. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/stepbystep_dashboard.py:0
+msgid "The progression dashboard is reserved to project users."
+msgstr "Le tableau de progression est réservé aux usagers des projets."
+
+#. module: bf_stepbystep_clients
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
 msgid "The progression of this mandate is not available yet."
 msgstr "La progression de ce mandat n'est pas encore disponible."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/controllers/portal.py:0
+msgid ""
+"This mandate has no email address on file. Contact us so we can open the "
+"page for you."
+msgstr ""
+"Ce mandat n'a aucune adresse courriel au dossier. Écrivez-nous et nous vous "
+"ouvrirons la page."
 
 #. module: bf_stepbystep_clients
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
@@ -938,6 +1484,23 @@ msgstr "Demain"
 
 #. module: bf_stepbystep_clients
 #. odoo-python
+#: code:addons/bf_stepbystep_clients/controllers/portal.py:0
+msgid ""
+"Too many attempts today. Try again tomorrow, or contact us to reopen the "
+"page."
+msgstr ""
+"Trop d'essais aujourd'hui. Réessayez demain, ou écrivez-nous et nous vous "
+"rouvrirons la page."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/controllers/portal.py:0
+msgid "Too many codes have been asked for in the last hour. Try again later."
+msgstr ""
+"Trop de codes ont été demandés dans la dernière heure. Réessayez plus tard."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
 #: code:addons/bf_stepbystep_clients/models/progression_document.py:0
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
 msgid "Too many documents sent in the last hour. Try again later."
@@ -954,6 +1517,12 @@ msgstr "Heures totales"
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Try again"
 msgstr "Réessayer"
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "Unknown event: %(event)s"
+msgstr "Événement inconnu : %(event)s"
 
 #. module: bf_stepbystep_clients
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
@@ -974,6 +1543,11 @@ msgid "Upcoming tasks (60d)"
 msgstr "Tâches à venir (60j)"
 
 #. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_notice__values
+msgid "Values"
+msgstr "Valeurs"
+
+#. module: bf_stepbystep_clients
 #: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_task_type__progression_client_visible
 msgid "Visible on client portal"
 msgstr "Visible portail client"
@@ -983,6 +1557,72 @@ msgstr "Visible portail client"
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "Warning (75-89%)"
 msgstr "Attention (75-89%)"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_otp
+msgid ""
+"We ask for this code once per device, to make sure that only the person who "
+"receives our emails opens this page."
+msgstr ""
+"Nous demandons ce code une fois par appareil, pour nous assurer que seule la"
+" personne qui reçoit nos courriels ouvre cette page."
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "What the client reads"
+msgstr "Ce que le client lit"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.res_config_settings_view_form_progression
+msgid ""
+"When a client deposits a document, completes the questionnaire or enters "
+"wrong access codes several times in a row, the project manager of the "
+"mandate is notified. The e-mail never carries the document."
+msgstr ""
+"Quand un client dépose une pièce, remplit le questionnaire ou saisit "
+"plusieurs codes d'accès erronés à la suite, le responsable du mandat est "
+"avisé. Le courriel ne porte jamais la pièce."
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,help:bf_stepbystep_clients.field_project_project__progression_program_label_position
+msgid ""
+"Where the program name appears. Above the title is discreet; inside the "
+"title is impossible to miss."
+msgstr ""
+"Où le nom du programme apparaît. Au-dessus du titre, il est discret ; dans "
+"le titre, il est impossible à manquer."
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_project_project__progression_otp_failed_streak
+msgid "Wrong access codes in a row"
+msgstr "Codes d'accès erronés à la suite"
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_otp.py:0
+#: model:mail.template,subject:bf_stepbystep_clients.mail_template_progression_otp
+msgid "Your access code"
+msgstr "Votre code d'accès"
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
+msgid "a document"
+msgstr "une pièce"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid "e.g. Export Acceleration"
+msgstr "p. ex. Accélération Export"
+
+#. module: bf_stepbystep_clients
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_form_portal
+msgid ""
+"e.g. The documents of this mandate are confidential and stay between you and"
+" us."
+msgstr ""
+"p. ex. Les documents de ce mandat sont confidentiels et restent entre vous "
+"et nous."
 
 #. module: bf_stepbystep_clients
 #. odoo-javascript
@@ -1036,12 +1676,12 @@ msgid "tasks"
 msgstr "tâches"
 
 #. module: bf_stepbystep_clients
+#: model:mail.template,subject:bf_stepbystep_clients.mail_template_progression_notice
+msgid "{{ ctx.get('bf_avis_sujet') or '' }}"
+msgstr ""
+
+#. module: bf_stepbystep_clients
 #. odoo-javascript
 #: code:addons/bf_stepbystep_clients/static/src/xml/bf_stepbystep_dashboard.xml:0
 msgid "⏸️ Paused projects ("
 msgstr "⏸️ Projets en pause ("
-
-#. module: bf_stepbystep_clients
-#: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.progression_portal_page
-msgid "<span class=\"mx-1\" aria-hidden=\"true\">·</span>"
-msgstr "<span class=\"mx-1\" aria-hidden=\"true\">·</span>"

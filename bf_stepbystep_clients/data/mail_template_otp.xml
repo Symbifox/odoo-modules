@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le courriel du code d'accès. 🔴 Un `mail.template` et non un `mail.mail`
+         nu, pour une seule raison : `email_layout_xmlid` met le courriel dans la
+         mise en page de l'instance, comme tous les autres courriels maison. Un
+         corps nu arrivait sans logo, sans pied, sans couleur de marque.
+
+         ⚠️ `bf_onboarding_base` n'est PAS une dépendance du module : la mise en
+         page est désignée par son identifiant, et là où le module est absent
+         Odoo journalise un avertissement et envoie le corps tel quel. C'est la
+         convention de la maison, et elle se dégrade proprement.
+
+         ⚠️ `auto_delete` : le corps porte le code en clair, et Odoo supprime le
+         message dès qu'il est parti. -->
+    <record id="mail_template_progression_otp" model="mail.template">
+        <field name="name">Progression: client access code</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="subject">Your access code</field>
+        <field name="email_from">{{ object.company_id.partner_id.email_formatted or object.company_id.email or '' }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="lang">{{ ctx.get('bf_progression_lang') or object.partner_id.lang }}</field>
+        <field name="body_html" type="html">
+<t t-set="_champs" t-value="object.company_id._fields"/>
+<t t-set="brand_dark" t-value="('report_brand_dark' in _champs and object.company_id.report_brand_dark) or '#212529'"/>
+<div style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:15px; line-height:24px; color:#374151;">
+    <p style="margin:0 0 12px 0; font-size:15px; line-height:24px; color:#374151;">Hello,</p>
+    <p style="margin:0 0 4px 0; font-size:15px; line-height:24px; color:#374151;">Your access code for the progress page of your mandate:</p>
+    <p t-attf-style="margin:12px 0 16px 0; font-size:30px; line-height:38px; font-weight:600; letter-spacing:0.22em; color:{{ brand_dark }};"><t t-out="ctx.get('bf_progression_code') or ''"/></p>
+    <p style="margin:0 0 12px 0; font-size:15px; line-height:24px; color:#374151;">It expires in <t t-out="ctx.get('bf_progression_minutes') or 30"/> minutes, and it is asked once per device.</p>
+    <p style="margin:0; font-size:13px; line-height:20px; color:#6B7280;">If you did not ask for this code, you can ignore this message.</p>
+</div>
+        </field>
+    </record>
+
+</odoo>

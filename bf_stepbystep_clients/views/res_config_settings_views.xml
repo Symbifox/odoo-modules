@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les canaux de l'avis au responsable du mandat, par société. -->
+    <record id="res_config_settings_view_form_progression" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf_stepbystep_clients</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Progress" string="Progress" name="bf_stepbystep_clients">
+                    <block title="Client actions on the progress page" name="bf_progression_notify_block">
+                        <setting id="bf_progression_notify_setting"
+                                 string="Notify the mandate manager"
+                                 help="When a client deposits a document, completes the questionnaire or enters wrong access codes several times in a row, the project manager of the mandate is notified. The e-mail never carries the document.">
+                            <div class="content-group mt-2">
+                                <div>
+                                    <field name="progression_notify_activity"/>
+                                    <label for="progression_notify_activity" string="Activity to do"/>
+                                </div>
+                                <div>
+                                    <field name="progression_notify_inbox"/>
+                                    <label for="progression_notify_inbox" string="Odoo notification (follows the user's preference)"/>
+                                </div>
+                                <div>
+                                    <field name="progression_notify_email"/>
+                                    <label for="progression_notify_email" string="E-mail"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_progression_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'bf_stepbystep_clients', 'bin_size': False}</field>
+    </record>
+
+</odoo>

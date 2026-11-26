@@ -32,6 +32,24 @@
                                     invisible="not progression_portal_published"/>
                         </group>
                     </group>
+                    <!-- Les deux textes que le mandat écrit sur la page du client.
+                         Pas de groupe : ils n'ouvrent aucun accès, et les écrire
+                         est déjà le droit d'écrire le projet. -->
+                    <group string="Access" groups="project.group_project_manager">
+                        <field name="progression_otp_required"/>
+                        <button name="action_progression_otp_reset" type="object"
+                                string="Forget the devices and codes" icon="fa-user-times"
+                                invisible="not progression_otp_required"
+                                confirm="The client will have to ask for a new code on each device. Continue?"/>
+                    </group>
+                    <group name="bf_stepbystep_mandate_texts" string="What the client reads">
+                        <field name="progression_program_label"
+                               placeholder="e.g. Export Acceleration"/>
+                        <field name="progression_program_label_position"
+                               invisible="not progression_program_label"/>
+                        <field name="progression_confidentiality_note"
+                               placeholder="e.g. The documents of this mandate are confidential and stay between you and us."/>
+                    </group>
                     <field name="progression_deposit_ids" readonly="1" groups="project.group_project_user">
                         <list create="0" delete="0">
                             <field name="deposited_at"/>
@@ -45,12 +63,13 @@
                         </list>
                     </field>
                     <p class="text-muted">
-                        The client sees the name of the project, the stages marked
+                        The client sees a neutral heading, their own name, the stages marked
                         "Visible on client portal", the progress of each one and the
                         client instruction of the current stage, and deposits the documents
                         expected at the current and completed stages. Each document becomes
-                        an attachment of the stage's task. No task name, assignee or
-                        timesheet is shown.
+                        an attachment of the stage's task. The internal name of the project
+                        is never shown, and neither is a task name, an assignee or a
+                        timesheet.
                     </p>
                 </page>
             </xpath>

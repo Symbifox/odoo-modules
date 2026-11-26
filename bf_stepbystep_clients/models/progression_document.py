@@ -196,6 +196,9 @@ class ProgressionDeposit(models.Model):
             author_id=auteur.id,
             message_type="comment",
         )
+        # L'avis au responsable du mandat : une ligne neuve en file, rien
+        # de plus dans la transaction du client. Il ne fait jamais échouer le dépôt.
+        projet._progression_aviser("deposit", cible=cible, depot_id=depot.id)
         return depot
 
     @api.model

@@ -78,6 +78,12 @@ class TestDepotAuPortail(HttpCase, _Mandat):
         # Une deuxième version s'ajoute, sans effacer la première.
         self._deposer(self.certificat, nom="certificat-v2.pdf", contenu=b"%PDF-1.4 v2")
         self.assertEqual(len(self.projet.progression_deposit_ids), 2)
+        # 🔴 L'anglais de la page ne se suppose pas. Sur un locataire dont la
+        # seule langue active est le français (comme sur certaines bases),
+        # la page rendait « Reçue » et cet essai tombait pour la LANGUE, pas
+        # pour le dépôt. La langue se demande, elle ne se devine pas.
+        self.env["res.lang"]._activate_lang("en_US")
+        self.projet.partner_id.lang = "en_US"
         self.assertIn("Received", self.url_open(self.page).text)
 
     def test_les_refus(self):

@@ -9,4 +9,37 @@
         groups="project.group_project_user"
         sequence="5"/>
 
+    <!-- 18.0.2.8.0 : la racine a désormais des enfants, donc une barre de menus ;
+         le tableau y reprend sa place en premier. -->
+    <menuitem
+        id="bf_stepbystep_clients_menu_dashboard"
+        name="Dashboard"
+        parent="bf_stepbystep_clients_menu_root"
+        action="bf_stepbystep_clients_action"
+        groups="project.group_project_user"
+        sequence="1"/>
+
+    <menuitem
+        id="bf_stepbystep_clients_menu_config"
+        name="Configuration"
+        parent="bf_stepbystep_clients_menu_root"
+        groups="base.group_system"
+        sequence="90"/>
+
+    <menuitem
+        id="bf_stepbystep_clients_menu_settings"
+        name="Settings"
+        parent="bf_stepbystep_clients_menu_config"
+        action="action_progression_settings"
+        groups="base.group_system"
+        sequence="1"/>
+
+    <menuitem
+        id="bf_stepbystep_clients_menu_notices"
+        name="Client action notices"
+        parent="bf_stepbystep_clients_menu_config"
+        action="bf_progression_notice_action"
+        groups="base.group_system"
+        sequence="10"/>
+
 </odoo>

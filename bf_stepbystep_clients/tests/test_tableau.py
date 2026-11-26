@@ -21,10 +21,19 @@ class TestBudgetDuTableau(TransactionCase):
             "company_id": cls.env.company.id,
         })
 
-    def _projet(self, nom, alloue, heures):
-        projet = self.env["project.project"].create({
-            "name": nom, "allow_timesheets": True, "allocated_hours": alloue,
+    def _parcours(self, projet):
+        """Une étape numérotée et visible au client : le projet devient un mandat que
+        le tableau montre (18.0.2.4.6)."""
+        self.env["project.task.type"].create({
+            "name": f"Étape 1 de {projet.name}", "progression_step_number": 1,
+            "progression_client_visible": True, "project_ids": [(4, projet.id)],
         })
+        return projet
+
+    def _projet(self, nom, alloue, heures):
+        projet = self._parcours(self.env["project.project"].create({
+            "name": nom, "allow_timesheets": True, "allocated_hours": alloue,
+        }))
         if heures:
             self.env["account.analytic.line"].create({
                 "name": "Travail", "project_id": projet.id,
@@ -96,9 +105,9 @@ class TestBudgetDuTableau(TransactionCase):
         chef = new_test_user(self.env, login="chef_prive", groups="project.group_project_user")
         prive = self._projet("Mandat privé", 10, 777)
         prive.privacy_visibility = "followers"
-        ouvert = self.env["project.project"].create({
+        ouvert = self._parcours(self.env["project.project"].create({
             "name": "Mandat ouvert", "privacy_visibility": "employees",
-        })
+        }))
         donnees = self.tableau.with_user(chef).get_dashboard_data()
         ids = {p["id"] for p in donnees["projects"]}
         self.assertNotIn(prive.id, ids)
@@ -211,3 +220,42 @@ class TestBudgetDuTableau(TransactionCase):
         # Un mandat sans aucune tâche lisible s'ouvre quand même.
         vide = self.env["project.project"].create({"name": "Mandat vide", "company_id": False})
         self.assertNotIn("error", self.tableau.with_user(chef).get_client_detail(vide.id))
+
+
+@tagged("post_install", "-at_install")
+class TestMandatsSeulement(TransactionCase):
+    """Le tableau ne montre que les mandats clients : les projets dont une étape porte
+    un numéro de progression et paraît au portail (18.0.2.4.6)."""
+
+    def setUp(self):
+        super().setUp()
+        self.tableau = self.env["bf.stepbystep.dashboard"]
+        self.Projet = self.env["project.project"]
+        self.Etape = self.env["project.task.type"]
+
+    def _ids(self):
+        return {p["id"] for p in self.tableau.get_dashboard_data()["projects"]}
+
+    def test_projet_sans_parcours_absent(self):
+        interne = self.Projet.create({"name": "Projet interne"})
+        self.Etape.create({"name": "À faire", "project_ids": [(4, interne.id)]})
+        donnees = self.tableau.get_dashboard_data()
+        self.assertNotIn(interne.id, {p["id"] for p in donnees["projects"]})
+        self.assertEqual(donnees["summary"]["total_projects"], len(donnees["projects"]))
+
+    def test_etape_numerotee_mais_interne_absente(self):
+        projet = self.Projet.create({"name": "Mandat aux étapes internes"})
+        self.Etape.create({"name": "Revue interne", "progression_step_number": 1,
+                           "progression_client_visible": False,
+                           "project_ids": [(4, projet.id)]})
+        self.assertNotIn(projet.id, self._ids())
+
+    def test_parcours_configure_present(self):
+        projet = self.Projet.create({"name": "Mandat suivi"})
+        etape = self.Etape.create({"name": "Démarrage",
+                                   "project_ids": [(4, projet.id)]})
+        self.assertNotIn(projet.id, self._ids())
+        etape.progression_step_number = 1
+        # Le tableau lit en SQL : l'écriture doit d'abord atteindre la base.
+        etape.flush_recordset()
+        self.assertIn(projet.id, self._ids())

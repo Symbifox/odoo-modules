@@ -61,6 +61,56 @@ class ProjectProject(models.Model):
     )
 
     # ------------------------------------------------------------------
+    # Ce que le mandat écrit sur la page
+    # ------------------------------------------------------------------
+    #
+    # Deux textes, et aucune garde de groupe : ils ne donnent accès à rien, et
+    # les écrire est déjà le droit d'écrire le projet. Ce qui compte pour eux
+    # est ailleurs — le gabarit les rend ÉCHAPPÉS (`t-out`), pour qu'une note
+    # collée depuis un courriel n'emporte pas son HTML sur une page publique.
+
+    progression_program_label = fields.Char(
+        string="Program name on the client page",
+        help="Public name of the program this mandate belongs to (e.g. "
+             "\"Export Acceleration\"). Shown to the client so they can tell one "
+             "mandate from another. Leave empty to show nothing.",
+    )
+    # Pas `translate=True` : c'est un nom propre de programme, et il s'écrit
+    # pareil dans les deux langues. Le traduire ne ferait qu'ouvrir la porte à
+    # une version anglaise vide, donc à une page sans programme nommé.
+    progression_program_label_position = fields.Selection(
+        selection=[
+            ("overline", "Above the title"),
+            ("inline", "Inside the title"),
+        ],
+        string="Program name position",
+        default="overline",
+        required=True,
+        help="Where the program name appears. Above the title is discreet; "
+             "inside the title is impossible to miss.",
+    )
+    # Pas `translate=True`, pour la même raison que le nom du programme, en plus
+    # grave : une correction saisie en français ne touche pas la valeur anglaise,
+    # et un client de l'autre langue continuerait de lire la PREMIÈRE version
+    # d'un avis qu'on dit contractuel. Un seul texte, celui que le conseiller
+    # écrit dans la langue du client qu'il nomme.
+    progression_otp_required = fields.Boolean(
+        string="Ask a code by email",
+        copy=False,
+        groups=GROUPE_PUBLICATION,
+        help="The client proves once per device that they read the mandate's "
+             "email: a six-digit code is sent to them, and the device is "
+             "remembered for the length of the mandate. Use it for mandates "
+             "where the link alone is not enough.",
+    )
+    progression_confidentiality_note = fields.Text(
+        string="Confidentiality note",
+        help="Confidentiality notice shown to the client on the progression "
+             "page, for mandates where it is contractual. Leave empty to show "
+             "nothing.",
+    )
+
+    # ------------------------------------------------------------------
     # 🔴 La garde de publication est SERVEUR
     # ------------------------------------------------------------------
     #
@@ -75,6 +125,12 @@ class ProjectProject(models.Model):
                 "Publishing the client portal makes the progression of this "
                 "project readable without an account. This action requires "
                 "the \"Project: Administrator\" group."))
+        # 🔴 Et le droit d'ÉCRIRE CES mandats : le groupe ne dit rien de la
+        # société. Les actions qui suivent écrivent en sudo (jeton, appareils,
+        # codes) ou rendent l'adresse privée ; sans ce contrôle, la règle
+        # multi-société des projets ne jouait pas.
+        if not self.env.su:
+            self.check_access("write")
 
     @api.constrains("progression_portal_token")
     def _progression_controler_le_jeton(self):
@@ -127,6 +183,8 @@ class ProjectProject(models.Model):
         self._progression_exiger_le_droit_de_publier()
         for projet in self.sudo():
             projet.progression_portal_token = secrets.token_urlsafe(32)
+        # La suite d'erreurs de code visait l'ancienne adresse.
+        self.sudo()._progression_otp_remettre_la_suite()
         return True
 
     def _progression_portal_url(self):
@@ -155,6 +213,39 @@ class ProjectProject(models.Model):
                 "message": self._progression_portal_url(),
             },
         }
+
+    # ------------------------------------------------------------------
+    # La double authentification
+    # ------------------------------------------------------------------
+
+    def _progression_otp_courriel(self):
+        """L'adresse où écrire le code. Un module pont la remplace, et le
+        contrôleur lui passe celle de la partie que la page NOMME."""
+        self.ensure_one()
+        partenaire = self.sudo().partner_id
+        return partenaire.commercial_partner_id.email or partenaire.email or ""
+
+    def _progression_otp_exige(self):
+        """Vrai si la page demande un code avant de s'ouvrir."""
+        self.ensure_one()
+        return bool(self.sudo().progression_otp_required)
+
+    def action_progression_otp_reset(self):
+        """Oublie les appareils reconnus et les codes en cours de ce mandat.
+
+        Deux usages, et le second n'est pas théorique : le départ d'une personne
+        chez le client, dont l'appareil reste reconnu 90 jours ; et le déblocage
+        quand quelqu'un qui tient le lien a brûlé les essais et les codes de
+        l'heure, laissant le vrai client dehors.
+        """
+        self._progression_exiger_le_droit_de_publier()
+        for projet in self.sudo():
+            self.env["bf.progression.device"].sudo().search(
+                [("project_id", "=", projet.id)]).unlink()
+            self.env["bf.progression.otp"].sudo().search(
+                [("project_id", "=", projet.id)]).unlink()
+        self.sudo()._progression_otp_remettre_la_suite()
+        return True
 
     # ------------------------------------------------------------------
     # Ce que voit le client
