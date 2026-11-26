@@ -21,6 +21,19 @@
         </field>
     </record>
 
+    <!-- Le nom du relevé n'est pas stocké : la recherche porte sur ce qui l'est. -->
+    <record id="view_bf_charge_snapshot_search" model="ir.ui.view">
+        <field name="name">bf.charge.snapshot.search</field>
+        <field name="model">bf.charge.snapshot</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="date"/>
+                <field name="user_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </search>
+        </field>
+    </record>
+
     <record id="view_bf_charge_snapshot_form" model="ir.ui.view">
         <field name="name">bf.charge.snapshot.form</field>
         <field name="model">bf.charge.snapshot</field>

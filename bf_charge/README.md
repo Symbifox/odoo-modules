@@ -105,6 +105,32 @@ columns, and numbers in the summary and the signals are written the way the
 reader's language writes them. On upgrade, the current plans are recomputed on
 their person's scope; older plans keep what they said.
 
+## Written in every language (18.0.1.3.0)
+
+The plan's summary and its five signals are sentences the module writes when it
+computes, with their numbers inside. They used to be stored in the single language of
+whoever computed the plan: French for a cron, an upgrade or a French-speaking manager,
+so an English-speaking reader saw French text although the module's English catalogue
+translated every one of those sentences.
+
+Each sentence is now written once per active language, numbers formatted the way that
+language writes them, and every reader sees their own. Readers with no language in
+context (XML-RPC, a cron) read the module's source language, like its labels. The
+signals of a plan are measured over the 30 days before the plan was **computed**, not
+before the day they are read, so a plan that is rewritten later does not count what
+happened after it; only hour bank balances and the contract's targets are read as they
+are now.
+
+On upgrade, current plans are **rewritten, not recomputed**: their figures and their
+computation date stay as they were, the summary is reworded from the stored figures, and
+the signals are measured again on the window that ended on the computation date. A plan
+whose contract was deleted since keeps saying that it had one. Older plans keep the text
+they had.
+
+The name of a reading (*Reading of …*) is no longer stored: it is written in the
+language of whoever reads it, and the readings list gains a search view on date, person
+and company. Three missing English translations were added to the catalogue.
+
 ## Requirements
 
 - Odoo 18 Community

@@ -14,8 +14,10 @@ class BfChargeSnapshot(models.Model):
     _name = "bf.charge.snapshot"
     _description = "Relevé de charge"
     _order = "date desc, id desc"
+    _rec_names_search = ["user_id.name"]
 
-    name = fields.Char(string="Nom", compute="_compute_name", store=True)
+    # Non stocké : stocké, il gardait la langue de qui avait pris le relevé.
+    name = fields.Char(string="Nom", compute="_compute_name")
     date = fields.Date(string="Date", required=True, default=fields.Date.context_today,
                        index=True)
     company_id = fields.Many2one("res.company", string="Société", required=True,
@@ -42,6 +44,7 @@ class BfChargeSnapshot(models.Model):
     tasks_closed = fields.Integer(string="Tâches fermées sur 30 j")
 
     @api.depends("date", "user_id")
+    @api.depends_context("lang")
     def _compute_name(self):
         for rec in self:
             rec.name = _("Relevé du %(d)s") % {"d": rec.date or ""}

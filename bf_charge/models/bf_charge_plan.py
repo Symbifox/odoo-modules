@@ -72,7 +72,10 @@ class BfChargePlan(models.Model):
         string="Carnet en semaines de capacité", readonly=True,
         help="Heures posées et non plaçables, divisées par la capacité nette déclarée.",
     )
-    summary = fields.Text(string="Ce que le plan dit", readonly=True)
+    # 🔴 Traduisible, et écrit dans CHAQUE langue active au calcul : le
+    # résumé est une phrase rédigée, pas un libellé. Rédigé dans la seule langue de
+    # qui calcule, il restait français pour un anglophone, quoi que dise le catalogue.
+    summary = fields.Text(string="Ce que le plan dit", readonly=True, translate=True)
     is_current = fields.Boolean(
         string="Plan en vigueur", compute="_compute_is_current", search="_search_is_current",
         help="Le dernier plan calculé de cette personne dans cette société. Les plans "
@@ -222,9 +225,68 @@ class BfChargePlan(models.Model):
             "hours_unassigned": totaux["sans_assigne"],
             "tasks_unassigned": compte["sans_assigne"],
             "backlog_weeks": (carnet / capacite) if capacite else 0.0,
-            "summary": self._redige_resume(totaux, compte, capacite, carnet, contrat),
         })
-        self._build_signals(contrat)
+        self._rediger(contrat)
+
+    def _rediger(self, contrat=None):
+        """Rédige le résumé et les signaux dans chaque langue, sans toucher aux chiffres.
+
+        Le résumé se relit des seuls champs stockés par `_build` : il redit à
+        l'identique ce que le plan a calculé. Les signaux se remesurent sur les 30
+        jours qui précèdent la DATE DU CALCUL, pas la date du jour : une montée ne
+        fait pas dire au plan ce qui s'est passé après lui. Seuls le solde des
+        banques d'heures et les cibles du contrat se lisent tels qu'ils sont.
+        """
+        self.ensure_one()
+        if contrat is None:
+            contrat = self.contract_id
+        aujourdhui = fields.Date.context_today(self, self.build_date or None)
+        totaux = {
+            "placees": self.hours_placed, "non_placables": self.hours_unplaceable,
+            "sans_assigne": self.hours_unassigned, "ecartees": self.hours_rejected,
+            "gabarits": self.hours_template, "dormantes": self.hours_dormant,
+        }
+        compte = {"non_placables": self.tasks_unplaceable,
+                  "sans_charge": self.tasks_without_charge,
+                  "sans_assigne": self.tasks_unassigned}
+        capacite = self.capacity_per_week
+        carnet = (self.hours_placed or 0.0) + (self.hours_unplaceable or 0.0)
+        # Le résumé ne lit du contrat que son existence. Un contrat supprimé depuis
+        # le calcul (`ondelete="set null"`) a laissé sa capacité au plan : il
+        # existait, et le résumé ne doit pas devenir « aucun contrat ».
+        temoin = contrat or bool(capacite)
+        self.update_field_translations("summary", self._rendre_par_langue(
+            lambda plan: plan._redige_resume(totaux, compte, capacite, carnet, temoin)))
+        self.signal_ids.unlink()
+        self._build_signals(contrat, aujourdhui)
+
+    # ------------------------------------------------------------------
+    # Langues
+    # ------------------------------------------------------------------
+    #: Les textes du plan rédigés au calcul : un par langue active, jamais un seul.
+    CHAMPS_REDIGES_SIGNAL = ("name", "measure", "target")
+
+    def _rendre_par_langue(self, rediger):
+        """{langue: rediger(plan dans cette langue)}, pour chaque langue active.
+
+        🔴 Le plan se rédigeait dans la seule langue de qui le calculait.
+        Un cron ou une montée (sans langue au contexte) écrivait du français pour
+        tout le monde, et un anglophone lisait « Clients simultanés » alors que le
+        catalogue anglais portait « Concurrent customers ».
+
+        La fente `en_US` est celle que lit qui n'a pas de langue au contexte
+        (XML-RPC, cron) et toute langue activée après le calcul. Elle reçoit la
+        rédaction de la langue SOURCE du module (le français), chiffres compris,
+        comme ses libellés : rendue en `en_US` inactive, elle aurait pris le format
+        des nombres de la société de qui calcule.
+        """
+        codes = [code for code, _nom in self.env["res.lang"].get_installed()]
+        rendus = {code: rediger(self.with_context(lang=code)) for code in codes}
+        if "en_US" not in rendus:
+            source = next((code for code in codes if code.startswith("fr")), None)
+            rendus["en_US"] = (rendus[source] if source
+                               else rediger(self.with_context(lang="en_US")))
+        return rendus
 
     def action_open_lines(self):
         """Ouvre les lignes du plan sur le graphique, pas sur la liste.
@@ -358,22 +420,40 @@ class BfChargePlan(models.Model):
     # ------------------------------------------------------------------
     # Signaux
     # ------------------------------------------------------------------
-    def _build_signals(self, contrat):
+    def _build_signals(self, contrat, aujourdhui=None):
         self.ensure_one()
+        # Une seule date pour toutes les langues : réévaluée par langue, elle
+        # pouvait changer à minuit entre deux rédactions.
+        aujourdhui = aujourdhui or fields.Date.context_today(self)
+        rendus = self._rendre_par_langue(
+            lambda plan: plan._collect_signals(contrat, aujourdhui))
+        # Appariés par code, jamais par rang : un signal conditionnel ajouté plus
+        # tard décalerait sinon les traductions en silence.
+        par_code = {code: {s["code"]: s for s in signaux} for code, signaux in rendus.items()}
+        reference = rendus["en_US"]
+        for code in par_code:
+            if [(s["code"], s["verdict"]) for s in rendus[code]] != \
+                    [(s["code"], s["verdict"]) for s in reference]:
+                raise ValueError("signaux du plan %s différents en %s" % (self.id, code))
         Signal = self.env["bf.charge.plan.signal"]
-        for vals in self._collect_signals(contrat):
-            vals["plan_id"] = self.id
-            Signal.create(vals)
+        for vals in reference:
+            signal = Signal.create(dict(vals, plan_id=self.id))
+            for champ in self.CHAMPS_REDIGES_SIGNAL:
+                signal.update_field_translations(
+                    champ, {code: par_code[code][vals["code"]][champ] for code in par_code})
 
-    def _collect_signals(self, contrat):
+    def _collect_signals(self, contrat, aujourdhui=None):
         self.ensure_one()
-        today = fields.Date.context_today(self)
+        today = aujourdhui or fields.Date.context_today(self)
         depuis = today - timedelta(days=30)
+        # Borne haute : sans elle, un plan remesuré plus tard comptait ce qui est
+        # arrivé après sa date.
+        lendemain = fields.Datetime.to_datetime(today + timedelta(days=1))
         signaux = []
 
         # 🔴 `sudo()` + borne de société explicite : voir le contrat de capacité.
         lignes = self.env["account.analytic.line"].sudo().search([
-            ("date", ">=", depuis), ("project_id", "!=", False),
+            ("date", ">=", depuis), ("date", "<=", today), ("project_id", "!=", False),
             ("user_id", "=", self.user_id.id),
             ("company_id", "in", [False, self.company_id.id]),
         ])
@@ -415,10 +495,12 @@ class BfChargePlan(models.Model):
         siennes = [("user_ids", "in", self.user_id.ids),
                    ("company_id", "in", [False, self.company_id.id])]
         arrivees = Task.search_count(
-            siennes + [("create_date", ">=", fields.Datetime.to_datetime(depuis))])
+            siennes + [("create_date", ">=", fields.Datetime.to_datetime(depuis)),
+                       ("create_date", "<", lendemain)])
         clotures = Task.search_count(siennes + [
             ("state", "in", ["1_done", "1_canceled"]),
             ("date_last_stage_update", ">=", fields.Datetime.to_datetime(depuis)),
+            ("date_last_stage_update", "<", lendemain),
         ])
         signaux.append({
             "code": "flux",
@@ -541,7 +623,8 @@ class BfChargePlanSignal(models.Model):
     plan_id = fields.Many2one("bf.charge.plan", string="Plan", required=True,
                               ondelete="cascade", index=True)
     code = fields.Char(string="Code", required=True)
-    name = fields.Char(string="Signal", required=True)
-    measure = fields.Char(string="Mesure")
-    target = fields.Char(string="Repère")
+    # Traduisibles : rédigés au calcul dans chaque langue active (voir le plan).
+    name = fields.Char(string="Signal", required=True, translate=True)
+    measure = fields.Char(string="Mesure", translate=True)
+    target = fields.Char(string="Repère", translate=True)
     verdict = fields.Selection(VERDICTS, string="Verdict", default="inconnu")

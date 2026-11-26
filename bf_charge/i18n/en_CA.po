@@ -75,7 +75,7 @@ msgstr "%(nb)s live tasks carry no workload: they are counted nowhere, and that 
 #. odoo-python
 #: code:addons/bf_charge/models/bf_charge_plan.py:0
 msgid "%(p).0f %% sur 30 jours (%(c).0f h client, %(i).0f h interne)"
-msgstr ""
+msgstr "%(p).0f %% over 30 days (%(c).0f h customer, %(i).0f h internal)"
 
 #. module: bf_charge
 #. odoo-python
@@ -604,7 +604,7 @@ msgstr "Out of plan"
 #. odoo-python
 #: code:addons/bf_charge/models/bf_charge_plan.py:0
 msgid "Hors plan : %(g).0f h de gabarits et %(d).0f h de projets dormants."
-msgstr ""
+msgstr "Out of plan: %(g).0f h of templates and %(d).0f h of dormant projects."
 
 #. module: bf_charge
 #: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
@@ -685,7 +685,7 @@ msgstr ""
 msgid ""
 "Le contrat en vigueur ne porte pas d'heures par semaine, donc aucun signal "
 "de saturation ne peut se calculer."
-msgstr ""
+msgstr "The contract in force carries no hours per week, so no saturation signal can be calculated."
 
 #. module: bf_charge
 #: model:ir.model.fields,help:bf_charge.field_bf_charge_plan_line__week_start

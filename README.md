@@ -144,7 +144,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_capture` | Captation audio | 18.0.1.4.3 | BUSL-1.1 | Record a meeting or a memo from a phone; the server names the file and drops it where the rest is already automatic |
 | `bf_celebrations` | Célébrations | 18.0.2.2.1 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
 | `bf_celebrations_email` | Célébrations : groupes de destinataires | 18.0.1.0.0 | LGPL-3 | Tend une carte de fête aux groupes de destinataires du composeur de courriels |
-| `bf_charge` | Plan de charge | 18.0.1.2.0 | BUSL-1.1 | What is actually left to do, placed on weeks, against a declared capacity rather than a guessed one |
+| `bf_charge` | Plan de charge | 18.0.1.3.0 | BUSL-1.1 | What is actually left to do, placed on weeks, against a declared capacity rather than a guessed one |
 | `bf_chatter_chronological` | BF Chatter Chronological View | 18.0.4.2.0 | LGPL-3 | Sort the chatter feed by the email's original Date header instead of insertion id (Python `_order` + `_message_fetch` + JS `Thread.fetch*` patch); cogwheel action to re-parse lost Date headers from quoted body content |
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.1.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |

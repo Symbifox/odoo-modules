@@ -648,6 +648,195 @@ class TestCharge(TransactionCase):
         carnet = plan.signal_ids.filtered(lambda s: s.code == "carnet")
         self.assertRegex(carnet.measure, r"^\d+,\d semaines")
 
+    # -- le plan se rédige dans chaque langue active ----------------------
+    def _deux_langues(self):
+        for code in ("fr_CA", "en_CA"):
+            self.env["res.lang"]._activate_lang(code)
+        contrat = self.env["bf.charge.contract"].create({
+            "name": "Essai", "hours_per_week": 10.5, "company_id": self.company.id})
+        contrat.action_activate()
+        self._saisir(self.projet, jours=1)
+        self.Task.create({"name": "à personne", "project_id": self.projet.id,
+                          "allocated_hours": 7.0, "user_ids": False,
+                          "date_deadline": fields.Date.context_today(self.env.user)})
+
+    def test_le_plan_calcule_sans_langue_se_lit_dans_chaque_langue(self):
+        """🔴 Calculé sans langue au contexte (cron, montée), le plan était rédigé en
+        français pour tous : la vidéo anglaise en montrait 21 phrases."""
+        self._deux_langues()
+        plan = self._plan().with_context(lang=None)
+        plan.action_build()
+        en, fr = plan.with_context(lang="en_CA"), plan.with_context(lang="fr_CA")
+        self.assertIn("placed on the horizon", en.summary)
+        self.assertIn("nobody carries", en.summary)
+        self.assertIn("10.5 h per week", en.summary, "nombres au format anglais")
+        self.assertNotIn("posées", en.summary)
+        self.assertIn("posées sur l'horizon", fr.summary)
+        self.assertIn("10,5 h par semaine", fr.summary, "nombres au format français")
+        noms = {s.code: s.name for s in en.signal_ids}
+        self.assertEqual(noms["clients"], "Concurrent customers")
+        self.assertEqual(noms["flux"], "Arrivals against closures")
+        self.assertEqual(fr.signal_ids.filtered(lambda s: s.code == "clients").name,
+                         "Clients simultanés")
+        clients = en.signal_ids.filtered(lambda s: s.code == "clients")
+        self.assertIn("customers touched over 30 days", clients.measure)
+        self.assertTrue(clients.target.startswith("declared ceiling: "))
+        carnet = en.signal_ids.filtered(lambda s: s.code == "carnet")
+        self.assertRegex(carnet.measure, r"^\d+\.\d weeks of declared capacity")
+        part = en.signal_ids.filtered(lambda s: s.code == "part_client")
+        self.assertRegex(part.measure, r"^\d+ % over 30 days \(\d+ h customer, \d+ h internal\)$")
+
+    def test_le_plan_calcule_en_francais_se_lit_aussi_en_anglais(self):
+        """Le bouton « Calculer » d'un francophone ne rédige pas que pour lui."""
+        self._deux_langues()
+        plan = self._plan().with_context(lang="fr_CA")
+        plan.action_build()
+        en = plan.with_context(lang="en_CA")
+        self.assertIn("placed on the horizon", en.summary)
+        self.assertIn("Concurrent customers", en.signal_ids.mapped("name"))
+        self.assertIn("Clients simultanés", plan.signal_ids.mapped("name"))
+
+    def test_la_fente_source_garde_la_langue_source(self):
+        """Sans langue au contexte (XML-RPC, cron), on lit la langue source du
+        module, comme ses libellés : jamais l'anglais par défaut pour un francophone."""
+        if "en_US" in dict(self.env["res.lang"].get_installed()):
+            self.skipTest("en_US active : sa fente se rédige dans sa propre langue")
+        self._deux_langues()
+        # Rendue en en_US inactive, la fente prenait le format de la société de qui
+        # calcule : on la met en anglais pour que « 10,5 » prouve quelque chose.
+        self.env.user.company_id.partner_id.lang = "en_CA"
+        plan = self._plan().with_context(lang="en_CA")
+        plan.action_build()
+        source = plan.with_context(lang=None)
+        self.assertIn("posées sur l'horizon", source.summary)
+        self.assertIn("10,5 h par semaine", source.summary, "chiffres de la langue source")
+        self.assertIn("Clients simultanés", source.signal_ids.mapped("name"))
+
+    def test_un_gestionnaire_ordinaire_redige_dans_chaque_langue(self):
+        """Les essais tournent en superutilisateur : le bouton, lui, est pressé par un
+        gestionnaire, soumis aux droits et aux règles de société."""
+        self._deux_langues()
+        gestionnaire = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Charge : gestionnaire", "login": "charge-gestion@example.com",
+            "company_id": self.company.id, "company_ids": [(6, 0, [self.company.id])],
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("bf_charge.group_bf_charge_manager").id])],
+        })
+        plan = self._plan().with_user(gestionnaire).with_context(lang="fr_CA")
+        plan.action_build()
+        en = plan.with_context(lang="en_CA")
+        self.assertIn("placed on the horizon", en.summary)
+        self.assertIn("Concurrent customers", en.signal_ids.mapped("name"))
+        self.assertIn("Clients simultanés", plan.signal_ids.mapped("name"))
+
+    def test_le_nom_du_releve_se_lit_dans_la_langue_de_qui_lit(self):
+        self._deux_langues()
+        releve = self.env["bf.charge.snapshot"].with_context(lang="fr_CA")._capture(
+            company=self.company)
+        self.assertTrue(releve.with_context(lang="en_CA").name.startswith("Reading of "))
+        self.assertTrue(releve.with_context(lang="fr_CA").name.startswith("Relevé du "))
+
+    def _migration_1_3(self):
+        import importlib.util
+        from pathlib import Path
+        chemin = Path(__file__).parents[1] / "migrations" / "18.0.1.3.0" / "end-migrate.py"
+        spec = importlib.util.spec_from_file_location("bf_charge_mig_1_3_0", chemin)
+        migration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(migration)
+        return migration
+
+    def test_la_migration_1_3_redige_sans_recalculer(self):
+        """La montée re-rédige le plan en vigueur dans chaque langue, sans toucher à
+        ses chiffres ni à sa date de calcul."""
+        migration = self._migration_1_3()
+        self._deux_langues()
+        ancien = self._plan()
+        ancien.action_build()
+        recent = self._plan()
+        recent.action_build()
+        redige = recent.with_context(lang="fr_CA").summary
+        # Un chiffre que seul un RECALCUL changerait, et une date de calcul passée.
+        recent.hours_beyond = 4242.0
+        # L'archive reste plus vieille : seul le plus récent calcul est en vigueur.
+        calcule_le = fields.Datetime.now() - timedelta(days=3)
+        recent.build_date = calcule_le
+        ancien.build_date = fields.Datetime.now() - timedelta(days=10)
+        # Ce que la montée laisse : l'ancien texte, dans la seule fente source.
+        self.env.flush_all()
+        self.env.cr.execute(
+            "UPDATE bf_charge_plan SET summary = jsonb_build_object('en_US', 'avant') "
+            "WHERE id IN %s", [tuple((ancien | recent).ids)])
+        self.env.cr.execute(
+            "UPDATE bf_charge_plan_signal SET name = jsonb_build_object('en_US', 'avant') "
+            "WHERE plan_id = %s", [recent.id])
+        self.env.invalidate_all()
+        migration.migrate(self.env.cr, "18.0.1.2.0")
+        self.assertEqual(recent.with_context(lang="fr_CA").summary, redige,
+                         "le résumé redit exactement ce que le plan a calculé")
+        self.assertIn("placed on the horizon", recent.with_context(lang="en_CA").summary)
+        self.assertIn("Concurrent customers",
+                      recent.with_context(lang="en_CA").signal_ids.mapped("name"))
+        self.assertEqual(recent.hours_beyond, 4242.0, "aucun recalcul")
+        self.assertEqual(recent.build_date, calcule_le, "date de calcul intacte")
+        self.assertEqual(ancien.with_context(lang="en_CA").summary, "avant",
+                         "l'archive n'est pas touchée")
+        self.env.cr.execute("SELECT 1 FROM information_schema.columns "
+                            "WHERE table_name = 'bf_charge_snapshot' AND column_name = 'name'")
+        self.assertFalse(self.env.cr.fetchone(), "colonne morte du nom retirée")
+
+    def test_la_redaction_relit_les_champs_stockes(self):
+        self._deux_langues()
+        plan = self._plan()
+        plan.action_build()
+        plan.hours_placed = 123.0
+        plan._rediger()
+        self.assertIn("123 h placed on the horizon", plan.with_context(lang="en_CA").summary)
+
+    def test_un_contrat_supprime_ne_devient_pas_aucun_contrat(self):
+        """Le contrat est en `set null` : le plan garde sa capacité, et la redit."""
+        self._deux_langues()
+        plan = self._plan()
+        plan.action_build()
+        self.assertTrue(plan.contract_id)
+        plan.contract_id.unlink()
+        self.assertFalse(plan.contract_id)
+        plan._rediger()
+        resume = plan.with_context(lang="fr_CA").summary
+        self.assertNotIn("Aucun contrat", resume)
+        self.assertIn("Au rythme déclaré de 10,5 h par semaine", resume)
+
+    def test_les_signaux_se_mesurent_a_la_date_du_plan(self):
+        """Remesuré plus tard (une montée), le plan ne compte pas ce qui a suivi sa date."""
+        partenaire = self.env["res.partner"].create({"name": "Charge : client"})
+        mandat = self.Project.create({"name": "Charge : mandat", "partner_id": partenaire.id,
+                                      "company_id": self.company.id})
+        self._saisir(mandat, jours=1, heures=8.0)
+        plan = self._plan()
+        aujourdhui = fields.Date.context_today(self.env.user)
+        def clients(jour):
+            signaux = plan._collect_signals(self.env["bf.charge.contract"], jour)
+            return next(s for s in signaux if s["code"] == "clients")["measure"]
+        self.assertTrue(clients(aujourdhui).startswith("1 "), clients(aujourdhui))
+        self.assertTrue(clients(aujourdhui - timedelta(days=5)).startswith("0 "),
+                        "une saisie postérieure à la date du plan n'entre pas")
+        # Et par le chemin de la montée : la rédaction se mesure à la date du calcul.
+        plan.action_build()
+        plan.build_date = fields.Datetime.now() - timedelta(days=5)
+        plan._rediger()
+        mesure = plan.signal_ids.filtered(lambda s: s.code == "clients").measure
+        self.assertTrue(mesure.startswith("0 "), mesure)
+
+    def test_la_migration_dit_ses_echecs(self):
+        from unittest.mock import patch
+        migration = self._migration_1_3()
+        plan = self._plan()
+        plan.action_build()
+        Plan = type(self.env["bf.charge.plan"])
+        with patch.object(Plan, "_rediger", side_effect=RuntimeError("essai")), \
+                self.assertLogs("bf_charge_mig_1_3_0", level="ERROR") as journal:
+            migration.migrate(self.env.cr, "18.0.1.2.0")
+        self.assertTrue(any("non rédigés" in ligne for ligne in journal.output))
+
     def test_les_semaines_ne_lisent_que_le_plan_en_vigueur(self):
         ancien = self._plan()
         ancien.action_build()
