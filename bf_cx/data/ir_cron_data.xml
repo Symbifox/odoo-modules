@@ -2,7 +2,7 @@
 <odoo>
     <data noupdate="1">
         <record id="ir_cron_cx_wave_reminders" model="ir.cron">
-            <field name="name">Expérience client : entretien des vagues</field>
+            <field name="name">Customer experience: wave upkeep</field>
             <field name="model_id" ref="model_bf_cx_wave"/>
             <field name="state">code</field>
             <field name="code">model._cron_send_reminders()</field>
@@ -13,7 +13,7 @@
         </record>
 
         <record id="ir_cron_cx_complaint_ack" model="ir.cron">
-            <field name="name">Expérience client : plaintes sans accusé de réception</field>
+            <field name="name">Customer experience: complaints without acknowledgement</field>
             <field name="model_id" ref="model_bf_cx_complaint"/>
             <field name="state">code</field>
             <field name="code">model._cron_ack_overdue()</field>

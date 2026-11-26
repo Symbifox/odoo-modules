@@ -1,5 +1,6 @@
 /** @odoo-module **/
 
+import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { Component, onWillStart, useState } from "@odoo/owl";
@@ -30,10 +31,10 @@ export class BfCxDashboard extends Component {
 
     get presets() {
         return [
-            { key: "30", label: "30 j" },
-            { key: "90", label: "90 j" },
-            { key: "365", label: "12 mois" },
-            { key: "all", label: "Tout" },
+            { key: "30", label: _t("30 d") },
+            { key: "90", label: _t("90 d") },
+            { key: "365", label: _t("12 months") },
+            { key: "all", label: _t("All") },
         ];
     }
 
@@ -82,8 +83,20 @@ export class BfCxDashboard extends Component {
         return months.map((m) => {
             const total = m.promoter + m.passive + m.detractor;
             const px = (v) => Math.round((v / max) * (height - 18));
+            const label = m.label.slice(0, 7);
             return {
-                label: m.label.slice(0, 7),
+                label,
+                // Tooltips and aria-label: composed here, through _t, because
+                // a QWeb <title> and a t-attf attribute are never extracted.
+                npsTitle: _t(
+                    "%(month)s · promoters %(promoter)s, passives %(passive)s, detractors %(detractor)s",
+                    { month: label, promoter: m.promoter, passive: m.passive, detractor: m.detractor }
+                ),
+                npsAria: _t("%(month)s: %(total)s answers", { month: label, total }),
+                complaintsTitle: _t("%(month)s: %(count)s complaint(s)", {
+                    month: label,
+                    count: m.complaints,
+                }),
                 total,
                 complaints: m.complaints,
                 promoter: m.promoter,
@@ -110,7 +123,7 @@ export class BfCxDashboard extends Component {
     openFeedback(extraDomain) {
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Feedbacks",
+            name: _t("Feedback"),
             res_model: "bf.cx.feedback",
             views: [
                 [false, "list"],
@@ -127,7 +140,7 @@ export class BfCxDashboard extends Component {
     openFollowups() {
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "À rappeler",
+            name: _t("To call back"),
             res_model: "bf.cx.feedback",
             views: [
                 [false, "list"],
@@ -143,7 +156,7 @@ export class BfCxDashboard extends Component {
     openComplaints() {
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "Plaintes",
+            name: _t("Complaints"),
             res_model: "bf.cx.complaint",
             views: [
                 [false, "list"],

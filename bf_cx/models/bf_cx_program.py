@@ -8,6 +8,8 @@ import base64
 import io
 import logging
 
+from markupsafe import escape
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -16,179 +18,182 @@ _logger = logging.getLogger(__name__)
 
 class BfCxProgram(models.Model):
     _name = "bf.cx.program"
-    _description = "Programme de mesure d'expérience"
+    _description = "Experience measurement program"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "sequence, id"
 
-    name = fields.Char(string="Nom", required=True, tracking=True)
-    sequence = fields.Integer(string="Séquence", default=10)
+    # Translatable since 18.0.1.13.2: the default programs read in each
+    # reader's language, a team's own wording stays as typed.
+    name = fields.Char(string="Name", required=True, tracking=True,
+                       translate=True)
+    sequence = fields.Integer(string="Sequence", default=10)
     active = fields.Boolean(default=True)
     program_type = fields.Selection(
         [
-            ("nps", "NPS relationnel"),
-            ("csat", "CSAT transactionnel"),
-            ("pulse", "Pulse continu"),
-            ("internal", "Feedback interne (360)"),
+            ("nps", "Relationship NPS"),
+            ("csat", "Transactional CSAT"),
+            ("pulse", "Continuous pulse"),
+            ("internal", "Internal feedback (360)"),
         ],
-        string="Type de programme",
+        string="Program type",
         default="nps",
         required=True,
         tracking=True,
-        help="NPS/Pulse : la note est classée promoteur/passif/détracteur. "
-             "CSAT : simple note de satisfaction. Interne : les entrées sont "
-             "réservées aux gestionnaires du module.",
+        help="NPS/Pulse: the score is classified as "
+             "promoter/passive/detractor. CSAT: a plain satisfaction "
+             "score. Internal: entries are restricted to the module's "
+             "managers.",
     )
     survey_id = fields.Many2one(
         "survey.survey",
-        string="Sondage",
+        string="Survey",
         required=True,
         ondelete="restrict",
         tracking=True,
-        help="Sondage Odoo servant de support au programme. La question de "
-             "score doit être de type « Échelle » (0-10 pour un NPS).",
+        help="Odoo survey supporting the program. The score question must "
+             "be of the \"Scale\" type (0-10 for an NPS).",
     )
     score_question_id = fields.Many2one(
         "survey.question",
-        string="Question de score",
+        string="Score question",
         domain="[('survey_id', '=', survey_id), ('question_type', '=', 'scale')]",
-        help="Question « Échelle » dont la valeur alimente le score. Si vide, "
-             "la première réponse de type échelle est utilisée.",
+        help="\"Scale\" question whose value feeds the score. If empty, "
+             "the first scale answer is used.",
     )
     comment_question_id = fields.Many2one(
         "survey.question",
-        string="Question de commentaire",
+        string="Comment question",
         domain="[('survey_id', '=', survey_id), ('question_type', 'in', ('text_box', 'char_box'))]",
-        help="Question texte dont la réponse devient le commentaire du "
-             "feedback. Si vide, la première réponse texte est utilisée.",
+        help="Text question whose answer becomes the feedback comment. If "
+             "empty, the first text answer is used.",
     )
     testimonial_question_id = fields.Many2one(
         "survey.question",
-        string="Question témoignage",
+        string="Testimonial question",
         domain="[('survey_id', '=', survey_id), ('question_type', '=', 'simple_choice')]",
-        help="Question à choix simple demandant la permission de citer le "
-             "répondant. Optionnel.",
+        help="Single-choice question asking permission to quote the "
+             "respondent. Optional.",
     )
     testimonial_answer_id = fields.Many2one(
         "survey.question.answer",
-        string="Réponse « oui » témoignage",
+        string="Testimonial \"yes\" answer",
         domain="[('question_id', '=', testimonial_question_id)]",
-        help="Choix de réponse qui marque le feedback comme candidat "
-             "témoignage.",
+        help="Answer choice that marks the feedback as a testimonial "
+             "candidate.",
     )
     testimonial_direct_answer_id = fields.Many2one(
         "survey.question.answer",
-        string="Réponse « oui, sans recontacter »",
+        string="\"Yes, no recontact\" answer",
         domain="[('question_id', '=', testimonial_question_id)]",
-        help="Choix de réponse qui vaut consentement : le témoignage est "
-             "créé directement en « Consentement obtenu », la réponse au "
-             "sondage servant de preuve. Son libellé doit dire comment le "
-             "répondant sera nommé. Optionnel.",
+        help="Answer choice that counts as consent: the testimonial is "
+             "created directly as \"Consent obtained\", the survey answer "
+             "serving as proof. Its label must say how the respondent "
+             "will be named. Optional.",
     )
     invite_template_id = fields.Many2one(
         "mail.template",
-        string="Gabarit d'invitation",
+        string="Invitation template",
         domain="[('model', '=', 'survey.user_input')]",
         default=lambda self: self.env.ref(
             "bf_cx.mail_template_cx_invite",
             raise_if_not_found=False,
         ),
-        help="Courriel envoyé pour chaque invitation d'une vague.",
+        help="Email sent for each invitation of a wave.",
     )
     campaign_id = fields.Many2one(
         "utm.campaign",
-        string="Campagne UTM",
-        help="Campagne associée par défaut aux vagues du programme (le lien "
-             "sondage ↔ campagne n'existe pas dans Odoo standard : c'est ce "
-             "module qui le porte).",
+        string="UTM campaign",
+        help="Campaign attached by default to the program's waves "
+             "(standard Odoo has no survey ↔ campaign link: this module "
+             "provides it).",
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Responsable",
+        string="Owner",
         default=lambda self: self.env.user,
         tracking=True,
     )
     company_id = fields.Many2one(
         "res.company",
-        string="Société",
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
     reminder_days = fields.Integer(
-        string="Rappel après (jours)",
+        string="Reminder after (days)",
         default=5,
-        help="Nombre de jours après l'envoi d'une vague avant le rappel "
-             "automatique aux non-répondants. 0 = aucun rappel automatique.",
+        help="Number of days after a wave is sent before the automatic "
+             "reminder to non-respondents. 0 = no automatic reminder.",
     )
     reminder_template_id = fields.Many2one(
         "mail.template",
-        string="Gabarit de rappel",
+        string="Reminder template",
         domain="[('model', '=', 'survey.user_input')]",
         default=lambda self: self.env.ref(
             "bf_cx.mail_template_cx_reminder",
             raise_if_not_found=False,
         ),
-        help="Courriel de rappel aux non-répondants (un message court et "
-             "différencié performe mieux qu'un renvoi identique). Vide = "
-             "renvoi du gabarit d'invitation.",
+        help="Reminder email to non-respondents (a short, distinct "
+             "message works better than an identical resend). Empty = the "
+             "invitation template is resent.",
     )
     hide_respondent = fields.Boolean(
-        string="Masquer le répondant (360)",
+        string="Hide the respondent (360)",
         default=True,
-        help="Sur un programme interne, n'inscrit pas le répondant au "
-             "registre des feedbacks : les listes, regroupements, exports "
-             "et tableaux de bord ne le nomment pas. Le masquage porte sur "
-             "le registre, pas sur la base : un gestionnaire garde accès à "
-             "la réponse de sondage elle-même. Sur une équipe de trois "
-             "personnes, dites-le honnêtement aux répondants.",
+        help="On an internal program, does not enter the respondent in "
+             "the feedback register: lists, groupings, exports and "
+             "dashboards do not name them. The masking applies to the "
+             "register, not to the database: a manager still has access "
+             "to the survey answer itself. On a team of three, tell "
+             "respondents so honestly.",
     )
     cooldown_days = fields.Integer(
-        string="Cadence minimale (jours)",
+        string="Minimum cadence (days)",
         default=0,
-        help="Quarantaine anti-sursollicitation propre à CE programme "
-             "(pratique : 90 j pour un NPS relationnel, 30 j pour du "
-             "transactionnel). 0 = le paramètre global s'applique.",
+        help="Over-solicitation quarantine specific to THIS program "
+             "(practice: 90 days for a relationship NPS, 30 days for "
+             "transactional). 0 = the global setting applies.",
     )
-    wave_ids = fields.One2many("bf.cx.wave", "program_id", string="Vagues")
+    wave_ids = fields.One2many("bf.cx.wave", "program_id", string="Waves")
     feedback_ids = fields.One2many(
-        "bf.cx.feedback", "program_id", string="Feedbacks"
+        "bf.cx.feedback", "program_id", string="Feedback"
     )
 
     pulse_url = fields.Char(
-        string="URL publique (pulse)",
+        string="Public URL (pulse)",
         compute="_compute_pulse",
-        help="Disponible quand le sondage est en accès « Toute personne "
-             "ayant le lien » : lien permanent à diffuser (signatures, "
-             "affiches, QR).",
+        help="Available when the survey's access is \"Anyone with the "
+             "link\": a permanent link to share (signatures, posters, QR).",
     )
     pulse_snippet = fields.Text(
-        string="Extrait HTML pour signature",
+        string="HTML snippet for a signature",
         compute="_compute_pulse",
-        help="À coller tel quel dans une signature de courriel ou un pied "
-             "de communication.",
+        help="To paste as is into an email signature or a communication "
+             "footer.",
     )
 
     wave_count = fields.Integer(compute="_compute_wave_count")
     feedback_count = fields.Integer(compute="_compute_feedback_stats")
     promoter_count = fields.Integer(
-        string="Promoteurs", compute="_compute_feedback_stats"
+        string="Promoters", compute="_compute_feedback_stats"
     )
-    passive_count = fields.Integer(string="Passifs", compute="_compute_feedback_stats")
+    passive_count = fields.Integer(string="Passives", compute="_compute_feedback_stats")
     detractor_count = fields.Integer(
-        string="Détracteurs", compute="_compute_feedback_stats"
+        string="Detractors", compute="_compute_feedback_stats"
     )
     nps_score = fields.Integer(
-        string="Score NPS (historique)",
+        string="NPS score (all time)",
         compute="_compute_feedback_stats",
-        help="% promoteurs − % détracteurs sur TOUT l'historique du "
-             "programme, de −100 à +100. Comprend les saisies manuelles "
-             "rattachées au programme.",
+        help="% promoters − % detractors over the program's ENTIRE "
+             "history, from −100 to +100. Includes manual entries "
+             "attached to the program.",
     )
     nps_window_display = fields.Char(
-        string="NPS (fenêtre)",
+        string="NPS (window)",
         compute="_compute_nps_window",
-        help="Score sur la fenêtre glissante configurée (défaut 12 mois), "
-             "masqué sous 10 réponses : en deçà, la marge d'erreur dépasse "
-             "±20 points.",
+        help="Score over the configured rolling window (12 months by "
+             "default), hidden below 10 answers: under that, the margin "
+             "of error exceeds ±20 points.",
     )
 
     # ── Compute ──────────────────────────────────────────────────────────────
@@ -231,19 +236,22 @@ class BfCxProgram(models.Model):
                 else 0
             )
 
+    @api.depends_context("lang")
     def _compute_nps_window(self):
         Feedback = self.env["bf.cx.feedback"]
         for program in self:
             summary = Feedback._nps_summary(
                 [("program_id", "=", program.id)]
             )
-            program.nps_window_display = "%s (n=%s, %s j)" % (
-                summary["display"],
-                summary["n"],
-                summary["days"],
+            program.nps_window_display = _(
+                "%(display)s (n=%(n)s, %(days)s d)",
+                display=summary["display"],
+                n=summary["n"],
+                days=summary["days"],
             )
 
     @api.depends("survey_id.access_mode", "survey_id.access_token")
+    @api.depends_context("lang")
     def _compute_pulse(self):
         base = (
             self.env["ir.config_parameter"].sudo().get_param("web.base.url") or ""
@@ -253,11 +261,11 @@ class BfCxProgram(models.Model):
             if survey and survey.access_mode == "public" and base:
                 url = "%s/survey/start/%s" % (base, survey.access_token)
                 program.pulse_url = url
+                # Pasted into the user's own signature: their language.
                 program.pulse_snippet = (
-                    '<a href="%s" '
-                    'style="color:#29ABE2; text-decoration:none; '
-                    'font-size:12px;">Comment avons-nous fait&#8239;? '
-                    'Donnez-nous votre avis &#8594;</a>' % url
+                    '<a href="%s" style="color:#29ABE2; '
+                    'text-decoration:none; font-size:12px;">%s &#8594;</a>'
+                    % (url, escape(_("How did we do? Give us your feedback")))
                 )
             else:
                 program.pulse_url = False
@@ -286,7 +294,7 @@ class BfCxProgram(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Vagues - %s") % self.name,
+            "name": _("Waves - %s") % self.name,
             "res_model": "bf.cx.wave",
             "view_mode": "list,form",
             "domain": [("program_id", "=", self.id)],
@@ -297,7 +305,7 @@ class BfCxProgram(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Feedbacks - %s") % self.name,
+            "name": _("Feedback - %s") % self.name,
             "res_model": "bf.cx.feedback",
             "view_mode": "list,kanban,form,graph,pivot",
             "domain": [("program_id", "=", self.id)],
@@ -313,15 +321,15 @@ class BfCxProgram(models.Model):
         self.ensure_one()
         if not self.pulse_url:
             raise UserError(
-                _("Le QR exige un sondage en accès public (« Toute personne "
-                  "ayant le lien »).")
+                _("The QR code requires a survey with public access "
+                  "(\"Anyone with the link\").")
             )
         try:
             import qrcode
         except ImportError as exc:
             raise UserError(
-                _("La librairie Python « qrcode » n'est pas installée dans "
-                  "le conteneur Odoo (pip install qrcode).")
+                _("The \"qrcode\" Python library is not installed in the "
+                  "Odoo container (pip install qrcode).")
             ) from exc
         buffer = io.BytesIO()
         image = qrcode.make(self.pulse_url, border=2)

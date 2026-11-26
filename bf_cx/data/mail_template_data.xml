@@ -9,11 +9,11 @@
              hooks.apply_cx_i18n (post_init + migrations). -->
 
         <record id="mail_template_cx_invite" model="mail.template">
-            <field name="name">Expérience client : invitation au sondage</field>
+            <field name="name">Customer experience: survey invitation</field>
             <field name="model_id" ref="survey.model_survey_user_input"/>
-            <field name="subject">Votre avis compte (2 minutes)</field>
+            <field name="subject">Your feedback matters (2 minutes)</field>
             <field name="partner_to">{{ object.partner_id.id }}</field>
-            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="lang">{{ object.partner_id.lang or user.company_id.partner_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
@@ -30,7 +30,7 @@
                                 <img t-att-src="'/brand/logo/%d' % company.id" alt="Logo" style="height:40px; width:auto; display:block; border:0;"/>
                             </td>
                             <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
-                                Votre avis
+                                Your feedback
                             </td>
                         </tr></tbody></table>
                     </td>
@@ -39,28 +39,25 @@
                 <tr>
                     <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;">
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Bonjour <t t-out="object.partner_id.name or ''"/>,
+                            Hello <t t-out="object.partner_id.name or ''"/>,
                         </p>
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Merci de nous faire confiance. Auriez-vous deux
-                            minutes pour nous dire comment ça se passe de
-                            votre côté&#160;? Vos réponses nous aident
-                            concrètement à nous améliorer.
+                            Thank you for trusting us. Would you have two minutes to tell us how things are going on your end? Your answers concretely help us improve.
                         </p>
                         <div style="text-align:center; margin:28px 0;">
                             <a t-att-href="object.get_start_url()"
                                t-attf-style="background-color:{{ brand_primary }}; color:#FFFFFF; text-decoration:none; padding:12px 28px; border-radius:6px; font-size:15px; display:inline-block;">
-                                Répondre au sondage
+                                Take the survey
                             </a>
                         </div>
                         <t t-if="object.deadline">
                             <p style="font-size:13px; color:#6B7280; margin:0 0 12px 0;">
-                                Le sondage est ouvert jusqu'au
+                                The survey is open until
                                 <t t-out="format_date(object.deadline)"/>.
                             </p>
                         </t>
                         <p style="font-size:15px; margin:0;">
-                            Merci beaucoup&#160;!
+                            Thank you so much!
                         </p>
                     </td>
                 </tr>
@@ -68,8 +65,8 @@
                     <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
                         <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
                             <t t-if="company.name"><t t-out="company.name"/><br/></t>
-                            Vous préférez ne plus recevoir de demandes d'avis&#160;?
-                            <a t-att-href="object.partner_id.bf_cx_unsubscribe_url" style="color:#6B7280;">Me désabonner</a>.
+                            Prefer not to receive feedback requests?
+                            <a t-att-href="object.partner_id.bf_cx_unsubscribe_url" style="color:#6B7280;">Unsubscribe</a>.
                         </p>
                     </td>
                 </tr>
@@ -87,11 +84,11 @@
         </record>
 
         <record id="mail_template_cx_reminder" model="mail.template">
-            <field name="name">Expérience client : rappel de sondage</field>
+            <field name="name">Customer experience: survey reminder</field>
             <field name="model_id" ref="survey.model_survey_user_input"/>
-            <field name="subject">Petit rappel : votre avis compte</field>
+            <field name="subject">A quick reminder: your feedback matters</field>
             <field name="partner_to">{{ object.partner_id.id }}</field>
-            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="lang">{{ object.partner_id.lang or user.company_id.partner_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
@@ -108,7 +105,7 @@
                                 <img t-att-src="'/brand/logo/%d' % company.id" alt="Logo" style="height:40px; width:auto; display:block; border:0;"/>
                             </td>
                             <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
-                                Petit rappel
+                                A quick reminder
                             </td>
                         </tr></tbody></table>
                     </td>
@@ -117,22 +114,19 @@
                 <tr>
                     <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;">
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Bonjour <t t-out="object.partner_id.name or ''"/>,
+                            Hello <t t-out="object.partner_id.name or ''"/>,
                         </p>
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Un petit rappel, sans aucune pression&#160;: votre
-                            avis nous aiderait vraiment, et il ne faut que
-                            deux minutes. C'est le seul rappel que vous
-                            recevrez.
+                            A quick, no-pressure reminder: your feedback would really help us, and it only takes two minutes. This is the only reminder you will receive.
                         </p>
                         <div style="text-align:center; margin:28px 0;">
                             <a t-att-href="object.get_start_url()"
                                t-attf-style="background-color:{{ brand_primary }}; color:#FFFFFF; text-decoration:none; padding:12px 28px; border-radius:6px; font-size:15px; display:inline-block;">
-                                Répondre au sondage
+                                Take the survey
                             </a>
                         </div>
                         <p style="font-size:15px; margin:0;">
-                            Merci beaucoup&#160;!
+                            Thank you so much!
                         </p>
                     </td>
                 </tr>
@@ -140,8 +134,8 @@
                     <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
                         <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
                             <t t-if="company.name"><t t-out="company.name"/><br/></t>
-                            Vous préférez ne plus recevoir de demandes d'avis&#160;?
-                            <a t-att-href="object.partner_id.bf_cx_unsubscribe_url" style="color:#6B7280;">Me désabonner</a>.
+                            Prefer not to receive feedback requests?
+                            <a t-att-href="object.partner_id.bf_cx_unsubscribe_url" style="color:#6B7280;">Unsubscribe</a>.
                         </p>
                     </td>
                 </tr>
@@ -159,12 +153,12 @@
         </record>
 
         <record id="mail_template_complaint_ack" model="mail.template">
-            <field name="name">Expérience client : accusé de réception de plainte</field>
+            <field name="name">Customer experience: complaint acknowledgement</field>
             <field name="model_id" ref="model_bf_cx_complaint"/>
-            <field name="subject">Votre plainte est bien reçue ({{ object.confirmation_code }})</field>
+            <field name="subject">We have received your complaint ({{ object.confirmation_code }})</field>
             <field name="partner_to">{{ object.partner_id.id or '' }}</field>
             <field name="email_to">{{ '' if object.partner_id else (object.contact_email or '') }}</field>
-            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="lang">{{ object.partner_id.lang or object.company_id.partner_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
 <t t-set="company" t-value="object.company_id or user.company_id"/>
@@ -181,7 +175,7 @@
                                 <img t-att-src="'/brand/logo/%d' % company.id" alt="Logo" style="height:40px; width:auto; display:block; border:0;"/>
                             </td>
                             <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
-                                Bien reçu
+                                Received
                             </td>
                         </tr></tbody></table>
                     </td>
@@ -190,27 +184,21 @@
                 <tr>
                     <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;">
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Bonjour <t t-out="object.partner_id.name or object.contact_name or ''"/>,
+                            Hello <t t-out="object.partner_id.name or object.contact_name or ''"/>,
                         </p>
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Nous avons bien reçu votre plainte concernant
-                            «&#160;<t t-out="object.name"/>&#160;» et nous la
-                            prenons au sérieux. Elle est entre bonnes mains
-                            dès maintenant.
+                            We have received your complaint about “<t t-out="object.name"/>” and we take it seriously. It is in good hands as of now.
                         </p>
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;">
                             <tbody><tr>
                                 <td align="center" t-attf-style="background-color:#F8FAFC; border:1px solid #e5e7eb; border-left:4px solid {{ brand_primary }}; border-radius:6px; padding:14px;">
-                                    <span style="font-size:13px; color:#6B7280;">Votre code de confirmation</span><br/>
+                                    <span style="font-size:13px; color:#6B7280;">Your confirmation code</span><br/>
                                     <span t-attf-style="font-size:22px; font-weight:800; letter-spacing:3px; color:{{ brand_dark }};"><t t-out="object.confirmation_code"/></span>
                                 </td>
                             </tr></tbody>
                         </table>
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Nous vous revenons avec notre analyse et la suite
-                            à donner dans les meilleurs délais. Merci de nous
-                            l'avoir signalée&#160;: c'est ce qui nous permet
-                            de nous améliorer.
+                            We will get back to you with our analysis and next steps as soon as possible. Thank you for letting us know: this is what helps us improve.
                         </p>
                     </td>
                 </tr>
@@ -219,8 +207,8 @@
                         <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
                             <t t-if="company.name"><t t-out="company.name"/><br/></t>
                             <t t-if="object.partner_id">
-                                Vous préférez ne plus recevoir de demandes d'avis&#160;?
-                                <a t-att-href="object.partner_id.bf_cx_unsubscribe_url" style="color:#6B7280;">Me désabonner</a>.
+                                Prefer not to receive feedback requests?
+                                <a t-att-href="object.partner_id.bf_cx_unsubscribe_url" style="color:#6B7280;">Unsubscribe</a>.
                             </t>
                         </p>
                     </td>

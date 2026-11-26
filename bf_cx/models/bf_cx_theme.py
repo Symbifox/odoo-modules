@@ -10,13 +10,13 @@ from odoo import fields, models
 
 class BfCxTheme(models.Model):
     _name = "bf.cx.theme"
-    _description = "Thème de feedback"
+    _description = "Feedback theme"
     _order = "name"
 
-    name = fields.Char(string="Thème", required=True, translate=True)
-    color = fields.Integer(string="Couleur")
+    name = fields.Char(string="Theme", required=True, translate=True)
+    color = fields.Integer(string="Color")
     active = fields.Boolean(default=True)
 
     _sql_constraints = [
-        ("name_uniq", "unique(name)", "Ce thème existe déjà."),
+        ("name_uniq", "unique(name)", "This theme already exists."),
     ]

@@ -1,7 +1,11 @@
 {
     "name": "Expérience client : analyse IA des verbatims",
     "summary": "Sentiment, thèmes et résumé des commentaires par le pont IA",
-    "version": "18.0.1.2.3",
+    # 18.0.1.2.4: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.2.4",
     "category": "Marketing/Customer Experience",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

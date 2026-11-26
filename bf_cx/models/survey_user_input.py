@@ -18,6 +18,8 @@ import logging
 from odoo import _, fields, models
 from odoo.exceptions import UserError
 
+from .langue import langue_de
+
 _logger = logging.getLogger(__name__)
 
 
@@ -26,7 +28,7 @@ class SurveyUserInput(models.Model):
 
     bf_cx_wave_id = fields.Many2one(
         "bf.cx.wave",
-        string="Vague d'expérience",
+        string="Experience wave",
         ondelete="set null",
         copy=False,
         index=True,
@@ -68,8 +70,8 @@ class SurveyUserInput(models.Model):
             wave = answer.bf_cx_wave_id
             if not wave:
                 raise UserError(
-                    _("Cette réponse n'appartient à aucune vague : il n'y a "
-                      "pas d'invitation à renvoyer.")
+                    _("This answer belongs to no wave: there is no "
+                      "invitation to resend.")
                 )
             # L'accès en écriture à la vague EST le droit de renvoyer. Les
             # droits sur survey.user_input sont ceux du module Sondages,
@@ -79,19 +81,19 @@ class SurveyUserInput(models.Model):
             wave.check_access("write")
             if wave.state == "closed":
                 raise UserError(
-                    _("La vague « %s » est fermée. La rouvrir d'abord si le "
-                      "sondage doit encore accepter des réponses.") % wave.name
+                    _("The \"%s\" wave is closed. Reopen it first if the "
+                      "survey must still accept answers.") % wave.name
                 )
             template = wave.program_id.invite_template_id
             if not template:
                 raise UserError(
-                    _("Le programme « %s » n'a pas de gabarit d'invitation.")
+                    _("The \"%s\" program has no invitation template.")
                     % wave.program_id.name
                 )
             if answer.state == "done":
                 raise UserError(
-                    _("%s a déjà répondu : renvoyer l'invitation ne ferait "
-                      "que redemander un avis déjà donné.")
+                    _("%s has already answered: resending the invitation "
+                      "would only ask again for feedback already given.")
                     % (answer.partner_id.display_name or answer.email)
                 )
             # Le sondage refuse les réponses passé la date limite : renvoyer
@@ -99,15 +101,15 @@ class SurveyUserInput(models.Model):
             deadline = answer.deadline or wave.deadline
             if deadline and deadline < now:
                 raise UserError(
-                    _("La date limite de réponse (%s) est passée : le lien "
-                      "ne s'ouvrirait plus. Reporter la date limite de la "
-                      "vague avant de renvoyer.")
+                    _("The answer deadline (%s) has passed: the link "
+                      "would no longer open. Push back the wave's answer "
+                      "deadline before resending.")
                     % fields.Datetime.to_string(deadline)
                 )
             partner = answer.partner_id
             if not partner or not partner.email:
                 raise UserError(
-                    _("Aucune adresse courriel sur ce destinataire.")
+                    _("No email address on this recipient.")
                 )
             if not answer.test_entry:
                 # Cadence volontairement hors jeu (``days=0``) : c'est la
@@ -118,13 +120,12 @@ class SurveyUserInput(models.Model):
                 allowed, _blocked = partner._bf_cx_split_solicitable(days=0)
                 if not allowed:
                     raise UserError(
-                        _("Le renvoi à %s est bloqué par les garde-fous "
-                          "d'envoi : compte exclu des sondages, liste noire "
-                          "de courriel, « ne pas contacter », ou recouvrement "
-                          "en cours. La cadence "
-                          "anti-sursollicitation, elle, n'est pas en cause : "
-                          "un renvoi ne compte pas comme une nouvelle "
-                          "sollicitation.") % partner.display_name
+                        _("Resending to %s is blocked by the sending "
+                          "guards: account excluded from surveys, email "
+                          "blacklist, \"do not contact\", or collections "
+                          "in progress. The over-solicitation cadence is "
+                          "not the cause: a resend does not count as a "
+                          "new solicitation.") % partner.display_name
                     )
             # force_send : sur un geste manuel, on veut l'échec SMTP tout de
             # suite plutôt qu'un courriel qui dort dans la file. Ciblé sur ce
@@ -132,8 +133,11 @@ class SurveyUserInput(models.Model):
             # cron d'envoi.
             # `send_mail` rend un ID, pas un enregistrement - et sur un
             # envoi réussi le gabarit `auto_delete` l'a déjà supprimé.
+            # A contact without a language gets the company's.
             mail = self.env["mail.mail"].sudo().browse(
-                template.send_mail(answer.id, force_send=True)
+                template.with_context(
+                    lang=langue_de(wave.env, societe=wave.company_id)
+                ).send_mail(answer.id, force_send=True)
             )
             # `send()` n'ÉCHOUE pas quand la livraison échoue : il pose
             # `state='exception'` et rend la main. Sans ce contrôle, le
@@ -143,26 +147,29 @@ class SurveyUserInput(models.Model):
             # le mail.mail, donc « il ne reste rien » vaut succès.
             if mail.exists() and mail.state != "sent":
                 raise UserError(
-                    _("Le courriel n'est pas parti (état « %(state)s »). "
-                      "Rien n'a été écrit : %(reason)s",
+                    _("The email did not go out (state \"%(state)s\"). "
+                      "Nothing was written: %(reason)s",
                       state=mail.state,
-                      reason=mail.failure_reason or _("aucune raison rapportée "
-                                                      "par le serveur."))
+                      reason=mail.failure_reason or _("no reason reported "
+                                                      "by the server."))
                 )
+            # Outside the outer _(): the extractor does not see a _()
+            # nested in another one's arguments.
+            mention_essai = (
+                _(" - test entry, it counts in no statistic")
+                if answer.test_entry
+                else ""
+            )
             wave.message_post(
                 body=_(
-                    "Invitation renvoyée à %(contact)s (%(email)s)%(test)s. "
-                    "Même lien de réponse qu'à l'envoi initial ; ni la "
-                    "quarantaine anti-sursollicitation, ni le rappel "
-                    "collectif, ni les compteurs de la vague ne bougent.",
+                    "Invitation resent to %(contact)s "
+                    "(%(email)s)%(test)s. Same answer link as the first "
+                    "sending; neither the over-solicitation quarantine, "
+                    "nor the collective reminder, nor the wave's counters "
+                    "move.",
                     contact=partner.display_name,
                     email=partner.email,
-                    test=(
-                        _(" - entrée de test, elle ne compte dans aucune "
-                          "statistique")
-                        if answer.test_entry
-                        else ""
-                    ),
+                    test=mention_essai,
                 )
             )
             sent |= answer
@@ -171,9 +178,9 @@ class SurveyUserInput(models.Model):
             "tag": "display_notification",
             "params": {
                 "type": "success",
-                "title": _("Invitation renvoyée"),
+                "title": _("Invitation resent"),
                 "message": _(
-                    "%(count)d invitation(s) renvoyée(s) : %(who)s.",
+                    "%(count)d invitation(s) resent: %(who)s.",
                     count=len(sent),
                     who=", ".join(sent.partner_id.mapped("display_name")),
                 ),

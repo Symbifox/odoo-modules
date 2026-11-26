@@ -2,6 +2,8 @@ from unittest.mock import patch
 
 from odoo.tests import TransactionCase, tagged
 
+from odoo.addons.bf_cx.tests.common import amorcer_francais
+
 BRIDGE = "odoo.addons.bf_ai_bridge.models.bf_ai_bridge.BfAiBridge"
 
 
@@ -31,12 +33,29 @@ class TestCxAi(TransactionCase):
             self.assertIn("Délais", fb.theme_ids.mapped("name"))
 
     def test_bridge_error_leaves_a_note(self):
-        fb = self._feedback()
+        # Pinned: the note follows the language of the call (since bf_cx 18.0.1.13.2, the
+        # source is English and an en_US-only database reads it as is).
+        fb = self._feedback().with_context(lang="en_US")
         with patch(BRIDGE + ".available", return_value=True), \
                 patch(BRIDGE + ".call", return_value={"error": "délai"}):
             self.assertFalse(fb._bf_cx_ai_analyze_one())
         self.assertFalse(fb.sentiment)
-        self.assertTrue(fb.message_ids.filtered(lambda m: "Analyse IA" in (m.body or "")))
+        self.assertTrue(fb.message_ids.filtered(lambda m: "AI analysis" in (m.body or "")))
+
+    def test_le_travail_planifie_note_le_sentiment_dans_sa_langue(self):
+        """A scheduled job has no language in its context. The
+        sentiment label of its note must not fall back on the English
+        source for a French database."""
+        amorcer_francais(self.env, ("bf_cx", "bf_cx_ai"), usagers=(self.env.user,))
+        self.env["ir.config_parameter"].sudo().set_param("bf_cx.ai_auto_analyze", "True")
+        fb = self._feedback()
+        answer = {"data": {"sentiment": "negatif", "themes": [], "summary": ""}}
+        with patch(BRIDGE + ".available", return_value=True), \
+                patch(BRIDGE + ".call", return_value=answer):
+            self.env["bf.cx.feedback"].with_context(lang=None)._cron_bf_cx_ai_auto_analyze()
+        note = fb.message_ids.filtered(lambda m: "sentiment" in (m.body or ""))[:1]
+        self.assertTrue(note, "no analysis note: nothing measured")
+        self.assertIn("Négatif", note.body)
 
     def test_vocabulary_shares_helpdesk_themes(self):
         if "helpdesk.theme" not in self.env:
@@ -48,7 +67,7 @@ class TestCxAi(TransactionCase):
         """Le pont transmet le commentaire au modèle d'IA : aucun texte ne doit dire le contraire."""
         helps = [f.help for model in ("bf.cx.feedback", "res.config.settings")
                  for f in self.env[model]._fields.values() if f.help]
-        views = self.env["ir.ui.view"].sudo().search([("arch_db", "ilike", "Analyser")])
+        views = self.env["ir.ui.view"].sudo().search([("arch_db", "ilike", "Analyze")])
         texts = " ".join(helps) + " ".join(v.arch_db for v in views)
         self.assertNotIn("ne quitte le serveur", texts)
         self.assertNotIn("leaves the server", texts)

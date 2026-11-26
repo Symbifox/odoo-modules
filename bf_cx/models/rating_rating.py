@@ -22,7 +22,7 @@ class RatingRating(models.Model):
 
     bf_cx_feedback_id = fields.Many2one(
         "bf.cx.feedback",
-        string="Feedback d'expérience",
+        string="Experience feedback",
         readonly=True,
         copy=False,
     )

@@ -12,24 +12,27 @@ from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools.misc import get_lang
+
+from .langue import langue_de
 
 _logger = logging.getLogger(__name__)
 
 
 class BfCxWave(models.Model):
     _name = "bf.cx.wave"
-    _description = "Vague d'envoi"
+    _description = "Sending wave"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "id desc"
 
     name = fields.Char(
-        string="Nom",
+        string="Name",
         required=True,
-        default=lambda self: _("Vague du %s") % fields.Date.context_today(self),
+        default=lambda self: _("Wave of %s") % fields.Date.context_today(self),
     )
     program_id = fields.Many2one(
         "bf.cx.program",
-        string="Programme",
+        string="Program",
         required=True,
         ondelete="cascade",
         index=True,
@@ -41,64 +44,64 @@ class BfCxWave(models.Model):
         related="program_id.company_id", store=True, readonly=True
     )
     state = fields.Selection(
-        [("draft", "Brouillon"), ("sent", "Envoyée"), ("closed", "Fermée")],
-        string="État",
+        [("draft", "Draft"), ("sent", "Sent"), ("closed", "Closed")],
+        string="Status",
         default="draft",
         required=True,
         tracking=True,
     )
     partner_ids = fields.Many2many(
         "res.partner",
-        string="Destinataires",
-        help="Contacts à inviter. Ceux sans adresse courriel sont ignorés à "
-             "l'envoi (et listés dans le journal de la vague).",
+        string="Recipients",
+        help="Contacts to invite. Those without an email address are "
+             "skipped at sending (and listed in the wave's log).",
     )
     subject_user_id = fields.Many2one(
         "res.users",
-        string="Personne évaluée",
+        string="Person reviewed",
         index=True,
         tracking=True,
-        help="Sur un programme interne, la personne SUR QUI porte la "
-             "rétroaction : les destinataires l'évaluent, elle ne s'évalue "
-             "pas nécessairement elle-même. Laisser vide pour un pouls "
-             "interne qui porte sur l'organisation et non sur quelqu'un.",
+        help="On an internal program, the person the feedback is ABOUT: "
+             "the recipients review them, they do not necessarily review "
+             "themselves. Leave empty for an internal pulse about the "
+             "organization rather than about someone.",
     )
     campaign_id = fields.Many2one(
         "utm.campaign",
-        string="Campagne UTM",
+        string="UTM campaign",
         compute="_compute_campaign_id",
         store=True,
         readonly=False,
-        help="Repris du programme par défaut ; modifiable par vague.",
+        help="Taken from the program by default; can be changed per wave.",
     )
     deadline = fields.Datetime(
-        string="Date limite de réponse",
-        help="Transmise aux réponses générées (le sondage refuse les "
-             "réponses après cette date).",
+        string="Answer deadline",
+        help="Passed on to the generated answers (the survey refuses "
+             "answers after this date).",
     )
-    sent_date = fields.Datetime(string="Envoyée le", readonly=True, copy=False)
+    sent_date = fields.Datetime(string="Sent on", readonly=True, copy=False)
     reminder_date = fields.Datetime(
-        string="Dernier rappel", readonly=True, copy=False
+        string="Last reminder", readonly=True, copy=False
     )
     user_input_ids = fields.One2many(
-        "survey.user_input", "bf_cx_wave_id", string="Réponses"
+        "survey.user_input", "bf_cx_wave_id", string="Answers"
     )
 
     invited_count = fields.Integer(
-        string="Invités", compute="_compute_input_stats"
+        string="Invited", compute="_compute_input_stats"
     )
     completed_count = fields.Integer(
-        string="Réponses complétées", compute="_compute_input_stats"
+        string="Completed answers", compute="_compute_input_stats"
     )
     completion_rate = fields.Float(
-        string="Taux de réponse (%)", compute="_compute_input_stats"
+        string="Response rate (%)", compute="_compute_input_stats"
     )
-    nps_score = fields.Integer(string="Score NPS", compute="_compute_nps_score")
+    nps_score = fields.Integer(string="NPS score", compute="_compute_nps_score")
     subject_summary = fields.Char(
-        string="Résultat 360",
+        string="360 result",
         compute="_compute_subject_summary",
-        help="Moyenne des notes reçues par la personne évaluée dans cette "
-             "vague, masquée sous un seuil de réponses.",
+        help="Average of the scores received by the person reviewed in "
+             "this wave, hidden below an answer threshold.",
     )
 
     # ── Constraints ──────────────────────────────────────────────────────────
@@ -116,9 +119,10 @@ class BfCxWave(models.Model):
                 and wave.program_id.program_type != "internal"
             ):
                 raise ValidationError(
-                    _("Une personne évaluée ne se règle que sur un programme "
-                      "de type « Feedback interne (360) ». Le programme "
-                      "« %(program)s » est de type « %(type)s ».",
+                    _("A person reviewed can only be set on a program of "
+                      "the \"Internal feedback (360)\" type. The "
+                      "\"%(program)s\" program is of the \"%(type)s\" "
+                      "type.",
                       program=wave.program_id.name,
                       type=dict(
                           wave.program_id._fields["program_type"]
@@ -201,16 +205,16 @@ class BfCxWave(models.Model):
         """Create one tokenized answer per recipient and email the invites."""
         for wave in self:
             if wave.state == "closed":
-                raise UserError(_("La vague « %s » est fermée.") % wave.name)
+                raise UserError(_("The \"%s\" wave is closed.") % wave.name)
             program = wave.program_id
             if not program.survey_id:
                 raise UserError(
-                    _("Le programme « %s » n'a pas de sondage.") % program.name
+                    _("The \"%s\" program has no survey.") % program.name
                 )
             template = program.invite_template_id
             if not template:
                 raise UserError(
-                    _("Le programme « %s » n'a pas de gabarit d'invitation.")
+                    _("The \"%s\" program has no invitation template.")
                     % program.name
                 )
             already = wave.user_input_ids.partner_id
@@ -233,30 +237,38 @@ class BfCxWave(models.Model):
                         # paramètre global : quand le programme porte la
                         # sienne, c'est elle qui a bloqué, et nommer l'autre
                         # envoie corriger un réglage qui n'y est pour rien.
+                        # Outside the outer _(): the extractor does not see
+                        # a _() nested in another one's arguments.
+                        if program.cooldown_days:
+                            origine = _(
+                                "cadence specific to the \"%s\" program"
+                            ) % program.name
+                        else:
+                            origine = _("adjustable in the settings")
                         raise UserError(
                             # `source` est le nom du 1er paramètre de `_()` :
                             # l'utiliser comme marqueur lève un TypeError.
-                            _("Aucun destinataire à inviter : %(contacts)s "
-                              "sollicité(s) il y a moins de %(days)s jours "
-                              "(garde-fou anti-sursollicitation, %(origine)s).",
+                            _("No recipient to invite: %(contacts)s "
+                              "contacted less than %(days)s days ago "
+                              "(over-solicitation guard, %(origine)s).",
                               contacts=", ".join(cooled.mapped("display_name")),
                               days=program._bf_cx_effective_cooldown(),
-                              origine=(
-                                  _("cadence propre au programme « %s »")
-                                  % program.name
-                                  if program.cooldown_days
-                                  else _("réglable dans les paramètres")
-                              ))
+                              origine=origine)
                         )
                     raise UserError(
-                        _("Aucun destinataire avec adresse courriel à inviter.")
+                        _("No recipient with an email address to invite.")
                     )
                 # Re-run on a sent wave with nothing new: just log, do not
                 # rewrite the state nor claim "0 invitations sent".
                 wave.message_post(
-                    body=_("Aucun nouveau destinataire à inviter.")
+                    body=_("No new recipient to invite.")
                 )
                 continue
+            # A contact without a language gets the company's (the
+            # template's `lang` renders empty, and a scheduled job has no
+            # language of its own: since 18.0.1.13.2 that would be English).
+            template_l = template.with_context(
+                lang=langue_de(wave.env, societe=wave.company_id))
             for partner in to_invite:
                 answer = program.survey_id._create_answer(
                     partner=partner,
@@ -264,25 +276,25 @@ class BfCxWave(models.Model):
                     deadline=wave.deadline,
                     bf_cx_wave_id=wave.id,
                 )
-                template.send_mail(answer.id, force_send=False)
+                template_l.send_mail(answer.id, force_send=False)
             body_lines = [
-                _("%d invitation(s) envoyée(s).") % len(to_invite),
+                _("%d invitation(s) sent.") % len(to_invite),
             ]
             if already:
                 body_lines.append(
-                    _("%d contact(s) déjà invité(s) dans cette vague, ignoré(s).")
+                    _("%d contact(s) already invited in this wave, skipped.")
                     % len(already & wave.partner_ids)
                 )
             if skipped:
                 body_lines.append(
-                    _("Ignorés (aucune adresse courriel) : %s")
+                    _("Skipped (no email address): %s")
                     % ", ".join(skipped.mapped("display_name"))
                 )
             if cooled:
                 body_lines.append(
-                    _("Reportés par les garde-fous (sollicitation récente, "
-                      "liste à ne pas contacter, recouvrement ou courriel "
-                      "bloqué) - le cron retentera : %s")
+                    _("Held back by the guards (recent contact, "
+                      "do-not-contact list, collections or blocked email) "
+                      "- the scheduled job will retry: %s")
                     % ", ".join(cooled.mapped("display_name"))
                 )
             if program.program_type != "internal":
@@ -304,8 +316,7 @@ class BfCxWave(models.Model):
                 # would invite people to a dead link.
                 wave.reminder_date = wave.reminder_date or fields.Datetime.now()
                 wave.message_post(
-                    body=_("Rappel non envoyé : la date limite de réponse "
-                           "est passée.")
+                    body=_("Reminder not sent: the answer deadline has passed.")
                 )
                 continue
             program = wave.program_id
@@ -323,8 +334,10 @@ class BfCxWave(models.Model):
                 and i.partner_id.email
                 and not i.partner_id._bf_cx_is_excluded()
             )
+            template_l = template.with_context(
+                lang=langue_de(wave.env, societe=wave.company_id))
             for answer in pending:
-                template.send_mail(answer.id, force_send=False)
+                template_l.send_mail(answer.id, force_send=False)
             # A reminder is a real touch: it must count in the solicitation
             # budget (no cooldown CHECK though - blocking the single
             # reminder would defeat it).
@@ -332,7 +345,7 @@ class BfCxWave(models.Model):
                 pending.partner_id._bf_cx_mark_solicited()
             wave.reminder_date = fields.Datetime.now()
             wave.message_post(
-                body=_("Rappel envoyé à %d non-répondant(s).") % len(pending)
+                body=_("Reminder sent to %d non-respondent(s).") % len(pending)
             )
         return True
 
@@ -362,13 +375,12 @@ class BfCxWave(models.Model):
         )
         if not partner:
             raise UserError(
-                _("Aucun contact de test n'est configuré. Le régler dans "
-                  "Paramètres > Expérience client > Contact de test, puis "
-                  "relancer l'essai.")
+                _("No test contact is set. Set it in Settings > Customer "
+                  "experience > Test contact, then run the test again.")
             )
         if not partner.email:
             raise UserError(
-                _("Le contact de test « %s » n'a pas d'adresse courriel.")
+                _("The test contact \"%s\" has no email address.")
                 % partner.display_name
             )
         return partner
@@ -398,12 +410,12 @@ class BfCxWave(models.Model):
             program = wave.program_id
             if not program.survey_id:
                 raise UserError(
-                    _("Le programme « %s » n'a pas de sondage.") % program.name
+                    _("The \"%s\" program has no survey.") % program.name
                 )
             template = program.invite_template_id
             if not template:
                 raise UserError(
-                    _("Le programme « %s » n'a pas de gabarit d'invitation.")
+                    _("The \"%s\" program has no invitation template.")
                     % program.name
                 )
             # test_entry est posé APRÈS la création et non pendant. Le
@@ -425,10 +437,10 @@ class BfCxWave(models.Model):
             template.send_mail(answer.id, force_send=True)
             wave.message_post(
                 body=_(
-                    "Courriel de test envoyé à %(contact)s (%(email)s). "
-                    "Entrée de test : elle ne compte ni dans les invitations, "
-                    "ni dans le taux de réponse, ni dans le score, et une "
-                    "réponse n'ira pas au registre.",
+                    "Test email sent to %(contact)s (%(email)s). Test "
+                    "entry: it counts neither in the invitations, nor in "
+                    "the response rate, nor in the score, and an answer "
+                    "will not go to the register.",
                     contact=partner.display_name,
                     email=partner.email,
                 )
@@ -438,9 +450,9 @@ class BfCxWave(models.Model):
             "tag": "display_notification",
             "params": {
                 "type": "success",
-                "title": _("Essai envoyé"),
+                "title": _("Test sent"),
                 "message": _(
-                    "%(count)d courriel(s) de test envoyé(s) à %(email)s.",
+                    "%(count)d test email(s) sent to %(email)s.",
                     count=len(self),
                     email=partner.email,
                 ),
@@ -460,7 +472,7 @@ class BfCxWave(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Feedbacks - %s") % self.name,
+            "name": _("Feedback - %s") % self.name,
             "res_model": "bf.cx.feedback",
             "view_mode": "list,kanban,form,graph,pivot",
             "domain": [("wave_id", "=", self.id)],
@@ -472,6 +484,11 @@ class BfCxWave(models.Model):
     def _cron_send_reminders(self):
         """Daily wave upkeep: close expired waves, remind non-respondents,
         retry recipients that the outbound guards had deferred."""
+        # Since 18.0.1.13.2 the source is English: a scheduled job has no language
+        # in its context, and what it writes (notes, tracked states, selection
+        # labels) would read the English source. Pin the job's language.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         now = fields.Datetime.now()
 
         # 1. Close waves whose answer deadline has passed: they would
@@ -482,8 +499,7 @@ class BfCxWave(models.Model):
         for wave in expired:
             wave.action_close()
             wave.message_post(
-                body=_("Vague fermée automatiquement : date limite de "
-                       "réponse dépassée.")
+                body=_("Wave closed automatically: answer deadline passed.")
             )
 
         # 2. Single reminder to non-respondents after program.reminder_days.

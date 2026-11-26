@@ -81,6 +81,7 @@ redistributing.
 
 | Version | Change |
 |---|---|
+| 18.0.1.2.4 | English source, French in the `fr_CA` catalogue. Sentiment and theme labels shown in the feedback are read in the reader's language, and the analysis job runs in the company's language. |
 | 18.0.1.2.3 | The fallback parser keeps at most five themes, as the model is asked. First public release. |
 | 18.0.1.2.2 | Removed the unused dependency on `bf_claude_chat`. |
 | 18.0.1.2.1 | Field help, settings and notes no longer claim that no data leaves the server: the comment text is sent to the AI model behind the bridge, and the texts now say so. The description no longer says the module installs itself. |

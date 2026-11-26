@@ -33,10 +33,10 @@ class MailThread(models.AbstractModel):
             if blocked:
                 self.message_post(
                     body=_(
-                        "Demande d'évaluation non envoyée à %s : garde-fou "
-                        "de sollicitation (compte exclu des sondages, "
-                        "cadence, liste à ne pas contacter, courriel bloqué "
-                        "ou dossier en recouvrement)."
+                        "Rating request not sent to %s: solicitation "
+                        "guard (account excluded from surveys, cadence, "
+                        "do-not-contact list, blocked email or file in "
+                        "collections)."
                     )
                     % partner.display_name
                 )

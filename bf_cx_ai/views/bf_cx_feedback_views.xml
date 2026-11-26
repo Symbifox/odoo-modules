@@ -8,9 +8,9 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="action_ai_analyze" type="object"
-                        string="Analyser (IA)"
+                        string="Analyze (AI)"
                         invisible="not comment"
-                        help="Analyser le commentaire (sentiment, thèmes, résumé) par le pont IA : le texte du commentaire est transmis au modèle d'IA."/>
+                        help="Analyze the comment (sentiment, themes, summary) through the AI bridge: the comment's text is sent to the AI model."/>
             </xpath>
             <xpath expr="//group[@name='score']" position="inside">
                 <field name="sentiment"/>
@@ -37,13 +37,13 @@
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='filter_my']" position="after">
                 <separator/>
-                <filter string="Sentiment négatif (IA)" name="filter_ai_negative"
+                <filter string="Negative sentiment (AI)" name="filter_ai_negative"
                         domain="[('sentiment', '=', 'negatif')]"/>
-                <filter string="Non analysés (IA)" name="filter_ai_pending"
+                <filter string="Not analyzed (AI)" name="filter_ai_pending"
                         domain="[('comment', '!=', False), ('ai_analyzed', '=', False)]"/>
             </xpath>
             <xpath expr="//filter[@name='group_month']" position="after">
-                <filter string="Sentiment (IA)" name="group_sentiment"
+                <filter string="Sentiment (AI)" name="group_sentiment"
                         context="{'group_by': 'sentiment'}"/>
             </xpath>
         </field>

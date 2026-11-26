@@ -12,7 +12,7 @@ import logging
 
 from markupsafe import Markup, escape
 
-from odoo import _, http
+from odoo import http
 from odoo.http import request
 from odoo.tools import consteq, hmac
 
@@ -91,21 +91,7 @@ class BfCxUnsubscribe(http.Controller):
         partner = self._check(partner_id, token)
         if not partner:
             return request.not_found()
-        email = partner.email_normalized
-        if email:
-            request.env["mail.blacklist"].sudo()._add(
-                email,
-                message=_(
-                    "Désabonnement des demandes d'avis (lien de courriel "
-                    "Expérience client)."
-                ),
-            )
-            partner.sudo().message_post(
-                body=_(
-                    "S'est désabonné des demandes d'avis (sondages et "
-                    "évaluations) via le lien de courriel."
-                )
-            )
+        partner.sudo()._bf_cx_unsubscribe()
         inner = (
             "<h2 style='margin:0 0 16px 0;'>C'est fait / Done</h2>"
             "<p>Vous ne recevrez plus de demandes d'avis de notre part. "

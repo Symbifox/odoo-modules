@@ -11,6 +11,9 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools.misc import get_lang
+
+from .langue import langue_de
 
 _logger = logging.getLogger(__name__)
 
@@ -22,127 +25,128 @@ CONFIRMATION_ALPHABET = "ACDEFGHJKMNPRTUVWXY34679"
 
 class BfCxComplaint(models.Model):
     _name = "bf.cx.complaint"
-    _description = "Plainte client"
+    _description = "Customer complaint"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date_received desc, id desc"
     _rec_name = "number"
 
     number = fields.Char(
-        string="Numéro (interne)",
+        string="Number (internal)",
         readonly=True,
         copy=False,
         default="/",
-        help="Séquence interne. Ne JAMAIS la communiquer au plaignant : "
-             "elle révèle le volume de plaintes reçues. Utiliser le code "
-             "de confirmation.",
+        help="Internal sequence. NEVER give it to the complainant: it "
+             "reveals the volume of complaints received. Use the "
+             "confirmation code.",
     )
     confirmation_code = fields.Char(
-        string="Code de confirmation",
+        string="Confirmation code",
         readonly=True,
         copy=False,
         index=True,
-        help="Référence non séquentielle communiquée au plaignant dans "
-             "l'accusé de réception.",
+        help="Non-sequential reference given to the complainant in the "
+             "acknowledgement.",
     )
-    name = fields.Char(string="Objet", required=True, tracking=True)
+    name = fields.Char(string="Subject", required=True, tracking=True)
     partner_id = fields.Many2one(
-        "res.partner", string="Plaignant", index=True, tracking=True
+        "res.partner", string="Complainant", index=True, tracking=True
     )
     contact_name = fields.Char(
-        string="Nom du contact",
-        help="Si le plaignant n'a pas de fiche contact.",
+        string="Contact name",
+        help="If the complainant has no contact record.",
     )
-    contact_email = fields.Char(string="Courriel du contact")
+    contact_email = fields.Char(string="Contact email")
     severity = fields.Selection(
         [
-            ("low", "Faible"),
-            ("medium", "Moyenne"),
-            ("high", "Élevée"),
-            ("critical", "Critique"),
+            ("low", "Low"),
+            ("medium", "Medium"),
+            ("high", "High"),
+            ("critical", "Critical"),
         ],
-        string="Gravité",
+        string="Severity",
         default="medium",
         required=True,
         tracking=True,
     )
     state = fields.Selection(
         [
-            ("received", "Reçue"),
-            ("ack", "Accusé de réception"),
-            ("analysis", "En analyse"),
-            ("resolved", "Résolue"),
-            ("closed", "Fermée"),
+            ("received", "Received"),
+            ("ack", "Acknowledged"),
+            ("analysis", "Under analysis"),
+            ("resolved", "Resolved"),
+            ("closed", "Closed"),
         ],
-        string="État",
+        string="Status",
         default="received",
         required=True,
         tracking=True,
     )
     date_received = fields.Datetime(
-        string="Reçue le",
+        string="Received on",
         required=True,
         default=fields.Datetime.now,
     )
     ack_deadline = fields.Datetime(
-        string="Échéance d'accusé de réception",
+        string="Acknowledgement deadline",
         compute="_compute_ack_deadline",
         store=True,
-        help="Date limite pour accuser réception (délai configurable dans "
-             "les paramètres). Le cron alerte le responsable à l'approche "
-             "du dépassement.",
+        help="Deadline to acknowledge receipt (delay set in the "
+             "settings). The scheduled job alerts the owner as the "
+             "deadline approaches.",
     )
     date_acknowledged = fields.Datetime(
-        string="AR envoyé le", readonly=True, copy=False
+        string="Acknowledgement sent on", readonly=True, copy=False
     )
     ack_delay_hours = fields.Float(
-        string="Délai d'AR (h)",
+        string="Acknowledgement delay (h)",
         compute="_compute_delays",
         store=True,
-        help="Heures entre la réception et l'accusé de réception - "
-             "indicateur ISO 10002.",
+        help="Hours between receipt and acknowledgement - ISO 10002 indicator.",
     )
     resolution_delay_days = fields.Float(
-        string="Délai de résolution (j)",
+        string="Resolution time (days)",
         compute="_compute_delays",
         store=True,
     )
-    date_resolved = fields.Datetime(string="Résolue le", readonly=True, copy=False)
+    date_resolved = fields.Datetime(string="Resolved on", readonly=True, copy=False)
     complainant_satisfied = fields.Boolean(
-        string="Plaignant satisfait du traitement",
+        string="Complainant satisfied with the handling",
         tracking=True,
-        help="ISO 10002 : vérifier la satisfaction du plaignant vis-à-vis "
-             "du TRAITEMENT de la plainte après résolution (pas du produit).",
+        help="ISO 10002: check the complainant's satisfaction with the "
+             "HANDLING of the complaint after resolution (not with the "
+             "product).",
     )
     description = fields.Html(string="Description", required=True)
-    resolution = fields.Html(string="Résolution")
+    resolution = fields.Html(string="Resolution")
     theme_ids = fields.Many2many(
         "bf.cx.theme",
-        string="Thèmes",
-        help="Causes récurrentes : même référentiel que les feedbacks, "
-             "pour l'agrégation de la boucle externe.",
+        string="Themes",
+        help="Recurring causes: the same reference list as feedback, for "
+             "the outer-loop aggregation.",
     )
-    root_cause = fields.Text(string="Cause fondamentale")
+    root_cause = fields.Text(string="Root cause")
     corrective_action = fields.Text(
-        string="Action corrective",
-        help="Ce qui est mis en place pour que la situation ne se "
-             "reproduise pas.",
+        string="Corrective action",
+        help="What is put in place so that the situation does not happen "
+             "again.",
     )
-    project_id = fields.Many2one("project.project", string="Projet / mandat")
+    project_id = fields.Many2one("project.project", string="Project / "
+                                                           "engagement")
     user_id = fields.Many2one(
         "res.users",
-        string="Responsable",
+        string="Owner",
         default=lambda self: self.env.user,
         tracking=True,
     )
     company_id = fields.Many2one(
         "res.company",
-        string="Société",
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
     feedback_id = fields.Many2one(
         "bf.cx.feedback",
-        string="Feedback d'origine",
+        string="Source feedback",
         ondelete="set null",
     )
 
@@ -227,12 +231,17 @@ class BfCxComplaint(models.Model):
         for rec in self:
             email = rec.partner_id.email or rec.contact_email
             if template and email:
-                template.send_mail(rec.id, force_send=False)
-                body = _("Accusé de réception envoyé à %s.") % email
+                # A complainant without a language gets the company's (the
+                # template's `lang` renders empty; since 18.0.1.13.2 the source,
+                # read without a language, is English).
+                template.with_context(
+                    lang=langue_de(rec.env, societe=rec.company_id)
+                ).send_mail(rec.id, force_send=False)
+                body = _("Acknowledgement sent to %s.") % email
             else:
                 body = _(
-                    "Accusé de réception consigné par %s (aucune adresse "
-                    "courriel - transmis hors système)."
+                    "Acknowledgement recorded by %s (no email address - "
+                    "passed on outside the system)."
                 ) % self.env.user.display_name
             rec.write(
                 {
@@ -251,8 +260,8 @@ class BfCxComplaint(models.Model):
         for rec in self:
             if not rec.resolution:
                 raise UserError(
-                    _("Consigner la résolution avant de fermer l'analyse "
-                      "(champ « Résolution »).")
+                    _("Record the resolution before closing the analysis "
+                      "(\"Resolution\" field).")
                 )
             rec.write(
                 {"state": "resolved", "date_resolved": fields.Datetime.now()}
@@ -267,17 +276,22 @@ class BfCxComplaint(models.Model):
                 continue
             if not (rec.partner_id or rec.contact_email or rec.contact_name):
                 continue
+            user = rec.user_id or self.env.user
+            # Read by the owner, who is not always the one closing.
+            env_l = rec.with_context(
+                lang=langue_de(rec.env, user, societe=rec.company_id)).env
             rec.activity_schedule(
                 "mail.mail_activity_data_todo",
                 date_deadline=fields.Date.context_today(rec)
                 + timedelta(days=7),
-                user_id=(rec.user_id or self.env.user).id,
-                summary=_("Valider la satisfaction du plaignant (%s)")
+                user_id=user.id,
+                summary=env_l._("Check the complainant's satisfaction (%s)")
                 % (rec.partner_id.display_name or rec.contact_name or ""),
-                note=_(
-                    "ISO 10002 : vérifier que le plaignant est satisfait du "
-                    "TRAITEMENT de sa plainte, puis cocher « Plaignant "
-                    "satisfait du traitement » sur la fiche."
+                note=env_l._(
+                    "ISO 10002: check that the complainant is satisfied "
+                    "with the HANDLING of their complaint, then tick "
+                    "\"Complainant satisfied with the handling\" on the "
+                    "record."
                 ),
             )
         return True
@@ -291,29 +305,50 @@ class BfCxComplaint(models.Model):
     @api.model
     def _cron_ack_overdue(self):
         """Alert the owner when an acknowledgement deadline is (nearly) blown."""
+        # Since 18.0.1.13.2 the source is English: a scheduled job has no language
+        # in its context, and what it writes (notes, tracked states, selection
+        # labels) would read the English source. Pin the job's language.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         soon = fields.Datetime.now() + timedelta(hours=24)
         overdue = self.search(
             [("state", "=", "received"), ("ack_deadline", "<", soon)]
         )
+        langs = [code for code, _name in self.env["res.lang"].get_installed()]
         for rec in overdue:
-            summary = _("Accusé de réception en retard - %s") % rec.number
+            user = rec.user_id or self.env.user
+            env_l = rec.with_context(
+                lang=langue_de(rec.env, user, societe=rec.company_id)).env
+            summary = env_l._("Acknowledgement overdue - %s") % rec.number
+            # The same alert may already exist in another language (written
+            # before 18.0.1.13.2 in French, or for a previous owner): one per
+            # complaint, whatever its language.
+            summaries = {summary} | {
+                self.with_context(lang=code).env._(
+                    "Acknowledgement overdue - %s") % rec.number
+                for code in langs
+            } | {
+                # Wording delivered before 18.0.1.13.2, still in open activities of
+                # databases that have no French catalogue (English only).
+                "Accusé de réception en retard - %s" % rec.number,
+            }
             existing = self.env["mail.activity"].search_count(
                 [
                     ("res_model", "=", self._name),
                     ("res_id", "=", rec.id),
-                    ("summary", "=", summary),
+                    ("summary", "in", list(summaries)),
                 ]
             )
             if existing:
                 continue
             rec.activity_schedule(
                 "mail.mail_activity_data_todo",
-                user_id=(rec.user_id or self.env.user).id,
+                user_id=user.id,
                 summary=summary,
-                note=_(
-                    "L'échéance d'accusé de réception de cette plainte est "
-                    "atteinte ou dépassée. Utiliser « Accuser réception » "
-                    "(courriel automatique si le plaignant a une adresse)."
+                note=env_l._(
+                    "The acknowledgement deadline of this complaint has "
+                    "been reached or passed. Use \"Acknowledge\" "
+                    "(automatic email if the complainant has an address)."
                 ),
             )
         return True

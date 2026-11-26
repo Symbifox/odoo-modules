@@ -5,7 +5,7 @@
          n'atteint pas. Le client répond à SON fournisseur, pas à un éditeur de logiciel.
          Le cadre ne garde que la navigation du sondage, et disparaît sans elle. -->
     <template id="survey_layout_sans_promotion" inherit_id="survey.layout"
-              name="Sondage : sans promotion de l'éditeur">
+              name="Survey: without the publisher's promotion">
         <xpath expr="//div[hasclass('o_survey_brand_message')]" position="attributes">
             <attribute name="t-if">not no_survey_navigation</attribute>
             <attribute name="class" add="d-print-none" separator=" "/>

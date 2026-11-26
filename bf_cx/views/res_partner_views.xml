@@ -11,21 +11,21 @@
                         class="oe_stat_button" icon="fa-comments-o"
                         groups="bf_cx.group_bf_cx_user"
                         invisible="bf_cx_feedback_count == 0">
-                    <field name="bf_cx_feedback_count" widget="statinfo" string="Feedbacks"/>
+                    <field name="bf_cx_feedback_count" widget="statinfo" string="Feedback"/>
                 </button>
             </xpath>
             <xpath expr="//page[@name='contact_addresses']" position="after">
-                <page string="Expérience client" name="bf_cx"
+                <page string="Customer experience" name="bf_cx"
                       groups="bf_cx.group_bf_cx_user">
                     <group>
-                        <group string="Sollicitation">
+                        <group string="Solicitation">
                             <field name="bf_cx_last_solicited" readonly="1"/>
                             <field name="bf_cx_exclude_effective" invisible="1"/>
                         </group>
-                        <group string="Exclusion de compte">
+                        <group string="Account exclusion">
                             <field name="bf_cx_exclude"/>
                             <field name="bf_cx_exclude_reason"
-                                   placeholder="Pourquoi ce compte est hors des sondages"
+                                   placeholder="Why this account is excluded from surveys"
                                    invisible="not bf_cx_exclude"/>
                             <field name="bf_cx_exclude_date"
                                    invisible="not bf_cx_exclude"/>
@@ -35,20 +35,10 @@
                     </group>
                     <div class="alert alert-warning" role="alert"
                          invisible="bf_cx_exclude or not bf_cx_exclude_effective">
-                        Hors des sondages parce que sa société l'est. Le
-                        retirer de l'exclusion se fait sur la fiche de la
-                        société, pas ici.
+                        Excluded from surveys because their company is. Lifting the exclusion is done on the company's record, not here.
                     </div>
                     <div class="text-muted mt-2">
-                        « Ne jamais solliciter » est une décision de votre organisation
-                        sur un compte : elle couvre les vagues, le
-                        post-rencontre, le post-perte, les notes de projet et
-                        le CSAT des billets, et rien d'autre — ni la
-                        facturation, ni le registre de vie privée. Posée sur
-                        une société, elle couvre tous ses contacts, y compris
-                        ceux créés plus tard. À distinguer de « Ne pas
-                        contacter », qui est une objection formulée par la
-                        personne elle-même.
+                        "Never solicit" is a decision of your organization about an account: it covers waves, post-meeting, post-loss, project ratings and ticket CSAT, and nothing else — neither invoicing nor the privacy register. Set on a company, it covers all its contacts, including those created later. Not to be confused with "Do not contact", which is an objection raised by the person themselves.
                     </div>
                 </page>
             </xpath>

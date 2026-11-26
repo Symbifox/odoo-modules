@@ -170,8 +170,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.2.0.1 | LGPL-3 | The minute book of a corporation or an association kept in Odoo: board, shareholder and members' resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.3.2.0 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
 | `bf_credit_identity` | Credit & Identity | 18.0.1.1.0 | LGPL-3 | Check your credit files and protect your identity: a guide to your rights in Quebec and Canada, with private reminders |
-| `bf_cx` | Expérience client | 18.0.1.13.1 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
-| `bf_cx_ai` | Expérience client : analyse IA des verbatims | 18.0.1.2.3 | LGPL-3 | Sentiment, themes and a one-line summary of customer comments, through the AI bridge |
+| `bf_cx` | Expérience client | 18.0.1.13.2 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
+| `bf_cx_ai` | Expérience client : analyse IA des verbatims | 18.0.1.2.4 | LGPL-3 | Sentiment, themes and a one-line summary of customer comments, through the AI bridge |
 | `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.2.0 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
 | `bf_cx_crm` | Expérience client - sondage post-perte CRM | 18.0.1.2.0 | BUSL-1.1 | Automatic win/loss survey when a CRM opportunity is marked lost |
 | `bf_cx_dashboard` | Expérience client - tuile tableau de bord | 18.0.1.2.0 | BUSL-1.1 | NPS tile with pending detractors and open complaints on the Symbifox dashboard |
@@ -335,7 +335,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_outreach_privacy` | Démarchage — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Privacy bridge for outreach: prospecting purpose in the register, retention of prospects, a hashed opt-out list and verified destruction recorded in the register |
 | `bf_people_notebook` | People I've Met | 18.0.1.0.0 | LGPL-3 | A private notebook of the people you meet: where, what they like, the detail that lets you reconnect, without making them a contact |
 | `bf_persona` | Persona des contacts | 18.0.3.3.2 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
-| `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.1.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
+| `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.1.1 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
 | `bf_persona_privacy` | Persona des contacts — pont Vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Privacy bridge for contact personas: relationship-profile and payer-rating purpose in the register, retention from the end of the relationship, verified destruction recorded in the register, classifiable personas |
 | `bf_planogram` | Planograms | 18.0.1.0.2 | BUSL-1.1 | The shelf drawn from the records: fixtures, shelves, facings, capacity, and a version frozen for the round that counts it |
 | `bf_planogram_floorplan` | Planograms on the floor plan | 18.0.1.0.0 | BUSL-1.1 | Where the fixture stands, on the plan of the store, and what the plan says about what is on it |

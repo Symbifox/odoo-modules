@@ -10,66 +10,67 @@ from datetime import timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 
+from .langue import langue_de
+
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
     bf_cx_feedback_ids = fields.One2many(
-        "bf.cx.feedback", "partner_id", string="Feedbacks d'expérience"
+        "bf.cx.feedback", "partner_id", string="Experience feedback"
     )
     bf_cx_feedback_count = fields.Integer(
         compute="_compute_bf_cx_feedback_count"
     )
     bf_cx_unsubscribe_url = fields.Char(
         compute="_compute_bf_cx_unsubscribe_url",
-        string="Lien de désabonnement CX",
-        help="Lien signé (HMAC) inclus au pied des courriels de demande "
-             "d'avis. Aboutit sur mail.blacklist, que tous les garde-fous "
-             "du module respectent.",
+        string="CX unsubscribe link",
+        help="Signed link (HMAC) included in the footer of feedback "
+             "request emails. It ends up in mail.blacklist, which every "
+             "guard of the module respects.",
     )
     bf_cx_last_solicited = fields.Datetime(
-        string="Dernière sollicitation CX",
+        string="Last CX solicitation",
         copy=False,
-        help="Dernière fois qu'une demande de feedback lui a été envoyée "
-             "(vague, post-rencontre, post-perte). Sert au garde-fou "
-             "anti-sursollicitation.",
+        help="Last time a feedback request was sent to them (wave, "
+             "post-meeting, post-loss). Used by the over-solicitation "
+             "guard.",
     )
     bf_cx_exclude = fields.Boolean(
-        string="Ne jamais solliciter (Expérience client)",
+        string="Never solicit (Customer experience)",
         copy=False,
         tracking=True,
-        help="Exclut définitivement ce contact de toute demande d'avis : "
-             "vagues, post-rencontre, post-perte, notes de projet, CSAT des "
-             "billets. Posé sur une SOCIÉTÉ, il couvre tous ses contacts, y "
-             "compris ceux créés plus tard.\n\n"
-             "À ne pas confondre avec « Ne pas contacter » : celui-là est une "
-             "objection formulée par la personne et vit au registre de vie "
-             "privée. Celui-ci est une décision de votre organisation sur un "
-             "compte, et ne touche ni la facturation ni le registre.",
+        help="Permanently excludes this contact from any feedback "
+             "request: waves, post-meeting, post-loss, project ratings, "
+             "ticket CSAT. Set on a COMPANY, it covers all its contacts, "
+             "including those created later.\n\nNot to be confused with "
+             "\"Do not contact\": that one is an objection raised by the "
+             "person and lives in the privacy register. This one is a "
+             "decision of your organization about an account, and touches "
+             "neither invoicing nor the register.",
     )
     bf_cx_exclude_reason = fields.Char(
-        string="Motif de l'exclusion CX",
+        string="CX exclusion reason",
         copy=False,
         tracking=True,
-        help="Pourquoi ce compte est hors des sondages. Écrit pour la "
-             "personne qui montera la prochaine vague et se demandera "
-             "pourquoi il en manque un. Le motif est suivi dans le fil de "
-             "discussion, donc visible de tous les usagers internes : "
-             "restez factuel.",
+        help="Why this account is excluded from surveys. Written for the "
+             "person who will build the next wave and wonder why one is "
+             "missing. The reason is tracked in the discussion thread, so "
+             "it is visible to all internal users: stay factual.",
     )
     bf_cx_exclude_date = fields.Datetime(
-        string="Exclu le", readonly=True, copy=False
+        string="Excluded on", readonly=True, copy=False
     )
     bf_cx_exclude_user_id = fields.Many2one(
-        "res.users", string="Exclu par", readonly=True, copy=False
+        "res.users", string="Excluded by", readonly=True, copy=False
     )
     bf_cx_exclude_effective = fields.Boolean(
-        string="Hors sondages",
+        string="Excluded from surveys",
         compute="_compute_bf_cx_exclude_effective",
         search="_search_bf_cx_exclude_effective",
-        help="Vrai aussi quand c'est la SOCIÉTÉ du contact qui est exclue - "
-             "sinon la fiche d'un employé afficherait « sollicitable » alors "
-             "que rien ne lui parviendra jamais.",
+        help="Also true when it is the contact's COMPANY that is excluded "
+             "- otherwise an employee's record would show \"can be "
+             "solicited\" while nothing will ever reach them.",
     )
 
     @api.depends("bf_cx_exclude", "commercial_partner_id.bf_cx_exclude")
@@ -89,8 +90,8 @@ class ResPartner(models.Model):
         """
         if operator not in ("=", "!=") or not isinstance(value, bool):
             raise NotImplementedError(
-                _("« Hors sondages » ne se cherche qu'avec = ou != sur un "
-                  "booléen.")
+                _("\"Excluded from surveys\" can only be searched with = "
+                  "or != on a boolean.")
             )
         exclu = [
             "|",
@@ -136,8 +137,8 @@ class ResPartner(models.Model):
             "bf_cx.group_bf_cx_user"
         ):
             raise AccessError(
-                _("Seul un opérateur de l'Expérience client peut exclure un "
-                  "compte des sondages ou lever cette exclusion.")
+                _("Only a Customer experience operator can exclude an "
+                  "account from surveys or lift that exclusion.")
             )
         vals = {
             k: v
@@ -260,6 +261,35 @@ class ResPartner(models.Model):
             )
         return self - blocked, blocked
 
+    def _bf_cx_unsubscribe(self):
+        """The public unsubscribe link, once confirmed: blacklist the address
+        and leave a trace on the contact.
+
+        Both notes are read by staff, not by the visitor whose page is
+        rendering: in the company's language, not the browser's (since
+        18.0.1.13.2 the source is English).
+        """
+        for partner in self:
+            email = partner.email_normalized
+            if not email:
+                continue
+            env_l = partner.with_context(
+                lang=langue_de(partner.env, societe=partner.company_id)).env
+            self.env["mail.blacklist"].sudo()._add(
+                email,
+                message=env_l._(
+                    "Unsubscribed from feedback requests (Customer "
+                    "experience email link)."
+                ),
+            )
+            partner.message_post(
+                body=env_l._(
+                    "Unsubscribed from feedback requests (surveys and "
+                    "ratings) through the email link."
+                )
+            )
+        return True
+
     def _bf_cx_mark_solicited(self):
         if self:
             self.sudo().write({"bf_cx_last_solicited": fields.Datetime.now()})
@@ -278,7 +308,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Feedbacks - %s") % self.display_name,
+            "name": _("Feedback - %s") % self.display_name,
             "res_model": "bf.cx.feedback",
             "view_mode": "list,kanban,form,graph,pivot",
             "domain": [("partner_id", "=", self.id)],

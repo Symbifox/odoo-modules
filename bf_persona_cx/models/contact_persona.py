@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from odoo import _, api, fields, models
+from odoo.tools.misc import get_lang
 
 # A score below this share of its scale is a warning, whatever the kind:
 # 6/10 on an NPS (a detractor), 3/5 on a satisfaction rating.
@@ -83,10 +84,15 @@ class ContactPersona(models.Model):
         label = "%s/%s" % (
             ("%g" % feedback.score), ("%g" % feedback.score_max),
         )
+        # The labels are bf_cx's, English at the source since bf_cx 18.0.1.13.2: read them
+        # in the same language as _() below, also when the call carries no
+        # language (Gen's context, the create hook, a scheduled job).
+        env = self.env if self.env.lang else self.with_context(
+            lang=get_lang(self.env).code).env
         if feedback.kind == "nps" and feedback.nps_bucket:
-            bucket = dict(feedback._fields["nps_bucket"]._description_selection(self.env))[feedback.nps_bucket]
+            bucket = dict(feedback._fields["nps_bucket"]._description_selection(env))[feedback.nps_bucket]
             return _("NPS %(score)s (%(bucket)s)") % {"score": label, "bucket": bucket.lower()}
-        kind = dict(feedback._fields["kind"]._description_selection(self.env))[feedback.kind]
+        kind = dict(feedback._fields["kind"]._description_selection(env))[feedback.kind]
         return _("%(kind)s %(score)s") % {"kind": kind, "score": label}
 
     def _cx_is_low(self, feedback):

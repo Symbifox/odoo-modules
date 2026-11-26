@@ -26,75 +26,75 @@ class ResConfigSettings(models.TransientModel):
             )
 
     bf_cx_auto_activity = fields.Boolean(
-        string="Boucle fermée automatique",
+        string="Automatic closed loop",
         config_parameter="bf_cx.auto_activity",
         default=True,
-        help="Créer automatiquement une activité de suivi pour le "
-             "responsable quand un détracteur (NPS ≤ 6) ou une note "
-             "insatisfaite arrive.",
+        help="Automatically create a follow-up activity for the owner "
+             "when a detractor (NPS ≤ 6) or a dissatisfied rating comes "
+             "in.",
     )
     bf_cx_ingest_ratings = fields.Boolean(
-        string="Ingérer les évaluations par courriel",
+        string="Ingest email ratings",
         config_parameter="bf_cx.ingest_ratings",
         default=True,
-        help="Copier chaque évaluation reçue (projets, tickets…) dans le "
-             "registre unifié des feedbacks.",
+        help="Copy each rating received (projects, tickets…) into the "
+             "unified feedback register.",
     )
     bf_cx_solicitation_cooldown_days = fields.Integer(
-        string="Anti-sursollicitation (jours)",
+        string="Over-solicitation guard (days)",
         config_parameter="bf_cx.solicitation_cooldown_days",
         default=30,
-        help="Nombre de jours minimum entre deux demandes de feedback au "
-             "même contact (vagues, post-rencontre, post-perte). 0 = aucun "
-             "garde-fou.",
+        help="Minimum number of days between two feedback requests to the "
+             "same contact (waves, post-meeting, post-loss). 0 = no guard.",
     )
     bf_cx_followup_days = fields.Integer(
-        string="Échéance de boucle fermée (jours)",
+        string="Closed-loop deadline (days)",
         config_parameter="bf_cx.followup_days",
         default=2,
-        help="Échéance de l'activité créée pour un détracteur ou une note "
-             "insatisfaite (pratique : recontacter sous 24-72 h).",
+        help="Deadline of the activity created for a detractor or a "
+             "dissatisfied rating (practice: contact again within 24-72 "
+             "h).",
     )
     bf_cx_nps_window_days = fields.Integer(
-        string="Fenêtre NPS (jours)",
+        string="NPS window (days)",
         config_parameter="bf_cx.nps_window_days",
         default=365,
-        help="Fenêtre glissante du score NPS affiché (tableau de bord, "
-             "digest, programmes). À petit volume, 365 jours est la seule "
-             "fenêtre statistiquement honnête ; le score est masqué sous "
-             "10 réponses.",
+        help="Rolling window of the NPS score shown (dashboard, digest, "
+             "programs). At low volume, 365 days is the only "
+             "statistically honest window; the score is hidden below 10 "
+             "answers.",
     )
     bf_cx_testimonial_activity = fields.Boolean(
-        string="Activité pour les candidats témoignage",
+        string="Activity for testimonial candidates",
         config_parameter="bf_cx.testimonial_activity",
         default=True,
-        help="Créer une activité (échéance 5 j) quand un répondant accepte "
-             "d'être cité - un opt-in est périssable.",
+        help="Create an activity (5-day deadline) when a respondent "
+             "agrees to be quoted - an opt-in is perishable.",
     )
     bf_cx_notify_every_response = fields.Boolean(
-        string="Avertir de chaque réponse",
+        string="Notify each answer",
         config_parameter="bf_cx.notify_every_response",
         default=False,
-        help="Envoyer un avis au responsable à CHAQUE réponse, y compris les "
-             "promoteurs. Sans cela, seuls les détracteurs se signalent (par "
-             "l'activité de rappel) et une réponse enthousiaste passe "
-             "inaperçue. À ouvrir en connaissance de cause : une "
-             "notification qu'on reçoit pour tout finit par ne plus être lue, "
-             "y compris le jour où elle annonce un détracteur.",
+        help="Send a notice to the owner for EVERY answer, promoters "
+             "included. Without it, only detractors are flagged (through "
+             "the reminder activity) and an enthusiastic answer goes "
+             "unnoticed. Turn it on knowingly: a notification received "
+             "for everything ends up no longer being read, including the "
+             "day it announces a detractor.",
     )
     bf_cx_test_partner_id = fields.Many2one(
         "res.partner",
-        string="Contact de test",
+        string="Test contact",
         config_parameter="bf_cx.test_partner_id",
-        help="Contact qui reçoit les courriels du bouton « Envoyer un "
-             "essai » d'une vague. Utiliser une adresse à soi : l'essai "
-             "part pour vrai. Il ne compte dans aucune statistique et "
-             "n'alimente pas le registre.",
+        help="Contact who receives the emails of a wave's \"Send a test\" "
+             "button. Use an address of your own: the test is sent for "
+             "real. It counts in no statistic and does not feed the "
+             "register.",
     )
     bf_cx_complaint_ack_days = fields.Integer(
-        string="Délai d'accusé de réception (jours)",
+        string="Acknowledgement delay (days)",
         config_parameter="bf_cx.complaint_ack_days",
         default=2,
-        help="Nombre de jours pour accuser réception d'une plainte "
-             "(calcule l'échéance affichée sur chaque plainte).",
+        help="Number of days to acknowledge a complaint (computes the "
+             "deadline shown on each complaint).",
     )

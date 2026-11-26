@@ -5,7 +5,11 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.1.0",
+    # 18.0.1.1.1: les libellés de sélection de bf_cx (source anglaise depuis
+    #   18.0.1.13.2) se lisent dans la langue du résumé, même quand l'appel
+    #   n'en porte aucune (contexte de Gen, crochet de création, travail
+    #   planifié) : on lisait « NPS 6/10 (detractor) » dans une phrase française.
+    "version": "18.0.1.1.1",
     "category": "Sales/CRM",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

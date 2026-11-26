@@ -7,46 +7,46 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="Expérience client" string="Expérience client" name="bf_cx">
-                    <block title="Boucle fermée" name="bf_cx_loop_block">
-                        <setting string="Activité automatique de suivi"
-                                 help="Un détracteur NPS (note ≤ 6) ou une note insatisfaite crée une activité assignée au responsable du compte.">
+                <app data-string="Customer experience" string="Customer experience" name="bf_cx">
+                    <block title="Closed loop" name="bf_cx_loop_block">
+                        <setting string="Automatic follow-up activity"
+                                 help="An NPS detractor (score ≤ 6) or a dissatisfied rating creates an activity assigned to the account owner.">
                             <field name="bf_cx_auto_activity"/>
                         </setting>
-                        <setting string="Ingérer les évaluations par courriel"
-                                 help="Copier chaque évaluation (projets, tickets…) dans le registre unifié des feedbacks.">
+                        <setting string="Ingest email ratings"
+                                 help="Copy each rating (projects, tickets…) into the unified feedback register.">
                             <field name="bf_cx_ingest_ratings"/>
                         </setting>
-                        <setting string="Anti-sursollicitation"
-                                 help="Nombre de jours minimum entre deux demandes de feedback au même contact, tous canaux (vagues, post-rencontre, post-perte, ratings de projets et tickets). 0 = aucun garde-fou. Réglable par programme pour une cadence relationnelle plus lente (90 j recommandé).">
+                        <setting string="Over-solicitation guard"
+                                 help="Minimum number of days between two feedback requests to the same contact, all channels (waves, post-meeting, post-loss, project and ticket ratings). 0 = no guard. Adjustable per program for a slower relationship cadence (90 days recommended).">
                             <field name="bf_cx_solicitation_cooldown_days"/>
                         </setting>
-                        <setting string="Échéance de boucle fermée"
-                                 help="Échéance de l'activité créée pour un détracteur ou une note insatisfaite (pratique : 24-72 h).">
+                        <setting string="Closed-loop deadline"
+                                 help="Deadline of the activity created for a detractor or a dissatisfied rating (practice: 24-72 h).">
                             <field name="bf_cx_followup_days"/>
                         </setting>
-                        <setting string="Avertir de chaque réponse"
-                                 help="Un avis au responsable à chaque réponse versée au registre, promoteurs compris. Fermé, seuls les détracteurs se signalent par l'activité de rappel, et une réponse enthousiaste passe inaperçue. L'avis suit la préférence Odoo du destinataire (courriel ou boîte de réception).">
+                        <setting string="Notify each answer"
+                                 help="A notice to the owner for each answer filed in the register, promoters included. Off, only detractors are flagged through the reminder activity, and an enthusiastic answer goes unnoticed. The notice follows the recipient's Odoo preference (email or inbox).">
                             <field name="bf_cx_notify_every_response"/>
                         </setting>
-                        <setting string="Candidats témoignage"
-                                 help="Créer une activité (échéance 5 jours) quand un répondant accepte d'être cité.">
+                        <setting string="Testimonial candidates"
+                                 help="Create an activity (5-day deadline) when a respondent agrees to be quoted.">
                             <field name="bf_cx_testimonial_activity"/>
                         </setting>
-                        <setting string="Fenêtre NPS"
-                                 help="Fenêtre glissante du score affiché (tableau de bord, digest, programmes). Le score est masqué sous 10 réponses - en deçà, la marge d'erreur dépasse ±20 points.">
+                        <setting string="NPS window"
+                                 help="Rolling window of the score shown (dashboard, digest, programs). The score is hidden below 10 answers - under that, the margin of error exceeds ±20 points.">
                             <field name="bf_cx_nps_window_days"/>
                         </setting>
                     </block>
-                    <block title="Essais" name="bf_cx_test_block">
-                        <setting string="Contact de test"
-                                 help="Destinataire du bouton « Envoyer un essai » sur une vague. L'essai part pour vrai, avec un vrai lien de réponse : utiliser une adresse à soi. Il ne compte dans aucune statistique et n'alimente pas le registre, donc il n'éprouve ni l'écriture au registre ni la boucle détracteur.">
+                    <block title="Tests" name="bf_cx_test_block">
+                        <setting string="Test contact"
+                                 help="Recipient of a wave's &quot;Send a test&quot; button. The test is sent for real, with a real answer link: use an address of your own. It counts in no statistic and does not feed the register, so it tests neither the write to the register nor the detractor loop.">
                             <field name="bf_cx_test_partner_id"/>
                         </setting>
                     </block>
-                    <block title="Plaintes" name="bf_cx_complaint_block">
-                        <setting string="Délai d'accusé de réception"
-                                 help="Nombre de jours pour accuser réception d'une plainte. Sert à calculer l'échéance affichée sur chaque plainte.">
+                    <block title="Complaints" name="bf_cx_complaint_block">
+                        <setting string="Acknowledgement delay"
+                                 help="Number of days to acknowledge a complaint. Used to compute the deadline shown on each complaint.">
                             <field name="bf_cx_complaint_ack_days"/>
                         </setting>
                     </block>
@@ -56,7 +56,7 @@
     </record>
 
     <record id="action_cx_settings" model="ir.actions.act_window">
-        <field name="name">Paramètres</field>
+        <field name="name">Settings</field>
         <field name="res_model">res.config.settings</field>
         <field name="view_mode">form</field>
         <field name="target">inline</field>

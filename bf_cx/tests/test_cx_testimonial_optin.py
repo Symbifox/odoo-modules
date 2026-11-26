@@ -6,6 +6,8 @@ the testimonial is born consented, with the survey answer as its proof.
 """
 from odoo.tests import TransactionCase, tagged
 
+from .common import amorcer_francais
+
 
 @tagged("post_install", "-at_install")
 class TestCxTestimonialOptin(TransactionCase):
@@ -25,6 +27,10 @@ class TestCxTestimonialOptin(TransactionCase):
         cls.env["ir.config_parameter"].sudo().set_param(
             "bf_cx.solicitation_cooldown_days", "0"
         )
+        # The activity texts below are asserted in French (owner: the
+        # program's, else the admin).
+        amorcer_francais(cls.env, usagers=(
+            cls.program.user_id, cls.env.ref("base.user_admin"), cls.env.user))
 
     def _answer(self, answer, comment="Excellent accompagnement", score="10"):
         wave = self.env["bf.cx.wave"].create(

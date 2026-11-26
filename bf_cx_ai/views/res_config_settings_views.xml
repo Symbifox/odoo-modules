@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="bf_cx.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//block[@name='bf_cx_loop_block']" position="inside">
-                <setting string="Analyse IA automatique des verbatims"
-                         help="Chaque jour, analyser (sentiment, thèmes, résumé) jusqu'à 20 commentaires récents non analysés par le pont IA : le texte des commentaires est transmis au modèle d'IA.">
+                <setting string="Automatic AI analysis of verbatims"
+                         help="Every day, analyze (sentiment, themes, summary) up to 20 recent unanalyzed comments through the AI bridge: the comments' text is sent to the AI model.">
                     <field name="bf_cx_ai_auto_analyze"/>
                 </setting>
             </xpath>

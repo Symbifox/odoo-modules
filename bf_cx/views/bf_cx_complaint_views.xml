@@ -26,22 +26,22 @@
         <field name="name">bf.cx.complaint.form</field>
         <field name="model">bf.cx.complaint</field>
         <field name="arch" type="xml">
-            <form string="Plainte">
+            <form string="Complaint">
                 <header>
                     <button name="action_acknowledge" type="object"
-                            string="Accuser réception" class="btn-primary"
+                            string="Acknowledge" class="btn-primary"
                             invisible="state != 'received'"/>
                     <button name="action_start_analysis" type="object"
-                            string="Démarrer l'analyse" class="btn-primary"
+                            string="Start the analysis" class="btn-primary"
                             invisible="state != 'ack'"/>
                     <button name="action_resolve" type="object"
-                            string="Marquer résolue" class="btn-primary"
+                            string="Mark resolved" class="btn-primary"
                             invisible="state != 'analysis'"/>
                     <button name="action_close" type="object"
-                            string="Fermer"
+                            string="Close"
                             invisible="state != 'resolved'"/>
                     <button name="action_reopen" type="object"
-                            string="Rouvrir"
+                            string="Reopen"
                             invisible="state not in ('resolved', 'closed')"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="received,ack,analysis,resolved,closed"/>
@@ -51,9 +51,9 @@
                         <h3>
                             <field name="number" readonly="1"/> ·
                             <field name="confirmation_code" readonly="1"
-                                   help="Référence communiquée au plaignant"/>
+                                   help="Reference given to the complainant"/>
                         </h3>
-                        <h1><field name="name" placeholder="Objet de la plainte"/></h1>
+                        <h1><field name="name" placeholder="Subject of the complaint"/></h1>
                     </div>
                     <group>
                         <group name="who">
@@ -77,19 +77,19 @@
                     </group>
                     <notebook>
                         <page string="Description" name="description">
-                            <field name="description" placeholder="Description factuelle de la plainte…"/>
+                            <field name="description" placeholder="Factual description of the complaint…"/>
                         </page>
-                        <page string="Résolution" name="resolution">
+                        <page string="Resolution" name="resolution">
                             <group>
                                 <field name="root_cause" colspan="2"
-                                       placeholder="Pourquoi est-ce arrivé ?"/>
+                                       placeholder="Why did it happen?"/>
                                 <field name="corrective_action" colspan="2"
-                                       placeholder="Ce qu'on met en place pour éviter la récidive."/>
+                                       placeholder="What is put in place to prevent it from happening again."/>
                                 <field name="complainant_satisfied"/>
                                 <field name="theme_ids" widget="many2many_tags"
                                        options="{'color_field': 'color', 'bf_color': True}" colspan="2"/>
                             </group>
-                            <field name="resolution" placeholder="Réponse donnée au plaignant…"/>
+                            <field name="resolution" placeholder="Answer given to the complainant…"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -102,39 +102,38 @@
         <field name="name">bf.cx.complaint.search</field>
         <field name="model">bf.cx.complaint</field>
         <field name="arch" type="xml">
-            <search string="Plaintes">
+            <search string="Complaints">
                 <field name="name"/>
                 <field name="number"/>
                 <field name="confirmation_code"/>
                 <field name="partner_id"/>
-                <filter string="Ouvertes" name="filter_open"
+                <filter string="Open" name="filter_open"
                         domain="[('state', 'not in', ('resolved', 'closed'))]"/>
-                <filter string="Accusé de réception en retard" name="filter_ack_overdue"
+                <filter string="Acknowledgement overdue" name="filter_ack_overdue"
                         domain="[('state', '=', 'received'), ('ack_deadline', '&lt;', (datetime.datetime.now().to_utc()).strftime('%Y-%m-%d %H:%M:%S'))]"/>
                 <separator/>
-                <filter string="Mes plaintes" name="filter_my" domain="[('user_id', '=', uid)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Gravité" name="group_severity" context="{'group_by': 'severity'}"/>
-                    <filter string="Plaignant" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                <filter string="My complaints" name="filter_my" domain="[('user_id', '=', uid)]"/>
+                <group expand="0" string="Group by">
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Severity" name="group_severity" context="{'group_by': 'severity'}"/>
+                    <filter string="Complainant" name="group_partner" context="{'group_by': 'partner_id'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_cx_complaint" model="ir.actions.act_window">
-        <field name="name">Plaintes</field>
+        <field name="name">Complaints</field>
         <field name="res_model">bf.cx.complaint</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_cx_complaint_search"/>
         <field name="context">{'search_default_filter_open': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucune plainte - tant mieux
+                No complaints - good
             </p>
             <p>
-                Consigner ici toute plainte reçue : gravité, échéance
-                d'accusé de réception, analyse de cause et action corrective.
+                Record every complaint received here: severity, acknowledgement deadline, cause analysis and corrective action.
             </p>
         </field>
     </record>

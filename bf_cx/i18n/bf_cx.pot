@@ -1,0 +1,3437 @@
+# Translation template for Expérience client.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx 18.0.1.13.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-26 18:31+0000\n"
+"PO-Revision-Date: 2026-11-26 18:31+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid " - test entry, it counts in no statistic"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/res_partner.py:0
+msgid "\"Excluded from surveys\" can only be searched with = or != on a boolean."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_partner_form_cx
+msgid ""
+"\"Never solicit\" is a decision of your organization about an account: it "
+"covers waves, post-meeting, post-loss, project ratings and ticket CSAT, and "
+"nothing else — neither invoicing nor the privacy register. Set on a company,"
+" it covers all its contacts, including those created later. Not to be "
+"confused with \"Do not contact\", which is an objection raised by the person"
+" themselves."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__score_question_id
+msgid ""
+"\"Scale\" question whose value feeds the score. If empty, the first scale "
+"answer is used."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__testimonial_direct_answer_id
+msgid "\"Yes, no recontact\" answer"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__nps_score
+msgid ""
+"% promoters − % detractors over the program's ENTIRE history, from −100 to "
+"+100. Includes manual entries attached to the program."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "%(avg)s/%(max)s over %(n)s answers"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid "%(count)d invitation(s) resent: %(who)s."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "%(count)d test email(s) sent to %(email)s."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_program.py:0
+msgid "%(display)s (n=%(n)s, %(days)s d)"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/js/cx_dashboard.js:0
+msgid ""
+"%(month)s · promoters %(promoter)s, passives %(passive)s, detractors "
+"%(detractor)s"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/js/cx_dashboard.js:0
+msgid "%(month)s: %(count)s complaint(s)"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/js/cx_dashboard.js:0
+msgid "%(month)s: %(total)s answers"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "%(n)s answer(s) - average hidden below %(min)s"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "%d contact(s) already invited in this wave, skipped."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "%d invitation(s) sent."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid ""
+"%s has already answered: resending the invitation would only ask again for "
+"feedback already given."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "(n="
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/js/cx_dashboard.js:0
+msgid "12 months"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/js/cx_dashboard.js:0
+msgid "30 d"
+msgstr ""
+
+#. module: bf_cx
+#: model:bf.cx.program,name:bf_cx.program_360_default
+msgid "360 feedback"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.survey,title:bf_cx.survey_360_default
+msgid "360 feedback: a colleague's work"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__subject_summary
+msgid "360 result"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/js/cx_dashboard.js:0
+msgid "90 d"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+msgid ""
+"<i class=\"fa fa-info-circle me-1\"/>For a permanent pulse link (signatures,"
+" QR), set the survey's access to \"Anyone with the link\"."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "<span class=\"o_stat_text\">360 result</span>"
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,body_html:bf_cx.mail_template_cx_360_invite
+msgid ""
+"<t t-set=\"company\" t-value=\"(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#29ABE2'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#2E3132'\"/>\n"
+"<t t-set=\"subject_name\" t-value=\"object.bf_cx_wave_id.subject_user_id.name or ''\"/>\n"
+"<t t-set=\"hidden\" t-value=\"object.bf_cx_wave_id.program_id.hide_respondent\"/>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background-color:#F8FAFC;\">\n"
+"    <tbody><tr><td align=\"center\" style=\"padding:24px;\">\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;\">\n"
+"            <tbody>\n"
+"                <tr>\n"
+"                    <td t-attf-style=\"background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;\">\n"
+"                        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody><tr>\n"
+"                            <td align=\"left\">\n"
+"                                <img t-att-src=\"'/brand/logo/%d' % company.id\" alt=\"Logo\" style=\"height:40px; width:auto; display:block; border:0;\"/>\n"
+"                            </td>\n"
+"                            <td align=\"right\" style=\"color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;\">\n"
+"                                Feedback\n"
+"                            </td>\n"
+"                        </tr></tbody></table>\n"
+"                    </td>\n"
+"                </tr>\n"
+"                <tr><td t-attf-style=\"height:4px; line-height:4px; background-color:{{ brand_primary }};\">&amp;nbsp;</td></tr>\n"
+"                <tr>\n"
+"                    <td style=\"padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;\">\n"
+"                        <p style=\"font-size:15px; margin:0 0 12px 0;\">\n"
+"                            Hello <t t-out=\"object.partner_id.name or ''\"/>,\n"
+"                        </p>\n"
+"                        <p style=\"font-size:15px; margin:0 0 12px 0;\">\n"
+"                            <t t-if=\"subject_name\">\n"
+"                                We are collecting feedback on the work of <strong><t t-out=\"subject_name\"/></strong>. You work with this person: your view counts for more than ours.\n"
+"                            </t>\n"
+"                            <t t-else=\"\">\n"
+"                                We are collecting internal feedback on the way we work.\n"
+"                            </t>\n"
+"                        </p>\n"
+"                        <p style=\"font-size:15px; margin:0 0 12px 0;\">\n"
+"                            Allow three minutes. What helps are concrete examples, not round scores.\n"
+"                        </p>\n"
+"                        <div style=\"text-align:center; margin:28px 0;\">\n"
+"                            <a t-att-href=\"object.get_start_url()\" t-attf-style=\"background-color:{{ brand_primary }}; color:#FFFFFF; text-decoration:none; padding:12px 28px; border-radius:6px; font-size:15px; display:inline-block;\">\n"
+"                                Give my feedback\n"
+"                            </a>\n"
+"                        </div>\n"
+"                        <t t-if=\"object.deadline\">\n"
+"                            <p style=\"font-size:13px; color:#6B7280; margin:0 0 12px 0;\">\n"
+"                                Feedback is collected until\n"
+"                                <t t-out=\"format_date(object.deadline)\"/>.\n"
+"                            </p>\n"
+"                        </t>\n"
+"                        <p style=\"font-size:13px; color:#6B7280; margin:0;\">\n"
+"                            <t t-if=\"hidden\">\n"
+"                                Your name is not entered in the feedback register: neither the summary, nor the lists, nor the exports show it. In a team this size, a comment can still be recognized by its content.\n"
+"                            </t>\n"
+"                            <t t-else=\"\">\n"
+"                                Your name comes with your answer.\n"
+"                            </t>\n"
+"                        </p>\n"
+"                    </td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td style=\"padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;\">\n"
+"                        <p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;\">\n"
+"                            <t t-if=\"company.name\"><t t-out=\"company.name\"/></t>\n"
+"                        </p>\n"
+"                    </td>\n"
+"                </tr>\n"
+"            </tbody>\n"
+"        </table>\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:12px auto 0;\">\n"
+"            <tbody><tr>\n"
+"                <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;\">&amp;nbsp;</td>\n"
+"                <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;\">&amp;nbsp;</td>\n"
+"            </tr></tbody>\n"
+"        </table>\n"
+"    </td></tr></tbody>\n"
+"</table>\n"
+"            "
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,body_html:bf_cx.mail_template_cx_reminder
+msgid ""
+"<t t-set=\"company\" t-value=\"(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#29ABE2'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#2E3132'\"/>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background-color:#F8FAFC;\">\n"
+"    <tbody><tr><td align=\"center\" style=\"padding:24px;\">\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;\">\n"
+"            <tbody>\n"
+"                <tr>\n"
+"                    <td t-attf-style=\"background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;\">\n"
+"                        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody><tr>\n"
+"                            <td align=\"left\">\n"
+"                                <img t-att-src=\"'/brand/logo/%d' % company.id\" alt=\"Logo\" style=\"height:40px; width:auto; display:block; border:0;\"/>\n"
+"                            </td>\n"
+"                            <td align=\"right\" style=\"color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;\"> A quick reminder </td>\n"
+"                        </tr></tbody></table>\n"
+"                    </td>\n"
+"                </tr>\n"
+"                <tr><td t-attf-style=\"height:4px; line-height:4px; background-color:{{ brand_primary }};\">&amp;nbsp;</td></tr>\n"
+"                <tr>\n"
+"                    <td style=\"padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;\">\n"
+"                        <p style=\"font-size:15px; margin:0 0 12px 0;\"> Hello <t t-out=\"object.partner_id.name or ''\"/>,\n"
+"                        </p>\n"
+"                        <p style=\"font-size:15px; margin:0 0 12px 0;\"> A quick, no-pressure reminder: your feedback would really help us, and it only takes two minutes. This is the only reminder you will receive. </p>\n"
+"                        <div style=\"text-align:center; margin:28px 0;\">\n"
+"                            <a t-att-href=\"object.get_start_url()\" t-attf-style=\"background-color:{{ brand_primary }}; color:#FFFFFF; text-decoration:none; padding:12px 28px; border-radius:6px; font-size:15px; display:inline-block;\"> Take the survey </a>\n"
+"                        </div>\n"
+"                        <p style=\"font-size:15px; margin:0;\"> Thank you so much! </p>\n"
+"                    </td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td style=\"padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;\">\n"
+"                        <p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;\">\n"
+"                            <t t-if=\"company.name\"><t t-out=\"company.name\"/><br/></t> Prefer not to receive feedback requests? <a t-att-href=\"object.partner_id.bf_cx_unsubscribe_url\" style=\"color:#6B7280;\">Unsubscribe</a>.\n"
+"                        </p>\n"
+"                    </td>\n"
+"                </tr>\n"
+"            </tbody>\n"
+"        </table>\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:12px auto 0;\">\n"
+"            <tbody><tr>\n"
+"                <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;\">&amp;nbsp;</td>\n"
+"                <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;\">&amp;nbsp;</td>\n"
+"            </tr></tbody>\n"
+"        </table>\n"
+"    </td></tr></tbody>\n"
+"</table>\n"
+"            "
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,body_html:bf_cx.mail_template_cx_invite
+msgid ""
+"<t t-set=\"company\" t-value=\"(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#29ABE2'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#2E3132'\"/>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background-color:#F8FAFC;\">\n"
+"    <tbody><tr><td align=\"center\" style=\"padding:24px;\">\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;\">\n"
+"            <tbody>\n"
+"                <tr>\n"
+"                    <td t-attf-style=\"background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;\">\n"
+"                        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody><tr>\n"
+"                            <td align=\"left\">\n"
+"                                <img t-att-src=\"'/brand/logo/%d' % company.id\" alt=\"Logo\" style=\"height:40px; width:auto; display:block; border:0;\"/>\n"
+"                            </td>\n"
+"                            <td align=\"right\" style=\"color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;\"> Your feedback </td>\n"
+"                        </tr></tbody></table>\n"
+"                    </td>\n"
+"                </tr>\n"
+"                <tr><td t-attf-style=\"height:4px; line-height:4px; background-color:{{ brand_primary }};\">&amp;nbsp;</td></tr>\n"
+"                <tr>\n"
+"                    <td style=\"padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;\">\n"
+"                        <p style=\"font-size:15px; margin:0 0 12px 0;\"> Hello <t t-out=\"object.partner_id.name or ''\"/>,\n"
+"                        </p>\n"
+"                        <p style=\"font-size:15px; margin:0 0 12px 0;\"> Thank you for trusting us. Would you have two minutes to tell us how things are going on your end? Your answers concretely help us improve. </p>\n"
+"                        <div style=\"text-align:center; margin:28px 0;\">\n"
+"                            <a t-att-href=\"object.get_start_url()\" t-attf-style=\"background-color:{{ brand_primary }}; color:#FFFFFF; text-decoration:none; padding:12px 28px; border-radius:6px; font-size:15px; display:inline-block;\"> Take the survey </a>\n"
+"                        </div>\n"
+"                        <t t-if=\"object.deadline\">\n"
+"                            <p style=\"font-size:13px; color:#6B7280; margin:0 0 12px 0;\"> The survey is open until <t t-out=\"format_date(object.deadline)\"/>.\n"
+"                            </p>\n"
+"                        </t>\n"
+"                        <p style=\"font-size:15px; margin:0;\"> Thank you so much! </p>\n"
+"                    </td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td style=\"padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;\">\n"
+"                        <p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;\">\n"
+"                            <t t-if=\"company.name\"><t t-out=\"company.name\"/><br/></t> Prefer not to receive feedback requests? <a t-att-href=\"object.partner_id.bf_cx_unsubscribe_url\" style=\"color:#6B7280;\">Unsubscribe</a>.\n"
+"                        </p>\n"
+"                    </td>\n"
+"                </tr>\n"
+"            </tbody>\n"
+"        </table>\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:12px auto 0;\">\n"
+"            <tbody><tr>\n"
+"                <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;\">&amp;nbsp;</td>\n"
+"                <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;\">&amp;nbsp;</td>\n"
+"            </tr></tbody>\n"
+"        </table>\n"
+"    </td></tr></tbody>\n"
+"</table>\n"
+"            "
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,body_html:bf_cx.mail_template_complaint_ack
+msgid ""
+"<t t-set=\"company\" t-value=\"object.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#29ABE2'\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#2E3132'\"/>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background-color:#F8FAFC;\">\n"
+"    <tbody><tr><td align=\"center\" style=\"padding:24px;\">\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;\">\n"
+"            <tbody>\n"
+"                <tr>\n"
+"                    <td t-attf-style=\"background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;\">\n"
+"                        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tbody><tr>\n"
+"                            <td align=\"left\">\n"
+"                                <img t-att-src=\"'/brand/logo/%d' % company.id\" alt=\"Logo\" style=\"height:40px; width:auto; display:block; border:0;\"/>\n"
+"                            </td>\n"
+"                            <td align=\"right\" style=\"color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;\"> Received </td>\n"
+"                        </tr></tbody></table>\n"
+"                    </td>\n"
+"                </tr>\n"
+"                <tr><td t-attf-style=\"height:4px; line-height:4px; background-color:{{ brand_primary }};\">&amp;nbsp;</td></tr>\n"
+"                <tr>\n"
+"                    <td style=\"padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;\">\n"
+"                        <p style=\"font-size:15px; margin:0 0 12px 0;\"> Hello <t t-out=\"object.partner_id.name or object.contact_name or ''\"/>,\n"
+"                        </p>\n"
+"                        <p style=\"font-size:15px; margin:0 0 12px 0;\"> We have received your complaint about “ <t t-out=\"object.name\"/> ” and we take it seriously. It is in good hands as of now. </p>\n"
+"                        <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:20px 0;\">\n"
+"                            <tbody><tr>\n"
+"                                <td align=\"center\" t-attf-style=\"background-color:#F8FAFC; border:1px solid #e5e7eb; border-left:4px solid {{ brand_primary }}; border-radius:6px; padding:14px;\">\n"
+"                                    <span style=\"font-size:13px; color:#6B7280;\">Your confirmation code</span><br/>\n"
+"                                    <span t-attf-style=\"font-size:22px; font-weight:800; letter-spacing:3px; color:{{ brand_dark }};\"><t t-out=\"object.confirmation_code\"/></span>\n"
+"                                </td>\n"
+"                            </tr></tbody>\n"
+"                        </table>\n"
+"                        <p style=\"font-size:15px; margin:0 0 12px 0;\"> We will get back to you with our analysis and next steps as soon as possible. Thank you for letting us know: this is what helps us improve. </p>\n"
+"                    </td>\n"
+"                </tr>\n"
+"                <tr>\n"
+"                    <td style=\"padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;\">\n"
+"                        <p style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;\">\n"
+"                            <t t-if=\"company.name\"><t t-out=\"company.name\"/><br/></t>\n"
+"                            <t t-if=\"object.partner_id\"> Prefer not to receive feedback requests? <a t-att-href=\"object.partner_id.bf_cx_unsubscribe_url\" style=\"color:#6B7280;\">Unsubscribe</a>.\n"
+"                            </t>\n"
+"                        </p>\n"
+"                    </td>\n"
+"                </tr>\n"
+"            </tbody>\n"
+"        </table>\n"
+"        <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:12px auto 0;\">\n"
+"            <tbody><tr>\n"
+"                <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;\">&amp;nbsp;</td>\n"
+"                <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;\">&amp;nbsp;</td>\n"
+"            </tr></tbody>\n"
+"        </table>\n"
+"    </td></tr></tbody>\n"
+"</table>\n"
+"            "
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid ""
+"A notice to the owner for each answer filed in the register, promoters "
+"included. Off, only detractors are flagged through the reminder activity, "
+"and an enthusiastic answer goes unnoticed. The notice follows the "
+"recipient's Odoo preference (email or inbox)."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid ""
+"A person reviewed can only be set on a program of the \"Internal feedback "
+"(360)\" type. The \"%(program)s\" program is of the \"%(type)s\" type."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.actions.act_window,help:bf_cx.action_cx_program
+msgid ""
+"A program links an Odoo survey (0-10 scale question for the NPS) to a "
+"follow-up: sending waves, reminders, score computation and a closed loop on "
+"detractors."
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,subject:bf_cx.mail_template_cx_reminder
+msgid "A quick reminder: your feedback matters"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "A reminder activity was created."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_testimonial.py:0
+msgid "A testimonial can only be published with consent obtained."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid ""
+"A testimonial cannot be created without an identified contact (anonymous "
+"answer)."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_partner_form_cx
+msgid "Account exclusion"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Acknowledge"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_complaint__state__ack
+msgid "Acknowledged"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__ack_deadline
+msgid "Acknowledgement deadline"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid "Acknowledgement delay"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_config_settings__bf_cx_complaint_ack_days
+msgid "Acknowledgement delay (days)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__ack_delay_hours
+msgid "Acknowledgement delay (h)"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_search
+msgid "Acknowledgement overdue"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_complaint.py:0
+msgid "Acknowledgement overdue - %s"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_complaint.py:0
+msgid ""
+"Acknowledgement recorded by %s (no email address - passed on outside the "
+"system)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__date_acknowledged
+msgid "Acknowledgement sent on"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_complaint.py:0
+msgid "Acknowledgement sent to %s."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_needaction
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_needaction
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_needaction
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_needaction
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__active
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__activity_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__activity_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__activity_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__activity_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__activity_state
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__activity_state
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__activity_state
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__activity_state
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__activity_type_icon
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__activity_type_icon
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__activity_type_icon
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__activity_type_icon
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_config_settings__bf_cx_testimonial_activity
+msgid "Activity for testimonial candidates"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/js/cx_dashboard.js:0
+msgid "All"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+msgid "All-time NPS"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_partner__bf_cx_exclude_effective
+#: model:ir.model.fields,help:bf_cx.field_res_users__bf_cx_exclude_effective
+msgid ""
+"Also true when it is the contact's COMPANY that is excluded - otherwise an "
+"employee's record would show \"can be solicited\" while nothing will ever "
+"reach them."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid ""
+"An NPS detractor (score ≤ 6) or a dissatisfied rating creates an activity "
+"assigned to the account owner."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid ""
+"An NPS feedback must be scored on a 0 to 10 scale (score received: "
+"%(score)s/%(max)s)."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid ""
+"An invitation that was deleted or never received is resent line by line, on "
+"the same answer link: the \"Resend\" button only affects that person and "
+"changes neither the counters nor the collective reminder."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.ui.menu,name:bf_cx.menu_cx_report
+msgid "Analysis"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "Anonymous"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "Anonymous respondent"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "Anonymous verbatim to examine"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__testimonial_direct_answer_id
+msgid ""
+"Answer choice that counts as consent: the testimonial is created directly as"
+" \"Consent obtained\", the survey answer serving as proof. Its label must "
+"say how the respondent will be named. Optional."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__testimonial_answer_id
+msgid "Answer choice that marks the feedback as a testimonial candidate."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__deadline
+msgid "Answer deadline"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Answer given to the complainant…"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Answered on"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__user_input_ids
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Answers"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.actions.act_window,help:bf_cx.action_cx_feedback
+msgid ""
+"Answers to the programs' surveys and email ratings land here automatically. "
+"Feedback heard in a meeting or on the phone can also be recorded."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_search
+msgid "Archived"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_attachment_count
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_attachment_count
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_attachment_count
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_attachment_count
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_config_settings__bf_cx_auto_activity
+msgid "Automatic closed loop"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid "Automatic follow-up activity"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_config_settings__bf_cx_auto_activity
+msgid ""
+"Automatically create a follow-up activity for the owner when a detractor "
+"(NPS ≤ 6) or a dissatisfied rating comes in."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__pulse_url
+msgid ""
+"Available when the survey's access is \"Anyone with the link\": a permanent "
+"link to share (signatures, posters, QR)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__subject_summary
+msgid ""
+"Average of the scores received by the person reviewed in this wave, hidden "
+"below an answer threshold."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_search
+msgid "Awaiting consent"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_partner__bf_cx_feedback_count
+#: model:ir.model.fields,field_description:bf_cx.field_res_users__bf_cx_feedback_count
+msgid "Bf Cx Feedback Count"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "CSAT"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.actions.client,name:bf_cx.action_cx_dashboard
+msgid "CX dashboard"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_partner__bf_cx_exclude_reason
+#: model:ir.model.fields,field_description:bf_cx.field_res_users__bf_cx_exclude_reason
+msgid "CX exclusion reason"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_partner__bf_cx_unsubscribe_url
+#: model:ir.model.fields,field_description:bf_cx.field_res_users__bf_cx_unsubscribe_url
+msgid "CX unsubscribe link"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__campaign_id
+msgid ""
+"Campaign attached by default to the program's waves (standard Odoo has no "
+"survey ↔ campaign link: this module provides it)."
+msgstr ""
+
+#. module: bf_cx
+#: model:res.groups,comment:bf_cx.group_bf_cx_user
+msgid ""
+"Can manage programs, waves, customer feedback, complaints and testimonials. "
+"Does not see internal feedback (360)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__source
+msgid "Channel"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_complaint.py:0
+msgid "Check the complainant's satisfaction (%s)"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.actions.act_window,help:bf_cx.action_cx_wave
+msgid ""
+"Choose a program and a list of contacts: each recipient receives a personal "
+"invitation with their own answer token. Non-respondents are reminded "
+"automatically."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_search
+msgid "Client"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Close"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_complaint__state__closed
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_wave__state__closed
+msgid "Closed"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid "Closed loop"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "Closed loop: contact %s again"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid "Closed-loop deadline"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_config_settings__bf_cx_followup_days
+msgid "Closed-loop deadline (days)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__color_resolved_index
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_theme__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__color
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__color
+msgid "Color"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__color_source
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__color_source
+msgid "Color Source"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__color_hex
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_theme__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__color_resolved
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_theme__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__comment
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__kind__verbatim
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_form
+msgid "Comment"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__comment_question_id
+msgid "Comment question"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "Comments"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__company_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__company_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__company_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__company_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_search
+msgid "Complainant"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__complainant_satisfied
+msgid "Complainant satisfied with the handling"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Complaint"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/js/cx_dashboard.js:0
+#: model:ir.actions.act_window,name:bf_cx.action_cx_complaint
+#: model:ir.ui.menu,name:bf_cx.menu_cx_complaint
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_search
+msgid "Complaints"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "Complaints per month"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "Complaints received"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__completed_count
+msgid "Completed answers"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.ui.menu,name:bf_cx.menu_cx_config
+msgid "Configuration"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__confirmation_code
+msgid "Confirmation code"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_form
+msgid "Consent"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_testimonial__state__consented
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_form
+msgid "Consent obtained"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_testimonial__state__consent_pending
+msgid "Consent requested"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__consent_date
+msgid "Consented on"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "Consented testimonial: publish the one from %s"
+msgstr ""
+
+#. module: bf_cx
+#. modules: bf_cx, bf_cx_privacy
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "Contact"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__contact_email
+msgid "Contact email"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__contact_name
+msgid "Contact name"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_config_settings__bf_cx_test_partner_id
+msgid ""
+"Contact who receives the emails of a wave's \"Send a test\" button. Use an "
+"address of your own: the test is sent for real. It counts in no statistic "
+"and does not feed the register."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__partner_ids
+msgid ""
+"Contacts to invite. Those without an email address are skipped at sending "
+"(and listed in the wave's log)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__context_note
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_form
+msgid "Context"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_program__program_type__pulse
+msgid "Continuous pulse"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid ""
+"Copy each rating (projects, tickets…) into the unified feedback register."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_config_settings__bf_cx_ingest_ratings
+msgid ""
+"Copy each rating received (projects, tickets…) into the unified feedback "
+"register."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__corrective_action
+msgid "Corrective action"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,title:bf_cx.question_nps_testimonial
+msgid "Could we quote your comments as a testimonial?"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.actions.act_window,help:bf_cx.action_cx_program
+msgid "Create a measurement program"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_form
+msgid "Create a testimonial"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_config_settings__bf_cx_testimonial_activity
+msgid ""
+"Create an activity (5-day deadline) when a respondent agrees to be quoted - "
+"an opt-in is perishable."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid ""
+"Create an activity (5-day deadline) when a respondent agrees to be quoted."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__create_uid
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__create_uid
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__create_uid
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__create_uid
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__create_uid
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__create_date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__create_date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__create_date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__create_date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__create_date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_complaint__severity__critical
+msgid "Critical"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model,name:bf_cx.model_bf_cx_complaint
+msgid "Customer complaint"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+#: model:ir.module.category,name:bf_cx.module_category_cx
+#: model:ir.ui.menu,name:bf_cx.menu_cx_root
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_partner_form_cx
+msgid "Customer experience"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.module.category,description:bf_cx.module_category_cx
+msgid ""
+"Customer experience measurement: NPS, continuous feedback, complaints and "
+"testimonials"
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,name:bf_cx.mail_template_complaint_ack
+msgid "Customer experience: complaint acknowledgement"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.actions.server,name:bf_cx.ir_cron_cx_complaint_ack_ir_actions_server
+msgid "Customer experience: complaints without acknowledgement"
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,name:bf_cx.mail_template_cx_invite
+msgid "Customer experience: survey invitation"
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,name:bf_cx.mail_template_cx_reminder
+msgid "Customer experience: survey reminder"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.actions.server,name:bf_cx.ir_cron_cx_wave_reminders_ir_actions_server
+msgid "Customer experience: wave upkeep"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.ui.menu,name:bf_cx.menu_cx_dashboard
+msgid "Dashboard"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__date
+msgid "Date"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid ""
+"Deadline of the activity created for a detractor or a dissatisfied rating "
+"(practice: 24-72 h)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_config_settings__bf_cx_followup_days
+msgid ""
+"Deadline of the activity created for a detractor or a dissatisfied rating "
+"(practice: contact again within 24-72 h)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__ack_deadline
+msgid ""
+"Deadline to acknowledge receipt (delay set in the settings). The scheduled "
+"job alerts the owner as the deadline approaches."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__description
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Description"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__nps_bucket__detractor
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_kanban
+msgid "Detractor"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__detractor_count
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "Detractors"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__display_name
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__display_name
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__display_name
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__display_name
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__display_name
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__color_resolved
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__color_resolved
+msgid "Displayed color"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__color_resolved_index
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__state__done
+msgid "Done"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+msgid "Download the QR code"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_testimonial__state__draft
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_wave__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_search
+msgid "Drafts"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model,name:bf_cx.model_mail_thread
+msgid "Email Thread"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__source__rating
+msgid "Email rating"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__invite_template_id
+msgid "Email sent for each invitation of a wave."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__context_note
+msgid "Engagement, project or situation the testimonial comes from."
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,scale_max_label:bf_cx.question_360_score
+msgid "Enormously"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_partner__bf_cx_exclude_user_id
+#: model:ir.model.fields,field_description:bf_cx.field_res_users__bf_cx_exclude_user_id
+msgid "Excluded by"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_partner__bf_cx_exclude_effective
+#: model:ir.model.fields,field_description:bf_cx.field_res_users__bf_cx_exclude_effective
+msgid "Excluded from surveys"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_partner_form_cx
+msgid ""
+"Excluded from surveys because their company is. Lifting the exclusion is "
+"done on the company's record, not here."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_partner__bf_cx_exclude_date
+#: model:ir.model.fields,field_description:bf_cx.field_res_users__bf_cx_exclude_date
+msgid "Excluded on"
+msgstr ""
+
+#. module: bf_cx
+#. modules: bf_cx, bf_cx_ai
+#: model:ir.model.fields,field_description:bf_cx.field_rating_rating__bf_cx_feedback_id
+#: model:ir.model.fields,field_description:bf_cx.field_res_partner__bf_cx_feedback_ids
+#: model:ir.model.fields,field_description:bf_cx.field_res_users__bf_cx_feedback_ids
+msgid "Experience feedback"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model,name:bf_cx.model_bf_cx_program
+msgid "Experience measurement program"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_survey_user_input__bf_cx_wave_id
+msgid "Experience wave"
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,name:bf_cx.mail_template_cx_360_invite
+msgid "Experience: 360 feedback invitation"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Factual description of the complaint…"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__failed_message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__failed_message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__failed_message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__failed_message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/js/cx_dashboard.js:0
+#: model:ir.actions.act_window,name:bf_cx.action_cx_feedback
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__feedback_ids
+#: model:ir.ui.menu,name:bf_cx.menu_cx_feedback
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_form
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_graph
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_pivot
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_list
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_partner_form_cx
+msgid "Feedback"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_program.py:0
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+#: code:addons/bf_cx/models/res_partner.py:0
+msgid "Feedback - %s"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__feedback_count
+msgid "Feedback Count"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.actions.act_window,name:bf_cx.action_cx_report
+msgid "Feedback analysis"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model,name:bf_cx.model_bf_cx_theme
+msgid "Feedback theme"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "Follow-up closed from the feedback record."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__state__in_progress
+msgid "Follow-up in progress"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__user_id
+msgid "Follow-up owner"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_follower_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_follower_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_follower_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_follower_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_partner_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_partner_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_partner_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_partner_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__activity_type_icon
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__activity_type_icon
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__activity_type_icon
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__activity_type_icon
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "From"
+msgstr ""
+
+#. module: bf_cx
+#: model:res.groups,comment:bf_cx.group_bf_cx_manager
+msgid "Full access, including internal feedback (360) and the configuration."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_search
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_search
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_search
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__pulse_snippet
+msgid "HTML snippet for a signature"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+msgid "HTML snippet to paste into a signature"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__has_message
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__has_message
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__has_message
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__has_message
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid ""
+"Held back by the guards (recent contact, do-not-contact list, collections or"
+" blocked email) - the scheduled job will retry: %s"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__hide_respondent
+msgid "Hide the respondent (360)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_complaint__severity__high
+msgid "High"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__ack_delay_hours
+msgid "Hours between receipt and acknowledgement - ISO 10002 indicator."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_program.py:0
+msgid "How did we do? Give us your feedback"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,title:bf_cx.question_nps_score
+msgid ""
+"How likely are you to recommend us to a colleague or a business partner?"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_complaint.py:0
+msgid ""
+"ISO 10002: check that the complainant is satisfied with the HANDLING of "
+"their complaint, then tick \"Complainant satisfied with the handling\" on "
+"the record."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__complainant_satisfied
+msgid ""
+"ISO 10002: check the complainant's satisfaction with the HANDLING of the "
+"complaint after resolution (not with the product)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__activity_exception_icon
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__activity_exception_icon
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__activity_exception_icon
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__activity_exception_icon
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__message_needaction
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__message_needaction
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__message_needaction
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__message_needaction
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__message_has_error
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__message_has_sms_error
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__message_has_error
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__message_has_sms_error
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__message_has_error
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__message_has_sms_error
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__message_has_error
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__message_has_sms_error
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__message_has_error
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__contact_name
+msgid "If the complainant has no contact record."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_config_settings__bf_cx_ingest_ratings
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid "Ingest email ratings"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__kind__internal
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "Internal (360)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_program__program_type__internal
+msgid "Internal feedback (360)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__subject_user_id
+msgid ""
+"Internal feedback (360): the person this entry is ABOUT. Not to be confused "
+"with the follow-up owner, who holds the client account."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__number
+msgid ""
+"Internal sequence. NEVER give it to the complainant: it reveals the volume "
+"of complaints received. Use the confirmation code."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid "Invitation resent"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid ""
+"Invitation resent to %(contact)s (%(email)s)%(test)s. Same answer link as "
+"the first sending; neither the over-solicitation quarantine, nor the "
+"collective reminder, nor the wave's counters move."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__invite_template_id
+msgid "Invitation template"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Invitations"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Invite the new recipients"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__invited_count
+msgid "Invited"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Invited on"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_is_follower
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_is_follower
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_is_follower
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_is_follower
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_partner__bf_cx_last_solicited
+#: model:ir.model.fields,field_description:bf_cx.field_res_users__bf_cx_last_solicited
+msgid "Last CX solicitation"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__write_uid
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__write_uid
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__write_uid
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__write_uid
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__write_uid
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__write_date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__write_date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__write_date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__write_date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__write_date
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__reminder_date
+msgid "Last reminder"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_partner__bf_cx_last_solicited
+#: model:ir.model.fields,help:bf_cx.field_res_users__bf_cx_last_solicited
+msgid ""
+"Last time a feedback request was sent to them (wave, post-meeting, post-"
+"loss). Used by the over-solicitation guard."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.actions.act_window,help:bf_cx.action_cx_wave
+msgid "Launch a first wave"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "Loading…"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_complaint__severity__low
+msgid "Low"
+msgstr ""
+
+#. module: bf_cx
+#: model:res.groups,name:bf_cx.group_bf_cx_manager
+msgid "Manager"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__source__manual
+msgid "Manual entry"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_form
+msgid "Mark done"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Mark resolved"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_complaint__severity__medium
+msgid "Medium"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__source__meeting
+msgid "Meeting"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_content
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_content
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_content
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_content
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_has_error
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_has_error
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_has_error
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_has_error
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_search
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_search
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_search
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_search
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__message_content
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__message_content
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__message_content
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__message_content
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__message_search
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__message_search
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__message_search
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__message_search
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__cooldown_days
+msgid "Minimum cadence (days)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_config_settings__bf_cx_solicitation_cooldown_days
+msgid ""
+"Minimum number of days between two feedback requests to the same contact "
+"(waves, post-meeting, post-loss). 0 = no guard."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid ""
+"Minimum number of days between two feedback requests to the same contact, "
+"all channels (waves, post-meeting, post-loss, project and ticket ratings). 0"
+" = no guard. Adjustable per program for a slower relationship cadence (90 "
+"days recommended)."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "Month"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_search
+msgid "My complaints"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "My follow-ups"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__kind__nps
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_list
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_list
+msgid "NPS"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__nps_window_display
+msgid "NPS (window)"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "NPS answers per month"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__nps_bucket
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "NPS category"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__needs_followup
+msgid ""
+"NPS detractor or dissatisfied rating: deserves a closed-loop follow-up. This"
+" is the field the dashboard tile and the digest watch."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__nps_score
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "NPS score"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__nps_score
+msgid "NPS score (all time)"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.survey,title:bf_cx.survey_nps_default
+msgid "NPS survey: your feedback matters"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid "NPS window"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_config_settings__bf_cx_nps_window_days
+msgid "NPS window (days)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__program_type
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__program_type
+msgid ""
+"NPS/Pulse: the score is classified as promoter/passive/detractor. CSAT: a "
+"plain satisfaction score. Internal: entries are restricted to the module's "
+"managers."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__name
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_partner__bf_cx_exclude
+#: model:ir.model.fields,field_description:bf_cx.field_res_users__bf_cx_exclude
+msgid "Never solicit (Customer experience)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__state__new
+msgid "New"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "New answer in the register"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__activity_summary
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__activity_summary
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__activity_summary
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__activity_summary
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__activity_type_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__activity_type_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__activity_type_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__activity_type_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "No NPS answers in the period."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "No answers"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.actions.act_window,help:bf_cx.action_cx_complaint
+msgid "No complaints - good"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "No complaints in the period."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid "No email address on this recipient."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.actions.act_window,help:bf_cx.action_cx_feedback
+msgid "No feedback yet"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "No new recipient to invite."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid ""
+"No recipient to invite: %(contacts)s contacted less than %(days)s days ago "
+"(over-solicitation guard, %(origine)s)."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "No recipient with an email address to invite."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid ""
+"No test contact is set. Set it in Settings > Customer experience > Test "
+"contact, then run the test again."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.actions.act_window,help:bf_cx.action_cx_testimonial
+msgid "No testimonials yet"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question.answer,value:bf_cx.answer_nps_testimonial_no
+msgid "No thank you"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "No theme"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__confirmation_code
+msgid ""
+"Non-sequential reference given to the complainant in the acknowledgement."
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,scale_min_label:bf_cx.question_360_score
+msgid "Not at all"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_config_settings__bf_cx_notify_every_response
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid "Notify each answer"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__number
+msgid "Number (internal)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__reminder_days
+msgid ""
+"Number of days after a wave is sent before the automatic reminder to non-"
+"respondents. 0 = no automatic reminder."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_config_settings__bf_cx_complaint_ack_days
+msgid ""
+"Number of days to acknowledge a complaint (computes the deadline shown on "
+"each complaint)."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid ""
+"Number of days to acknowledge a complaint. Used to compute the deadline "
+"shown on each complaint."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__message_needaction_counter
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__message_needaction_counter
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__message_needaction_counter
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__message_needaction_counter
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__message_has_error_counter
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__message_has_error_counter
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__message_has_error_counter
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__message_has_error_counter
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__survey_id
+msgid ""
+"Odoo survey supporting the program. The score question must be of the "
+"\"Scale\" type (0-10 for an NPS)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__hide_respondent
+msgid ""
+"On an internal program, does not enter the respondent in the feedback "
+"register: lists, groupings, exports and dashboards do not name them. The "
+"masking applies to the register, not to the database: a manager still has "
+"access to the survey answer itself. On a team of three, tell respondents so "
+"honestly."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__subject_user_id
+msgid ""
+"On an internal program, the person the feedback is ABOUT: the recipients "
+"review them, they do not necessarily review themselves. Leave empty for an "
+"internal pulse about the organization rather than about someone."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/res_partner.py:0
+msgid ""
+"Only a Customer experience operator can exclude an account from surveys or "
+"lift that exclusion."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_search
+msgid "Open"
+msgstr ""
+
+#. module: bf_cx
+#: model:res.groups,name:bf_cx.group_bf_cx_user
+msgid "Operator"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_form
+msgid "Origin"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__source__other
+msgid "Other"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__score_max
+msgid "Out of"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid "Over-solicitation guard"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_config_settings__bf_cx_solicitation_cooldown_days
+msgid "Over-solicitation guard (days)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__cooldown_days
+msgid ""
+"Over-solicitation quarantine specific to THIS program (practice: 90 days for"
+" a relationship NPS, 30 days for transactional). 0 = the global setting "
+"applies."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "Overall satisfaction"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,title:bf_cx.question_360_score
+msgid "Overall, does working with this person make your own work easier?"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__color_hex
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__color_hex
+msgid "Own color"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__user_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__user_id
+msgid "Owner"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__deadline
+msgid ""
+"Passed on to the generated answers (the survey refuses answers after this "
+"date)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__nps_bucket__passive
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_kanban
+msgid "Passive"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__passive_count
+msgid "Passives"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "Periods"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_partner__bf_cx_exclude
+#: model:ir.model.fields,help:bf_cx.field_res_users__bf_cx_exclude
+msgid ""
+"Permanently excludes this contact from any feedback request: waves, post-meeting, post-loss, project ratings, ticket CSAT. Set on a COMPANY, it covers all its contacts, including those created later.\n"
+"\n"
+"Not to be confused with \"Do not contact\": that one is an objection raised by the person and lives in the privacy register. This one is a decision of your organization about an account, and touches neither invoicing nor the register."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__subject_user_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__subject_user_id
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_search
+msgid "Person reviewed"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "Person reviewed (360)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__program_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__program_id
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_search
+msgid "Program"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__program_type
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__program_type
+msgid "Program type"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.actions.act_window,name:bf_cx.action_cx_program
+#: model:ir.ui.menu,name:bf_cx.menu_cx_program
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_search
+msgid "Programs"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__project_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__project_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__project_id
+msgid "Project / engagement"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__nps_bucket__promoter
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_kanban
+msgid "Promoter"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__promoter_count
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "Promoters"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__consent_note
+msgid "Proof of consent"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__pulse_url
+msgid "Public URL (pulse)"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_form
+msgid "Publish"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_search
+msgid "Publishable"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_testimonial__state__published
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_search
+msgid "Published"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__published_at
+msgid "Published on"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+msgid "Pulse (permanent public link)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__testimonial_consent_direct
+msgid "Quote allowed without recontact"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model,name:bf_cx.model_rating_rating
+msgid "Rating"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/mail_thread.py:0
+msgid ""
+"Rating request not sent to %s: solicitation guard (account excluded from "
+"surveys, cadence, do-not-contact list, blocked email or file in "
+"collections)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__rating_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__rating_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__rating_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__rating_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_complaint__state__received
+msgid "Received"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__date_received
+msgid "Received on"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__user_id
+msgid ""
+"Receives the closed-loop activity for a detractor or a dissatisfied rating."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid ""
+"Recipient of a wave's \"Send a test\" button. The test is sent for real, "
+"with a real answer link: use an address of your own. It counts in no "
+"statistic and does not feed the register, so it tests neither the write to "
+"the register nor the detractor loop."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__partner_ids
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Recipients"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.actions.act_window,help:bf_cx.action_cx_complaint
+msgid ""
+"Record every complaint received here: severity, acknowledgement deadline, "
+"cause analysis and corrective action."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_testimonial.py:0
+msgid "Record the proof of consent (\"Proof of consent\" field)."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_complaint.py:0
+msgid "Record the resolution before closing the analysis (\"Resolution\" field)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__theme_ids
+msgid ""
+"Recurring causes (delays, communication, price, quality…): the aggregation "
+"axis of the outer loop. Review periodically in the pivot view."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__theme_ids
+msgid ""
+"Recurring causes: the same reference list as feedback, for the outer-loop "
+"aggregation."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "Recurring themes (outer loop)"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Reference given to the complainant"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__consent_note
+msgid ""
+"Reference of the proof: client's email, date of the call, signed document, "
+"etc."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_testimonial__state__declined
+msgid "Refused"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_form
+msgid "Refused by the client"
+msgstr ""
+
+#. module: bf_cx
+#: model:bf.cx.program,name:bf_cx.program_nps_default
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_program__program_type__nps
+msgid "Relationship NPS"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__reminder_days
+msgid "Reminder after (days)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__reminder_template_id
+msgid ""
+"Reminder email to non-respondents (a short, distinct message works better "
+"than an identical resend). Empty = the invitation template is resent."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "Reminder not sent: the answer deadline has passed."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "Reminder sent to %d non-respondent(s)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__reminder_template_id
+msgid "Reminder template"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Reopen"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Resend"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Resend the invitation to all non-respondents?"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid ""
+"Resend the invitation to this recipient only? The answer link stays the same"
+" and no one else is affected."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid ""
+"Resending to %s is blocked by the sending guards: account excluded from "
+"surveys, email blacklist, \"do not contact\", or collections in progress. "
+"The over-solicitation cadence is not the cause: a resend does not count as a"
+" new solicitation."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_form
+msgid "Reset to draft"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_form
+msgid "Reset to new"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__resolution
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Resolution"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__resolution_delay_days
+msgid "Resolution time (days)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_complaint__state__resolved
+msgid "Resolved"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__date_resolved
+msgid "Resolved on"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.actions.act_window,help:bf_cx.action_cx_testimonial
+msgid ""
+"Respondents who agree to be quoted appear as \"testimonial candidates\" in "
+"the feedback. A testimonial is published only with recorded consent."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "Response rate"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__completion_rate
+msgid "Response rate (%)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__activity_user_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__activity_user_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__activity_user_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__activity_user_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_config_settings__bf_cx_nps_window_days
+msgid ""
+"Rolling window of the NPS score shown (dashboard, digest, programs). At low "
+"volume, 365 days is the only statistically honest window; the score is "
+"hidden below 10 answers."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid ""
+"Rolling window of the score shown (dashboard, digest, programs). The score "
+"is hidden below 10 answers - under that, the margin of error exceeds ±20 "
+"points."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__root_cause
+msgid "Root cause"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__kind__csat
+msgid "Satisfaction (CSAT)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__score
+msgid "Score"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid ""
+"Score of %(score)s/%(max)s received anonymously (pulse link). Read the "
+"comment and learn from it - no recontact possible."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid ""
+"Score of %(score)s/%(max)s received. Get in touch, understand the cause and "
+"record the follow-up on this record."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__nps_window_display
+msgid ""
+"Score over the configured rolling window (12 months by default), hidden "
+"below 10 answers: under that, the margin of error exceeds ±20 points."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__score_question_id
+msgid "Score question"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_config_settings__bf_cx_notify_every_response
+msgid ""
+"Send a notice to the owner for EVERY answer, promoters included. Without it,"
+" only detractors are flagged (through the reminder activity) and an "
+"enthusiastic answer goes unnoticed. Turn it on knowingly: a notification "
+"received for everything ends up no longer being read, including the day it "
+"announces a detractor."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Send a reminder"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Send a test"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Send an invitation to each recipient with an email address?"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Send an invitation to the recipients added since the last sending?"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid ""
+"Send an invitation to the test contact only? It counts in no statistic and "
+"does not feed the register."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Send the invitations"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model,name:bf_cx.model_bf_cx_wave
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Sending wave"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.actions.act_window,name:bf_cx.action_cx_wave
+#: model:ir.ui.menu,name:bf_cx.menu_cx_wave
+msgid "Sending waves"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_wave__state__sent
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_search
+msgid "Sent"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__sent_date
+msgid "Sent on"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_testimonial.py:0
+msgid "Set the consent method before declaring it obtained."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.actions.act_window,name:bf_cx.action_cx_settings
+#: model:ir.ui.menu,name:bf_cx.menu_cx_settings
+msgid "Settings"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__severity
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_search
+msgid "Severity"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_partner__bf_cx_unsubscribe_url
+#: model:ir.model.fields,help:bf_cx.field_res_users__bf_cx_unsubscribe_url
+msgid ""
+"Signed link (HMAC) included in the footer of feedback request emails. It "
+"ends up in mail.blacklist, which every guard of the module respects."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__testimonial_question_id
+msgid ""
+"Single-choice question asking permission to quote the respondent. Optional."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "Skipped (no email address): %s"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_partner_form_cx
+msgid "Solicitation"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__feedback_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__feedback_id
+msgid "Source feedback"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__rating_ref_id
+msgid "Source rating"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Start the analysis"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_form
+msgid "Start the follow-up"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__state
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__state
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__state
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__state
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_search
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_search
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_search
+msgid "Status"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__activity_state
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__activity_state
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__activity_state
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__activity_state
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__name
+msgid "Subject"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Subject of the complaint"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__survey_id
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_feedback__source__survey
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+msgid "Survey"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_testimonial__consent_mode__survey
+msgid "Survey (box ticked by the respondent)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model,name:bf_cx.model_survey_user_input
+msgid "Survey User Input"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__survey_user_input_id
+msgid "Survey answer"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid ""
+"Survey answer #%(id)s, submitted on %(when)s UTC %(channel)s: \"%(answer)s\""
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__campaign_id
+msgid "Taken from the program by default; can be changed per wave."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_form
+msgid "Test"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_res_config_settings__bf_cx_test_partner_id
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid "Test contact"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid ""
+"Test email sent to %(contact)s (%(email)s). Test entry: it counts neither in"
+" the invitations, nor in the response rate, nor in the score, and an answer "
+"will not go to the register."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "Test sent"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__testimonial_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__body
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_form
+msgid "Testimonial"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__testimonial_answer_id
+msgid "Testimonial \"yes\" answer"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "Testimonial - %s"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__is_testimonial_candidate
+msgid "Testimonial candidate"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "Testimonial candidate: contact %s again"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "Testimonial candidates"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__testimonial_question_id
+msgid "Testimonial question"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_form
+msgid "Testimonial title"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_testimonial.py:0
+msgid "Testimonial withdrawn - remove any current use (%s)."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.actions.act_window,name:bf_cx.action_cx_testimonial
+#: model:ir.ui.menu,name:bf_cx.menu_cx_testimonial
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_search
+msgid "Testimonials"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.res_config_settings_view_form
+msgid "Tests"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__color_text
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__color_text
+msgid "Text color"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__comment_question_id
+msgid ""
+"Text question whose answer becomes the feedback comment. If empty, the first"
+" text answer is used."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid "The \"%s\" program has no invitation template."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "The \"%s\" program has no survey."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "The \"%s\" wave is closed."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid ""
+"The \"%s\" wave is closed. Reopen it first if the survey must still accept "
+"answers."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_program.py:0
+msgid ""
+"The \"qrcode\" Python library is not installed in the Odoo container (pip "
+"install qrcode)."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_program.py:0
+msgid ""
+"The QR code requires a survey with public access (\"Anyone with the link\")."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_complaint.py:0
+msgid ""
+"The acknowledgement deadline of this complaint has been reached or passed. "
+"Use \"Acknowledge\" (automatic email if the complainant has an address)."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid ""
+"The answer deadline (%s) has passed: the link would no longer open. Push "
+"back the wave's answer deadline before resending."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_form
+msgid "The client's exact quote…"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid ""
+"The email did not go out (state \"%(state)s\"). Nothing was written: "
+"%(reason)s"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__is_testimonial_candidate
+msgid ""
+"The respondent agreed to be contacted again so their comments can be quoted."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid ""
+"The respondent agrees to be quoted provided they are contacted again to "
+"confirm. Write to them while it is fresh, then create the testimonial "
+"(\"Create a testimonial\" button on this record)."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid ""
+"The respondent allowed the quote in the survey without being contacted "
+"again. The testimonial is created as \"Consent obtained\": review it, then "
+"publish it."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__testimonial_consent_direct
+msgid ""
+"The respondent ticked the survey answer that allows the quote without "
+"contacting them again. The testimonial is created as \"Consent obtained\", "
+"with that answer as proof."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_form
+msgid "The respondent's verbatim…"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "The test contact \"%s\" has no email address."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_theme__name
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "Theme"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__theme_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__theme_ids
+msgid "Themes"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid "This answer belongs to no wave: there is no invitation to resend."
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,constr_error_msg:bf_cx.question_360_score
+#: model:survey.question,constr_error_msg:bf_cx.question_nps_score
+msgid "This question is mandatory."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.constraint,message:bf_cx.constraint_bf_cx_theme_name_uniq
+msgid "This theme already exists."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__name
+msgid "Title"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/js/cx_dashboard.js:0
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__needs_followup
+msgid "To call back"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "To call back (closed loop)"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+msgid "To handle"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__pulse_snippet
+msgid "To paste as is into an email signature or a communication footer."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_program__program_type__csat
+msgid "Transactional CSAT"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__kind
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_feedback_search
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_search
+msgid "Type"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__activity_exception_decoration
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__activity_exception_decoration
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__activity_exception_decoration
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__activity_exception_decoration
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__campaign_id
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__campaign_id
+msgid "UTM campaign"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_complaint__state__analysis
+msgid "Under analysis"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/res_partner.py:0
+msgid "Unsubscribed from feedback requests (Customer experience email link)."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/res_partner.py:0
+msgid ""
+"Unsubscribed from feedback requests (surveys and ratings) through the email "
+"link."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__where_used
+msgid "Used on"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_testimonial__consent_mode__verbal
+msgid "Verbal"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,scale_max_label:bf_cx.question_nps_score
+msgid "Very likely"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,scale_min_label:bf_cx.question_nps_score
+msgid "Very unlikely"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__wave_id
+msgid "Wave"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__wave_count
+msgid "Wave Count"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "Wave closed automatically: answer deadline passed."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "Wave of %s"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__wave_ids
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_list
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_wave_search
+msgid "Waves"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_program.py:0
+msgid "Waves - %s"
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,subject:bf_cx.mail_template_complaint_ack
+msgid "We have received your complaint ({{ object.confirmation_code }})"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_complaint__website_message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_feedback__website_message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_program__website_message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_testimonial__website_message_ids
+#: model:ir.model.fields,field_description:bf_cx.field_bf_cx_wave__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__website_message_ids
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_feedback__website_message_ids
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_program__website_message_ids
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__website_message_ids
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_wave__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_testimonial__where_used
+msgid "Website, proposal, LinkedIn page… where the testimonial is quoted."
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,title:bf_cx.question_360_keep
+msgid ""
+"What does this person do well and should keep doing? A specific example is "
+"worth more than a general compliment."
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_bf_cx_complaint__corrective_action
+msgid "What is put in place so that the situation does not happen again."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "What is put in place to prevent it from happening again."
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,title:bf_cx.question_nps_reason
+msgid "What is the main reason for your score?"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question,title:bf_cx.question_360_change
+msgid "What would help you if this person did it differently?"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_complaint_form
+msgid "Why did it happen?"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_partner_form_cx
+msgid "Why this account is excluded from surveys"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields,help:bf_cx.field_res_partner__bf_cx_exclude_reason
+#: model:ir.model.fields,help:bf_cx.field_res_users__bf_cx_exclude_reason
+msgid ""
+"Why this account is excluded from surveys. Written for the person who will "
+"build the next wave and wonder why one is missing. The reason is tracked in "
+"the discussion thread, so it is visible to all internal users: stay factual."
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_testimonial_form
+msgid "Withdraw (consent revoked)"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_testimonial__state__retired
+msgid "Withdrawn"
+msgstr ""
+
+#. module: bf_cx
+#: model:ir.model.fields.selection,name:bf_cx.selection__bf_cx_testimonial__consent_mode__written
+msgid "Written (email, letter)"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question.answer,value:bf_cx.answer_nps_testimonial_yes
+msgid "Yes, contact me to confirm"
+msgstr ""
+
+#. module: bf_cx
+#: model:survey.question.answer,value:bf_cx.answer_nps_testimonial_direct
+msgid ""
+"Yes, you may quote me with my name, title and organization, no need to "
+"contact me"
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,subject:bf_cx.mail_template_cx_invite
+msgid "Your feedback matters (2 minutes)"
+msgstr ""
+
+#. module: bf_cx
+#: model:mail.template,subject:bf_cx.mail_template_cx_360_invite
+msgid ""
+"Your view on {{ object.bf_cx_wave_id.subject_user_id.name or 'a colleague' "
+"}}"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "adjustable in the settings"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "by the contact's user"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_wave.py:0
+msgid "cadence specific to the \"%s\" program"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "detractor"
+msgstr ""
+
+#. module: bf_cx
+#: model_terms:ir.ui.view,arch_db:bf_cx.view_cx_program_form
+msgid "e.g. Relationship NPS"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "h"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "n too small"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "n/a"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_testimonial.py:0
+msgid "no location recorded"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/survey_user_input.py:0
+msgid "no reason reported by the server."
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "open"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "passive"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "promoter"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-python
+#: code:addons/bf_cx/models/bf_cx_feedback.py:0
+msgid "through the personal invitation link"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "to"
+msgstr ""
+
+#. module: bf_cx
+#. odoo-javascript
+#: code:addons/bf_cx/static/src/xml/cx_dashboard.xml:0
+msgid "· average acknowledgement"
+msgstr ""

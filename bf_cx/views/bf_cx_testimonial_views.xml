@@ -23,29 +23,29 @@
         <field name="name">bf.cx.testimonial.form</field>
         <field name="model">bf.cx.testimonial</field>
         <field name="arch" type="xml">
-            <form string="Témoignage">
+            <form string="Testimonial">
                 <header>
                     <button name="action_set_consented" type="object"
-                            string="Consentement obtenu" class="btn-primary"
+                            string="Consent obtained" class="btn-primary"
                             invisible="state not in ('draft', 'consent_pending')"/>
                     <button name="action_publish" type="object"
-                            string="Publier" class="btn-primary"
+                            string="Publish" class="btn-primary"
                             invisible="state != 'consented'"/>
                     <button name="action_decline" type="object"
-                            string="Refusé par le client"
+                            string="Refused by the client"
                             invisible="state not in ('draft', 'consent_pending')"/>
                     <button name="action_retire" type="object"
-                            string="Retirer (consentement révoqué)"
+                            string="Withdraw (consent revoked)"
                             invisible="state not in ('consented', 'published')"/>
                     <button name="action_reset_draft" type="object"
-                            string="Remettre en brouillon"
+                            string="Reset to draft"
                             invisible="state == 'draft'"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,consent_pending,consented,published"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Titre du témoignage"/></h1>
+                        <h1><field name="name" placeholder="Testimonial title"/></h1>
                     </div>
                     <group>
                         <group name="who">
@@ -55,7 +55,7 @@
                             <field name="date"/>
                             <field name="feedback_id" invisible="not feedback_id"/>
                         </group>
-                        <group name="consent" string="Consentement">
+                        <group name="consent" string="Consent">
                             <field name="consent_mode"/>
                             <field name="consent_note"/>
                             <field name="consent_date"/>
@@ -64,9 +64,9 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
-                    <group string="Témoignage">
+                    <group string="Testimonial">
                         <field name="body" nolabel="1" colspan="2"
-                               placeholder="Citation exacte du client…"/>
+                               placeholder="The client's exact quote…"/>
                     </group>
                 </sheet>
                 <chatter/>
@@ -78,16 +78,16 @@
         <field name="name">bf.cx.testimonial.search</field>
         <field name="model">bf.cx.testimonial</field>
         <field name="arch" type="xml">
-            <search string="Témoignages">
+            <search string="Testimonials">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="body"/>
-                <filter string="Publiables" name="filter_consented" domain="[('state', '=', 'consented')]"/>
-                <filter string="Publiés" name="filter_published" domain="[('state', '=', 'published')]"/>
-                <filter string="En attente de consentement" name="filter_pending"
+                <filter string="Publishable" name="filter_consented" domain="[('state', '=', 'consented')]"/>
+                <filter string="Published" name="filter_published" domain="[('state', '=', 'published')]"/>
+                <filter string="Awaiting consent" name="filter_pending"
                         domain="[('state', 'in', ('draft', 'consent_pending'))]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+                <group expand="0" string="Group by">
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
                     <filter string="Client" name="group_partner" context="{'group_by': 'partner_id'}"/>
                 </group>
             </search>
@@ -95,18 +95,16 @@
     </record>
 
     <record id="action_cx_testimonial" model="ir.actions.act_window">
-        <field name="name">Témoignages</field>
+        <field name="name">Testimonials</field>
         <field name="res_model">bf.cx.testimonial</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_cx_testimonial_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucun témoignage pour l'instant
+                No testimonials yet
             </p>
             <p>
-                Les répondants qui acceptent d'être cités apparaissent comme
-                « candidats témoignage » dans les feedbacks. Un témoignage ne
-                se publie qu'avec un consentement consigné.
+                Respondents who agree to be quoted appear as "testimonial candidates" in the feedback. A testimonial is published only with recorded consent.
             </p>
         </field>
     </record>

@@ -27,22 +27,22 @@
         <field name="name">bf.cx.wave.form</field>
         <field name="model">bf.cx.wave</field>
         <field name="arch" type="xml">
-            <form string="Vague d'envoi">
+            <form string="Sending wave">
                 <header>
-                    <button name="action_send" type="object" string="Envoyer les invitations"
+                    <button name="action_send" type="object" string="Send the invitations"
                             class="btn-primary" invisible="state != 'draft'"
-                            confirm="Envoyer une invitation à chaque destinataire avec adresse courriel ?"/>
-                    <button name="action_send" type="object" string="Inviter les nouveaux destinataires"
+                            confirm="Send an invitation to each recipient with an email address?"/>
+                    <button name="action_send" type="object" string="Invite the new recipients"
                             invisible="state != 'sent'"
-                            confirm="Envoyer une invitation aux destinataires ajoutés depuis le dernier envoi ?"/>
-                    <button name="action_remind" type="object" string="Envoyer un rappel"
+                            confirm="Send an invitation to the recipients added since the last sending?"/>
+                    <button name="action_remind" type="object" string="Send a reminder"
                             invisible="state != 'sent'"
-                            confirm="Renvoyer l'invitation à tous les non-répondants ?"/>
-                    <button name="action_send_test" type="object" string="Envoyer un essai"
-                            confirm="Envoyer une invitation au seul contact de test ? Elle ne compte dans aucune statistique et n'alimente pas le registre."/>
-                    <button name="action_close" type="object" string="Fermer"
+                            confirm="Resend the invitation to all non-respondents?"/>
+                    <button name="action_send_test" type="object" string="Send a test"
+                            confirm="Send an invitation to the test contact only? It counts in no statistic and does not feed the register."/>
+                    <button name="action_close" type="object" string="Close"
                             invisible="state != 'sent'"/>
-                    <button name="action_reopen" type="object" string="Rouvrir"
+                    <button name="action_reopen" type="object" string="Reopen"
                             invisible="state != 'closed'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,sent,closed"/>
                 </header>
@@ -50,17 +50,17 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_feedback" type="object"
                                 class="oe_stat_button" icon="fa-comments-o">
-                            <field name="completed_count" widget="statinfo" string="Réponses"/>
+                            <field name="completed_count" widget="statinfo" string="Answers"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-line-chart" disabled="1"
                                 invisible="program_type not in ('nps', 'pulse')">
-                            <field name="nps_score" widget="statinfo" string="Score NPS"/>
+                            <field name="nps_score" widget="statinfo" string="NPS score"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-users" disabled="1"
                                 invisible="program_type != 'internal' or not subject_user_id">
                             <div class="o_stat_info">
                                 <field name="subject_summary" class="o_stat_text"/>
-                                <span class="o_stat_text">Résultat 360</span>
+                                <span class="o_stat_text">360 result</span>
                             </div>
                         </button>
                     </div>
@@ -86,7 +86,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Destinataires" name="recipients">
+                        <page string="Recipients" name="recipients">
                             <field name="partner_ids"
                                    readonly="state == 'closed'">
                                 <list>
@@ -98,27 +98,23 @@
                         </page>
                         <page string="Invitations" name="answers">
                             <div class="text-muted mb-2">
-                                Une invitation supprimée ou jamais reçue se
-                                renvoie ligne par ligne, sur le même lien de
-                                réponse : le bouton « Renvoyer » ne touche
-                                que cette personne et ne modifie ni les
-                                compteurs, ni le rappel collectif.
+                                An invitation that was deleted or never received is resent line by line, on the same answer link: the "Resend" button only affects that person and changes neither the counters nor the collective reminder.
                             </div>
                             <field name="user_input_ids" readonly="1">
                                 <list decoration-muted="test_entry">
                                     <field name="partner_id"/>
                                     <field name="email"/>
-                                    <field name="test_entry" string="Essai" optional="show"/>
+                                    <field name="test_entry" string="Test" optional="show"/>
                                     <field name="state"/>
-                                    <field name="create_date" string="Invité le"/>
-                                    <field name="end_datetime" string="Répondu le"/>
+                                    <field name="create_date" string="Invited on"/>
+                                    <field name="end_datetime" string="Answered on"/>
                                     <button name="action_bf_cx_resend_invite"
                                             type="object"
-                                            string="Renvoyer"
+                                            string="Resend"
                                             icon="fa-paper-plane"
                                             class="btn-link"
                                             invisible="state == 'done'"
-                                            confirm="Renvoyer l'invitation à ce seul destinataire ? Le lien de réponse reste le même et personne d'autre n'est touché."/>
+                                            confirm="Resend the invitation to this recipient only? The answer link stays the same and no one else is affected."/>
                                 </list>
                             </field>
                         </page>
@@ -133,35 +129,32 @@
         <field name="name">bf.cx.wave.search</field>
         <field name="model">bf.cx.wave</field>
         <field name="arch" type="xml">
-            <search string="Vagues">
+            <search string="Waves">
                 <field name="name"/>
                 <field name="program_id"/>
-                <filter string="Brouillons" name="filter_draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="Envoyées" name="filter_sent" domain="[('state', '=', 'sent')]"/>
+                <filter string="Drafts" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Sent" name="filter_sent" domain="[('state', '=', 'sent')]"/>
                 <field name="subject_user_id"/>
-                <group expand="0" string="Regrouper par">
-                    <filter string="Programme" name="group_program" context="{'group_by': 'program_id'}"/>
-                    <filter string="Personne évaluée" name="group_subject" context="{'group_by': 'subject_user_id'}"/>
-                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+                <group expand="0" string="Group by">
+                    <filter string="Program" name="group_program" context="{'group_by': 'program_id'}"/>
+                    <filter string="Person reviewed" name="group_subject" context="{'group_by': 'subject_user_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_cx_wave" model="ir.actions.act_window">
-        <field name="name">Vagues d'envoi</field>
+        <field name="name">Sending waves</field>
         <field name="res_model">bf.cx.wave</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_cx_wave_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Lancer une première vague
+                Launch a first wave
             </p>
             <p>
-                Choisir un programme et une liste de contacts : chaque
-                destinataire reçoit une invitation personnelle avec son
-                propre jeton de réponse. Les non-répondants sont relancés
-                automatiquement.
+                Choose a program and a list of contacts: each recipient receives a personal invitation with their own answer token. Non-respondents are reminded automatically.
             </p>
         </field>
     </record>

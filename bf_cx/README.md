@@ -221,6 +221,22 @@ of reach of a portal debranding module. The customer answers their supplier,
 not a software publisher. The frame only keeps the survey navigation, and is
 left out when there is none and when printing.
 
+## Languages (18.0.1.13.2)
+
+The module is written in English and ships a complete `fr_CA` catalogue: a French-speaking user
+reads it in French, an English-speaking one (`en_US`, `en_CA`) in English. Before this version the
+source was French, so English-speaking users read it in French whatever the catalogues said.
+
+- Email templates (invitation, reminder, 360 invitation, complaint acknowledgement), the NPS
+  survey and the default programs exist in both languages. A contact with no language receives
+  them in the company's language.
+- Activities and chatter notes (closed loop, testimonial, complaint closure, acknowledgement
+  alert, unsubscription) are written in the language of the person responsible, or of the
+  company, not in the language of the public visitor or the scheduled job that triggered them.
+- Program names are translatable. On upgrade, the migration switches templates, surveys,
+  programs and scheduled jobs to the English source only while they still carry the text the
+  module shipped; anything edited by hand is left as it is, and its French stays readable.
+
 ## Architecture
 
 - No hard dependency on the helpdesk or on the privacy module: the links live

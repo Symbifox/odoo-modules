@@ -14,6 +14,8 @@ from markupsafe import Markup
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
+from .langue import langue_de
+
 _logger = logging.getLogger(__name__)
 
 # Standard NPS buckets on a 0-10 scale (not configurable on purpose: a custom
@@ -47,7 +49,7 @@ def param_is_true(env, key, default=False):
 
 class BfCxFeedback(models.Model):
     _name = "bf.cx.feedback"
-    _description = "Feedback d'expérience"
+    _description = "Experience feedback"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date desc, id desc"
 
@@ -64,8 +66,8 @@ class BfCxFeedback(models.Model):
         [
             ("nps", "NPS"),
             ("csat", "Satisfaction (CSAT)"),
-            ("verbatim", "Commentaire"),
-            ("internal", "Interne (360)"),
+            ("verbatim", "Comment"),
+            ("internal", "Internal (360)"),
         ],
         string="Type",
         required=True,
@@ -75,116 +77,117 @@ class BfCxFeedback(models.Model):
     )
     source = fields.Selection(
         [
-            ("survey", "Sondage"),
-            ("rating", "Évaluation par courriel"),
-            ("manual", "Saisie manuelle"),
-            ("meeting", "Rencontre"),
-            ("other", "Autre"),
+            ("survey", "Survey"),
+            ("rating", "Email rating"),
+            ("manual", "Manual entry"),
+            ("meeting", "Meeting"),
+            ("other", "Other"),
         ],
-        string="Canal",
+        string="Channel",
         required=True,
         default="manual",
     )
-    score = fields.Float(string="Note", digits=(12, 1))
-    score_max = fields.Float(string="Note sur", default=10.0, digits=(12, 1))
+    score = fields.Float(string="Score", digits=(12, 1))
+    score_max = fields.Float(string="Out of", default=10.0, digits=(12, 1))
     nps_bucket = fields.Selection(
         [
-            ("promoter", "Promoteur"),
-            ("passive", "Passif"),
-            ("detractor", "Détracteur"),
+            ("promoter", "Promoter"),
+            ("passive", "Passive"),
+            ("detractor", "Detractor"),
         ],
-        string="Catégorie NPS",
+        string="NPS category",
         compute="_compute_nps_bucket",
         store=True,
     )
-    comment = fields.Text(string="Commentaire")
+    comment = fields.Text(string="Comment")
     theme_ids = fields.Many2many(
         "bf.cx.theme",
-        string="Thèmes",
-        help="Causes récurrentes (délais, communication, prix, qualité…) : "
-             "l'axe d'agrégation de la boucle externe. À revoir "
-             "périodiquement dans le pivot.",
+        string="Themes",
+        help="Recurring causes (delays, communication, price, quality…): "
+             "the aggregation axis of the outer loop. Review periodically "
+             "in the pivot view.",
     )
     program_id = fields.Many2one(
-        "bf.cx.program", string="Programme", ondelete="set null", index=True
+        "bf.cx.program", string="Program", ondelete="set null", index=True
     )
     wave_id = fields.Many2one(
-        "bf.cx.wave", string="Vague", ondelete="set null", index=True
+        "bf.cx.wave", string="Wave", ondelete="set null", index=True
     )
     survey_user_input_id = fields.Many2one(
         "survey.user_input",
-        string="Réponse au sondage",
+        string="Survey answer",
         ondelete="set null",
         copy=False,
     )
     rating_ref_id = fields.Many2one(
         "rating.rating",
-        string="Évaluation d'origine",
+        string="Source rating",
         ondelete="set null",
         copy=False,
     )
-    project_id = fields.Many2one("project.project", string="Projet / mandat")
+    project_id = fields.Many2one("project.project", string="Project / "
+                                                           "engagement")
     company_id = fields.Many2one(
         "res.company",
-        string="Société",
+        string="Company",
         required=True,
         default=lambda self: self.env.company,
     )
     user_id = fields.Many2one(
         "res.users",
-        string="Responsable du suivi",
+        string="Follow-up owner",
         tracking=True,
-        help="Reçoit l'activité de boucle fermée pour un détracteur ou une "
-             "note insatisfaite.",
+        help="Receives the closed-loop activity for a detractor or a "
+             "dissatisfied rating.",
     )
     subject_user_id = fields.Many2one(
         "res.users",
-        string="Personne évaluée",
+        string="Person reviewed",
         index=True,
         tracking=True,
-        help="Rétroaction interne (360) : la personne SUR QUI porte cette "
-             "entrée. À ne pas confondre avec le responsable du suivi, qui "
-             "est le porteur du compte client.",
+        help="Internal feedback (360): the person this entry is ABOUT. "
+             "Not to be confused with the follow-up owner, who holds the "
+             "client account.",
     )
     state = fields.Selection(
         [
-            ("new", "Nouveau"),
-            ("in_progress", "Suivi en cours"),
-            ("done", "Traité"),
+            ("new", "New"),
+            ("in_progress", "Follow-up in progress"),
+            ("done", "Done"),
         ],
-        string="État",
+        string="Status",
         default="new",
         required=True,
         tracking=True,
     )
     needs_followup = fields.Boolean(
-        string="À rappeler",
+        string="To call back",
         compute="_compute_needs_followup",
         store=True,
-        help="Détracteur NPS ou note insatisfaite : mérite un suivi de "
-             "boucle fermée. C'est ce champ que la tuile du tableau de bord "
-             "et le digest surveillent.",
+        help="NPS detractor or dissatisfied rating: deserves a "
+             "closed-loop follow-up. This is the field the dashboard tile "
+             "and the digest watch.",
     )
     is_testimonial_candidate = fields.Boolean(
-        string="Candidat témoignage",
-        help="Le répondant a accepté qu'on le recontacte pour citer ses "
-             "commentaires.",
+        string="Testimonial candidate",
+        help="The respondent agreed to be contacted again so their "
+             "comments can be quoted.",
     )
     testimonial_consent_direct = fields.Boolean(
-        string="Citation autorisée sans recontact",
+        string="Quote allowed without recontact",
         readonly=True,
         copy=False,
-        help="Le répondant a coché au sondage la réponse qui autorise la "
-             "citation sans le recontacter. Le témoignage est créé en "
-             "« Consentement obtenu », avec cette réponse pour preuve.",
+        help="The respondent ticked the survey answer that allows the "
+             "quote without contacting them again. The testimonial is "
+             "created as \"Consent obtained\", with that answer as proof.",
     )
     testimonial_id = fields.Many2one(
         "bf.cx.testimonial",
-        string="Témoignage",
+        string="Testimonial",
         readonly=True,
         copy=False,
     )
-    color = fields.Integer(string="Couleur")
+    color = fields.Integer(string="Color")
 
     # ── Compute ──────────────────────────────────────────────────────────────
 
@@ -206,10 +209,11 @@ class BfCxFeedback(models.Model):
             rec.needs_followup = rec._needs_followup()
 
     @api.depends("partner_id.name", "kind", "date")
+    @api.depends_context("lang")
     def _compute_display_name(self):
         kind_labels = dict(self._fields["kind"]._description_selection(self.env))
         for rec in self:
-            who = rec.partner_id.name or _("Anonyme")
+            who = rec.partner_id.name or _("Anonymous")
             rec.display_name = "%s - %s (%s)" % (
                 kind_labels.get(rec.kind, rec.kind),
                 who,
@@ -224,8 +228,8 @@ class BfCxFeedback(models.Model):
                 continue
             if rec.score_max != 10 or not (0 <= rec.score <= 10):
                 raise ValidationError(
-                    _("Un feedback NPS doit être noté sur une échelle de 0 à "
-                      "10 (note reçue : %(score)s/%(max)s).",
+                    _("An NPS feedback must be scored on a 0 to 10 scale "
+                      "(score received: %(score)s/%(max)s).",
                       score=rec.score, max=rec.score_max)
                 )
 
@@ -319,27 +323,31 @@ class BfCxFeedback(models.Model):
             user = rec._closed_loop_user()
             if not user:
                 continue
+            # Read by the owner, not by the respondent whose request is
+            # running (a public visitor, a scheduled job): their language.
+            rec = rec.with_context(
+                lang=langue_de(rec.env, user, societe=rec.company_id))
             try:
                 if rec.partner_id:
                     summary = (
-                        _("Boucle fermée : recontacter %s")
+                        rec.env._("Closed loop: contact %s again")
                         % rec.partner_id.display_name
                     )
-                    note = _(
-                        "Note de %(score)s/%(max)s reçue. Prendre contact, "
-                        "comprendre la cause et consigner le suivi sur cette "
-                        "fiche.",
+                    note = rec.env._(
+                        "Score of %(score)s/%(max)s received. Get in "
+                        "touch, understand the cause and record the "
+                        "follow-up on this record.",
                         score=rec.score,
                         max=int(rec.score_max),
                     )
                 elif (rec.comment or "").strip():
                     # Anonymous pulse answer: no one to call back - examine
                     # the verbatim instead of promising a recontact.
-                    summary = _("Verbatim anonyme à examiner")
-                    note = _(
-                        "Note de %(score)s/%(max)s reçue anonymement (lien "
-                        "pulse). Lire le commentaire et en tirer les leçons "
-                        "- aucun recontact possible.",
+                    summary = rec.env._("Anonymous verbatim to examine")
+                    note = rec.env._(
+                        "Score of %(score)s/%(max)s received anonymously "
+                        "(pulse link). Read the comment and learn from it "
+                        "- no recontact possible.",
                         score=rec.score,
                         max=int(rec.score_max),
                     )
@@ -387,6 +395,8 @@ class BfCxFeedback(models.Model):
             user = rec._closed_loop_user()
             if not user or not user.partner_id:
                 continue
+            rec = rec.with_context(
+                lang=langue_de(rec.env, user, societe=rec.company_id))
             try:
                 rec.message_post(
                     body=rec._new_response_body(),
@@ -409,17 +419,17 @@ class BfCxFeedback(models.Model):
         self.ensure_one()
         partner = self.partner_id
         compte = partner.commercial_partner_id if partner else False
-        qui = partner.display_name if partner else _("Répondant anonyme")
+        qui = partner.display_name if partner else _("Anonymous respondent")
         if compte and partner and compte != partner:
             qui = "%s (%s)" % (qui, compte.display_name)
 
         buckets = {
-            "promoter": _("promoteur"),
-            "passive": _("passif"),
-            "detractor": _("détracteur"),
+            "promoter": _("promoter"),
+            "passive": _("passive"),
+            "detractor": _("detractor"),
         }
         lignes = [
-            Markup("<p><b>%s</b></p>") % _("Nouvelle réponse au registre"),
+            Markup("<p><b>%s</b></p>") % _("New answer in the register"),
             Markup("<p>%s</p>") % qui,
         ]
         if self.score:
@@ -435,7 +445,7 @@ class BfCxFeedback(models.Model):
         if self._needs_followup():
             lignes.append(
                 Markup("<p><i>%s</i></p>")
-                % _("Une activité de rappel a été créée.")
+                % _("A reminder activity was created.")
             )
         return Markup("").join(lignes)
 
@@ -453,6 +463,14 @@ class BfCxFeedback(models.Model):
         for rec in self:
             if not rec.is_testimonial_candidate or not rec.partner_id:
                 continue
+            # The testimonial and the activity are read by staff, not by the
+            # respondent whose submission is running: the owner's language,
+            # else the company's (same owner as the activity, without its
+            # warning when nobody can be assigned).
+            owner = rec.user_id or rec.program_id.user_id
+            rec = rec.with_context(lang=langue_de(
+                rec.env, owner if owner and not owner.share else None,
+                societe=rec.company_id))
             testimonial = False
             if (
                 rec.testimonial_consent_direct
@@ -472,21 +490,27 @@ class BfCxFeedback(models.Model):
             user = rec._closed_loop_user()
             if not user:
                 continue
+            if user != owner:  # fallback assignee (admin): their language
+                rec = rec.with_context(
+                    lang=langue_de(rec.env, user, societe=rec.company_id))
             try:
                 if testimonial:
-                    summary = _("Témoignage consenti : publier celui de %s")
-                    note = _(
-                        "Le répondant a autorisé au sondage la citation sans "
-                        "être recontacté. Le témoignage est créé en "
-                        "« Consentement obtenu » : le relire, puis le publier."
+                    summary = rec.env._("Consented testimonial: publish the "
+                                        "one from %s")
+                    note = rec.env._(
+                        "The respondent allowed the quote in the survey "
+                        "without being contacted again. The testimonial "
+                        "is created as \"Consent obtained\": review it, "
+                        "then publish it."
                     )
                 else:
-                    summary = _("Candidat témoignage : recontacter %s")
-                    note = _(
-                        "Le répondant accepte d'être cité à condition d'être "
-                        "recontacté pour confirmer. Lui écrire pendant que "
-                        "c'est frais, puis créer le témoignage (bouton "
-                        "« Créer un témoignage » sur cette fiche)."
+                    summary = rec.env._(
+                        "Testimonial candidate: contact %s again")
+                    note = rec.env._(
+                        "The respondent agrees to be quoted provided they "
+                        "are contacted again to confirm. Write to them "
+                        "while it is fresh, then create the testimonial "
+                        "(\"Create a testimonial\" button on this record)."
                     )
                 rec.activity_schedule(
                     "mail.mail_activity_data_todo",
@@ -515,7 +539,7 @@ class BfCxFeedback(models.Model):
         # closes its open automatic to-dos (and vice-versa would drift).
         self.activity_feedback(
             ["mail.mail_activity_data_todo"],
-            feedback=_("Suivi fermé depuis la fiche feedback."),
+            feedback=_("Follow-up closed from the feedback record."),
         )
         return True
 
@@ -535,7 +559,9 @@ class BfCxFeedback(models.Model):
             lambda l: l.suggested_answer_id
             == self.program_id.testimonial_direct_answer_id
         )[:1].suggested_answer_id
-        lang = self.partner_id.lang or None
+        # A contact without a language read the survey in the company's
+        # language (the en_US slot is English since 18.0.1.13.2).
+        lang = langue_de(self.env, self.partner_id, societe=self.company_id)
         wording = ticked.with_context(lang=lang).value if ticked else ""
         submitted = user_input.end_datetime or user_input.write_date
         answered_on = (
@@ -543,7 +569,7 @@ class BfCxFeedback(models.Model):
         )
         testimonial = self.env["bf.cx.testimonial"].create(
             {
-                "name": _("Témoignage - %s") % self.partner_id.display_name,
+                "name": _("Testimonial - %s") % self.partner_id.display_name,
                 "partner_id": self.partner_id.id,
                 "body": self.comment,
                 "project_id": self.project_id.id,
@@ -551,8 +577,8 @@ class BfCxFeedback(models.Model):
                 "feedback_id": self.id,
                 "consent_mode": "survey",
                 "consent_note": _(
-                    "Réponse au sondage #%(id)s, soumise le %(when)s UTC "
-                    "%(channel)s : « %(answer)s »"
+                    "Survey answer #%(id)s, submitted on %(when)s UTC "
+                    "%(channel)s: \"%(answer)s\""
                 )
                 % {
                     "id": user_input.id,
@@ -560,9 +586,9 @@ class BfCxFeedback(models.Model):
                     if submitted
                     else self.date,
                     "answer": wording,
-                    "channel": _("par le lien d'invitation personnel")
+                    "channel": _("through the personal invitation link")
                     if self.env.user._is_public()
-                    else _("par l'usager du contact"),
+                    else _("by the contact's user"),
                 },
                 "consent_date": answered_on,
             }
@@ -576,15 +602,15 @@ class BfCxFeedback(models.Model):
         self.ensure_one()
         if not self.partner_id:
             raise UserError(
-                _("Impossible de créer un témoignage sans contact identifié "
-                  "(réponse anonyme).")
+                _("A testimonial cannot be created without an identified "
+                  "contact (anonymous answer).")
             )
         if self.testimonial_id:
             testimonial = self.testimonial_id
         else:
             testimonial = self.env["bf.cx.testimonial"].create(
                 {
-                    "name": _("Témoignage - %s")
+                    "name": _("Testimonial - %s")
                     % (self.partner_id.display_name or self.date),
                     "partner_id": self.partner_id.id,
                     "body": self.comment or "",
@@ -657,9 +683,9 @@ class BfCxFeedback(models.Model):
         if score is not None:
             display = str(score)
         elif scored:
-            display = _("n insuffisant")
+            display = _("n too small")
         else:
-            display = "n/d"
+            display = _("n/a")
         return {
             "days": days,
             "n": scored,
@@ -711,15 +737,15 @@ class BfCxFeedback(models.Model):
     def _bf_cx_360_display(self, summary):
         """One-line rendering of a 360 aggregate, honest about thin data."""
         if not summary or not summary["n"]:
-            return _("Aucune réponse")
+            return _("No answers")
         if summary["masked"]:
             return _(
-                "%(n)s réponse(s) - moyenne masquée sous %(min)s",
+                "%(n)s answer(s) - average hidden below %(min)s",
                 n=summary["n"],
                 min=MIN_360_RESPONSES,
             )
         return _(
-            "%(avg)s/%(max)s sur %(n)s réponses",
+            "%(avg)s/%(max)s over %(n)s answers",
             avg=summary["average"],
             max=int(summary["score_max"]),
             n=summary["n"],
@@ -767,7 +793,7 @@ class BfCxFeedback(models.Model):
         csat_display = (
             "%.1f / 5" % (csat_avg * 5.0 / (csat_max or 5.0))
             if csat_n
-            else "n/d"
+            else _("n/a")
         )
 
         Complaint = self.env["bf.cx.complaint"]
@@ -830,8 +856,11 @@ class BfCxFeedback(models.Model):
             )
             entry["complaints"] = count
 
+        # Outside the comprehension: before Python 3.12 its frame has no
+        # `self`, and _() would not find the user's language there.
+        sans_theme = _("No theme")
         themes = [
-            {"name": theme.name if theme else _("Sans thème"), "count": count}
+            {"name": theme.name if theme else sans_theme, "count": count}
             for theme, count in self._read_group(
                 period + [("theme_ids", "!=", False)],
                 ["theme_ids"],

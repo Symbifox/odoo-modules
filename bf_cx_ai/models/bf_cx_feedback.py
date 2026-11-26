@@ -14,6 +14,7 @@ from datetime import timedelta
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
+from odoo.tools.misc import get_lang
 
 from odoo.addons.bf_cx.models.bf_cx_feedback import param_is_true
 
@@ -39,29 +40,32 @@ class BfCxFeedback(models.Model):
 
     sentiment = fields.Selection(
         [
-            ("positif", "Positif"),
-            ("neutre", "Neutre"),
-            ("negatif", "Négatif"),
+            ("positif", "Positive"),
+            ("neutre", "Neutral"),
+            ("negatif", "Negative"),
         ],
-        string="Sentiment (IA)",
+        string="Sentiment (AI)",
         readonly=True,
         copy=False,
         index=True,
-        help="Sentiment du commentaire, déterminé par l'analyse IA. Le texte du "
-             "commentaire est transmis au modèle d'IA par le pont du serveur.",
+        help="Sentiment of the comment, determined by the AI analysis. "
+             "The comment's text is sent to the AI model through the "
+             "server's bridge.",
     )
     ai_summary = fields.Char(
-        string="Résumé (IA)",
+        string="Summary (AI)",
         readonly=True,
         copy=False,
-        help="Résumé du commentaire en une phrase, produit par l'analyse IA.",
+        help="One-sentence summary of the comment, produced by the AI "
+             "analysis.",
     )
     ai_analyzed = fields.Boolean(
-        string="Analysé par l'IA",
+        string="Analyzed by AI",
         readonly=True,
         copy=False,
-        help="Coché après une tentative d'analyse aboutie : empêche le "
-             "traitement automatique de repasser sur le même feedback.",
+        help="Ticked after an analysis attempt that went through: keeps "
+             "the automatic processing from going over the same feedback "
+             "again.",
     )
 
     # ── Actions ──────────────────────────────────────────────────────────────
@@ -87,21 +91,21 @@ class BfCxFeedback(models.Model):
                 failed += 1
         if failed:
             message = _(
-                "%(done)s analyse(s) réussie(s), %(failed)s en échec "
-                "(détails au chatter).",
+                "%(done)s analysis(es) succeeded, %(failed)s failed "
+                "(details in the chatter).",
                 done=done,
                 failed=failed,
             )
             notif_type = "warning"
         else:
-            message = _("%s analyse(s) réussie(s).") % done
+            message = _("%s analysis(es) succeeded.") % done
             notif_type = "success"
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
                 "type": notif_type,
-                "title": _("Analyse IA"),
+                "title": _("AI analysis"),
                 "message": message,
                 "sticky": False,
             },
@@ -128,9 +132,9 @@ class BfCxFeedback(models.Model):
             timeout = _DEFAULT_BRIDGE_TIMEOUT
         if not self.env["bf.ai.bridge"].available():
             self._bf_cx_ai_post_note(_(
-                "Analyse IA non effectuée : le pont IA est "
-                "indisponible (socket introuvable). Réessayer plus tard ou "
-                "vérifier le service claude-chatbot-bridge."
+                "AI analysis not done: the AI bridge is unavailable "
+                "(socket not found). Try again later or check the "
+                "claude-chatbot-bridge service."
             ))
             return False
         # Point dédié, sans outil (18.0.1.2.0) : /chat, qui a des outils
@@ -147,8 +151,7 @@ class BfCxFeedback(models.Model):
                 self.id, exc,
             )
             self._bf_cx_ai_post_note(_(
-                "Analyse IA non effectuée : le pont IA n'a pas "
-                "répondu (%s)."
+                "AI analysis not done: the AI bridge did not answer (%s)."
             ) % type(exc).__name__)
             return False
         data = self._bf_cx_ai_normalize(resp)
@@ -160,8 +163,8 @@ class BfCxFeedback(models.Model):
         ):
             self.write(vals)
             self._bf_cx_ai_post_note(_(
-                "Analyse IA : réponse illisible du pont IA, aucun "
-                "champ mis à jour."
+                "AI analysis: unreadable answer from the AI bridge, no "
+                "field updated."
             ))
             return False
         if data["sentiment"]:
@@ -177,17 +180,19 @@ class BfCxFeedback(models.Model):
             )
         parts = []
         if data["sentiment"]:
-            label = dict(self._fields["sentiment"].selection).get(
+            label = dict(
+                self._fields["sentiment"]._description_selection(self.env)
+            ).get(
                 data["sentiment"], data["sentiment"]
             )
-            parts.append(_("sentiment : %s") % label)
+            parts.append(_("sentiment: %s") % label)
         if data["themes"]:
-            parts.append(_("thèmes : %s") % ", ".join(data["themes"]))
+            parts.append(_("themes: %s") % ", ".join(data["themes"]))
         if data["summary"]:
-            parts.append(_("résumé : %s") % data["summary"][:250])
+            parts.append(_("summary: %s") % data["summary"][:250])
         self._bf_cx_ai_post_note(
             Markup("<p>%s</p>")
-            % (_("Analyse IA terminée (%s).") % " ; ".join(parts))
+            % (_("AI analysis done (%s).") % " ; ".join(parts))
         )
         return True
 
@@ -303,6 +308,11 @@ class BfCxFeedback(models.Model):
         whole thing, default OFF). The batch stops as soon as the bridge
         looks unreachable so unprocessed records are retried tomorrow.
         """
+        # Since bf_cx 18.0.1.13.2 the source is English: a scheduled job has no language
+        # in its context, and what it writes (notes, tracked states, selection
+        # labels) would read the English source. Pin the job's language.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         if not param_is_true(self.env, "bf_cx.ai_auto_analyze", default=False):
             return
         since = fields.Datetime.now() - timedelta(days=30)

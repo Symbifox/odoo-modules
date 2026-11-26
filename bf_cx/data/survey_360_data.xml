@@ -9,11 +9,11 @@
              employee at mail.blacklist would blacklist them for client
              mail too. -->
         <record id="mail_template_cx_360_invite" model="mail.template">
-            <field name="name">Expérience : invitation à une rétroaction 360</field>
+            <field name="name">Experience: 360 feedback invitation</field>
             <field name="model_id" ref="survey.model_survey_user_input"/>
-            <field name="subject">Votre regard sur {{ object.bf_cx_wave_id.subject_user_id.name or 'un collègue' }}</field>
+            <field name="subject">Your view on {{ object.bf_cx_wave_id.subject_user_id.name or 'a colleague' }}</field>
             <field name="partner_to">{{ object.partner_id.id }}</field>
-            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="lang">{{ object.partner_id.lang or user.company_id.partner_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
@@ -32,7 +32,7 @@
                                 <img t-att-src="'/brand/logo/%d' % company.id" alt="Logo" style="height:40px; width:auto; display:block; border:0;"/>
                             </td>
                             <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
-                                Rétroaction
+                                Feedback
                             </td>
                         </tr></tbody></table>
                     </td>
@@ -41,46 +41,37 @@
                 <tr>
                     <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;">
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Bonjour <t t-out="object.partner_id.name or ''"/>,
+                            Hello <t t-out="object.partner_id.name or ''"/>,
                         </p>
                         <p style="font-size:15px; margin:0 0 12px 0;">
                             <t t-if="subject_name">
-                                Nous recueillons de la rétroaction sur le
-                                travail de <strong><t t-out="subject_name"/></strong>.
-                                Vous travaillez avec cette personne&#160;: votre
-                                regard vaut plus que le nôtre.
+                                We are collecting feedback on the work of <strong><t t-out="subject_name"/></strong>. You work with this person: your view counts for more than ours.
                             </t>
                             <t t-else="">
-                                Nous recueillons de la rétroaction interne sur
-                                notre façon de travailler.
+                                We are collecting internal feedback on the way we work.
                             </t>
                         </p>
                         <p style="font-size:15px; margin:0 0 12px 0;">
-                            Comptez trois minutes. Ce qui est utile, ce sont
-                            les exemples concrets, pas les notes rondes.
+                            Allow three minutes. What helps are concrete examples, not round scores.
                         </p>
                         <div style="text-align:center; margin:28px 0;">
                             <a t-att-href="object.get_start_url()"
                                t-attf-style="background-color:{{ brand_primary }}; color:#FFFFFF; text-decoration:none; padding:12px 28px; border-radius:6px; font-size:15px; display:inline-block;">
-                                Donner ma rétroaction
+                                Give my feedback
                             </a>
                         </div>
                         <t t-if="object.deadline">
                             <p style="font-size:13px; color:#6B7280; margin:0 0 12px 0;">
-                                La collecte est ouverte jusqu'au
+                                Feedback is collected until
                                 <t t-out="format_date(object.deadline)"/>.
                             </p>
                         </t>
                         <p style="font-size:13px; color:#6B7280; margin:0;">
                             <t t-if="hidden">
-                                Votre nom n'est pas inscrit au registre des
-                                rétroactions&#160;: ni la synthèse, ni les
-                                listes, ni les exports ne l'affichent. Dans une
-                                équipe de cette taille, un commentaire reste
-                                toutefois reconnaissable à son contenu.
+                                Your name is not entered in the feedback register: neither the summary, nor the lists, nor the exports show it. In a team this size, a comment can still be recognized by its content.
                             </t>
                             <t t-else="">
-                                Votre nom accompagne votre réponse.
+                                Your name comes with your answer.
                             </t>
                         </p>
                     </td>
@@ -110,7 +101,7 @@
              change behaviour. No testimonial opt-in: internal feedback is
              never a client quote. -->
         <record id="survey_360_default" model="survey.survey">
-            <field name="title">Rétroaction 360 : le travail d'un collègue</field>
+            <field name="title">360 feedback: a colleague's work</field>
             <field name="access_mode">token</field>
             <field name="users_login_required" eval="False"/>
             <field name="questions_layout">one_page</field>
@@ -119,32 +110,32 @@
         <record id="question_360_score" model="survey.question">
             <field name="survey_id" ref="survey_360_default"/>
             <field name="sequence">10</field>
-            <field name="title">Globalement, travailler avec cette personne rend votre propre travail plus facile ?</field>
+            <field name="title">Overall, does working with this person make your own work easier?</field>
             <field name="question_type">scale</field>
             <field name="scale_min">0</field>
             <field name="scale_max">10</field>
-            <field name="scale_min_label">Pas du tout</field>
-            <field name="scale_max_label">Énormément</field>
+            <field name="scale_min_label">Not at all</field>
+            <field name="scale_max_label">Enormously</field>
             <field name="constr_mandatory" eval="True"/>
-            <field name="constr_error_msg">Cette question est obligatoire.</field>
+            <field name="constr_error_msg">This question is mandatory.</field>
         </record>
 
         <record id="question_360_keep" model="survey.question">
             <field name="survey_id" ref="survey_360_default"/>
             <field name="sequence">20</field>
-            <field name="title">Qu'est-ce que cette personne fait bien et devrait continuer de faire ? Un exemple précis vaut mieux qu'un compliment général.</field>
+            <field name="title">What does this person do well and should keep doing? A specific example is worth more than a general compliment.</field>
             <field name="question_type">text_box</field>
         </record>
 
         <record id="question_360_change" model="survey.question">
             <field name="survey_id" ref="survey_360_default"/>
             <field name="sequence">30</field>
-            <field name="title">Qu'est-ce qui vous aiderait si cette personne le faisait autrement ?</field>
+            <field name="title">What would help you if this person did it differently?</field>
             <field name="question_type">text_box</field>
         </record>
 
         <record id="program_360_default" model="bf.cx.program">
-            <field name="name">Rétroaction 360</field>
+            <field name="name">360 feedback</field>
             <field name="program_type">internal</field>
             <field name="survey_id" ref="survey_360_default"/>
             <field name="score_question_id" ref="question_360_score"/>

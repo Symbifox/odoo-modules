@@ -13,6 +13,26 @@ flag-based assertion and fail these.
 from odoo.tests import TransactionCase
 
 
+def amorcer_francais(env, modules=("bf_cx",), usagers=()):
+    """Make a test that reads French independent of the database.
+
+    The source is English: a test that expects French must say so, or it
+    passes on a French database (OdooBot in fr_CA) and fails on an
+    English-only one. French activated, the modules' catalogue loaded, and
+    French set on the company and on the users whose language the code reads
+    (get_lang reads the user's, then the company's).
+    """
+    env["res.lang"]._activate_lang("fr_CA")
+    installes = env["ir.module.module"].search(
+        [("name", "in", list(modules)), ("state", "=", "installed")]
+    ).mapped("name")
+    env["ir.module.module"]._load_module_terms(installes, ["fr_CA"], overwrite=True)
+    env.company.partner_id.lang = "fr_CA"
+    for usager in usagers:
+        if usager:
+            usager.lang = "fr_CA"
+
+
 class CxBridgeCase(TransactionCase):
     """Base case for the opt-in bridges of the CX ecosystem."""
 

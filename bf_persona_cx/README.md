@@ -49,6 +49,10 @@ registry.
 
 Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The customer-experience lines of the summary are whole translated sentences, so their punctuation follows the language. The health reason stored on the persona, which the team reads in the persona list, is written in the company's language, whoever moved the feedback or the complaint (a client on the portal, an employee set to another language).
 
+Since 18.0.1.1.1 the summary also reads the customer-experience selection labels (NPS category,
+complaint state) in the same language as the sentence around them; they used to come out in
+English inside a French sentence.
+
 ## License
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the

@@ -51,9 +51,9 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-center mt-2">
                                 <field name="date"/>
-                                <span t-if="record.nps_bucket.raw_value == 'detractor'" class="badge text-bg-danger">Détracteur</span>
-                                <span t-if="record.nps_bucket.raw_value == 'passive'" class="badge text-bg-warning">Passif</span>
-                                <span t-if="record.nps_bucket.raw_value == 'promoter'" class="badge text-bg-success">Promoteur</span>
+                                <span t-if="record.nps_bucket.raw_value == 'detractor'" class="badge text-bg-danger">Detractor</span>
+                                <span t-if="record.nps_bucket.raw_value == 'passive'" class="badge text-bg-warning">Passive</span>
+                                <span t-if="record.nps_bucket.raw_value == 'promoter'" class="badge text-bg-success">Promoter</span>
                             </div>
                         </div>
                     </t>
@@ -69,16 +69,16 @@
             <form string="Feedback">
                 <header>
                     <button name="action_start_followup" type="object"
-                            string="Démarrer le suivi" class="btn-primary"
+                            string="Start the follow-up" class="btn-primary"
                             invisible="state != 'new'"/>
                     <button name="action_mark_done" type="object"
-                            string="Marquer traité" class="btn-primary"
+                            string="Mark done" class="btn-primary"
                             invisible="state != 'in_progress'"/>
                     <button name="action_reset_new" type="object"
-                            string="Remettre à nouveau"
+                            string="Reset to new"
                             invisible="state == 'new'"/>
                     <button name="action_create_testimonial" type="object"
-                            string="Créer un témoignage"
+                            string="Create a testimonial"
                             invisible="not is_testimonial_candidate and not comment"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="new,in_progress,done"/>
@@ -108,20 +108,20 @@
                             <field name="testimonial_id" invisible="not testimonial_id"/>
                         </group>
                     </group>
-                    <group name="comment_group" string="Commentaire">
+                    <group name="comment_group" string="Comment">
                         <field name="comment" nolabel="1" colspan="2"
-                               placeholder="Verbatim du répondant…"/>
+                               placeholder="The respondent's verbatim…"/>
                         <field name="theme_ids" widget="many2many_tags"
                                options="{'color_field': 'color', 'bf_color': True}" colspan="2"/>
                     </group>
                     <group>
-                        <group name="origin" string="Origine">
+                        <group name="origin" string="Origin">
                             <field name="program_id"/>
                             <field name="wave_id"/>
                             <field name="survey_user_input_id" invisible="not survey_user_input_id"/>
                             <field name="rating_ref_id" invisible="not rating_ref_id"/>
                         </group>
-                        <group name="context" string="Contexte">
+                        <group name="context" string="Context">
                             <field name="project_id"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
@@ -136,7 +136,7 @@
         <field name="name">bf.cx.feedback.graph</field>
         <field name="model">bf.cx.feedback</field>
         <field name="arch" type="xml">
-            <graph string="Feedbacks" type="bar" stacked="True">
+            <graph string="Feedback" type="bar" stacked="True">
                 <field name="date" interval="month"/>
                 <field name="nps_bucket"/>
             </graph>
@@ -147,7 +147,7 @@
         <field name="name">bf.cx.feedback.pivot</field>
         <field name="model">bf.cx.feedback</field>
         <field name="arch" type="xml">
-            <pivot string="Feedbacks">
+            <pivot string="Feedback">
                 <field name="date" interval="month" type="row"/>
                 <field name="nps_bucket" type="col"/>
                 <field name="score" type="measure"/>
@@ -159,7 +159,7 @@
         <field name="name">bf.cx.feedback.search</field>
         <field name="model">bf.cx.feedback</field>
         <field name="arch" type="xml">
-            <search string="Feedbacks">
+            <search string="Feedback">
                 <field name="partner_id"/>
                 <field name="subject_user_id"/>
                 <field name="comment"/>
@@ -167,50 +167,48 @@
                 <field name="project_id"/>
                 <filter string="NPS" name="filter_nps" domain="[('kind', '=', 'nps')]"/>
                 <filter string="CSAT" name="filter_csat" domain="[('kind', '=', 'csat')]"/>
-                <filter string="Commentaires" name="filter_verbatim" domain="[('kind', '=', 'verbatim')]"/>
-                <filter string="Interne (360)" name="filter_internal" domain="[('kind', '=', 'internal')]"/>
+                <filter string="Comments" name="filter_verbatim" domain="[('kind', '=', 'verbatim')]"/>
+                <filter string="Internal (360)" name="filter_internal" domain="[('kind', '=', 'internal')]"/>
                 <separator/>
-                <filter string="Détracteurs" name="filter_detractors" domain="[('nps_bucket', '=', 'detractor')]"/>
-                <filter string="Promoteurs" name="filter_promoters" domain="[('nps_bucket', '=', 'promoter')]"/>
+                <filter string="Detractors" name="filter_detractors" domain="[('nps_bucket', '=', 'detractor')]"/>
+                <filter string="Promoters" name="filter_promoters" domain="[('nps_bucket', '=', 'promoter')]"/>
                 <separator/>
-                <filter string="À traiter" name="filter_new" domain="[('state', '=', 'new')]"/>
-                <filter string="À rappeler (boucle fermée)" name="filter_followup"
+                <filter string="To handle" name="filter_new" domain="[('state', '=', 'new')]"/>
+                <filter string="To call back (closed loop)" name="filter_followup"
                         domain="[('needs_followup', '=', True), ('state', '!=', 'done')]"/>
-                <filter string="Candidats témoignage" name="filter_testimonial" domain="[('is_testimonial_candidate', '=', True)]"/>
+                <filter string="Testimonial candidates" name="filter_testimonial" domain="[('is_testimonial_candidate', '=', True)]"/>
                 <separator/>
-                <filter string="Mes suivis" name="filter_my" domain="[('user_id', '=', uid)]"/>
-                <group expand="0" string="Regrouper par">
+                <filter string="My follow-ups" name="filter_my" domain="[('user_id', '=', uid)]"/>
+                <group expand="0" string="Group by">
                     <filter string="Type" name="group_kind" context="{'group_by': 'kind'}"/>
-                    <filter string="Catégorie NPS" name="group_bucket" context="{'group_by': 'nps_bucket'}"/>
-                    <filter string="Programme" name="group_program" context="{'group_by': 'program_id'}"/>
+                    <filter string="NPS category" name="group_bucket" context="{'group_by': 'nps_bucket'}"/>
+                    <filter string="Program" name="group_program" context="{'group_by': 'program_id'}"/>
                     <filter string="Contact" name="group_partner" context="{'group_by': 'partner_id'}"/>
-                    <filter string="Personne évaluée (360)" name="group_subject" context="{'group_by': 'subject_user_id'}"/>
-                    <filter string="Mois" name="group_month" context="{'group_by': 'date:month'}"/>
-                    <filter string="Thème" name="group_theme" context="{'group_by': 'theme_ids'}"/>
+                    <filter string="Person reviewed (360)" name="group_subject" context="{'group_by': 'subject_user_id'}"/>
+                    <filter string="Month" name="group_month" context="{'group_by': 'date:month'}"/>
+                    <filter string="Theme" name="group_theme" context="{'group_by': 'theme_ids'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_cx_feedback" model="ir.actions.act_window">
-        <field name="name">Feedbacks</field>
+        <field name="name">Feedback</field>
         <field name="res_model">bf.cx.feedback</field>
         <field name="view_mode">list,kanban,form,graph,pivot</field>
         <field name="search_view_id" ref="view_cx_feedback_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucun feedback pour l'instant
+                No feedback yet
             </p>
             <p>
-                Les réponses aux sondages des programmes et les évaluations
-                par courriel atterrissent ici automatiquement. On peut aussi
-                consigner un feedback entendu en rencontre ou au téléphone.
+                Answers to the programs' surveys and email ratings land here automatically. Feedback heard in a meeting or on the phone can also be recorded.
             </p>
         </field>
     </record>
 
     <record id="action_cx_report" model="ir.actions.act_window">
-        <field name="name">Analyse des feedbacks</field>
+        <field name="name">Feedback analysis</field>
         <field name="res_model">bf.cx.feedback</field>
         <field name="view_mode">graph,pivot</field>
         <field name="search_view_id" ref="view_cx_feedback_search"/>

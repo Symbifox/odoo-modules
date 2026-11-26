@@ -1,0 +1,198 @@
+# Translation of Expérience client : analyse IA des verbatims - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_ai 18.0.1.2.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-26 18:31+0000\n"
+"PO-Revision-Date: 2026-11-26 18:31+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_cx_ai
+#. odoo-python
+#: code:addons/bf_cx_ai/models/bf_cx_feedback.py:0
+msgid ""
+"%(done)s analysis(es) succeeded, %(failed)s failed (details in the chatter)."
+msgstr ""
+"%(done)s analyse(s) réussie(s), %(failed)s en échec (détails au chatter)."
+
+#. module: bf_cx_ai
+#. odoo-python
+#: code:addons/bf_cx_ai/models/bf_cx_feedback.py:0
+msgid "%s analysis(es) succeeded."
+msgstr "%s analyse(s) réussie(s)."
+
+#. module: bf_cx_ai
+#: model:ir.model.fields,help:bf_cx_ai.field_res_config_settings__bf_cx_ai_auto_analyze
+msgid ""
+"A daily job analyzes (sentiment, themes, summary) up to 20 recent unanalyzed"
+" comments, through the AI bridge: the comments' text is sent to the AI "
+"model. Off by default."
+msgstr ""
+"Un traitement quotidien analyse (sentiment, thèmes, résumé) jusqu'à 20 "
+"commentaires récents non analysés, par le pont IA : le texte des "
+"commentaires est transmis au modèle d'IA. Désactivé par défaut."
+
+#. module: bf_cx_ai
+#. odoo-python
+#: code:addons/bf_cx_ai/models/bf_cx_feedback.py:0
+msgid "AI analysis"
+msgstr "Analyse IA"
+
+#. module: bf_cx_ai
+#. odoo-python
+#: code:addons/bf_cx_ai/models/bf_cx_feedback.py:0
+msgid "AI analysis done (%s)."
+msgstr "Analyse IA terminée (%s)."
+
+#. module: bf_cx_ai
+#. odoo-python
+#: code:addons/bf_cx_ai/models/bf_cx_feedback.py:0
+msgid "AI analysis not done: the AI bridge did not answer (%s)."
+msgstr "Analyse IA non effectuée : le pont IA n'a pas répondu (%s)."
+
+#. module: bf_cx_ai
+#. odoo-python
+#: code:addons/bf_cx_ai/models/bf_cx_feedback.py:0
+msgid ""
+"AI analysis not done: the AI bridge is unavailable (socket not found). Try "
+"again later or check the claude-chatbot-bridge service."
+msgstr ""
+"Analyse IA non effectuée : le pont IA est indisponible (socket introuvable)."
+" Réessayer plus tard ou vérifier le service claude-chatbot-bridge."
+
+#. module: bf_cx_ai
+#. odoo-python
+#: code:addons/bf_cx_ai/models/bf_cx_feedback.py:0
+msgid "AI analysis: unreadable answer from the AI bridge, no field updated."
+msgstr "Analyse IA : réponse illisible du pont IA, aucun champ mis à jour."
+
+#. module: bf_cx_ai
+#: model_terms:ir.ui.view,arch_db:bf_cx_ai.view_cx_feedback_form_ai
+msgid "Analyze (AI)"
+msgstr "Analyser (IA)"
+
+#. module: bf_cx_ai
+#: model_terms:ir.ui.view,arch_db:bf_cx_ai.view_cx_feedback_form_ai
+msgid ""
+"Analyze the comment (sentiment, themes, summary) through the AI bridge: the "
+"comment's text is sent to the AI model."
+msgstr ""
+"Analyser le commentaire (sentiment, thèmes, résumé) par le pont IA : le "
+"texte du commentaire est transmis au modèle d'IA."
+
+#. module: bf_cx_ai
+#: model:ir.model.fields,field_description:bf_cx_ai.field_bf_cx_feedback__ai_analyzed
+msgid "Analyzed by AI"
+msgstr "Analysé par l'IA"
+
+#. module: bf_cx_ai
+#: model:ir.model.fields,field_description:bf_cx_ai.field_res_config_settings__bf_cx_ai_auto_analyze
+#: model_terms:ir.ui.view,arch_db:bf_cx_ai.res_config_settings_view_form
+msgid "Automatic AI analysis of verbatims"
+msgstr "Analyse IA automatique des verbatims"
+
+#. module: bf_cx_ai
+#: model:ir.actions.server,name:bf_cx_ai.ir_cron_cx_ai_auto_analyze_ir_actions_server
+msgid "Customer experience: AI analysis of verbatims"
+msgstr "Expérience client : analyse IA des verbatims"
+
+#. module: bf_cx_ai
+#: model_terms:ir.ui.view,arch_db:bf_cx_ai.res_config_settings_view_form
+msgid ""
+"Every day, analyze (sentiment, themes, summary) up to 20 recent unanalyzed "
+"comments through the AI bridge: the comments' text is sent to the AI model."
+msgstr ""
+"Chaque jour, analyser (sentiment, thèmes, résumé) jusqu'à 20 commentaires "
+"récents non analysés par le pont IA : le texte des commentaires est transmis"
+" au modèle d'IA."
+
+#. module: bf_cx_ai
+#. modules: bf_cx, bf_cx_ai
+#: model:ir.model,name:bf_cx_ai.model_bf_cx_feedback
+msgid "Experience feedback"
+msgstr "Retours d'expérience"
+
+#. module: bf_cx_ai
+#: model:ir.model.fields.selection,name:bf_cx_ai.selection__bf_cx_feedback__sentiment__negatif
+msgid "Negative"
+msgstr "Négatif"
+
+#. module: bf_cx_ai
+#: model_terms:ir.ui.view,arch_db:bf_cx_ai.view_cx_feedback_search_ai
+msgid "Negative sentiment (AI)"
+msgstr "Sentiment négatif (IA)"
+
+#. module: bf_cx_ai
+#: model:ir.model.fields.selection,name:bf_cx_ai.selection__bf_cx_feedback__sentiment__neutre
+msgid "Neutral"
+msgstr "Neutre"
+
+#. module: bf_cx_ai
+#: model_terms:ir.ui.view,arch_db:bf_cx_ai.view_cx_feedback_search_ai
+msgid "Not analyzed (AI)"
+msgstr "Non analysés (IA)"
+
+#. module: bf_cx_ai
+#: model:ir.model.fields,help:bf_cx_ai.field_bf_cx_feedback__ai_summary
+msgid "One-sentence summary of the comment, produced by the AI analysis."
+msgstr "Résumé du commentaire en une phrase, produit par l'analyse IA."
+
+#. module: bf_cx_ai
+#: model:ir.model.fields.selection,name:bf_cx_ai.selection__bf_cx_feedback__sentiment__positif
+msgid "Positive"
+msgstr "Positif"
+
+#. module: bf_cx_ai
+#: model:ir.model.fields,field_description:bf_cx_ai.field_bf_cx_feedback__sentiment
+#: model_terms:ir.ui.view,arch_db:bf_cx_ai.view_cx_feedback_search_ai
+msgid "Sentiment (AI)"
+msgstr "Sentiment (IA)"
+
+#. module: bf_cx_ai
+#: model:ir.model.fields,help:bf_cx_ai.field_bf_cx_feedback__sentiment
+msgid ""
+"Sentiment of the comment, determined by the AI analysis. The comment's text "
+"is sent to the AI model through the server's bridge."
+msgstr ""
+"Sentiment du commentaire, déterminé par l'analyse IA. Le texte du "
+"commentaire est transmis au modèle d'IA par le pont du serveur."
+
+#. module: bf_cx_ai
+#: model:ir.model.fields,field_description:bf_cx_ai.field_bf_cx_feedback__ai_summary
+msgid "Summary (AI)"
+msgstr "Résumé (IA)"
+
+#. module: bf_cx_ai
+#: model:ir.model.fields,help:bf_cx_ai.field_bf_cx_feedback__ai_analyzed
+msgid ""
+"Ticked after an analysis attempt that went through: keeps the automatic "
+"processing from going over the same feedback again."
+msgstr ""
+"Coché après une tentative d'analyse aboutie : empêche le traitement "
+"automatique de repasser sur le même feedback."
+
+#. module: bf_cx_ai
+#. odoo-python
+#: code:addons/bf_cx_ai/models/bf_cx_feedback.py:0
+msgid "sentiment: %s"
+msgstr "sentiment : %s"
+
+#. module: bf_cx_ai
+#. odoo-python
+#: code:addons/bf_cx_ai/models/bf_cx_feedback.py:0
+msgid "summary: %s"
+msgstr "résumé : %s"
+
+#. module: bf_cx_ai
+#. odoo-python
+#: code:addons/bf_cx_ai/models/bf_cx_feedback.py:0
+msgid "themes: %s"
+msgstr "thèmes : %s"
