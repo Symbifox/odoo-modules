@@ -3,10 +3,10 @@
 # the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_corporate_governance 18.0.1.2.0\n"
+"Project-Id-Version: bf_corporate_governance 18.0.2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-21 07:27+0000\n"
-"PO-Revision-Date: 2026-10-21 07:27+0000\n"
+"POT-Creation-Date: 2026-11-26 02:12+0000\n"
+"PO-Revision-Date: 2026-11-26 08:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
@@ -16,7 +16,24 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_securetransfer
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance_template.py:0
+msgid "%(day)s %(month)s of the year after the fiscal year ends"
+msgstr "%(day)s %(month)s de l'année qui suit la fin de l'exercice"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance_template.py:0
+msgid "%(months)s months after the fiscal year ends"
+msgstr "%(months)s mois après la fin de l'exercice"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance_template.py:0
+msgid "%(months)s months and %(days)s days after the fiscal year ends"
+msgstr "%(months)s mois et %(days)s jours après la fin de l'exercice"
+
+#. module: bf_corporate_governance
 #. odoo-python
 #: code:addons/bf_corporate_governance/models/corporate_compliance.py:0
 msgid "%s days"
@@ -29,23 +46,63 @@ msgstr "'%s_%s' % (object.sequence, object.name)"
 
 #. module: bf_corporate_governance
 #. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance_template.py:0
+msgid ", and within %(n)s months of the previous one"
+msgstr ", et dans les %(n)s mois de la précédente"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_co17_balance_due
+msgid "2 months after the fiscal year end, with no 3-month extension: the federal rule for a CCPC does not apply to the CO-17."
+msgstr "2 mois après la fin de l'exercice, sans prolongation à 3 mois : la règle fédérale d'une SPCC ne s'applique pas à la CO-17."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_ca_t2_balance_due
+msgid "2 months after the fiscal year end; 3 months for a Canadian-controlled private corporation that meets the three conditions of para. (d)(i) of the definition (small business deduction, CCPC all year, taxable income of the previous year within the business limit): move the date if so."
+msgstr "2 mois après la fin de l'exercice; 3 mois pour une société privée sous contrôle canadien qui remplit les trois conditions de l'al. d)(i) de la définition (déduction pour petite entreprise, SPCC toute l'année, revenu imposable de l'année précédente sous le plafond des affaires) : déplacer la date le cas échéant."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_ca_gst_annual_return
+msgid "3 months after the fiscal year end. Quarterly instalments are due if the instalment base reaches $3,000 (s. 237): they are not generated here."
+msgstr "3 mois après la fin de l'exercice. Des acomptes trimestriels sont dus si la base des acomptes atteint 3 000 $ (art. 237) : ils ne sont pas générés ici."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_qst_annual_return
+msgid "3 months after the fiscal year end. Quarterly instalments are due if the instalment base reaches $3,000 (s. 458.0.1): they are not generated here."
+msgstr "3 mois après la fin de l'exercice. Des acomptes trimestriels sont dus si la base des acomptes atteint 3 000 $ (art. 458.0.1) : ils ne sont pas générés ici."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_template__fixed_day
+msgid "31 means the last day of the month, whatever its length."
+msgstr "31 désigne le dernier jour du mois, quelle que soit sa longueur."
+
+#. module: bf_corporate_governance
+#. odoo-python
 #: code:addons/bf_corporate_governance/models/corporate_compliance.py:0
-msgid ""
-"<p><strong>Corporate compliance (%(label)s)</strong></p><p>%(name)s - Due "
-"date: %(date)s</p>"
-msgstr ""
-"<p><strong>Conformité corporative (%(label)s)</strong></p><p>%(name)s - "
-"Échéance : %(date)s</p>"
+msgid "<p><strong>Corporate compliance (%(label)s)</strong></p><p>%(name)s - Due date: %(date)s</p>"
+msgstr "<p><strong>Conformité corporative (%(label)s)</strong></p><p>%(name)s - Échéance : %(date)s</p>"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance_template.py:0
+msgid "A deadline is counted after the end of the fiscal year, not before."
+msgstr "Une échéance se compte après la fin de l'exercice, pas avant."
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance_template.py:0
+msgid "A fixed-date template needs a month and a day between 1 and 31."
+msgstr "Un gabarit à date fixe exige un mois et un jour entre 1 et 31."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_npo_member_list
+msgid "A list of members must be prepared every year. The Act sets no date: it is set here at the annual meeting."
+msgstr "Une liste des membres doit être préparée chaque année. La loi ne fixe pas de date : elle est placée ici à l'assemblée annuelle."
 
 #. module: bf_corporate_governance
 #. odoo-python
 #: code:addons/bf_corporate_governance/models/corporate_resolution.py:0
-msgid ""
-"A members' resolution is not signed in the capacity of shareholder: choose "
-"another capacity for %s."
-msgstr ""
-"Une résolution des membres ne se signe pas en qualité d'actionnaire : "
-"choisissez une autre qualité pour %s."
+msgid "A members' resolution is not signed in the capacity of shareholder: choose another capacity for %s."
+msgstr "Une résolution des membres ne se signe pas en qualité d'actionnaire : choisissez une autre qualité pour %s."
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__meeting_type__agm
@@ -58,8 +115,37 @@ msgid "Abstentions"
 msgstr "Abstentions"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_generate_line__legal_basis
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_template__legal_basis
+msgid "Act and section the obligation comes from, as it will be printed on the generated event."
+msgstr "Loi et article d'où vient l'obligation, tels qu'ils seront repris sur l'événement généré."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_cnesst_wage_statement
+msgid "Act respecting industrial accidents and occupational diseases (A-3.001), s. 291; A-3.001, r. 7, s. 21"
+msgstr "Loi sur les accidents du travail et les maladies professionnelles (A-3.001), art. 291; A-3.001, r. 7, art. 21"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_sst_prevention_program
+msgid "Act respecting occupational health and safety (S-2.1), s. 58; S-2.1, r. 8.3, s. 5"
+msgstr "Loi sur la santé et la sécurité du travail (S-2.1), art. 58; S-2.1, r. 8.3, art. 5"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_sst_action_plan
+msgid "Act respecting occupational health and safety (S-2.1), s. 61.1; S-2.1, r. 8.3, s. 5"
+msgstr "Loi sur la santé et la sécurité du travail (S-2.1), art. 61.1; S-2.1, r. 8.3, art. 5"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_qst_annual_return
+msgid "Act respecting the Québec sales tax (T-0.1), s. 468, 437 and 460"
+msgstr "Loi sur la taxe de vente du Québec (T-0.1), art. 468, 437 et 460"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_req_annual_update
+msgid "Act respecting the legal publicity of enterprises (P-44.1), s. 45; P-44.1, r. 1, s. 3, para. 1"
+msgstr "Loi sur la publicité légale des entreprises (P-44.1), art. 45; P-44.1, r. 1, art. 3, par. 1°"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_needaction
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_needaction
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_needaction
@@ -68,10 +154,7 @@ msgid "Action Needed"
 msgstr "Nécessite une action"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
-#. hosting_management
-#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__active
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__is_active
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__is_active
 msgid "Active"
@@ -92,32 +175,24 @@ msgid "Active officers"
 msgstr "Dirigeants actifs"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_ids
 msgid "Activities"
 msgstr "Activités"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_exception_decoration
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_exception_decoration
 msgid "Activity Exception Decoration"
 msgstr "Indicateur d'exception d'activité"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_state
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_state
 msgid "Activity State"
 msgstr "État de l'activité"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_type_icon
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_type_icon
 msgid "Activity Type Icon"
@@ -126,8 +201,7 @@ msgstr "Icône de type d'activité"
 #. module: bf_corporate_governance
 #: model_terms:ir.actions.act_window,help:bf_corporate_governance.corporate_minute_book_action
 msgid "Add a document with a minute book section to see it here"
-msgstr ""
-"Ajouter un document avec une section du livre des minutes pour le voir ici"
+msgstr "Ajouter un document avec une section du livre des minutes pour le voir ici"
 
 #. module: bf_corporate_governance
 #: model_terms:ir.actions.act_window,help:bf_corporate_governance.corporate_director_action
@@ -168,14 +242,89 @@ msgid "Adoption"
 msgstr "Adoption"
 
 #. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__already_generated
+msgid "Already generated"
+msgstr "Déjà générée"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_ca_gst_annual_return
+msgid "Annual GST/HST return and payment"
+msgstr "Déclaration annuelle de TPS/TVH et paiement"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_qst_annual_return
+msgid "Annual QST return and payment"
+msgstr "Déclaration annuelle de TVQ et paiement"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__annual_declaration
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__annual_declaration
 msgid "Annual declaration"
 msgstr "Déclaration annuelle"
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_coop_agm
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__agm
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__agm
 msgid "Annual general meeting"
 msgstr "Assemblée générale annuelle"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_npo_agm
+msgid "Annual general meeting of members"
+msgstr "Assemblée générale annuelle des membres"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_npo_member_list
+msgid "Annual list of members"
+msgstr "Liste annuelle des membres"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__annual_report
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__annual_report
+msgid "Annual report"
+msgstr "Rapport annuel"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_coop_report_minister
+msgid "Annual report sent to the Minister"
+msgstr "Transmission du rapport annuel au ministre"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_spa_agm
+msgid "Annual shareholders' meeting"
+msgstr "Assemblée annuelle des actionnaires"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_sst_action_plan
+msgid "Annual update of the action plan"
+msgstr "Mise à jour annuelle du plan d'action"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_sst_prevention_program
+msgid "Annual update of the prevention program"
+msgstr "Mise à jour annuelle du programme de prévention"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_req_annual_update
+msgid "Annual updating declaration (REQ)"
+msgstr "Déclaration de mise à jour annuelle (REQ)"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__legal_form__any
+msgid "Any legal form"
+msgstr "Toute forme juridique"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__condition
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__condition
+msgid "Applies when"
+msgstr "S'applique si"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_spa_auditor
+msgid "Appointed at each annual meeting (s. 231). A corporation that is not a reporting issuer may do without one if all the shareholders, voting or not, agree (s. 239); the exemption only lasts until the next annual meeting, so it is renewed every year."
+msgstr "Nommé à chaque assemblée annuelle (art. 231). Une société qui n'est pas émetteur assujetti peut s'en dispenser si tous les actionnaires, avec ou sans droit de vote, y consentent (art. 239); la dispense ne vaut que jusqu'à l'assemblée annuelle suivante, elle se renouvelle donc chaque année."
 
 #. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_form
@@ -190,10 +339,54 @@ msgid "Appointment date"
 msgstr "Date de nomination"
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_npo_auditor
+msgid "Appointment of the auditor"
+msgstr "Nomination du vérificateur"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__appointment_resolution_id
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__appointment_resolution_id
 msgid "Appointment resolution"
 msgstr "Résolution de nomination"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_spa_fs_approval
+msgid "Approval and signature of the financial statements"
+msgstr "Approbation et signature des états financiers"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_coop_fs_approval
+msgid "Approval of the financial statements"
+msgstr "Approbation des états financiers"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_coop_fs_approval
+msgid "Approved by the board and attested by two directors (a business corporation needs one)."
+msgstr "Approuvés par le conseil et attestés par deux administrateurs (une société par actions en demande un)."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_spa_fs_approval
+msgid "Approved by the board before they are presented at the annual meeting. A director signs them as proof of the approval (s. 227, para. 2): check that the signature lines of the statements delivered by the accountant are actually signed."
+msgstr "Approuvés par le conseil avant leur présentation à l'assemblée annuelle. Un administrateur les signe en preuve de l'approbation (art. 227, al. 2) : vérifier que les lignes de signature des états livrés par le comptable sont bien signées."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__4
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__4
+msgid "April"
+msgstr "avril"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_form
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__scope
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__scope
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_search
+msgid "Area"
+msgstr "Volet"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__project_document__minute_book_section__charter
@@ -201,8 +394,11 @@ msgid "Articles of incorporation"
 msgstr "Statuts constitutifs"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_spa_director_election
+msgid "At the annual meeting. Terms are set by the by-laws and last at most 3 years; a term with no stated length ends at the close of the next annual meeting."
+msgstr "À l'assemblée annuelle. Le règlement intérieur fixe les mandats, d'au plus 3 ans; un mandat sans durée expresse prend fin à la clôture de l'assemblée annuelle suivante."
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_attachment_count
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_attachment_count
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_attachment_count
@@ -211,16 +407,32 @@ msgid "Attachment Count"
 msgstr "Nombre de pièces jointes"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__attachment_ids
 msgid "Attachments"
 msgstr "Pièces jointes"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__auditor_appointment
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__auditor_appointment
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__auditor_appointment
 msgid "Auditor appointment"
 msgstr "Nomination du vérificateur"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_spa_auditor
+msgid "Auditor: appointment or exemption"
+msgstr "Vérificateur : nomination ou dispense"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_coop_auditor
+msgid "Auditor: appointment or review engagement"
+msgstr "Auditeur : nomination ou mission d'examen"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__8
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__8
+msgid "August"
+msgstr "août"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__resolved_text
@@ -229,9 +441,19 @@ msgid "BE IT RESOLVED THAT..."
 msgstr "IL EST RÉSOLU QUE..."
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_npo_fs_presentation
+msgid "Balance sheet and statement of revenue and expenses, presented at the annual meeting."
+msgstr "Bilan et état des recettes et dépenses, présentés à l'assemblée annuelle."
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__bank_authorization
 msgid "Banking authorization"
 msgstr "Autorisation bancaire"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_cnesst_wage_statement
+msgid "Before 15 March, so 14 March at the latest, for the calendar year ending in the fiscal year. Within 45 days if the business ceases. Section 292 of the Act, still cited by many guides, is repealed."
+msgstr "Avant le 15 mars, donc le 14 mars au plus tard, pour l'année civile où se termine l'exercice. Dans les 45 jours en cas de cessation. L'art. 292 de la loi, que bien des guides citent encore, est abrogé."
 
 #. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
@@ -249,12 +471,30 @@ msgid "Body of the resolution"
 msgstr "Corps de la résolution"
 
 #. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_template__first_cap_months_after_incorporation
+msgid "Bound used when there is no previous occurrence, counted from the date of incorporation. 0: none."
+msgstr "Borne appliquée faute d'occurrence précédente, comptée depuis la date de constitution. 0 : aucune."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_generate__incorporation_date
+msgid "Bounds the first annual meeting when there is no previous one."
+msgstr "Borne la première assemblée annuelle, faute de précédente."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_generate__legal_form__qc_business_corporation
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__legal_form__qc_business_corporation
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_legal_form__qc_business_corporation
+msgid "Business corporation (Québec)"
+msgstr "Société par actions (Québec)"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__bylaw_amendment
 msgid "By-law amendment"
 msgstr "Modification de règlements"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__bylaw_review
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__bylaw_review
 msgid "By-law review"
 msgstr "Révision des règlements"
 
@@ -262,6 +502,16 @@ msgstr "Révision des règlements"
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__project_document__minute_book_section__bylaws
 msgid "By-laws"
 msgstr "Reglements"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_npo_auditor
+msgid "By-laws of the organisation (C-38, s. 224: s. 113 does not apply)"
+msgstr "Règlements généraux de l'organisme (C-38, art. 224 : l'art. 113 ne s'applique pas)"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_generate_view_form
+msgid "Cancel"
+msgstr "Annuler"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__capacity
@@ -275,17 +525,10 @@ msgstr "Qualité (texte)"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution_signatory__capacity
-msgid ""
-"Capacity in which the person signs. It is what is printed under the name. "
-"\"Shareholder\" by default, except on a members' resolution, where it must "
-"be chosen (meeting chair or meeting secretary, most often)."
-msgstr ""
-"Qualité en laquelle la personne signe. C'est elle qui est imprimée sous le "
-"nom. « Actionnaire » d'office, sauf sur une résolution des membres, où elle "
-"se choisit (présidence ou secrétariat d'assemblée, le plus souvent)."
+msgid "Capacity in which the person signs. It is what is printed under the name. \"Shareholder\" by default, except on a members' resolution, where it must be chosen (meeting chair or meeting secretary, most often)."
+msgstr "Qualité en laquelle la personne signe. C'est elle qui est imprimée sous le nom. « Actionnaire » d'office, sauf sur une résolution des membres, où elle se choisit (présidence ou secrétariat d'assemblée, le plus souvent)."
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_security_awareness, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
 msgid "Category"
 msgstr "Catégorie"
@@ -301,19 +544,46 @@ msgid "Classification"
 msgstr "Classification"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
-#. hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_npo_member_list
+msgid "Companies Act (C-38), s. 223"
+msgstr "Loi sur les compagnies (C-38), art. 223"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_npo_director_election
+msgid "Companies Act (C-38), s. 89"
+msgstr "Loi sur les compagnies (C-38), art. 89"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_npo_agm
+msgid "Companies Act (C-38), s. 98 and 224"
+msgstr "Loi sur les compagnies (C-38), art. 98 et 224"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_npo_fs_presentation
+msgid "Companies Act (C-38), s. 98, para. 2"
+msgstr "Loi sur les compagnies (C-38), art. 98, par. 2"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__company_id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__company_id
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__company_id
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__company_id
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__company_id
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
 msgid "Company"
 msgstr "Société"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_security_awareness
-#. odoo-javascript
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__status__completed
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
 msgid "Completed"
@@ -342,9 +612,64 @@ msgid "Compliance events"
 msgstr "Événements de conformité"
 
 #. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_form
+msgid "Compliance template"
+msgstr "Gabarit de conformité"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.act_window,name:bf_corporate_governance.corporate_compliance_template_action
+#: model:ir.ui.menu,name:bf_corporate_governance.menu_corporate_compliance_template
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_list
+msgid "Compliance templates"
+msgstr "Gabarits de conformité"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_generate_line__condition
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_template__condition
+msgid "Condition under which the obligation applies (employees, dividends, registered charity...). An obligation with a condition is offered unticked by the generator."
+msgstr "Condition à laquelle l'obligation s'applique (employés, dividendes, organisme de bienfaisance enregistré...). Le générateur propose décochée une obligation conditionnelle."
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__contract_approval
 msgid "Contract approval"
 msgstr "Approbation de contrat"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_generate__legal_form__qc_cooperative
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__legal_form__qc_cooperative
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_legal_form__qc_cooperative
+msgid "Cooperative (Québec)"
+msgstr "Coopérative (Québec)"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_coop_annual_report
+msgid "Cooperatives Act (C-67.2), s. 132"
+msgstr "Loi sur les coopératives (C-67.2), art. 132"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_coop_fs_approval
+msgid "Cooperatives Act (C-67.2), s. 133"
+msgstr "Loi sur les coopératives (C-67.2), art. 133"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_coop_report_minister
+msgid "Cooperatives Act (C-67.2), s. 134"
+msgstr "Loi sur les coopératives (C-67.2), art. 134"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_coop_auditor
+msgid "Cooperatives Act (C-67.2), s. 135 and 139"
+msgstr "Loi sur les coopératives (C-67.2), art. 135 et 139"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_coop_agm
+msgid "Cooperatives Act (C-67.2), s. 76"
+msgstr "Loi sur les coopératives (C-67.2), art. 76"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_coop_director_election
+msgid "Cooperatives Act (C-67.2), s. 76 and 84"
+msgstr "Loi sur les coopératives (C-67.2), art. 76 et 84"
 
 #. module: bf_corporate_governance
 #. odoo-javascript
@@ -363,6 +688,11 @@ msgid "Corporate compliance event"
 msgstr "Événement de conformité corporative"
 
 #. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_corporate_compliance_template
+msgid "Corporate compliance template"
+msgstr "Gabarit de conformité corporative"
+
+#. module: bf_corporate_governance
 #: model:ir.model,name:bf_corporate_governance.model_corporate_director
 msgid "Corporate director"
 msgstr "Administrateur corporatif"
@@ -376,9 +706,19 @@ msgid "Corporate governance"
 msgstr "Gouvernance corporative"
 
 #. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__scope__corporate
+msgid "Corporate law"
+msgstr "Droit des sociétés"
+
+#. module: bf_corporate_governance
 #: model:ir.model,name:bf_corporate_governance.model_corporate_officer
 msgid "Corporate officer"
 msgstr "Dirigeant corporatif"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.res_company_view_form_corporate
+msgid "Corporate profile"
+msgstr "Profil corporatif"
 
 #. module: bf_corporate_governance
 #: model:ir.model,name:bf_corporate_governance.model_corporate_resolution
@@ -406,10 +746,10 @@ msgid "Create your first corporate resolution"
 msgstr "Créer votre première résolution corporative"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__create_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__create_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__create_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__create_uid
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__create_uid
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__create_uid
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__create_uid
@@ -418,10 +758,10 @@ msgid "Created by"
 msgstr "Créé par"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__create_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__create_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__create_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__create_date
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__create_date
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__create_date
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__create_date
@@ -440,12 +780,45 @@ msgid "Custom title..."
 msgstr "Titre personnalisé..."
 
 #. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__incorporation_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_res_company__corporate_incorporation_date
+msgid "Date of incorporation"
+msgstr "Date de constitution"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__fixed_day
+msgid "Day"
+msgstr "Jour"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__offset_days
+msgid "Days after"
+msgstr "Jours après"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__due_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__due_date
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_form
 msgid "Deadline"
 msgstr "Date limite"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_security_awareness
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__anchor
+msgid "Deadline counted from"
+msgstr "Échéance comptée depuis"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__deadline_rule
+msgid "Deadline rule"
+msgstr "Règle d'échéance"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__12
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__12
+msgid "December"
+msgstr "décembre"
+
+#. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_form
 msgid "Details"
 msgstr "Détails"
@@ -485,10 +858,10 @@ msgid "Directors' signatures"
 msgstr "Signatures des administrateurs"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__display_name
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__display_name
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__display_name
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__display_name
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__display_name
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__display_name
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__display_name
@@ -507,13 +880,16 @@ msgid "Dividend declaration"
 msgstr "Déclaration de dividende"
 
 #. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_project_document
+msgid "Document"
+msgstr "Document"
+
+#. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
 msgid "Documents"
 msgstr "Documents"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_securetransfer, bf_security_awareness,
-#. hosting_management
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__status__draft
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
@@ -539,7 +915,11 @@ msgid "Effective date"
 msgstr "Date d'entrée en vigueur"
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_coop_director_election
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_npo_director_election
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_spa_director_election
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__director_election
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__director_election
 msgid "Election of directors"
 msgstr "Élection des administrateurs"
 
@@ -550,29 +930,66 @@ msgid "End date"
 msgstr "Date de fin"
 
 #. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__anchor__fiscal_year_end
+msgid "End of the fiscal year"
+msgstr "Fin de l'exercice"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__end_reason
 msgid "End reason"
 msgstr "Raison de fin"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__event_type
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__event_type
 msgid "Event type"
 msgstr "Type d'événement"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__failed_message_ids
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__failed_message_ids
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__failed_message_ids
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__failed_message_ids
-msgid "Failed Messages"
-msgstr "Messages en échec"
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_co17_return
+msgid "Every corporation, except a charity registered for the whole year (s. 1003.1). It carries the box of the annual updating declaration of the REQ."
+msgstr "Toute société, sauf un organisme de bienfaisance enregistré toute l'année (art. 1003.1). Elle porte la case de la déclaration de mise à jour annuelle du REQ."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_ca_t2_return
+msgid "Every resident corporation, a non-profit legal person and a cooperative included. A charity registered for the whole year files the T3010 instead (s. 150(1.1)(a))."
+msgstr "Toute société résidente, y compris un OBNL constitué en personne morale et une coopérative. Un organisme de bienfaisance enregistré toute l'année produit plutôt la T3010 (al. 150(1.1)a))."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_npo_director_election
+msgid "Every year by default, unless the letters patent or the by-laws provide otherwise. At least 3 directors (s. 83); without an election, the outgoing directors stay in office (s. 85)."
+msgstr "Chaque année par défaut, sauf si les lettres patentes ou les règlements en disposent autrement. Au moins 3 administrateurs (art. 83); faute d'élection, les sortants restent en fonction (art. 85)."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_ca_gst_annual_return
+msgid "Excise Tax Act, s. 238(1)(a)(iii) and 228(2)(b)"
+msgstr "Loi sur la taxe d'accise, sous-al. 238(1)a)(iii) et al. 228(2)b)"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__2
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__2
+msgid "February"
+msgstr "février"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_ca_t2_balance_due
+msgid "Federal balance of tax due"
+msgstr "Paiement du solde d'impôt fédéral"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_ca_t2_return
+msgid "Federal corporation income tax return (T2)"
+msgstr "Déclaration de revenus fédérale des sociétés (T2)"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__project_document__minute_book_section__forms_filed
 msgid "Filed forms"
 msgstr "Formulaires deposes"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_tp997_1_return
+msgid "Filed in addition to the CO-17."
+msgstr "Produite en plus de la CO-17."
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__filing_reference
@@ -581,6 +998,7 @@ msgstr "Référence de dépôt"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__financial_approval
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__financial_approval
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__financial_approval
 msgid "Financial approval"
 msgstr "Approbation financière"
@@ -591,15 +1009,41 @@ msgid "Financial statements"
 msgstr "Etats financiers"
 
 #. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__first_cap_months_after_incorporation
+msgid "First one: no later than (months after incorporation)"
+msgstr "Première : au plus tard (mois après la constitution)"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__fiscal_year
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__fiscal_year
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__fiscal_year
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
 msgid "Fiscal year"
 msgstr "Année fiscale"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__fiscal_year_end
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__fiscal_year_end
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.res_company_view_form_corporate
+msgid "Fiscal year end"
+msgstr "Fin de l'exercice"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_res_company__corporate_fy_end_day
+msgid "Fiscal year ends (day)"
+msgstr "Fin de l'exercice (jour)"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_res_company__corporate_fy_end_month
+msgid "Fiscal year ends (month)"
+msgstr "Fin de l'exercice (mois)"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__anchor__fixed_date
+msgid "Fixed date, the year after the fiscal year ends"
+msgstr "Date fixe, l'année qui suit la fin de l'exercice"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_follower_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_follower_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_follower_ids
@@ -608,8 +1052,6 @@ msgid "Followers"
 msgstr "Abonnés"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_partner_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_partner_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_partner_ids
@@ -618,8 +1060,6 @@ msgid "Followers (Partners)"
 msgstr "Abonnés (Partenaires)"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__activity_type_icon
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
@@ -633,12 +1073,8 @@ msgstr "Anciens"
 
 #. module: bf_corporate_governance
 #: model:res.groups,comment:bf_corporate_governance.group_corporate_manager
-msgid ""
-"Full access to corporate governance features (resolutions, directors, "
-"officers, compliance)."
-msgstr ""
-"Accès complet aux fonctionnalités de gouvernance corporative (résolutions, "
-"administrateurs, dirigeants, conformité)."
+msgid "Full access to corporate governance features (resolutions, directors, officers, compliance)."
+msgstr "Accès complet aux fonctionnalités de gouvernance corporative (résolutions, administrateurs, dirigeants, conformité)."
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_officer__title__director_general
@@ -646,8 +1082,31 @@ msgid "General manager"
 msgstr "Directeur général"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__selected
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_generate_view_form
+msgid "Generate"
+msgstr "Générer"
+
+#. module: bf_corporate_governance
+#: model:ir.actions.act_window,name:bf_corporate_governance.corporate_compliance_generate_action
+#: model:ir.ui.menu,name:bf_corporate_governance.menu_corporate_compliance_generate
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_generate_view_form
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_list
+msgid "Generate a fiscal year"
+msgstr "Générer un exercice"
+
+#. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_corporate_compliance_generate
+msgid "Generate a fiscal year's compliance events"
+msgstr "Générer les événements de conformité d'un exercice"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
+msgid "Generated from a template"
+msgstr "Générés d'un gabarit"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_search
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_search
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
@@ -655,8 +1114,6 @@ msgid "Group by"
 msgstr "Regrouper par"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__has_message
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__has_message
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__has_message
@@ -665,10 +1122,37 @@ msgid "Has Message"
 msgstr "A un message"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__scope__ohs
+msgid "Health and safety"
+msgstr "Santé et sécurité"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__ohs_filing
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__ohs_filing
+msgid "Health and safety filing"
+msgstr "Déclaration en santé et sécurité"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__include_ohs
+msgid "Health and safety obligations"
+msgstr "Obligations en santé et sécurité"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__ohs_program
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__ohs_program
+msgid "Health and safety program"
+msgstr "Programme de santé et sécurité"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_npo_agm
+msgid "Held every year at the time the by-laws set. The balance sheet presented must be made up to a date no more than 4 months before the meeting (s. 98, para. 2 a)), hence 4 months after the fiscal year end; 6 months if the organisation operates outside Québec and the meeting so resolves. Part III provides no written resolution of the members in place of the meeting."
+msgstr "Tenue chaque année à l'époque que fixent les règlements. Le bilan présenté doit être arrêté au plus 4 mois avant l'assemblée (art. 98, par. 2 a)), d'où 4 mois après la fin de l'exercice; 6 mois si l'organisme a des activités hors du Québec et que l'assemblée l'autorise. La partie III ne prévoit pas de résolution écrite des membres tenant lieu d'assemblée."
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__id
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__id
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__id
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__id
@@ -677,24 +1161,28 @@ msgid "ID"
 msgstr "ID"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_exception_icon
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_exception_icon
 msgid "Icon"
 msgstr "Icône"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__activity_exception_icon
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__activity_exception_icon
 msgid "Icon to indicate an exception activity."
 msgstr "Icône pour indiquer une activité d'exception."
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_spa_director_election
+msgid "If a director's term ends at this meeting"
+msgstr "Si le mandat d'un administrateur prend fin à cette assemblée"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_sst_prevention_program
+msgid "If an establishment has 20 or more workers during the year"
+msgstr "Si un établissement compte au moins 20 travailleurs au cours de l'année"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_needaction
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_needaction
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_needaction
@@ -703,8 +1191,6 @@ msgid "If checked, new messages require your attention."
 msgstr "Si coché, de nouveaux messages demandent votre attention."
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_has_error
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_has_sms_error
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_has_error
@@ -717,14 +1203,98 @@ msgid "If checked, some messages have a delivery error."
 msgstr "Si coché, certains messages ont une erreur de livraison."
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_ca_t5_return
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_rl3_return
+msgid "If dividends were paid during the calendar year"
+msgstr "Si des dividendes ont été versés pendant l'année civile"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_ca_t1044_return
+msgid "If dividends, interest, rents or royalties exceed $10,000, total assets exceeded $200,000 at the end of the previous year, or a T1044 was required for an earlier year"
+msgstr "Si les dividendes, intérêts, loyers ou redevances dépassent 10 000 $, si l'actif total dépassait 200 000 $ à la fin de l'exercice précédent, ou si une T1044 a déjà été exigée"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_sst_action_plan
+msgid "If every establishment has fewer than 20 workers"
+msgstr "Si chaque établissement compte moins de 20 travailleurs"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_ca_gst_annual_return
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_qst_annual_return
+msgid "If registered as an annual filer"
+msgstr "Si l'organisation est inscrite comme déclarant annuel"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_npo_auditor
+msgid "If the by-laws, a sector law or a funder require one"
+msgstr "Si les règlements généraux, une loi sectorielle ou un bailleur de fonds l'exigent"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_ca_t3010_return
+msgid "If the organisation is a registered charity"
+msgstr "Si l'organisme est un organisme de bienfaisance enregistré"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_tp985_22_return
+msgid "If the organisation is a registered charity active in Québec"
+msgstr "Si l'organisme est un organisme de bienfaisance enregistré actif au Québec"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_ca_t4_return
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_cnesst_wage_statement
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_rl1_return
+msgid "If the organisation paid salaries or wages during the calendar year"
+msgstr "Si l'organisation a versé des salaires pendant l'année civile"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_ca_t2_balance_due
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_co17_balance_due
+msgid "If there is a balance of tax to pay"
+msgstr "S'il reste un solde d'impôt à payer"
+
+#. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_search
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_search
 msgid "In office"
 msgstr "Actifs"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_ca_t1044_return
+msgid "Income Tax Act, s. 149(12)"
+msgstr "Loi de l'impôt sur le revenu, par. 149(12)"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_ca_t3010_return
+msgid "Income Tax Act, s. 149.1(14)"
+msgstr "Loi de l'impôt sur le revenu, par. 149.1(14)"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_ca_t2_return
+msgid "Income Tax Act, s. 150(1)(a)"
+msgstr "Loi de l'impôt sur le revenu, al. 150(1)a)"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_ca_t2_balance_due
+msgid "Income Tax Act, s. 157(1)(b) and 248(1) \"balance-due day\""
+msgstr "Loi de l'impôt sur le revenu, al. 157(1)b) et par. 248(1) « date d'exigibilité du solde »"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_ca_t4_return
+msgid "Income Tax Regulations, s. 200(1) and 205(1)"
+msgstr "Règlement de l'impôt sur le revenu, par. 200(1) et 205(1)"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_ca_t5_return
+msgid "Income Tax Regulations, s. 201(1)(a) and 205(1)"
+msgstr "Règlement de l'impôt sur le revenu, al. 201(1)a) et par. 205(1)"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__information_return
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__information_return
+msgid "Information return"
+msgstr "Déclaration de renseignements"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_is_follower
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_is_follower
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_is_follower
@@ -733,10 +1303,58 @@ msgid "Is Follower"
 msgstr "Est un abonné"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__1
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__1
+msgid "January"
+msgstr "janvier"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__7
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__7
+msgid "July"
+msgstr "juillet"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__6
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__6
+msgid "June"
+msgstr "juin"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_generate__remember
+msgid "Keep the legal form, incorporation date and fiscal year end on the company, to prefill the next generation."
+msgstr "Garder la forme juridique, la date de constitution et la fin d'exercice sur la société, pour préremplir la prochaine génération."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_spa_director_election
+msgid "LSAQ, s. 110"
+msgstr "LSAQ, art. 110"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_spa_agm
+msgid "LSAQ, s. 163 and 225"
+msgstr "LSAQ, art. 163 et 225"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_spa_fs_approval
+msgid "LSAQ, s. 226 and 227"
+msgstr "LSAQ, art. 226 et 227"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_spa_auditor
+msgid "LSAQ, s. 231 and 239"
+msgstr "LSAQ, art. 231 et 239"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_generate__fiscal_year
+msgid "Label printed on the events, the year the fiscal year ends by default."
+msgstr "Libellé repris sur les événements, par défaut l'année où se termine l'exercice."
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__write_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__write_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__write_uid
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__write_uid
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__write_uid
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__write_uid
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__write_uid
@@ -745,10 +1363,10 @@ msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__write_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__write_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__write_date
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__write_date
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__write_date
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__write_date
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__write_date
@@ -757,14 +1375,34 @@ msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_ca_t5_return
+msgid "Last day of February, for dividends paid to a resident of Canada during the calendar year."
+msgstr "Dernier jour de février, pour les dividendes versés à un résident du Canada pendant l'année civile."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_rl3_return
+msgid "Last day of February, for dividends paid to an individual resident in Québec or to a corporation with an establishment there."
+msgstr "Dernier jour de février, pour les dividendes versés à un particulier résidant au Québec ou à une société qui y a un établissement."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_rl1_return
+msgid "Last day of February, for the calendar year ending in the fiscal year."
+msgstr "Dernier jour de février, pour l'année civile où se termine l'exercice."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_ca_t4_return
+msgid "Last day of February, for the calendar year ending in the fiscal year. Within 30 days if the business ceases (s. 205(2))."
+msgstr "Dernier jour de février, pour l'année civile où se termine l'exercice. Dans les 30 jours en cas de cessation (par. 205(2))."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__fiscal_year_end
+msgid "Last day of the fiscal year the event belongs to."
+msgstr "Dernier jour de l'exercice auquel appartient l'événement."
+
+#. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
-msgid ""
-"Left empty, the PDF of a board resolution lists the directors in office on "
-"the meeting date, and the PDF of a members' resolution prints two lines to "
-"fill in for the meeting chair and the meeting secretary. A shareholder "
-"resolution has nothing to infer: with no signatory entered, it prints with "
-"one line to fill in."
-msgstr ""
+msgid "Left empty, the PDF of a board resolution lists the directors in office on the meeting date, and the PDF of a members' resolution prints two lines to fill in for the meeting chair and the meeting secretary. A shareholder resolution has nothing to infer: with no signatory entered, it prints with one line to fill in."
+msgstr "Laissé vide, le PDF d'une résolution du conseil liste les administrateurs en poste à la date de la séance, et le PDF d'une résolution des membres imprime deux lignes à remplir pour la présidence et le secrétariat d'assemblée. Une résolution des actionnaires n'a rien à déduire : sans signataire saisi, elle s'imprime avec une ligne à remplir."
 "Laissé vide, le PDF d'une résolution du conseil reprend les\n"
 "                                administrateurs en poste à la date de la séance, et celui d'une\n"
 "                                résolution des membres, deux lignes à remplir pour la présidence\n"
@@ -773,32 +1411,52 @@ msgstr ""
 "                                avec une ligne à remplir."
 
 #. module: bf_corporate_governance
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution_signatory__capacity_custom
-msgid ""
-"Literal capacity, when the list is not enough, for example \"Vice-president,"
-" secretary and treasurer\". Required when the capacity is \"Other\"."
-msgstr ""
-"Qualité littérale, quand la liste ne suffit pas — par exemple « Vice-"
-"président, secrétaire et trésorier ». Obligatoire quand la qualité est « "
-"Autre »."
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__legal_basis
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__legal_basis
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__legal_basis
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_form
+msgid "Legal basis"
+msgstr "Base légale"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_securetransfer, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__legal_form
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__legal_form
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_res_company__corporate_legal_form
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_search
+msgid "Legal form"
+msgstr "Forme juridique"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution_signatory__capacity_custom
+msgid "Literal capacity, when the list is not enough, for example \"Vice-president, secretary and treasurer\". Required when the capacity is \"Other\"."
+msgstr "Qualité littérale, quand la liste ne suffit pas — par exemple « Vice-président, secrétaire et trésorier ». Obligatoire quand la qualité est « Autre »."
+
+#. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
 msgid "Logo"
 msgstr "Logo"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness
 #: model:res.groups,name:bf_corporate_governance.group_corporate_manager
 msgid "Manager"
 msgstr "Gestionnaire"
 
 #. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__3
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__3
+msgid "March"
+msgstr "mars"
+
+#. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_form
 msgid "Mark as completed"
 msgstr "Marquer complété"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__5
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__5
+msgid "May"
+msgstr "mai"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution_signatory__capacity__assembly_chair
@@ -847,18 +1505,6 @@ msgid "Members' resolution"
 msgstr "Résolution des membres"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_content
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_content
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_content
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_content
-msgid "Message Content"
-msgstr "Contenu du message"
-
-#. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_has_error
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_has_error
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_has_error
@@ -867,38 +1513,6 @@ msgid "Message Delivery error"
 msgstr "Erreur d'envoi du message"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_search
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_search
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_search
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_search
-msgid "Message Search"
-msgstr "Recherche de message"
-
-#. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_content
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_content
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_content
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_content
-msgid "Message content, to be used only in searches"
-msgstr "Contenu du message, à n'utiliser que dans les recherches"
-
-#. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_search
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_search
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_search
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_search
-msgid "Message search, to be used only in searches"
-msgstr "Recherche de message, à n'utiliser que dans les recherches"
-
-#. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_ids
@@ -928,84 +1542,95 @@ msgid "Minute book: official document"
 msgstr "Livre des minutes — Document officiel"
 
 #. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__fixed_month
+msgid "Month"
+msgstr "Mois"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__offset_months
+msgid "Months after"
+msgstr "Mois après"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__mover_id
 msgid "Mover"
 msgstr "Proposeur"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__my_activity_date_deadline
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__my_activity_date_deadline
 msgid "My Activity Deadline"
 msgstr "Échéance de mon activité"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#. odoo-javascript
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__name
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__name
 msgid "Name"
 msgstr "Nom"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_calendar_event_id
-#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "Événement du calendrier de la prochaine activité"
-
-#. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_date_deadline
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_date_deadline
 msgid "Next Activity Deadline"
 msgstr "Échéance de la prochaine activité"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_summary
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_summary
 msgid "Next Activity Summary"
 msgstr "Résumé de la prochaine activité"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_type_id
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_type_id
 msgid "Next Activity Type"
 msgstr "Type de la prochaine activité"
 
 #. module: bf_corporate_governance
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution_signatory__purpose
-msgid ""
-"Note printed under the capacity when the signature is given for a limited "
-"purpose, for example \"for the sole purpose of attesting the disclosure of "
-"interest\"."
-msgstr ""
-"Mention imprimée sous la qualité quand la signature est donnée à une fin "
-"limitée — par exemple « aux seules fins d'attester la dénonciation d'intérêt"
-" »."
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__cap_months_after_previous
+msgid "No later than (months after the previous one)"
+msgstr "Au plus tard (mois après la précédente)"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, hosting_management
-#. odoo-python
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_generate__legal_form__qc_nonprofit
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__legal_form__qc_nonprofit
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_legal_form__qc_nonprofit
+msgid "Non-profit legal person (Québec)"
+msgstr "Personne morale sans but lucratif (Québec)"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_ca_t1044_return
+msgid "Non-profit organization information return (T1044)"
+msgstr "Déclaration de renseignements des OSBL (T1044)"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution_signatory__purpose
+msgid "Note printed under the capacity when the signature is given for a limited purpose, for example \"for the sole purpose of attesting the disclosure of interest\"."
+msgstr "Mention imprimée sous la qualité quand la signature est donnée à une fin limitée — par exemple « aux seules fins d'attester la dénonciation d'intérêt »."
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__notes
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__notes
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__notes
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_form
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_form
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
 msgid "Notes"
 msgstr "Notes"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#. odoo-python
+#: code:addons/bf_corporate_governance/wizard/corporate_compliance_generate.py:0
+msgid "Nothing to generate: every ticked obligation already exists for this company and fiscal year."
+msgstr "Rien à générer : chaque obligation cochée existe déjà pour cette société et cet exercice."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__11
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__11
+msgid "November"
+msgstr "novembre"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_needaction_counter
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_needaction_counter
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_needaction_counter
@@ -1014,8 +1639,6 @@ msgid "Number of Actions"
 msgstr "Nombre d'actions"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_has_error_counter
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_has_error_counter
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_has_error_counter
@@ -1024,8 +1647,6 @@ msgid "Number of errors"
 msgstr "Nombre d'erreurs"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_needaction_counter
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_needaction_counter
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_needaction_counter
@@ -1034,8 +1655,6 @@ msgid "Number of messages requiring action"
 msgstr "Nombre de messages nécessitant une action"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_has_error_counter
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_has_error_counter
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_has_error_counter
@@ -1044,11 +1663,37 @@ msgid "Number of messages with delivery error"
 msgstr "Nombre de messages avec des erreurs d'envoi"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, hosting_management
 #. odoo-python
 #: code:addons/bf_corporate_governance/models/corporate_compliance.py:0
 msgid "OVERDUE"
 msgstr "EN RETARD"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__template_id
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_form
+msgid "Obligation"
+msgstr "Obligation"
+
+#. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_corporate_compliance_generate_line
+msgid "Obligation offered by the generator"
+msgstr "Obligation proposée par le générateur"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__template_id
+msgid "Obligation this event was generated from. Empty for an event entered by hand."
+msgstr "Obligation dont l'événement a été généré. Vide pour un événement saisi à la main."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__line_ids
+msgid "Obligations"
+msgstr "Obligations"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__10
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__10
+msgid "October"
+msgstr "octobre"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__partner_id
@@ -1068,15 +1713,23 @@ msgid "Officers"
 msgstr "Dirigeants"
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_ca_t1044_return
+msgid "Once required, always required. A registered charity files the T3010 instead."
+msgstr "Une fois exigée, toujours exigée. Un organisme de bienfaisance enregistré produit plutôt la T3010."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_coop_director_election
+msgid "One-year terms, or 2 to 3 years with staggered terms set by by-law. A cooperative of fewer than 25 members may agree in writing, with 90% of the members, not to elect directors (s. 61), for one year at a time."
+msgstr "Mandats d'un an, ou de 2 à 3 ans en rotation si un règlement le prévoit. Une coopérative de moins de 25 membres peut convenir par écrit, avec 90 % des membres, de ne pas élire d'administrateurs (art. 61), pour un an à la fois."
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__sequence
 msgid "Order"
 msgstr "Ordre"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
-#. hosting_management
-#. odoo-python
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__other
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__other
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_director__end_reason__other
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_officer__title__other
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__other
@@ -1085,7 +1738,6 @@ msgid "Other"
 msgstr "Autre"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_security_awareness, hosting_management
 #. odoo-javascript
 #: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__status__overdue
@@ -1105,7 +1757,11 @@ msgid "Overdue corporate compliance"
 msgstr "Conformité corporative en retard"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_securetransfer, bf_security_awareness
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_npo_auditor
+msgid "Part III of the Companies Act imposes no auditor: s. 224 excludes ss. 113 and 114. Do not cite s. 113 as the basis for a non-profit."
+msgstr "La partie III de la Loi sur les compagnies n'impose pas de vérificateur : l'art. 224 exclut les art. 113 et 114. Ne pas citer l'art. 113 comme fondement pour un OBNL."
+
+#. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
 msgid "Pending"
 msgstr "En cours"
@@ -1119,6 +1775,16 @@ msgstr "Poste"
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__whereas_text
 msgid "Preamble / \"whereas\" clauses"
 msgstr "Préambule / clauses « attendu que »"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_coop_annual_report
+msgid "Preparation of the annual report"
+msgstr "Préparation du rapport annuel"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_npo_fs_presentation
+msgid "Presentation of the financial statements"
+msgstr "Présentation des états financiers"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_officer__title__president
@@ -1157,13 +1823,46 @@ msgid "Proxy holder"
 msgstr "Fondé de pouvoir"
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_co17_balance_due
+msgid "Québec balance of tax due"
+msgstr "Paiement du solde d'impôt du Québec"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_co17_return
+msgid "Québec corporation income tax return (CO-17)"
+msgstr "Déclaration de revenus des sociétés (CO-17)"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_tp985_22_return
+msgid "Québec counterpart of the T3010."
+msgstr "Pendant québécois de la T3010."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_tp997_1_return
+msgid "Québec non-profit information return (TP-997.1)"
+msgstr "Déclaration de renseignements des OSBL (TP-997.1)"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_tp985_22_return
+msgid "Québec registered charity information return (TP-985.22)"
+msgstr "Déclaration de renseignements des organismes de bienfaisance (TP-985.22)"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__filing_reference
 msgid "REQ confirmation number or other filing reference"
 msgstr "Numéro de confirmation REQ ou autre référence de dépôt"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_rl1_return
+msgid "RL-1 slips and Summary"
+msgstr "Relevés 1 et Sommaire"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_rl3_return
+msgid "RL-3 slips (investment income)"
+msgstr "Relevés 3 (revenus de placement)"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__rating_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__rating_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__rating_ids
@@ -1172,13 +1871,15 @@ msgid "Ratings"
 msgstr "Évaluations"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. hosting_management
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__sequence
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_form
 msgid "Reference"
 msgstr "Référence"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__reference_url
+msgid "Reference link"
+msgstr "Lien de référence"
 
 #. module: bf_corporate_governance
 #: model:ir.actions.act_window,name:bf_corporate_governance.corporate_director_action
@@ -1193,6 +1894,11 @@ msgid "Register of officers"
 msgstr "Registre des dirigeants"
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_ca_t3010_return
+msgid "Registered charity information return (T3010)"
+msgstr "Déclaration de renseignements des organismes de bienfaisance (T3010)"
+
+#. module: bf_corporate_governance
 #. odoo-javascript
 #: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
 msgid "Registers"
@@ -1202,6 +1908,16 @@ msgstr "Registres"
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__meeting_type__regular
 msgid "Regular"
 msgstr "Ordinaire"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_rl3_return
+msgid "Regulation respecting the Taxation Act (I-3, r. 1), s. 1086R5 and 1086R65"
+msgstr "Règlement sur les impôts (I-3, r. 1), art. 1086R5 et 1086R65"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_rl1_return
+msgid "Regulation respecting the Taxation Act (I-3, r. 1), s. 1086R65"
+msgstr "Règlement sur les impôts (I-3, r. 1), art. 1086R65"
 
 #. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_form
@@ -1214,6 +1930,11 @@ msgid "Rejected"
 msgstr "Rejeté"
 
 #. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__remember
+msgid "Remember on the company"
+msgstr "Retenir sur la société"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__reminder_sent
 msgid "Reminder sent"
 msgstr "Rappel envoyé"
@@ -1224,10 +1945,13 @@ msgid "Removal"
 msgstr "Destitution"
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_ca_t3010_return
+msgid "Replaces the T2 and the T1044."
+msgstr "Remplace la T2 et la T1044."
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__domicile
-msgid ""
-"Required for the Canadian residency requirements of the Québec Business "
-"Corporations Act (LSAQ)"
+msgid "Required for the Canadian residency requirements of the Québec Business Corporations Act (LSAQ)"
 msgstr "Requis pour les exigences de résidence canadienne de la LSAQ"
 
 #. module: bf_corporate_governance
@@ -1246,7 +1970,6 @@ msgid "Resignation"
 msgstr "Démission"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, hosting_management
 #: model:ir.actions.report,name:bf_corporate_governance.action_report_corporate_resolution
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__resolution_id
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution_signatory__resolution_id
@@ -1255,7 +1978,6 @@ msgid "Resolution"
 msgstr "Résolution"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.report_corporate_resolution
 msgid "Resolution date"
 msgstr "Date de la résolution"
@@ -1278,16 +2000,12 @@ msgid "Resolutions"
 msgstr "Résolutions"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_user_id
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_user_id
 msgid "Responsible User"
 msgstr "Utilisateur responsable"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_has_sms_error
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_has_sms_error
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_has_sms_error
@@ -1296,9 +2014,19 @@ msgid "SMS Delivery error"
 msgstr "Erreur d'envoi SMS"
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,condition:bf_corporate_governance.tpl_qc_tp997_1_return
+msgid "Same three conditions as the T1044"
+msgstr "Mêmes trois conditions que la T1044"
+
+#. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
 msgid "Search compliance events"
 msgstr "Rechercher des événements de conformité"
+
+#. module: bf_corporate_governance
+#: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_template_view_search
+msgid "Search compliance templates"
+msgstr "Rechercher des gabarits de conformité"
 
 #. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_director_view_search
@@ -1314,6 +2042,11 @@ msgstr "Rechercher des dirigeants"
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
 msgid "Search resolutions"
 msgstr "Rechercher des résolutions"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_template__cap_months_after_previous
+msgid "Second bound: the event is also due within this many months of the previous occurrence of the same obligation (completed date, failing that its deadline). 0: no second bound."
+msgstr "Seconde borne : l'événement est aussi dû dans ce nombre de mois après l'occurrence précédente de la même obligation (date de réalisation, à défaut son échéance). 0 : aucune seconde borne."
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__seconder_id
@@ -1334,6 +2067,18 @@ msgstr "Sélectionner un administrateur..."
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_form
 msgid "Select an officer..."
 msgstr "Sélectionner un dirigeant..."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__fixed_month__9
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__res_company__corporate_fy_end_month__9
+msgid "September"
+msgstr "septembre"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__sequence
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_template__sequence
+msgid "Sequence"
+msgstr "Séquence"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__subject_category__share_issuance
@@ -1409,18 +2154,20 @@ msgstr "Extraordinaire"
 #. module: bf_corporate_governance
 #. odoo-python
 #: code:addons/bf_corporate_governance/models/corporate_resolution_signatory.py:0
-msgid ""
-"Specify the capacity of %s: \"Other\" without text would print a name with "
-"no capacity."
-msgstr ""
-"Précisez la qualité de %s : « Autre » sans texte imprimerait un nom sans "
-"qualité."
+msgid "Specify the capacity of %s: \"Other\" without text would print a name with no capacity."
+msgstr "Précisez la qualité de %s : « Autre » sans texte imprimerait un nom sans qualité."
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
-#. bf_securetransfer, bf_security_awareness, hosting_management
-#. odoo-javascript
-#. odoo-python
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_template__code
+msgid "Stable identifier of the obligation, used to recognise it from one fiscal year to the next."
+msgstr "Identifiant stable de l'obligation, qui la fait reconnaître d'un exercice à l'autre."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_qc_cnesst_wage_statement
+msgid "Statement of wages (CNESST)"
+msgstr "Déclaration des salaires (CNESST)"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__status
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__status
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
@@ -1430,8 +2177,6 @@ msgid "Status"
 msgstr "Statut"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__activity_state
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__activity_state
 msgid ""
@@ -1461,6 +2206,68 @@ msgid "Superseded by"
 msgstr "Remplacé par"
 
 #. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_ca_t4_return
+msgid "T4 slips and Summary"
+msgstr "Feuillets T4 et Sommaire"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,name:bf_corporate_governance.tpl_ca_t5_return
+msgid "T5 slips and Summary (dividends)"
+msgstr "Feuillets T5 et Sommaire (dividendes)"
+
+#. module: bf_corporate_governance
+#: model:ir.model,name:bf_corporate_governance.model_knowledge_dashboard
+msgid "Tableau de bord des connaissances"
+msgstr "Tableau de bord des connaissances"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__scope__tax
+msgid "Tax"
+msgstr "Fiscalité"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate__include_tax
+msgid "Tax obligations"
+msgstr "Obligations fiscales"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__tax_payment
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__tax_payment
+msgid "Tax payment"
+msgstr "Paiement d'impôt"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_event__event_type__tax_return
+#: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_compliance_template__event_type__tax_return
+msgid "Tax return"
+msgstr "Déclaration de revenus"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_co17_balance_due
+msgid "Taxation Act (I-3), s. 1 \"balance-due day\" and 1027"
+msgstr "Loi sur les impôts (I-3), art. 1 « date d'échéance du solde » et 1027"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_co17_return
+msgid "Taxation Act (I-3), s. 1000"
+msgstr "Loi sur les impôts (I-3), art. 1000"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_tp985_22_return
+msgid "Taxation Act (I-3), s. 985.22"
+msgstr "Loi sur les impôts (I-3), art. 985.22"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,legal_basis:bf_corporate_governance.tpl_qc_tp997_1_return
+msgid "Taxation Act (I-3), s. 997.1"
+msgstr "Loi sur les impôts (I-3), art. 997.1"
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__template_id
+msgid "Template"
+msgstr "Gabarit"
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_director__end_reason__term_expired
 msgid "Term expired"
 msgstr "Mandat expiré"
@@ -1471,18 +2278,21 @@ msgid "Termination resolution"
 msgstr "Résolution de fin"
 
 #. module: bf_corporate_governance
-#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__signatory_ids
-msgid ""
-"The people who sign the resolution, with the capacity in which they sign it."
-" Left empty, only a board resolution can be inferred, from its directors in "
-"office on the meeting date."
-msgstr ""
-"Les personnes qui signent la résolution, avec la qualité en laquelle elles "
-"la signent. Laissé vide, seule une résolution du conseil se déduit — de ses "
-"administrateurs en poste à la date de la séance."
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_coop_auditor
+msgid "The audit is mandatory and the auditor must be a CPA (s. 135); no regulatory exemption is in force since S.Q. 2026, c. 1. A review engagement can replace it if two thirds of the members present agree (s. 139), decided each year."
+msgstr "L'audit est obligatoire et l'auditeur doit être CPA (art. 135); aucune exemption réglementaire n'est en vigueur depuis L.Q. 2026, c. 1. Une mission d'examen peut le remplacer si les deux tiers des membres présents y consentent (art. 139), à décider chaque année."
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__signatory_ids
+msgid "The people who sign the resolution, with the capacity in which they sign it. Left empty, only a board resolution can be inferred, from its directors in office on the meeting date."
+msgstr "Les personnes qui signent la résolution, avec la qualité en laquelle elles la signent. Laissé vide, seule une résolution du conseil se déduit — de ses administrateurs en poste à la date de la séance."
+
+#. module: bf_corporate_governance
+#: model:ir.model.constraint,message:bf_corporate_governance.constraint_corporate_compliance_event_template_year_uniq
+msgid "This obligation was already generated for this company and fiscal year."
+msgstr "Cette obligation a déjà été générée pour cette société et cet exercice."
+
+#. module: bf_corporate_governance
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__title
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__name
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_officer_view_search
@@ -1495,18 +2305,17 @@ msgid "Treasurer"
 msgstr "Trésorier"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_fundraising_web,
-#. bf_nextcloud_browser, bf_security_awareness, hosting_management
-#. odoo-javascript
-#. odoo-python
+#: model:ir.model.constraint,message:bf_corporate_governance.constraint_corporate_compliance_template_code_uniq
+msgid "Two compliance templates cannot share a code."
+msgstr "Deux gabarits de conformité ne peuvent pas partager un code."
+
+#. module: bf_corporate_governance
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_compliance_view_search
 #: model_terms:ir.ui.view,arch_db:bf_corporate_governance.corporate_resolution_view_search
 msgid "Type"
 msgstr "Type"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__activity_exception_decoration
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__activity_exception_decoration
 msgid "Type of the exception activity on record."
@@ -1557,8 +2366,6 @@ msgid "WHEREAS..."
 msgstr "ATTENDU QUE..."
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__website_message_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__website_message_ids
 #: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__website_message_ids
@@ -1567,14 +2374,52 @@ msgid "Website Messages"
 msgstr "Messages du site web"
 
 #. module: bf_corporate_governance
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__website_message_ids
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__website_message_ids
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__website_message_ids
 #: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__website_message_ids
 msgid "Website communication history"
 msgstr "Historique de communication du site web"
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_sst_action_plan
+msgid "Within 12 months of the previous update: adjust the date to the plan's anniversary. The workers designate a health and safety liaison officer (s. 97.1)."
+msgstr "Dans les 12 mois de la mise à jour précédente : ajuster la date sur l'anniversaire du plan. Les travailleurs désignent un agent de liaison en santé et sécurité (art. 97.1)."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_sst_prevention_program
+msgid "Within 12 months of the previous update: adjust the date to the program's anniversary. The threshold is counted per establishment, loaned workers included. Same threshold: a health and safety committee meeting at least once per calendar quarter, a representative, and a report of priorities to the CNESST every 3 years (s. 60)."
+msgstr "Dans les 12 mois de la mise à jour précédente : ajuster la date sur l'anniversaire du programme. Le seuil se compte par établissement, travailleurs prêtés compris. Même seuil : un comité de santé et de sécurité qui se réunit au moins une fois par trimestre civil, un représentant, et un rapport des priorités à la CNESST tous les 3 ans (art. 60)."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_coop_report_minister
+msgid "Within 30 days of the annual meeting, and to the federation if the cooperative is a member. The deadline offered is the latest possible one; move it to 30 days after the actual meeting date."
+msgstr "Dans les 30 jours de l'assemblée annuelle, et à la fédération si la coopérative en est membre. L'échéance proposée est la plus tardive possible : la ramener à 30 jours après la date réelle de l'assemblée."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_req_annual_update
+msgid "Within 6 months of the end of the taxation year, for a legal person that files a CO-17; none the year of registration. If nothing changed, the box of the CO-17 is enough (s. 46). The 15 June date only concerns natural persons and partnerships. A registered charity exempt from the CO-17 files from 15 May to 15 November: read its date on the enterprise's statement of information."
+msgstr "Dans les 6 mois de la fin de l'année d'imposition, pour une personne morale qui produit une CO-17; aucune l'année de l'immatriculation. Si rien n'a changé, la case de la CO-17 suffit (art. 46). Le 15 juin ne vise que les personnes physiques et les sociétés de personnes. Un organisme de bienfaisance enregistré dispensé de la CO-17 la produit du 15 mai au 15 novembre : lire sa date à l'état des renseignements de l'entreprise."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_spa_agm
+msgid "Within 6 months of the fiscal year end, since the financial statements presented must be for a year ended in the previous 6 months (s. 225), and within 15 months of the previous meeting (s. 163; first meeting: 18 months from incorporation). A written resolution signed by all the voting shareholders can take its place (s. 178). Notice: at least 10 days before (s. 165)."
+msgstr "Dans les 6 mois de la fin de l'exercice, puisque les états financiers présentés doivent porter sur un exercice clos dans les 6 mois précédents (art. 225), et dans les 15 mois de la précédente (art. 163; première assemblée : 18 mois de la constitution). Une résolution écrite signée par tous les actionnaires habiles à voter peut en tenir lieu (art. 178). Avis : au moins 10 jours avant (art. 165)."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_coop_annual_report
+msgid "Within 6 months of the fiscal year end. It contains the financial statements, the auditor's report and the date of the annual meeting."
+msgstr "Dans les 6 mois de la fin de l'exercice. Il contient les états financiers, le rapport de l'auditeur et la date de l'assemblée annuelle."
+
+#. module: bf_corporate_governance
+#: model:corporate.compliance.template,notes:bf_corporate_governance.tpl_qc_coop_agm
+msgid "Within 6 months of the fiscal year end. Mandatory agenda: auditor's report and annual report, allocation of surplus, election of directors, appointment of the auditor."
+msgstr "Dans les 6 mois de la fin de l'exercice. Ordre du jour obligatoire : rapport de l'auditeur et rapport annuel, affectation des trop-perçus, élection des administrateurs, nomination de l'auditeur."
+
+#. module: bf_corporate_governance
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_generate_line__wizard_id
+msgid "Wizard"
+msgstr "Assistant"
 
 #. module: bf_corporate_governance
 #: model:ir.model.fields.selection,name:bf_corporate_governance.selection__corporate_resolution__meeting_type__written
@@ -1605,6 +2450,13 @@ msgid "for the sole purpose of attesting the disclosure of interest"
 msgstr "aux seules fins d'attester la dénonciation d'intérêt"
 
 #. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance_template.py:0
+#, python-format
+msgid "Last day of %(month)s of the year after the fiscal year ends"
+msgstr "Fin %(month)s de l'année qui suit la fin de l'exercice"
+
+#. module: bf_corporate_governance
 #. odoo-javascript
 #: code:addons/bf_corporate_governance/static/src/xml/corporate_dashboard.xml:0
 msgid "overdue corporate obligation(s)"
@@ -1615,3 +2467,75 @@ msgstr "obligation(s) corporative(s) en retard"
 #: code:addons/bf_corporate_governance/models/corporate_resolution_signatory.py:0
 msgid "this signatory"
 msgstr "ce signataire"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__failed_message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__failed_message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__failed_message_ids
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__failed_message_ids
+msgid "Failed Messages"
+msgstr "Messages en échec"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_content
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_content
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_content
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__message_search
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_director__message_search
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_officer__message_search
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__message_search
+msgid "Message Search"
+msgstr "Recherche de message"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_content
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_content
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_content
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Contenu du message, à n'utiliser que dans les recherches"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_compliance_event__message_search
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_director__message_search
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_officer__message_search
+#: model:ir.model.fields,help:bf_corporate_governance.field_corporate_resolution__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Recherche de message, à n'utiliser que dans les recherches"
+
+#. module: bf_corporate_governance
+#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
+#. bf_security_awareness, hosting_management
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_compliance_event__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_corporate_governance.field_corporate_resolution__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement du calendrier de la prochaine activité"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/corporate_compliance_template.py:0
+#, python-format
+msgid "%s (copy)"
+msgstr "%s (copie)"
+
+#. module: bf_corporate_governance
+#. odoo-python
+#: code:addons/bf_corporate_governance/models/res_company.py:0
+#, python-format
+msgid "The fiscal year end day must be between 1 and 31 (31: last day of the month)."
+msgstr "Le jour de fin d'exercice doit être entre 1 et 31 (31 : dernier jour du mois)."

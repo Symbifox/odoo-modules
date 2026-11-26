@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le catalogue des obligations. Des RÈGLES, jamais une date.
+         noupdate="0" : une montée corrige un gabarit livré; elle ne touche aucun
+         événement déjà généré, qui garde sa copie. Produit par gen_catalogue.py
+         (textes lus en vigueur, LégisQuébec à jour au 2026-10-15). -->
+    <data noupdate="0">
+
+        <record id="tpl_qc_spa_agm" model="corporate.compliance.template">
+            <field name="name">Annual shareholders' meeting</field>
+            <field name="code">qc_spa_agm</field>
+            <field name="sequence">100</field>
+            <field name="legal_form">qc_business_corporation</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">agm</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="cap_months_after_previous">15</field>
+            <field name="first_cap_months_after_incorporation">18</field>
+            <field name="legal_basis">LSAQ, s. 163 and 225</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/S-31.1#se:163</field>
+            <field name="notes">Within 6 months of the fiscal year end, since the financial statements presented must be for a year ended in the previous 6 months (s. 225), and within 15 months of the previous meeting (s. 163; first meeting: 18 months from incorporation). A written resolution signed by all the voting shareholders can take its place (s. 178). Notice: at least 10 days before (s. 165).</field>
+        </record>
+
+        <record id="tpl_qc_spa_fs_approval" model="corporate.compliance.template">
+            <field name="name">Approval and signature of the financial statements</field>
+            <field name="code">qc_spa_fs_approval</field>
+            <field name="sequence">101</field>
+            <field name="legal_form">qc_business_corporation</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">financial_approval</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">LSAQ, s. 226 and 227</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/S-31.1#se:227</field>
+            <field name="notes">Approved by the board before they are presented at the annual meeting. A director signs them as proof of the approval (s. 227, para. 2): check that the signature lines of the statements delivered by the accountant are actually signed.</field>
+        </record>
+
+        <record id="tpl_qc_spa_director_election" model="corporate.compliance.template">
+            <field name="name">Election of directors</field>
+            <field name="code">qc_spa_director_election</field>
+            <field name="sequence">102</field>
+            <field name="legal_form">qc_business_corporation</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">director_election</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">LSAQ, s. 110</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/S-31.1#se:110</field>
+            <field name="condition">If a director's term ends at this meeting</field>
+            <field name="notes">At the annual meeting. Terms are set by the by-laws and last at most 3 years; a term with no stated length ends at the close of the next annual meeting.</field>
+        </record>
+
+        <record id="tpl_qc_spa_auditor" model="corporate.compliance.template">
+            <field name="name">Auditor: appointment or exemption</field>
+            <field name="code">qc_spa_auditor</field>
+            <field name="sequence">103</field>
+            <field name="legal_form">qc_business_corporation</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">auditor_appointment</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">LSAQ, s. 231 and 239</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/S-31.1#se:239</field>
+            <field name="notes">Appointed at each annual meeting (s. 231). A corporation that is not a reporting issuer may do without one if all the shareholders, voting or not, agree (s. 239); the exemption only lasts until the next annual meeting, so it is renewed every year.</field>
+        </record>
+
+        <record id="tpl_qc_npo_agm" model="corporate.compliance.template">
+            <field name="name">Annual general meeting of members</field>
+            <field name="code">qc_npo_agm</field>
+            <field name="sequence">204</field>
+            <field name="legal_form">qc_nonprofit</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">agm</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">4</field>
+            <field name="legal_basis">Companies Act (C-38), s. 98 and 224</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-38#se:98</field>
+            <field name="notes">Held every year at the time the by-laws set. The balance sheet presented must be made up to a date no more than 4 months before the meeting (s. 98, para. 2 a)), hence 4 months after the fiscal year end; 6 months if the organisation operates outside Québec and the meeting so resolves. Part III provides no written resolution of the members in place of the meeting.</field>
+        </record>
+
+        <record id="tpl_qc_npo_fs_presentation" model="corporate.compliance.template">
+            <field name="name">Presentation of the financial statements</field>
+            <field name="code">qc_npo_fs_presentation</field>
+            <field name="sequence">205</field>
+            <field name="legal_form">qc_nonprofit</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">financial_approval</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">4</field>
+            <field name="legal_basis">Companies Act (C-38), s. 98, para. 2</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-38#se:98</field>
+            <field name="notes">Balance sheet and statement of revenue and expenses, presented at the annual meeting.</field>
+        </record>
+
+        <record id="tpl_qc_npo_director_election" model="corporate.compliance.template">
+            <field name="name">Election of directors</field>
+            <field name="code">qc_npo_director_election</field>
+            <field name="sequence">206</field>
+            <field name="legal_form">qc_nonprofit</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">director_election</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">4</field>
+            <field name="legal_basis">Companies Act (C-38), s. 89</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-38#se:89</field>
+            <field name="notes">Every year by default, unless the letters patent or the by-laws provide otherwise. At least 3 directors (s. 83); without an election, the outgoing directors stay in office (s. 85).</field>
+        </record>
+
+        <record id="tpl_qc_npo_member_list" model="corporate.compliance.template">
+            <field name="name">Annual list of members</field>
+            <field name="code">qc_npo_member_list</field>
+            <field name="sequence">207</field>
+            <field name="legal_form">qc_nonprofit</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">other</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">4</field>
+            <field name="legal_basis">Companies Act (C-38), s. 223</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-38#se:223</field>
+            <field name="notes">A list of members must be prepared every year. The Act sets no date: it is set here at the annual meeting.</field>
+        </record>
+
+        <record id="tpl_qc_npo_auditor" model="corporate.compliance.template">
+            <field name="name">Appointment of the auditor</field>
+            <field name="code">qc_npo_auditor</field>
+            <field name="sequence">208</field>
+            <field name="legal_form">qc_nonprofit</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">auditor_appointment</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">4</field>
+            <field name="legal_basis">By-laws of the organisation (C-38, s. 224: s. 113 does not apply)</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-38#se:224</field>
+            <field name="condition">If the by-laws, a sector law or a funder require one</field>
+            <field name="notes">Part III of the Companies Act imposes no auditor: s. 224 excludes ss. 113 and 114. Do not cite s. 113 as the basis for a non-profit.</field>
+        </record>
+
+        <record id="tpl_qc_coop_annual_report" model="corporate.compliance.template">
+            <field name="name">Preparation of the annual report</field>
+            <field name="code">qc_coop_annual_report</field>
+            <field name="sequence">309</field>
+            <field name="legal_form">qc_cooperative</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">annual_report</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Cooperatives Act (C-67.2), s. 132</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-67.2#se:132</field>
+            <field name="notes">Within 6 months of the fiscal year end. It contains the financial statements, the auditor's report and the date of the annual meeting.</field>
+        </record>
+
+        <record id="tpl_qc_coop_agm" model="corporate.compliance.template">
+            <field name="name">Annual general meeting</field>
+            <field name="code">qc_coop_agm</field>
+            <field name="sequence">310</field>
+            <field name="legal_form">qc_cooperative</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">agm</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Cooperatives Act (C-67.2), s. 76</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-67.2#se:76</field>
+            <field name="notes">Within 6 months of the fiscal year end. Mandatory agenda: auditor's report and annual report, allocation of surplus, election of directors, appointment of the auditor.</field>
+        </record>
+
+        <record id="tpl_qc_coop_fs_approval" model="corporate.compliance.template">
+            <field name="name">Approval of the financial statements</field>
+            <field name="code">qc_coop_fs_approval</field>
+            <field name="sequence">311</field>
+            <field name="legal_form">qc_cooperative</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">financial_approval</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Cooperatives Act (C-67.2), s. 133</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-67.2#se:133</field>
+            <field name="notes">Approved by the board and attested by two directors (a business corporation needs one).</field>
+        </record>
+
+        <record id="tpl_qc_coop_director_election" model="corporate.compliance.template">
+            <field name="name">Election of directors</field>
+            <field name="code">qc_coop_director_election</field>
+            <field name="sequence">312</field>
+            <field name="legal_form">qc_cooperative</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">director_election</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Cooperatives Act (C-67.2), s. 76 and 84</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-67.2#se:84</field>
+            <field name="notes">One-year terms, or 2 to 3 years with staggered terms set by by-law. A cooperative of fewer than 25 members may agree in writing, with 90% of the members, not to elect directors (s. 61), for one year at a time.</field>
+        </record>
+
+        <record id="tpl_qc_coop_auditor" model="corporate.compliance.template">
+            <field name="name">Auditor: appointment or review engagement</field>
+            <field name="code">qc_coop_auditor</field>
+            <field name="sequence">313</field>
+            <field name="legal_form">qc_cooperative</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">auditor_appointment</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Cooperatives Act (C-67.2), s. 135 and 139</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-67.2#se:135</field>
+            <field name="notes">The audit is mandatory and the auditor must be a CPA (s. 135); no regulatory exemption is in force since S.Q. 2026, c. 1. A review engagement can replace it if two thirds of the members present agree (s. 139), decided each year.</field>
+        </record>
+
+        <record id="tpl_qc_coop_report_minister" model="corporate.compliance.template">
+            <field name="name">Annual report sent to the Minister</field>
+            <field name="code">qc_coop_report_minister</field>
+            <field name="sequence">314</field>
+            <field name="legal_form">qc_cooperative</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">annual_report</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="offset_days">30</field>
+            <field name="legal_basis">Cooperatives Act (C-67.2), s. 134</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/C-67.2#se:134</field>
+            <field name="notes">Within 30 days of the annual meeting, and to the federation if the cooperative is a member. The deadline offered is the latest possible one; move it to 30 days after the actual meeting date.</field>
+        </record>
+
+        <record id="tpl_qc_req_annual_update" model="corporate.compliance.template">
+            <field name="name">Annual updating declaration (REQ)</field>
+            <field name="code">qc_req_annual_update</field>
+            <field name="sequence">415</field>
+            <field name="legal_form">any</field>
+            <field name="scope">corporate</field>
+            <field name="event_type">annual_declaration</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Act respecting the legal publicity of enterprises (P-44.1), s. 45; P-44.1, r. 1, s. 3, para. 1</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/rc/P-44.1,%20r.%201#se:3</field>
+            <field name="notes">Within 6 months of the end of the taxation year, for a legal person that files a CO-17; none the year of registration. If nothing changed, the box of the CO-17 is enough (s. 46). The 15 June date only concerns natural persons and partnerships. A registered charity exempt from the CO-17 files from 15 May to 15 November: read its date on the enterprise's statement of information.</field>
+        </record>
+
+        <record id="tpl_ca_t2_return" model="corporate.compliance.template">
+            <field name="name">Federal corporation income tax return (T2)</field>
+            <field name="code">ca_t2_return</field>
+            <field name="sequence">416</field>
+            <field name="legal_form">any</field>
+            <field name="scope">tax</field>
+            <field name="event_type">tax_return</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Income Tax Act, s. 150(1)(a)</field>
+            <field name="reference_url">https://laws-lois.justice.gc.ca/fra/lois/I-3.3/</field>
+            <field name="notes">Every resident corporation, a non-profit legal person and a cooperative included. A charity registered for the whole year files the T3010 instead (s. 150(1.1)(a)).</field>
+        </record>
+
+        <record id="tpl_qc_co17_return" model="corporate.compliance.template">
+            <field name="name">Québec corporation income tax return (CO-17)</field>
+            <field name="code">qc_co17_return</field>
+            <field name="sequence">417</field>
+            <field name="legal_form">any</field>
+            <field name="scope">tax</field>
+            <field name="event_type">tax_return</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Taxation Act (I-3), s. 1000</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/I-3#se:1000</field>
+            <field name="notes">Every corporation, except a charity registered for the whole year (s. 1003.1). It carries the box of the annual updating declaration of the REQ.</field>
+        </record>
+
+        <record id="tpl_ca_t2_balance_due" model="corporate.compliance.template">
+            <field name="name">Federal balance of tax due</field>
+            <field name="code">ca_t2_balance_due</field>
+            <field name="sequence">418</field>
+            <field name="legal_form">any</field>
+            <field name="scope">tax</field>
+            <field name="event_type">tax_payment</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">2</field>
+            <field name="legal_basis">Income Tax Act, s. 157(1)(b) and 248(1) "balance-due day"</field>
+            <field name="reference_url">https://laws-lois.justice.gc.ca/fra/lois/I-3.3/</field>
+            <field name="condition">If there is a balance of tax to pay</field>
+            <field name="notes">2 months after the fiscal year end; 3 months for a Canadian-controlled private corporation that meets the three conditions of para. (d)(i) of the definition (small business deduction, CCPC all year, taxable income of the previous year within the business limit): move the date if so.</field>
+        </record>
+
+        <record id="tpl_qc_co17_balance_due" model="corporate.compliance.template">
+            <field name="name">Québec balance of tax due</field>
+            <field name="code">qc_co17_balance_due</field>
+            <field name="sequence">419</field>
+            <field name="legal_form">any</field>
+            <field name="scope">tax</field>
+            <field name="event_type">tax_payment</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">2</field>
+            <field name="legal_basis">Taxation Act (I-3), s. 1 "balance-due day" and 1027</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/I-3#se:1027</field>
+            <field name="condition">If there is a balance of tax to pay</field>
+            <field name="notes">2 months after the fiscal year end, with no 3-month extension: the federal rule for a CCPC does not apply to the CO-17.</field>
+        </record>
+
+        <record id="tpl_ca_t4_return" model="corporate.compliance.template">
+            <field name="name">T4 slips and Summary</field>
+            <field name="code">ca_t4_return</field>
+            <field name="sequence">420</field>
+            <field name="legal_form">any</field>
+            <field name="scope">tax</field>
+            <field name="event_type">information_return</field>
+            <field name="anchor">fixed_date</field>
+            <field name="fixed_month">2</field>
+            <field name="fixed_day">31</field>
+            <field name="legal_basis">Income Tax Regulations, s. 200(1) and 205(1)</field>
+            <field name="reference_url">https://laws-lois.justice.gc.ca/fra/reglements/C.R.C.%2C_ch._945/</field>
+            <field name="condition">If the organisation paid salaries or wages during the calendar year</field>
+            <field name="notes">Last day of February, for the calendar year ending in the fiscal year. Within 30 days if the business ceases (s. 205(2)).</field>
+        </record>
+
+        <record id="tpl_qc_rl1_return" model="corporate.compliance.template">
+            <field name="name">RL-1 slips and Summary</field>
+            <field name="code">qc_rl1_return</field>
+            <field name="sequence">421</field>
+            <field name="legal_form">any</field>
+            <field name="scope">tax</field>
+            <field name="event_type">information_return</field>
+            <field name="anchor">fixed_date</field>
+            <field name="fixed_month">2</field>
+            <field name="fixed_day">31</field>
+            <field name="legal_basis">Regulation respecting the Taxation Act (I-3, r. 1), s. 1086R65</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/rc/I-3,%20r.%201#se:1086r65</field>
+            <field name="condition">If the organisation paid salaries or wages during the calendar year</field>
+            <field name="notes">Last day of February, for the calendar year ending in the fiscal year.</field>
+        </record>
+
+        <record id="tpl_ca_t5_return" model="corporate.compliance.template">
+            <field name="name">T5 slips and Summary (dividends)</field>
+            <field name="code">ca_t5_return</field>
+            <field name="sequence">422</field>
+            <field name="legal_form">any</field>
+            <field name="scope">tax</field>
+            <field name="event_type">information_return</field>
+            <field name="anchor">fixed_date</field>
+            <field name="fixed_month">2</field>
+            <field name="fixed_day">31</field>
+            <field name="legal_basis">Income Tax Regulations, s. 201(1)(a) and 205(1)</field>
+            <field name="reference_url">https://laws-lois.justice.gc.ca/fra/reglements/C.R.C.%2C_ch._945/</field>
+            <field name="condition">If dividends were paid during the calendar year</field>
+            <field name="notes">Last day of February, for dividends paid to a resident of Canada during the calendar year.</field>
+        </record>
+
+        <record id="tpl_qc_rl3_return" model="corporate.compliance.template">
+            <field name="name">RL-3 slips (investment income)</field>
+            <field name="code">qc_rl3_return</field>
+            <field name="sequence">423</field>
+            <field name="legal_form">any</field>
+            <field name="scope">tax</field>
+            <field name="event_type">information_return</field>
+            <field name="anchor">fixed_date</field>
+            <field name="fixed_month">2</field>
+            <field name="fixed_day">31</field>
+            <field name="legal_basis">Regulation respecting the Taxation Act (I-3, r. 1), s. 1086R5 and 1086R65</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/rc/I-3,%20r.%201#se:1086r5</field>
+            <field name="condition">If dividends were paid during the calendar year</field>
+            <field name="notes">Last day of February, for dividends paid to an individual resident in Québec or to a corporation with an establishment there.</field>
+        </record>
+
+        <record id="tpl_ca_gst_annual_return" model="corporate.compliance.template">
+            <field name="name">Annual GST/HST return and payment</field>
+            <field name="code">ca_gst_annual_return</field>
+            <field name="sequence">424</field>
+            <field name="legal_form">any</field>
+            <field name="scope">tax</field>
+            <field name="event_type">tax_return</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">3</field>
+            <field name="legal_basis">Excise Tax Act, s. 238(1)(a)(iii) and 228(2)(b)</field>
+            <field name="reference_url">https://laws-lois.justice.gc.ca/fra/lois/E-15/</field>
+            <field name="condition">If registered as an annual filer</field>
+            <field name="notes">3 months after the fiscal year end. Quarterly instalments are due if the instalment base reaches $3,000 (s. 237): they are not generated here.</field>
+        </record>
+
+        <record id="tpl_qc_qst_annual_return" model="corporate.compliance.template">
+            <field name="name">Annual QST return and payment</field>
+            <field name="code">qc_qst_annual_return</field>
+            <field name="sequence">425</field>
+            <field name="legal_form">any</field>
+            <field name="scope">tax</field>
+            <field name="event_type">tax_return</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">3</field>
+            <field name="legal_basis">Act respecting the Québec sales tax (T-0.1), s. 468, 437 and 460</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/T-0.1#se:468</field>
+            <field name="condition">If registered as an annual filer</field>
+            <field name="notes">3 months after the fiscal year end. Quarterly instalments are due if the instalment base reaches $3,000 (s. 458.0.1): they are not generated here.</field>
+        </record>
+
+        <record id="tpl_ca_t1044_return" model="corporate.compliance.template">
+            <field name="name">Non-profit organization information return (T1044)</field>
+            <field name="code">ca_t1044_return</field>
+            <field name="sequence">226</field>
+            <field name="legal_form">qc_nonprofit</field>
+            <field name="scope">tax</field>
+            <field name="event_type">information_return</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Income Tax Act, s. 149(12)</field>
+            <field name="reference_url">https://laws-lois.justice.gc.ca/fra/lois/I-3.3/</field>
+            <field name="condition">If dividends, interest, rents or royalties exceed $10,000, total assets exceeded $200,000 at the end of the previous year, or a T1044 was required for an earlier year</field>
+            <field name="notes">Once required, always required. A registered charity files the T3010 instead.</field>
+        </record>
+
+        <record id="tpl_qc_tp997_1_return" model="corporate.compliance.template">
+            <field name="name">Québec non-profit information return (TP-997.1)</field>
+            <field name="code">qc_tp997_1_return</field>
+            <field name="sequence">227</field>
+            <field name="legal_form">qc_nonprofit</field>
+            <field name="scope">tax</field>
+            <field name="event_type">information_return</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Taxation Act (I-3), s. 997.1</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/I-3#se:997_1</field>
+            <field name="condition">Same three conditions as the T1044</field>
+            <field name="notes">Filed in addition to the CO-17.</field>
+        </record>
+
+        <record id="tpl_ca_t3010_return" model="corporate.compliance.template">
+            <field name="name">Registered charity information return (T3010)</field>
+            <field name="code">ca_t3010_return</field>
+            <field name="sequence">228</field>
+            <field name="legal_form">qc_nonprofit</field>
+            <field name="scope">tax</field>
+            <field name="event_type">information_return</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Income Tax Act, s. 149.1(14)</field>
+            <field name="reference_url">https://laws-lois.justice.gc.ca/fra/lois/I-3.3/</field>
+            <field name="condition">If the organisation is a registered charity</field>
+            <field name="notes">Replaces the T2 and the T1044.</field>
+        </record>
+
+        <record id="tpl_qc_tp985_22_return" model="corporate.compliance.template">
+            <field name="name">Québec registered charity information return (TP-985.22)</field>
+            <field name="code">qc_tp985_22_return</field>
+            <field name="sequence">229</field>
+            <field name="legal_form">qc_nonprofit</field>
+            <field name="scope">tax</field>
+            <field name="event_type">information_return</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">6</field>
+            <field name="legal_basis">Taxation Act (I-3), s. 985.22</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/I-3#se:985_22</field>
+            <field name="condition">If the organisation is a registered charity active in Québec</field>
+            <field name="notes">Québec counterpart of the T3010.</field>
+        </record>
+
+        <record id="tpl_qc_cnesst_wage_statement" model="corporate.compliance.template">
+            <field name="name">Statement of wages (CNESST)</field>
+            <field name="code">qc_cnesst_wage_statement</field>
+            <field name="sequence">430</field>
+            <field name="legal_form">any</field>
+            <field name="scope">ohs</field>
+            <field name="event_type">ohs_filing</field>
+            <field name="anchor">fixed_date</field>
+            <field name="fixed_month">3</field>
+            <field name="fixed_day">14</field>
+            <field name="legal_basis">Act respecting industrial accidents and occupational diseases (A-3.001), s. 291; A-3.001, r. 7, s. 21</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/rc/A-3.001,%20r.%207#se:21</field>
+            <field name="condition">If the organisation paid salaries or wages during the calendar year</field>
+            <field name="notes">Before 15 March, so 14 March at the latest, for the calendar year ending in the fiscal year. Within 45 days if the business ceases. Section 292 of the Act, still cited by many guides, is repealed.</field>
+        </record>
+
+        <record id="tpl_qc_sst_prevention_program" model="corporate.compliance.template">
+            <field name="name">Annual update of the prevention program</field>
+            <field name="code">qc_sst_prevention_program</field>
+            <field name="sequence">431</field>
+            <field name="legal_form">any</field>
+            <field name="scope">ohs</field>
+            <field name="event_type">ohs_program</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">12</field>
+            <field name="cap_months_after_previous">12</field>
+            <field name="legal_basis">Act respecting occupational health and safety (S-2.1), s. 58; S-2.1, r. 8.3, s. 5</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/rc/S-2.1,%20r.%208.3#se:5</field>
+            <field name="condition">If an establishment has 20 or more workers during the year</field>
+            <field name="notes">Within 12 months of the previous update: adjust the date to the program's anniversary. The threshold is counted per establishment, loaned workers included. Same threshold: a health and safety committee meeting at least once per calendar quarter, a representative, and a report of priorities to the CNESST every 3 years (s. 60).</field>
+        </record>
+
+        <record id="tpl_qc_sst_action_plan" model="corporate.compliance.template">
+            <field name="name">Annual update of the action plan</field>
+            <field name="code">qc_sst_action_plan</field>
+            <field name="sequence">432</field>
+            <field name="legal_form">any</field>
+            <field name="scope">ohs</field>
+            <field name="event_type">ohs_program</field>
+            <field name="anchor">fiscal_year_end</field>
+            <field name="offset_months">12</field>
+            <field name="cap_months_after_previous">12</field>
+            <field name="legal_basis">Act respecting occupational health and safety (S-2.1), s. 61.1; S-2.1, r. 8.3, s. 5</field>
+            <field name="reference_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/S-2.1#se:61_1</field>
+            <field name="condition">If every establishment has fewer than 20 workers</field>
+            <field name="notes">Within 12 months of the previous update: adjust the date to the plan's anniversary. The workers designate a health and safety liaison officer (s. 97.1).</field>
+        </record>
+
+    </data>
+</odoo>

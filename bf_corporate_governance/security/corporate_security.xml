@@ -26,5 +26,29 @@
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 
+        <!-- Un événement appartient à UNE société. Sans règle, le
+             calendrier, le tableau de bord et le rapport bimensuel montraient
+             à chaque société les échéances de toutes les autres. -->
+        <record id="corporate_compliance_event_rule_company" model="ir.rule">
+            <field name="name">Compliance events: allowed companies</field>
+            <field name="model_id" ref="model_corporate_compliance_event"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <!-- Le générateur est un transitoire, donc une vraie table : sans règle,
+             un gestionnaire lirait le formulaire d'un autre. Règles GLOBALES (pas
+             de groupe), comme celles du cœur sur mail.compose.message. -->
+        <record id="corporate_compliance_generate_rule_owner" model="ir.rule">
+            <field name="name">Compliance generator: own forms only</field>
+            <field name="model_id" ref="model_corporate_compliance_generate"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        </record>
+
+        <record id="corporate_compliance_generate_line_rule_owner" model="ir.rule">
+            <field name="name">Compliance generator lines: own forms only</field>
+            <field name="model_id" ref="model_corporate_compliance_generate_line"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        </record>
+
     </data>
 </odoo>

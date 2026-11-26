@@ -4,7 +4,12 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    'version': '18.0.1.2.0',
+    # 18.0.2.0.0 : le module livre des GABARITS d'obligations, plus des
+    #   événements datés. Les cinq événements de l'éditeur que chaque base
+    #   recevait sortent (retirés s'ils sont intacts, détachés sinon), un générateur
+    #   dépose les événements d'un exercice par société, et le calendrier couvre la
+    #   société par actions, l'OBNL, la coopérative, le fiscal et la SST.
+    'version': '18.0.2.0.0',
     'category': 'Services/Project',
     'summary': 'Résolutions, registres corporatifs et calendrier de conformité',
     'description': """
@@ -27,7 +32,9 @@ Fonctionnalités:
   de la séance plutôt qu'aujourd'hui
 * Registre des administrateurs, avec domicile pour la résidence LSAQ
 * Registre des dirigeants
-* Calendrier de conformité corporative avec rappels automatiques
+* Calendrier de conformité avec rappels automatiques, généré par exercice et
+  par société depuis des gabarits : société par actions, OBNL et coopérative
+  du Québec, volets fiscal et santé-sécurité
 * Livre des minutes rattaché aux documents de la base de connaissances
 * Bloc de gouvernance sur le tableau de bord des connaissances
 * Chiffres corporatifs dans le rapport bimensuel par courriel
@@ -44,8 +51,10 @@ Fonctionnalités:
         # Sécurité d'abord
         'security/corporate_security.xml',
         'security/ir.model.access.csv',
-        # Données de référence
-        'data/corporate_compliance_data.xml',
+        # Données de référence : le catalogue des obligations, puis le retrait des
+        # événements datés d'avant 18.0.2.0.0 (une fonction, rejouée à chaque montée).
+        'data/corporate_compliance_template_data.xml',
+        'data/corporate_compliance_cleanup.xml',
         'data/corporate_cron.xml',
         # Rapports
         'report/corporate_resolution_templates.xml',
@@ -53,6 +62,9 @@ Fonctionnalités:
         'views/corporate_resolution_views.xml',
         'views/corporate_director_views.xml',
         'views/corporate_officer_views.xml',
+        # Gabarits et générateur AVANT le calendrier : sa liste porte le bouton
+        # du générateur, par %(…)d.
+        'views/corporate_compliance_template_views.xml',
         'views/corporate_compliance_views.xml',
         # Actions de forage du rapport courriel : charge APRÈS les vues
         # qu'elle référence en search_view_id.

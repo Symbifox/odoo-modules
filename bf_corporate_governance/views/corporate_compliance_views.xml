@@ -25,10 +25,13 @@
                         <group string="Details">
                             <field name="event_type"/>
                             <field name="fiscal_year"/>
+                            <field name="fiscal_year_end"/>
                             <field name="due_date"/>
                             <field name="completed_date"/>
                         </group>
                         <group string="Reference">
+                            <field name="legal_basis"/>
+                            <field name="template_id" readonly="1" invisible="not template_id"/>
                             <field name="resolution_id"/>
                             <field name="filing_reference"/>
                             <field name="company_id" groups="base.group_multi_company"/>
@@ -53,12 +56,19 @@
                   decoration-warning="status == 'due_soon'"
                   decoration-success="status == 'upcoming'"
                   decoration-muted="status == 'completed'">
+                <header>
+                    <button name="%(corporate_compliance_generate_action)d" type="action"
+                            string="Generate a fiscal year" display="always"
+                            groups="bf_corporate_governance.group_corporate_manager"/>
+                </header>
                 <field name="name"/>
                 <field name="event_type"/>
                 <field name="fiscal_year" optional="show"/>
                 <field name="due_date"/>
                 <field name="completed_date"/>
                 <field name="filing_reference" optional="show"/>
+                <field name="legal_basis" optional="hide"/>
+                <field name="company_id" optional="show" groups="base.group_multi_company"/>
                 <field name="status" widget="badge"
                        decoration-danger="status == 'overdue'"
                        decoration-warning="status == 'due_soon'"
@@ -102,6 +112,9 @@
                 <filter string="Pending" name="pending"
                         domain="[('completed_date', '=', False)]"/>
                 <separator/>
+                <filter string="Generated from a template" name="from_template"
+                        domain="[('template_id', '!=', False)]"/>
+                <separator/>
                 <group expand="0" string="Group by">
                     <filter string="Type" name="group_type"
                             context="{'group_by': 'event_type'}"/>
@@ -109,6 +122,9 @@
                             context="{'group_by': 'status'}"/>
                     <filter string="Fiscal year" name="group_fiscal_year"
                             context="{'group_by': 'fiscal_year'}"/>
+                    <filter string="Company" name="group_company"
+                            context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
                 </group>
             </search>
         </field>

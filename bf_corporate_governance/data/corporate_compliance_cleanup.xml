@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Retirer, à CHAQUE installation et montée, les cinq événements datés
+         que data/corporate_compliance_data.xml livrait jusqu'à 18.0.1.2.0, s'ils sont
+         intacts. Une fonction de données plutôt qu'une migration : voir la docstring
+         de corporate.compliance.event._retirer_semis_livres. Sans effet une fois faite. -->
+    <function model="corporate.compliance.event" name="_retirer_semis_livres"/>
+</odoo>

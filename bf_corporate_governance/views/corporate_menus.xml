@@ -40,6 +40,18 @@
               action="corporate_compliance_action"
               sequence="40"/>
 
+    <menuitem id="menu_corporate_compliance_generate"
+              name="Generate a fiscal year"
+              parent="menu_corporate_parent"
+              action="corporate_compliance_generate_action"
+              sequence="41"/>
+
+    <menuitem id="menu_corporate_compliance_template"
+              name="Compliance templates"
+              parent="menu_corporate_parent"
+              action="corporate_compliance_template_action"
+              sequence="45"/>
+
     <menuitem id="menu_corporate_minute_book"
               name="Minute book"
               parent="menu_corporate_parent"

@@ -28,6 +28,29 @@ MODELES = [
 ]
 
 
+
+from ..models.corporate_compliance import SEMIS_LIVRES
+
+# 18.0.2.0.0 : identifiants nés après l'extraction, hors gabarits livrés.
+ARRIVES_APRES_EXTRACTION = {
+    'access_corporate_compliance_template_user',
+    'access_corporate_compliance_template_manager',
+    'access_corporate_compliance_generate_manager',
+    'access_corporate_compliance_generate_line_manager',
+    'corporate_compliance_event_rule_company',
+    'corporate_compliance_generate_rule_owner',
+    'corporate_compliance_generate_line_rule_owner',
+    'corporate_compliance_template_view_list',
+    'corporate_compliance_template_view_form',
+    'corporate_compliance_template_view_search',
+    'corporate_compliance_template_action',
+    'corporate_compliance_generate_view_form',
+    'corporate_compliance_generate_action',
+    'res_company_view_form_corporate',
+    'menu_corporate_compliance_generate',
+    'menu_corporate_compliance_template',
+}
+
 class TestExtraction(TransactionCase):
 
     # Ce qu'Odoo engendre en reflétant le code : la migration les prend par
@@ -123,7 +146,15 @@ class TestExtraction(TransactionCase):
         a_lister = self._xmlids_declares(MODULE)
         # Garde-fou : un inventaire vide passerait au vert sans rien éprouver.
         self.assertTrue(a_lister, 'Aucun enregistrement déclaré par %s' % MODULE)
-        oublies = sorted(a_lister - set(passe.XMLIDS))
+        # Nés APRÈS l'extraction (18.0.2.0.0) : jamais sous le socle, donc rien
+        # à déplacer. Les gabarits livrés s'y ajoutent, par leur modèle.
+        neufs = ARRIVES_APRES_EXTRACTION | set(self.env['ir.model.data'].search([
+            ('module', '=', MODULE), ('model', '=', 'corporate.compliance.template'),
+        ]).mapped('name'))
+        self.assertFalse(
+            self.env['ir.model.data'].search([('module', '=', SOCLE), ('name', 'in', list(neufs))]),
+            "Un identifiant « neuf » existe sous le socle : il fallait le déplacer")
+        oublies = sorted(a_lister - set(passe.XMLIDS) - neufs)
         self.assertFalse(
             oublies,
             "Déclarés par %s mais absents de XMLIDS dans la migration : %s"
@@ -133,7 +164,10 @@ class TestExtraction(TransactionCase):
         # Et l'inverse : un identifiant listé dans la migration mais que le
         # module ne déclare plus resterait sous l'ancien nom sans que rien ne
         # le dise, jusqu'à ce qu'Odoo l'efface.
-        surplus = sorted(set(passe.XMLIDS) - self._xmlids(MODULE))
+        # Les cinq événements datés d'avant 18.0.2.0.0 restent VOLONTAIREMENT dans la
+        # liste : chez un locataire resté sur un vieux socle, c'est elle
+        # qui les remet à ce module, dont la fonction de retrait les enlève ensuite.
+        surplus = sorted(set(passe.XMLIDS) - self._xmlids(MODULE) - set(SEMIS_LIVRES))
         self.assertFalse(
             surplus,
             "Listés par la migration mais absents de %s : %s"

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Gabarits d'obligations : le catalogue, jamais une date. -->
+    <record id="corporate_compliance_template_view_list" model="ir.ui.view">
+        <field name="name">corporate.compliance.template.list</field>
+        <field name="model">corporate.compliance.template</field>
+        <field name="arch" type="xml">
+            <list string="Compliance templates">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="legal_form"/>
+                <field name="scope"/>
+                <field name="event_type" optional="hide"/>
+                <field name="deadline_rule"/>
+                <field name="legal_basis" optional="show"/>
+                <field name="condition" optional="show"/>
+                <field name="code" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="corporate_compliance_template_view_form" model="ir.ui.view">
+        <field name="name">corporate.compliance.template.form</field>
+        <field name="model">corporate.compliance.template</field>
+        <field name="arch" type="xml">
+            <form string="Compliance template">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Obligation">
+                            <field name="active" invisible="1"/>
+                            <field name="code"/>
+                            <field name="legal_form"/>
+                            <field name="scope"/>
+                            <field name="event_type"/>
+                            <field name="condition"/>
+                        </group>
+                        <group string="Deadline">
+                            <field name="anchor"/>
+                            <field name="offset_months" invisible="anchor != 'fiscal_year_end'"/>
+                            <field name="offset_days" invisible="anchor != 'fiscal_year_end'"/>
+                            <field name="fixed_month" invisible="anchor != 'fixed_date'"
+                                   required="anchor == 'fixed_date'"/>
+                            <field name="fixed_day" invisible="anchor != 'fixed_date'"/>
+                            <field name="cap_months_after_previous"/>
+                            <field name="first_cap_months_after_incorporation"/>
+                            <field name="deadline_rule"/>
+                        </group>
+                    </group>
+                    <group string="Legal basis">
+                        <field name="legal_basis"/>
+                        <field name="reference_url" widget="url"/>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="corporate_compliance_template_view_search" model="ir.ui.view">
+        <field name="name">corporate.compliance.template.search</field>
+        <field name="model">corporate.compliance.template</field>
+        <field name="arch" type="xml">
+            <search string="Search compliance templates">
+                <field name="name"/>
+                <field name="legal_basis"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter string="Legal form" name="group_legal_form"
+                            context="{'group_by': 'legal_form'}"/>
+                    <filter string="Area" name="group_scope"
+                            context="{'group_by': 'scope'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="corporate_compliance_template_action" model="ir.actions.act_window">
+        <field name="name">Compliance templates</field>
+        <field name="res_model">corporate.compliance.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="corporate_compliance_template_view_search"/>
+        <field name="context">{'search_default_group_legal_form': 1}</field>
+    </record>
+
+    <!-- Le générateur -->
+    <record id="corporate_compliance_generate_view_form" model="ir.ui.view">
+        <field name="name">corporate.compliance.generate.form</field>
+        <field name="model">corporate.compliance.generate</field>
+        <field name="arch" type="xml">
+            <form string="Generate a fiscal year">
+                <group>
+                    <group>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="legal_form"/>
+                        <field name="incorporation_date"/>
+                    </group>
+                    <group>
+                        <field name="fiscal_year_end"/>
+                        <field name="fiscal_year"/>
+                        <field name="include_tax"/>
+                        <field name="include_ohs"/>
+                        <field name="remember"/>
+                    </group>
+                </group>
+                <field name="line_ids" nolabel="1">
+                    <list editable="bottom" create="0" delete="0"
+                          decoration-muted="already_generated">
+                        <field name="sequence" column_invisible="1"/>
+                        <field name="selected" readonly="already_generated" force_save="1" widget="boolean_toggle"/>
+                        <field name="template_id" readonly="1" force_save="1"/>
+                        <field name="scope" optional="show"/>
+                        <field name="due_date" readonly="already_generated" force_save="1"/>
+                        <field name="legal_basis" optional="show"/>
+                        <field name="condition" optional="show"/>
+                        <field name="already_generated" force_save="1"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_generate" type="object" string="Generate"
+                            class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="corporate_compliance_generate_action" model="ir.actions.act_window">
+        <field name="name">Generate a fiscal year</field>
+        <field name="res_model">corporate.compliance.generate</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Le profil corporatif, sur la fiche de la société -->
+    <record id="res_company_view_form_corporate" model="ir.ui.view">
+        <field name="name">res.company.form.corporate</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Corporate profile" name="corporate_profile"
+                      groups="bf_corporate_governance.group_corporate_manager">
+                    <group>
+                        <group>
+                            <field name="corporate_legal_form"/>
+                            <field name="corporate_incorporation_date"/>
+                        </group>
+                        <group string="Fiscal year end">
+                            <field name="corporate_fy_end_month"/>
+                            <field name="corporate_fy_end_day"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
