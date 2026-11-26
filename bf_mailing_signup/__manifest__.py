@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Inscription publique à une liste d'envoi",
-    "version": "18.0.1.3.1",
+    "version": "18.0.1.3.2",
     "category": "Marketing",
     "summary": "Formulaire d'infolettre en HTML pur, à double consentement, "
                "sans reCaptcha ni ressource tierce",

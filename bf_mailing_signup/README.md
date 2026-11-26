@@ -138,7 +138,7 @@ Trois choses, apprises ailleurs, y sont volontaires :
 | Clé | Défaut | Rôle |
 |---|---|---|
 | `bf_mailing_signup.list_id` | *(aucun)* | La `mailing.list` visée. **Sans elle, rien ne s'inscrit** et un avertissement est journalisé. |
-| `bf_mailing_signup.base_url` | `https://symbifox.com` | Le domaine écrit dans le lien de confirmation. |
+| `bf_mailing_signup.base_url` | *(aucun)* | Le site qui porte les formulaires, en `schéma://hôte` seulement (`https://symbifox.com`, sans chemin : les blocs du proxy sont à correspondance exacte). Écrit dans le lien de confirmation et de désabonnement. **Sans lui, rien ne s'inscrit**, aucun courriel ne part et un avertissement est journalisé : jamais de repli sur un autre site. |
 | `bf_mailing_signup.reply_to_fr` | *(aucun)* | Adresse de réponse du courriel français. |
 | `bf_mailing_signup.reply_to_en` | *(aucun)* | Adresse de réponse du courriel anglais. |
 | `bf_mailing_signup.brand_name` | *(le nom de la société)* | Le nom écrit dans le sujet, l'en-tête et le corps. |
@@ -355,6 +355,7 @@ rien tant qu'aucune inscription n'a de date de confirmation.
 
 ## Journal
 
+- **18.0.1.3.2** : sans `bf_mailing_signup.base_url` (ou sans `http`/`https`), le formulaire n'inscrit plus personne et n'envoie aucune confirmation, avec un avertissement au journal, y compris pour un vrai navigateur (le refus passe avant le contrôle d'origine). Avant, le lien retombait sur symbifox.com et y envoyait l'adresse de l'abonné et son jeton. La séquence d'accueil refuse aussi une valeur sans `http`/`https` (son lien de désabonnement aurait été relatif). La preuve du consentement nomme le site réglé, ou « site non réglé », au lieu de symbifox.com. ⚠️ Régler `base_url` AVANT la pose : sans lui, le formulaire s'éteint.
 - **18.0.1.3.1** : le titre de la page de désabonnement ne s'accorde plus au genre de la personne
   (« Désabonnement confirmé », et non « Vous êtes désabonné »).
 - **18.0.1.3.0** : séquence d'accueil (étapes par liste et par langue, tâche planifiée

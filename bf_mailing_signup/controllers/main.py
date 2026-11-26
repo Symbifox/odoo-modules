@@ -212,9 +212,11 @@ def _cle_boite(env, email, espace="bf_mailing_signup"):
 
 
 def _origine_attendue(env):
-    """`schéma://hôte[:port]` du site qui porte les formulaires (`base_url`)."""
-    icp = env["ir.config_parameter"].sudo()
-    base = (icp.get_param(ICP_BASE_URL) or icp.get_param("web.base.url") or "").strip()
+    """`schéma://hôte[:port]` du site qui porte les formulaires (`base_url`), ou "".
+
+    Pas de repli sur `web.base.url` : sans site réglé, `signup` refuse avant
+    même de regarder l'origine."""
+    base = _base_site(env)
     m = re.match(r"^(https?://[^/?#]+)", base, re.IGNORECASE)
     return m.group(1).lower() if m else ""
 
@@ -350,9 +352,32 @@ def _token_desabonnement_valid(env, list_id, email, token):
     return hmac.compare_digest(_token_desabonnement(env, list_id, email), token)
 
 
+def _base_site(env):
+    """Le site qui porte les formulaires (`base_url`), sans barre finale, ou "" s'il manque.
+
+    🔴 AUCUN repli, ni sur symbifox.com ni sur `web.base.url`. Jusqu'à la 18.0.1.3.1, le
+    lien de confirmation retombait sur symbifox.com : chez qui installe le module sans
+    régler ce paramètre, ses abonnés partaient chez Blue Fox, leur adresse et leur jeton
+    dans l'URL. Le lien ne confirmait rien chez lui, et l'adresse arrivait dans les
+    journaux d'un serveur qui n'est pas le sien. `web.base.url` ne vaut pas
+    mieux : c'est l'adresse d'Odoo, pas celle du site, et les pages où la confirmation
+    renvoie (`/infolettre-confirme.html`…) n'y sont pas.
+
+    Une valeur sans `http://` ni `https://` compte pour absente : le lien serait relatif,
+    donc mort dans un courriel.
+    """
+    base = (env["ir.config_parameter"].sudo().get_param(ICP_BASE_URL) or "").strip().rstrip("/")
+    return base if re.match(r"^https?://[^/?#\s]+", base, re.IGNORECASE) else ""
+
+
+def _hote_site(env):
+    """L'hôte du site réglé (`symbifox.com`), ou "" : jamais celui d'Odoo."""
+    return _base_site(env).split("//", 1)[-1]
+
+
 def _url_desabonnement(env, list_id, email, lang):
     """Le lien que porte chaque courriel de la séquence, et son en-tête `List-Unsubscribe`."""
-    base = (env["ir.config_parameter"].sudo().get_param(ICP_BASE_URL) or "").strip().rstrip("/")
+    base = _base_site(env)
     if not base:
         # Pas de repli sur un site qui n'est pas le sien : chez un autre locataire, le lien
         # d'un courriel (qui doit marcher 60 jours) pointerait sur un site mort.
@@ -878,12 +903,22 @@ class BfMailingSignup(http.Controller):
     def signup(self, **post):
         lang = _lang(post.get("lang"))
         pages = PAGES[lang]
-        if _origine_refusee(request.env):
-            return _refus_origine()
         # Réponse UNIQUE quoi qu'il arrive. Dire « déjà inscrit », « adresse
         # refusée » ou « trop de tentatives » donne à qui sonde le service
         # exactement ce qu'il cherche : savoir si une adresse est sur la liste.
         merci = werkzeug.utils.redirect(pages["merci"], 303)
+        if not _base_site(request.env):
+            # Sans site, le lien de confirmation n'aurait nulle part où aller. Refusé
+            # AVANT tout le reste : ni trace, ni contact, ni courriel. Et avant le contrôle
+            # d'origine, sans quoi un vrai navigateur (qui envoie `Origin`) prenait un 403
+            # « origine étrangère » et l'exploitant ne lisait jamais la vraie cause. La page
+            # reste celle de tout le monde, comme pour une liste absente : même panne de
+            # réglage, et le refus d'origine journalise déjà chaque requête.
+            _logger.warning("bf_mailing_signup : %s absent ou sans http(s) : inscription "
+                            "refusée, aucun courriel de confirmation", ICP_BASE_URL)
+            return merci
+        if _origine_refusee(request.env):
+            return _refus_origine()
 
         # Le pot de miel : un champ que la feuille de style sort de l'écran,
         # qu'aucun lecteur d'écran n'annonce et qu'aucune tabulation n'atteint.
@@ -1070,7 +1105,11 @@ class BfMailingSignup(http.Controller):
         l'adresse de la marque, et c'est le bon endroit pour ça.
         """
         icp = env["ir.config_parameter"].sudo()
-        base = (icp.get_param(ICP_BASE_URL) or "https://symbifox.com").rstrip("/")
+        base = _base_site(env)
+        if not base:
+            # Garde de second rang : `signup` refuse déjà en amont. Lever ici fait défaire
+            # le contact et la trace par le savepoint de l'appelant.
+            raise ValueError(f"{ICP_BASE_URL} absent : aucun lien de confirmation possible")
         token = _token(env, list_id, email, date.today().toordinal())
         url = (f"{base}/infolettre/confirmer?e={quote(email)}"
                f"&j={token}&lang={lang}")
@@ -1156,7 +1195,8 @@ class BfMailingSignup(http.Controller):
         contact.message_post(body=(
             "Consentement exprès confirmé par lien courriel le "
             f"{fields.Datetime.now()} UTC "
-            "(inscription publique symbifox.com, double consentement)."))
+            f"(inscription publique {_hote_site(env) or 'site non réglé'}, "
+            "double consentement)."))
         # L'avis, lui, ne part QUE si l'état a changé. Un lien rechargé deux
         # fois n'est pas une deuxième inscription, et prévenir deux fois pour la
         # même personne apprend à ignorer l'avis.

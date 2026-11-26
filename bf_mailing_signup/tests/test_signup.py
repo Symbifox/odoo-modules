@@ -72,6 +72,11 @@ class TestMailingSignup(HttpCase):
         # ajoutait un courriel et trois essais comptaient faux. Les essais de
         # l'avis le posent eux-mêmes.
         self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_NOTIFY, "")
+        # Le site des formulaires est réglé ICI : sans lui, plus rien ne part.
+        # Avant, les essais passaient sur une base neuve grâce au repli sur symbifox.com,
+        # celui-là même que la 18.0.1.3.2 retire.
+        self.env["ir.config_parameter"].sudo().set_param(
+            ctl.ICP_BASE_URL, "https://symbifox.example")
         self.adresse = "essai.inscription@example.com"
 
     # ------------------------------------------------------------------ outils
@@ -207,12 +212,84 @@ class TestMailingSignup(HttpCase):
         self.assertEqual(len(self.envois), 1,
                          "exactement un courriel, celui de confirmation")
         corps = self._corps_html(self.envois[0])
-        self.assertIn("/infolettre/confirmer", corps)
+        self.assertIn("https://symbifox.example/infolettre/confirmer?", corps,
+                      "le lien part du site réglé, et d'aucun autre")
+        self.assertNotIn("symbifox.com", corps)
         self.assertIn(self._jeton(), corps)
         self.assertEqual(corps.count(self._jeton()), 3,
                          "le lien vit à trois endroits : la cible du bouton, "
                          "celle du repli, et le repli écrit en clair pour qui "
                          "ne voit ni bouton ni lien")
+
+    def test_sans_site_regle_rien_ne_s_ecrit_et_rien_ne_part(self):
+        """Sans `base_url` utilisable, aucun repli sur un domaine de Blue Fox.
+
+        Le repli d'avant envoyait les abonnés de qui installe le module sur
+        symbifox.com, leur adresse et leur jeton dans l'URL. Ici, rien ne part, rien
+        ne s'écrit (ni contact, ni trace de plafond), la page reste la même que pour
+        tout le monde, et le journal dit pourquoi.
+        """
+        icp = self.env["ir.config_parameter"].sudo()
+        Trace = self.env["bf.mailing.signup.trace"].sudo()
+        for valeur in ("", "   ", "symbifox.com", "/infolettre"):
+            ctl._bucket_data.clear()    # un cas de plus ne doit pas buter sur le seau
+            icp.set_param(ctl.ICP_BASE_URL, valeur)
+            traces = Trace.search_count([])
+            with self.assertLogs("odoo.addons.bf_mailing_signup", "WARNING") as journal:
+                r = self._poster()
+            self.assertEqual((r.status_code, r.headers["Location"]),
+                             (303, "/infolettre-merci.html"), f"« {valeur} » : page de tous")
+            self.assertEqual(self.envois, [], f"« {valeur} » : aucun courriel ne doit partir")
+            self.assertFalse(self._inscription(), f"« {valeur} » : aucune inscription")
+            self.assertEqual(Trace.search_count([]), traces, f"« {valeur} » : rien de compté")
+            self.assertTrue(
+                [e for e in journal.records
+                 if e.levelname == "WARNING" and "inscription refusée" in e.getMessage()],
+                f"« {valeur} » : l'avertissement du refus manque : {journal.output}")
+
+    def test_sans_site_un_vrai_navigateur_lit_la_vraie_cause(self):
+        """Un navigateur envoie `Origin` sur un POST de formulaire. Sans site réglé, il
+        prenait un 403 « origine étrangère » : le journal ne disait jamais pourquoi."""
+        self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_BASE_URL, "")
+        with self.assertLogs("odoo.addons.bf_mailing_signup", "WARNING") as journal:
+            r = self.url_open("/infolettre", data={"courriel": self.adresse, "lang": "fr"},
+                              headers={"Origin": "https://symbifox.example",
+                                       "Sec-Fetch-Site": "same-origin"},
+                              allow_redirects=False)
+        self.assertEqual((r.status_code, r.headers.get("Location")),
+                         (303, "/infolettre-merci.html"))
+        messages = [e.getMessage() for e in journal.records]
+        self.assertTrue([m for m in messages if "inscription refusée" in m], messages)
+        self.assertFalse([m for m in messages if "étranger" in m], messages)
+        self.assertEqual(self.envois, [])
+        self.assertFalse(self._inscription())
+
+    def test_la_confirmation_ne_part_jamais_sans_site(self):
+        """La garde de second rang : `_send_confirmation` appelé seul ne retombe sur rien."""
+        self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_BASE_URL, "")
+        with self.assertRaises(ValueError):
+            ctl.BfMailingSignup()._send_confirmation(
+                self.env, self.liste.id, self.adresse, "fr")
+        self.assertEqual(self.envois, [])
+        self.assertFalse(self.env["mail.mail"].sudo().search(
+            [("email_to", "=", self.adresse)]), "aucun courriel en file non plus")
+
+    def test_la_preuve_du_consentement_nomme_le_site_regle(self):
+        """La note datée sur le contact nomme le site du locataire, pas symbifox.com."""
+        self._poster()
+        self._confirmer()
+        contact = self._inscription().contact_id
+        preuves = contact.message_ids.filtered(
+            lambda m: "Consentement exprès" in (m.body or ""))
+        self.assertTrue(preuves)
+        self.assertIn("inscription publique symbifox.example,", preuves[0].body)
+        # Site retiré entre l'envoi et le clic : la note ne nomme pas l'hôte d'Odoo.
+        self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_BASE_URL, "")
+        with mute_logger("odoo.addons.bf_mailing_signup"):
+            self._confirmer()
+        derniere = contact.message_ids.filtered(
+            lambda m: "Consentement exprès" in (m.body or ""))[:1]
+        self.assertIn("inscription publique site non réglé,", derniere.body)
 
     def test_rien_ne_part_sans_adresse_valable(self):
         self._poster(site_web="robot")

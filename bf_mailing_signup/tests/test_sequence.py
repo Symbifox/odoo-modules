@@ -365,6 +365,18 @@ class TestSequenceAccueil(HttpCase):
         sub = self._inscription()
         self.assertEqual((sub.bf_step, sub.bf_failures), (1, 0), "ce n'est pas l'échec d'une adresse")
 
+    def test_sans_http_aucun_courriel_de_sequence_ne_part(self):
+        """Un `base_url` sans schéma ferait un lien de désabonnement relatif, mort."""
+        self._inscrire()
+        self.envois.clear()
+        self._vieillir(8)
+        self.env["ir.config_parameter"].sudo().set_param(ctl.ICP_BASE_URL, "exemple.test")
+        with mute_logger("odoo.addons.bf_mailing_signup"):
+            self._cron()
+        self.assertEqual(self.envois, [], "aucun courriel, donc aucun List-Unsubscribe")
+        sub = self._inscription()
+        self.assertEqual((sub.bf_step, sub.bf_failures), (1, 0), "ce n'est pas l'échec d'une adresse")
+
     def test_l_expediteur_n_emprunte_pas_le_nom_de_l_usager_de_la_tache(self):
         racine = self.env.ref("base.partner_root")
         racine.write({"name": "Nom Bizarre", "email": "nombizarre@example.com"})
