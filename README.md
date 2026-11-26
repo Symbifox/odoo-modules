@@ -287,7 +287,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_labour_relations_employer` | Relations de travail : côté employeur | 18.0.1.1.0 | BUSL-1.1 | Obligations and reminders, the posted seniority list, job postings and movements, dues remittance preparation, the joint committee |
 | `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |
 | `bf_letter_writer` | Letter Writer | 18.0.2.1.1 | BUSL-1.1 | Branded official-letter editor: 5 letterhead modes, field merge (`{{ }}`), reusable templates and quick-text blocks, email + PDF send |
-| `bf_lexend` | Lexend Typeface | 18.0.3.1.1 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
+| `bf_lexend` | Lexend Typeface | 18.0.3.1.2 | LGPL-3 | Self-hosted Lexend font (two weights, WOFF2 on screen, TTF in PDFs) for the backend and website, plus a Lexend option on the company font for PDF reports |
 | `bf_linkpage` | Pages de liens | 18.0.10.2.0 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
 | `bf_live_base` | Séance en direct : le socle | 18.0.1.1.0 | BUSL-1.1 | The projected palette, the contrast calculation and the brand ramp, shared by every live-session screen |
 | `bf_llm` | Symbifox — LLM Provider | 18.0.1.2.0 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
@@ -498,7 +498,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_work_hours_timer` | BF Working Hours - Timer | 18.0.1.0.1 | LGPL-3 | Timer segments count as traces of working time, start and end kept |
 | `bf_work_hours_timesheet` | BF Working Hours - Timesheets | 18.0.1.0.0 | LGPL-3 | Entered timesheet hours beside the reconstructed hours: two numbers, never one replacing the other |
 | `bf_zerotouch_install` | Symbifox — Blue Fox OS Zero-Touch Install | 18.0.4.1.0 | BUSL-1.1 | The kickstart a Blue Fox OS installer fetches from its boot menu, rendered from the company's policy, with an OIDC device flow approved on a second device |
-| `bluefox_branding` | Symbifox Branding | 18.0.3.32.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
+| `bluefox_branding` | Symbifox Branding | 18.0.3.32.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by the company brand fields of `bf_onboarding_base` (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.28.1 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.3.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.3.0.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |

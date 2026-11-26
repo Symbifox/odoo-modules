@@ -1,41 +1,54 @@
 # Lexend Typeface
 
-Adds the Lexend typeface as a font option across the Odoo backend, frontend
-and PDF reports.
+Ships the Lexend typeface, self-hosted, for the Odoo backend, the website and
+PDF reports. No request ever reaches a third-party font service.
 
-## What it adds
+## What it ships
+
+Two static weights, regular (400) and semi-bold (600), in two formats:
+
+| Where | Format | Size per weight |
+|---|---|---|
+| Backend and website | WOFF2, with the TTF as fallback in the same `@font-face` | about 37 KB |
+| PDF reports | TTF | about 100 KB |
+
+Every `@font-face` uses `font-display: swap`. Headings use the semi-bold weight.
+
+## What changes once it is installed
+
+- **Backend and website**: they render in Lexend right away, whatever the
+  company font is. `lexend.css` sets the font on `html`, `body` and the web
+  client; there is no setting to turn it off short of uninstalling the module.
+- **PDF reports**: reports printed with the company document layout
+  (invoices, quotations and the like) keep following the company font,
+  `res.company.font` (Odoo's default is Lato). This module adds **Lexend** to
+  that selection: pick it in the document layout settings to get Lexend in
+  those reports too. Internal and plain reports, which have no company layout,
+  render in Lexend.
+- Tables in reports use tabular, lining figures so that amounts line up.
 
 ### Fields on `res.company`
 
-- `font` — extends the standard Odoo selection with `Lexend`
+- `font`: extends the standard Odoo selection with `Lexend`.
 
-Brand color fields and their Settings UI live in `bluefox_branding`
-(since 18.0.3.0.0) — install that module to manage brand colours and
-white-label settings.
+## What it does not do
 
-### Asset bundles
-
-- `web.assets_backend` + `web.assets_frontend` — `lexend.css` adds the
-  Lexend `@font-face` declaration and a body-level font-family override
-  when `res.company.font = 'Lexend'`
-- `web.report_assets_common` + `web.report_assets_pdf` — same for PDF reports
-
-### WOFF2 (18.0.3.1.1)
-
-The backend and the website load Lexend as WOFF2 (about 37 KB per weight
-instead of 100 KB), with the TTF as fallback in the same `@font-face`. PDF
-reports keep the TTF.
-
-## Standalone use
-
-This module is useful on its own if you simply want the Lexend font
-available as a `res.company.font` option for the backend, frontend and
-PDF reports. The companion `bluefox_branding` module builds on it to
-re-skin the backend UI and rewrite standard Odoo email templates.
+Brand colours and white-label settings are not part of this module. Install
+`bluefox_branding` for them; it builds on this module to re-skin the backend
+and the standard Odoo emails.
 
 ## Dependencies
 
 - `web` (Odoo core)
+
+## Changelog
+
+- **18.0.3.1.2**: description and README brought in line with what the module
+  does. No code change.
+- **18.0.3.1.1**: the backend and the website load Lexend as WOFF2 (about
+  37 KB per weight instead of 100 KB), with the TTF as fallback. PDF reports
+  keep the TTF.
+- **18.0.3.1.0**: French name and summary in Apps (`fr_CA.po`).
 
 ## Third-party assets
 
