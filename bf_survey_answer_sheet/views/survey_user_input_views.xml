@@ -31,6 +31,14 @@
         <field name="model">survey.user_input</field>
         <field name="inherit_id" ref="survey.survey_user_input_view_tree"/>
         <field name="arch" type="xml">
+            <!-- The respondent column says everything the contact column
+                 says, and still says something when no contact is linked. -->
+            <field name="partner_id" position="before">
+                <field name="bf_respondent" optional="show"/>
+            </field>
+            <field name="partner_id" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
             <field name="state" position="after">
                 <field name="bf_sheet_state" optional="hide"/>
             </field>

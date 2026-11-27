@@ -24,7 +24,13 @@
     #   est « solid » (Bootstrap le pose sur toute cellule), même à largeur
     #   nulle. Chaque cellule pose `border-style:none` ; le filet gris du bas,
     #   écrit après, reste.
-    "version": "18.0.1.1.2",
+    # 18.0.1.2.0: colonne « Qui a répondu » dans la liste des participations :
+    #   le contact lié, sinon ce que la personne a saisi (réponse « surnom »,
+    #   puis courriel). Une réponse par le lien public n'a aucun contact et la
+    #   liste n'en montrait que le courriel. Affichage seulement : rien n'est
+    #   rattaché par le courriel, que n'importe qui peut saisir. La colonne
+    #   Contact passe en option masquée.
+    "version": "18.0.1.2.0",
     "category": "Marketing/Surveys",
     "summary": "Each completed response filed by itself: a branded PDF of the "
                "answers, password-protected, in the respondent's own folder",

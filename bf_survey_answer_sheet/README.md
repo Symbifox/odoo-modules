@@ -77,6 +77,13 @@ request:
   minutes. A Nextcloud outage delays a sheet; it never breaks a submission.
   Each attempt is counted, each failure written in full on the response, and
   after five the response waits for a person instead of knocking forever.
+- **The list of responses says who answered (18.0.1.2.0).** A response made
+  through the public link has no contact, and Odoo's list showed only its
+  email. The *Respondent* column shows the linked contact, or else what the
+  respondent typed: the answer saved as nickname, then the email. It links
+  nothing: a typed email that matches a contact is not tied to that contact,
+  since anybody can type anybody's email. The *Contact* column becomes an
+  optional one, hidden by default.
 
 Nothing is sent to anybody: this module files. The password is handed over out
 of band, by whatever channel you trust — a one-time secret, for instance.

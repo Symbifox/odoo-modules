@@ -326,3 +326,13 @@ msgstr "Où la feuille a été déposée, ou ce qui l'a arrêtée."
 #: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_survey__bf_sheet_noise_words
 msgid "Words ignored when matching"
 msgstr "Mots ignorés au rapprochement"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,field_description:bf_survey_answer_sheet.field_survey_user_input__bf_respondent
+msgid "Respondent"
+msgstr "Qui a répondu"
+
+#. module: bf_survey_answer_sheet
+#: model:ir.model.fields,help:bf_survey_answer_sheet.field_survey_user_input__bf_respondent
+msgid "The linked contact; on an anonymous response, the name or the email the respondent typed."
+msgstr "Le contact lié ; pour une réponse anonyme, le nom ou le courriel saisi dans le questionnaire."

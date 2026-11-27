@@ -77,6 +77,29 @@ class SurveyUserInput(models.Model):
         string="Answer sheet etags", copy=False, readonly=True,
         groups="base.group_system")
 
+    # Who answered, in one column. Odoo's list shows the linked contact, and a
+    # response made through the public link has none: Odoo never ties an
+    # anonymous answer to a contact, even when the typed email matches one -
+    # rightly, since anybody can type anybody's email. The column then showed
+    # an email and nothing else. This one falls back on what the respondent
+    # typed: the answer saved as nickname, then the email. Display only: it
+    # links nothing.
+    # Stored, so the list sorts on it; stored computes run as superuser, so an
+    # anonymous submission never needs to read the contact.
+    bf_respondent = fields.Char(
+        string="Respondent", compute="_compute_bf_respondent", store=True,
+        help="The linked contact; on an anonymous response, the name or the "
+             "email the respondent typed.")
+
+    @api.depends("partner_id.complete_name", "nickname", "email")
+    def _compute_bf_respondent(self):
+        for line in self:
+            line.bf_respondent = (
+                line.partner_id.complete_name
+                or (line.nickname or "").strip()
+                or (line.email or "").strip()
+                or False)
+
     # ------------------------------------------------------------------ #
     # The trigger: a submission, and nothing else
     # ------------------------------------------------------------------ #

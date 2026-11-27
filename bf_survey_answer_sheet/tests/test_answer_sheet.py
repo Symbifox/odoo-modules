@@ -145,6 +145,41 @@ class TestAnswerSheet(TransactionCase):
         self.assertEqual(bare._bf_sheet_company_name(),
                          self.env._("Unknown company"))
 
+    # ------------------------------------------------------------------ #
+    # Who answered, in the list
+    # ------------------------------------------------------------------ #
+    def test_an_anonymous_response_still_says_who_answered(self):
+        """The public link links no contact: the list showed an email and
+        nothing else. What the respondent typed fills the column."""
+        answered = self._answer(email="someone@acme.example")
+        self.assertFalse(answered.partner_id, "the public link links nobody")
+        self.assertEqual(answered.bf_respondent, "Kestrel inc.",
+                         "the answer saved as nickname comes first")
+        answered.nickname = "  "
+        self.assertEqual(answered.bf_respondent, "someone@acme.example",
+                         "then the email")
+        answered.email = False
+        self.assertFalse(answered.bf_respondent, "and nothing is made up")
+
+    def test_a_linked_contact_is_who_answered(self):
+        partners = self.env["res.partner"]
+        company = partners.create({"name": "Kestrel Ltd", "is_company": True})
+        contact = partners.create({"name": "A Person", "parent_id": company.id})
+        answered = self._answer(partner_id=contact.id, email="other@acme.example")
+        self.assertEqual(answered.bf_respondent, "Kestrel Ltd, A Person")
+        contact.name = "A Renamed Person"
+        self.assertEqual(answered.bf_respondent, "Kestrel Ltd, A Renamed Person",
+                         "a renamed contact is renamed in the list too")
+
+    def test_the_column_never_links_a_contact_by_email(self):
+        """Anybody can type anybody's email: a match must not tie the answers
+        to that contact's record."""
+        self.env["res.partner"].create(
+            {"name": "Real Owner", "email": "owner@acme.example"})
+        answered = self._answer(email="owner@acme.example")
+        self.assertFalse(answered.partner_id)
+        self.assertNotEqual(answered.bf_respondent, "Real Owner")
+
     def test_the_file_name_carries_the_completion_day(self):
         """The day is the company's day, not the server's: 22:30 in Montreal is
         still the 19th, where UTC has already turned."""
