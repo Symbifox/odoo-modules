@@ -100,6 +100,11 @@ class ProgressionPortail(ProgressionPortail):
                 "Questionnaire de progression illisible pour le projet %s", project_id)
             return request.not_found()
         if not reponse:
+            # Fini, que ce soit tout à l'heure dans un autre onglet ou par le
+            # lien du courriel que la page vient de reprendre : la page le dit.
+            # Sans jeton de réponse dans l'adresse, seulement celui de la page.
+            if projet._progression_survey_etat() == "fini":
+                return redirect("/progression/%s/%s" % (projet.id, token), code=303)
             return request.not_found()
         return redirect("/survey/%s/%s" % (
             reponse.survey_id.sudo().access_token, reponse.access_token), code=303)

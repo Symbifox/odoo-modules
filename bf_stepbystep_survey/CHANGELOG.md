@@ -1,5 +1,35 @@
 # Changelog
 
+## 18.0.1.2.0 (2026-11-27)
+
+The button picks up the answer the company **already has**. When the client
+received the questionnaire through a personal link in an e-mail, the first click
+on the page now leads to that answer instead of creating a second one.
+
+Taken over: an answer to the same questionnaire, in the name of a contact of the
+company the page names, **created within the 90 days before the click** (the
+invitation often leaves before the mandate exists), not a test entry, whose
+deadline has not passed, that has not used up its time limit and that no mandate
+holds (archived ones included). The most advanced wins (finished, then started,
+then new), then the most recent. The invitation's deadline is dropped once taken
+over: the page becomes the mandate's channel.
+
+Nothing is taken over when the page names the mandate's **payer** and that payer
+looks like an ordering customer: another of its mandates names a different
+beneficiary or carries the same questionnaire (without a bridge
+that names the beneficiary, any other mandate of the payer counts). A page
+that names a beneficiary is not concerned: the beneficiary is who reads it.
+
+Each takeover leaves an internal note on the mandate. A project administrator
+can **Detach the answer** from the *Client portal* tab: the answer is kept, the
+client's next click starts a new one, and from then on this mandate takes over
+nothing by itself.
+
+An answer already finished is attached and the click leads back to the page,
+which says *Questionnaire received*. The same goes for a button left open in
+another tab after the answer was finished: the route used to answer 404, it now
+returns to the page. The answer's token still never travels in an address.
+
 ## 18.0.1.1.1 (2026-11-25)
 
 The stage that asks the questionnaire and the mandate's answer are reserved to

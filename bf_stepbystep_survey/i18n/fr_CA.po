@@ -157,3 +157,37 @@ msgstr ""
 #: code:addons/bf_stepbystep_survey/models/survey_user_input.py:0
 msgid "the questionnaire"
 msgstr "le questionnaire"
+
+#. module: bf_stepbystep_survey
+#: model:ir.model.fields,field_description:bf_stepbystep_survey.field_project_project__progression_survey_skip_ids
+msgid "Answers detached from this mandate"
+msgstr "Réponses détachées de ce mandat"
+
+#. module: bf_stepbystep_survey
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_survey.bf_stepbystep_survey_project_form
+msgid "Detach the answer"
+msgstr "Détacher la réponse"
+
+#. module: bf_stepbystep_survey
+#: model_terms:ir.ui.view,arch_db:bf_stepbystep_survey.bf_stepbystep_survey_project_form
+msgid "The client's next click will start a new answer. The detached answer is kept, and this mandate will no longer take over an answer by itself."
+msgstr "Le prochain clic du client commencera une nouvelle réponse. La réponse détachée est conservée, et ce mandat ne reprendra plus de réponse de lui-même."
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/project_project.py:0
+msgid "Only a project administrator can detach the client's answer."
+msgstr "Seul un administrateur des projets peut détacher la réponse du client."
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/project_project.py:0
+msgid "Questionnaire: the answer of %(nom)s was detached from this mandate. The client's next click starts a new one."
+msgstr "Questionnaire : la réponse de %(nom)s a été détachée de ce mandat. Le prochain clic du client en commence une nouvelle."
+
+#. module: bf_stepbystep_survey
+#. odoo-python
+#: code:addons/bf_stepbystep_survey/models/project_project.py:0
+msgid "Questionnaire: the client's page took over the answer already sent to %(nom)s."
+msgstr "Questionnaire : la page du client a repris la réponse déjà envoyée à %(nom)s."
+

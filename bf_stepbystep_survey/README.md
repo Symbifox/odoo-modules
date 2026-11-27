@@ -32,13 +32,50 @@ client the first one's answer, and let them overwrite it. The field does not cop
 with the project, so a copied mandate is not born "already answered", and
 changing the mandate's questionnaire detaches the old answer.
 
-The first click creates that one answer, named after the party the page **names**
-(the beneficiary when a bridge provides one, the ordering customer otherwise),
-and every later click reuses it. A **finished** answer is never reopened: the
-button disappears, the page says *Questionnaire received*, and the route itself
-answers 404, so the answer's token stops travelling in addresses, bookmarks and
+The first click takes over the answer the company **already has**, or creates
+that one answer, named after the party the page **names** (the beneficiary when
+a bridge provides one, the ordering customer otherwise); every later click
+reuses it. A **finished** answer is never reopened: the button disappears, the
+page says *Questionnaire received*, and a click on a stale button leads back to
+the page, so the answer's token stops travelling in addresses, bookmarks and
 proxy logs. The redirect then hands over to the `survey` module, which renders
 the questionnaire, resumes it at the right page and records the answers.
+
+### The answer the company already has (v18.0.1.2.0)
+
+A client often receives the questionnaire first through a personal link in an
+e-mail. On the first click, the page takes over that answer instead of creating a
+second one. It must be an answer to the same questionnaire, in the name of a
+contact of the company the page names, created within the **90 days before the
+click** (the invitation often leaves before the mandate exists), not a test
+entry, with no passed deadline and no exhausted time limit, and held by no
+mandate (archived ones included). The most advanced wins, then the most recent.
+Its deadline is dropped: the page becomes the mandate's channel. If it is
+already finished, the click attaches it and leads back to the page, which says
+*Questionnaire received*. Each takeover leaves an internal note on the mandate.
+
+Nothing is taken over when the page names the mandate's **payer** and that payer
+looks like an ordering customer: another of its mandates names a different
+beneficiary, or carries the same questionnaire. Its page names the payer, not the
+client who reads it, and the answer of one of the payer's contacts would be
+served to someone else. Without a bridge that names the beneficiary, any
+other mandate of the payer counts. Name the beneficiary and the page finds the right answer.
+
+When the answer taken over is not the right one, **Detach the answer** on the
+*Client portal* tab (project administrators). The answer is kept, the client's
+next click starts a new one, and from then on this mandate takes over nothing by
+itself.
+
+What it does not catch: an invitation sent to an e-mail address with no contact
+behind it; a click more than 90 days after the invitation; an ordering customer
+none of whose mandates names a beneficiary; and a contact who moves to another
+company takes along an answer started within the window — the note on the
+mandate and *Detach* are the remedy.
+
+Two simultaneous clicks cannot create two answers: the route writes the project
+row before looking, which makes the second transaction replay on a fresh snapshot
+(the same technique the core uses for document deposits, and for the same reason
+— Odoo runs in REPEATABLE READ, where a row lock is not enough).
 
 Two simultaneous clicks cannot create two answers: the route writes the project
 row before looking, which makes the second transaction replay on a fresh snapshot
@@ -107,5 +144,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-11-25, this version converts automatically to
+- **Change Date**: on 2030-11-27, this version converts automatically to
   **LGPL-3.0-or-later**.

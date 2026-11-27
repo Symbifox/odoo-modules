@@ -21,7 +21,11 @@
     # 18.0.1.1.1: l'étape et la réponse du questionnaire sont réservées au
     #   groupe qui publie le portail (`readonly` ne protège pas d'une écriture
     #   directe, là où une base élargit le droit d'écrire les projets).
-    "version": "18.0.1.1.1",
+    # 18.0.1.2.0: le bouton reprend la réponse que l'entreprise a DÉJÀ reçue par
+    #   un lien de courriel au lieu d'en créer une seconde. Rien n'est repris
+    #   quand la page nomme un payeur qui a l'air d'un donneur d'ordre. Une
+    #   réponse déjà finie ramène le client à sa page, qui dit « reçu ».
+    "version": "18.0.1.2.0",
     "category": "Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

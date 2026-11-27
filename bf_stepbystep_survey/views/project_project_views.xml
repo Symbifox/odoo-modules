@@ -31,6 +31,11 @@
                          rien ne dit comment en détacher une (la supprimer). -->
                     <field name="progression_survey_answer_id" readonly="1"
                            invisible="not progression_survey_answer_id"/>
+                    <!-- Le recours quand la réponse reprise n'est pas la bonne. -->
+                    <button name="action_progression_survey_detacher" type="object"
+                            string="Detach the answer" class="btn-link" colspan="2"
+                            invisible="not progression_survey_answer_id"
+                            confirm="The client's next click will start a new answer. The detached answer is kept, and this mandate will no longer take over an answer by itself."/>
                 </group>
             </xpath>
         </field>
