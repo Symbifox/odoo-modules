@@ -50,6 +50,9 @@ export function streamingFields(messages = []) {
         startedAt: Date.now(),
         interrupted: false,
         reconnecting: false,
+        // Le cadenas, posé dès que le pont dit comment le tour part.
+        masque: "",
+        masque_constate: false,
         notice: "",
         turnId: null,
         finalized: false,
@@ -121,6 +124,14 @@ function applyEvent(host, assistant, event, data, labels) {
                 : _t("Gen picks up where it left off");
             break;
         }
+        case "masque":
+            // Annoncé au départ (`constate` faux), puis remplacé par le
+            // compte du relais à la fin du tour. Le plus faible des deux l'emporte :
+            // c'est le serveur qui tranche (`cadenas_retenu`), et son verdict arrive
+            // par `final`.
+            assistant.masque = data.etat || "";
+            assistant.masque_constate = Boolean(data.constate);
+            break;
         case "text":
             assistant.content += data.delta || "";
             assistant.reconnecting = false;
@@ -150,12 +161,21 @@ function applyEvent(host, assistant, event, data, labels) {
                 assistant.disabled = true;
             } else if (data.reason === "not_found") {
                 assistant.notFound = true;
+            } else if (data.reason === "attachment") {
+                // Une pièce refusée au départ (à un autre, trop de texte).
+                // Aucun tour n'est parti : l'écran rend la question et ses pièces.
+                assistant.attachmentRefused = data.response || "";
+                assistant.attachmentIds = data.attachment_ids || [];
+                assistant.streaming = false;
+                assistant.finalized = true;
             } else if (!assistant.turnId && data.response) {
                 // Refusé avant tout tour (message vide, trop de requêtes) :
                 // rien à suivre, la raison est la réponse.
                 assistant.content = data.response;
                 assistant.streaming = false;
                 assistant.finalized = true;
+                // Rien n'est parti, les pièces de la question reviennent.
+                assistant.refusedEarly = true;
             }
             break;
         case "final":
@@ -163,6 +183,12 @@ function applyEvent(host, assistant, event, data, labels) {
             if (typeof data.content === "string" && data.content) assistant.content = data.content;
             assistant.interrupted = data.state === "error";
             assistant.endReason = data.end_reason || "";
+            // Enregistré : ce cadenas-là tient compte de TOUS les départs du tour,
+            // reprises automatiques comprises.
+            if (data.masque !== undefined) {
+                assistant.masque = data.masque || "";
+                assistant.masque_constate = Boolean(data.masque_constate);
+            }
             if (data.message_id) assistant.id = data.message_id;
             // Où en est la conversation, selon Gen.
             if (data.closure) assistant.closure = data.closure;

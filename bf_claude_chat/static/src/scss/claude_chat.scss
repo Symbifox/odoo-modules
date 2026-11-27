@@ -36,6 +36,18 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     --bf-gen-meta:          #999;                    // compteur de jetons, consommation
     --bf-gen-warn-fg:       #b45309;                 // réponse interrompue
     --bf-gen-warn-bg:       rgba(245, 158, 11, 0.12);
+    // Cadenas du tour : masqué, noms en clair, rien masqué.
+    // 🔴 Mesuré sur le fond EFFECTIF de la page, jamais sur du blanc : la pastille
+    // s'empile sur son propre fond à 10 % ET sur la bulle de l'assistant, qui est de la
+    // marque diluée. Le premier vert, #1d7a4c, donnait 5,3:1 sur blanc et **4,43:1** à
+    // l'écran (parcours au navigateur) : sous la barre.
+    // Au pire fond clair construit (bulle 248,249,249) : 5,3:1, 5,8:1 et 6,2:1.
+    --bf-gen-cadenas-ok-fg:  #196b42;
+    --bf-gen-cadenas-ok-bg:  rgba(25, 107, 66, 0.10);
+    --bf-gen-cadenas-mid-fg: #7a5000;
+    --bf-gen-cadenas-mid-bg: rgba(122, 80, 0, 0.10);
+    --bf-gen-cadenas-no-fg:  #982d2d;
+    --bf-gen-cadenas-no-bg:  rgba(152, 45, 45, 0.10);
     --bf-gen-overlay:       rgba(0, 0, 0, 0.15);
 
     // Bulle de l'assistant et avatar : la marque diluée dans la surface.
@@ -280,9 +292,13 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     background: var(--bf-gen-bg);
 }
 
+// La hauteur suit le texte (gen_pieces.js, `ajusterSaisie`). Le plafond
+// ici DOIT valoir SAISIE_MAX : plus bas, la règle couperait la zone que le JS agrandit
+// — c'était le cas du panneau, à 100 px, sans aucun JS pour l'agrandir. Un essai garde
+// l'accord.
 .bf-chat-input {
     resize: none;
-    max-height: 150px;
+    max-height: 240px;
     border-radius: 12px !important;
     padding: 10px 16px;
 
@@ -350,6 +366,48 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+}
+
+// ── La voie de la bulle du softphone ────────────────────────
+// 🔴 Mesuré au navigateur : la bulle flottante de
+// `bf_softphone` (`position: fixed; right: 1.25rem; bottom: 1.25rem; 3.5rem × 3.5rem;
+// z-index: 1045`) recouvre **82,6 %** du bouton ci-dessus, et `elementFromPoint` au
+// centre du bouton rend la BULLE — aux quatre quarts aussi. Relevé :
+//   390, 768, 1024 px → 82,6 %, bouton INATTEIGNABLE ;  1250 px → 51,7 %, inatteignable ;
+//   1440 px → 0 %, sain.  Donc sur toute fenêtre ≤ ~1 300 px.
+// Ce n'est pas une régression du panneau unique : à 768 px aucune de ses règles ne
+// s'applique et le recouvrement est le même. Il l'a seulement rendu VISIBLE (avant, le
+// bouton était hors écran). Le même bouton porte « Arrêter » pendant une réponse en vol :
+// la panne coûtait aussi l'arrêt d'un flux. Seul secours d'alors : Entrée sans Maj envoie.
+//
+// Le composeur réserve la voie de la bulle, et seulement ce qu'il faut :
+//   voie   = 1.25rem d'écart + 3.5rem de bulle = 76px, plus 16px de jeu = 92px
+//   libre  = ce qui reste à droite du composeur, (panneau − 932) / 2, jamais négatif
+//            (932 = 900px de `max-width` + 2 × 16px de `p-3`)
+//   panneau = 100vw moins la barre latérale de 280px quand elle est là. Sous la borne
+//            elle n'y est pas, mais `libre` y vaut 0 des deux manières : même formule.
+// `clamp(16px, 92px − (100vw − 1212px)/2, 92px)` rend donc 16px — la valeur d'avant,
+// au pixel — dès que le composeur a déjà 92px de dégagement (≈ 1 300 px et au-delà), et
+// monte jusqu'à 92px quand il touche le bord de l'écran. AUCUNE borne à dériver : la
+// formule suit la largeur, là où un `@media` à 1 300px aurait silencieusement laissé
+// passer une bande dès qu'on touche aux 280px de la barre ou aux 900px du composeur.
+// ⚠️ `100vw` compte la barre de défilement du document là où elle existe, donc la voie
+// peut se réserver ~7px trop court : absorbé par les 16px de jeu.
+// ⚠️ `body:has(...)` : la voie n'est réservée que pour qui VOIT la bulle. Elle ne se
+// rend que pour le groupe `bf_softphone.group_softphone_user` (`t-if="ui.visible"` dans
+// `softphone.xml`). Sans le module, ou sans le groupe, le composeur ne perd pas un pixel.
+// 🔴 `!important` obligatoire : `p-3` de Bootstrap est `padding: 1rem !important`.
+// QUATRIÈME morsure de cette famille dans cette version, après `.d-flex` contre
+// `display: none`, `.position-relative` contre `position: static`, et le plancher de
+// 32px qui avalait le retour. Vérifié dans le navigateur, pas dans le code.
+//
+// Le TIROIR du systray, lui, n'a rien à réserver, et ce n'est pas une omission : sa
+// superposition `.bf-panel-overlay` est à `z-index: 2147483647` contre 1045 pour la
+// bulle, donc son bouton Envoyer reçoit le doigt même recouvert à 39,1 % — mesuré
+// atteignable aux cinq largeurs, centre et quatre quarts. Un essai tient cet écart de
+// z-index, qui est la seule raison pour laquelle le tiroir s'en sort.
+body:has(.o_bf_sp_bubble) .bf-chat-input-area {
+    padding-right: clamp(16px, calc(92px - (100vw - 1212px) / 2), 92px) !important;
 }
 
 // ── Side panel (replaces dropdown) ──────────────────────────
@@ -465,7 +523,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 
 .bf-side-panel-textarea {
     resize: none;
-    max-height: 100px;
+    max-height: 240px;
     border-radius: 8px !important;
     font-size: 0.9rem;
 
@@ -487,6 +545,77 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 
 .bf-side-panel-input {
     flex-shrink: 0;
+}
+
+// ── Pièces jointes ──────────────────────────────
+.bf-gen-trombone {
+    flex-shrink: 0;
+    border-color: var(--bf-gen-border);
+    color: var(--bf-gen-accent-fg);
+}
+.bf-side-panel-input .bf-gen-trombone {
+    border-radius: 50% !important;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+}
+
+.bf-gen-pieces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+.bf-gen-pieces-bulle {
+    margin-top: 6px;
+}
+
+.bf-gen-piece {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    padding: 2px 8px;
+    border: 1px solid var(--bf-gen-border);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: inherit;
+    text-decoration: none;
+    background: var(--bf-gen-bg);
+
+    .bf-gen-piece-nom {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 220px;
+    }
+}
+a.bf-gen-piece:hover {
+    text-decoration: underline;
+}
+.bf-gen-piece-erreur {
+    border-color: var(--bs-danger, #dc3545);
+    color: var(--bs-danger, #dc3545);
+    flex-wrap: wrap;
+
+    // Le motif d'un refus se LIT : il dit quoi faire (PDF numérisé, trop gros).
+    .bf-gen-piece-motif {
+        flex-basis: 100%;
+        white-space: normal;
+        font-size: 0.75rem;
+    }
+}
+.bf-gen-piece-coupee {
+    border-color: var(--bs-warning, #ffc107);
+}
+.bf-gen-piece-retirer {
+    color: inherit;
+    line-height: 1;
+}
+
+// La zone de dépôt, pendant qu'un fichier la survole.
+.bf-gen-depot {
+    outline: 2px dashed var(--bf-gen-accent-fg);
+    outline-offset: -6px;
 }
 
 // ── Rename input ────────────────────────────────────────────
@@ -687,6 +816,45 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     font-size: 0.7rem;
     color: var(--bf-gen-meta);
     cursor: help;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+}
+
+// Le cadenas. Trois états, et le pointillé de celui qui n'est qu'ANNONCÉ.
+// ⚠️ Rien en dur ici : les six couleurs sont des variables, redéfinies en mode sombre,
+// comme tout le reste de ce fichier (§ Mode sombre).
+.bf-chat-cadenas {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 6px;
+    border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+    border-radius: 10px;
+    font-size: 0.65rem;
+    line-height: 1.5;
+    white-space: nowrap;
+
+    // ⚠️ L'icône ne porte jamais l'état seule : un cadenas fermé et un cadenas ouvert
+    // se distinguent mal à cette taille, et la couleur ne parle pas à tout le monde.
+    // Le mot est donc toujours là, et l'infobulle dit la phrase entière.
+    > i { font-size: 0.7rem; }
+
+    &.bf-cadenas-complet {
+        color: var(--bf-gen-cadenas-ok-fg);
+        background: var(--bf-gen-cadenas-ok-bg);
+    }
+    &.bf-cadenas-partiel {
+        color: var(--bf-gen-cadenas-mid-fg);
+        background: var(--bf-gen-cadenas-mid-bg);
+    }
+    &.bf-cadenas-clair {
+        color: var(--bf-gen-cadenas-no-fg);
+        background: var(--bf-gen-cadenas-no-bg);
+    }
+    // Annoncé par la sonde, jamais confirmé : le pointillé le dit sans crier.
+    &.bf-cadenas-annonce { border-style: dashed; }
 }
 
 // "Response interrupted" banner (timeout / max-turns / Stop).
@@ -739,6 +907,17 @@ body.bf_dark_mode {
     --bf-gen-meta:          #b0b6b8;
     --bf-gen-warn-fg:       #fbbf24;
     --bf-gen-warn-bg:       rgba(245, 158, 11, 0.15);
+    // 🔴 Même raison que l'accent de marque : un vert et un rouge « pleins » tombent
+    // sous 3:1 sur #2E3132. Éclaircis pour le texte, le fond garde la teinte diluée.
+    // ⚠️ La bulle sombre est de la marque diluée dans #2E3132, donc PLUS CLAIRE que la
+    // surface : les trois couleurs sont choisies sur ce fond-là (56,62,65), le pire des
+    // deux, où elles donnent 5,4:1, 5,3:1 et 4,7:1 (et 6,4 / 6,3 / 5,5 sur la surface).
+    --bf-gen-cadenas-ok-fg:  #86efac;
+    --bf-gen-cadenas-ok-bg:  rgba(134, 239, 172, 0.15);
+    --bf-gen-cadenas-mid-fg: #fcd34d;
+    --bf-gen-cadenas-mid-bg: rgba(252, 211, 77, 0.15);
+    --bf-gen-cadenas-no-fg:  #ffb3b3;
+    --bf-gen-cadenas-no-bg:  rgba(255, 179, 179, 0.15);
     --bf-gen-overlay:       rgba(0, 0, 0, 0.45);
 
     --bf-gen-bubble-bg:     color-mix(in srgb, var(--brand-primary, #3367d6) 12%, var(--brand-dark, #2E3132));
@@ -934,4 +1113,176 @@ body.bf_dark_mode {
 // L'hôte de la barre en plein écran se rétrécit sans rogner le menu.
 .bf-gen-meters-host {
     min-width: 0;
+}
+
+// ── un panneau à la fois sous 768 px ─────────────────────
+// Gen porte deux fois la même forme « liste + conversation côte à côte » : l'action
+// plein écran et le tiroir du systray. Mesuré au navigateur à 390 px, aucune des deux
+// ne tenait : la conversation du plein écran tombait à 118 px et son bord droit sortait
+// de 8 px ; le tiroir, 420 px de `min-width` dans un écran de 390, était posé à
+// x = -30, donc coupé à gauche SANS barre de défilement pour y revenir — un document
+// qui ne déborde pas d'un pixel et perd quand même 30 px de contenu.
+//
+// La borne 767,98 px est celle d'Odoo (`d-none d-md-block` sur ses propres éléments de
+// barre) et celle de la saisie : une seule frontière pour tout le mobile.
+//
+// ⚠️ Ces règles ne font rien seules : le CSS ne peut pas savoir qu'une conversation est
+// ouverte. La classe `bf-gen-conv` est posée par le gabarit, sur la MÊME condition que
+// le `t-if` qui décide d'afficher la conversation — sans quoi l'écran pourrait se vider
+// en annonçant une conversation que rien ne rend, et le retour serait injoignable.
+@media (max-width: 767.98px) {
+
+    // ── Action plein écran ──────────────────────────────────────────────
+    .bf-chat-sidebar {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .bf-chat-container {
+    // 🔴 `display: none` SANS `!important` ne ferme rien ici : les trois panneaux
+    // portent la classe `d-flex` de Bootstrap, et l'utilitaire est `display: flex
+    // !important`. Mesuré au navigateur : la règle s'appliquait, la liste rétrécissait à
+    // 201 px, et les deux panneaux restaient à l'écran. Même piège que plus haut avec
+    // `.flex-shrink-0`. Ces trois `!important` ne vivent que sous la borne.
+        &.bf-gen-conv .bf-chat-sidebar { display: none !important; }
+        &:not(.bf-gen-conv) .bf-chat-panel { display: none !important; }
+    }
+
+    // ── Tiroir du systray ───────────────────────────────────────────────
+    // `width: 100%` et non `100vw` : le tiroir est l'enfant d'une superposition
+    // `position: fixed; left: 0; right: 0`, donc 100 % vaut déjà l'écran, sans le
+    // pixel de trop que `100vw` ajoute quand une barre de défilement existe.
+    .bf-side-panel {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .bf-side-panel-sessions {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .bf-side-panel-body {
+        // `.bf-side-panel-sessions` n'a pas `d-flex` et cédait sans `!important` ;
+        // `.bf-side-panel-chat-main` l'a. Les deux le portent, pour une seule règle à lire.
+        &.bf-gen-conv .bf-side-panel-sessions { display: none !important; }
+        &:not(.bf-gen-conv) .bf-side-panel-chat-main { display: none !important; }
+    }
+
+    // Le retour : présent dans le DOM à toute largeur, affiché par `d-md-none`
+    // seulement sous la borne, donc sans un pixel d'effet au bureau.
+    // 🔴 Il faisait 19 × 31 px, sous les 24 × 24 de WCAG 2.5.8 et
+    // très loin des 44 pt d'Apple, à 8 px sous la barre d'Odoo dont le menu des
+    // applications occupe la même bande horizontale. Cible de 44 px.
+    .bf-gen-retour {
+        flex-shrink: 0;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    // 🔴 RÉGRESSION du panneau unique, mesurée avant/après sur la même
+    // page : le menu des compteurs est `right: 0` dans un `<span>` de 16 px. En tirant
+    // le volet de x = 280 à x = 0, on tirait son bouton de x = 355 à x = 75, et
+    // 210 px de menu ancrés à droite sortaient à **x = -119** — 57 % hors écran, ses
+    // quatre cases à x = -106, et `doc.scrollWidth == clientWidth`, donc AUCUNE barre
+    // de défilement pour aller les chercher.
+    // Le menu s'ancre désormais sur la BARRE des compteurs (358 px, à l'écran) et non
+    // sur le bouton : on rend son `<span>` non positionné, et le menu s'étire d'un bord
+    // à l'autre de cette barre.
+    // ⚠️ `position: static` a besoin d'un `!important` : `.position-relative` de
+    // Bootstrap en porte un.
+    .bf-gen-meters > span.position-relative {
+        position: static !important;
+    }
+
+    // 🔴 Écrit `.bf-gen-meters-menu` (0,1,0), ce bloc était
+    // du CODE MORT. La règle de la ligne 909, `.bf-gen-meters .bf-gen-meters-menu`
+    // (0,2,0), gagnait, et le menu restait collé à droite — mesuré, `left` calculé à
+    // 148 px, largeur 210 dans une barre de 358, et le retirer ne changeait RIEN.
+    // Deux sélecteurs de classe, donc, et placé après : il s'applique pour vrai.
+    .bf-gen-meters .bf-gen-meters-menu {
+        left: 0;
+        right: 0;
+        width: auto;
+    }
+
+    // 🔴 La pastille de la fiche liée est un `<a href>` qui
+    // couvre 86 % de la largeur de la ligne ET son centre géométrique : toucher le
+    // milieu d'une ligne sortait de Gen vers la fiche, en silence, pendant que la liste
+    // restait affichée. Sous la borne la pastille
+    // devient décorative — elle dit encore quelle fiche est liée, et le geste premier
+    // de la ligne redevient « ouvrir la conversation », qui est la raison d'être du panneau.
+    // Au-dessus de la borne, le lien ne change pas.
+    .bf-gen-record-pill {
+        pointer-events: none;
+    }
+
+    // 🔴 Les trois actions de ligne sont à `opacity: 0` et ne
+    // se révèlent qu'au `:hover`, qu'un écran tactile ne déclenche jamais : un bloc
+    // INVISIBLE de 52 px au bord droit de la ligne recevait le toucher, et Archiver
+    // écrit en base. Les montrer, pour qu'on les touche exprès.
+    // Spécificité égale à la règle qui les cache (0,3,0) et placée après : pas besoin
+    // d'`!important`.
+    .bf-chat-sidebar .bf-chat-session-item .bf-chat-session-actions {
+        opacity: 1;
+    }
+
+    .bf-side-panel-session-item .bf-side-panel-row-actions .btn {
+        opacity: 1;
+    }
+
+    // 🔴 La liste cachée, RIEN à l'écran ne nommait la
+    // conversation ouverte : l'en-tête du plein écran n'a que des boutons-icônes
+    // (`innerText` vide, mesuré). Le nom s'y ajoute, et les compteurs passent à la
+    // ligne suivante plutôt que de se disputer 390 px avec lui.
+    // `order: 1` suffit à les renvoyer en dernier ; on ne touche pas à leur
+    // `flex-grow`, que `flex-grow-1` de Bootstrap tient avec un `!important`.
+    .bf-chat-panel-header {
+        flex-wrap: wrap;
+
+        > .bf-gen-meters-host {
+            order: 1;
+            flex-basis: 100%;
+        }
+    }
+
+    // 🔴 `flex: 1 1 0` et non `auto` : avec `flex-wrap`, un titre long calcule sa base
+    // sur son contenu `nowrap`, ne tient pas sur la ligne et la fait RETOURNER — chaque
+    // enfant de l'en-tête s'est retrouvé sur sa propre ligne (mesuré : quatre lignes,
+    // tous à x = 16). Base nulle, il ne pousse plus rien et occupe ce qui reste.
+    .bf-gen-titre-mobile {
+        min-width: 0;
+        flex: 1 1 0;
+    }
+
+    // 🔴 Une première forme se donnait 44 px pour la flèche au nom de
+    // WCAG 2.5.8 et laissait sur le même écran trois actions de ligne de 14,8 × 21,2 px
+    // à 4 px d'écart — **dont Archiver, qui écrit** — le bouton Partager à 22,3 × 31, et
+    // le ✕ du tiroir à 20,5 × 31, lui qui est l'une des DEUX seules sorties au téléphone
+    // (la superposition n'a pas un pixel de libre sous la borne). Rendre les actions
+    // visibles sans les rendre touchables n'était qu'une demi-mesure.
+    // 32 px : au-dessus du plancher de 24 × 24 de WCAG 2.5.8 AA, sans manger la ligne
+    // comme le feraient trois cibles de 44 (132 px sur 389).
+    // 🔴 `:not(.bf-gen-retour)` n'est pas une coquetterie : écrit sans lui, ce bloc
+    // (0,2,0) battait `.bf-gen-retour` (0,1,0) et **ramenait le retour de 44 à 32 px**,
+    // pendant que le changelog promettait 44 au nom de WCAG. Mesuré, puis corrigé.
+    // Troisième morsure de la spécificité dans cette version, après `.d-flex` et
+    // `.position-relative` : dans ce fichier, on vérifie au navigateur, pas au code.
+    .bf-chat-session-actions .btn,
+    .bf-side-panel-row-actions .btn,
+    .bf-chat-panel-header .btn:not(.bf-gen-retour),
+    .bf-side-panel-header .btn:not(.bf-gen-retour) {
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    // 🔴 Et le volet lui-même doit pouvoir rétrécir. Sans `min-width: 0`, un élément
+    // de boîte flexible garde `min-width: auto` : il ne descend pas sous la largeur
+    // minimale de son contenu, donc l'en-tête à quatre lignes l'a poussé à **405 px**
+    // dans un écran de 390, et le conteneur a débordé de 15 px. Mesuré, puis corrigé.
+    // Sous la borne seulement : au bureau le volet fait 1 160 px et n'a rien à céder.
+    .bf-chat-panel {
+        min-width: 0;
+    }
 }

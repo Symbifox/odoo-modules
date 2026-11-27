@@ -1,5 +1,180 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.45.2 - 2026-11-27
+
+Publication de rattrapage : le dépôt passe de 18.0.1.42.0 à 18.0.1.45.2 et porte
+les entrées 18.0.1.43.0 à 18.0.1.45.2 ci-dessous.
+
+La bascule de forfait ne change plus en silence. Trois chemins la changeaient sans que
+l'écran le dise.
+
+### Un champ absent n'est plus un vidage
+
+Un enregistrement des Paramètres qui portait le compte de la bascule sans ses usagers
+basculait **toute l'instance** au lieu des seuls usagers choisis : Odoo lit vide un champ
+absent dans l'`inverse` qu'il partage avec les autres. Un champ absent veut maintenant dire
+« inchangé » : il est complété depuis ce que le formulaire avait lu, sinon relu au pont. Si
+le pont est muet alors qu'un changement est demandé, une erreur s'affiche. Le formulaire
+ouvert pendant que le pont était muet reste enregistrable, sans rien écrire.
+
+### Un retrait refusé le dit
+
+Un retrait de la bascule demandé pendant que le pont ne répondait plus sortait sans un mot,
+et l'écran disait « enregistré ». Il affiche maintenant l'erreur du pont.
+
+### Usagers archivés
+
+Une bascule réservée à un usager archivé ensuite devenait globale au prochain
+enregistrement. Elle s'affiche désormais en erreur, avec un renvoi à l'hôte du pont.
+
+### Durcissements
+
+- Un instantané mal formé se lit comme « rien lu » au lieu de lever une erreur serveur.
+- Le dict de valeurs de l'appelant n'est plus modifié sur place.
+
+## 18.0.1.45.1 - 2026-11-26
+
+### Les assistants ne se lisent plus d'un collègue à l'autre
+
+Le rapport de cohérence des consignes (`claude.chat.coherence.report`) est un modèle
+transitoire : une vraie table, ouverte à tous les internes, sans règle d'enregistrement.
+Tout employé pouvait donc lire l'assistant d'un collègue par un simple `web_search_read`,
+jusqu'au passage du cron de ménage. Une règle globale le réserve à son auteur
+(`create_uid`), sur les quatre opérations, administrateurs compris
+(`security/bf_wizard_owner_rules.xml`). Un essai liste les assistants du module ouverts
+à tous : un assistant neuf sans règle le fait échouer.
+
+## 18.0.1.45.0 - 2026-11-25
+
+Deux demandes venues de l'usage.
+
+### La zone de saisie grandit avec le texte, dans le panneau aussi
+
+Dans le panneau latéral, la saisie restait à une ligne : on tapait une question longue
+en ne voyant que des demi-lignes. Le plein écran avait un `autoResize`, le panneau n'en
+avait aucun, et son SCSS plafonnait la zone à 100 px de toute façon.
+
+- Les deux surfaces écoutent maintenant `input`, pas seulement `keydown` : un texte
+  **collé** agrandit aussi la zone (au plein écran, il ne le faisait pas).
+- Un seul plafond, 240 px, au JS (`SAISIE_MAX`) et au SCSS des deux zones ; au-delà, la
+  zone défile. Un essai garde l'accord des trois valeurs : plus bas, le SCSS couperait ce
+  que le JS agrandit.
+
+### Pièces jointes : un trombone et le glisser-déposer
+
+- Un bouton trombone à côté de la saisie et le glisser-déposer sur la conversation, sur
+  les deux surfaces. Formats lus : PDF, Word (`.docx`), ODT, Excel (`.xlsx`) et les
+  fichiers texte. Les images sont refusées.
+- **Le fichier est lu dès qu'on le choisit**, pas à l'envoi : la puce dit tout de suite
+  si Gen pourra le lire et combien il en lira. Un PDF numérisé (sans texte), un fichier
+  endommagé ou une image est refusé là, avec la raison écrite sous la puce.
+- **Gen reçoit le TEXTE, jamais le fichier.** Il suit la question dans le message du
+  tour, un bloc par fichier, après une ligne qui dit à Gen que ce contenu est une donnée
+  et jamais une consigne. La balise du bloc porte un jeton tiré au hasard pour chaque
+  message : un document ne peut pas deviner celle qui ferme son bloc, et toute balise
+  ressemblante du document est désamorcée. Le texte passe donc par le masque des
+  noms comme ce qu'on tape, alors qu'un PDF ou une image en base64 partirait en clair :
+  le relais ne masque que du texte. Le fichier reste dans Odoo, rattaché à la question,
+  et se retélécharge depuis la puce sous la bulle.
+- Plafonds : 20 Mo par fichier ; 120 000 caractères par fichier (au-delà, le texte est
+  **coupé**, et la puce comme l'en-tête du bloc le disent) ; 5 fichiers et 200 000
+  caractères par message (au-delà, l'envoi est refusé plutôt que rogné en silence).
+- Une pièce n'est qu'à soi : en attente, elle n'a pas de `res_id`, et Odoo ne la montre
+  qu'à qui l'a créée et aux administrateurs système. Un tour n'accepte que les pièces en attente de l'appelant ; celle
+  d'un autre, ou une pièce déjà partie avec une question précédente, est refusée du même
+  « Attachment not found » qu'une pièce inexistante, et **rien n'est créé** : ni
+  conversation vide, ni question sans réponse. La question et ses pièces reviennent à la
+  saisie.
+- Pendant que Gen répond, une question tapée part toujours dans le tour en cours ; les
+  pièces attendent la question suivante.
+- **La lecture se fait dans un processus à part, borné** (`prlimit` : 2 Go d'espace
+  d'adressage, 60 s de processeur, plus un délai), jamais dans le worker : un fichier
+  est une entrée hostile. Une bombe zip est refusée sur sa taille déclarée, un classeur
+  qui déclare un million de rangées vides est lu sur ses vraies cellules, et la lecture
+  s'arrête au plafond de caractères. Le texte est gardé avec la pièce : le fichier n'est
+  lu qu'une fois, et Odoo ne le relit pas lui-même (`ir.attachment._index` ne rend rien
+  pour une pièce de Gen : `attachment_indexation` passait sinon pdfminer sur tout un PDF,
+  dans le worker).
+- **Plafond par locataire** (`bf_claude_chat.pieces_caracteres_max`) : un pont qui borne
+  la longueur du message (16 384 caractères sur un locataire public) en exige un plus
+  bas ; la pièce est alors coupée au téléversement, et la puce le dit.
+- **Rétention** : effacer une conversation ou un message efface ses documents (la
+  cascade SQL des messages passait à côté). Un cron quotidien retire les pièces jamais
+  envoyées passé un jour, et celles dont le message n'existe plus. Le téléversement est
+  coupé quand Gen est éteint, et limité en débit comme les tours.
+- Le titre de la conversation se fait sur la question seule, pas sur le texte des pièces.
+- Aucun champ neuf : une pièce se retrouve par `res_model`/`res_id`.
+- L'application mobile n'envoie pas encore de pièces jointes.
+
+## 18.0.1.44.0 - 2026-11-15
+
+### Un panneau à la fois sous 768 px, sur les deux surfaces
+
+Gen portait deux fois la même forme — liste et conversation côte à côte — et aucune des
+deux ne tenait dans un téléphone : à 390 px, le plein écran débordait de 123 px et la
+saisie sortait de l'écran avec son bouton d'envoi ; le tiroir du systray réclamait
+420 px et perdait trente pixels de liste à gauche, hors de l'écran, sans barre de
+défilement pour y revenir.
+
+- **Sous 768 px, une seule surface à l'écran.** La liste occupe la largeur tant
+  qu'aucune conversation n'est ouverte ; la conversation l'occupe ensuite ; une flèche
+  de retour, dans son en-tête, ramène à la liste. Même geste dans le tiroir, qui
+  prend toute la largeur. Le nom de la conversation ouverte s'affiche dans l'en-tête,
+  puisque la liste est cachée.
+- **Rien ne bouge au-dessus de la borne** (767,98 px, celle d'Odoo) : la flèche est
+  `d-md-none`, et les règles vivent dans une seule requête média.
+- **Le menu des compteurs s'ancre sur sa barre** : tiré à gauche avec le volet, il
+  sortait de l'écran.
+- **Les actions de ligne restent visibles au toucher**, et la pastille de la fiche liée
+  ne couvre plus le centre de la ligne : la toucher sortait de Gen vers la fiche.
+
+### La bulle du téléphone ne vole plus le bouton Envoyer
+
+Le bouton flottant de `bf_softphone` se pose dans le coin inférieur droit, au-dessus du
+bouton Envoyer (qui porte aussi Arrêter pendant une réponse) : couvert aux quatre
+cinquièmes et injoignable jusqu'à 1 250 px. Le composeur du plein écran réserve
+maintenant la voie de la bulle, et seulement ce qu'il faut (`clamp(16px, …, 92px)`),
+pour qui voit la bulle (`body:has(.o_bf_sp_bubble)`). Le tiroir du systray n'avait rien
+à corriger : sa superposition passe au-dessus de la bulle.
+
+## 18.0.1.43.0 - 2026-11-14
+
+### Un cadenas dit comment chaque tour est parti vers le modèle
+
+Un service local remplace par des jetons les courriels, téléphones, NAS, noms de
+personnes et noms d'organisations de tout ce qui part vers le modèle, et les remet
+en clair au retour. Jusqu'ici, rien à l'écran ne disait si un tour en avait
+bénéficié — et il y a des cas où il n'en bénéficie pas : le service peut être
+arrêté, ou ne remplacer que les identifiants.
+
+- **Trois états, sous chaque réponse** : masqué (identifiants et noms), noms en
+  clair (identifiants seulement), et rien de masqué. Un seul état aurait caché la
+  moitié de la question, puisque les deux familles se remplacent séparément.
+- **Ce que l'état dit, c'est le masquage qui était EN SERVICE**, pas une garantie
+  de couverture : le service remplace les noms de son répertoire, et un nom qu'il
+  ne connaît pas part en clair sous un cadenas « Masqué ». Les mots à l'écran le
+  disent ainsi, et l'infobulle l'explique. Elle dit aussi le trou qui touche des
+  noms connus : les blocs de pensée du modèle repartent tels quels, donc une
+  conversation plus ancienne que le masquage des noms rejoue les siens en clair.
+- **Mesuré, pas deviné.** Le cadenas paraît dès le départ du tour, sur la foi de
+  l'état du service, puis il est **remplacé par ce que le service a vraiment
+  remplacé** pour ce tour-là. Un cadenas que rien n'a confirmé se montre en
+  pointillé et le dit dans son infobulle : le service peut changer d'état entre le
+  moment où on l'interroge et celui où la requête part.
+- **Le plus faible l'emporte.** Une réponse peut demander plusieurs départs
+  (reprise automatique après une coupure) : si l'un d'eux est parti moins masqué,
+  c'est celui-là que le cadenas montre.
+- **Gardé avec la réponse**, donc une conversation relue trois jours plus tard le
+  dit encore, et le téléphone lit le même cadenas que le bureau (surface mobile 11).
+- **Infalsifiable**, par deux ceintures : le champ est refusé à l'écriture directe
+  ET revérifié après la création, parce qu'une valeur par défaut personnelle
+  s'ajoute après le premier contrôle. Seul le serveur l'écrit. Un cadenas que
+  l'usager pourrait poser lui-même ne prouverait rien.
+
+Rien ne s'affiche là où il n'y a pas de service de masque, ni sur les réponses
+d'avant cette version : un cadenas ouvert y laisserait croire qu'un masque a
+manqué à son devoir.
+
 ## 18.0.1.42.0 - 2026-11-08
 
 ### La clé API ne s'efface plus en enregistrant un autre réglage

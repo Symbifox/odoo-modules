@@ -114,6 +114,28 @@ class ClaudeChatMessage(models.Model):
     )
     closure_reason = fields.Char(string="Closure Reason (this turn)", copy=False,
                                  readonly=True)
+    # Le cadenas. Comment CE tour est parti vers Anthropic, gardé avec lui
+    # pour qu'une conversation relue trois jours plus tard le dise encore — et parce que
+    # c'est la preuve qu'une évaluation des facteurs relatifs à la vie privée demande.
+    # Vide : le relais de masque ne concerne pas ce système, ou le tour est d'avant ce
+    # champ. L'écran ne montre alors aucun cadenas : en afficher un dirait qu'un masque
+    # a manqué à son devoir là où il n'y en a jamais eu.
+    masque = fields.Selection(
+        [("complet", "Identifiers and known names masked"),
+         ("identifiants", "Identifiers masked, names in the clear"),
+         ("clair", "Nothing masked")],
+        string="Mask (this turn)", copy=False, readonly=True,
+        help="How this turn went out to the model: which masking the relay had on "
+             "when it left. Not a coverage guarantee: the relay replaces the names its "
+             "directory knows, and the model's own earlier thinking is replayed as it "
+             "was written.",
+    )
+    masque_constate = fields.Boolean(
+        string="Mask Measured", copy=False, readonly=True,
+        help="True: counted by the relay on what really left. False: announced by "
+             "the health probe when the turn started, and never confirmed — the relay "
+             "may have changed mode in between, or the turn may have been excluded.",
+    )
 
     # 🔴 Ces champs pilotent un fil qui tourne en superutilisateur et parle au
     # pont. `readonly=True` ne garde que l'écran : la règle d'accès laisse tout
@@ -125,6 +147,9 @@ class ClaudeChatMessage(models.Model):
         "state", "turn_key", "client_token", "runner_heartbeat",
         "auto_continue_count", "prefix_len", "stop_requested", "turn_payload",
         "end_reason", "closure_state", "closure_reason",
+        # 🔴 Le cadenas AUSSI : un cadenas que l'usager peut écrire lui-même
+        # par RPC ne prouve rien. Seul le fil du tour, en sudo, le pose.
+        "masque", "masque_constate",
     })
 
     def _check_turn_fields(self, vals_list):
@@ -154,7 +179,13 @@ class ClaudeChatMessage(models.Model):
             if (rec.state != "done" or rec.turn_key or rec.client_token
                     or rec.runner_heartbeat or rec.auto_continue_count
                     or rec.prefix_len or rec.stop_requested or rec.turn_payload
-                    or rec.end_reason or rec.closure_state or rec.closure_reason):
+                    or rec.end_reason or rec.closure_state or rec.closure_reason
+                    # 🔴 Le cadenas AUSSI :
+                    # le filtre `propre` ci-dessus ferme la route du CONTEXTE, pas celle
+                    # d'un `ir.default` personnel, que tout employé peut poser (droits
+                    # 1,1,1,1 sur `ir.default` pour `base.group_user`). Sans cette
+                    # ligne, un usager se fabriquait une réponse « Masqué · constaté ».
+                    or rec.masque or rec.masque_constate):
                 raise AccessError(_(
                     "Only the server may set these fields on a Gen message: %s",
                     "state"))
@@ -163,6 +194,51 @@ class ClaudeChatMessage(models.Model):
     def write(self, vals):
         self._check_turn_fields([vals])
         return super().write(vals)
+
+    # ── Pièces jointes ──────────────────────────────────────────
+
+    def unlink(self):
+        """Les documents joints partent avec leur question.
+
+        🔴 Odoo ne purge à l'`unlink` que les pièces du modèle LUI-MÊME, et un message
+        effacé par la cascade de sa conversation ne passe même pas ici. Sans ce geste
+        (et la cascade de `claude.chat.session.unlink`), un document joint survivait
+        dans le filestore à l'effacement de sa conversation : une rétention que
+        personne n'a décidée."""
+        # Le droit d'abord : sans lui, les pièces partaient en sudo avant le refus.
+        self.check_access("unlink")
+        if self.ids:
+            self.env["ir.attachment"].sudo().search([
+                ("res_model", "=", self._name), ("res_id", "in", self.ids),
+            ]).unlink()
+        return super().unlink()
+
+    #: Une pièce choisie et jamais envoyée vit au plus ce délai.
+    PIECES_EN_ATTENTE_JOURS = 1
+
+    @api.model
+    def _purger_pieces(self, uid=None):
+        """Les pièces en attente depuis plus d'un jour, et celles dont le message n'existe
+        plus (effacé par une cascade SQL, celle d'un usager supprimé par exemple).
+
+        Appelé au téléversement (pour cet usager) et chaque nuit par le cron (pour tous)."""
+        Attachment = self.env["ir.attachment"].sudo()
+        limite = fields.Datetime.subtract(fields.Datetime.now(),
+                                          days=self.PIECES_EN_ATTENTE_JOURS)
+        domaine = [("res_model", "=", self._name), ("res_id", "=", 0),
+                   ("create_date", "<", limite)]
+        if uid:
+            domaine.append(("create_uid", "=", uid))
+        veilles = Attachment.search(domaine)
+        orphelines = Attachment.browse()
+        if not uid:
+            rattachees = Attachment.search([("res_model", "=", self._name),
+                                            ("res_id", "!=", 0)])
+            vivants = set(self.sudo().with_context(active_test=False).browse(
+                set(rattachees.mapped("res_id"))).exists().ids)
+            orphelines = rattachees.filtered(lambda p: p.res_id not in vivants)
+        (veilles | orphelines).unlink()
+        return len(veilles) + len(orphelines)
 
     # Au-delà, un tour « en cours » dont le fil ne donne plus signe de vie est
     # tenu pour orphelin. Le fil écrit au moins toutes les 15 s (signe de vie

@@ -475,12 +475,22 @@ class ClaudeAccountPlanSwitch(models.Model):
         veulent dire « je n'ai rien lu » et doivent arrêter toute écriture :
         sans ça, `_plan_switch_write` relit une bascule en place, voit qu'on
         lui demande le vide, et la RETIRE.
+
+        ⚠️ « Bien formé » veut dire `[répertoire, [ids]]`, pas
+        seulement « une liste ». `"[]"` faisait lever `IndexError` plus loin,
+        et `["/x", ["a"]]` une erreur SQL qui avortait la transaction (de même
+        un id hors de la plage `integer` de Postgres).
         """
         try:
             lu = json.loads(snapshot) if snapshot else None
         except ValueError:
-            lu = None
-        return lu if isinstance(lu, list) else None
+            return None
+        if not (isinstance(lu, list) and len(lu) == 2 and isinstance(lu[0], str)
+                and isinstance(lu[1], list)
+                and all(isinstance(u, int) and not isinstance(u, bool)
+                        and 0 < u < 2 ** 31 for u in lu[1])):
+            return None
+        return lu
 
     @api.model
     def _plan_switch_unchanged(self, snapshot, account, users):
@@ -518,7 +528,7 @@ class ClaudeAccountPlanSwitch(models.Model):
         compte = self.search([("config_dir", "=", etat.get("config_dir") or "")], limit=1) \
             if etat.get("config_dir") else self.browse()
         uids = [int(u) for u in etat.get("users") or [] if str(u).isdigit()]
-        usagers = self.env["res.users"].browse(uids).exists()
+        usagers = self._plan_switch_usagers(uids)
         # Ne jamais montrer « forfait de l'instance » ou
         # « tous » pour une bascule que cet écran ne sait pas représenter ; le
         # prochain enregistrement l'aurait réécrite.
@@ -527,11 +537,30 @@ class ClaudeAccountPlanSwitch(models.Model):
                 "The plan is switched to an account this instance does not list "
                 "(%s). Change it on the bridge host.",
                 etat["config_dir"]))
-        if uids and not usagers:
-            return dict(vide, available=True, error=_(
-                "The plan is switched for users who no longer exist here. "
-                "Change it on the bridge host."))
+        if usagers is None:
+            return dict(vide, available=True, error=self._plan_switch_usagers_perdus())
         return {"account": compte, "users": usagers, "error": False, "available": True}
+
+    @api.model
+    def _plan_switch_usagers(self, uids):
+        """Les usagers basculés, ou None si l'écran ne peut pas les représenter.
+
+        🔴 `exists()` garde un usager ARCHIVÉ, mais la lecture d'un many2many le
+        filtre (`active_test`) — dans l'`inverse` comme dans le formulaire. Une
+        bascule pour le seul usager 7, archivé ensuite, se relisait donc
+        « usagers vides » à l'enregistrement d'un autre onglet, et
+        `_plan_switch_write` la posait pour TOUTE l'instance. Archivés ou
+        disparus, même verdict : l'écran ne sait pas la montrer, il la met en
+        erreur (lecture seule) et renvoie à l'hôte du pont.
+        """
+        uids = list(dict.fromkeys(uids))
+        usagers = self.env["res.users"].browse(uids).exists().filtered("active")
+        return usagers if len(usagers) == len(uids) else None
+
+    @api.model
+    def _plan_switch_usagers_perdus(self):
+        return _("The plan is switched for users who are archived or no longer "
+                 "exist here. Change it on the bridge host.")
 
     @api.model
     def _plan_switch_write(self, account, users):
@@ -540,6 +569,13 @@ class ClaudeAccountPlanSwitch(models.Model):
         ⚠️ Les réglages s'enregistrent d'un bloc : un pont muet à l'ouverture
         rendait des champs vides, et enregistrer un autre réglage aurait
         retiré la bascule. On relit donc l'état avant d'écrire.
+
+        🔴 Un pont muet à l'ENREGISTREMENT lève, que la demande soit une
+        bascule ou un RETRAIT. Avant, un retrait (compte et usagers vides)
+        sortait sans un mot et l'écran disait « enregistré » pendant que la
+        bascule restait en place. Le « rien lu, rien demandé » d'un formulaire
+        qui n'a jamais vu la bascule n'arrive pas ici : l'`inverse` le filtre
+        avant (`_inverse_plan_switch`), la page reste enregistrable.
         """
         if not self.env.user.has_group("base.group_system"):
             return
@@ -547,9 +583,7 @@ class ClaudeAccountPlanSwitch(models.Model):
         voulu_dir = account.config_dir if account else ""
         actuel_dir = actuel["account"].config_dir if actuel["account"] else ""
         if actuel["error"]:
-            if voulu_dir or users:
-                raise UserError(actuel["error"])
-            return
+            raise UserError(actuel["error"])
         if voulu_dir == actuel_dir and set(users.ids) == set(actuel["users"].ids):
             return
         try:

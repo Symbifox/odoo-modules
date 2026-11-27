@@ -7,9 +7,11 @@ import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
 import { router } from "@web/core/browser/router";
 import { GenSteps, GenWaitLine } from "@bf_claude_chat/js/gen_wait";
+import { GenCadenas } from "@bf_claude_chat/js/gen_cadenas";
 import { listModeMixin } from "@bf_claude_chat/js/gen_list_mode";
 import { closureMixin } from "@bf_claude_chat/js/gen_closure";
 import { badgeTitle, screenMixin } from "@bf_claude_chat/js/gen_screen";
+import { ajusterSaisie, piecesMixin } from "@bf_claude_chat/js/gen_pieces";
 import { newClientToken, streamingFields } from "@bf_claude_chat/js/gen_turn";
 
 
@@ -231,7 +233,7 @@ function prettyContextLabel(ctx) {
 
 export class ClaudeSystrayItem extends Component {
     static template = "bf_claude_chat.SystrayItem";
-    static components = { GenSteps, GenWaitLine };
+    static components = { GenSteps, GenWaitLine, GenCadenas };
     static props = [];
 
     setup() {
@@ -239,6 +241,7 @@ export class ClaudeSystrayItem extends Component {
         this.notification = useService("notification");
         this.messagesRef = useRef("systrayMessages");
         this.inputRef = useRef("systrayInput");
+        this.fileInputRef = useRef("genFiles");
 
         this.state = useState({
             open: false,           // panel open/closed
@@ -255,6 +258,7 @@ export class ClaudeSystrayItem extends Component {
             ...listModeMixin.listModeState(),
             ...closureMixin.closureState(),
             ...screenMixin.screenState(),
+            ...piecesMixin.piecesState(),
             // Depuis une fiche, voir toutes les conversations.
             allConversations: false,
             editingName: "",
@@ -549,15 +553,22 @@ export class ClaudeSystrayItem extends Component {
         const textarea = this.inputRef.el;
         if (!textarea) return;
         const message = textarea.value.trim();
-        if (!message) return;
-        // Comme au plein écran, la question part dans le tour en
-        // cours au lieu d'être ignorée.
-        if (this.state.isThinking) {
-            if (this.state.streamingActive) await this._sayInTurn(message, textarea);
+        // Une pièce encore en lecture ne part pas à moitié.
+        if (this.piecesEnCours()) {
+            this._avisPiecesEnLecture();
             return;
         }
+        // Comme au plein écran, la question part dans le tour en
+        // cours au lieu d'être ignorée. Les pièces attendent la question suivante.
+        if (this.state.isThinking) {
+            if (message && this.state.streamingActive) await this._sayInTurn(message, textarea);
+            return;
+        }
+        const pieces = this._prendrePieces();
+        if (!message && !pieces.length) return;
         textarea.value = "";
-        await this._send(message);
+        this.autoResize(textarea);
+        await this._send(message, { pieces });
     }
 
     /**
@@ -583,8 +594,12 @@ export class ClaudeSystrayItem extends Component {
         await this._send(this.state.autoBriefPrompt, { internal: true });
     }
 
-    async _send(message, { internal = false } = {}) {
-        if (!message || this.state.isThinking) return;
+    async _send(message, { internal = false, pieces = [] } = {}) {
+        if ((!message && !pieces.length) || this.state.isThinking) {
+            this._rendrePieces(pieces);
+            return;
+        }
+        const attachmentIds = pieces.map((p) => p.id);
 
         const sessionId = this.state.activeSessionId === -1 ? null : this.state.activeSessionId;
         this._onWrite();
@@ -595,7 +610,8 @@ export class ClaudeSystrayItem extends Component {
             this.state.messages.push({
                 id: `u-${Date.now()}`,
                 role: "user",
-                content: message,
+                content: message || this._questionSansTexte(),
+                attachments: pieces,
             });
         }
 
@@ -608,7 +624,7 @@ export class ClaudeSystrayItem extends Component {
             this._syncThinking();
             this.scrollToBottom();
             try {
-                await this._sendBuffered(message, sessionId, context, internal);
+                await this._sendBuffered(message, sessionId, context, internal, pieces);
             } finally {
                 this._bufferedBusy = false;
                 this._syncThinking();
@@ -634,37 +650,51 @@ export class ClaudeSystrayItem extends Component {
         const payload = { session_id: sessionId, message, client_token: newClientToken() };
         if (context) payload.context = context;
         if (internal) payload.internal = true;
+        if (attachmentIds.length) payload.attachment_ids = attachmentIds;
 
+        const rendre = (refus = {}) => {
+            // The question was not sent: give it back, with its attachments.
+            if (!userMsg) return;
+            this.state.messages = this.state.messages.filter((m) => m.id !== userMsg.id);
+            this._rendrePieces(pieces, refus);
+            if (this.inputRef.el && !this.inputRef.el.value) {
+                this.inputRef.el.value = message;
+                this.autoResize(this.inputRef.el);
+            }
+        };
         const outcome = await this._followTurn(assistant, {
-            start: payload,
-            onBusy: () => {
-                // The question was not sent: give it back.
-                if (!userMsg) return;
-                this.state.messages = this.state.messages.filter((m) => m.id !== userMsg.id);
-                if (this.inputRef.el && !this.inputRef.el.value) {
-                    this.inputRef.el.value = message;
-                }
-            },
-        });
+            start: payload, onBusy: () => rendre() });
+        if (assistant.attachmentRefused) {
+            // Rien n'est parti ; la bulle d'attente n'a rien à dire.
+            this.state.messages = this.state.messages.filter((m) => m !== assistant);
+            rendre({ enCause: assistant.attachmentIds, raison: assistant.attachmentRefused });
+            this.notification.add(assistant.attachmentRefused, { type: "warning" });
+            return;
+        }
+        if (assistant.refusedEarly) this._rendrePieces(pieces);
         if (outcome === "disabled") {
             // Server turned streaming off: fall back cleanly.
             this.state.streaming = false;
             this.state.messages.splice(this.state.messages.indexOf(assistant), 1);
-            await this._sendBuffered(message, sessionId, context, internal);
+            await this._sendBuffered(message, sessionId, context, internal, pieces);
         }
         await this._refreshList(wasNewSession);
         this.scrollToBottom();
         this.focusInput();
     }
 
-    async _sendBuffered(message, sessionId, context, internal = false) {
+    async _sendBuffered(message, sessionId, context, internal = false, pieces = []) {
         const payload = { session_id: sessionId, message };
         if (context) payload.context = context;
         if (internal) payload.internal = true;
+        if (pieces.length) payload.attachment_ids = pieces.map((p) => p.id);
         const affichee = this.state.activeSessionId;
         try {
             const result = await rpc("/claude-chat/send", payload);
             if (result.error) {
+                // Rien n'est parti ; les pièces reviennent à la saisie.
+                this._rendrePieces(pieces, {
+                    enCause: result.attachment_ids, raison: result.error });
                 this.notification.add(result.error, { type: "danger" });
                 return;
             }
@@ -704,6 +734,16 @@ export class ClaudeSystrayItem extends Component {
             ev.preventDefault();
             this.onSend();
         }
+    }
+
+    /** La saisie du panneau restait à une ligne
+     *  (« je vois des demi-lignes »). Elle suit maintenant son texte, collé compris. */
+    onInputChange(ev) {
+        ajusterSaisie(ev.target);
+    }
+
+    autoResize(textarea) {
+        setTimeout(() => ajusterSaisie(textarea), 0);
     }
 
     // ── Archives et portée de la liste ──────────
@@ -860,13 +900,20 @@ export class ClaudeSystrayItem extends Component {
     }
 
     get activeSessionName() {
-        if (this.state.activeSessionId === -1) return "New Chat";
+        // 🔴 `"New Chat"` n'était pas marqué, et l'en-tête
+        // affichait « New Chat » pendant que le bouton qui venait de la créer affichait
+        // « Nouvelle conversation ». Le msgid est déjà traduit au catalogue.
+        if (this.state.activeSessionId === -1) return _t("New Chat");
         const s = this.state.sessions.find((s) => s.id === this.state.activeSessionId);
-        return s ? s.name : "";
+        // 🔴 Et il rendait "" quand la conversation ouverte n'est pas dans la liste
+        // chargée — une recherche sans résultat, un passage aux archivées pendant le
+        // chargement : conversation utilisable et PLUS RIEN qui la nomme, ce que ce nom
+        // existe précisément pour empêcher au téléphone.
+        return s ? s.name : _t("Conversation");
     }
 }
 
-Object.assign(ClaudeSystrayItem.prototype, listModeMixin, closureMixin, screenMixin);
+Object.assign(ClaudeSystrayItem.prototype, listModeMixin, closureMixin, screenMixin, piecesMixin);
 
 export const systrayClaudeChat = {
     Component: ClaudeSystrayItem,

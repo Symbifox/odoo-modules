@@ -1,6 +1,6 @@
 {
     "name": "Gen",
-    "version": "18.0.1.42.0",
+    "version": "18.0.1.45.2",
     "category": "Productivity",
     "summary": "Chat with Gen, the AI assistant, directly inside Odoo",
     "website": "https://symbifox.com",
@@ -13,6 +13,7 @@
     "data": [
         "security/security.xml",
         "security/ir.model.access.csv",
+        "security/bf_wizard_owner_rules.xml",
         "data/ir_cron.xml",
         "views/menu.xml",
         "views/flag_views.xml",
@@ -25,9 +26,11 @@
             "bf_claude_chat/static/src/scss/claude_chat.scss",
             "bf_claude_chat/static/src/js/claude_stream.js",
             "bf_claude_chat/static/src/js/gen_wait.js",
+            "bf_claude_chat/static/src/js/gen_cadenas.js",
             "bf_claude_chat/static/src/js/gen_turn.js",
             "bf_claude_chat/static/src/js/gen_list_mode.js",
             "bf_claude_chat/static/src/js/gen_closure.js",
+            "bf_claude_chat/static/src/js/gen_pieces.js",
             "bf_claude_chat/static/src/js/gen_screen.js",
             "bf_claude_chat/static/src/js/claude_chat.js",
             "bf_claude_chat/static/src/js/claude_systray.js",

@@ -9,24 +9,30 @@ through an integrated side panel and a full-screen page.
 bf_claude_chat/
 ├── controllers/
 │   ├── main.py                  # JSON-RPC + SSE endpoints (/claude-chat/*)
+│   ├── pieces.py                # Attachment upload and removal
 │   └── mobile_api.py            # REST surface for the mobile app
 ├── models/
 │   ├── claude_chat_session.py       # claude.chat.session model
 │   ├── claude_chat_message.py       # claude.chat.message model
 │   ├── claude_chat_instruction.py   # claude.chat.instruction (steering)
+│   ├── ir_attachment.py             # Gen's attachments skip Odoo's indexer
 │   └── res_config_settings.py       # Settings (Settings > Gen)
 ├── security/
 │   ├── security.xml             # Access rules, and the bridge RPC group
+│   ├── bf_wizard_owner_rules.xml # Wizards belong to their author
 │   └── ir.model.access.csv      # Model ACLs
 ├── static/src/
 │   ├── js/
 │   │   ├── claude_stream.js     # Shared SSE client
 │   │   ├── claude_chat.js       # OWL component - full-screen page
-│   │   └── claude_systray.js    # OWL component - systray side panel
+│   │   ├── claude_systray.js    # OWL component - systray side panel
+│   │   ├── gen_cadenas.js       # The mask padlock under an answer
+│   │   └── gen_pieces.js        # Attachments, drop zone, growing input
 │   ├── scss/
 │   │   └── claude_chat.scss     # Styles (side panel, bubbles, animations)
 │   └── xml/
 │       └── claude_chat.xml      # OWL templates (ChatAction + SystrayItem)
+├── pieces_jointes.py            # Reading an attachment's text, out of process
 ├── views/
 │   ├── menu.xml                 # Main menu + admin (All Sessions)
 │   ├── instruction_views.xml    # Steering instructions
@@ -297,6 +303,95 @@ group "Pont GenFox (RPC)". Everything else gets an `AccessError`.
 failures by design, so a bridge locked out does not raise anything: the
 consumption registry simply stays empty, which reads as "nobody used Gen".
 
+### The mask padlock (1.43.0)
+
+When a local masking relay sits between the bridge and the model, it replaces
+e-mail addresses, phone numbers, SINs, and the names of people and organisations
+with tokens before anything leaves, then puts them back in the reply. Each answer
+now says how its turn went out, under the bubble:
+
+- three states: identifiers and known names masked, identifiers only (names in the
+  clear), or nothing masked. The two families are replaced separately, so one state
+  would hide half of the answer;
+- what the padlock shows is the masking that was **on**, not a coverage guarantee:
+  the relay replaces the names of its directory, and a name it does not know leaves
+  in the clear under a "Masked" padlock. The tooltip says so, and also names the gap
+  that touches known names: the model's thinking blocks are replayed as they are, so
+  a conversation older than name masking replays its own in the clear;
+- the padlock appears when the turn starts, from the relay's health probe, then is
+  **replaced by what the relay actually counted** for that turn. A padlock nothing
+  confirmed is dashed, and says so;
+- the weakest wins: an answer that needed several departures (automatic resume)
+  shows the least masked one;
+- it is stored with the answer (`masque`, `masque_constate` on `claude.chat.message`),
+  so the phone reads the same padlock (mobile API 11), and only the server writes it:
+  the fields are refused on direct writes and checked again after creation, because a
+  personal default is added after the first check.
+
+No padlock appears where there is no masking relay, nor on answers from before this
+version: an open padlock there would suggest a mask failed.
+
+### One panel at a time on a phone (1.44.0)
+
+Below 768 px (Odoo's own breakpoint, 767.98 px), the full-screen page and the
+systray drawer show one surface at a time: the list fills the width until a
+conversation opens, then the conversation does, and a back arrow in its header
+returns to the list. The open conversation's name shows in that header. Above the
+breakpoint nothing changes. Under it, the counters menu anchors on its bar, the row
+actions stay visible to touch, row buttons are at least 32 px, and the linked-record
+pill no longer covers the centre of the row.
+
+The full-screen composer also keeps clear of the floating `bf_softphone` bubble,
+which sat over the Send (and Stop) button up to about 1,300 px: it reserves the
+bubble's lane, and only for users who see the bubble (`body:has(.o_bf_sp_bubble)`).
+
+### Attachments (1.45.0)
+
+A paperclip next to the input, and drag-and-drop onto the conversation, on both
+surfaces. PDF, Word (`.docx`), ODT, Excel (`.xlsx`) and text files are read; images
+are refused.
+
+- **The file is read when it is chosen**, not on send: its chip says at once whether
+  Gen can read it and how much of it. A scanned PDF with no text, a damaged file or
+  an image is refused there, with the reason under the chip.
+- **Gen receives the TEXT, never the file.** It follows the question in the turn's
+  message, one block per file, after a line telling Gen the content is data and never
+  an instruction. Each block's tag carries a random token drawn per message, so a
+  document cannot guess the tag that closes its block, and look-alike tags in the
+  document are defused. The text therefore goes through the masking relay like
+  anything typed. The file stays in Odoo, attached to the question, and can be
+  downloaded again from the chip under the bubble.
+- Limits: 20 MB per file; 120,000 characters per file (beyond that the text is
+  **cut**, and both the chip and the block header say so); 5 files and 200,000
+  characters per message (beyond that the send is refused, never trimmed silently).
+  `bf_claude_chat.pieces_caracteres_max` lowers the per-message cap for a bridge that
+  bounds message length.
+- A pending attachment has no `res_id`, and Odoo shows it only to its creator and to
+  system administrators. A turn
+  accepts only the caller's pending attachments; anyone else's, or one already sent,
+  is refused like a missing one, and **nothing is created**.
+- **Reading runs in a separate, bounded process** (`prlimit`: 2 GB address space,
+  60 s CPU, plus a timeout), never in the worker: a file is hostile input. A zip bomb
+  is refused on its declared size, and reading stops at the character cap. The text
+  is kept with the attachment, and Odoo's own indexer does not read Gen's
+  attachments.
+- Retention: deleting a conversation or a message deletes its documents; a daily
+  cron removes attachments never sent after a day, and those whose message is gone.
+  Upload is closed while Gen is off and rate-limited like turns.
+- The mobile app does not send attachments yet.
+
+The input box also grows with its text in the side panel (it stayed on one line),
+pasted text included, up to 240 px on both surfaces.
+
+### Wizards belong to their author (1.45.1)
+
+The instruction coherence report (`claude.chat.coherence.report`) is a transient
+model: a real table, open to every internal user, with no record rule, so a
+colleague's wizard was readable with a plain `web_search_read` until the vacuum
+cron cleared it. A global rule (`security/bf_wizard_owner_rules.xml`) restricts it
+to its creator on the four operations, administrators included. A test lists the
+module's wizards open to everyone: a new one without a rule fails it.
+
 ### Mobile API
 
 `/bf_claude_chat/mobile/v1/*` serves the companion mobile app. A turn is
@@ -364,6 +459,7 @@ counters the user chose to show (1.37.0).
 | duration_ms | Integer | Turn duration |
 | followup | Boolean | A follow-up posted by the nightly pass, not by a turn of Gen |
 | closure_state, closure_reason | Selection, Char | The closure judgment of this turn (server-written) |
+| masque, masque_constate | Selection, Boolean | How the turn went out to the model, and whether the relay confirmed it (1.43.0, server-written) |
 
 ### claude.chat.flag
 
@@ -417,6 +513,12 @@ Every endpoint is `type="json"`, `auth="user"`, `methods=["POST"]`.
 | `/claude-chat/share-to-task` | Posts the conversation into the chatter |
 | `/claude-chat/send-to-gen` | Opens a linked conversation per record (max 10) and runs the brief in the background |
 | `/claude-chat/seen` | A turn followed on screen to its end counts as read |
+| `/claude-chat/upload/remove` | Removes one of the caller's pending attachments (1.45.0) |
+
+`/claude-chat/upload` (`type="http"`, `auth="user"`, multipart field `ufile`) reads
+a chosen file at once and returns `id`, `name`, `size`, `chars`, `total` and
+`truncated`, or an `error` with the reason it was refused. `/claude-chat/send` and `/claude-chat/stream` accept `attachment_ids`
+(1.45.0).
 
 `/claude-chat/stream` is the streaming counterpart of `/send`: `type="http"`,
 `auth="user"`, CSRF replaced by the `X-Claude-Stream: 1` header. `/claude-chat/attach`
@@ -453,7 +555,7 @@ renaming and "Send to Gen" from a record, 6 adds `res_label` and `/list-mode`,
 `/closure-answer` and `/link-answer`, 8 adds `unread` on each conversation of
 `/sessions` (Gen wrote since the last reading) and `/seen`, 9 adds `totals` in
 `/messages` and `/usage`, 10 adds `/report` and `reported` on each message of
-`/messages`. A second report of the same answer (an offline replay) returns the
+`/messages`, 11 adds `masque` and `masque_constate` on each message (1.43.0). A second report of the same answer (an offline replay) returns the
 first one with `already`, and never creates a duplicate. Reading `/messages` does not count as reading: the app
 reloads it at the end of a turn even when the user has left.
 
@@ -529,7 +631,7 @@ the text of `result` is not.
 | Live viewers (parameter `bf_claude_chat.max_live_viewers`) | half the HTTP workers | How many screens may follow a turn live at once. Each one holds an HTTP worker until its turn ends; a refused screen reattaches through `/claude-chat/attach` and the turn carries on without it |
 | Conversations aim to close | False | End-of-turn judgment, the "Archive?" proposal, the nightly follow-up and the daily notification (parameter `bf_claude_chat.closure_enabled`) |
 | Plan / conversation tokens / cost visible to | (empty) | Three groups: who sees the plan windows, the tokens of a conversation, its cost at API rates. Empty means every internal user (1.37.0) |
-| Plan paying for Gen | (empty) | Shown only when the bridge offers a `/bascule` route: another Max account (`claude.account`) pays the Gen turns of the users listed, or of everyone. Read and written through the bridge, never copied into the database; a form left open does not undo a switch made elsewhere (1.37.0) |
+| Plan paying for Gen | (empty) | Shown only when the bridge offers a `/bascule` route: another Max account (`claude.account`) pays the Gen turns of the users listed, or of everyone. Read and written through the bridge, never copied into the database; a form left open does not undo a switch made elsewhere (1.37.0). A save that does not carry both fields leaves the missing one unchanged instead of emptying it, so it can no longer turn a switch limited to some users into one for the whole instance; removing a switch while the bridge does not answer shows the bridge's error instead of a silent "saved"; a switch whose users include an archived or deleted one shows as an error instead of becoming global (1.45.2) |
 | Gen's personality | (empty) | How Gen speaks here (name, tu/vous, language, length, self-presentation), composed before the steering instructions as `context.identity`. Tone only, 2,000 characters at most; what Gen may do stays on the bridge |
 
 ## Security
@@ -560,6 +662,10 @@ the text of `result` is not.
 - The Anthropic API key is encrypted at rest with Fernet, the key coming from
   `BF_CLAUDE_CHAT_FERNET_KEY` or `odoo.conf` - never from the database
 - Per-user rate limit of 30 requests/minute, held per worker process
+- **A wizard is its author's only** (1.45.1): a global record rule on
+  `claude.chat.coherence.report`, administrators included
+- **Attachments are read out of process** (1.45.0): a bounded subprocess, never the
+  worker, and only the caller's own pending attachments can join a turn
 - **Reported answers stay on the instance** (1.38.0): `claude.chat.flag` has no
   access for ordinary users or portal users; it is created only by the mobile
   route, which checks that the answer belongs to the caller, and read by
@@ -685,4 +791,4 @@ After updating, force a browser asset reload: `Ctrl+Shift+R`.
 ## Licence
 
 Business Source License 1.1, see `LICENSE`. This version becomes available
-under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-10-29).
+under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-11-27).

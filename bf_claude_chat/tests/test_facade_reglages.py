@@ -20,6 +20,7 @@ from unittest.mock import patch
 
 from cryptography.fernet import Fernet
 
+from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase, tagged
 
 from odoo.addons.bf_claude_chat.models.res_config_settings import (
@@ -292,14 +293,24 @@ class TestBasculeDeForfait(TransactionCase):
         cls.usager = cls.env["res.users"].search(
             [("share", "=", False), ("active", "=", True), ("id", "!=", 1)],
             limit=1)
+        # Un second compte et un second usager, pour les bascules
+        # partielles.
+        cls.autre_compte = cls.Compte.create({
+            "name": "Autre forfait du banc", "config_dir": "/banc/autre"})
+        cls.autre_usager = cls.env["res.users"].search(
+            [("share", "=", False), ("active", "=", True),
+             ("id", "not in", [1, cls.usager.id])], limit=1)
 
-    def _faux_pont(self, gestes, muet=False, muet_jusqu_a=0):
+    def _faux_pont(self, gestes, muet=False, muet_jusqu_a=0, muet_apres=0):
         """Remplace le seul appel sortant. `gestes` reçoit chaque demande.
 
         `muet_jusqu_a=n` : les n PREMIERS appels lèvent, les suivants répondent.
         C'est la fenêtre qui mord — pont muet à l'OUVERTURE des Paramètres,
         vivant à l'ENREGISTREMENT — et un faux pont muet du début à la fin ne
         la mesure jamais.
+
+        `muet_apres=n` : les n premiers appels répondent, les suivants lèvent —
+        pont vivant à l'ouverture, muet à l'enregistrement.
         """
         etat = {"config_dir": self.compte.config_dir,
                 "users": [self.usager.id],
@@ -307,7 +318,8 @@ class TestBasculeDeForfait(TransactionCase):
 
         def appel(modele, charge):
             gestes.append(charge)
-            if muet or len(gestes) <= muet_jusqu_a:
+            if muet or len(gestes) <= muet_jusqu_a or (
+                    muet_apres and len(gestes) > muet_apres):
                 raise ValueError("Bridge HTTP 500: banc")
             if charge.get("action") == "get":
                 return dict(etat)
@@ -492,3 +504,222 @@ class TestBasculeDeForfait(TransactionCase):
         poses = [g for g in gestes if g.get("action") == "set"]
         self.assertEqual(len(poses), 1)
         self.assertEqual(poses[0]["config_dir"], "")
+
+
+    # ==================================================================
+    # Les deux chemins qui faisaient changer la bascule en silence.
+    #  1. un champ ABSENT des valeurs du `create` se lisait vide dans l'`inverse`
+    #     (Odoo n'alimente le cache que des champs reçus) : une bascule réservée
+    #     à des usagers devenait une bascule de toute l'instance ;
+    #  2. un retrait délibéré, pont muet à l'enregistrement, sortait sans un mot.
+    # ==================================================================
+    def _poses(self, gestes):
+        return [g for g in gestes if g.get("action") == "set"]
+
+    # -- chemin 1 : un champ absent n'est pas un vidage ------------------------
+    def test_un_compte_sans_usagers_garde_les_usagers_bascules(self):
+        """🔴 Le défaut : compte donné, usagers absents → toute l'instance."""
+        gestes = []
+        with self._faux_pont(gestes):
+            self.Reglages.create({"claude_plan_account_id": self.autre_compte.id})
+            self.env.flush_all()
+        poses = self._poses(gestes)
+        self.assertEqual(len(poses), 1)
+        self.assertEqual(poses[0]["config_dir"], self.autre_compte.config_dir)
+        self.assertEqual(poses[0]["users"], [self.usager.id],
+                         "les usagers absents des valeurs ont été lus vides : "
+                         "la bascule vise toute l'instance")
+
+    def test_un_compte_et_l_instantane_sans_usagers_prend_ceux_de_l_instantane(self):
+        """Avec un instantané lisible, les usagers viennent de lui, pas du pont."""
+        gestes = []
+        with self._faux_pont(gestes):
+            instantane = self.Compte._plan_switch_snapshot()
+            gestes.clear()
+            self.Reglages.create({"claude_plan_account_id": self.autre_compte.id,
+                                  "claude_plan_switch_snapshot": instantane})
+            self.env.flush_all()
+        poses = self._poses(gestes)
+        self.assertEqual([(p["config_dir"], p["users"]) for p in poses],
+                         [(self.autre_compte.config_dir, [self.usager.id])])
+
+    def test_des_usagers_sans_compte_gardent_le_compte(self):
+        """L'autre moitié : usagers donnés, compte absent → retour au forfait
+        de l'instance, avant."""
+        self.assertTrue(self.autre_usager, "le banc n'a pas deux usagers internes")
+        gestes = []
+        with self._faux_pont(gestes):
+            self.Reglages.create({"claude_plan_user_ids": [
+                (6, 0, [self.usager.id, self.autre_usager.id])]})
+            self.env.flush_all()
+        poses = self._poses(gestes)
+        self.assertEqual(len(poses), 1)
+        self.assertEqual(poses[0]["config_dir"], self.compte.config_dir)
+        self.assertEqual(sorted(poses[0]["users"]),
+                         sorted([self.usager.id, self.autre_usager.id]))
+
+    def test_un_instantane_lisible_seul_ne_retire_rien(self):
+        """L'instantané seul : compte et usagers se lisaient vides, et le
+        changement apparent retirait la bascule."""
+        gestes = []
+        with self._faux_pont(gestes):
+            instantane = self.Compte._plan_switch_snapshot()
+            gestes.clear()
+            self.Reglages.create({"claude_plan_switch_snapshot": instantane})
+            self.env.flush_all()
+        self.assertEqual(self._poses(gestes), [])
+        self.assertEqual(gestes, [], "l'instantané suffit, le pont n'est pas relu")
+        self.assertEqual(self.etat_du_pont["config_dir"], self.compte.config_dir)
+
+    def test_le_formulaire_pont_muet_n_envoie_que_l_instantane_vide(self):
+        """La forme exacte du formulaire quand le pont était muet à l'ouverture :
+        compte et usagers en lecture seule ne sont pas renvoyés par le client
+        web (`record.js`, `_getChanges`). Rien lu, rien demandé : aucun appel,
+        aucune erreur, la page Paramètres reste enregistrable."""
+        gestes = []
+        with self._faux_pont(gestes, muet=True):
+            self.Reglages.create({"claude_plan_switch_snapshot": ""})
+            self.env.flush_all()
+        self.assertEqual(gestes, [])
+
+    def test_un_retrait_sans_instantane_atteint_le_pont(self):
+        """Compte et usagers vides, sans instantané : un retrait demandé.
+        Avant, « rien lu » l'avalait sans un mot."""
+        gestes = []
+        with self._faux_pont(gestes):
+            self.Reglages.create({"claude_plan_account_id": False,
+                                  "claude_plan_user_ids": [(6, 0, [])]})
+            self.env.flush_all()
+        poses = self._poses(gestes)
+        self.assertEqual(len(poses), 1)
+        self.assertEqual(poses[0]["config_dir"], "")
+
+    def test_une_demande_partielle_pont_muet_leve(self):
+        """Impossible de compléter sans lire : la demande ne se perd pas."""
+        gestes = []
+        with self._faux_pont(gestes, muet=True), self.assertRaises(UserError):
+            self.Reglages.create({"claude_plan_account_id": self.autre_compte.id})
+        self.assertEqual(self._poses(gestes), [])
+
+    def test_un_create_vide_ne_lit_pas_le_pont(self):
+        """Le `create({})` de n'importe quel module ne sort pas sur le réseau."""
+        gestes = []
+        with self._faux_pont(gestes):
+            self.Reglages.create({})
+            self.env.flush_all()
+        self.assertEqual(gestes, [])
+
+    def test_l_inverse_voit_les_usagers_completes(self):
+        """La contre-épreuve par espion :
+        ce que `_inverse_plan_switch` VOIT quand les usagers manquaient."""
+        vu = []
+        Reglages = type(self.Reglages)
+        vrai = Reglages._inverse_plan_switch
+
+        def espion(reglages):
+            for rec in reglages:
+                vu.append(rec.claude_plan_user_ids.ids)
+            return vrai(reglages)
+
+        gestes = []
+        with self._faux_pont(gestes), \
+                patch.object(Reglages, "_inverse_plan_switch", espion):
+            self.Reglages.create({"claude_plan_account_id": self.autre_compte.id})
+            self.env.flush_all()
+        self.assertEqual(vu, [[self.usager.id]])
+
+    # -- chemin 2 : un retrait, pont muet à l'enregistrement --------------------
+    def test_un_retrait_pont_muet_a_l_enregistrement_leve(self):
+        """🔴 Le formulaire a lu la bascule (pont vivant), l'admin la retire,
+        le pont ne répond plus : avant, `_plan_switch_write` sortait sans un
+        mot et l'écran disait « enregistré »."""
+        gestes = []
+        with self._faux_pont(gestes, muet_apres=1):
+            recu = self.Reglages.onchange({}, [], self._spec_bascule()).get("value", {})
+            self.assertTrue(recu.get("claude_plan_switch_snapshot"))
+            with self.assertRaises(UserError):
+                self.Reglages.create({
+                    "claude_plan_account_id": False,
+                    "claude_plan_user_ids": [(6, 0, [])],
+                    "claude_plan_switch_snapshot": recu["claude_plan_switch_snapshot"],
+                })
+                self.env.flush_all()
+        self.assertEqual(self._poses(gestes), [])
+        self.assertEqual(self.etat_du_pont["config_dir"], self.compte.config_dir)
+
+    def test_un_enregistrement_neutre_pont_muet_a_l_enregistrement_passe(self):
+        """Le revers à garder : rien changé, pont muet à l'enregistrement →
+        la page reste enregistrable, sans un appel."""
+        gestes = []
+        with self._faux_pont(gestes, muet_apres=1):
+            recu = self.Reglages.onchange({}, [], self._spec_bascule()).get("value", {})
+            gestes.clear()
+            self.Reglages.create({
+                "claude_plan_account_id": self._id_de(recu.get("claude_plan_account_id")),
+                "claude_plan_user_ids": [(6, 0, [self.usager.id])],
+                "claude_plan_switch_snapshot": recu.get("claude_plan_switch_snapshot"),
+            })
+            self.env.flush_all()
+        self.assertEqual(gestes, [])
+
+    # -- usagers archivés, instantanés mal formés ------------------------------
+    def _usager_jetable(self):
+        return self.env["res.users"].create({
+            "name": "Usager jetable", "login": "jetable@banc.invalid"})
+
+    def test_une_bascule_vers_un_usager_archive_ne_devient_pas_globale(self):
+        """🔴 La bascule vise le seul usager X, archivé ensuite. Le many2many le
+        filtre à la lecture (`active_test`) : l'enregistrement d'un autre
+        onglet renvoyait « usagers vides » et posait le forfait pour TOUTE
+        l'instance. L'écran la tient désormais pour illisible."""
+        jetable = self._usager_jetable()
+        gestes = []
+        with self._faux_pont(gestes):
+            self.etat_du_pont["users"] = [jetable.id]
+            jetable.active = False
+            recu = self.Reglages.onchange({}, [], self._spec_bascule()).get("value", {})
+            self.assertFalse(recu.get("claude_plan_switch_snapshot"),
+                             "un usager archivé devrait mettre l'écran en erreur")
+            # le formulaire en erreur ne renvoie que l'instantané vide
+            self.Reglages.create({"claude_plan_switch_snapshot": ""})
+            # et un script qui ne donne que le compte doit buter, pas élargir
+            with self.assertRaises(UserError):
+                self.Reglages.create({"claude_plan_account_id": self.compte.id})
+        self.assertEqual(self._poses(gestes), [])
+        self.assertEqual(self.etat_du_pont["users"], [jetable.id])
+
+    def test_un_instantane_qui_vise_un_usager_archive_leve(self):
+        """Même trou par l'instantané : ses usagers, archivés entre l'ouverture
+        et l'enregistrement, ne se complètent pas en « tous »."""
+        jetable = self._usager_jetable()
+        gestes = []
+        with self._faux_pont(gestes):
+            self.etat_du_pont["users"] = [jetable.id]
+            instantane = self.Compte._plan_switch_snapshot()
+            self.assertTrue(instantane)
+            jetable.active = False
+            with self.assertRaises(UserError):
+                self.Reglages.create({"claude_plan_account_id": self.autre_compte.id,
+                                      "claude_plan_switch_snapshot": instantane})
+        self.assertEqual(self._poses(gestes), [])
+
+    def test_un_instantane_mal_forme_se_lit_comme_rien_lu(self):
+        """`"[]"` levait `IndexError`, `["/x", ["a"]]` une erreur SQL : ce sont
+        des instantanés illisibles, rangés avec le vide."""
+        for forme in ("[]", '["/banc/bascule"]', '["/banc/bascule", ["a"]]',
+                      '["/banc/bascule", 5]', '[5, []]', '["/banc/bascule", [true]]',
+                      '["/banc/bascule", [99999999999]]', '["/banc/bascule", [0]]'):
+            with self.subTest(forme=forme):
+                self.assertIsNone(self.Compte._plan_switch_lu(forme))
+                gestes = []
+                with self._faux_pont(gestes):
+                    self.Reglages.create({"claude_plan_switch_snapshot": forme})
+                    self.env.flush_all()
+                self.assertEqual(self._poses(gestes), [])
+
+    def test_le_dict_de_l_appelant_ne_ressort_pas_complete(self):
+        vals = {"claude_plan_account_id": self.autre_compte.id}
+        with self._faux_pont([]):
+            self.Reglages.create(vals)
+            self.env.flush_all()
+        self.assertEqual(vals, {"claude_plan_account_id": self.autre_compte.id})

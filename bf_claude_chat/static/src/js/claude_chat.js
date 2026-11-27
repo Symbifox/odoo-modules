@@ -7,9 +7,11 @@ import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
 import { router } from "@web/core/browser/router";
 import { GenSteps, GenWaitLine } from "@bf_claude_chat/js/gen_wait";
+import { GenCadenas } from "@bf_claude_chat/js/gen_cadenas";
 import { listModeMixin } from "@bf_claude_chat/js/gen_list_mode";
 import { closureMixin } from "@bf_claude_chat/js/gen_closure";
 import { screenMixin } from "@bf_claude_chat/js/gen_screen";
+import { ajusterSaisie, piecesMixin } from "@bf_claude_chat/js/gen_pieces";
 import { newClientToken, streamingFields } from "@bf_claude_chat/js/gen_turn";
 
 
@@ -137,13 +139,14 @@ function markdownToHtml(md) {
 
 class ClaudeChatAction extends Component {
     static template = "bf_claude_chat.ChatAction";
-    static components = { GenSteps, GenWaitLine };
+    static components = { GenSteps, GenWaitLine, GenCadenas };
     static props = ["*"];
 
     setup() {
         this.notification = useService("notification");
         this.messagesRef = useRef("messagesContainer");
         this.inputRef = useRef("chatInput");
+        this.fileInputRef = useRef("genFiles");
 
         this.state = useState({
             sessions: [],
@@ -156,6 +159,7 @@ class ClaudeChatAction extends Component {
             ...listModeMixin.listModeState(),
             ...closureMixin.closureState(),
             ...screenMixin.screenState(),
+            ...piecesMixin.piecesState(),
             editingName: "",
             shareOpen: false,
             shareQuery: "",
@@ -297,16 +301,22 @@ class ClaudeChatAction extends Component {
     async onSend() {
         const textarea = this.inputRef.el;
         if (!textarea) return;
-        const message = textarea.value.trim();
-        if (!message) return;
+        let message = textarea.value.trim();
+        // Une pièce encore en lecture ne part pas à moitié.
+        if (this.piecesEnCours()) {
+            this._avisPiecesEnLecture();
+            return;
+        }
         // Gen travaille : la question part dans le tour en cours au lieu de
         // rester coincée. Il la lit à sa prochaine
         // respiration ; s'il a fini d'écrire avant, le pont le dit et on la
-        // remet dans la saisie.
+        // remet dans la saisie. Les pièces, elles, attendent la question suivante.
         if (this.state.isThinking) {
-            await this._sayInTurn(message, textarea);
+            if (message) await this._sayInTurn(message, textarea);
             return;
         }
+        const pieces = this._prendrePieces();
+        if (!message && !pieces.length) return;
 
         // Determine session_id: null for brand new sessions
         const sessionId = this.state.activeSessionId === -1 ? null : this.state.activeSessionId;
@@ -316,11 +326,13 @@ class ClaudeChatAction extends Component {
         this.state.messages.push({
             id: `u-${Date.now()}`,
             role: "user",
-            content: message,
+            content: message || this._questionSansTexte(),
+            attachments: pieces,
             create_date: new Date().toISOString(),
         });
         textarea.value = "";
         this.autoResize(textarea);
+        const attachmentIds = pieces.map((p) => p.id);
 
         const wasNewSession = !sessionId;
 
@@ -330,7 +342,7 @@ class ClaudeChatAction extends Component {
             this._syncThinking();
             this.scrollToBottom();
             try {
-                await this._sendBuffered(message, sessionId);
+                await this._sendBuffered(message, sessionId, pieces);
             } finally {
                 this._bufferedBusy = false;
                 this._syncThinking();
@@ -354,20 +366,38 @@ class ClaudeChatAction extends Component {
         }) - 1;
         const assistant = this.state.messages[idx];
         const outcome = await this._followTurn(assistant, {
-            start: { session_id: sessionId, message, client_token: newClientToken() },
+            start: {
+                session_id: sessionId, message, client_token: newClientToken(),
+                attachment_ids: attachmentIds,
+            },
             onBusy: () => {
                 // The question was not sent: give it back.
                 this.state.messages = this.state.messages.filter((m) => m.id !== userMsg.id);
+                this._rendrePieces(pieces);
                 if (this.inputRef.el && !this.inputRef.el.value) {
                     this.inputRef.el.value = message;
                     this.autoResize(this.inputRef.el);
                 }
             },
         });
+        if (assistant.attachmentRefused) {
+            // Rien n'est parti. La question et ses pièces reviennent.
+            this.state.messages = this.state.messages.filter(
+                (m) => m !== assistant && m.id !== userMsg.id);
+            this._rendrePieces(pieces, {
+                enCause: assistant.attachmentIds, raison: assistant.attachmentRefused });
+            if (this.inputRef.el && !this.inputRef.el.value) {
+                this.inputRef.el.value = message;
+                this.autoResize(this.inputRef.el);
+            }
+            this.notification.add(assistant.attachmentRefused, { type: "warning" });
+            return;
+        }
+        if (assistant.refusedEarly) this._rendrePieces(pieces);
         if (outcome === "disabled") {
             this.state.streaming = false;
             this.state.messages.splice(this.state.messages.indexOf(assistant), 1);
-            await this._sendBuffered(message, sessionId);
+            await this._sendBuffered(message, sessionId, pieces);
             await this._markSeen();
         }
         await this.loadSessions();
@@ -376,14 +406,18 @@ class ClaudeChatAction extends Component {
         this.focusInput();
     }
 
-    async _sendBuffered(message, sessionId) {
+    async _sendBuffered(message, sessionId, pieces = []) {
         const affichee = this.state.activeSessionId;
         try {
             const result = await rpc("/claude-chat/send", {
                 session_id: sessionId,
                 message: message,
+                attachment_ids: pieces.map((p) => p.id),
             });
             if (result.error) {
+                // Rien n'est parti ; les pièces reviennent à la saisie.
+                this._rendrePieces(pieces, {
+                    enCause: result.attachment_ids, raison: result.error });
                 this.notification.add(result.error, { type: "danger" });
                 return;
             }
@@ -462,23 +496,22 @@ class ClaudeChatAction extends Component {
     // ── Input handling ─────────────────────────────────────────
 
     onInputKeydown(ev) {
-        const textarea = ev.target;
         // Enter sends, Shift+Enter adds newline
         if (ev.key === "Enter" && !ev.shiftKey) {
             ev.preventDefault();
             this.onSend();
             return;
         }
-        // Auto-resize
-        this.autoResize(textarea);
+    }
+
+    /** La saisie suit son texte, collé compris (`input`, pas `keydown`). */
+    onInputChange(ev) {
+        ajusterSaisie(ev.target);
     }
 
     autoResize(textarea) {
-        // Defer to next tick so value is updated
-        setTimeout(() => {
-            textarea.style.height = "auto";
-            textarea.style.height = Math.min(textarea.scrollHeight, 150) + "px";
-        }, 0);
+        // Au tick suivant : la valeur vient d'être posée par le code.
+        setTimeout(() => ajusterSaisie(textarea), 0);
     }
 
     // ── Helpers ─────────────────────────────────────────────
@@ -502,8 +535,23 @@ class ClaudeChatAction extends Component {
             if (el) el.focus();
         }, 50);
     }
+
+    /** Le nom de la conversation ouverte, pour
+     *  l'en-tête du téléphone, où la liste est cachée. Même logique que le tiroir. */
+    get activeSessionName() {
+        // 🔴 `"New Chat"` n'était pas marqué, et l'en-tête
+        // affichait « New Chat » pendant que le bouton qui venait de la créer affichait
+        // « Nouvelle conversation ». Le msgid est déjà traduit au catalogue.
+        if (this.state.activeSessionId === -1) return _t("New Chat");
+        const s = this.state.sessions.find((s) => s.id === this.state.activeSessionId);
+        // 🔴 Et il rendait "" quand la conversation ouverte n'est pas dans la liste
+        // chargée — une recherche sans résultat, un passage aux archivées pendant le
+        // chargement : conversation utilisable et PLUS RIEN qui la nomme, ce que ce nom
+        // existe précisément pour empêcher au téléphone.
+        return s ? s.name : _t("Conversation");
+    }
 }
 
-Object.assign(ClaudeChatAction.prototype, listModeMixin, closureMixin, screenMixin);
+Object.assign(ClaudeChatAction.prototype, listModeMixin, closureMixin, screenMixin, piecesMixin);
 
 registry.category("actions").add("claude_chat", ClaudeChatAction);

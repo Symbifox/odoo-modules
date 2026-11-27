@@ -153,7 +153,14 @@ class BfClaudeChatMobileApi(http.Controller):
             # précisions facultatives ; un seul par réponse et par personne),
             # et `reported` sur chaque message de `/messages`. Exigé par
             # Google Play pour le contenu généré par IA.
-            "api": 10,
+            # api 11 : `masque` et `masque_constate` sur chaque
+            # message de `/messages` et dans `/turn` — le cadenas, c'est-à-dire
+            # comment ce tour est parti vers le modèle (« complet » :
+            # identifiants et noms masqués, « identifiants » : noms en clair,
+            # « clair » : rien masqué, vide : pas de relais sur ce système).
+            # `masque_constate` faux = annoncé par la sonde au départ et jamais
+            # confirmé ; vrai = compté par le relais sur ce qui est vraiment parti.
+            "api": 11,
             "enabled": bool(settings["enabled"]),
             # Parité complète depuis l'api 2 : mêmes outils qu'au bureau.
             "readonly": False,
@@ -227,7 +234,8 @@ class BfClaudeChatMobileApi(http.Controller):
             ["role", "content", "state", "end_reason", "tool_log", "create_date", "followup",
              "input_tokens", "output_tokens", "cache_read_tokens",
              "cache_write_tokens", "net_tokens", "total_tokens", "cost_usd",
-             "duration_ms"],
+             # Le cadenas de chaque tour, comme au bureau.
+             "duration_ms", "masque", "masque_constate"],
             order="create_date asc, id asc", limit=200,
         )
         montrees = request.env.user._gen_meters_shown()
@@ -243,6 +251,7 @@ class BfClaudeChatMobileApi(http.Controller):
             row["tools"] = _tools(row.pop("tool_log", None))
             # `search_read` rend `false` pour un texte vide ; `/turn` rend "".
             row["end_reason"] = row.get("end_reason") or ""
+            row["masque"] = row.get("masque") or ""
         return _json({"session_id": session.id, "session_name": session.name,
                       "messages": rows, "totals": session._usage_totals_shown(montrees),
                       **session._closure_payload()})
@@ -349,6 +358,9 @@ class BfClaudeChatMobileApi(http.Controller):
             # « stopped » quand on a appuyé sur Arrêter : l'app ne le peint pas
             # comme une panne.
             "end_reason": message.end_reason or "",
+            # Le cadenas, pendant le tour comme après.
+            "masque": message.masque or "",
+            "masque_constate": message.masque_constate,
             # Le point d'attente initial n'est pas une réponse : ne pas l'afficher.
             "text": "" if texte == "…" else texte,
             "tools": _tools(message.tool_log),

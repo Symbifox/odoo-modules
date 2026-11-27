@@ -142,7 +142,8 @@
 
     <!-- Main chat action layout (full page) -->
     <t t-name="bf_claude_chat.ChatAction">
-        <div class="bf-chat-container d-flex h-100">
+        <!-- La classe suit le `t-if` du panneau, pas sa propre idée. -->
+        <div t-att-class="'bf-chat-container d-flex h-100' + (state.activeSessionId ? ' bf-gen-conv' : '')">
             <!-- Sidebar -->
             <div class="bf-chat-sidebar d-flex flex-column border-end">
                 <div class="p-3 border-bottom">
@@ -226,10 +227,24 @@
             </div>
 
             <!-- Chat panel -->
-            <div class="bf-chat-panel d-flex flex-column flex-grow-1">
+            <div t-att-class="'bf-chat-panel d-flex flex-column flex-grow-1' + (state.depot ? ' bf-gen-depot' : '')"
+                 t-on-dragover="onDragOver" t-on-dragleave="onDragLeave" t-on-drop="onDrop">
                 <t t-if="state.activeSessionId">
                     <!-- Chat header with share button -->
                     <div class="bf-chat-panel-header d-flex align-items-center gap-2 px-3 py-2 border-bottom">
+                        <!-- Le retour à la liste, sous 768 px seulement.
+                             `_clearConversation` est le geste du mixin partagé : il vide
+                             aussi le total et l'avis « archivée », qui autrement
+                             passaient à la conversation suivante. -->
+                        <button class="btn btn-sm btn-link text-muted p-1 d-md-none bf-gen-retour"
+                                title="Back to conversations"
+                                t-on-click="() => this._clearConversation()">
+                            <i class="fa fa-chevron-left"/>
+                        </button>
+                        <!-- Sous la borne, la liste est
+                             cachée et rien d'autre ne nomme la conversation ouverte. -->
+                        <span class="fw-semibold text-truncate d-md-none bf-gen-titre-mobile"
+                              t-att-title="activeSessionName" t-esc="activeSessionName"/>
                         <!-- Pas d'overflow-hidden ici, le menu ⚙ s'ouvre dessous -->
                         <div class="flex-grow-1 bf-gen-meters-host">
                             <t t-call="bf_claude_chat.Meters"/>
@@ -304,14 +319,20 @@
                                         <!-- Même vocabulaire que le Cockpit et que Comms : jetons NEUFS
                                              en tête, contexte relu à part. Le total additionne la
                                              relecture et se lit très mal. -->
-                                        <div t-if="msg.usageLabel" class="bf-chat-usage"
-                                             t-att-title="msg.usageTitle">
-                                            <t t-esc="msg.usageLabel"/>
+                                        <!-- Le cadenas vit sur la même ligne que la
+                                             consommation, et il paraît dès le départ du tour, quand
+                                             celle-ci n'est pas encore connue. -->
+                                        <div t-if="msg.usageLabel or msg.masque" class="bf-chat-usage">
+                                            <span t-if="msg.usageLabel" t-att-title="msg.usageTitle">
+                                                <t t-esc="msg.usageLabel"/>
+                                            </span>
+                                            <GenCadenas t-if="msg.masque" msg="msg"/>
                                         </div>
                                     </t>
                                     <div t-else=""
                                          class="bf-chat-content">
                                         <t t-esc="msg.content"/>
+                                        <t t-call="bf_claude_chat.GenPiecesBulle"/>
                                         <div t-if="msg.queued" class="bf-chat-queued">
                                             <i class="fa fa-hourglass-half me-1"/>Queued: Gen will read this when it comes up for air.
                                         </div>
@@ -342,11 +363,18 @@
 
                     <!-- Input area -->
                     <div class="bf-chat-input-area border-top p-3">
-                        <div class="d-flex gap-2">
+                        <t t-call="bf_claude_chat.GenPiecesSaisie"/>
+                        <div class="d-flex gap-2 align-items-end">
+                            <button type="button" class="btn btn-outline-secondary bf-gen-trombone"
+                                    t-on-click="onPickFiles"
+                                    title="Attach a file (PDF, Word, Excel, text)">
+                                <i class="fa fa-paperclip"/>
+                            </button>
                             <textarea class="form-control bf-chat-input"
                                       t-ref="chatInput"
                                       t-att-disabled="state.isThinking and !state.streamingActive"
                                       t-on-keydown="onInputKeydown"
+                                      t-on-input="onInputChange"
                                       rows="1"
                                       placeholder="Type your message..."/>
                             <button t-if="state.streamingActive"
@@ -402,6 +430,13 @@
                     <!-- Header bar -->
                     <div class="bf-side-panel-header d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
                         <div class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden">
+                            <!-- Le retour, sous 768 px seulement. -->
+                            <button t-if="showChat"
+                                    class="btn btn-sm btn-link p-1 d-md-none bf-gen-retour"
+                                    title="Back to conversations"
+                                    t-on-click.stop="() => this._clearConversation()">
+                                <i class="fa fa-chevron-left"/>
+                            </button>
                             <i class="fa fa-commenting text-primary"/>
                             <span t-if="showChat" class="fw-semibold text-truncate"
                                   t-esc="activeSessionName"/>
@@ -468,7 +503,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex bf-side-panel-body">
+                    <div t-att-class="'d-flex bf-side-panel-body' + (showChat ? ' bf-gen-conv' : '')">
                         <!-- Mini session list -->
                         <div class="bf-side-panel-sessions border-end">
                             <div class="px-2 py-1 border-bottom">
@@ -557,7 +592,8 @@
                         </div>
 
                         <!-- Chat area -->
-                        <div class="bf-side-panel-chat-main d-flex flex-column flex-grow-1">
+                        <div t-att-class="'bf-side-panel-chat-main d-flex flex-column flex-grow-1' + (state.depot ? ' bf-gen-depot' : '')"
+                             t-on-dragover="onDragOver" t-on-dragleave="onDragLeave" t-on-drop="onDrop">
                             <t t-if="showChat">
                                 <div t-if="state.plan or totalsLabel() or state.metersAllowed.length" class="px-2 py-1 border-bottom bf-side-panel-meters">
                                     <t t-call="bf_claude_chat.Meters"/>
@@ -597,13 +633,19 @@
                                                     <!-- Même vocabulaire que le Cockpit et que Comms : jetons NEUFS
                                                          en tête, contexte relu à part. Le total additionne la
                                                          relecture et se lit très mal. -->
-                                                    <div t-if="msg.usageLabel" class="bf-chat-usage"
-                                                         t-att-title="msg.usageTitle">
-                                                        <t t-esc="msg.usageLabel"/>
+                                                    <!-- Le cadenas vit sur la même ligne que la
+                                                         consommation, et il paraît dès le départ du tour, quand
+                                                         celle-ci n'est pas encore connue. -->
+                                                    <div t-if="msg.usageLabel or msg.masque" class="bf-chat-usage">
+                                                        <span t-if="msg.usageLabel" t-att-title="msg.usageTitle">
+                                                            <t t-esc="msg.usageLabel"/>
+                                                        </span>
+                                                        <GenCadenas t-if="msg.masque" msg="msg"/>
                                                     </div>
                                                 </t>
                                                 <div t-else="">
                                                     <t t-esc="msg.content"/>
+                                                    <t t-call="bf_claude_chat.GenPiecesBulle"/>
                                                     <div t-if="msg.queued" class="bf-chat-queued">
                                                         <i class="fa fa-hourglass-half me-1"/>Queued: Gen will read this when it comes up for air.
                                                     </div>
@@ -635,11 +677,18 @@
 
                                 <!-- Input -->
                                 <div class="bf-side-panel-input border-top p-2">
-                                    <div class="d-flex gap-1">
+                                    <t t-call="bf_claude_chat.GenPiecesSaisie"/>
+                                    <div class="d-flex gap-1 align-items-end">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm bf-gen-trombone"
+                                                t-on-click.stop="onPickFiles"
+                                                title="Attach a file (PDF, Word, Excel, text)">
+                                            <i class="fa fa-paperclip"/>
+                                        </button>
                                         <textarea class="form-control form-control-sm bf-side-panel-textarea"
                                                   t-ref="systrayInput"
                                                   t-att-disabled="state.isThinking and !state.streamingActive"
                                                   t-on-keydown="onInputKeydown"
+                                                  t-on-input="onInputChange"
                                                   rows="1"
                                                   placeholder="Message Gen..."/>
                                         <button t-if="state.streamingActive"
@@ -675,6 +724,45 @@
         </t>
     </t>
 
+    <!-- Les pièces d'une question, sous sa bulle. Un lien de
+         téléchargement quand la pièce est enregistrée (id numérique). -->
+    <t t-name="bf_claude_chat.GenPiecesBulle">
+        <div t-if="msg.attachments and msg.attachments.length" class="bf-gen-pieces bf-gen-pieces-bulle">
+            <t t-foreach="msg.attachments" t-as="piece" t-key="piece.id">
+                <a class="bf-gen-piece" t-att-href="pieceUrl(piece)" t-att-title="piece.name">
+                    <i class="fa fa-paperclip"/><span class="bf-gen-piece-nom" t-esc="piece.name"/>
+                </a>
+            </t>
+        </div>
+    </t>
+
+    <!-- Les pièces prêtes à partir, au-dessus de la saisie, et le
+         sélecteur de fichiers caché que le trombone ouvre. -->
+    <t t-name="bf_claude_chat.GenPiecesSaisie">
+        <input type="file" class="d-none" multiple="multiple" t-ref="genFiles"
+               accept=".pdf,.docx,.odt,.xlsx,.txt,.md,.csv,.json,.xml,.html,.htm,.log"
+               t-on-change="onFilesPicked"/>
+        <div t-if="state.pieces.length" class="bf-gen-pieces bf-gen-pieces-saisie mb-1">
+            <t t-foreach="state.pieces" t-as="piece" t-key="piece.cle">
+                <span t-att-class="'bf-gen-piece'
+                                   + (piece.erreur ? ' bf-gen-piece-erreur' : '')
+                                   + (piece.truncated ? ' bf-gen-piece-coupee' : '')"
+                      t-att-title="pieceTitre(piece)">
+                    <i t-att-class="piece.chargement ? 'fa fa-spinner fa-spin'
+                                    : (piece.erreur ? 'fa fa-exclamation-triangle'
+                                    : (piece.truncated ? 'fa fa-scissors' : 'fa fa-paperclip'))"/>
+                    <span class="bf-gen-piece-nom" t-esc="piece.name"/>
+                    <span t-if="piece.erreur" class="bf-gen-piece-motif" t-esc="piece.erreur"/>
+                    <button type="button" class="btn btn-link btn-sm p-0 bf-gen-piece-retirer"
+                            t-on-click.stop="() => this.onRemovePiece(piece)"
+                            title="Remove" aria-label="Remove">
+                        <i class="fa fa-times"/>
+                    </button>
+                </span>
+            </t>
+        </div>
+    </t>
+
     <!-- Ce que Gen montre pendant qu'il travaille. -->
     <t t-name="bf_claude_chat.GenWaitLine">
         <div class="bf-gen-wait" role="status" aria-live="polite">
@@ -682,6 +770,12 @@
             <span class="bf-gen-wait-label" t-esc="label"/>
             <span class="bf-gen-wait-time" t-esc="elapsed"/>
         </div>
+    </t>
+
+    <t t-name="bf_claude_chat.GenCadenas">
+        <span t-if="etat" t-attf-class="bf-chat-cadenas {{ classe }}" t-att-title="title">
+            <i t-attf-class="fa {{ icone }}"/><t t-esc="libelle"/>
+        </span>
     </t>
 
     <t t-name="bf_claude_chat.GenSteps">

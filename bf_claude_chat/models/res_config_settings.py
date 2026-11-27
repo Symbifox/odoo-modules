@@ -263,6 +263,81 @@ class ResConfigSettings(models.TransientModel):
             rec.claude_plan_switch_snapshot = "" if etat["error"] else json.dumps(
                 self.env["claude.account"]._plan_switch_key(etat["account"], etat["users"]))
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Une copie : le dict de l'appelant ne doit pas ressortir complété.
+        vals_list = [dict(vals) for vals in vals_list]
+        for vals in vals_list:
+            self._plan_switch_completer(vals)
+        return super().create(vals_list)
+
+    @api.model
+    def _plan_switch_completer(self, vals):
+        """Un champ de la bascule ABSENT des valeurs veut dire « inchangé », pas « vide ».
+
+        🔴 Les trois champs partagent un `inverse`, et Odoo n'alimente
+        le cache que des champs présents dans les valeurs du `create` : un champ
+        absent s'y lit vide, sans erreur.
+        Un `create` qui portait le compte sans les usagers basculait donc TOUTE
+        l'instance au lieu des seuls usagers déjà basculés ; un `create` qui ne
+        portait que l'instantané retirait la bascule ; et un retrait demandé
+        sans instantané (compte et usagers vides) était avalé sans un mot.
+
+        On complète donc les champs absents avec ce que l'appelant avait sous
+        les yeux : l'instantané s'il en donne un lisible (aucun appel au pont),
+        sinon la bascule lue maintenant. Rien n'est fait quand aucun des trois
+        n'est là (`create({})` de n'importe quel module, pas d'appel au pont)
+        ni quand les trois y sont (le formulaire quand le pont a répondu).
+
+        ⚠️ Le formulaire, quand le pont était muet à l'ouverture, n'envoie QUE
+        l'instantané vide : compte et usagers sont alors en lecture seule
+        (vue) et Odoo ne renvoie pas un champ en lecture seule. C'est « rien
+        lu, rien demandé » : on ne complète rien, l'`inverse` passe son chemin
+        et la page Paramètres reste enregistrable.
+
+        Ce qu'on ne peut pas compléter lève, plutôt que de se perdre en silence :
+        une demande explicite quand le pont est muet, et un instantané lisible
+        (même envoyé seul) dont le compte a disparu ou dont un usager est
+        archivé ou disparu. Le formulaire ne produit jamais ce dernier cas : en
+        erreur, son instantané est vide.
+
+        ⚠️ Reste muet, à dessein : les TROIS champs présents avec un instantané
+        vide et une bascule vide. C'est la forme « rien lu, rien demandé »
+        qu'éprouve `test_un_pont_muet_a_l_ouverture_puis_vivant_ne_retire_pas_la_bascule`,
+        et rien ne la distingue d'un retrait : un script qui veut retirer la
+        bascule omet l'instantané (il est alors relu au pont).
+        """
+        champs = ("claude_plan_account_id", "claude_plan_user_ids",
+                  "claude_plan_switch_snapshot")
+        presents = [c for c in champs if c in vals]
+        if not presents or len(presents) == len(champs):
+            return
+        Compte = self.env["claude.account"]
+        demande = "claude_plan_account_id" in vals or "claude_plan_user_ids" in vals
+        lu = Compte._plan_switch_lu(vals.get("claude_plan_switch_snapshot")) \
+            if "claude_plan_switch_snapshot" in vals else None
+        if lu is not None:
+            rep, uids = lu
+            compte = Compte.search([("config_dir", "=", rep)], limit=1) if rep else Compte
+            if rep and not compte:
+                raise UserError(_(
+                    "The plan switch this form read points to an account this "
+                    "instance no longer lists (%s): reload the settings.", rep))
+            usagers = Compte._plan_switch_usagers(uids)
+            if usagers is None:
+                raise UserError(Compte._plan_switch_usagers_perdus())
+        elif not demande:
+            return   # un instantané vide ou illisible, seul : rien lu, rien demandé
+        else:
+            etat = Compte._plan_switch_read()
+            if etat["error"]:
+                raise UserError(etat["error"])
+            compte, usagers = etat["account"], etat["users"]
+            vals["claude_plan_switch_snapshot"] = json.dumps(
+                Compte._plan_switch_key(compte, usagers))
+        vals.setdefault("claude_plan_account_id", compte.id or False)
+        vals.setdefault("claude_plan_user_ids", [(6, 0, usagers.ids)])
+
     def _inverse_plan_switch(self):
         """Ne touche à la bascule que si le formulaire l'avait LUE.
 

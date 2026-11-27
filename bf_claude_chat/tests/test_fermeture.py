@@ -384,9 +384,20 @@ class TestPasseDeNuit(_Base):
         self.assertEqual(projet.message_ids, avant)
 
     def test_les_relancees_sans_reponse_n_affament_pas_la_passe(self):
-        deja = self._session(9, closure_state="open")
-        deja.followup_date = fields.Datetime.now() - timedelta(days=5)
-        neuve = self._session(3, closure_state="open")
+        # 🔴 Les deux conversations sont ancrées des ANNÉES en arrière, et non à 9 et
+        # 3 jours comme à l'écriture. Le `search` du cron porte sur TOUTE la base, et
+        # une base d'essai peut être une copie de données réelles : des conversations
+        # réelles y sont alors candidates (`followup_date` vide, inactives). Le plafond
+        # rabattu à 1, c'est l'une d'elles qui prenait l'unique place, et l'essai
+        # rougissait sans qu'une ligne de code ait bougé, parce que les dates de la
+        # base avaient simplement vieilli au-delà des trois jours de `neuve`. Un essai
+        # ne suppose jamais l'état de la base.
+        # `deja` reste la PLUS VIEILLE des deux : sans cela l'essai ne mord plus sur le
+        # `("followup_date", "=", False)` du domaine, qui est justement ce qu'il garde —
+        # `neuve` passerait la première même si le domaine le perdait.
+        deja = self._session(9001, closure_state="open")
+        deja.followup_date = fields.Datetime.now() - timedelta(days=9000)
+        neuve = self._session(9000, closure_state="open")
         with patch.object(module_session, "FOLLOWUP_BATCH", 1):
             self.env["claude.chat.session"]._cron_closure_followup()
         self.assertTrue(self._relances(neuve))

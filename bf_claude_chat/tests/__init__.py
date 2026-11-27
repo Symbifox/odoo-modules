@@ -3,6 +3,7 @@ from . import test_registre
 from . import test_comptes
 from . import test_personnalite
 from . import test_tours
+from . import test_cadenas
 from . import test_plafond
 from . import test_nommage
 from . import test_liste
@@ -16,3 +17,6 @@ from . import test_signalement
 from . import test_consigne_ecriture
 from . import test_portes_du_pont
 from . import test_facade_reglages
+from . import test_mise_en_page_telephone
+from . import test_pieces_jointes
+from . import test_wizard_owner

@@ -66,6 +66,18 @@ class ClaudeChatSession(models.Model):
     # de nuit, et aurait fait remonter chaque nuit les vieilles conversations.
     _order = "list_date desc, id desc"
 
+    def unlink(self):
+        """La cascade SQL efface les messages sans passer par leur `unlink` ;
+        leurs documents joints partent donc d'ici, avant elle."""
+        self.check_access("unlink")
+        messages = self.env["claude.chat.message"].sudo().with_context(
+            active_test=False).search([("session_id", "in", self.ids)])
+        if messages:
+            self.env["ir.attachment"].sudo().search([
+                ("res_model", "=", "claude.chat.message"), ("res_id", "in", messages.ids),
+            ]).unlink()
+        return super().unlink()
+
     name = fields.Char(
         string="Title",
         default="New Chat",
@@ -255,7 +267,7 @@ class ClaudeChatSession(models.Model):
         self._check_closure_fields(vals_list)
         if self.env.su:
             return super().create(vals_list)
-        # 🔴 le contrôle ne lit
+        # 🔴 Le contrôle ne lit
         # que les valeurs passées. Les défauts s'ajoutent APRÈS, dans
         # super().create(), depuis les clés `default_*` du contexte ou un
         # `ir.default` personnel : le journal se forgeait par là. Même parade

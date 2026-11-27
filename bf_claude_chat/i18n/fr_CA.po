@@ -4,7 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-24 09:56+0000\n"
+"POT-Creation-Date: 2026-11-14 12:51+0000\n"
+"PO-Revision-Date: 2026-11-15 19:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_CA\n"
@@ -16,7 +17,9 @@ msgstr ""
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_account.py:0
-msgid "%(champ)s vaut %(valeur)s : un seuil est un pourcentage, donc entre 0 et 100."
+msgid ""
+"%(champ)s vaut %(valeur)s : un seuil est un pourcentage, donc entre 0 et "
+"100."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -52,8 +55,16 @@ msgstr "%(size)s / %(max)s caractères"
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
-msgid "%(size)s / %(max)s characters: %(dropped)s instruction(s) would be left out"
-msgstr "%(size)s / %(max)s caractères : %(dropped)s consigne(s) resteraient dehors"
+msgid ""
+"%(size)s / %(max)s characters: %(dropped)s instruction(s) would be left out"
+msgstr ""
+"%(size)s / %(max)s caractères : %(dropped)s consigne(s) resteraient dehors"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "%s characters read"
+msgstr "%s caractères lus"
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -150,6 +161,12 @@ msgid "All Sessions"
 msgstr "Toutes les sessions"
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "Announced when the turn started; never confirmed."
+msgstr "Annoncé au départ du tour ; jamais confirmé."
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__message_id
 msgid "Answer"
 msgstr "Réponse"
@@ -244,15 +261,50 @@ msgid "Assistant Nextcloud"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "At most %s attachments per message."
+msgstr "Au plus %s pièces jointes par message."
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_closure
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "At the end of each turn Gen says where the conversation stands, and offers to archive it once everything is done. A nightly pass follows up on conversations left without news for two days. Nothing is ever archived without a click."
-msgstr "À la fin de chaque tour, Gen dit où en est la conversation et propose de l'archiver quand tout est fait. Une passe de nuit relance les conversations restées sans nouvelle depuis deux jours. Rien n'est jamais archivé sans un clic."
+msgid ""
+"At the end of each turn Gen says where the conversation stands, and offers "
+"to archive it once everything is done. A nightly pass follows up on "
+"conversations left without news for two days. Nothing is ever archived "
+"without a click."
+msgstr ""
+"À la fin de chaque tour, Gen dit où en est la conversation et propose de "
+"l'archiver quand tout est fait. Une passe de nuit relance les conversations "
+"restées sans nouvelle depuis deux jours. Rien n'est jamais archivé sans un "
+"clic."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__origin__editorial
 msgid "Atelier éditorial"
 msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Attach a file (PDF, Word, Excel, text)"
+msgstr "Joindre un fichier (PDF, Word, Excel, texte)"
+
+#. module: bf_claude_chat
+#: model:ir.model,name:bf_claude_chat.model_ir_attachment
+msgid "Attachment"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "Attachment not found."
+msgstr "Pièce jointe introuvable."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_account__seuil_session
@@ -281,8 +333,12 @@ msgstr "Reprises automatiques"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__auto_continue_count
-msgid "Automatic resumes after the bridge ended the turn cleanly (wall limit, step limit, overload)."
-msgstr "Reprises automatiques après une fin propre du pont (délai, limite d'étapes, surcharge)."
+msgid ""
+"Automatic resumes after the bridge ended the turn cleanly (wall limit, step "
+"limit, overload)."
+msgstr ""
+"Reprises automatiques après une fin propre du pont (délai, limite d'étapes, "
+"surcharge)."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__origin__autre
@@ -293,6 +349,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_form
 msgid "Back to New"
 msgstr "Remettre à traiter"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Back to conversations"
+msgstr "Retour aux conversations"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__bascule_montreal
@@ -341,12 +403,24 @@ msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_account__config_dir
-msgid "Ce que CLAUDE_CONFIG_DIR pointe sur l'hôte, par exemple /home/gen/.claude. C'est la clé du compte."
+msgid ""
+"Ce que CLAUDE_CONFIG_DIR pointe sur l'hôte, par exemple /home/gen/.claude. "
+"C'est la clé du compte."
 msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__cost_usd
-msgid "Ce que ce tour aurait coûté aux tarifs publics de l'API. Blue Fox tourne sur un forfait Max : rien n'est facturé au jeton, c'est un étalon de comparaison, pas une facture. C'est le seul chiffre qui pondère correctement le contexte relu (dix fois moins cher)."
+msgid ""
+"Ce que ce tour aurait coûté aux tarifs publics de l'API. Blue Fox tourne sur"
+" un forfait Max : rien n'est facturé au jeton, c'est un étalon de "
+"comparaison, pas une facture. C'est le seul chiffre qui pondère correctement"
+" le contexte relu (dix fois moins cher)."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/garde_pont.py:0
+msgid "Cette porte n'ouvre qu'au pont GenFox."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -506,6 +580,14 @@ msgid "Compte Claude"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:res.groups,comment:bf_claude_chat.group_pont
+msgid ""
+"Compte technique qui verse le registre de consommation et les relevés de la "
+"sonde. Sans ce test du QUI, tout compte authentifié pouvait forger le "
+"registre ou détruire les fenêtres de quota."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.actions.act_window,name:bf_claude_chat.action_claude_account
 #: model:ir.ui.menu,name:bf_claude_chat.menu_claude_account
 msgid "Comptes Claude"
@@ -535,7 +617,10 @@ msgstr "Échecs de diffusion consécutifs"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_session__stream_fail_count
-msgid "Consecutive failed streamed responses on this session. When it reaches the threshold, the next message forks a fresh Claude thread instead of resuming a poisoned one."
+msgid ""
+"Consecutive failed streamed responses on this session. When it reaches the "
+"threshold, the next message forks a fresh Claude thread instead of resuming "
+"a poisoned one."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -546,12 +631,12 @@ msgstr "Contenu"
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__cache_write_tokens
 msgid "Contexte mis en cache"
-msgstr ""
+msgstr "Cache écrit"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__cache_read_tokens
 msgid "Contexte relu"
-msgstr ""
+msgstr "Cache lu"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__session_id
@@ -610,6 +695,12 @@ msgstr "Coût visible par"
 #: code:addons/bf_claude_chat/static/src/js/gen_closure.js:0
 msgid "Could not save your answer."
 msgstr "Ta réponse n'a pas pu être enregistrée."
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "Counted by the relay on what actually left."
+msgstr "Compté par le relais sur ce qui est vraiment parti."
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
@@ -686,7 +777,9 @@ msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__internal
-msgid "Directive posted on the user's behalf (proactive brief). Kept so the conversation stays coherent for Claude, never rendered in the panel."
+msgid ""
+"Directive posted on the user's behalf (proactive brief). Kept so the "
+"conversation stays coherent for Claude, never rendered in the panel."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -738,13 +831,27 @@ msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_plan_account_id
-msgid "Empty: this instance's own plan. Another account: Gen turns are paid by that Max plan, for the users below (all if empty). Only the accounts the bridge allows for this instance are accepted."
-msgstr "Vide : le forfait de cette instance. Un autre compte : les tours de Gen sont payés par ce forfait Max, pour les usagers ci-dessous (tous si vide). Seuls les comptes que le pont ouvre à cette instance sont acceptés."
+msgid ""
+"Empty: this instance's own plan. Another account: Gen turns are paid by that"
+" Max plan, for the users below (all if empty). Only the accounts the bridge "
+"allows for this instance are accepted."
+msgstr ""
+"Vide : le forfait de cette instance. Un autre compte : les tours de Gen sont"
+" payés par ce forfait Max, pour les usagers ci-dessous (tous si vide). Seuls"
+" les comptes que le pont ouvre à cette instance sont acceptés."
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "Empty: this instance's own plan. Pick another Max account to have Gen turns paid by it, for the users listed (everyone if none). Takes effect on the next turn, no restart. Only the accounts the bridge allows for this instance are accepted."
-msgstr "Vide : le forfait de cette instance. Choisir un autre compte Max pour lui faire payer les tours de Gen, pour les usagers nommés (tous si aucun). Prend effet au tour suivant, sans redémarrage. Seuls les comptes que le pont ouvre à cette instance sont acceptés."
+msgid ""
+"Empty: this instance's own plan. Pick another Max account to have Gen turns "
+"paid by it, for the users listed (everyone if none). Takes effect on the "
+"next turn, no restart. Only the accounts the bridge allows for this instance"
+" are accepted."
+msgstr ""
+"Vide : le forfait de cette instance. Choisir un autre compte Max pour lui "
+"faire payer les tours de Gen, pour les usagers nommés (tous si aucun). Prend"
+" effet au tour suivant, sans redémarrage. Seuls les comptes que le pont "
+"ouvre à cette instance sont acceptés."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__state__pending
@@ -753,7 +860,9 @@ msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_account__seuil_bas
-msgid "En deçà, et à l'approche de la bascule, il reste du forfait payé à dépenser. C'est la moitié la moins évidente de la mesure, et celle qui rapporte."
+msgid ""
+"En deçà, et à l'approche de la bascule, il reste du forfait payé à dépenser."
+" C'est la moitié la moins évidente de la mesure, et celle qui rapporte."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -779,11 +888,14 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__input_tokens
 msgid "Entrée (non mise en cache)"
-msgstr ""
+msgstr "Jetons d'entrée"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__net_tokens
-msgid "Entrée + contexte mis en cache + sortie : ce que ce tour a réellement ajouté, sans compter le contexte relu. C'est la grandeur à comparer d'un tour à l'autre."
+msgid ""
+"Entrée + contexte mis en cache + sortie : ce que ce tour a réellement "
+"ajouté, sans compter le contexte relu. C'est la grandeur à comparer d'un "
+"tour à l'autre."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -858,8 +970,11 @@ msgstr "Relance"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__followup
-msgid "Follow-up posted by the nightly pass on a conversation left without news."
-msgstr "Relance écrite par la passe de nuit sur une conversation restée sans nouvelle."
+msgid ""
+"Follow-up posted by the nightly pass on a conversation left without news."
+msgstr ""
+"Relance écrite par la passe de nuit sur une conversation restée sans "
+"nouvelle."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__followup_date
@@ -877,6 +992,16 @@ msgstr "Application d'une procédure"
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_account_search
 msgid "Forfait"
 msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid ""
+"Full masking was on for this turn: identifiers, and the names the directory "
+"knows."
+msgstr ""
+"Masquage complet pour ce tour : les identifiants, et les noms que le "
+"répertoire connaît."
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -899,6 +1024,12 @@ msgid "Gen Assistant"
 msgstr "Assistant Gen"
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "Gen could not read this file."
+msgstr "Gen n'a pas pu lire ce fichier."
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_res_users__gen_meters
 msgid "Gen counters"
 msgstr "Compteurs de Gen"
@@ -913,6 +1044,12 @@ msgstr "Gen a fini avant de lire ta question. La voici de retour."
 #: model:ir.model.fields,field_description:bf_claude_chat.field_res_users__gen_closure_push_date
 msgid "Gen follow-up push"
 msgstr "Notification Gen du jour"
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "Gen found no text in this file."
+msgstr "Gen n'a trouvé aucun texte dans ce fichier."
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -935,8 +1072,16 @@ msgstr "Gen répond encore dans cette conversation."
 #. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_turn.js:0
-msgid "Gen is still working on your previous request. Here is where it stands."
-msgstr "Gen travaille encore sur ta demande précédente. Voici où en est le tour."
+msgid ""
+"Gen is still working on your previous request. Here is where it stands."
+msgstr ""
+"Gen travaille encore sur ta demande précédente. Voici où en est le tour."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+msgid "Gen is turned off."
+msgstr "Gen est désactivé."
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -958,6 +1103,16 @@ msgstr "Gen reprend là où le tour s'était arrêté (%s sur %s)"
 
 #. module: bf_claude_chat
 #. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid ""
+"Gen reads PDF, Word (.docx), ODT, Excel (.xlsx) and text files (.txt, .md, "
+".csv). Not images."
+msgstr ""
+"Gen lit les PDF, Word (.docx), ODT, Excel (.xlsx) et les fichiers texte "
+"(.txt, .md, .csv). Pas les images."
+
+#. module: bf_claude_chat
+#. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_message.py:0
 msgid "Gen was interrupted before answering."
 msgstr "Gen a été interrompu avant de répondre."
@@ -965,8 +1120,12 @@ msgstr "Gen a été interrompu avant de répondre."
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_session.py:0
-msgid "Gen · conversation \"%(name)s\" (%(owner)s): %(state)s, no news for %(days)s days."
-msgstr "Gen · conversation « %(name)s » (%(owner)s) : %(state)s, sans nouvelle depuis %(days)s jours."
+msgid ""
+"Gen · conversation \"%(name)s\" (%(owner)s): %(state)s, no news for %(days)s"
+" days."
+msgstr ""
+"Gen · conversation « %(name)s » (%(owner)s) : %(state)s, sans nouvelle "
+"depuis %(days)s jours."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_personality
@@ -977,8 +1136,23 @@ msgstr "Personnalité de Gen"
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/res_config_settings.py:0
-msgid "Gen's personality is limited to %(max)s characters; this text has %(size)s. Shorten it: the bridge cuts at the same length, and a cut would be silent."
-msgstr "La personnalité de Gen est limitée à %(max)s caractères ; ce texte en a %(size)s. Raccourcis-le : le pont coupe à la même longueur, et la coupe serait silencieuse."
+msgid ""
+"Gen's personality is limited to %(max)s characters; this text has %(size)s. "
+"Shorten it: the bridge cuts at the same length, and a cut would be silent."
+msgstr ""
+"La personnalité de Gen est limitée à %(max)s caractères ; ce texte en a "
+"%(size)s. Raccourcis-le : le pont coupe à la même longueur, et la coupe "
+"serait silencieuse."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid ""
+"Gen's turns go back to the shared Max plan. Reopen Settings to see the field"
+" empty."
+msgstr ""
+"Les tours de Gen repartent sur le forfait Max partagé. Réouvrez les "
+"Paramètres pour voir le champ vide."
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -1007,6 +1181,11 @@ msgstr "Gen : effacer les précisions des signalements de plus de 12 mois"
 #: model:ir.actions.server,name:bf_claude_chat.ir_cron_closure_followup_ir_actions_server
 msgid "Gen: follow up on conversations left without news"
 msgstr "Gen : relancer les conversations restées sans nouvelle"
+
+#. module: bf_claude_chat
+#: model:ir.actions.server,name:bf_claude_chat.ir_cron_purger_pieces_ir_actions_server
+msgid "Gen: remove attachments never sent or left behind"
+msgstr "Gen : retirer les pièces jointes jamais envoyées ou laissées derrière"
 
 #. module: bf_claude_chat
 #: model:ir.actions.server,name:bf_claude_chat.ir_cron_retitle_sessions_ir_actions_server
@@ -1041,18 +1220,49 @@ msgstr "Haiku (le plus rapide, léger)"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_account_window__heures_restantes
-msgid "Heures d'ici la remise à zéro. Non stocké : ça bouge tout seul. ⚠️ Vaut 0 quand la remise à zéro est inconnue, parce qu'un Float ne sait pas valoir « non mesuré » : lire `resets_at` avant de s'en servir pour juger."
+msgid ""
+"Heures d'ici la remise à zéro. Non stocké : ça bouge tout seul. ⚠️ Vaut 0 "
+"quand la remise à zéro est inconnue, parce qu'un Float ne sait pas valoir « "
+"non mesuré » : lire `resets_at` avant de s'en servir pour juger."
 msgstr ""
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "How Gen speaks here: the name it goes by, tu or vous, default language, length, how it presents itself. Tone only: what Gen may do is set on the bridge, not in this box."
-msgstr "Comment Gen parle ici : le nom qu'il porte, tu ou vous, la langue par défaut, la longueur, la façon dont il se présente. Le ton seulement : ce que Gen peut faire se règle sur le pont, pas dans cette case."
+msgid ""
+"How Gen speaks here: the name it goes by, tu or vous, default language, "
+"length, how it presents itself. Tone only: what Gen may do is set on the "
+"bridge, not in this box."
+msgstr ""
+"Comment Gen parle ici : le nom qu'il porte, tu ou vous, la langue par "
+"défaut, la longueur, la façon dont il se présente. Le ton seulement : ce que"
+" Gen peut faire se règle sur le pont, pas dans cette case."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_personality
-msgid "How Gen speaks on this instance: the name it goes by, tu or vous, the default language, how long its answers run, how it presents itself. Composed into every conversation, before the steering instructions. It shapes the tone, never what Gen may do: tool access and safety rules are set on the bridge, not here. 2,000 characters at most."
-msgstr "Comment Gen parle sur cette instance : le nom qu'il porte, tu ou vous, la langue par défaut, la longueur de ses réponses, la façon dont il se présente. Composé dans chaque conversation, avant les consignes. Ça façonne le ton, jamais ce que Gen peut faire : les accès aux outils et les règles de sécurité se règlent sur le pont, pas ici. 2 000 caractères au plus."
+msgid ""
+"How Gen speaks on this instance: the name it goes by, tu or vous, the "
+"default language, how long its answers run, how it presents itself. Composed"
+" into every conversation, before the steering instructions. It shapes the "
+"tone, never what Gen may do: tool access and safety rules are set on the "
+"bridge, not here. 2,000 characters at most."
+msgstr ""
+"Comment Gen parle sur cette instance : le nom qu'il porte, tu ou vous, la "
+"langue par défaut, la longueur de ses réponses, la façon dont il se "
+"présente. Composé dans chaque conversation, avant les consignes. Ça façonne "
+"le ton, jamais ce que Gen peut faire : les accès aux outils et les règles de"
+" sécurité se règlent sur le pont, pas ici. 2 000 caractères au plus."
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__masque
+msgid ""
+"How this turn went out to the model: which masking the relay had on when it "
+"left. Not a coverage guarantee: the relay replaces the names its directory "
+"knows, and the model's own earlier thinking is replayed as it was written."
+msgstr ""
+"Comment ce tour est parti vers le modèle : quel masquage le relais avait en "
+"service à son départ. Pas une garantie de couverture : le relais remplace "
+"les noms que son répertoire connaît, et les pensées déjà écrites par le "
+"modèle repartent telles quelles."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__id
@@ -1073,8 +1283,31 @@ msgstr "Idéation"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_session__mobile_conversation_id
-msgid "Identifiant de fil rendu par le pont, pour reprendre la conversation au tour suivant. Volontairement séparé de claude_session_id, que le panneau web passe à /chat."
+msgid ""
+"Identifiant de fil rendu par le pont, pour reprendre la conversation au tour"
+" suivant. Volontairement séparé de claude_session_id, que le panneau web "
+"passe à /chat."
 msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid ""
+"Identifier masking was on (emails, phone numbers, SINs); name masking was "
+"not."
+msgstr ""
+"Masquage des identifiants en service (courriels, téléphones, NAS) ; celui "
+"des noms, non."
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__masque__complet
+msgid "Identifiers and known names masked"
+msgstr "Identifiants et noms connus masqués"
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__masque__identifiants
+msgid "Identifiers masked, names in the clear"
+msgstr "Identifiants masqués, noms en clair"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__turn_key
@@ -1119,7 +1352,10 @@ msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__cache_read_tokens
-msgid "Jetons déjà en cache, relus par le modèle. Facturés au dixième du prix d'entrée, et relus une fois par pas interne du tour : c'est ce qui gonfle les totaux sans correspondre à du travail neuf."
+msgid ""
+"Jetons déjà en cache, relus par le modèle. Facturés au dixième du prix "
+"d'entrée, et relus une fois par pas interne du tour : c'est ce qui gonfle "
+"les totaux sans correspondre à du travail neuf."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1130,11 +1366,13 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__total_tokens
 msgid "Jetons traités"
-msgstr ""
+msgstr "Jetons au total"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__cache_write_tokens
-msgid "Jetons écrits dans le cache pour les tours suivants. Du travail réel, payé une fois, qui rend les tours d'après moins chers."
+msgid ""
+"Jetons écrits dans le cache pour les tours suivants. Du travail réel, payé "
+"une fois, qui rend les tours d'après moins chers."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1144,8 +1382,18 @@ msgstr "Jugée le"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_account__etat
-msgid "Jugement porté sur le dernier relevé, aux seuils de ce compte. « Sous les seuils » : la semaine et la session de 5 h sont toutes deux en deçà de leur plafond, et la bascule n'est pas assez proche pour que le solde restant risque d'être perdu."
+msgid ""
+"Jugement porté sur le dernier relevé, aux seuils de ce compte. « Sous les "
+"seuils » : la semaine et la session de 5 h sont toutes deux en deçà de leur "
+"plafond, et la bascule n'est pas assez proche pour que le solde restant "
+"risque d'être perdu."
 msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid "Key removed"
+msgstr "Clé retirée"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__account_id
@@ -1161,7 +1409,9 @@ msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_account_window__bascule_montreal
-msgid "La remise à zéro dite en heure de Montréal, quel que soit le fuseau de la fiche d'usager qui lit l'écran."
+msgid ""
+"La remise à zéro dite en heure de Montréal, quel que soit le fuseau de la "
+"fiche d'usager qui lit l'écran."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1214,8 +1464,12 @@ msgstr "Dernière modification le"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__runner_heartbeat
-msgid "Last sign of life of the thread writing this turn. A pending turn without a recent one is taken over by another thread."
-msgstr "Dernier signe de vie du fil qui écrit ce tour. Un tour en cours sans signe de vie récent est repris par un autre fil."
+msgid ""
+"Last sign of life of the thread writing this turn. A pending turn without a "
+"recent one is taken over by another thread."
+msgstr ""
+"Dernier signe de vie du fil qui écrit ce tour. Un tour en cours sans signe "
+"de vie récent est repris par un autre fil."
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_account_form
@@ -1224,7 +1478,9 @@ msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_account__credits_actifs
-msgid "Le compte a des crédits achetés au-delà du forfait. Les deux champs qui suivent ne veulent rien dire quand c'est faux."
+msgid ""
+"Le compte a des crédits achetés au-delà du forfait. Les deux champs qui "
+"suivent ne veulent rien dire quand c'est faux."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1241,17 +1497,16 @@ msgstr ""
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_account.py:0
-msgid "Le seuil de solde dormant (%(bas)s) doit rester sous le seuil hebdomadaire (%(haut)s), sinon les deux avis se déclenchent ensemble."
+msgid ""
+"Le seuil de solde dormant (%(bas)s) doit rester sous le seuil hebdomadaire "
+"(%(haut)s), sinon les deux avis se déclenchent ensemble."
 msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__user_id
-msgid "Leave empty to apply the instruction to everyone. Set it to keep the instruction private to that user."
-msgstr ""
-
-#. module: bf_claude_chat
-#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "Leave empty to use the server's Max plan. Set an Anthropic API key to bill this tenant independently."
+msgid ""
+"Leave empty to apply the instruction to everyone. Set it to keep the "
+"instruction private to that user."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1261,8 +1516,12 @@ msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__prefix_len
-msgid "Length of the text written by earlier resumes: what a screen that re-attaches shows before replaying the current part."
-msgstr "Longueur du texte écrit par les reprises précédentes : ce qu'un écran qui se rattache affiche avant de relire la partie en cours."
+msgid ""
+"Length of the text written by earlier resumes: what a screen that re-"
+"attaches shows before replaying the current part."
+msgstr ""
+"Longueur du texte écrit par les reprises précédentes : ce qu'un écran qui se"
+" rattache affiche avant de relire la partie en cours."
 
 #. module: bf_claude_chat
 #: model_terms:ir.actions.act_window,help:bf_claude_chat.action_claude_account
@@ -1314,13 +1573,30 @@ msgstr "Parcours des tâches"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_session__claude_session_id
-msgid "Maps to Claude Code's internal session identifier for multi-turn context."
+msgid ""
+"Maps to Claude Code's internal session identifier for multi-turn context."
 msgstr ""
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_form
 msgid "Mark as Reviewed"
 msgstr "Marquer comme traité"
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__masque
+msgid "Mask (this turn)"
+msgstr "Masque (ce tour)"
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__masque_constate
+msgid "Mask Measured"
+msgstr "Masque constaté"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "Masked"
+msgstr "Masqué"
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
@@ -1334,7 +1610,9 @@ msgstr "Tours maximum par message"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_max_turns
-msgid "Maximum number of tool-use cycles Claude can perform per message. Higher values allow more complex queries but take longer."
+msgid ""
+"Maximum number of tool-use cycles Claude can perform per message. Higher "
+"values allow more complex queries but take longer."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1355,7 +1633,7 @@ msgstr "Nombre maximal de cycles d'outils par message (p. ex. 45)."
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__message_count
 msgid "Message Count"
-msgstr ""
+msgstr "Messages"
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -1396,10 +1674,18 @@ msgid "Named by hand"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "Names in the clear"
+msgstr "Noms en clair"
+
+#. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
 msgid "Near-identical wording (%(pct)d%% match). Keep one."
-msgstr "Formulation quasi identique (%(pct)d %% de correspondance). N'en garder qu'une."
+msgstr ""
+"Formulation quasi identique (%(pct)d %% de correspondance). N'en garder "
+"qu'une."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_flag__state__new
@@ -1458,13 +1744,38 @@ msgstr "Aucune conversation pour l'instant"
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
-msgid "No duplicate and no contradiction found across %s active instruction(s)."
+msgid ""
+"No duplicate and no contradiction found across %s active instruction(s)."
 msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+msgid "No file received."
+msgstr "Aucun fichier reçu."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid "No key to remove"
+msgstr "Aucune clé à retirer"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "No masking was on: this turn left as it was written."
+msgstr "Aucun masquage en service : ce tour est parti tel qu'il a été écrit."
 
 #. module: bf_claude_chat
 #: model_terms:ir.actions.act_window,help:bf_claude_chat.action_claude_flag
 msgid "No reported answer"
 msgstr "Aucune réponse signalée"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "Not masked"
+msgstr "Rien de masqué"
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -1479,6 +1790,11 @@ msgid "Note"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__masque__clair
+msgid "Nothing masked"
+msgstr "Rien de masqué"
+
+#. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_flag__reason__offensive
 msgid "Offensive or inappropriate"
 msgstr "Offensante ou inappropriée"
@@ -1491,13 +1807,16 @@ msgstr "Un type de fiche"
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
-msgid "One says « %(positive)s », the other « %(negative)s », about the same subject."
+msgid ""
+"One says « %(positive)s », the other « %(negative)s », about the same "
+"subject."
 msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__model_id
 msgid "Only applies when the user is working on this record type."
-msgstr "Ne s'applique que lorsque l'utilisateur travaille sur ce type de fiche."
+msgstr ""
+"Ne s'applique que lorsque l'utilisateur travaille sur ce type de fiche."
 
 #. module: bf_claude_chat
 #. odoo-python
@@ -1513,13 +1832,23 @@ msgstr "Seul le serveur peut écrire ces champs d'un message de Gen : %s"
 
 #. module: bf_claude_chat
 #. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "Open a conversation to attach a file."
+msgstr "Ouvre une conversation pour joindre un fichier."
+
+#. module: bf_claude_chat
+#. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 msgid "Open full page"
 msgstr "Ouvrir en pleine page"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_api_key
-msgid "Optional. If set, this tenant uses its own API key (pay-per-use) instead of the shared Max plan. Leave empty to use the server's Max plan."
+msgid ""
+"Optional. If set, this tenant uses its own API key (pay-per-use) instead of "
+"the shared Max plan. A key already stored shows as dots: the key itself "
+"never travels back to the browser, and saving the dots changes nothing. Use "
+"« Remove the key » below to go back to the shared Max plan."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1582,7 +1911,9 @@ msgstr "Téléphone"
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
 msgid "Pick a record type, or set the scope back to « Every conversation »."
-msgstr "Choisis un type de fiche, ou remets la portée à « Toutes les conversations »."
+msgstr ""
+"Choisis un type de fiche, ou remets la portée à « Toutes les conversations "
+"»."
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -1623,6 +1954,11 @@ msgid "Plan paying for Gen"
 msgstr "Forfait qui paie Gen"
 
 #. module: bf_claude_chat
+#: model:res.groups,name:bf_claude_chat.group_pont
+msgid "Pont GenFox (RPC)"
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
 msgid "Preparing a secure link"
@@ -1656,7 +1992,10 @@ msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_session__origin
-msgid "Quelle fonction a consommé. Les passes sans personne au clavier (raffinage, éditorial, carto, OCR, enrichissement) tiennent ici leur propre fil, un par enregistrement travaillé."
+msgid ""
+"Quelle fonction a consommé. Les passes sans personne au clavier (raffinage, "
+"éditorial, carto, OCR, enrichissement) tiennent ici leur propre fil, un par "
+"enregistrement travaillé."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1704,6 +2043,12 @@ msgstr "Lecture de fichiers"
 #: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
 msgid "Reading in Odoo"
 msgstr "Lecture dans Odoo"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "Reading the file…"
+msgstr "Lecture du fichier…"
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -1769,12 +2114,34 @@ msgstr ""
 #. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Remove"
+msgstr "Retirer"
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Remove the key"
+msgstr "Retirer la clé"
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid ""
+"Remove this tenant's Anthropic API key? Gen's turns go back to the server's "
+"shared Max plan."
+msgstr ""
+"Retirer la clé API Anthropic de cette instance ? Les tours de Gen repartent "
+"sur le forfait Max partagé du serveur."
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 msgid "Rename"
 msgstr "Renommer"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_account__subscription_type
-msgid "Rendu par le relevé : pro, max, team, enterprise. Vide sur une clé d'API, où les fenêtres d'abonnement ne s'appliquent pas."
+msgid ""
+"Rendu par le relevé : pro, max, team, enterprise. Vide sur une clé d'API, où"
+" les fenêtres d'abonnement ne s'appliquent pas."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1952,6 +2319,14 @@ msgid "Session éteinte"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid ""
+"Set an Anthropic API key to bill this tenant independently. A key already "
+"stored shows as dots and saving them changes nothing; use Remove the key to "
+"go back to the server's shared Max plan."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__seuil_session
 msgid "Seuil de session (%)"
 msgstr ""
@@ -1974,8 +2349,12 @@ msgstr ""
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_account.py:0
-msgid "Several plans are switched for this instance. Change them on the bridge host, not here."
-msgstr "Plusieurs forfaits sont basculés pour cette instance. Les changer sur l'hôte du pont, pas ici."
+msgid ""
+"Several plans are switched for this instance. Change them on the bridge "
+"host, not here."
+msgstr ""
+"Plusieurs forfaits sont basculés pour cette instance. Les changer sur l'hôte"
+" du pont, pas ici."
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -2007,8 +2386,12 @@ msgstr "Archivées"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__block_chars
-msgid "Size of the block Gen receives for this instruction's audience, this instruction included, against the ceiling."
-msgstr "Taille du bloc que Gen reçoit pour le public de cette consigne, celle-ci comprise, contre le plafond."
+msgid ""
+"Size of the block Gen receives for this instruction's audience, this "
+"instruction included, against the ceiling."
+msgstr ""
+"Taille du bloc que Gen reçoit pour le public de cette consigne, celle-ci "
+"comprise, contre le plafond."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_account__etat__dormant
@@ -2024,7 +2407,7 @@ msgstr "Sonnet (rapide, recommandé)"
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__output_tokens
 msgid "Sortie"
-msgstr ""
+msgstr "Jetons de sortie"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_account__etat__ok
@@ -2074,7 +2457,9 @@ msgstr "Arrêt demandé"
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "Stream answers token by token with tool and thinking activity (console-like). When off, replies are buffered."
+msgid ""
+"Stream answers token by token with tool and thinking activity (console-"
+"like). When off, replies are buffered."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2084,7 +2469,9 @@ msgstr "Diffuser les réponses au fil de l'écriture"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_streaming
-msgid "Stream the answer token by token with tool and thinking activity (console-like). When off, the chat falls back to a single buffered reply."
+msgid ""
+"Stream the answer token by token with tool and thinking activity (console-"
+"like). When off, the chat falls back to a single buffered reply."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2121,12 +2508,16 @@ msgstr "Identifiant du locataire"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_tenant
-msgid "Tenant identifier sent to the bridge to select the correct MCP tools and system prompt (e.g. 'bf' or 'pme')."
+msgid ""
+"Tenant identifier sent to the bridge to select the correct MCP tools and "
+"system prompt (e.g. 'bf' or 'pme')."
 msgstr ""
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "Tenant slug sent to the bridge (e.g. 'bf' or 'pme'). Controls which MCP tools and system prompt are used."
+msgid ""
+"Tenant slug sent to the bridge (e.g. 'bf' or 'pme'). Controls which MCP "
+"tools and system prompt are used."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2137,14 +2528,22 @@ msgstr ""
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_account.py:0
-msgid "The bridge cannot read its plan switch table: fix it on the server before changing it here."
-msgstr "Le pont ne peut pas lire sa table de bascule : la réparer sur le serveur avant de la changer ici."
+msgid ""
+"The bridge cannot read its plan switch table: fix it on the server before "
+"changing it here."
+msgstr ""
+"Le pont ne peut pas lire sa table de bascule : la réparer sur le serveur "
+"avant de la changer ici."
 
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_account.py:0
-msgid "The bridge did not answer: the plan switch cannot be read or changed right now."
-msgstr "Le pont n'a pas répondu : la bascule de forfait ne peut être ni lue ni changée pour l'instant."
+msgid ""
+"The bridge did not answer: the plan switch cannot be read or changed right "
+"now."
+msgstr ""
+"Le pont n'a pas répondu : la bascule de forfait ne peut être ni lue ni "
+"changée pour l'instant."
 
 #. module: bf_claude_chat
 #. odoo-python
@@ -2183,25 +2582,95 @@ msgstr "Les précisions sont trop longues."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__body
-msgid "The directive itself, written as you would say it to a colleague. This text is composed into Claude's system prompt."
+msgid ""
+"The directive itself, written as you would say it to a colleague. This text "
+"is composed into Claude's system prompt."
 msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "The file could not be sent."
+msgstr "Le fichier n'a pas pu être envoyé."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_auto_brief
-msgid "The first time the panel opens on a record with no conversation yet, Claude reads the record, its chatter and its latest activity and opens with a short situation report plus next actions, without waiting for a question."
+msgid ""
+"The first time the panel opens on a record with no conversation yet, Claude "
+"reads the record, its chatter and its latest activity and opens with a short"
+" situation report plus next actions, without waiting for a question."
 msgstr ""
 
 #. module: bf_claude_chat
-#. odoo-python
-#: code:addons/bf_claude_chat/models/claude_account.py:0
-msgid "The plan is switched for users who no longer exist here. Change it on the bridge host."
-msgstr "Le forfait est basculé pour des usagers qui n'existent plus ici. Le changer sur l'hôte du pont."
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid ""
+"The model's own earlier thinking is replayed as it was written, so a "
+"conversation older than name masking can carry names in the clear."
+msgstr ""
+"Les pensées déjà écrites par le modèle repartent telles quelles : une "
+"conversation plus ancienne que le masquage des noms peut donc en porter en "
+"clair."
 
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_account.py:0
-msgid "The plan is switched to an account this instance does not list (%s). Change it on the bridge host."
-msgstr "Le forfait est basculé vers un compte que cette instance ne liste pas (%s). Le changer sur l'hôte du pont."
+msgid ""
+"The plan is switched for users who are archived or no longer exist here. "
+"Change it on the bridge host."
+msgstr ""
+"Le forfait est basculé pour des usagers archivés ou qui n'existent plus ici. "
+"Le changer sur l'hôte du pont."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_account.py:0
+msgid ""
+"The plan is switched to an account this instance does not list (%s). Change "
+"it on the bridge host."
+msgstr ""
+"Le forfait est basculé vers un compte que cette instance ne liste pas (%s). "
+"Le changer sur l'hôte du pont."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This Excel workbook is unreadable or damaged."
+msgstr "Ce classeur Excel est illisible ou endommagé."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This ODT document is unreadable or damaged."
+msgstr "Ce document ODT est illisible ou endommagé."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid ""
+"This PDF has no readable text (a scanned document?). Gen does not read "
+"images."
+msgstr ""
+"Ce PDF ne contient pas de texte lisible (document numérisé ?). Gen ne lit "
+"pas les images."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This PDF is encrypted or password-protected."
+msgstr "Ce PDF est chiffré ou protégé par un mot de passe."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This PDF is unreadable or damaged."
+msgstr "Ce PDF est illisible ou endommagé."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This Word document is unreadable or damaged."
+msgstr "Ce document Word est illisible ou endommagé."
 
 #. module: bf_claude_chat
 #: model:ir.model.constraint,message:bf_claude_chat.constraint_claude_chat_flag_une_fois_par_reponse
@@ -2219,6 +2688,42 @@ msgstr "Cette conversation dort depuis un moment. L'archiver ?"
 #: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
 msgid "This conversation: %s turns"
 msgstr "Cette conversation : %s tours"
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This file does not look like text."
+msgstr "Ce fichier ne ressemble pas à du texte."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This file is empty."
+msgstr "Ce fichier est vide."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This file is larger than 20 MB."
+msgstr "Ce fichier dépasse 20 Mo."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This file is too large to read once unpacked."
+msgstr "Ce fichier est trop volumineux une fois décompressé."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This file took too long to read."
+msgstr "Ce fichier a pris trop de temps à lire."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid "This instance already runs on the shared Max plan."
+msgstr "Cette instance tourne déjà sur le forfait Max partagé."
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
@@ -2265,9 +2770,36 @@ msgid "To follow"
 msgstr "À suivre"
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+msgid ""
+"Together these attachments hold %(total)s characters; Gen reads at most "
+"%(max)s per message here. Send fewer, or shorter, attachments."
+msgstr ""
+"Ces pièces portent ensemble %(total)s caractères ; Gen en lit au plus "
+"%(max)s par message ici. Envoie-en moins, ou de plus courtes."
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__client_token
-msgid "Token drawn by the screen when asking: a question sent again after a cut finds its turn instead of starting a second one."
-msgstr "Jeton tiré par l'écran au départ : une question renvoyée après une coupure retrouve son tour au lieu d'en lancer un second."
+msgid ""
+"Token drawn by the screen when asking: a question sent again after a cut "
+"finds its turn instead of starting a second one."
+msgstr ""
+"Jeton tiré par l'écran au départ : une question renvoyée après une coupure "
+"retrouve son tour au lieu d'en lancer un second."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+msgid "Too many attachments at once. Wait a moment."
+msgstr "Trop de pièces jointes d'un coup. Attends un instant."
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+msgid "Too many attachments waiting. Send or remove the ones that are ready."
+msgstr ""
+"Trop de pièces jointes en attente. Envoie ou retire celles qui sont prêtes."
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -2277,12 +2809,28 @@ msgstr "Trop d'écrans suivent cette réponse. Elle apparaîtra ici."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__total_tokens
-msgid "Tout ce que le modèle a lu et écrit, contexte relu compris. Utile pour mesurer la charge, trompeur pour mesurer le coût : voir « Jetons neufs »."
+msgid ""
+"Tout ce que le modèle a lu et écrit, contexte relu compris. Utile pour "
+"mesurer la charge, trompeur pour mesurer le coût : voir « Jetons neufs »."
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__masque_constate
+msgid ""
+"True: counted by the relay on what really left. False: announced by the "
+"health probe when the turn started, and never confirmed — the relay may have"
+" changed mode in between, or the turn may have been excluded."
+msgstr ""
+"Vrai : compté par le relais sur ce qui est vraiment parti. Faux : annoncé "
+"par la sonde au départ du tour et jamais confirmé — le relais a pu changer "
+"de mode entre-temps, ou le tour a pu être exclu."
+
+#. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "Tu t'appelles Gen. Tu tutoies. Tu réponds en français, court et concret : la réponse d'abord, sans superlatifs. Quand un outil échoue ou qu'une chose n'est pas branchée, tu le dis franchement."
+msgid ""
+"Tu t'appelles Gen. Tu tutoies. Tu réponds en français, court et concret : la"
+" réponse d'abord, sans superlatifs. Quand un outil échoue ou qu'une chose "
+"n'est pas branchée, tu le dis franchement."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2308,7 +2856,9 @@ msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__state
-msgid "Un tour mobile reste « en cours » le temps que l'assistant réponde ; le téléphone n'a plus à tenir la connexion ouverte."
+msgid ""
+"Un tour mobile reste « en cours » le temps que l'assistant réponde ; le "
+"téléphone n'a plus à tenir la connexion ouverte."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2324,8 +2874,10 @@ msgstr "Annuler"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_bridge_socket
-msgid "Unix socket path for the Claude bridge service. Shared by every Blue Fox module that talks to the bridge (meetings, invoice OCR, contact enrichment)."
-msgstr ""
+msgid ""
+"Unix socket path for the Claude bridge service. Shared by every Blue Fox "
+"module that talks to the bridge (meetings, invoice OCR, contact enrichment)."
+msgstr "Chemin du socket Unix du service de pont Claude."
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
@@ -2343,12 +2895,20 @@ msgstr "Utilisateur"
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_plan_user_ids
 msgid "Users whose Gen turns go to the plan above. Empty: everyone."
-msgstr "Usagers dont les tours de Gen vont au forfait ci-dessus. Vide : tout le monde."
+msgstr ""
+"Usagers dont les tours de Gen vont au forfait ci-dessus. Vide : tout le "
+"monde."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__utilization
 msgid "Utilisée (%)"
 msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "Wait until the attachments are read."
+msgstr "Attends que les pièces jointes soient lues."
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -2366,60 +2926,98 @@ msgstr "Semaine"
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__turn_payload
-msgid "What the turn sent to the bridge, without the API key: an automatic resume starts again from it, even when the cron runs it."
-msgstr "Ce que le tour a envoyé au pont, sans la clé d'API : une reprise automatique repart de là, même lancée par le cron."
+msgid ""
+"What the turn sent to the bridge, without the API key: an automatic resume "
+"starts again from it, even when the cron runs it."
+msgstr ""
+"Ce que le tour a envoyé au pont, sans la clé d'API : une reprise automatique"
+" repart de là, même lancée par le cron."
 
 #. module: bf_claude_chat
 #: model_terms:ir.actions.act_window,help:bf_claude_chat.action_claude_flag
-msgid "When someone reports an answer from Gen in Symbifox Mobile, it lands here."
-msgstr "Quand une personne signale une réponse de Gen dans Symbifox Mobile, elle arrive ici."
+msgid ""
+"When someone reports an answer from Gen in Symbifox Mobile, it lands here."
+msgstr ""
+"Quand une personne signale une réponse de Gen dans Symbifox Mobile, elle "
+"arrive ici."
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "When you open the panel on a record you have not discussed yet, Claude opens with a situation report and next actions instead of waiting for a question."
+msgid ""
+"When you open the panel on a record you have not discussed yet, Claude opens"
+" with a situation report and next actions instead of waiting for a question."
 msgstr ""
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_session__closure_state
-msgid "Where the conversation stands, as Gen judged it at the end of its last turn."
+msgid ""
+"Where the conversation stands, as Gen judged it at the end of its last turn."
 msgstr "Où en est la conversation, selon Gen à la fin de son dernier tour."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_meter_plan_group_id
-msgid "Who sees the Claude plan windows (session, week). Empty: every internal user."
-msgstr "Qui voit les fenêtres du forfait Claude (session, semaine). Vide : tous les usagers internes."
+msgid ""
+"Who sees the Claude plan windows (session, week). Empty: every internal "
+"user."
+msgstr ""
+"Qui voit les fenêtres du forfait Claude (session, semaine). Vide : tous les "
+"usagers internes."
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "Who sees the session and week windows of the Claude plan. Empty: every internal user. Each user can still hide them for themselves."
-msgstr "Qui voit les fenêtres session et semaine du forfait Claude. Vide : tous les usagers internes. Chacun peut ensuite les masquer pour lui-même."
+msgid ""
+"Who sees the session and week windows of the Claude plan. Empty: every "
+"internal user. Each user can still hide them for themselves."
+msgstr ""
+"Qui voit les fenêtres session et semaine du forfait Claude. Vide : tous les "
+"usagers internes. Chacun peut ensuite les masquer pour lui-même."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_meter_usage_group_id
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Who sees the tokens a conversation used. Empty: every internal user."
-msgstr "Qui voit les jetons qu'une conversation a consommés. Vide : tous les usagers internes."
+msgstr ""
+"Qui voit les jetons qu'une conversation a consommés. Vide : tous les usagers"
+" internes."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_meter_cost_group_id
-msgid "Who sees what a conversation would cost at API rates. Empty: every internal user."
-msgstr "Qui voit ce que coûterait une conversation aux tarifs de l'API. Vide : tous les usagers internes."
+msgid ""
+"Who sees what a conversation would cost at API rates. Empty: every internal "
+"user."
+msgstr ""
+"Qui voit ce que coûterait une conversation aux tarifs de l'API. Vide : tous "
+"les usagers internes."
 
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "Who sees what a conversation would cost at public API rates. Empty: every internal user."
-msgstr "Qui voit ce que coûterait une conversation aux tarifs publics de l'API. Vide : tous les usagers internes."
+msgid ""
+"Who sees what a conversation would cost at public API rates. Empty: every "
+"internal user."
+msgstr ""
+"Qui voit ce que coûterait une conversation aux tarifs publics de l'API. Vide"
+" : tous les usagers internes."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__end_reason
-msgid "Why the turn did not end normally, as the bridge said it (timeout, max_turns, stopped, unknown_turn...)."
-msgstr "Pourquoi le tour n'a pas fini normalement, tel que le pont l'a dit (timeout, max_turns, stopped, unknown_turn...)."
+msgid ""
+"Why the turn did not end normally, as the bridge said it (timeout, "
+"max_turns, stopped, unknown_turn...)."
+msgstr ""
+"Pourquoi le tour n'a pas fini normalement, tel que le pont l'a dit (timeout,"
+" max_turns, stopped, unknown_turn...)."
 
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
-msgid "With this instruction, the block Gen receives would be %(size)s characters for a ceiling of %(max)s. The last %(dropped)s instruction(s) in sequence order would be left out. Shorten, reorder or archive."
-msgstr "Avec cette consigne, le bloc que Gen reçoit ferait %(size)s caractères pour un plafond de %(max)s. Les %(dropped)s dernière(s) consigne(s) dans l'ordre des séquences resteraient dehors. Raccourcir, réordonner ou archiver."
+msgid ""
+"With this instruction, the block Gen receives would be %(size)s characters "
+"for a ceiling of %(max)s. The last %(dropped)s instruction(s) in sequence "
+"order would be left out. Shorten, reorder or archive."
+msgstr ""
+"Avec cette consigne, le bloc que Gen reçoit ferait %(size)s caractères pour "
+"un plafond de %(max)s. Les %(dropped)s dernière(s) consigne(s) dans l'ordre "
+"des séquences resteraient dehors. Raccourcir, réordonner ou archiver."
 
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__closure_state__open
@@ -2462,6 +3060,12 @@ msgid "Writing to Nextcloud"
 msgstr "Écriture dans Nextcloud"
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "cut: Gen will only read the beginning (%s in all)"
+msgstr "coupé : Gen n'en lira que le début (%s en tout)"
+
+#. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
 msgid "e.g. Always quote the source"
 msgstr "p. ex. Toujours citer la source"
@@ -2495,55 +3099,32 @@ msgid "État de la sonde"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/main.py:0
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "📎 Read the attachments."
+msgstr "📎 Lis les pièces jointes."
+
+#. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_session.py:0
-msgid "🔔 Follow-up: this conversation has been waiting for you for %(days)s days."
+msgid ""
+"🔔 Follow-up: this conversation has been waiting for you for %(days)s days."
 msgstr "🔔 Relance : cette conversation t'attend depuis %(days)s jours."
 
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_session.py:0
 msgid "🔔 Follow-up: work is left here, with no news for %(days)s days."
-msgstr "🔔 Relance : du travail reste ici, sans nouvelle depuis %(days)s jours."
-
-#. module: bf_claude_chat
-#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid "Remove the key"
-msgstr "Retirer la clé"
-
-#. module: bf_claude_chat
-#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid ""
-"Remove this tenant's Anthropic API key? Gen's turns go back to the server's "
-"shared Max plan."
 msgstr ""
-"Retirer la clé API Anthropic de cette instance ? Les tours de Gen repartent "
-"sur le forfait Max partagé du serveur."
-
-#. module: bf_claude_chat
-#. odoo-python
-#: code:addons/bf_claude_chat/models/res_config_settings.py:0
-msgid "No key to remove"
-msgstr "Aucune clé à retirer"
-
-#. module: bf_claude_chat
-#. odoo-python
-#: code:addons/bf_claude_chat/models/res_config_settings.py:0
-msgid "This instance already runs on the shared Max plan."
-msgstr "Cette instance tourne déjà sur le forfait Max partagé."
-
-#. module: bf_claude_chat
-#. odoo-python
-#: code:addons/bf_claude_chat/models/res_config_settings.py:0
-msgid "Key removed"
-msgstr "Clé retirée"
+"🔔 Relance : du travail reste ici, sans nouvelle depuis %(days)s jours."
 
 #. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/res_config_settings.py:0
 msgid ""
-"Gen's turns go back to the shared Max plan. Reopen Settings to see the field "
-"empty."
-msgstr ""
-"Les tours de Gen repartent sur le forfait Max partagé. Réouvrez les "
-"Paramètres pour voir le champ vide."
+"The plan switch this form read points to an account this instance no longer "
+"lists (%s): reload the settings."
+msgstr "Le formulaire a lu une bascule vers un compte que cette instance ne liste "
+"plus (%s) : recharger les paramètres."

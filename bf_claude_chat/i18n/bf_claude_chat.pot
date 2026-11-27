@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-06 23:52+0000\n"
-"PO-Revision-Date: 2026-11-06 23:52+0000\n"
+"POT-Creation-Date: 2026-11-26 03:04+0000\n"
+"PO-Revision-Date: 2026-11-26 03:04+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -58,6 +58,12 @@ msgstr ""
 #: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
 msgid ""
 "%(size)s / %(max)s characters: %(dropped)s instruction(s) would be left out"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "%s characters read"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -155,6 +161,12 @@ msgid "All Sessions"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "Announced when the turn started; never confirmed."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_flag__message_id
 msgid "Answer"
 msgstr ""
@@ -249,6 +261,14 @@ msgid "Assistant Nextcloud"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "At most %s attachments per message."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_closure
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid ""
@@ -261,6 +281,25 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__origin__editorial
 msgid "Atelier éditorial"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Attach a file (PDF, Word, Excel, text)"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model,name:bf_claude_chat.model_ir_attachment
+msgid "Attachment"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "Attachment not found."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -303,6 +342,12 @@ msgstr ""
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_form
 msgid "Back to New"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Back to conversations"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -646,6 +691,12 @@ msgid "Could not save your answer."
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "Counted by the relay on what actually left."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Counters"
 msgstr ""
@@ -929,6 +980,14 @@ msgstr ""
 
 #. module: bf_claude_chat
 #. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid ""
+"Full masking was on for this turn: identifiers, and the names the directory "
+"knows."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 #: model:ir.actions.client,name:bf_claude_chat.action_claude_chat
@@ -948,6 +1007,12 @@ msgid "Gen Assistant"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "Gen could not read this file."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_res_users__gen_meters
 msgid "Gen counters"
 msgstr ""
@@ -961,6 +1026,12 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_res_users__gen_closure_push_date
 msgid "Gen follow-up push"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "Gen found no text in this file."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -989,6 +1060,12 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+msgid "Gen is turned off."
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
 msgid "Gen is writing"
@@ -1004,6 +1081,14 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_turn.js:0
 msgid "Gen picks up where it left off (%s of %s)"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid ""
+"Gen reads PDF, Word (.docx), ODT, Excel (.xlsx) and text files (.txt, .md, "
+".csv). Not images."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1035,6 +1120,14 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid ""
+"Gen's turns go back to the shared Max plan. Reopen Settings to see the field"
+" empty."
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
 msgid "Gen: %s active conversations"
@@ -1060,6 +1153,11 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.actions.server,name:bf_claude_chat.ir_cron_closure_followup_ir_actions_server
 msgid "Gen: follow up on conversations left without news"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.actions.server,name:bf_claude_chat.ir_cron_purger_pieces_ir_actions_server
+msgid "Gen: remove attachments never sent or left behind"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1120,6 +1218,14 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__masque
+msgid ""
+"How this turn went out to the model: which masking the relay had on when it "
+"left. Not a coverage guarantee: the relay replaces the names its directory "
+"knows, and the model's own earlier thinking is replayed as it was written."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__id
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__id
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__id
@@ -1142,6 +1248,24 @@ msgid ""
 "Identifiant de fil rendu par le pont, pour reprendre la conversation au tour"
 " suivant. Volontairement séparé de claude_session_id, que le panneau web "
 "passe à /chat."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid ""
+"Identifier masking was on (emails, phone numbers, SINs); name masking was "
+"not."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__masque__complet
+msgid "Identifiers and known names masked"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__masque__identifiants
+msgid "Identifiers masked, names in the clear"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1222,6 +1346,12 @@ msgid ""
 "seuils » : la semaine et la session de 5 h sont toutes deux en deçà de leur "
 "plafond, et la bascule n'est pas assez proche pour que le solde restant "
 "risque d'être perdu."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid "Key removed"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1337,13 +1467,6 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
-#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
-msgid ""
-"Leave empty to use the server's Max plan. Set an Anthropic API key to bill "
-"this tenant independently."
-msgstr ""
-
-#. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__origin__ocr
 msgid "Lecture de document (OCR)"
 msgstr ""
@@ -1412,6 +1535,22 @@ msgstr ""
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_flag_form
 msgid "Mark as Reviewed"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__masque
+msgid "Mask (this turn)"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__masque_constate
+msgid "Mask Measured"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "Masked"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1490,6 +1629,12 @@ msgid "Named by hand"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "Names in the clear"
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
 msgid "Near-identical wording (%(pct)d%% match). Keep one."
@@ -1557,8 +1702,32 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+msgid "No file received."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid "No key to remove"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "No masking was on: this turn left as it was written."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model_terms:ir.actions.act_window,help:bf_claude_chat.action_claude_flag
 msgid "No reported answer"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid "Not masked"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1571,6 +1740,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__note
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_account_form
 msgid "Note"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__masque__clair
+msgid "Nothing masked"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1610,6 +1784,12 @@ msgstr ""
 
 #. module: bf_claude_chat
 #. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "Open a conversation to attach a file."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 msgid "Open full page"
 msgstr ""
@@ -1618,7 +1798,9 @@ msgstr ""
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_api_key
 msgid ""
 "Optional. If set, this tenant uses its own API key (pay-per-use) instead of "
-"the shared Max plan. Leave empty to use the server's Max plan."
+"the shared Max plan. A key already stored shows as dots: the key itself "
+"never travels back to the browser, and saving the dots changes nothing. Use "
+"« Remove the key » below to go back to the shared Max plan."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1814,6 +1996,12 @@ msgstr ""
 
 #. module: bf_claude_chat
 #. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "Reading the file…"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
 msgid "Reading the task"
 msgstr ""
@@ -1871,6 +2059,24 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__resets_at
 msgid "Remise à zéro"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Remove"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Remove the key"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid ""
+"Remove this tenant's Anthropic API key? Gen's turns go back to the server's "
+"shared Max plan."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2058,6 +2264,14 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_account__etat_sonde__session_morte
 msgid "Session éteinte"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid ""
+"Set an Anthropic API key to bill this tenant independently. A key already "
+"stored shows as dots and saving them changes nothing; use Remove the key to "
+"go back to the server's shared Max plan."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2314,6 +2528,12 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "The file could not be sent."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_auto_brief
 msgid ""
 "The first time the panel opens on a record with no conversation yet, Claude "
@@ -2322,11 +2542,19 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_cadenas.js:0
+msgid ""
+"The model's own earlier thinking is replayed as it was written, so a "
+"conversation older than name masking can carry names in the clear."
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_account.py:0
 msgid ""
-"The plan is switched for users who no longer exist here. Change it on the "
-"bridge host."
+"The plan is switched for users who are archived or no longer exist here. "
+"Change it on the bridge host."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2335,6 +2563,44 @@ msgstr ""
 msgid ""
 "The plan is switched to an account this instance does not list (%s). Change "
 "it on the bridge host."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This Excel workbook is unreadable or damaged."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This ODT document is unreadable or damaged."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid ""
+"This PDF has no readable text (a scanned document?). Gen does not read "
+"images."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This PDF is encrypted or password-protected."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This PDF is unreadable or damaged."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This Word document is unreadable or damaged."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2352,6 +2618,42 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
 msgid "This conversation: %s turns"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This file does not look like text."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This file is empty."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This file is larger than 20 MB."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This file is too large to read once unpacked."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/pieces_jointes.py:0
+msgid "This file took too long to read."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid "This instance already runs on the shared Max plan."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2399,10 +2701,30 @@ msgid "To follow"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+msgid ""
+"Together these attachments hold %(total)s characters; Gen reads at most "
+"%(max)s per message here. Send fewer, or shorter, attachments."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__client_token
 msgid ""
 "Token drawn by the screen when asking: a question sent again after a cut "
 "finds its turn instead of starting a second one."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+msgid "Too many attachments at once. Wait a moment."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/pieces.py:0
+msgid "Too many attachments waiting. Send or remove the ones that are ready."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2416,6 +2738,14 @@ msgstr ""
 msgid ""
 "Tout ce que le modèle a lu et écrit, contexte relu compris. Utile pour "
 "mesurer la charge, trompeur pour mesurer le coût : voir « Jetons neufs »."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__masque_constate
+msgid ""
+"True: counted by the relay on what really left. False: announced by the "
+"health probe when the turn started, and never confirmed — the relay may have"
+" changed mode in between, or the turn may have been excluded."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2493,6 +2823,12 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__utilization
 msgid "Utilisée (%)"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "Wait until the attachments are read."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2626,6 +2962,12 @@ msgid "Writing to Nextcloud"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "cut: Gen will only read the beginning (%s in all)"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
 msgid "e.g. Always quote the source"
 msgstr ""
@@ -2659,6 +3001,14 @@ msgid "État de la sonde"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_claude_chat/controllers/main.py:0
+#: code:addons/bf_claude_chat/static/src/js/gen_pieces.js:0
+msgid "📎 Read the attachments."
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_session.py:0
 msgid ""
@@ -2669,4 +3019,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_session.py:0
 msgid "🔔 Follow-up: work is left here, with no news for %(days)s days."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid ""
+"The plan switch this form read points to an account this instance no longer "
+"lists (%s): reload the settings."
 msgstr ""

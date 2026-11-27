@@ -8,7 +8,7 @@ import time
 from collections import defaultdict
 
 import odoo
-from odoo import fields, http
+from odoo import _, fields, http
 from odoo.addons.bf_ai_bridge.tools import transport
 
 from ..models.claude_chat_session import usage_shown
@@ -22,6 +22,8 @@ from odoo.http import request, Response
 from odoo.modules.registry import Registry
 
 from . import turns
+from . import pieces as _pieces
+from .. import pieces_jointes as _pj
 from ..closure import ClosureFilter, strip_closure
 from . import viewer_slots
 
@@ -245,6 +247,16 @@ def plan_usage(env, fresh=False):
 # treated as poisoned: the next message forks a fresh thread instead of
 # resuming the broken one. This is what fixes "brisé pour ce contexte".
 _STREAM_FAIL_THRESHOLD = 2
+
+
+
+def _question_sans_texte():
+    """La question gardée quand la personne n'envoie qu'une pièce jointe.
+
+    Elle s'affiche dans sa bulle ; Gen la reçoit suivie du texte de la pièce. Dans la
+    langue de la personne, et la même que l'écran affiche en attendant.
+    """
+    return _("📎 Read the attachments.")
 
 _SSE_HEADERS = [
     ("Cache-Control", "no-cache"),
@@ -634,15 +646,23 @@ def launch_background_turn(env, session, question, settings, *, internal=False,
 class ClaudeChatController(http.Controller):
 
     @http.route("/claude-chat/send", type="json", auth="user", methods=["POST"])
-    def send_message(self, session_id=None, message="", context=None, internal=False):
+    def send_message(self, session_id=None, message="", context=None, internal=False,
+                     attachment_ids=None):
         """Send a message to Claude via the bridge service."""
         settings = _get_settings()
 
         if not settings["enabled"]:
             return {"error": "Claude AI is disabled. An administrator can enable it in Settings."}
 
+        if not message.strip() and attachment_ids and not internal:
+            message = _question_sans_texte()
         if not message.strip():
             return {"error": "Empty message"}
+        try:
+            pieces, textes = _pieces.pieces_du_tour(
+                request.env, [] if internal else (attachment_ids or []))
+        except _pj.PieceRefusee as refus:
+            return {"error": str(refus), "attachment_ids": refus.ids}
 
         user = request.env.user
 
@@ -674,7 +694,7 @@ class ClaudeChatController(http.Controller):
             session = Session.create(vals)
 
         # Save user message
-        Message.create({
+        question = Message.create({
             "session_id": session.id,
             "role": "user",
             "content": message.strip(),
@@ -684,7 +704,7 @@ class ClaudeChatController(http.Controller):
         # Build bridge payload with settings
         bridge_payload = {
             "session_id": session.claude_session_id or None,
-            "message": message.strip(),
+            "message": _pj.message_pour_gen(message.strip(), textes),
             "user_name": user.name,
             "user_id": user.id,
             "user_email": user.email or "",
@@ -735,6 +755,11 @@ class ClaudeChatController(http.Controller):
         except Exception:
             _logger.exception("Bridge service error")
             return {"error": "An unexpected error occurred."}
+
+        # Rattachées seulement une fois le pont joint. Avant, un pont muet
+        # les laissait rattachées à une question restée sans réponse, et l'écran les
+        # rendait comme prêtes : l'envoi suivant recevait « introuvable ».
+        _pieces.rattacher(pieces, question)
 
         # Une conversation qui a reçu la consigne de fermeture peut
         # encore écrire la balise ici ; elle ne s'enregistre jamais, même quand
@@ -822,6 +847,7 @@ class ClaudeChatController(http.Controller):
         internal = bool(data_in.get("internal"))
         context = data_in.get("context")
         client_token = turns.valid_client_token(data_in.get("client_token"))
+        piece_ids = data_in.get("attachment_ids") or []
         user = request.env.user
 
         def _err(msg, reason="cli_error"):
@@ -832,6 +858,9 @@ class ClaudeChatController(http.Controller):
         # When streaming is disabled the client falls back to /claude-chat/send.
         if not settings["enabled"] or not settings.get("streaming", True):
             return _err("Le mode streaming est désactivé.", "disabled")
+        # Une pièce seule, sans question, est une demande de lecture.
+        if not message and piece_ids and not internal:
+            message = _question_sans_texte()
         if not message:
             return _err("Message vide.")
 
@@ -854,6 +883,17 @@ class ClaudeChatController(http.Controller):
         # Contexte de page résolu UNE fois, contrôle d'accès inclus, pour
         # l'enregistrement de session ET la charge utile passerelle plus bas.
         ctx_model, ctx_res_id = _validated_context_ref(request.env, context)
+
+        # Les pièces sont contrôlées AVANT de toucher quoi que ce soit — ni
+        # conversation créée, ni conversation archivée rouverte, ni question sans
+        # réponse. Une pièce refusée reste en attente, et l'écran marque les siennes.
+        try:
+            pieces, textes = _pieces.pieces_du_tour(request.env, [] if internal else piece_ids)
+        except _pj.PieceRefusee as refus:
+            return _sse_response([_sse_line("error", {
+                "response": str(refus), "reason": "attachment", "interrupted": False,
+                "attachment_ids": refus.ids,
+            })])
 
         # Find or create the Odoo session (same policy as send_message).
         if session_id:
@@ -879,7 +919,8 @@ class ClaudeChatController(http.Controller):
                 running = Message.browse()
             if running:
                 return self._follow_capped(running, busy=True)
-        else:
+
+        if not session_id:
             vals = {"name": "New Chat", "user_id": user.id}
             if ctx_model and ctx_res_id:
                 vals["res_model"] = ctx_model
@@ -891,10 +932,11 @@ class ClaudeChatController(http.Controller):
                     vals["name"] = Session._record_title(ctx_model, ctx_res_id) or "New Chat"
             session = Session.create(vals)
 
-        Message.create({
+        question = Message.create({
             "session_id": session.id, "role": "user", "content": message,
             "internal": bool(internal),
         })
+        _pieces.rattacher(pieces, question)
 
         # Anti-poison: a Claude thread that keeps failing gets forked, not
         # resumed, so a heavy record stops being "brisé pour ce contexte".
@@ -905,7 +947,11 @@ class ClaudeChatController(http.Controller):
 
         bridge_payload = {
             "session_id": claude_sid,
-            "message": message,
+            # Le TEXTE des pièces suit la question, et passe donc par le
+            # masque des noms comme elle. Le message gardé à l'écran reste la question,
+            # et `question` la porte seule pour le titre de la conversation.
+            "message": _pj.message_pour_gen(message, textes),
+            "question": message,
             "user_name": user.name,
             "user_id": user.id,
             "user_email": user.email or "",
@@ -1024,6 +1070,10 @@ class ClaudeChatController(http.Controller):
                 "content": msg.content if msg.content != "…" else "",
                 "state": msg.state,
                 "end_reason": msg.end_reason or "",
+                # Comment ce tour est parti. Un tour DÉJÀ fini n'a plus
+                # d'événement `masque` à relayer : l'écran le lit ici.
+                "masque": msg.masque or "",
+                "masque_constate": msg.masque_constate,
                 # L'écran qui suivait le tour lit le verdict ici.
                 "closure": msg.session_id._closure_payload(),
                 "usage": usage_shown(usage_vals({"usage": {
@@ -1057,6 +1107,12 @@ class ClaudeChatController(http.Controller):
         reglages = turns.turn_settings(env)
         turn_key = message.turn_key
         snapshot = _snapshot_line(message)
+        # 🔴 Lu MAINTENANT, pas dans le générateur. Le générateur d'une
+        # réponse en flux tourne APRÈS la fermeture du curseur de la requête : y toucher
+        # un enregistrement lève, et la réponse s'arrêtait juste après `snapshot` — le
+        # suiveur ne recevait plus une seule trame du pont. Même raison que `snapshot`
+        # juste au-dessus, et que les curseurs à part des sondages plus bas.
+        cadenas_depart = (message.masque or "", message.masque_constate)
 
         def _take_over():
             # Nobody writes this turn any more: this worker becomes its owner.
@@ -1085,6 +1141,9 @@ class ClaudeChatController(http.Controller):
             yield from head
             yield snapshot
             key = turn_key
+            # Le cadenas de cet écran-ci, parti de ce que la base portait
+            # DÉJÀ (il se rattache en cours de tour), et qui ne remonte jamais ensuite.
+            cadenas_vu = turns.CadenasSuivi(cadenas_depart)
             for _round in range(_WATCH_ROUNDS):
                 try:
                     chunks = transport.stream(socket_path, "/chat-attach", {
@@ -1093,7 +1152,8 @@ class ClaudeChatController(http.Controller):
                     # balise de fermeture arrive à l'écran qui revient.
                     filtre = ClosureFilter()
                     for frame, events in turns.relay_frames(chunks):
-                        yield from turns.cleaned_frames(frame, events, filtre.feed)
+                        yield from turns.cleaned_frames(frame, events, filtre.feed,
+                                                        cadenas_vu)
                 except Exception:
                     _logger.info("Gen : rattachement au pont interrompu", exc_info=True)
                 # The bridge turn is over (or gone): wait for the owner to save
@@ -1440,7 +1500,8 @@ class ClaudeChatController(http.Controller):
             ["role", "content", "create_date", "state", "end_reason", "followup",
              "input_tokens", "output_tokens", "cache_read_tokens",
              "cache_write_tokens", "net_tokens", "total_tokens", "cost_usd",
-             "duration_ms"],
+             # Le cadenas survit au rechargement, comme la consommation.
+             "duration_ms", "masque", "masque_constate"],
             order="create_date asc, id asc",
         )
         # Rien de ce que la personne a choisi de masquer, ou que la
@@ -1448,6 +1509,12 @@ class ClaudeChatController(http.Controller):
         montrees = request.env.user._gen_meters_shown()
         for row in messages:
             row.update(usage_shown(row, montrees))
+        # Les pièces d'une question, pour la puce sous sa bulle.
+        jointes = _pieces.pieces_des_messages(
+            request.env, [m["id"] for m in messages if m["role"] == "user"])
+        for row in messages:
+            if row["id"] in jointes:
+                row["attachments"] = jointes[row["id"]]
         # Au bureau, cette route ne sert qu'à OUVRIR une
         # conversation à l'écran. Le téléphone ne la montrera plus à lire,
         # jusqu'au dernier message FINI : une réponse encore en cours sera « à

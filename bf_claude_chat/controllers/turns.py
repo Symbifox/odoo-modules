@@ -245,10 +245,60 @@ class _NullListener:
         pass
 
 
+#: Les trois états du cadenas, du plus FORT au plus faible.
+CADENAS = ("complet", "identifiants", "clair")
+
+
+def cadenas_retenu(courant, etat, constate):
+    """Lequel des deux cadenas le tour garde : le plus FAIBLE.
+
+    Un tour d'Odoo peut valoir plusieurs tours du pont — reprises automatiques après une
+    fin propre, rattachement après une coupure, et le pont rend son verdict en deux temps
+    (annoncé au départ, mesuré à la fin). Si l'un de ces départs est parti moins masqué
+    que les autres, c'est LUI que le cadenas doit montrer : la personne a besoin de savoir
+    que quelque chose est sorti en clair, pas de la moyenne.
+
+    `constate` suit l'état retenu, jamais l'inverse : un « complet » annoncé puis dégradé
+    par la MESURE en « identifiants » garde le constaté de la mesure, et un état annoncé
+    que la mesure confirme devient constaté.
+    """
+    if etat not in CADENAS:
+        return courant
+    vu, vu_constate = courant
+    if vu not in CADENAS or CADENAS.index(etat) > CADENAS.index(vu):
+        return (etat, bool(constate))
+    if etat == vu:
+        return (etat, bool(vu_constate or constate))
+    return courant
+
+
+class CadenasSuivi:
+    """Le cadenas tel qu'UN écran le voit : il ne remonte jamais en cours de tour.
+
+    Le pont rend son verdict en deux temps et un tour peut repartir (reprise
+    automatique) : la trame brute du pont peut donc annoncer « masqué » après qu'une
+    mesure a dit « en clair ». L'écran applique la DERNIÈRE trame reçue, et affichait
+    alors un cadenas plus fort que celui que la base gardait déjà, jusqu'à l'arrivée de
+    `final`.
+
+    Une seule règle pour les deux usages : le fil du tour (par `TurnProgress`) et un
+    écran qui suit le tour de quelqu'un d'autre (`main._follow`). Deux copies de la même
+    règle, c'est une divergence qui attend son tour.
+    """
+
+    def __init__(self, depart=("", False)):
+        self.etat = depart
+
+    def __call__(self, etat, constate):
+        self.etat = cadenas_retenu(self.etat, etat, constate)
+        return self.etat
+
+
 class TurnProgress:
     """Accumule le tour et l'écrit dans le message, sans marteler la base."""
 
-    def __init__(self, db_name, message_id, prefix="", tools=None, attempt=0):
+    def __init__(self, db_name, message_id, prefix="", tools=None, attempt=0,
+                 cadenas=("", False)):
         self.db_name = db_name
         self.message_id = message_id
         self.prefix = prefix
@@ -258,6 +308,10 @@ class TurnProgress:
         self._last = 0.0
         # La balise de fermeture n'atteint ni la base ni l'écran.
         self.closure = ClosureFilter()
+        #: (état du cadenas, constaté) du tour entier. Repris de ce que le
+        #: message porte DÉJÀ : un tour que ce fil reprend a eu des départs avant lui, et
+        #: c'est peut-être l'un de ceux-là qui est parti en clair.
+        self.cadenas = cadenas
 
     @property
     def content(self):
@@ -303,6 +357,24 @@ class TurnProgress:
                 tool["detail"] = detail
                 self.write(force=True)
                 return
+
+    def on_masque(self, etat, constate):
+        """Le cadenas d'un départ : retenu, écrit SANS ATTENDRE, puis RENDU à l'écran.
+
+        Écrit tout de suite (`force`) pour deux raisons : le téléphone n'a pas de flux et
+        lit l'avancement en sondant, et un fil qui meurt en cours de tour doit laisser
+        derrière lui ce qu'il savait du masque — sans quoi un tour repris plus tard
+        n'aurait plus rien à dire de son premier départ.
+
+        Rend l'état retenu : c'est LUI que `cleaned_frames` relaie, jamais la trame brute
+        du pont, pour que l'écran ne montre pas un cadenas plus fort que celui de la base.
+        """
+        avant = self.cadenas
+        self.cadenas = cadenas_retenu(avant, etat, constate)
+        if self.cadenas != avant:
+            self.write(force=True, masque=self.cadenas[0] or False,
+                       masque_constate=self.cadenas[1])
+        return self.cadenas
 
     def on_queued_seen(self, texte, session_id):
         """Le CLI a LU une question glissée dans le tour : elle existe enfin.
@@ -367,16 +439,19 @@ class TurnProgress:
 
 
 #: Trames que le fil réécrit avant de les relayer.
-_REWRITTEN = frozenset({"text", "done", "error"})
+_REWRITTEN = frozenset({"text", "done", "error", "masque"})
 
 
-def cleaned_frames(frame, evenements, feed):
+def cleaned_frames(frame, evenements, feed, cadenas=None):
     """Les trames à relayer pour une trame du pont, balise de fermeture ôtée.
 
     `feed` passe un morceau de texte au filtre et rend sa part affichable : le
     fil du tour donne celui de sa progression, un suiveur le sien. Une trame
     sans texte ni fin part telle quelle ; `done` et `error`, qui rendent la
     réponse entière, sont nettoyés.
+
+    `cadenas` retient le cadenas du tour et rend l'état à relayer. Absent, la
+    trame `masque` part telle quelle — ce que fait un appelant qui ne suit aucun état.
     """
     if not {nom for nom, _d in evenements} & _REWRITTEN:
         yield frame
@@ -386,6 +461,10 @@ def cleaned_frames(frame, evenements, feed):
             visible = feed(data.get("delta"))
             if visible:
                 yield sse("text", dict(data, delta=visible))
+        elif nom == "masque":
+            etat, constate = cadenas(data.get("etat"), data.get("constate")) if cadenas \
+                else (data.get("etat") or "", bool(data.get("constate")))
+            yield sse("masque", {"etat": etat, "constate": constate})
         elif nom in _REWRITTEN:
             propre = dict(data)
             if isinstance(data.get("response"), str):
@@ -491,6 +570,8 @@ def _load(db_name, message_id):
             "prefix": (content or "")[:message.prefix_len or 0],
             "tools": tools if isinstance(tools, list) else [],
             "attempt": message.auto_continue_count or 0,
+            # Le cadenas des départs d'avant ce fil.
+            "cadenas": (message.masque or "", message.masque_constate),
             "stop_requested": message.stop_requested,
             "claude_sid": session.claude_session_id or "",
             "session_id": session.id,
@@ -514,11 +595,20 @@ def run_turn(db_name, message_id, socket_path, timeout, *, attach=False,
         return
     base = dict(etat["payload"])
     tenant = base["tenant"]
+    # Avec des pièces jointes, `message` porte la question SUIVIE de leur
+    # texte, et `question` la question seule. C'est elle qui fait le titre ; `message`
+    # reste ce qui part (y compris quand la note de fermeture s'y ajoute plus bas).
+    # Retirée de ce qui part au pont, qui ne la connaît pas.
+    pour_titre = base.pop("question", None)
     question = base.get("message") or ""
     turn_key = etat["turn_key"]
     claude_sid = etat["claude_sid"]
     progress = TurnProgress(db_name, message_id, prefix=etat["prefix"],
-                            tools=etat["tools"], attempt=etat["attempt"])
+                            tools=etat["tools"], attempt=etat["attempt"],
+                            # ⚠️ `.get` et non `etat["cadenas"]`, comme `closure_note` :
+                            # une clé ajoutée après coup ne doit pas faire échouer un
+                            # appelant qui fabrique son état (un essai voisin le fait).
+                            cadenas=etat.get("cadenas") or ("", False))
     usage = {}
     debut = time.monotonic()
     mode = "attach" if attach else "start"
@@ -549,7 +639,8 @@ def run_turn(db_name, message_id, socket_path, timeout, *, attach=False,
                     "turn_key": turn_key, "tenant": tenant, "offset": 0}, timeout)
             for morceau, evenements in relay_frames(chunks):
                 # Relayé d'abord (texte filtré au passage), écrit ensuite.
-                for sortie in cleaned_frames(morceau, evenements, progress.on_text):
+                for sortie in cleaned_frames(morceau, evenements, progress.on_text,
+                                             progress.on_masque):
                     listener.put(sortie)
                 if any(nom == "text" for nom, _d in evenements):
                     progress.write()
@@ -559,6 +650,8 @@ def run_turn(db_name, message_id, socket_path, timeout, *, attach=False,
                         a_parle = True
                         if data.get("session_id"):
                             claude_sid = data["session_id"]
+                    elif nom == "masque":
+                        pass  # déjà retenu et relayé par cleaned_frames
                     elif nom == "text":
                         pass  # déjà passé au filtre par cleaned_frames
                     elif nom == "tool":
@@ -644,7 +737,8 @@ def run_turn(db_name, message_id, socket_path, timeout, *, attach=False,
     # l'événement `final` qui suit porte le contenu enregistré.
     progress.finish_text()
     message_final = _finalize(db_name, message_id, progress, final, usage, claude_sid,
-                              stopped, question, etat, session_was_new, socket_path)
+                              stopped, question if pour_titre is None else pour_titre,
+                              etat, session_was_new, socket_path)
     if message_final:
         listener.put(sse("final", message_final))
     listener.put(sse("saved", {"message_id": message_id,
@@ -681,6 +775,10 @@ def _finalize(db_name, message_id, progress, final, usage, claude_sid, stopped,
         # Adresse, résumé de persona, consignes : plus rien à reprendre, rien
         # à garder.
         "turn_payload": False,
+        # Le cadenas du tour entier, réécrit ici parce que le dernier
+        # départ a pu le dégrader après la dernière écriture d'avancement.
+        "masque": progress.cadenas[0] or False,
+        "masque_constate": progress.cadenas[1],
     }
     for key in ("input_tokens", "output_tokens", "cache_read_tokens",
                 "cache_write_tokens", "duration_ms", "cost_usd"):
@@ -750,6 +848,9 @@ def _finalize(db_name, message_id, progress, final, usage, claude_sid, stopped,
         "state": vals["state"],
         "end_reason": raison,
         "closure": enregistre["closure"],
+        # L'écran qui suivait le tour remplace son cadenas provisoire par celui-ci.
+        "masque": progress.cadenas[0],
+        "masque_constate": progress.cadenas[1],
         "usage": usage_shown({k: vals.get(k, 0) for k in (
             "input_tokens", "output_tokens", "cache_read_tokens",
             "cache_write_tokens", "duration_ms", "cost_usd")}, enregistre["meters"]),

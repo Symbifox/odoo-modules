@@ -227,6 +227,14 @@ export const screenMixin = {
         this.state.closure = null;
         this.state.totals = null;
         this.state.activeArchived = false;
+        // 🔴 `shareOpen` restait vrai. Au tiroir, le
+        // panneau de partage est rendu HORS du corps, donc il flottait PAR-DESSUS la
+        // liste après un retour, son champ de recherche vivant, et y toucher un
+        // résultat appelait `onShareToTask` qui sortait aussitôt faute de conversation
+        // — rien, en silence. Au plein écran, rouvrir la MÊME conversation le
+        // réaffichait sans qu'on l'ait demandé. Il part avec la conversation, comme le
+        // total et l'avis « archivée ».
+        this.state.shareOpen = false;
         this._syncThinking();
     },
 

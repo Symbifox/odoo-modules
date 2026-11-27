@@ -55,4 +55,16 @@
         <field name="interval_type">days</field>
         <field name="priority">30</field>
     </record>
+    <!-- Les pièces jointes choisies et jamais envoyées, et celles dont le
+         message n'existe plus (cascade SQL d'un usager supprimé). -->
+    <record id="ir_cron_purger_pieces" model="ir.cron">
+        <field name="name">Gen: remove attachments never sent or left behind</field>
+        <field name="model_id" ref="model_claude_chat_message"/>
+        <field name="state">code</field>
+        <field name="code">model._purger_pieces()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="priority">30</field>
+    </record>
 </odoo>

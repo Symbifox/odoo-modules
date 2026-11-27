@@ -241,9 +241,17 @@ class TestBasculeDeForfait(TransactionCase):
         with patch.object(type(self.env["bf.ai.bridge"]), "call", muet):
             reglages = self.env["res.config.settings"].create({})
             self.assertTrue(reglages.claude_plan_switch_error)
-            # Le formulaire renvoie les champs vides lus : aucune écriture, aucune erreur.
+            # Ce que le formulaire renvoie quand le pont était muet à l'ouverture :
+            # l'instantané vide SEUL, compte et usagers étant en lecture seule
+            # (la vue), et le client web ne renvoie pas un champ en lecture
+            # seule. Aucune écriture, aucune erreur.
             self.env["res.config.settings"].create({
-                "claude_plan_account_id": False, "claude_plan_user_ids": [(6, 0, [])]})
+                "claude_plan_switch_snapshot": reglages.claude_plan_switch_snapshot or ""})
+            # Un retrait DEMANDÉ sans instantané (un script, pas le
+            # formulaire) ne se perd plus en silence quand le pont est muet.
+            with self.assertRaises(UserError):
+                self.env["res.config.settings"].create({
+                    "claude_plan_account_id": False, "claude_plan_user_ids": [(6, 0, [])]})
             with self.assertRaises(UserError):
                 reglages.write({"claude_plan_account_id": self.compte.id})
 
