@@ -61,7 +61,7 @@
                         </td>
                     </tr>
                     <tr t-if="sig['disclaimer']">
-                        <td colspan="3" t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
+                        <td t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
                             <t t-out="sig['disclaimer']"/>
                         </td>
                     </tr></tbody>
@@ -131,9 +131,13 @@
                             </table>
                             <div t-if="sig['tagline']" t-attf-style="margin-top:6px;font-size:11px;color:{{ sig['muted'] }};"><t t-out="sig['tagline']"/></div>
                         </td>
-                    </tr>
-                    <tr t-if="sig['disclaimer']">
-                        <td colspan="3" t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
+                    </tr></tbody>
+                </table>
+                <!-- Avertissement : tableau à part, aucune cellule étalée (18.0.5.2.0).
+                     Pourquoi : commentaire du record de `bf_signature_card`. -->
+                <table t-if="sig['disclaimer']" cellpadding="0" cellspacing="0" t-attf-style="border-collapse:collapse;font-family:{{ sig['font'] }};">
+                    <tbody><tr>
+                        <td t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
                             <t t-out="sig['disclaimer']"/>
                         </td>
                     </tr></tbody>
@@ -176,7 +180,7 @@
                         </td>
                     </tr>
                     <tr t-if="sig['disclaimer']">
-                        <td colspan="3" t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
+                        <td t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
                             <t t-out="sig['disclaimer']"/>
                         </td>
                     </tr></tbody>
@@ -252,9 +256,13 @@
                             </table>
                             <div t-if="sig['tagline']" t-attf-style="margin-top:6px;font-size:11px;color:{{ sig['muted'] }};"><t t-out="sig['tagline']"/></div>
                         </td>
-                    </tr>
-                    <tr t-if="sig['disclaimer']">
-                        <td colspan="3" t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
+                    </tr></tbody>
+                </table>
+                <!-- Avertissement : tableau à part, aucune cellule étalée (18.0.5.2.0).
+                     Pourquoi : commentaire du record de `bf_signature_card`. -->
+                <table t-if="sig['disclaimer']" cellpadding="0" cellspacing="0" t-attf-style="border-collapse:collapse;font-family:{{ sig['font'] }};">
+                    <tbody><tr>
+                        <td t-attf-style="padding:8px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
                             <t t-out="sig['disclaimer']"/>
                         </td>
                     </tr></tbody>

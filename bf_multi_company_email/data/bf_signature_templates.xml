@@ -97,6 +97,48 @@
       et le dégradé la recouvre là où il se rend. `font-size` et `line-height`
       à 1 px empêchent le `<br/>` d'enfler le filet à la hauteur d'une ligne
       de texte sous Word.
+
+      DEUX TABLEAUX, ET AUCUN COLSPAN (18.0.5.2.0)
+
+      Jusqu'à la 18.0.5.1.2, le filet, les boutons, le slogan et
+      l'avertissement étaient des rangées du MÊME tableau que la rangée
+      logo | barre | texte, étalées sur ses trois colonnes par `colspan="3"`.
+      Le cœur Odoo 18.0.20261112 ajoute à l'éditeur HTML un normaliseur,
+      `populateTableSpans` (`html_editor/…/table/table_plugin.js`), qui
+      RETIRE tout `colspan` et `rowspan` d'un tableau ouvert dans le
+      composeur et bourre chaque rangée de cellules vides jusqu'à la largeur
+      logique. Rien ne le voit côté serveur : la signature stockée reste
+      intacte, `html_sanitize` garde le `colspan`, c'est le navigateur qui
+      casse la signature au moment où on écrit le courriel. Résultat : les
+      boutons coincés dans
+      la colonne du logo (120 px), empilés.
+
+      D'où la forme : un tableau ENVELOPPE de 520 px (`max-width: 100%`), à
+      UNE colonne et deux rangées. La première porte, dans sa cellule, le
+      tableau logo | barre | texte (une seule rangée de trois cellules) ; la
+      seconde, le tableau du filet, des boutons, du slogan et de
+      l'avertissement (une cellule par rangée). Les deux tableaux intérieurs
+      sont à `width="100%"` de leur cellule. Dans chaque tableau, toutes les
+      rangées ont le même nombre de cellules : le normaliseur n'y trouve rien
+      à faire.
+
+      Pourquoi une enveloppe et pas deux tableaux côte à côte : le moteur de
+      Word est connu pour fusionner ou écarter deux tableaux adjacents, et il
+      ignore `max-width`, donc deux tableaux indépendants pourraient prendre
+      deux largeurs. L'enveloppe s'élargit d'un bloc, comme l'ancien tableau
+      unique. ⚠️ NON MESURÉ sous Outlook de bureau : vérifié dans Chrome
+      seulement. Un tableau imbriqué y est suivi d'une
+      marque de paragraphe, qui peut ajouter une ligne vide sous chacun des
+      deux tableaux intérieurs ; si un rendu Outlook le montre, poser
+      `font-size:1px; line-height:1px; mso-line-height-rule:exactly` sur les
+      deux cellules de l'enveloppe, comme sur le filet.
+
+      L'invariant est éprouvé par `tests/test_sans_colspan.py` sur les six
+      gabarits rendus, en anglais ET en français (la traduction de
+      `body_html` est une copie entière du corps, chargée depuis
+      `i18n/fr_CA.po`) : pas de `colspan`, pas de `rowspan`, et des rangées
+      de même longueur dans chaque tableau. Le jour où un gabarit en
+      réintroduit un, c'est cet essai qui tombe, pas la signature d'un client.
     -->
 
     <record id="bf_signature_card" model="mail.template">
@@ -106,7 +148,13 @@
         <field name="body_html" type="html">
             <div>
                 <t t-set="sig" t-value="object.bf_signature_data()"/>
+<!-- Tableau enveloppe d'UNE colonne, deux rangées, aucune cellule étalée.
+     Pourquoi : commentaire du record (18.0.5.2.0). -->
 <table cellpadding="0" cellspacing="0" t-attf-style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-collapse:collapse;caption-side:bottom;font-family: {{ sig['font'] }}; width: 520px; max-width: 100%;" width="520" data-oe-version="1.2">
+<tbody>
+<tr style="border-radius:0px;border-style:none;padding:0px;margin:0px;">
+<td style="padding:0px;margin:0px;border-style:none;">
+<table cellpadding="0" cellspacing="0" t-attf-style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-collapse:collapse;caption-side:bottom;font-family: {{ sig['font'] }}; width: 100%;" width="100%" data-oe-version="1.2">
 <tbody style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;"><tr style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
 
   <td t-if="sig['logo_url']" t-attf-style="border-radius:0px;border-style:none;padding:0 0px 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;width: 120px; padding-right: 0px; vertical-align: middle; color: {{ sig['text_color'] }};" width="120">
@@ -141,10 +189,15 @@
     </div>
   </td>
 </tr>
-
-
+</tbody></table>
+</td>
+</tr>
+<tr t-if="sig['links'] or sig['tagline'] or sig['disclaimer']" style="border-radius:0px;border-style:none;padding:0px;margin:0px;">
+<td style="padding:0px;margin:0px;border-style:none;">
+<table cellpadding="0" cellspacing="0" t-attf-style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;border-collapse:collapse;caption-side:bottom;font-family: {{ sig['font'] }}; width: 100%;" width="100%" data-oe-version="1.2">
+<tbody style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
 <tr t-if="sig['links'] or sig['tagline']" style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
-  <td colspan="3" t-attf-style="border-radius:0px;border-style:none;padding:14px 0 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding-top: 14px; color: {{ sig['text_color'] }};">
+  <td t-attf-style="border-radius:0px;border-style:none;padding:14px 0 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding-top: 14px; color: {{ sig['text_color'] }};">
     <!-- Filet : repli en couleur unie, plus 1 px de line-height/font-size.
          Pourquoi : commentaire du record, au-dessus de ce gabarit. -->
     <div t-attf-style="height: 1px; line-height: 1px; font-size: 1px; background-color: {{ sig['accent'] }}; background-image: linear-gradient(to right, {{ sig['accent'] }}, {{ sig['text_color'] }}); border: 0;"><br/></div>
@@ -153,7 +206,7 @@
 
 
 <tr t-if="sig['links']" style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
-  <td colspan="3" t-attf-style="border-radius:0px;border-style:none;padding:10px 0 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding-top: 10px; color: {{ sig['text_color'] }};">
+  <td t-attf-style="border-radius:0px;border-style:none;padding:10px 0 0 0;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding-top: 10px; color: {{ sig['text_color'] }};">
     <!-- Boutons : un lien = une cellule à fond, libellé blanc de 9 pt gras.
          Pourquoi, et ce que l'assainissement emporte : commentaire du record. -->
     <table cellpadding="0" cellspacing="0" border="0" t-attf-style="border-collapse: collapse; font-family: {{ sig['font'] }};">
@@ -176,14 +229,17 @@
 
 
 <tr t-if="sig['tagline']" style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
-  <td colspan="3" t-attf-style="padding-top: 8px; font-size: 10px; color: {{ sig['muted'] }};">
+  <td t-attf-style="padding-top: 8px; font-size: 10px; color: {{ sig['muted'] }};">
     <t t-out="sig['tagline']"/>
   </td>
 </tr>
 <tr t-if="sig['disclaimer']" style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
-  <td colspan="3" t-attf-style="padding:10px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
+  <td t-attf-style="padding:10px 0 0 0;font-size:{{ sig['disclaimer_size'] }};line-height:1.35;color:#8A929A;">
     <t t-out="sig['disclaimer']"/>
   </td>
+</tr>
+</tbody></table>
+</td>
 </tr>
 </tbody></table>
             </div>

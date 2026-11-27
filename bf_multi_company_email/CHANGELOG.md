@@ -4,6 +4,55 @@ Notable changes to `bf_multi_company_email`.
 The format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow `18.0.MAJOR.MINOR.PATCH`.
 
+## [18.0.5.2.0] — no merged cells in the signature templates
+
+### Fixed
+
+**Buttons squeezed under the logo.** Odoo 18.0.20261112 adds a normaliser to the
+HTML editor, `populateTableSpans`, which removes every `colspan` and `rowspan`
+from a table opened in a composer and pads each row with empty cells up to the
+widest one. The card spread its rule, buttons, tagline and notice over its
+three columns with `colspan="3"`: in the email that left, they fell into the
+120 px logo column, stacked. The stored signature was intact and the server saw
+nothing; the browser broke the signature while the message was being written.
+
+The card is now a 520 px wrapper table with one column and two rows: the
+logo | bar | text row in an inner table, and the rule, buttons, tagline and
+notice in a second inner table, one cell per row. A wrapper rather than two
+sibling tables, because Word's engine is known to merge or space two adjacent
+tables and ignores `max-width` (checked in Chrome; not measured in desktop
+Outlook). The banner and two-column templates move their notice into a table of
+its own; the compact and minimal templates, one column wide, lose a
+`colspan="3"` that earned them two empty cells per row.
+
+**The French copy of the templates kept the old body.** `body_html` is
+translatable and every language holds a full copy of it: an upgrade writes only
+`en_US`, and `i18n/fr_CA.po` loaded the old body back into `fr_CA`. Any
+rendering started from a French interface would have brought it back. The
+catalogue now ships these bodies with an empty `msgstr` (there is no text to
+translate, so French falls back to the source), and the upgrade removes the
+stale copy.
+
+The `end` migration targets signatures by their content (`signature` and the
+per-company rendering), renders one person and company at a time while
+honouring each company's propagation setting, writes only what changes, and
+logs what it cannot repair: a custom template that still renders a `colspan`, a
+company notice holding its own merged table, a sending identity carrying its
+own copy. Five new tests (`tests/test_sans_colspan.py`), including a port of
+Odoo's algorithm that must change nothing in the six rendered templates, in
+English and in French, nor in the stored signatures.
+
+## [18.0.5.1.2] — wizards belong to their author
+
+### Security
+
+**A colleague could read another user's wizard.** A transient model is a real
+table, and Odoo 18 adds no implicit "creator only" restriction: with an access
+right open to every internal user and no record rule, the template gallery and
+its lines were readable by any colleague with a plain search. Both now carry a
+global rule, `[('create_uid', '=', user.id)]`, on the four operations;
+`tests/test_wizard_owner.py` checks that every wizard of the module is covered.
+
 ## [18.0.5.1.1] — labels written in English
 
 ### Changed

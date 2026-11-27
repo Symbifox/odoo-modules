@@ -75,6 +75,13 @@ measures the properties of what they render rather than only that they render:
 - **No SVG logo.** Neither Gmail nor Outlook draws an SVG inside an `<img>`; a
   `bf_signature_logo_url` served by `/web/image/website/` returns one, and the
   upgrade logs a warning naming each company that still points there.
+- **No merged cells.** Odoo's HTML editor (from 18.0.20261112) strips
+  `colspan` and `rowspan` from any table opened in a composer and pads the rows
+  with empty cells. Every table of the shipped templates therefore has the same
+  number of cells on every row: the card is a one-column wrapper holding two
+  inner tables. `tests/test_sans_colspan.py` ports the editor's algorithm and
+  requires it to change nothing, in the rendered templates and in the stored
+  signatures.
 
 One limitation comes with the buttons: their label is hardcoded white and their
 background is the company's **Couleur du texte**. A light colour there makes the
@@ -219,6 +226,15 @@ without the script the bodies would change while the signatures already stored
 kept the old row. The step runs at `end`, once the registry is complete, so a
 bridge that replaces a signature field is loaded before anything is rendered.
 It never raises; on any error it logs the exact pass to replay by hand.
+
+Upgrading to 18.0.5.2.0 runs `migrations/18.0.5.2.0/end-migration.py`. It drops,
+on the shipped templates, any translated copy of the body that differs from the
+source (the French one kept the old merged cells), then re-renders every stored
+signature that still holds a `colspan`, one person and company at a time, for
+companies that propagate signatures. Same `end` step, same rule: it never
+raises, and it names what it leaves alone — a custom template that still merges
+cells, a company notice with its own merged table, a sending identity with its
+own copy of the signature.
 
 Brand elements start neutral (a blue accent, a system font stack). An
 installation can seed its own values from an optional `data/brand_seed.private.json`
