@@ -85,7 +85,11 @@
     #   la société active (`_brand_theme_color` : couleur foncée de la marque,
     #   sinon le #2E3132 de la barre), et le `theme_color` du manifeste prend la
     #   même valeur, sans quoi la barre passait d'une couleur à l'autre au lancement.
-    "version": "18.0.3.33.0",
+    # 18.0.3.33.1: l'assistant « Mise en page des documents » plantait à son
+    #   ouverture : Odoo rend web.styles_company_report avec company_ids =
+    #   l'assistant, et le cadre du PDF (18.0.3.32.0) y appelait une méthode de
+    #   res.company. L'aperçu se passe de l'arrondi du cadre ; les PDF le gardent.
+    "version": "18.0.3.33.1",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
     "description": """

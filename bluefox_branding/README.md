@@ -364,6 +364,10 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 
 ## Changelog
 
+### 18.0.3.33.1
+
+- Fixed: Settings → Document Layout failed to open ("Oops!") on every database running 18.0.3.32.0 or later. Odoo renders `web.styles_company_report` for the wizard's preview with `company_ids` set to the wizard itself, and the PDF frame rule added in 18.0.3.32.0 called a `res.company` method there. The wizard now answers that call with nothing: its preview goes without the frame's rounded corners, and the PDFs, which are rendered for the companies, keep them.
+
 ### 18.0.3.33.0
 
 - Installed apps (PWA) no longer keep Odoo's purple title bar. The web client page hard-codes `<meta name="theme-color" content="#71639e"/>` in `web.webclient_bootstrap`, and Chrome and Edge colour an installed app's title bar from that tag, ahead of the manifest's `theme_color`. The tag now carries the active company's navbar colour (`report_brand_dark`, else `#2E3132`), and the manifests' `theme_color` takes the same value (it was `report_brand_primary`), so the bar no longer switches colour as the app launches.

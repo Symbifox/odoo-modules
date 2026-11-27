@@ -6,3 +6,4 @@ from . import test_courriels_systeme
 from . import test_forme_du_cadre
 from . import test_couleur_par_societe
 from . import test_barre_de_titre
+from . import test_assistant_mise_en_page

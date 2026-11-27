@@ -249,3 +249,18 @@ class ResCompany(models.Model):
         # la police ou les couleurs changent. Même geste pour la forme.
         self._update_asset_style()
         self.env.registry.clear_cache("assets")
+
+
+class BaseDocumentLayout(models.TransientModel):
+    _inherit = "base.document.layout"
+
+    def _brand_frame_pdf_scss(self):
+        """Rien pour l'aperçu de l'assistant « Mise en page des documents ».
+
+        ``base.document.layout._get_asset_style`` rend ``web.styles_company_report``
+        avec ``company_ids: self`` : la boucle du gabarit y parcourt l'assistant, pas
+        une société, et l'appel du cadre levait AttributeError (« Oups ! » à
+        l'ouverture, depuis 18.0.3.32.0). L'aperçu se passe de l'arrondi du cadre ;
+        les PDF, rendus pour les sociétés, le gardent.
+        """
+        return Markup("")
