@@ -3,8 +3,10 @@
 
 Deux modèles :
 
-- `bf.progression.document` : une pièce ATTENDUE, déclarée sur une colonne
-  (`project.task.type`). Une colonne sert plusieurs projets : déclarer la liste
+- `bf.progression.document` : un élément de la page, déclaré sur une colonne
+  (`project.task.type`) : une pièce ATTENDUE (`kind = deposit`), ou depuis la
+  18.0.2.9.0 un LIEN que le client ouvre (`kind = link` : prise de rendez-vous,
+  questionnaire public, vidéo, dossier partagé). Une colonne sert plusieurs projets : déclarer la liste
   une fois la fait valoir pour chaque mandat qui passe par là (« pièce
   d'identité », « certificat de localisation », « T4 et Relevé 1 »).
 - `bf.progression.deposit` : un dépôt REÇU. Le fichier devient tout de suite une
@@ -19,7 +21,7 @@ import os
 import unicodedata
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 EXTENSIONS_ADMISES = {
     ".pdf", ".jpg", ".jpeg", ".png", ".heic", ".heif", ".webp", ".tif", ".tiff",
@@ -27,6 +29,20 @@ EXTENSIONS_ADMISES = {
 }
 PLAFOND_MO_DEFAUT = 25
 DEPOTS_PAR_HEURE_DEFAUT = 30
+# Une adresse de lien : https seulement. `t-att-href` échappe l'attribut, il ne
+# refuse pas `javascript:` ; c'est donc à la saisie que ça se joue, et le
+# gabarit le revérifie.
+LONGUEUR_MAX_LIEN = 2048
+
+
+def lien_admis(adresse):
+    """Vrai pour une adresse https:// sans espace, contrôle ni caractère
+    invisible — Unicode compris : une espace insécable ou un caractère de
+    direction passaient la seule règle ASCII."""
+    return bool(adresse) and len(adresse) <= LONGUEUR_MAX_LIEN \
+        and adresse.lower().startswith("https://") and len(adresse) > len("https://") \
+        and all(" " < c != "\x7f" and unicodedata.category(c)[0] not in "ZC"
+                for c in adresse)
 
 
 class DepotRefuse(UserError):
@@ -43,6 +59,17 @@ class ProgressionDocument(models.Model):
     _order = "stage_id, sequence, id"
 
     name = fields.Char(string="Document", required=True, translate=True)
+    # 18.0.2.9.0 : un élément de la page n'est plus forcément une pièce. Les
+    # lignes existantes restent des pièces (défaut), rien n'est déplacé.
+    kind = fields.Selection(
+        [("deposit", "Document to deposit"), ("link", "Link")],
+        string="Type", required=True, default="deposit",
+        help="Links are shown in their own block, after the documents of the "
+             "stage; the order sets the order within each block.")
+    url = fields.Char(
+        string="Address",
+        help="For a link: the https:// address the client opens (appointment "
+             "booking, public questionnaire, video, shared folder).")
     stage_id = fields.Many2one(
         "project.task.type", string="Stage", required=True, ondelete="cascade",
         index=True)
@@ -53,6 +80,28 @@ class ProgressionDocument(models.Model):
     required = fields.Boolean(string="Required", default=True)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
+
+    @api.constrains("kind", "url")
+    def _controler_le_lien(self):
+        Depots = self.env["bf.progression.deposit"].sudo()
+        Envois = self.env.get("bf.progression.upload")
+        for element in self:
+            # 🔴 Une pièce qui a reçu des dépôts ne devient pas un lien : sa trace
+            # de dépôt pointerait sur un lien, et le client perdrait son « Reçu ».
+            # Même chose pendant un envoi S3.
+            if element.kind == "link" and (
+                    Depots.search_count([("document_id", "=", element.id)])
+                    or (Envois is not None and Envois.sudo().search_count([
+                        ("document_id", "=", element.id),
+                        ("state", "not in", ("done", "failed"))]))):
+                raise ValidationError(_(
+                    "\"%(nom)s\" has already received documents from clients: "
+                    "it cannot become a link. Add a new link instead.",
+                    nom=element.name))
+            if element.kind == "link" and not lien_admis(element.url):
+                raise ValidationError(_(
+                    "The link \"%(nom)s\" needs an address that starts with "
+                    "https://, without spaces.", nom=element.name))
 
 
 class ProgressionDeposit(models.Model):
@@ -236,6 +285,21 @@ class ProjectProject(models.Model):
             ("state", "not in", ("1_done", "1_canceled")),
         ], order="sequence, id", limit=1)
 
+    def _progression_portal_liens(self, etape):
+        """Les liens d'une étape du portail, à la même règle que les pièces :
+        seulement pour une étape faite ou en cours."""
+        self.ensure_one()
+        if etape["state"] not in ("done", "current"):
+            return []
+        liens = self.env["bf.progression.document"].sudo().search(
+            [("stage_id", "in", etape["stage_ids"]), ("kind", "=", "link")])
+        return [{
+            "id": lien.id,
+            "name": lien.name,
+            "url": lien.url,
+            "instructions": lien.instructions or "",
+        } for lien in liens if lien_admis(lien.url)]
+
     def _progression_portal_documents(self, etape):
         """Les pièces attendues d'une étape du portail, avec leur dernier dépôt.
 
@@ -246,7 +310,7 @@ class ProjectProject(models.Model):
         if etape["state"] not in ("done", "current"):
             return []
         documents = self.env["bf.progression.document"].sudo().search(
-            [("stage_id", "in", etape["stage_ids"])])
+            [("stage_id", "in", etape["stage_ids"]), ("kind", "=", "deposit")])
         depots = self.env["bf.progression.deposit"].sudo().search([
             ("project_id", "=", self.id), ("document_id", "in", documents.ids)])
         resultat = []

@@ -520,8 +520,8 @@ msgstr "Pièces déposées"
 
 #. module: bf_stepbystep_clients
 #: model_terms:ir.ui.view,arch_db:bf_stepbystep_clients.bf_stepbystep_project_task_type_form_inherit
-msgid "Documents the client deposits on the portal"
-msgstr "Pièces que le client dépose au portail"
+msgid "What the client finds on the portal: documents to deposit, links"
+msgstr "Ce que le client trouve au portail : pièces à déposer, liens"
 
 #. module: bf_stepbystep_clients
 #: model:ir.model.fields,help:bf_stepbystep_clients.field_project_task_type__progression_document_ids
@@ -1721,3 +1721,46 @@ msgstr "notification Odoo"
 #: code:addons/bf_stepbystep_clients/models/progression_avis.py:0
 msgid "email"
 msgstr "courriel"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__kind
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,field_description:bf_stepbystep_clients.field_bf_progression_document__url
+msgid "Address"
+msgstr "Adresse"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields.selection,name:bf_stepbystep_clients.selection__bf_progression_document__kind__deposit
+msgid "Document to deposit"
+msgstr "Pièce à déposer"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields.selection,name:bf_stepbystep_clients.selection__bf_progression_document__kind__link
+msgid "Link"
+msgstr "Lien"
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,help:bf_stepbystep_clients.field_bf_progression_document__url
+msgid "For a link: the https:// address the client opens (appointment booking, public questionnaire, video, shared folder)."
+msgstr "Pour un lien : l'adresse https:// que le client ouvre (prise de rendez-vous, questionnaire public, vidéo, dossier partagé)."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_document.py:0
+msgid "The link \"%(nom)s\" needs an address that starts with https://, without spaces."
+msgstr "Le lien « %(nom)s » demande une adresse qui commence par https://, sans espace."
+
+#. module: bf_stepbystep_clients
+#: model:ir.model.fields,help:bf_stepbystep_clients.field_bf_progression_document__kind
+msgid "Links are shown in their own block, after the documents of the stage; the order sets the order within each block."
+msgstr "Les liens s'affichent dans leur propre bloc, après les pièces de l'étape ; l'ordre vaut à l'intérieur de chaque bloc."
+
+#. module: bf_stepbystep_clients
+#. odoo-python
+#: code:addons/bf_stepbystep_clients/models/progression_document.py:0
+msgid "\"%(nom)s\" has already received documents from clients: it cannot become a link. Add a new link instead."
+msgstr "« %(nom)s » a déjà reçu des pièces de clients : elle ne peut pas devenir un lien. Ajoutez plutôt un nouveau lien."
+

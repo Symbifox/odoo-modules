@@ -15,13 +15,16 @@
                     <field name="progression_client_action_hint"
                            placeholder="Instruction shown to the client when the project reaches this stage…"/>
                 </group>
-                <group string="Documents the client deposits on the portal" name="bf_stepbystep_documents">
+                <group string="What the client finds on the portal: documents to deposit, links" name="bf_stepbystep_documents">
                     <field name="progression_document_ids" nolabel="1" colspan="2">
                         <list editable="bottom">
                             <field name="sequence" widget="handle"/>
+                            <field name="kind"/>
                             <field name="name"/>
+                            <field name="url" invisible="kind != 'link'" required="kind == 'link'"
+                                   placeholder="https://…"/>
                             <field name="instructions"/>
-                            <field name="required"/>
+                            <field name="required" invisible="kind == 'link'"/>
                         </list>
                     </field>
                 </group>

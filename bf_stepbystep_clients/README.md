@@ -27,6 +27,9 @@ your own project stages.
 - **Client portal**: a public page, opened by an address with its own token,
   where the client sees the steps of the engagement, the step in progress and
   its client instruction. No account needed. See *Client portal* below.
+- **Documents and links per step**: a stage can ask the client for documents to
+  deposit on the page, and offer links (a booking page, a questionnaire, a
+  video) shown as buttons. See *Links on a step* below.
 - **An idempotent post-install hook** that prefills step numbers and labels on
   existing stages from a keyword table (safe to re-run).
 
@@ -114,6 +117,29 @@ that add content to a step, and the page itself carries a `<div name="page_extra
 right under its heading for modules that add a block to the page. The controller's `_progression_mode_de_depot()`
 returns `"direct"`; a bridge module can switch it, for instance to upload through
 `bf_securetransfer` storage.
+
+## Links on a step (v18.0.2.9.0)
+
+What a stage asks of the client is no longer only documents. In the stage form,
+the list *What the client finds on the portal* takes two types of items:
+
+- **Document to deposit**: what the portal already did. Existing items stay
+  documents; nothing is moved.
+- **Link**: a label, an `https://` address and an optional instruction. The
+  client page shows it as a button, opened in a new tab, at a stage that is done
+  or in progress, like documents. Use it for an appointment booking page, a
+  public questionnaire, a video or a shared folder.
+
+Configure it once on a stage and every mandate that goes through that stage gets
+it. A link is never a document: it has no *To send* badge, nothing can be
+deposited on it (the direct deposit and the start of an S3 upload both refuse it),
+and it does not count as a required document. A document that has already
+received deposits, or has an S3 upload under way, cannot be turned into a link:
+add a new link instead. Links are shown in their own block, after the documents
+of the stage; the order set in the list applies within each block. Only
+`https://` addresses are accepted, without spaces; the page checks the address
+again before showing the button, and the label and instruction are escaped like
+the rest of the page.
 
 ## A code by email, once per device (v18.0.2.7.0)
 
@@ -341,5 +367,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-11-25, this version converts automatically to
+- **Change Date**: on 2030-11-27, this version converts automatically to
   **LGPL-3.0-or-later**.

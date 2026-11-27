@@ -100,7 +100,9 @@ class ProgressionPortail(http.Controller):
         except (TypeError, ValueError):
             return None
         document = request.env["bf.progression.document"].sudo().browse(document_id).exists()
-        if not document or not document.active:
+        # Un lien n'est pas une pièce : rien ne s'y dépose, ni par le dépôt
+        # direct ni par le pont S3, qui passent tous deux par ici.
+        if not document or not document.active or document.kind != "deposit":
             return None
         permises = [e for e in projet._progression_portal_steps()
                     if e["state"] in ("done", "current")]
@@ -118,6 +120,7 @@ class ProgressionPortail(http.Controller):
         etapes = projet._progression_portal_steps()
         for etape in etapes:
             etape["documents"] = projet._progression_portal_documents(etape)
+            etape["links"] = projet._progression_portal_liens(etape)
         return {
             "project": projet,
             "partner": projet.partner_id,
