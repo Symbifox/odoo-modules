@@ -77,7 +77,15 @@
     #   gardait le repli d'Odoo : blanc à 55 % ici (visible par chance) mais
     #   presque noir sur un fond marine ailleurs, donc invisible.
     #   Défaut relevé à la campagne de captures du 2026-10-10.
-    "version": "18.0.3.32.0",
+    # 18.0.3.33.0: la barre de titre des applis installées (PWA) prend la couleur
+    #   de la barre de navigation. Le manifeste était déjà à la marque, mais
+    #   `web.webclient_bootstrap` porte en dur `<meta name="theme-color"
+    #   content="#71639e"/>`, et Chrome comme Edge lisent cette balise avant le
+    #   manifeste : toutes les applis installées restaient mauves. La balise suit
+    #   la société active (`_brand_theme_color` : couleur foncée de la marque,
+    #   sinon le #2E3132 de la barre), et le `theme_color` du manifeste prend la
+    #   même valeur, sans quoi la barre passait d'une couleur à l'autre au lancement.
+    "version": "18.0.3.33.0",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
     "description": """

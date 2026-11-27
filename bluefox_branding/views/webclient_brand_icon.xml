@@ -21,6 +21,18 @@
             <!-- Empty string leaves web.layout's own fallback in charge. -->
             <t t-set="x_icon" t-value="_brand_co and _brand_co._brand_tab_icon_url() or ''"/>
         </xpath>
+        <!--
+            Title bar of the installed application. Chrome and Edge colour it
+            from this tag, which outranks the manifest's theme_color: Odoo
+            hard-codes its purple here, so a branded manifest alone left every
+            installed app purple. Same company as the navbar's colours
+            (_brand_active_company, see brand_css_variables.xml), so the title
+            bar follows the company switcher too.
+        -->
+        <xpath expr="//meta[@name='theme-color']" position="attributes">
+            <attribute name="content"/>
+            <attribute name="t-att-content">(request and request.env and request.env['res.company']._brand_active_company()._brand_theme_color()) or '#71639e'</attribute>
+        </xpath>
         <xpath expr="//link[@rel='apple-touch-icon']" position="attributes">
             <attribute name="href"/>
             <attribute name="t-att-href">_brand_co and _brand_co._brand_icon_url(180) or '/web/static/img/odoo-icon-ios.png'</attribute>

@@ -5,3 +5,4 @@ from . import test_logo_en_tete
 from . import test_courriels_systeme
 from . import test_forme_du_cadre
 from . import test_couleur_par_societe
+from . import test_barre_de_titre

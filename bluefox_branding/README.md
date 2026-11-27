@@ -329,8 +329,13 @@ trade-off is ever revisited.
 The web app manifests (`/web/manifest.webmanifest` and the scoped per-app
 variants) ship Odoo purple hardcoded. `controllers/webmanifest.py` overrides
 them so the install splash screen background uses the primary company's
-`report_brand_dark` and the status bar (`theme_color`) its
-`report_brand_primary`. The primary company is resolved through
+`report_brand_dark`, and the title bar / status bar (`theme_color`) the
+navbar's colour, `res.company._brand_theme_color()` (`report_brand_dark`,
+else the navbar's own `#2E3132` fallback). The web client page carries the same
+value in its `<meta name="theme-color">`, which Odoo hard-codes to its purple:
+Chrome and Edge read that tag before the manifest, so without it every
+installed app kept a purple title bar. The tag follows the active company
+(company switcher included). The primary company is resolved through
 `base.main_company` (not sequence order, which archived companies can shadow).
 Already-installed PWAs pick the new colors up on the browser's next manifest
 refresh; iOS ignores `background_color` for splash screens.
@@ -354,10 +359,14 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-11-13, this version converts automatically to
+- **Change Date**: on 2030-11-27, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.3.33.0
+
+- Installed apps (PWA) no longer keep Odoo's purple title bar. The web client page hard-codes `<meta name="theme-color" content="#71639e"/>` in `web.webclient_bootstrap`, and Chrome and Edge colour an installed app's title bar from that tag, ahead of the manifest's `theme_color`. The tag now carries the active company's navbar colour (`report_brand_dark`, else `#2E3132`), and the manifests' `theme_color` takes the same value (it was `report_brand_primary`), so the bar no longer switches colour as the app launches.
 
 ### 18.0.3.32.0
 

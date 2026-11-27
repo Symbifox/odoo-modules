@@ -195,6 +195,19 @@ class ResCompany(models.Model):
             accent = ''
         return accent or (self.email_secondary_color or '').strip() or '#875A7B'
 
+    # -- Title bar of the installed application ------------------------------
+
+    def _brand_theme_color(self):
+        """Colour of an installed PWA's title bar (``<meta name="theme-color">``).
+
+        The navbar's colour, so the title bar and the bar right under it read as
+        one surface: ``.o_main_navbar`` paints ``var(--brand-dark, #2E3132)``
+        (static/src/scss/branding.scss), and the fallback here is the same
+        literal. Odoo did the same with its own navbar purple (``#71639e``).
+        """
+        self.ensure_one()
+        return (self.sudo().report_brand_dark or '').strip() or '#2E3132'
+
     # -- Brand icon ---------------------------------------------------------
     # One field feeds three surfaces (tab, apple-touch, PWA manifest); the URL
     # is built here so the template, the manifest controller and any public

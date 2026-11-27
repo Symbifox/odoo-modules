@@ -38,13 +38,19 @@ def _brand_company():
 
 
 def _brand_colors():
-    """(background, theme): splash background = brand dark, status bar = brand primary."""
+    """(background, theme): splash background = brand dark, title/status bar = navbar colour.
+
+    ``theme_color`` was the brand primary until 18.0.3.33.0. It now matches the
+    page's ``<meta name="theme-color">`` (``res.company._brand_theme_color``):
+    the browser paints the manifest's colour first and switches to the page's
+    once it loads, so two different values made the title bar flash.
+    """
     company = _brand_company()
     if company is None:
         return '#714B67', '#714B67'
     return (
         company.report_brand_dark or '#714B67',
-        company.report_brand_primary or '#714B67',
+        company._brand_theme_color(),
     )
 
 
