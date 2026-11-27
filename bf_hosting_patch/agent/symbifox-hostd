@@ -34,7 +34,7 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 CONF_PATH = os.environ.get("SYMBIFOX_CONF", "/etc/symbifox/hostd.conf")
 # Le consentement à être mis à jour à distance est LOCAL, posé à la main, et
 # retirable sans passer par Odoo. Le lot 1 ne l'utilise pas encore ; l'agent le
@@ -241,30 +241,79 @@ def pending_apt():
     return "apt", packages
 
 
-def pending_dnf():
+# Un NEVRA d'avis : nom-[époque:]version-version.arch. Le nom peut porter des
+# tirets, la version et la publication n'en portent pas.
+_NEVRA = re.compile(r"^(?P<name>.+)-(?:\d+:)?[^-]+-[^-]+\.(?P<arch>[A-Za-z0-9_]+)$")
+
+
+DNF_ARCHES = {
+    "noarch", "x86_64", "i686", "i386", "aarch64", "armv7hl", "ppc64le",
+    "s390x", "riscv64", "src",
+}
+
+
+def dnf_security_keys(text):
+    """Les paquets visés par un avis de sécurité, en clés `nom.arch`.
+
+    🔴 L'ancienne lecture prenait la DERNIÈRE colonne de chaque ligne. En
+    dnf5, la ligne finit par la date d'émission en deux mots
+    (`AAAA-MM-JJ hh:mm:ss`) : l'ensemble « sécurité » contenait des heures, aucun
+    paquet ne s'y retrouvait, et une machine Fedora portant des avis
+    « Important » rapportait zéro paquet de sécurité. Même en
+    dnf4 (`AVIS Important/Sec. nevra`), la comparaison par sous-chaîne entre
+    `nom.arch` et un NEVRA ne trouvait rien.
+
+    On cherche donc, dans chaque ligne, le mot qui A LA FORME d'un NEVRA, où
+    qu'il soit, puis on le réduit à `nom.arch`, qui est la forme que rend
+    `check-update`. L'identifiant d'avis (`FEDORA-2026-0fb2031f97`) n'a pas
+    d'arch et ne passe pas. La comparaison est EXACTE : `libzstd` ne doit pas
+    marquer `libzstd-devel`.
+    """
+    keys = set()
+    for line in text.splitlines():
+        for word in line.split():
+            match = _NEVRA.match(word)
+            if match and match.group("arch") in DNF_ARCHES:
+                keys.add(f"{match.group('name')}.{match.group('arch')}")
+    return keys
+
+
+def dnf_pending_packages(text, security):
     packages = []
-    security = set()
-    # `updateinfo` peut échouer sans que le compte soit faux : on perd alors la
-    # seule distinction sécurité, pas le compte. C'est signalé plus bas.
-    for line in run(["dnf", "-q", "updateinfo", "list", "--security"]).splitlines():
-        parts = line.split()
-        if len(parts) >= 3:
-            security.add(parts[-1])
-    # ⚠️ `dnf check-update` rend 100 quand des mises à jour EXISTENT, 0 quand il
-    # n'y en a pas. Traiter 100 comme un échec ferait dire « inconnu » à toute
-    # machine Fedora en retard.
-    ok, output = run_counted(["dnf", "-q", "check-update"], ok_codes=(0, 100))
-    if not ok:
-        return "dnf", None
-    for line in output.splitlines():
+    for line in text.splitlines():
         parts = line.split()
         if len(parts) == 3 and not line.startswith(" ") and "." in parts[0]:
             packages.append({
                 "name": parts[0],
                 "version_candidate": parts[1],
                 "origin": parts[2],
-                "is_security": any(parts[0] in item for item in security),
+                "is_security": parts[0] in security,
             })
+    return packages
+
+
+def pending_dnf():
+    # 🔴 Si `updateinfo` échoue, on ne sait plus lesquels sont de
+    # sécurité, et rapporter alors « 0 sécurité » met au vert une machine qui
+    # porte peut-être des avis « Important ». C'est exactement le compteur qui
+    # ne mesure rien. Le compte devient donc INCONNU, comme quand
+    # `check-update` échoue : le serveur affiche la machine aveugle, et
+    # quelqu'un va voir.
+    ok, advisories = run_counted(["dnf", "-q", "updateinfo", "list", "--security"])
+    if not ok:
+        return "dnf", None
+    security = dnf_security_keys(advisories)
+    # ⚠️ `dnf check-update` rend 100 quand des mises à jour EXISTENT, 0 quand il
+    # n'y en a pas. Traiter 100 comme un échec ferait dire « inconnu » à toute
+    # machine Fedora en retard.
+    ok, output = run_counted(["dnf", "-q", "check-update"], ok_codes=(0, 100))
+    if not ok:
+        return "dnf", None
+    packages = dnf_pending_packages(output, security)
+    # Une sonde qui trouve des avis et n'en rattache aucun ne mesure rien : le
+    # format a encore changé. Mieux vaut « inconnu » qu'un zéro rassurant.
+    if security and packages and not any(p["is_security"] for p in packages):
+        return "dnf", None
     return "dnf", packages
 
 

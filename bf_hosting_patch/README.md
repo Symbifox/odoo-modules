@@ -27,6 +27,16 @@ repository, a held `dpkg` lock — the agent reports **"count unknown"** rather
 than an empty list that would read as zero. A machine must not go green by
 failing to measure.
 
+The same holds for the security count. On dnf, the agent reads the security
+advisories (`updateinfo list --security`), reduces each package they name to
+`name.arch` and matches it exactly against the pending list. If the advisories
+cannot be read, or if advisories exist but none of them matches a pending
+package (a sign that the output format changed again), the count is reported
+as unknown rather than as zero security packages. Agent 1.1.1 fixes a reading
+that took the last column of each advisory line: dnf5 ends that line with a
+two-word date, so no package ever matched and every Fedora machine reported
+zero security updates.
+
 ## The shape of the link: the machine talks, the centre listens
 
 Odoo has **no** path to the machines, and wants none. A `symbifox-hostd` agent
