@@ -1,10 +1,21 @@
+import importlib.util
 from datetime import date
 from unittest.mock import patch
 
 from odoo.exceptions import AccessError, UserError
+from odoo.modules.module import get_module_path
 from odoo.tests import tagged
 
 from odoo.addons.bf_route.tests.common import MONDAY, RouteCase
+
+
+def _migration():
+    """The 18.0.1.1.0 migration script, loaded from its file (its path is not a module name)."""
+    path = f"{get_module_path('bf_route_expense')}/migrations/18.0.1.1.0/pre-migrate.py"
+    spec = importlib.util.spec_from_file_location("bf_route_expense_migrate_1_1_0", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 @tagged("post_install", "-at_install")
@@ -16,12 +27,12 @@ class TestMileageExpense(RouteCase):
         cls.employee = cls.env["hr.employee"].create({
             "name": "Route Worker", "user_id": cls.worker.id, "company_id": cls.company.id})
         cls.full = cls.env.ref("hr_expense.expense_product_mileage")
-        cls.reduced = cls.env.ref("bf_route_expense.product_mileage_reduced")
+        cls.reduced = cls.env.ref("bf_expense_mileage.product_mileage_reduced")
         cls.full.with_company(cls.company).standard_price = 0.73
         cls.reduced.with_company(cls.company).standard_price = 0.67
-        cls.company.write({"bf_route_mileage_product_id": cls.full.id,
-                           "bf_route_mileage_reduced_product_id": cls.reduced.id,
-                           "bf_route_mileage_threshold": 5000})
+        cls.company.write({"bf_mileage_product_id": cls.full.id,
+                           "bf_mileage_reduced_product_id": cls.reduced.id,
+                           "bf_mileage_threshold": 5000})
         cls.truck.bf_route_personal = True
 
     def finish(self, start=1000, end=1085, day=None):
@@ -100,7 +111,7 @@ class TestMileageExpense(RouteCase):
         self.assertEqual(day.sudo().expense_ids.product_id, self.full)
 
     def test_threshold_zero_means_full_rate(self):
-        self.company.bf_route_mileage_threshold = 0
+        self.company.bf_mileage_threshold = 0
         self.manual(6000)
         day = self.finish()
         self.assertEqual(day.sudo().expense_ids.product_id, self.full)
@@ -256,7 +267,7 @@ class TestMileageExpense(RouteCase):
         day = self.finish()
         self.assertFalse(day.sudo().expense_ids)
         self.assertIn("reduced-rate", day.message_ids[0].body)
-        self.company.bf_route_mileage_threshold = 0
+        self.company.bf_mileage_threshold = 0
         day.with_user(self.manager).action_claim_mileage()
         self.assertEqual(day.sudo().expense_ids.product_id, self.full)
 
@@ -340,47 +351,175 @@ class TestMileageExpense(RouteCase):
         self.full.active = False
         day = self.finish()
         self.assertFalse(day.sudo().expense_ids)
-        with self.assertRaisesRegex(UserError, "No mileage expense product"):
+        with self.assertRaisesRegex(UserError, "No mileage expense category"):
             day.with_user(self.manager).action_claim_mileage()
 
-    def _company_in_dollars(self):
-        """The hook sets rates only for a company in Canadian dollars. Every
-        tenant is; a fresh base (the CI) starts in US dollars, with CAD not even
-        active, so the company is put in CAD the way an office would."""
-        cad = self.env.ref("base.CAD")
-        if self.company.currency_id != cad:
-            cad.active = True
-            self.company.currency_id = cad
-        self.assertEqual(self.company.currency_id, cad)
+    # ------------------------------------------------------------------
+    # 18.0.1.1.0: the settings and the count of Mileage Tiers
+    # ------------------------------------------------------------------
+    def test_the_old_settings_are_gone(self):
+        for name in ("bf_route_mileage_product_id", "bf_route_mileage_reduced_product_id",
+                     "bf_route_mileage_threshold"):
+            self.assertNotIn(name, self.env["res.company"]._fields)
+        self.assertFalse(self.env["ir.model.fields"].search_count([
+            ("model", "=", "res.company"), ("name", "like", "bf\\_route\\_mileage%")]))
 
-    def test_install_hook_makes_the_reduced_product(self):
-        from odoo.addons.bf_route_expense import post_init_hook
-        self.env["ir.model.data"].search([("module", "=", "bf_route_expense"),
-                                          ("name", "=", "product_mileage_reduced")]).unlink()
-        self._company_in_dollars()
-        self.full.with_company(self.company).standard_price = 1.0
-        nzd = self.env["res.company"].create({"name": "Kiwi", "currency_id": self.env.ref("base.NZD").id})
-        self.full.with_company(nzd).standard_price = 1.0
-        self.env["res.lang"]._activate_lang("fr_CA")
-        post_init_hook(self.env(context=dict(self.env.context, lang="fr_CA")))
-        made = self.env.ref("bf_route_expense.product_mileage_reduced")
-        self.assertNotEqual(made, self.reduced)
-        self.assertEqual(made.uom_id, self.full.uom_id)
-        self.assertTrue(made.can_be_expensed)
-        self.assertEqual(made.with_context(lang="en_US").name, "Mileage, reduced rate")
-        self.assertEqual(made.with_context(lang="fr_CA").name, "Kilométrage, taux réduit")
-        self.assertAlmostEqual(made.with_company(self.company).standard_price, 0.67)
-        self.assertAlmostEqual(self.full.with_company(self.company).standard_price, 0.73,
-                               msg="Odoo's placeholder 1.00 becomes the 2026 rate")
-        self.assertEqual(self.company.bf_route_mileage_reduced_product_id, made)
-        self.assertAlmostEqual(self.full.with_company(nzd).standard_price, 1.0, msg="not in dollars per km")
-        self.assertFalse(made.with_company(nzd).standard_price)
+    def test_the_expenses_settings_drive_the_day(self):
+        # Written through the settings' related field (execute() would also run the other
+        # applications' settings, some of which call out).
+        settings = self.env["res.config.settings"].with_company(self.company).create({})
+        settings.write({"bf_mileage_threshold": 50})
+        self.assertEqual(self.company.bf_mileage_threshold, 50)
+        day = self.finish()
+        lines = {e.product_id: e.quantity for e in day.sudo().expense_ids}
+        self.assertEqual((lines[self.full], lines[self.reduced]), (50.0, 35.0))
 
-    def test_install_hook_keeps_a_rate_set_by_the_office(self):
-        from odoo.addons.bf_route_expense import post_init_hook
-        self.env["ir.model.data"].search([("module", "=", "bf_route_expense"),
-                                          ("name", "=", "product_mileage_reduced")]).unlink()
-        self._company_in_dollars()
-        self.full.with_company(self.company).standard_price = 0.70
-        post_init_hook(self.env)
-        self.assertAlmostEqual(self.full.with_company(self.company).standard_price, 0.70)
+    def test_another_full_rate_category_is_used(self):
+        other = self.full.copy({"name": "Car allowance", "default_code": "CAR1"})
+        other.with_company(self.company).standard_price = 0.80
+        self.company.bf_mileage_product_id = other
+        day = self.finish()
+        self.assertEqual(day.sudo().expense_ids.product_id, other)
+        self.assertAlmostEqual(day.sudo().expense_ids.total_amount_currency, 68.0)
+        self.assertNotIn("beyond", day.sudo().expense_ids.name, "the company's full rate, named so")
+
+    def test_the_company_s_category_without_rate_claims_nothing(self):
+        # Odoo's own Mileage still has its rate: the day must judge the company's category.
+        other = self.full.copy({"name": "Car allowance", "default_code": "CAR1"})
+        other.with_company(self.company).standard_price = 0.0
+        self.company.bf_mileage_product_id = other
+        day = self.finish()
+        self.assertFalse(day.sudo().expense_ids)
+        self.assertIn("No mileage expense category with a rate", day.message_ids[0].body)
+
+    def test_one_count_with_the_add_mileage_wizard(self):
+        day = self.finish()
+        self.assertEqual(day.sudo().expense_ids.product_id, self.full)
+        wizard = self.env["bf.expense.mileage.wizard"].with_user(self.worker).create({
+            "employee_id": self.employee.id, "company_id": self.company.id,
+            "date": MONDAY.replace(day=20), "name": "Depot to the plant", "distance_km": 4950})
+        made = self.env["hr.expense"].search(wizard.action_create()["domain"])
+        lines = {e.product_id: e.quantity for e in made}
+        self.assertEqual((lines[self.full], lines[self.reduced]), (4915.0, 35.0),
+                         "the wizard counts the 85 km of the route day")
+
+    def test_a_hand_claim_dated_later_counts_too(self):
+        # The year is one count, whatever the date: like the wizard, a day counts it.
+        self.manual(4950, when=MONDAY.replace(month=12, day=1))
+        day = self.finish()
+        lines = {e.product_id: e.quantity for e in day.sudo().expense_ids}
+        self.assertEqual((lines[self.full], lines[self.reduced]), (50.0, 35.0))
+
+    def test_a_redone_day_does_not_count_its_own_claim(self):
+        self.manual(4990)
+        day = self.finish(end=1005)
+        self.assertEqual(day.sudo().expense_ids.product_id, self.full)
+        day.with_user(self.manager).write({"odometer_end": 1085})
+        lines = {e.product_id: e.quantity for e in day.sudo().expense_ids}
+        self.assertEqual((lines[self.full], lines[self.reduced]), (10.0, 75.0))
+
+    def test_a_later_day_already_reported_is_not_counted_by_an_earlier_one(self):
+        self.manual(4900)
+        first = self.finish()
+        second = self.finish(start=2000, end=2085, day=self.make_day(day=MONDAY.replace(day=19)))
+        sheet = self.env["hr.expense.sheet"].create({
+            "name": "November", "employee_id": self.employee.id,
+            "expense_line_ids": [(6, 0, second.sudo().expense_ids.ids)]})
+        sheet.action_submit_sheet()
+        first.with_user(self.manager).write({"odometer_end": 1090})
+        self.assertEqual(first.sudo().expense_ids.product_id, self.full,
+                         "the later day counted this one: it does not count it back")
+        self.assertAlmostEqual(first.sudo().expense_ids.quantity, 90.0)
+        self.assertEqual(second.sudo().expense_ids.sheet_id, sheet, "reported: never redone")
+
+    def test_two_days_on_the_same_date_count_in_the_order_they_were_made(self):
+        south = self.route.with_user(self.manager).copy({"name": "South shore"})
+        self.manual(4900)
+        first = self.finish()
+        second = self.finish(start=2000, end=2085, day=self.make_day(route=south))
+        self.assertEqual(first.date, second.date)
+        self.assertLess(first.id, second.id)
+        lines = {e.product_id: e.quantity for e in second.sudo().expense_ids}
+        self.assertEqual((lines[self.full], lines[self.reduced]), (15.0, 70.0))
+        first.with_user(self.manager).write({"odometer_end": 1090})
+        self.assertEqual(first.sudo().expense_ids.product_id, self.full,
+                         "the day made after it, the same date, counts it: not the other way")
+        self.assertAlmostEqual(first.sudo().expense_ids.quantity, 90.0)
+        lines = {e.product_id: e.quantity for e in second.sudo().expense_ids}
+        self.assertEqual((lines[self.full], lines[self.reduced]), (10.0, 75.0), "and it is redone")
+
+    def test_another_employee_s_claims_are_not_counted(self):
+        other_employee = self.env["hr.employee"].create({
+            "name": "Other", "user_id": self.other.id, "company_id": self.company.id})
+        self.manual(4990)
+        self.env["hr.expense"].create({
+            "name": "Theirs", "employee_id": other_employee.id, "product_id": self.full.id,
+            "quantity": 3000, "date": MONDAY})
+        day = self.finish()
+        lines = {e.product_id: e.quantity for e in day.sudo().expense_ids}
+        self.assertEqual((lines[self.full], lines[self.reduced]), (10.0, 75.0))
+
+    def test_the_routes_settings_show_the_shared_fields(self):
+        arch = self.env["res.config.settings"].get_views([(False, "form")])["views"]["form"]["arch"]
+        block = arch[arch.index('name="bf_route_mileage"'):]
+        block = block[:block.index("</block>")]
+        for name in ("bf_mileage_product_id", "bf_mileage_rate", "bf_mileage_reduced_product_id",
+                     "bf_mileage_reduced_rate", "bf_mileage_threshold"):
+            self.assertIn(f'name="{name}"', block)
+        self.assertNotIn("bf_route_mileage_", block.replace('name="bf_route_mileage"', ""))
+
+    def _migrate(self, route, shared, company=None):
+        """Run the 18.0.1.1.0 migration on columns put back for the test (rolled back with it)."""
+        migration = _migration()
+        cr = self.env.cr
+        cr.execute("""ALTER TABLE res_company ADD COLUMN bf_route_mileage_product_id int,
+                      ADD COLUMN bf_route_mileage_reduced_product_id int,
+                      ADD COLUMN bf_route_mileage_threshold int""")
+        self.env.flush_all()
+        cr.execute("""UPDATE res_company SET bf_route_mileage_product_id = %s,
+                      bf_route_mileage_reduced_product_id = %s, bf_route_mileage_threshold = %s,
+                      bf_mileage_product_id = %s, bf_mileage_reduced_product_id = %s,
+                      bf_mileage_threshold = %s WHERE id = %s""", [*route, *shared, (company or self.company).id])
+        migration.migrate(cr, "18.0.1.0.0")
+        cr.execute("""SELECT bf_mileage_product_id, bf_mileage_reduced_product_id, bf_mileage_threshold
+                      FROM res_company WHERE id = %s""", [(company or self.company).id])
+        return cr.fetchone()
+
+    def test_migration_brings_the_routes_settings(self):
+        self.make_day()
+        other = self.full.copy({"default_code": "CAR1"})
+        other_reduced = self.reduced.copy({"default_code": "CAR2"})
+        with self.assertLogs("bf_route_expense_migrate_1_1_0", level="WARNING") as logs:
+            got = self._migrate((other.id, other_reduced.id, 3000), (self.full.id, self.reduced.id, 5000))
+        self.assertEqual(got, (other.id, other_reduced.id, 3000))
+        self.assertEqual(len([m for m in logs.output if "which differed" in m]), 3)
+
+    def test_migration_never_erases_a_shared_setting(self):
+        self.make_day()
+        got = self._migrate((None, None, 5000), (self.full.id, self.reduced.id, 5000))
+        self.assertEqual(got, (self.full.id, self.reduced.id, 5000))
+
+    def test_migration_leaves_a_company_without_route_days_alone(self):
+        bare = self.env["res.company"].create({"name": "No routes", "currency_id": self.company.currency_id.id})
+        self.assertFalse(self.env["bf.route.day"].search_count([("company_id", "=", bare.id)]))
+        other = self.full.copy({"default_code": "CAR1"})
+        with self.assertLogs("bf_route_expense_migrate_1_1_0", level="WARNING") as logs:
+            got = self._migrate((other.id, self.reduced.id, 5000), (self.full.id, self.reduced.id, 0), company=bare)
+        self.assertEqual(got, (self.full.id, self.reduced.id, 0), "its Expenses settings stay")
+        self.assertTrue(any("has no route day" in m and "dropped" in m for m in logs.output),
+                        "and the log says what the routes' side held")
+
+    def test_migration_of_a_new_install_does_nothing(self):
+        # Columns put back and differing: a new install (no version) must still not touch them.
+        self.make_day()
+        other = self.full.copy({"default_code": "CAR1"})
+        self.env.cr.execute("""ALTER TABLE res_company ADD COLUMN bf_route_mileage_product_id int,
+                               ADD COLUMN bf_route_mileage_reduced_product_id int,
+                               ADD COLUMN bf_route_mileage_threshold int""")
+        self.env.flush_all()
+        self.env.cr.execute("UPDATE res_company SET bf_route_mileage_product_id = %s, "
+                            "bf_route_mileage_threshold = 3000 WHERE id = %s", [other.id, self.company.id])
+        migration = _migration()
+        migration.migrate(self.env.cr, None)
+        self.env.cr.execute("SELECT bf_mileage_threshold FROM res_company WHERE id = %s", [self.company.id])
+        self.assertEqual(self.env.cr.fetchone()[0], 5000)

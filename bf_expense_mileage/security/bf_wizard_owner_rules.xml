@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Wizards are owner-scoped.
+
+    A TransientModel is a real table, and Odoo 18 adds no implicit "creator only"
+    restriction: with an ACL open to base.group_user and no record rule, any
+    internal user could read a colleague's wizard with a plain web_search_read,
+    until the autovacuum cron cleared it (and that cron can be off).
+
+    Each rule below is GLOBAL (no `groups`), like core's own wizard rules
+    (mail.mail_compose_message_rule, base.change_password_rule): it is ANDed
+    with everything else, so no administration group can reopen a colleague's
+    wizard row by accident. `create_uid` is the only column that says whom a
+    wizard belongs to. Every creation path of these wizards runs as the user
+    who then opens them (checked when the rules were added); sudo() keeps the
+    uid, only with_user() would change it.
+
+    Not covered: a file uploaded in a wizard before it is saved is stored as
+    an attachment with res_id 0, which Odoo lets its uploader and system
+    administrators read, whatever the rule.
+
+    Not in noupdate: an upgrade restores the rule if it was edited by hand.
+-->
+<odoo>
+
+    <record id="bf_expense_mileage_wizard_rule_owner" model="ir.rule">
+        <field name="name">Add mileage: its author only</field>
+        <field name="model_id" ref="model_bf_expense_mileage_wizard"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

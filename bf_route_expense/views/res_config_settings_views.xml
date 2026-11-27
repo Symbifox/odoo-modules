@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- 18.0.1.1.0: the same settings as Expenses › Mileage (bf_expense_mileage), shown
+         here too so the office of the routes finds them where they were. One value, two places. -->
     <record id="res_config_settings_view_form_bf_route_expense" model="ir.ui.view">
         <field name="name">res.config.settings.view.form.bf_route_expense</field>
         <field name="model">res.config.settings</field>
@@ -8,25 +10,25 @@
             <xpath expr="//block[@name='bf_route_engine']" position="before">
                 <block title="Mileage expenses" name="bf_route_mileage">
                     <setting string="Full rate"
-                             help="Per kilometre, up to the yearly threshold. The cost of this expense product.">
-                        <field name="bf_route_mileage_product_id"/>
-                        <div class="d-flex align-items-baseline gap-2" invisible="not bf_route_mileage_product_id">
-                            <field name="bf_route_mileage_rate" class="oe_inline"/>
+                             help="Per kilometre, up to the yearly threshold. The cost of this expense category.">
+                        <field name="bf_mileage_product_id"/>
+                        <div class="d-flex align-items-baseline gap-2" invisible="not bf_mileage_product_id">
+                            <field name="bf_mileage_rate" class="oe_inline"/>
                             <span>per km</span>
                         </div>
                     </setting>
                     <setting string="Reduced rate"
-                             help="Per kilometre, beyond the yearly threshold. The cost of this expense product.">
-                        <field name="bf_route_mileage_reduced_product_id"/>
-                        <div class="d-flex align-items-baseline gap-2" invisible="not bf_route_mileage_reduced_product_id">
-                            <field name="bf_route_mileage_reduced_rate" class="oe_inline"/>
+                             help="Per kilometre, beyond the yearly threshold. The cost of this expense category.">
+                        <field name="bf_mileage_reduced_product_id"/>
+                        <div class="d-flex align-items-baseline gap-2" invisible="not bf_mileage_reduced_product_id">
+                            <field name="bf_mileage_reduced_rate" class="oe_inline"/>
                             <span>per km</span>
                         </div>
                     </setting>
                     <setting string="Yearly threshold"
-                             help="Per employee and calendar year, counting every mileage expense. 0 = the full rate for every kilometre.">
+                             help="Per employee and calendar year, counting every mileage expense: route days, Add mileage and trips. 0 = the full rate for every kilometre. The same settings as Expenses › Mileage.">
                         <div class="d-flex align-items-baseline gap-2">
-                            <field name="bf_route_mileage_threshold" class="oe_inline"/>
+                            <field name="bf_mileage_threshold" class="oe_inline"/>
                             <span>km</span>
                         </div>
                     </setting>

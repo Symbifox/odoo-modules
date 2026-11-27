@@ -9,11 +9,15 @@ writes the day), ``mail_create_nolog`` would erase the expense's creation trace 
 ``mail_activity_quick_update`` would silence the activity to the person responsible.
 ⚠️ An expense already in a report (or refused) is never changed: whoever approves it has
 seen its amount. Only drafts are redone when the office corrects an odometer.
-⚠️ Two rates per calendar year (CRA and Revenu Québec): the full rate up to the threshold,
-counting the mileage expenses of the employee dated BEFORE the day (routes or typed by hand,
-refused ones excepted), then the reduced rate. When a day's claim changes, the drafts of the
-later days of the year are redone, in date order, so each one counts what precedes it; a
-draft the worker edited is left alone (a note says so).
+⚠️ Two rates per calendar year (CRA and Revenu Québec): the settings (products, rates, threshold)
+and the split are those of Mileage Tiers (``bf_expense_mileage``, ``_bf_mileage_lines``), shared
+with the Add mileage wizard and the trips: one count of the year per employee. A day counts the
+whole year of the employee except its own claim and the claims of the route days dated AFTER it:
+those count this day, in date order. When a day's claim changes, the drafts of the later days of
+the year are redone, in date order, so each one counts what precedes it; a draft the worker
+edited is left alone (a note says so). An expense typed by hand counts for every day of the
+year, whatever its date (the wizard counts the days the same way): never two years' worth of
+the full rate.
 ⚠️ A reason that belongs to the settings (product, rate, employee) never deletes the worker's
 own draft: a setting fixed later would not bring it back. Only the day's own facts do (no
 kilometres, not an own vehicle), and so does a draft held by an employee who no longer drives
@@ -108,13 +112,10 @@ class BfRouteDay(models.Model):
             lambda e: e.company_id == self.company_id and e.active)[:1]
 
     def _bf_route_mileage_products(self):
+        """(full, reduced): the mileage categories of the company, set in the Expenses settings
+        (bf_expense_mileage)."""
         self.ensure_one()
-        company = self.company_id.sudo()
-        full = company.bf_route_mileage_product_id or self.env.ref(
-            "hr_expense.expense_product_mileage", raise_if_not_found=False)
-        reduced = company.bf_route_mileage_reduced_product_id or self.env.ref(
-            "bf_route_expense.product_mileage_reduced", raise_if_not_found=False)
-        return full, reduced
+        return self.env["hr.expense"]._bf_mileage_products(self.company_id)
 
     def _bf_route_usable(self, product):
         """An expense product the claim can use: active, expensable, with a rate here."""
@@ -134,50 +135,37 @@ class BfRouteDay(models.Model):
             return _("No kilometres: enter the odometer at the start and at the end."), False
         full, reduced = self._bf_route_mileage_products()
         if not self._bf_route_usable(full):
-            return _("No mileage expense product with a rate: check the Routes settings."), True
-        if self.company_id.sudo().bf_route_mileage_threshold > 0 and not self._bf_route_usable(reduced):
-            return _("No reduced-rate mileage product with a rate: check the Routes settings, or set "
-                     "the yearly threshold to 0."), True
+            return _("No mileage expense category with a rate: check the Mileage settings "
+                     "(Expenses settings)."), True
+        if self.company_id.sudo().bf_mileage_threshold > 0 and not self._bf_route_usable(reduced):
+            return _("No reduced-rate mileage category with a rate: check the Mileage settings "
+                     "(Expenses settings), or set the yearly threshold to 0."), True
         if not self._bf_route_employee():
             return _("%s has no employee in this company: no expense to claim for.",
                      self.user_id.name or "-"), True
         return False, False
 
-    def _bf_route_earlier_domain(self, employee, products):
-        """The employee's mileage expenses of the year dated before this day (same date: the
-        ones typed by hand, and the days made before this one)."""
+    def _bf_route_not_counted(self, employee):
+        """The expenses this day leaves out of the count of the year: its own claim, and the
+        claims of the employee's route days after it (later date, or same date and made after),
+        whatever their state. Those days count this one; counting them back would count the
+        same kilometres twice."""
         self.ensure_one()
-        return [
+        later = self.env["hr.expense"].sudo().search([
             ("employee_id", "=", employee.id),
-            ("product_id", "in", products.ids),
-            ("date", ">=", date(self.date.year, 1, 1)),
-            ("state", "!=", "refused"),
-            # A negative draft typed by hand would keep every kilometre at the full rate.
-            ("quantity", ">", 0),
-            "|", ("date", "<", self.date),
-            "&", ("date", "=", self.date),
-            "|", ("bf_route_day_id", "=", False), ("bf_route_day_id", "<", self.id),
-        ]
+            ("bf_route_day_id", "!=", False),
+            ("date", ">=", self.date),
+            ("date", "<=", date(self.date.year, 12, 31)),
+        ]).filtered(lambda e: e.date > self.date or e.bf_route_day_id.id > self.id)
+        return self.sudo().expense_ids | later
 
     def _bf_route_mileage_lines(self, employee):
-        """[(product, km)]: the kilometres at the full rate, then those beyond the threshold."""
+        """[(product, km)]: the kilometres at the full rate, then those beyond the threshold,
+        split by the shared settings and count of the year (bf_expense_mileage)."""
         self.ensure_one()
-        km = round(self.distance_actual_km, 1)
-        full, reduced = self._bf_route_mileage_products()
-        threshold = self.company_id.sudo().bf_route_mileage_threshold
-        if threshold <= 0:
-            return [(full, km)]
-        earlier = self.env["hr.expense"].sudo().search(
-            self._bf_route_earlier_domain(employee, full | reduced)).filtered(
-            lambda e: e.bf_route_day_id != self)
-        left = max(0.0, threshold - sum(earlier.mapped("quantity")))
-        at_full = round(min(km, left), 1)
-        lines = []
-        if at_full > 0:
-            lines.append((full, at_full))
-        if km - at_full > 0:
-            lines.append((reduced, round(km - at_full, 1)))
-        return lines
+        return self.env["hr.expense"]._bf_mileage_lines(
+            employee, self.date, self.distance_actual_km, self.company_id,
+            exclude=self._bf_route_not_counted(employee))
 
     # ------------------------------------------------------------------
     # How

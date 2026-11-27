@@ -4,7 +4,10 @@
     "summary": "Kilometres at the full rate up to a yearly threshold per employee, then at the "
                "reduced rate, as the CRA and Revenu Québec allow",
     # 18.0.1.0.1: the module icon.
-    "version": "18.0.1.0.1",
+    # 18.0.1.0.2: the Add mileage wizard is owner-scoped (record rule on its table).
+    # 18.0.1.0.3: the count of the year takes expenses to leave out (Work routes' mileage reads
+    # these settings and this split, and redoes its days in order).
+    "version": "18.0.1.0.3",
     "category": "Human Resources/Expenses",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -32,6 +35,10 @@ splits the kilometres between them:
   reduced rate, set in the Expenses settings. A threshold of 0 keeps every
   kilometre at the full rate.
 
+Work routes' mileage (bf_route_expense) reads these settings and this split
+for the kilometres of a route day: one threshold, one pair of rates, one count
+of the year.
+
 What it does not do: change an expense typed by hand with the Mileage
 category, or redo earlier expenses when a later one is corrected. The count
 is read when the wizard creates the claim.
@@ -39,6 +46,7 @@ is read when the wizard creates the claim.
     "depends": ["hr_expense"],
     "data": [
         "security/ir.model.access.csv",
+        "security/bf_wizard_owner_rules.xml",
         "views/res_config_settings_views.xml",
         "wizard/bf_expense_mileage_wizard_views.xml",
     ],

@@ -222,7 +222,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_employee_experience_profile_privacy` | Expérience employé : types de profil, pont vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Express consent, profiling named, retention tied to the employment relationship, destruction on departure |
 | `bf_employee_experience_pulse` | Expérience employé : pulse | 18.0.1.2.4 | BUSL-1.1 | Anonymous mood pulse and eNPS: separate invitation and answer registers, shuffled batch hand-off, and display thresholds that hold because the answers are readable by no one |
 | `bf_employee_photo_age` | Symbifox Âge de la photo des employés | 18.0.1.0.1 | BUSL-1.1 | Know how old an employee's photo is, and remind them to update it |
-| `bf_expense_mileage` | Mileage Tiers | 18.0.1.0.1 | BUSL-1.1 | Kilometres at the full rate up to a yearly threshold per employee, then at the reduced rate, as the CRA and Revenu Québec allow |
+| `bf_expense_mileage` | Mileage Tiers | 18.0.1.0.3 | BUSL-1.1 | Kilometres at the full rate up to a yearly threshold per employee, then at the reduced rate, as the CRA and Revenu Québec allow |
 | `bf_expense_ocr` | Lecture des reçus | 18.0.2.2.0 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
 | `bf_expense_tip` | Pourboire | 18.0.1.1.0 | BUSL-1.1 | The tip on a meal receipt, entered on the expense that carries it and removed from the tax base, so input tax credits are not overstated |
 | `bf_expense_trip` | Business Trips | 18.0.1.0.1 | BUSL-1.1 | A business trip gathers its receipts, its meal allowances, its mileage and its hotel folio into one expense report, and an assistant can prepare it |
@@ -398,7 +398,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_retail` | Retail prices | 18.0.1.0.0 | BUSL-1.1 | The cost of what a store buys, kept as a series, and the shelf price that follows it |
 | `bf_retail_supply` | Retail suppliers and orders | 18.0.1.0.0 | BUSL-1.1 | The days a supplier delivers, the order guide that fills itself, the price file of the wholesaler, and what keeps coming back |
 | `bf_route` | Symbifox Work Routes | 18.0.1.4.0 | BUSL-1.1 | Recurring routes for people on the road: stops in order, proof at each stop, mileage, alerts, and a phone screen for the worker |
-| `bf_route_expense` | Symbifox Work Routes: Mileage Expenses | 18.0.1.0.0 | BUSL-1.1 | The kilometres of a route day driven with the worker's own car become a draft expense at the per-km rate |
+| `bf_route_expense` | Symbifox Work Routes: Mileage Expenses | 18.0.1.1.0 | BUSL-1.1 | The kilometres of a route day driven with the worker's own car become a draft expense at the per-km rate |
 | `bf_route_privacy` | Work Routes: Privacy Bridge (Quebec Law 25) | 18.0.1.1.0 | BUSL-1.1 | Declares the position read at a stop, its retention rule and the two uses made of it, and writes every erasure by bf_route's watcher to the register |
 | `bf_route_sale` | Symbifox Work Routes: Sales on the Road | 18.0.1.0.4 | BUSL-1.1 | Sell from the truck at each stop: truck stock, invoice at the customer's price, container deposits, payment recorded on the phone |
 | `bf_route_timesheet` | Symbifox Work Routes: Time Sheets | 18.0.1.0.0 | BUSL-1.1 | A finished route day logs the worker's time, from the start of the day to its end, on the route's project |

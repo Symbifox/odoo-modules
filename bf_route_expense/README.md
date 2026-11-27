@@ -3,7 +3,9 @@
 The kilometres of a route day driven with the worker's own car become a draft
 expense for the worker, at the per-km rate, with the route, the date and the
 customers visited. Installs itself when Work routes (`bf_route`) and Expenses
-(`hr_expense`) are both installed.
+(`hr_expense`) are both installed, and brings Mileage Tiers
+(`bf_expense_mileage`) along: its settings and its count of the year are the
+ones the route days use.
 
 > **Not tax advice.** The rates below (0.73 per km for the first 5,000 km of the
 > year, 0.67 beyond) and the threshold are those the CRA and Revenu Québec
@@ -28,16 +30,21 @@ an expense is double work and a source of errors.
   odometer readings and the customers visited. Nothing is reported or
   submitted for the worker: they add it to their report like any expense.
 - **Two rates per calendar year**: the full rate up to the threshold (5,000 km
-  by default), then the reduced rate, as the CRA and Revenu Québec allow. A
-  day counts the employee's mileage expenses of the year dated before it (from
-  the routes or typed by hand), refused ones excepted. A day that crosses the
-  threshold gives two lines.
-- **Rates in the settings** (*Settings › Work routes › Mileage expenses*): each
-  rate is the cost of an expense product, *Mileage* (Odoo's) and *Mileage,
-  reduced rate* (made at install from Odoo's, same unit, taxes and accounts).
-  In a company in Canadian dollars, the install sets 0.67 on the reduced rate,
-  and 0.73 on the full rate when it still holds Odoo's placeholder (1.00) or
-  nothing; a rate already set is kept. Other currencies: the office sets both.
+  by default), then the reduced rate, as the CRA and Revenu Québec allow. The
+  split is Mileage Tiers' (`bf_expense_mileage`): one count of the year per
+  employee, shared by the route days, *Add mileage* and the trips. A day
+  counts every mileage expense of the employee's year (refused ones and
+  negative drafts excepted), except the claims of the route days dated after
+  it, which count it instead. An expense typed by hand counts whatever its
+  date. A day that crosses the threshold gives two lines.
+- **One set of settings** (*Expenses › Configuration › Settings › Mileage*,
+  shown again in *Settings › Work routes › Mileage expenses*: the same values):
+  each rate is the cost of an expense category, *Mileage* (Odoo's) and
+  *Mileage, reduced rate* (made by Mileage Tiers at its install). Before
+  18.0.1.1.0 this module kept its own copy of the settings; the upgrade moves
+  its values to the shared ones in the companies that have route days (a
+  company without any keeps its Expenses settings, and the log says what was
+  dropped), then removes the copy.
 - **Corrections**: when the office corrects a finished day (odometer, date,
   worker, vehicle), its draft expense is redone, and so are the drafts of the
   employee's later days of the year, in date order, since the threshold may
@@ -62,7 +69,8 @@ rules.
 
 ## Configuration
 
-1. *Settings › Work routes › Mileage expenses*: check the two rates and the
+1. *Expenses › Configuration › Settings › Mileage* (or *Settings › Work
+   routes › Mileage expenses*, the same values): check the two rates and the
    threshold.
 2. *Fleet*: create the worker's car and tick *Employee's own vehicle*.
 3. Each worker needs an employee (*Employees*) linked to their user, in the
@@ -93,6 +101,17 @@ your accountant's call.
 - The box on the vehicle says it is an employee's own car, not whose: a replacement
   who drives it that day claims its kilometres, in their own name. The office checks the
   drafts.
+- A day redone by the office (corrected odometer, date, worker, vehicle) after
+  an *Add mileage* claim that already counted it counts that claim back: the
+  same kilometres count twice and the worker gets less at the full rate than
+  allowed. Never more: the yearly threshold is never exceeded this way. Chosen
+  on purpose: rare, and on the safe side for taxes.
+- An earlier day claimed or corrected after a later day's expense was
+  reported: the later expense is never changed, so the year may go past the
+  threshold at the full rate (as before 18.0.1.1.0). A few kilometres for a
+  corrected odometer; a whole day when *Claim the kilometres* claims, in July,
+  a March day that could not claim then while April to June are approved. No note says so:
+  the person who approves the later report checks it.
 
 ## License
 

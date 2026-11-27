@@ -100,7 +100,7 @@ class TestMileageTiers(TestExpenseCommon):
     def test_no_rate_refuses(self):
         self.reduced.with_company(self.company).standard_price = 0.0
         self._mileage(4950)
-        with self.assertRaisesRegex(UserError, "no rate"):
+        with self.assertRaisesRegex(UserError, "no rate|pas de taux"):
             self._claim(100)
 
     def test_no_kilometres_refuses(self):
@@ -144,12 +144,39 @@ class TestMileageTiers(TestExpenseCommon):
         """A reduced category of Work routes' mileage (installed after this module, say) is
         part of the same year."""
         other_reduced = self.reduced.copy({"default_code": "MIL2-ROUTES"})
-        self.env["ir.model.data"].create({
-            "module": "bf_route_expense", "name": "product_mileage_reduced",
-            "model": "product.product", "res_id": other_reduced.id})
+        # Where Work routes' mileage is installed, its record exists (and since 18.0.1.1.0 it
+        # depends on this module): point it at the other category instead.
+        xmlid = self.env["ir.model.data"].search([
+            ("module", "=", "bf_route_expense"), ("name", "=", "product_mileage_reduced")])
+        if xmlid:
+            xmlid.res_id = other_reduced.id
+            # The lookup reads the table in SQL: write it there before forgetting the cache.
+            self.env.flush_all()
+            self.env.registry.clear_cache()
+        else:
+            self.env["ir.model.data"].create({
+                "module": "bf_route_expense", "name": "product_mileage_reduced",
+                "model": "product.product", "res_id": other_reduced.id})
         self._mileage(4950, product=other_reduced)
         made = self._claim(100)
         self.assertEqual(self._split(made), [(self.full, 50.0, 36.5), (self.reduced, 50.0, 33.5)])
+
+    def test_own_reduced_category_counts_when_the_company_chose_another(self):
+        """Kilometres claimed with this module's reduced category stay in the year after the
+        company points its settings at another one (Work routes' migration may do that)."""
+        self._mileage(4950, product=self.reduced)
+        # Where Work routes' mileage shares the record, its xmlid would count it anyway: move it.
+        routes = self.env["ir.model.data"].search([
+            ("module", "=", "bf_route_expense"), ("name", "=", "product_mileage_reduced")])
+        if routes:
+            routes.res_id = self.reduced.copy({"default_code": "MIL2-ROUTES"}).id
+            self.env.flush_all()
+            self.env.registry.clear_cache()
+        other = self.reduced.copy({"default_code": "MIL2-OTHER"})
+        other.with_company(self.company).standard_price = 0.67
+        self.company.bf_mileage_reduced_product_id = other
+        made = self._claim(100)
+        self.assertEqual(self._split(made), [(self.full, 50.0, 36.5), (other, 50.0, 33.5)])
 
     def test_no_preview_nor_claim_for_someone_one_cannot_choose(self):
         other = self.env["hr.employee"].create({"name": "Someone else"})
