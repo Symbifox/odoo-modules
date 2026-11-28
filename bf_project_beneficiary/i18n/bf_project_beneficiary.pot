@@ -1,0 +1,114 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_project_beneficiary
+# Source strings are written in English.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_project_beneficiary 18.0.1.0.1\n"
+"POT-Creation-Date: 2026-11-11 00:18+0000\n"
+"PO-Revision-Date: 2026-11-11 00:18+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_project_beneficiary
+#: model:ir.model.fields,field_description:bf_project_beneficiary.field_project_project__bf_beneficiary_id
+#: model_terms:ir.ui.view,arch_db:bf_project_beneficiary.view_project_search_beneficiary
+msgid "Beneficiary"
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model:ir.model.fields,field_description:bf_project_beneficiary.field_project_project__bf_beneficiary_effective_id
+msgid "Beneficiary or ordering customer"
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model:ir.ui.menu,name:bf_project_beneficiary.menu_project_by_ordering_customer
+msgid "By ordering customer"
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model_terms:ir.actions.act_window,help:bf_project_beneficiary.action_project_by_ordering_customer
+msgid "No project yet"
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model_terms:ir.ui.view,arch_db:bf_project_beneficiary.view_project_form_beneficiary
+#: model_terms:ir.ui.view,arch_db:bf_project_beneficiary.view_project_list_beneficiary
+#: model_terms:ir.ui.view,arch_db:bf_project_beneficiary.view_project_search_beneficiary
+msgid "Ordering customer"
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model:ir.model,name:bf_project_beneficiary.model_project_project
+msgid "Project"
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model:ir.actions.act_window,name:bf_project_beneficiary.action_project_by_ordering_customer
+msgid "Projects by ordering customer"
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model_terms:ir.actions.act_window,help:bf_project_beneficiary.action_project_by_ordering_customer
+msgid ""
+"Projects group under the customer who orders and pays for them. The "
+"beneficiary, when it is another company, reads in its own column."
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model:ir.model.fields,help:bf_project_beneficiary.field_project_project__bf_beneficiary_effective_id
+msgid ""
+"The beneficiary when one is named, the ordering customer otherwise. This is "
+"the party a client-facing page must name."
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model:ir.model.fields,help:bf_project_beneficiary.field_project_project__bf_beneficiary_id
+msgid ""
+"The client the work is done for, when someone else orders and pays for it. "
+"Leave it empty when the ordering customer is also the beneficiary."
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model_terms:ir.ui.view,arch_db:bf_project_beneficiary.view_project_form_beneficiary
+msgid "same as the ordering customer"
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model:ir.module.module,shortdesc:base.module_bf_project_beneficiary
+msgid "BF Project Beneficiary"
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model:ir.module.module,summary:base.module_bf_project_beneficiary
+msgid ""
+"Who pays and who receives, told apart on the project: the ordering customer "
+"keeps the billing, the beneficiary is named beside it, and projects group by"
+" ordering customer"
+msgstr ""
+
+#. module: bf_project_beneficiary
+#: model:ir.module.module,description:base.module_bf_project_beneficiary
+msgid ""
+"\n"
+"Ordering customer and beneficiary\n"
+"=================================\n"
+"\n"
+"A project carries one customer in Odoo, and the whole billing chain descends\n"
+"from it. Hand-kept project books name two parties: the one that orders and\n"
+"pays, and the one the work is done for.\n"
+"\n"
+"This module keeps the standard customer as **the ordering customer**, the\n"
+"payer that the invoices and the analytic lines follow, and adds the\n"
+"**beneficiary** beside it. Leaving the beneficiary empty says both are the same\n"
+"party, which is the case for most projects.\n"
+"\n"
+"It reads on the form under the ordering customer, as an optional list column,\n"
+"in the search bar, and it groups: a menu entry opens the projects already\n"
+"grouped by ordering customer.\n"
+msgstr ""

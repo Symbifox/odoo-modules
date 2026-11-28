@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Formulaire : le bénéficiaire juste sous le donneur d'ordre, et le champ
+         standard renommé. Sans le renommage, deux lignes se lisent « Client » et
+         « Client bénéficiaire » et rien ne dit laquelle porte la facture.
+         Ancré sur le nom du champ, jamais sur un libellé : un libellé traduit
+         change de texte et l'xpath ne trouve plus rien. -->
+    <record id="view_project_form_beneficiary" model="ir.ui.view">
+        <field name="name">project.project.form.bf.beneficiary</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="string">Ordering customer</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <!-- Le même `context` que le champ qu'il double. ⚠️ Il TRIE, il
+                     ne filtre pas : avec `account`, les fiches déjà clientes
+                     remontent en tête de liste, et une fiche créée depuis le
+                     champ naît cliente. Employés et fournisseurs restent
+                     proposables, et ce nom-là part sur une page publique : le
+                     choix à la saisie reste celui de la personne qui saisit. -->
+                <field name="bf_beneficiary_id"
+                       widget="res_partner_many2one"
+                       context="{'res_partner_search_mode': 'customer'}"
+                       placeholder="same as the ordering customer"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Liste : une colonne de plus, cachée par défaut. `optional="hide"` et non
+         `show` : sur un locataire où les deux rôles sont la même entreprise, la
+         colonne serait vide partout et elle pousserait les autres hors de l'écran.
+         Celui qui en a besoin l'ouvre une fois, et Odoo garde son choix. -->
+    <record id="view_project_list_beneficiary" model="ir.ui.view">
+        <field name="name">project.project.list.bf.beneficiary</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="string">Ordering customer</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="bf_beneficiary_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Recherche : chercher par bénéficiaire, et grouper par l'un ou l'autre.
+         Odoo 18 ne propose AUCUN regroupement par client sur les projets : les
+         deux filtres du groupe sont donc nouveaux, pas des doublons.
+         `child_of` sur le bénéficiaire comme sur le donneur d'ordre : taper le
+         nom d'une entreprise doit trouver les projets rattachés à l'un de ses
+         contacts, sinon la recherche rend zéro là où l'écran montre la société. -->
+    <record id="view_project_search_beneficiary" model="ir.ui.view">
+        <field name="name">project.project.select.bf.beneficiary</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_project_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="string">Ordering customer</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="bf_beneficiary_id"
+                       filter_domain="[('bf_beneficiary_id', 'child_of', self)]"/>
+            </xpath>
+            <!-- Ancré sur le DERNIER filtre de regroupement sans restriction de
+                 groupe, et non sur le groupe « Group By » : Odoo refuse `string`
+                 comme sélecteur d'héritage (« View inheritance may not use
+                 attribute 'string' as a selector »), et ce groupe-là n'a pas de
+                 nom. `company`, qui le suit, ne paraît qu'en multi-société. -->
+            <xpath expr="//filter[@name='tags']" position="after">
+                <filter string="Ordering customer" name="bf_group_by_ordering_customer"
+                        context="{'group_by': 'partner_id'}"/>
+                <filter string="Beneficiary" name="bf_group_by_beneficiary"
+                        context="{'group_by': 'bf_beneficiary_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- La vue groupée demandée : un écran qui s'ouvre DÉJÀ groupé par donneur
+         d'ordre, les projets sans donneur d'ordre rassemblés à part. Les filtres
+         de recherche ci-dessus suffisent à qui sait où cliquer ; celui-ci est
+         pour qui ouvre son cahier de projets et veut le voir tel quel. -->
+    <record id="action_project_by_ordering_customer" model="ir.actions.act_window">
+        <field name="name">Projects by ordering customer</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="project.view_project_project_filter"/>
+        <field name="context">{'group_by': ['partner_id']}</field>
+        <!-- Chaque phrase sur UNE ligne : un texte de vue réparti sur plusieurs
+             lignes sort de l'export avec ses sauts de ligne et son indentation
+             dans le msgid, et sa traduction casse à la première réindentation. -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No project yet</p>
+            <p>Projects group under the customer who orders and pays for them. The beneficiary, when it is another company, reads in its own column.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_project_by_ordering_customer"
+              name="By ordering customer"
+              parent="project.menu_main_pm"
+              action="action_project_by_ordering_customer"
+              sequence="3"/>
+
+</odoo>

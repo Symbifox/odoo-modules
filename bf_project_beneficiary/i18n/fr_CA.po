@@ -1,0 +1,142 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_project_beneficiary
+# Source strings are written in English.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_project_beneficiary 18.0.1.0.1\n"
+"POT-Creation-Date: 2026-11-11 00:18+0000\n"
+"PO-Revision-Date: 2026-11-11 00:18+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_project_beneficiary
+#: model:ir.model.fields,field_description:bf_project_beneficiary.field_project_project__bf_beneficiary_id
+#: model_terms:ir.ui.view,arch_db:bf_project_beneficiary.view_project_search_beneficiary
+msgid "Beneficiary"
+msgstr "Client bénéficiaire"
+
+#. module: bf_project_beneficiary
+#: model:ir.model.fields,field_description:bf_project_beneficiary.field_project_project__bf_beneficiary_effective_id
+msgid "Beneficiary or ordering customer"
+msgstr "Client bénéficiaire ou donneur d'ordre"
+
+#. module: bf_project_beneficiary
+#: model:ir.ui.menu,name:bf_project_beneficiary.menu_project_by_ordering_customer
+msgid "By ordering customer"
+msgstr "Par donneur d'ordre"
+
+#. module: bf_project_beneficiary
+#: model_terms:ir.actions.act_window,help:bf_project_beneficiary.action_project_by_ordering_customer
+msgid "No project yet"
+msgstr "Aucun projet pour l'instant"
+
+#. module: bf_project_beneficiary
+#: model_terms:ir.ui.view,arch_db:bf_project_beneficiary.view_project_form_beneficiary
+#: model_terms:ir.ui.view,arch_db:bf_project_beneficiary.view_project_list_beneficiary
+#: model_terms:ir.ui.view,arch_db:bf_project_beneficiary.view_project_search_beneficiary
+msgid "Ordering customer"
+msgstr "Donneur d'ordre"
+
+#. module: bf_project_beneficiary
+#: model:ir.model,name:bf_project_beneficiary.model_project_project
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_project_beneficiary
+#: model:ir.actions.act_window,name:bf_project_beneficiary.action_project_by_ordering_customer
+msgid "Projects by ordering customer"
+msgstr "Projets par donneur d'ordre"
+
+#. module: bf_project_beneficiary
+#: model_terms:ir.actions.act_window,help:bf_project_beneficiary.action_project_by_ordering_customer
+msgid ""
+"Projects group under the customer who orders and pays for them. The "
+"beneficiary, when it is another company, reads in its own column."
+msgstr ""
+"Les projets se groupent sous le client qui les commande et les paie. Le "
+"bénéficiaire, quand c'est une autre entreprise, se lit dans sa propre "
+"colonne."
+
+#. module: bf_project_beneficiary
+#: model:ir.model.fields,help:bf_project_beneficiary.field_project_project__bf_beneficiary_effective_id
+msgid ""
+"The beneficiary when one is named, the ordering customer otherwise. This is "
+"the party a client-facing page must name."
+msgstr ""
+"Le bénéficiaire quand il est nommé, le donneur d'ordre sinon. C'est la "
+"partie qu'une page tournée vers le client doit nommer."
+
+#. module: bf_project_beneficiary
+#: model:ir.model.fields,help:bf_project_beneficiary.field_project_project__bf_beneficiary_id
+msgid ""
+"The client the work is done for, when someone else orders and pays for it. "
+"Leave it empty when the ordering customer is also the beneficiary."
+msgstr ""
+"Le client pour qui le travail est fait, quand quelqu'un d'autre le commande "
+"et le paie. À laisser vide quand le donneur d'ordre est aussi le "
+"bénéficiaire."
+
+#. module: bf_project_beneficiary
+#: model_terms:ir.ui.view,arch_db:bf_project_beneficiary.view_project_form_beneficiary
+msgid "same as the ordering customer"
+msgstr "comme le donneur d'ordre"
+
+#. module: bf_project_beneficiary
+#: model:ir.module.module,shortdesc:base.module_bf_project_beneficiary
+msgid "BF Project Beneficiary"
+msgstr "BF Bénéficiaire du projet"
+
+#. module: bf_project_beneficiary
+#: model:ir.module.module,summary:base.module_bf_project_beneficiary
+msgid ""
+"Who pays and who receives, told apart on the project: the ordering customer "
+"keeps the billing, the beneficiary is named beside it, and projects group by"
+" ordering customer"
+msgstr ""
+"Qui paie et qui reçoit, dits séparément sur le projet : le donneur d'ordre "
+"garde la facturation, le bénéficiaire est nommé à côté, et les projets se "
+"groupent par donneur d'ordre"
+
+#. module: bf_project_beneficiary
+#: model:ir.module.module,description:base.module_bf_project_beneficiary
+msgid ""
+"\n"
+"Ordering customer and beneficiary\n"
+"=================================\n"
+"\n"
+"A project carries one customer in Odoo, and the whole billing chain descends\n"
+"from it. Hand-kept project books name two parties: the one that orders and\n"
+"pays, and the one the work is done for.\n"
+"\n"
+"This module keeps the standard customer as **the ordering customer**, the\n"
+"payer that the invoices and the analytic lines follow, and adds the\n"
+"**beneficiary** beside it. Leaving the beneficiary empty says both are the same\n"
+"party, which is the case for most projects.\n"
+"\n"
+"It reads on the form under the ordering customer, as an optional list column,\n"
+"in the search bar, and it groups: a menu entry opens the projects already\n"
+"grouped by ordering customer.\n"
+msgstr ""
+"\n"
+"Donneur d'ordre et bénéficiaire\n"
+"===============================\n"
+"\n"
+"Un projet ne porte qu'un client dans Odoo, et toute la chaîne de facturation en\n"
+"descend. Les cahiers de projet tenus à la main, eux, nomment deux parties :\n"
+"celle qui commande et paie, et celle pour qui le travail est fait.\n"
+"\n"
+"Ce module garde le client standard comme **donneur d'ordre**, le payeur que les\n"
+"factures et les lignes analytiques suivent, et ajoute le **bénéficiaire** à côté.\n"
+"Laisser le bénéficiaire vide dit que les deux sont la même partie, ce qui est le\n"
+"cas de la plupart des projets.\n"
+"\n"
+"Il se lit au formulaire sous le donneur d'ordre, en colonne facultative dans la\n"
+"liste, dans la barre de recherche, et il groupe : une entrée de menu ouvre les\n"
+"projets déjà groupés par donneur d'ordre.\n"
