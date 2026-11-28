@@ -63,6 +63,16 @@ class SecureTransferAccessLog(models.Model):
             ("audience_joined", "Visitor confirmed (open audience)"),
             ("audience_blocked", "Visitor blocked"),
             ("audience_unblocked", "Visitor unblocked"),
+            ("audience_invited", "Recipients listed at send time"),
+            ("audience_resent", "Link re-sent to one recipient"),
+            ("audience_reminded", "Automatic reminder to a recipient"),
+            ("fanout", "Send split per recipient"),
+            # Brouillon gardé : ce que l'envoi a été AVANT de partir. Les
+            # dates de ces trois entrées, encadrées par `finalized`, sont la
+            # trace Loi 25 de ce qui a été préparé, et quand.
+            ("draft_kept", "Draft kept"),
+            ("draft_file_added", "File added to the draft"),
+            ("draft_file_removed", "File removed from the draft"),
             # ⚠ Écrites par le module pont `bf_securetransfer_sign`, jamais
             # par le socle — qui ne connaît pas bf_sign et ne doit pas le
             # connaître. Elles sont déclarées ICI quand même, et c'est

@@ -182,8 +182,8 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
     def test_key_prefix_strips_border_slashes(self):
         """A leading slash produces keys like ``//transfers/...``; the orphan
         sweeper's prefix filter would then never match its own objects."""
-        self.icp.set_param("bf_securetransfer.s3_key_prefix", "/transfers-bf/")
-        self.assertEqual(s3.key_prefix(self.env), "transfers-bf")
+        self.icp.set_param("bf_securetransfer.s3_key_prefix", "/transfers-demo/")
+        self.assertEqual(s3.key_prefix(self.env), "transfers-demo")
         self.icp.set_param("bf_securetransfer.s3_key_prefix", "  /a/b/  ")
         self.assertEqual(s3.key_prefix(self.env), "a/b")
 
@@ -349,6 +349,50 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
         with self.assertRaises(CLIENT_ERROR):
             s3.mpu_abort(self.env, "k", "u1")
 
+    # ------------------------------------------------------ 6 bis. mpu_is_gone
+    def test_mpu_is_gone_true_when_the_listing_does_not_show_it(self):
+        """🔴 Le fournisseur abandonne les parties d'un téléversement inachevé
+        après 2 jours. Sans cette réponse, un brouillon gardé dont le MPU avait
+        disparu était à la fois inenvoyable et invidable, sans fin (constat 5
+        de la relecture adverse)."""
+        c = self._mock_client()
+        c.list_multipart_uploads.return_value = {
+            "Uploads": [{"Key": "transfers/x/f", "UploadId": "AUTRE",
+                         "Initiated": datetime.now(timezone.utc)}],
+            "IsTruncated": False,
+        }
+        self.assertTrue(s3.mpu_is_gone(self.env, "transfers/x/f", "U-PARTI"))
+
+    def test_mpu_is_gone_false_when_the_listing_still_shows_it(self):
+        """⚠ Le garde-fou : un MPU toujours là doit vraiment être abandonné.
+        Le compter comme effacé laisserait ses parties au stockage, payées,
+        sans que plus rien ne les réclame."""
+        c = self._mock_client()
+        c.list_multipart_uploads.return_value = {
+            "Uploads": [{"Key": "transfers/x/f", "UploadId": "U-VIVANT",
+                         "Initiated": datetime.now(timezone.utc)}],
+            "IsTruncated": False,
+        }
+        self.assertFalse(s3.mpu_is_gone(self.env, "transfers/x/f", "U-VIVANT"))
+
+    def test_mpu_is_gone_answers_no_when_it_cannot_look(self):
+        """On ne déclare pas disparu ce qu'on n'a pas pu regarder : un point de
+        terminaison injoignable aurait fait passer tous les MPU pour effacés,
+        et le correctif aurait créé la fuite qu'il devait éviter."""
+        c = self._mock_client()
+        c.list_multipart_uploads.side_effect = cerr("AccessDenied", "ListMPU")
+        self.assertFalse(s3.mpu_is_gone(self.env, "transfers/x/f", "U-1"))
+
+    def test_mpu_is_gone_answers_on_the_exact_upload_id(self):
+        """Le listage est filtré sur la CLÉ : deux téléversements peuvent y
+        vivre côte à côte, et seul l'identifiant tranche."""
+        c = self._mock_client()
+        c.list_multipart_uploads.return_value = {"Uploads": [], "IsTruncated": False}
+        self.assertTrue(s3.mpu_is_gone(self.env, "transfers/x/f", "U-1"))
+        self.assertEqual(
+            c.list_multipart_uploads.call_args.kwargs["Prefix"],
+            "transfers/x/f")
+
     # ------------------------------------------------------ 7. mpu_complete
     def test_mpu_complete_rebuilds_parts_from_list_parts(self):
         """Trusting client-reported ETags lets a browser complete an upload
@@ -502,6 +546,25 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
         }
         stale = s3.list_stale_mpus(self.env, "transfers/", 24)
         self.assertEqual([s["upload_id"] for s in stale], ["U-OLD"])
+
+    def test_list_stale_mpus_without_a_grace_window_lists_everything(self):
+        """⚠ `older_than_hours` à 0 ne filtre RIEN, comme `list_objects` : un
+        cutoff à « maintenant » aurait jugé disparu, sur un écart d'horloge de
+        quelques secondes, un téléversement bien vivant — et `mpu_is_gone`
+        répond sur ce listage."""
+        c = self._mock_client()
+        now = datetime.now(timezone.utc)
+        c.list_multipart_uploads.return_value = {
+            "Uploads": [
+                {"Key": "a", "UploadId": "U-MAINTENANT", "Initiated": now},
+                {"Key": "b", "UploadId": "U-DEMAIN",
+                 "Initiated": now + timedelta(hours=1)},
+            ],
+            "IsTruncated": False,
+        }
+        stale = s3.list_stale_mpus(self.env, "transfers/", 0)
+        self.assertEqual([s["upload_id"] for s in stale],
+                         ["U-MAINTENANT", "U-DEMAIN"])
 
     # -------------------------------------------------- 9. grace window
     def test_list_objects_respects_the_grace_window(self):
@@ -728,7 +791,11 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
         """PutBucketLifecycleConfiguration replaces everything: dropping the
         other tenants' rules removes their expiry net without any signal."""
         self._isolate_brands()
-        self.icp.set_param("bf_securetransfer.s3_key_prefix", "transfers-bf")
+        self.icp.set_param("bf_securetransfer.s3_key_prefix", "transfers-demo")
+        # Cliquet : sans cela, un clone qui consigne déjà un délai
+        # plus long ferait poser ce délai-là au lieu de la valeur calculée.
+        self.icp.set_param(
+            "bf_securetransfer." + s3.LIFECYCLE_APPLIED_PARAM, False)
         c = self._mock_client()
         c.get_bucket_lifecycle_configuration.return_value = {"Rules": [
             {"ID": "st-expire-orphans-transfers-prod", "Status": "Enabled"},
@@ -739,10 +806,10 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
                  .kwargs["LifecycleConfiguration"]["Rules"])
         ids = [r["ID"] for r in rules]
         self.assertIn("st-expire-orphans-transfers-prod", ids)
-        self.assertIn("st-abort-incomplete-mpu-transfers-bf", ids)
-        self.assertIn("st-expire-orphans-transfers-bf", ids)
-        ours = next(r for r in rules if r["ID"] == "st-expire-orphans-transfers-bf")
-        self.assertEqual(ours["Filter"]["Prefix"], "transfers-bf/")
+        self.assertIn("st-abort-incomplete-mpu-transfers-demo", ids)
+        self.assertIn("st-expire-orphans-transfers-demo", ids)
+        ours = next(r for r in rules if r["ID"] == "st-expire-orphans-transfers-demo")
+        self.assertEqual(ours["Filter"]["Prefix"], "transfers-demo/")
         self.assertEqual(ours["Expiration"]["Days"],
                          s3._orphan_expiry_days(self.env))
         self.assertIn("1 foreign rule(s) preserved", report["lifecycle"]["detail"])
@@ -752,7 +819,7 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
         Sending both rules in one call got the WHOLE configuration refused, so
         no tenant ever had an expiry net."""
         self._isolate_brands()
-        self.icp.set_param("bf_securetransfer.s3_key_prefix", "transfers-bf")
+        self.icp.set_param("bf_securetransfer.s3_key_prefix", "transfers-demo")
         c = self._mock_client()
         c.get_bucket_lifecycle_configuration.return_value = {"Rules": [
             {"ID": "foreign-rule", "Status": "Enabled"},
@@ -766,7 +833,7 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
         rules = (c.put_bucket_lifecycle_configuration.call_args_list[1]
                  .kwargs["LifecycleConfiguration"]["Rules"])
         self.assertEqual([r["ID"] for r in rules],
-                         ["foreign-rule", "st-expire-orphans-transfers-bf"])
+                         ["foreign-rule", "st-expire-orphans-transfers-demo"])
         self.assertNotIn(
             "AbortIncompleteMultipartUpload",
             {k for r in rules for k in r})
@@ -797,6 +864,52 @@ class TestS3Gateway(BaseNeuve, TransactionCase):
         report = self._setup_bucket_report(c)
         self.assertFalse(report["lifecycle"]["ok"])
         self.assertEqual(c.put_bucket_lifecycle_configuration.call_count, 1)
+
+    def test_lifecycle_records_the_delay_it_applied(self):
+        """🔴 La fiche d'un brouillon n'annonce plus une date calculée : elle
+        lit ce que CETTE action a réellement posé. Relever la rétention d'une
+        marque sans reposer la règle ne doit plus déplacer la date annoncée."""
+        self._isolate_brands()
+        self.icp.set_param("bf_securetransfer.s3_key_prefix", "transfers-demo")
+        self.icp.set_param(
+            "bf_securetransfer." + s3.LIFECYCLE_APPLIED_PARAM, False)
+        c = self._mock_client()
+        c.get_bucket_lifecycle_configuration.return_value = {"Rules": []}
+        report = self._setup_bucket_report(c)
+        self.assertTrue(report["lifecycle"]["ok"], report["lifecycle"]["detail"])
+        self.assertEqual(s3.applied_orphan_expiry_days(self.env),
+                         s3._orphan_expiry_days(self.env))
+
+    def test_lifecycle_records_the_delay_on_the_fallback_path_too(self):
+        """IDrive E2 refuse la règle d'abandon : c'est la règle d'EXPIRATION
+        qui efface les octets, et c'est elle qu'on consigne."""
+        self._isolate_brands()
+        self.icp.set_param("bf_securetransfer.s3_key_prefix", "transfers-demo")
+        self.icp.set_param(
+            "bf_securetransfer." + s3.LIFECYCLE_APPLIED_PARAM, False)
+        c = self._mock_client()
+        c.get_bucket_lifecycle_configuration.return_value = {"Rules": []}
+        c.put_bucket_lifecycle_configuration.side_effect = [
+            cerr("InvalidRequest", "PutLifecycle"), None,
+        ]
+        report = self._setup_bucket_report(c)
+        self.assertTrue(report["lifecycle"]["ok"], report["lifecycle"]["detail"])
+        self.assertEqual(s3.applied_orphan_expiry_days(self.env),
+                         s3._orphan_expiry_days(self.env))
+
+    def test_a_refused_lifecycle_records_nothing(self):
+        """⚠ Rien n'est consigné quand le seau refuse : la fiche dira « filet
+        inconnu » plutôt qu'une date que le seau ne porte pas."""
+        self._isolate_brands()
+        self.icp.set_param(
+            "bf_securetransfer." + s3.LIFECYCLE_APPLIED_PARAM, False)
+        c = self._mock_client()
+        c.get_bucket_lifecycle_configuration.return_value = {"Rules": []}
+        c.put_bucket_lifecycle_configuration.side_effect = cerr(
+            "AccessDenied", "PutLifecycle")
+        report = self._setup_bucket_report(c)
+        self.assertFalse(report["lifecycle"]["ok"])
+        self.assertIsNone(s3.applied_orphan_expiry_days(self.env))
 
     def test_setup_bucket_probes_never_touch_the_network_in_tests(self):
         """Guard on the harness itself: every probe must report, none may raise

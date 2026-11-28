@@ -8,8 +8,8 @@ artefact), **automatic purging**, **multi-brand** resolution by hostname,
 **personal drop pages** (`/to/<slug>`), **anti-piggyback allowlists** and
 **automatic suspension on abuse reports**.
 
-- **Version**: `18.0.1.22.0`.
-- **Licence**: **BUSL-1.1** — production use allowed for your own internal business operations; providing the module as a product or service to third parties (hosted, managed or resold) requires a written agreement. Converts to **LGPL-3.0-or-later** on **2030-10-21**. See [`LICENSE`](LICENSE).
+- **Version**: `18.0.1.26.0`.
+- **Licence**: **BUSL-1.1** — production use allowed for your own internal business operations; providing the module as a product or service to third parties (hosted, managed or resold) requires a written agreement. Converts to **LGPL-3.0-or-later** on **2030-11-28**. See [`LICENSE`](LICENSE).
 - **Threat model & non-guarantees**: see [`SECURITY.md`](SECURITY.md).
 - **Multiple tiers**: the multi-brand system supports a limited free tier
   (default brand, optional "Powered by" mention) and a paid white-label tier on
@@ -156,6 +156,87 @@ artefact), **automatic purging**, **multi-brand** resolution by hostname,
 
 ---
 
+**Who has not come, and reminding that one person** (since 1.23.0)
+
+- **Named recipients are registered at send time**, in the *Not yet visited*
+  state. Before, the audience line was born from the **visit**: a recipient who
+  never clicked appeared nowhere, and "who has done nothing" could only be read
+  by comparing the address list with the Visitors tab by hand. The Visitors tab
+  is now the complete list — who downloaded, who is stuck on their code, who
+  never came — with a banner counting those absent.
+- **Remind a single person**: a *Resend* button on their line. The email is the
+  **same** as the first one (a reminder should look like what it reminds of), it
+  goes to that address and no other, and it is logged by name
+  (`audience_resent`). The header button now reads "Resend the link to
+  **everyone**", so the two gestures can no longer be confused.
+- **Automatic reminder of absentees**, per brand and **off by default**
+  (`st_absentee_reminder_enabled` / `_delay_hours` / `_max`, hourly cron). Only
+  a person who has **not even asked for their code** is reminded: whoever
+  downloaded needs nothing, and whoever is stuck on a code already has the email.
+
+**One send per recipient** (since 1.23.0, backend wizard)
+
+- A wizard checkbox: *One send per recipient*. The upload stays **single**; the
+  objects are copied **inside the bucket** (`s3.copy_object`, `CopyObject` under
+  5 GiB, **multipart** copy above), so no second pass from the workstation and
+  **no byte** through Odoo.
+- Each person gets **their own** link, with their own expiry to extend, their
+  own download budget, their own log, and a watermark that can finally name
+  someone instead of an IP.
+- The **first** recipient keeps the original transfer: a batch of N people
+  stores **N** copies, not N+1. An "In this batch" button links the sends.
+- ⚠ `recipient_emails` keeps the **batch** list on every send (it is what the
+  sender's receipt announces and what an operator searches by). **Who may OPEN
+  a link is read from `_recipient_list()`**, which returns only
+  `fanout_recipient`: mixing the two would make the N links interchangeable.
+- The split **copies every setting of the send by default**, including those a
+  bridge module adds (confidentiality agreement, expiry policy): exclusion is
+  explicit (`_FANOUT_NOT_CARRIED`), because a forgotten setting would open N
+  links without the gate the original send carried.
+
+**Prepare a send, send it later** (since 1.23.0, backend wizard)
+
+- **"Keep as draft"** button in the wizard: the files go to storage, **nothing**
+  goes out. No link exists yet (the token only rotates at activation), no email
+  leaves, and **nobody** is registered on the Visitors tab. ⚠ Every send check
+  is run **when keeping** (brand allowlist, offered retention, daily quota):
+  discovering a refusal three days later means an upload for nothing.
+- On a draft's form: **Add a file**, remove a file with its line's button, then
+  **Send**. Adding goes through the same `_backend_add_file` as the wizard, so
+  through the deny-list, the brand's caps, the sanitised name and the opaque
+  key. Removal exists **only** on a draft: after the send, bytes have been
+  served and the log is evidence.
+- 🔴 **Who may act on a draft: its author, or a manager.** A holder of the
+  **User** group only acts on a draft they prepared (*Prepared by* field); a
+  **Manager** acts on all. The group alone was not enough: it is read-only on
+  `secure.transfer` and the four gestures elevate with `sudo()`, so a colleague
+  in the same role could delete the bytes of someone else's draft or send their
+  incomplete file. The gate is single (`_assert_draft_editable`) and repeated
+  where bytes come in (`action_add` of the add-file wizard), because a public
+  method is an RPC surface. ⚠ A draft born on the **public page** has no
+  operator: only a manager can pick it up, on purpose.
+- ⚠ The draft path goes back through the wizard's `action_send()`, with a
+  context flag (`st_keep_draft`): refusals a **bridge module** raises by
+  overriding that method (the confidentiality agreement of
+  `bf_securetransfer_sign`) therefore protect the draft by construction.
+- **The hourly clean-up no longer touches a kept draft**, with no end date
+  (`draft_kept`, excluded in `_gc_drafts_domain`). A draft that is **not** kept
+  is still harvested after `draft_ttl_hours` (24 by default), stored objects
+  included: it is an abandoned upload, not a file being prepared.
+- 🔴 **The only end that "no end" has**: the bucket lifecycle rule
+  (`st-expire-orphans-<prefix>`) deletes every object under the prefix after its
+  delay, whatever Odoo thinks. A kept draft's form **shows that date**, and
+  raises a red banner two weeks before. The date is the one actually **posted**
+  on the bucket (recorded by the action that posts it), never a computed one;
+  as long as no rule has been posted from this database under this key prefix,
+  the form says **"storage net unknown"** rather than invent a date. Since
+  1.26.0 the rule follows the longest retention by itself (see Operations).
+- Log: `draft_kept`, `draft_file_added`, `draft_file_removed`. With
+  `finalized`, these dates frame **what was prepared, and when** — the Law 25
+  trace of a file assembled before it was sent.
+- The menu list opens on **active and draft** transfers (the two filters
+  combine): a kept draft that does not show is a lost draft.
+
 ## Flow overview
 
 A visitor opens the public send page (`/secrets`, or `/to/<slug>` for a personal
@@ -181,10 +262,10 @@ budget / burn) → S3 purge (`deleted`, metadata + log kept) → hard GC after
 
 | Model | Role |
 |---|---|
-| `secure.transfer` (`mail.thread`) | The transfer: tokens (an ephemeral `upload_token` plus a sharing `token`), state, sender/recipients, message, password, OTP, expiry, counters, `burn_after_download`/`notify_on_download`. |
+| `secure.transfer` (`mail.thread`) | The transfer: tokens (an ephemeral `upload_token` plus a sharing `token`), state, sender/recipients, message, password, OTP, expiry, counters, `burn_after_download`/`notify_on_download`. Split sends: `fanout_recipient` (the only person this link opens for) and `fanout_parent_id` (the batch). Kept drafts: `draft_kept`, `draft_operator_id`, and the storage-net date the form shows. |
 | `secure.transfer.file` | A file: sanitised name, size (`Float` — never `Integer`, which overflows past 2.1 GB), extension (deny-list), an **opaque** `s3_key` (uuid, no PII), pinned ETag, state, multipart fields (`s3_upload_id`, `part_size`, `parts_total`). |
-| `secure.transfer.brand` | A brand: `domain`, `slug` + `fixed_recipient` (drop page), visuals, limits, `tier`, `sender_allowlist`/`recipient_allowlist`, `powered_by`, billing. |
-| `secure.transfer.audience` | **A confirmed visitor**: identity (email **or** mobile), state (`pending`/`confirmed`/`blocked`), abuse counters held **in the database** (codes sent, SMS, cooldown) and a per-person download budget. Created in both modes: in open audience it ADMITS, with named recipients it ANCHORS (per-name watermark, budget, agreement). Deletion is blocked outside the GC — it records who was let in. |
+| `secure.transfer.brand` | A brand: `domain`, `slug` + `fixed_recipient` (drop page), visuals, limits, `tier`, `sender_allowlist`/`recipient_allowlist`, `powered_by` + `powered_by_name`, absentee reminder settings, billing. |
+| `secure.transfer.audience` | **A person a transfer has reached**: identity (email **or** mobile), state (`invited`/`pending`/`confirmed`/`blocked`), reminders (`resend_count`), abuse counters held **in the database** (codes sent, SMS, cooldown) and a per-person download budget. Created in both modes: in open audience it ADMITS, with named recipients it ANCHORS (per-name watermark, budget, agreement). Deletion is blocked outside the GC — it records who was let in. |
 | `secure.transfer.access.log` | The append-only hash-chained log (Law 25). Writes blocked outside the control point; deletion only by the weekly GC. |
 | `secure.transfer.template` | **A data-room preset**: the settings of a link, named and replayable (mode, lifetime, visitor cap, per-person download budget, admitted domains, agreement). Carries no brand on purpose. Two constraints refuse at save time what would have failed in production: open mode on a brand that does not offer it, and SMS together with a domain list. |
 | `res.config.settings` | Tenant settings (`ir.config_parameter` params). |
@@ -304,9 +385,16 @@ change to the CORS origins:
   **plus** the union of active brand domains, **PUT only**,
   `ExposeHeaders: ETag` (**mandatory** — without it multipart fails silently in
   the browser), `MaxAge 3600`;
-- attempts the lifecycle rules (`AbortIncompleteMultipartUpload` 2 d +
-  `Expiration` 45 d) — a safety net behind the purge; if IDrive E2 refuses, the
-  failure is logged and the crons remain the primary mechanism;
+- posts the lifecycle rules on the tenant's key prefix
+  (`AbortIncompleteMultipartUpload` 2 d, which IDrive E2 refuses, then
+  `Expiration` at `max(60, longest retention + 15)` days) — a safety net behind
+  the purge — and **records the delay it posted**
+  (`bf_securetransfer.s3_lifecycle_applied`), which a kept draft's form shows.
+  The net **never goes down**: re-run after a brand lowered its retention, the
+  action keeps the delay already posted (read back from the bucket), otherwise
+  sends granted before the change would be deleted while still promised. When
+  a retention later goes **up**, the scheduled job "raise the bucket lifecycle
+  net" posts it again by itself (see Operations);
 - runs the **probes**: `GetBucketLocation == ca-east-1` (proof of residency),
   object lock OFF, a put/head/get/delete round trip, signed `Content-Length`
   enforced, batched `DeleteObjects`, a full multipart cycle. The report is shown
@@ -345,6 +433,13 @@ domain (`secret.client.com`), logo/favicon/colours, `paid` tier, its own limits
 (0 = the configuration default), `powered_by` unticked where relevant,
 `sender_allowlist`/`recipient_allowlist` to lock down usage.
 
+**"Powered by"**: when the box is ticked, the public page, the four emails and
+the access certificate print the **same** name, the brand's "Credited name"
+field (`powered_by_name`, "Symbifox" by default; empty = Symbifox). The name is
+**never** read from the company: the company served is not the one credited. A
+white-label brand unticks the box, and nothing is printed, certificate
+included.
+
 ### 6b. Personal drop page (`/to/<slug>`)
 
 On the brand record, fill in the **Page identifier (slug)** (for example `drop`)
@@ -380,7 +475,15 @@ on request, or **automatic recurring** billing through `sale.subscription`
 - **Crons**: a daily purge at 03:15 (expired → batched S3 deletion, metadata +
   log kept), an hourly GC of abandoned drafts (multipart abort + object
   deletion), a weekly GC of logs past retention (the only path that deletes log
-  entries).
+  entries), an hourly reminder of absent recipients (off by default, per
+  brand), and the **bucket net** at 03:40: raising a brand's maximum retention,
+  or a tier default in the settings, triggers this job at once; it raises the
+  `st-expire-orphans-<prefix>` rule and records the new delay. The daily pass
+  also reads the rule back from the bucket and puts it back when the shared
+  bucket configuration was rewritten lower (the read-merge-write of a shared
+  bucket is not atomic). It posts nothing while the net is unknown, never
+  lowers the rule, and never raises (Odoo 18 disables a job that keeps
+  failing).
 - **Purge failures**: a per-transfer counter; ≥ 5 failures → an admin activity.
   If the S3 endpoint is unreachable, the cron gives up cleanly and catches up on
   the next run.
@@ -394,9 +497,12 @@ on request, or **automatic recurring** billing through `sale.subscription`
 
 ## Tests
 
-`515 tests` across 16 files (lifecycle, S3 gateway, multipart, the public HTTP
+`672 tests` across 32 files (lifecycle, S3 gateway, multipart, the public HTTP
 routes, email/i18n, wizards, crons, operator actions, ACL surface, brand
-provisioning, download gates, chatter link retention). **Every** S3 interaction
+provisioning, download gates, chatter link retention, one send per recipient,
+kept drafts and their owner gate, "Powered by", wizard owner rules, the bucket
+lifecycle net). Run on a fresh database: `tests/common.py` (`BaseNeuve`)
+activates the two Canadian languages and an outgoing mail domain. **Every** S3 interaction
 is mocked on
 `odoo.addons.bf_securetransfer.models.s3`: the suite runs without boto3 and
 without a reachable endpoint. To run it on staging:
@@ -443,6 +549,11 @@ defensible; "beyond the reach of any foreign access" is not, until Phase 3
 
 | Version | Highlights |
 |---|---|
+| `18.0.1.26.0` | **The bucket net follows the longest retention.** The lifecycle rule `st-expire-orphans-<prefix>` kept the value of the day "Configure the S3 bucket" was last run: raising a brand's retention did not post it again, and a kept draft's form announced the old date. Raising a brand's `max_retention_days` or a tier default now **triggers** the new scheduled job `cron_st_sync_lifecycle`, which posts the rule again and records the delay; the draft form follows with no manual step. Nothing is sent to the provider inside the screen's transaction (a slow bucket would make saving a brand fail). **Ratchet**: neither the job nor the manual action lowers the net any more, because a brand brought down from 90 to 30 days still has sends granted for 90; the ratchet also reads the rule **back from the bucket**, not only the recorded value, and the daily pass restores our rule when a neighbour rewrote the shared configuration lower. Unknown net, no storage, or a provider refusal: nothing is posted or recorded, and the job does not raise. `s3.apply_lifecycle()` comes out of the action to be shared. **Upgrade (`-u`) required** (new scheduled job). |
+| `18.0.1.25.1` | **Wizards are scoped to their owner.** Each wizard carries a global record rule on its creator, so an internal user can no longer read a colleague's wizard rows before the autovacuum clears them (see "Wizards are owner-scoped" below). |
+| `18.0.1.25.0` | **"Powered by" names Symbifox, on all three surfaces.** The public page and the four emails read the public name of the company **served**, and the access certificate its **legal** name: a client could end up crediting itself, and one brand printed two different names on the page and on the certificate. New per-brand field `powered_by_name` ("Credited name", default "Symbifox"), the single source of the three surfaces through `_powered_by_label()`. The `pre-migrate` migration creates the column itself so it can **log** every brand that switches, with what it displayed before; a name already chosen is left alone. **Upgrade (`-u`) required** (new column, certificate). |
+| `18.0.1.24.0` | **Two public-page fixes.** File sizes follow the reader's language for the number as well as the unit ("2.9 Mo" mixed two conventions in one sentence), and the brand logo is served from a **relative** address, so a page served from another host no longer shows a broken image; the emails, which need an absolute address, already prefix it themselves. |
+| `18.0.1.23.0` | **One send per recipient, and seeing who never came.** Named recipients get their audience line **at send time** (`invited`, "Not yet visited"); per-line **Resend**, and a per-brand automatic reminder, off by default. **"One send per recipient"** in the wizard: N links, N expiries, N logs, objects copied **inside the bucket** without a second upload. `_recipient_list()` becomes the **only** source of "who may open this link". **Keep a send as a draft**: keep, add and remove files, send later; the hourly clean-up spares a kept draft, whose form shows the date the bucket lifecycle would delete its bytes. Who may act on a draft: its author, or a manager. **Upgrade (`-u`) required** (new columns, new state, catch-up migration for live sends). |
 | `18.0.1.22.0` | **Each text in its reader's language.** Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. The public pages follow the visitor's language, the access log and the certificate the transfer's, and each email, activity and alert its reader's. File sizes carry the reader's unit. The migration switches the shipped email templates and scheduled jobs to English only where they were not edited. See the Languages section. |
 | `18.0.1.21.9` | **Public pages on a database without fr_CA.** The pages pushed the product's default locale, fr_CA, into the request context as is, and Odoo refuses a language that is not active: on any database without fr_CA every public page answered 400 « Invalid language code ». The context, the e-mails and the access certificate now fall back to an active language (fr_CA when active, else the company's language, else the first active one). The stored locale and the page's strings do not change. |
 | `18.0.1.21.8` | **Extensible draft clean-up.** The hourly draft harvest now takes its domain from `_gc_drafts_domain(cutoff)`, so a module that deliberately keeps a draft open past the TTL (a document request waiting for its files until its own deadline) can leave its drafts out by extending the method. Nothing changes for the base module alone. |
@@ -469,6 +580,25 @@ defensible; "beyond the reach of any foreign access" is not, until Phase 3
 | `18.0.1.0.x` | Phase 2: burn-after-download, notify-on-download, paid custom domains, dashboard, billing, sender/recipient OTP, anti-piggyback allowlists, automatic suspension on abuse plus email notice. |
 | `18.0.1.0.0` | MVP: direct S3 upload (simple + multipart), tokenised links, expiry/password, hash-chained Law 25 log, multi-brand, purge/crons. |
 
+
+## Wizards are owner-scoped
+
+Each wizard of this module carries a global record rule,
+`[('create_uid', '=', user.id)]`, on read, write, create and unlink:
+
+- `secure.transfer.add.file.wizard`
+- `secure.transfer.extend.wizard`
+- `secure.transfer.reveal.wizard`
+- `secure.transfer.send.wizard`
+
+A transient model is a real table, and Odoo 18 does not restrict it to its
+creator on its own: without the rule, any internal user could read a
+colleague's wizard until the autovacuum cron cleared it. The rule is global,
+like core's own wizard rules, so administrators do not read others' wizard
+rows either. (A file uploaded in a wizard before it is saved is stored as an
+attachment with `res_id` 0: Odoo lets its uploader and system administrators
+read it, whatever the rule.) Tests: `tests/test_wizard_owner.py`.
+
 ## Licence
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
@@ -478,5 +608,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-10-21, this version converts automatically to
+- **Change Date**: on 2030-11-28, this version converts automatically to
   **LGPL-3.0-or-later**.

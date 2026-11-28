@@ -590,6 +590,42 @@ class TestSecureTransferHttpRoutes(BaseNeuve, HttpCase):
         draft.invalidate_recordset()
         self.assertTrue(draft._recipient_otp_required())
 
+    def test_finalize_cannot_move_the_sender_of_a_kept_draft(self):
+        """🔴 Réserve du constat 7 de la relecture adverse. Un brouillon GARDÉ a payé son
+        quota quotidien sous l'adresse d'où il a été composé, et
+        `action_finalize` ne le recompte pas un jour plus tard. Laisser cette
+        route réécrire `sender_email` faisait partir l'envoi d'une adresse qui
+        n'a jamais été comptée contre le plafond anti-abus."""
+        draft = self._create()
+        draft._register_file("doc.pdf", 4096)
+        draft.sudo().action_keep_draft()
+        result = self._result(self._rpc(
+            "/secrets/api/%s/finalize" % draft.upload_token,
+            {"sender_email": "quelqu-un-dautre@example.com",
+             "recipient_emails": "dest@example.com"}))
+        self.assertEqual(result.get("error"), "sender_locked", result)
+        draft.invalidate_recordset()
+        self.assertEqual(draft.sender_email, "sender@example.com")
+        self.assertEqual(draft.state, "draft", "rien ne part")
+
+    def test_finalize_still_sets_the_sender_of_a_kept_draft_without_one(self):
+        """⚠ Le refus est NARROW à dessein. Sur la page publique, la fiche
+        naît au premier fichier déposé, souvent avant que l'adresse ne soit
+        tapée : un brouillon gardé qui n'en porte aucune doit pouvoir finir
+        son envoi, sinon le rattrapage d'un brouillon public le condamne."""
+        draft = self._create(sender_email="")
+        self.assertFalse(draft.sender_email)
+        draft._register_file("doc.pdf", 4096)
+        draft.sudo().action_keep_draft()
+        with patch(S3_MOD + ".head_object", side_effect=self._head_for(draft)):
+            self._result(self._rpc(
+                "/secrets/api/%s/finalize" % draft.upload_token,
+                {"sender_email": "sender@example.com",
+                 "recipient_emails": "dest@example.com"}))
+        draft.invalidate_recordset()
+        self.assertEqual(draft.sender_email, "sender@example.com")
+        self.assertEqual(draft.state, "active")
+
     def test_finalize_caps_the_download_budget(self):
         """The budget is a ceiling the sender sets on their own transfer; an
         unbounded value posted by a client would turn a confidentiality option

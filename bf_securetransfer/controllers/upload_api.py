@@ -480,6 +480,19 @@ class SecureTransferUploadApi(Controller):
             if not sender_email:
                 return _err("invalid_email",
                             _("Invalid sender email address."))
+            # 🔴 Un brouillon GARDÉ a déjà payé son quota quotidien sous
+            # l'adresse d'où il a été composé, et `action_finalize` ne le
+            # recompte pas le lendemain. Laisser cette route le réécrire ici
+            # faisait partir l'envoi d'une adresse qui n'a jamais été comptée.
+            # Refus NARROW à dessein : seulement quand le brouillon est gardé
+            # ET porte déjà une adresse ET qu'on en demande une autre. Un
+            # brouillon de la page publique créé sans adresse — le cas
+            # ordinaire, la fiche naît au premier fichier déposé — finalise
+            # toujours normalement.
+            if (transfer.draft_kept and transfer.sender_email
+                    and sender_email != transfer.sender_email):
+                return _err("sender_locked", _(
+                    "The sender of a kept draft cannot be changed."))
             updates["sender_email"] = sender_email
         if "sender_name" in params:
             updates["sender_name"] = _clean_sender_name(params.get("sender_name"))

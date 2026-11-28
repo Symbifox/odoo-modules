@@ -1,9 +1,25 @@
 """Brand resolution by request Host: exact match, case, port,
 X-Forwarded-Host chains, default fallback, single-default constraint."""
+import base64
+import io
+
 from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
 
 from .common import BaseNeuve
+
+
+def _png():
+    """Un PNG 1x1 réel, FABRIQUÉ et non recopié.
+
+    ⚠️ Une constante base64 écrite à la main avait un octet de décalage : PIL
+    lisait un nom de bloc «  IEN » et l'écriture du champ Binary levait, loin
+    de ce que l'essai vérifie.
+    """
+    from PIL import Image
+    tampon = io.BytesIO()
+    Image.new("RGB", (1, 1), (41, 171, 226)).save(tampon, format="PNG")
+    return tampon.getvalue()
 
 
 @tagged("post_install", "-at_install")
@@ -165,13 +181,45 @@ class TestBrandHostResolution(BaseNeuve, TransactionCase):
                     "powered_by_name", "tagline", "footer_html"):
             self.assertIn(key, v)
         self.assertTrue(v["primary"].startswith("#") or v["primary"])
-        # powered-by credits the operator's PUBLIC brand name
-        # (appointment_brand_name) when set, else res.company.name.
+        # « Powered by » credits the brand's own name, never the company
+        # served: see test_propulse_par.
+        self.assertEqual(v["powered_by_name"],
+                         (self.default.powered_by_name or "").strip() or "Symbifox")
+
+    def test_le_logo_est_servi_sur_la_meme_origine_que_la_page(self):
+        """Si ça casse : le logo de la page publique repointe le domaine de la
+        marque, et toute page servie ailleurs (environnement d'essai, domaine pas encore
+        branché, `public_base_url` différent) montre une image brisée — le
+        défaut mesuré le 2026-10-10 sur la page Boréal.
+
+        Les courriels, eux, ont besoin d'absolu : ils préfixent déjà par
+        `_share_base_url()` toute adresse qui ne commence pas par http (voir
+        test_emails_i18n), donc la forme relative leur convient.
+        """
+        self.default.sudo().write({
+            "logo": base64.b64encode(_png()),
+            "domain": "envoi.marque-essai.test",
+        })
+        url = self.default._visuals()["logo_url"]
+        self.assertTrue(url.startswith("/web/image/"), url)
+        self.assertNotIn("marque-essai.test", url)
+        # Rien à inscrire dans la CSP : l'image vient de chez nous.
+        self.assertFalse(self.default._visuals()["logo_host"])
+
+    def test_un_logo_hors_de_chez_nous_reste_absolu(self):
+        """Un logo public hébergé ailleurs (appointment_brand_logo_url) garde
+        son adresse entière, et son hôte reste exposé pour la CSP."""
         company = self.default.company_id
-        self.assertEqual(
-            v["powered_by_name"],
-            getattr(company, "appointment_brand_name", False) or company.name,
-        )
+        if "appointment_brand_logo_url" not in company._fields:
+            self.skipTest("bf_appointment absent")
+        self.default.sudo().logo = False
+        vals = {"appointment_brand_logo_url": "https://cdn.ailleurs.test/l.png"}
+        if "report_brand_logo" in company._fields:
+            vals["report_brand_logo"] = False
+        company.sudo().write(vals)
+        v = self.default._visuals()
+        self.assertEqual(v["logo_url"], "https://cdn.ailleurs.test/l.png")
+        self.assertEqual(v["logo_host"], "https://cdn.ailleurs.test")
 
 
 @tagged("post_install", "-at_install")

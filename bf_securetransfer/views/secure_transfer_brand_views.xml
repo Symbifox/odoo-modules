@@ -56,6 +56,8 @@
                             <field name="color_primary" widget="color"/>
                             <field name="color_dark" widget="color"/>
                             <field name="powered_by"/>
+                            <field name="powered_by_name" invisible="not powered_by"
+                                   placeholder="Symbifox"/>
                         </group>
                     </group>
                     <group>
@@ -72,6 +74,15 @@
                             <field name="allow_burn"
                                    help="Offer the sender the &quot;destroy after first download&quot; option."/>
                             <field name="watermark_downloads"/>
+                        </group>
+                        <group string="Reminding the recipients who never came">
+                            <field name="st_absentee_reminder_enabled"/>
+                            <field name="st_absentee_reminder_delay_hours"
+                                   invisible="not st_absentee_reminder_enabled"/>
+                            <field name="st_absentee_reminder_max"
+                                   invisible="not st_absentee_reminder_enabled"/>
+                            <div colspan="2" class="text-muted"
+                                 invisible="not st_absentee_reminder_enabled">Only a named recipient who has not even asked for their code is reminded. Someone who downloaded, or who is merely stuck on a code, already has the email and is left alone.</div>
                         </group>
                     </group>
                     <group string="Billing (paid tier)" invisible="tier != 'paid'">

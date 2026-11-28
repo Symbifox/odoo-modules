@@ -50,6 +50,21 @@ DENY_EXTENSIONS = frozenset(
 _GB, _MB, _KB = 1073741824, 1048576, 1024
 
 
+def _separateur(env, texte):
+    """``texte``, un nombre déjà formaté, avec le séparateur décimal du lecteur.
+
+    Le français écrit « 2,9 Mo » là où l'anglais écrit 2.9 MB, et les formats de
+    Python rendent toujours un point. Le séparateur se lit sur la MÊME langue
+    que l'unité, celle de ``env`` (``env.lang``, la source de ``env._``) : un
+    « 2.9 Mo » vient de deux sources de langue dans une seule phrase. Une langue
+    absente ou inactive laisse le point, qui est le défaut d'Odoo lui-même.
+    Seul le séparateur change ; le nombre de décimales reste celui de l'appelant.
+    """
+    separateur = env["res.lang"].sudo()._lang_get(
+        env.lang or "en_US").decimal_point or "."
+    return texte.replace(".", separateur) if separateur != "." else texte
+
+
 def size_label(env, nbytes, limit=False):
     """A byte count for a reader, with its unit in ``env``'s language.
 
@@ -62,12 +77,12 @@ def size_label(env, nbytes, limit=False):
     nbytes = nbytes or 0
     if limit:
         if nbytes >= _GB:
-            return env._("%s GB", "%g" % (nbytes / float(_GB)))
-        return env._("%s MB", "%g" % (nbytes / float(_MB)))
+            return env._("%s GB", _separateur(env, "%g" % (nbytes / float(_GB))))
+        return env._("%s MB", _separateur(env, "%g" % (nbytes / float(_MB))))
     if nbytes >= _GB:
-        return env._("%s GB", "%.2f" % (nbytes / float(_GB)))
+        return env._("%s GB", _separateur(env, "%.2f" % (nbytes / float(_GB))))
     if nbytes >= _MB:
-        return env._("%s MB", "%.1f" % (nbytes / float(_MB)))
+        return env._("%s MB", _separateur(env, "%.1f" % (nbytes / float(_MB))))
     if nbytes >= _KB:
         return env._("%s KB", "%.0f" % (nbytes / float(_KB)))
     return env._("%s B", "%d" % nbytes)
@@ -355,10 +370,108 @@ class SecureTransferFile(models.Model):
         })
         return True
 
+    def _copy_to(self, transfer):
+        """A verified twin of this file under ``transfer``, the object copied
+        inside the bucket. Returns the new ``secure.transfer.file``.
+
+        Deliberately NOT routed through ``secure.transfer._register_file``,
+        unlike every other way a file row is born: that method is the admission
+        desk (deny list, per-transfer file and byte ceilings, daily volume
+        quota per IP, sanitized display name, server-derived mimetype). This
+        file was already admitted on the sibling it is copied from. Passing it
+        again would charge the sender's daily quota once per recipient and
+        could refuse, halfway through a fan-out, a file that is already stored
+        and already promised to someone.
+        """
+        self.ensure_one()
+        if self.state != "verified":
+            raise UserError(_(
+                "Only a verified file can be copied; \"%s\" is not.",
+                self.filename))
+        Files = self.env["secure.transfer.file"]
+        twin = Files.create({
+            "transfer_id": transfer.id,
+            "filename": self.filename,
+            "extension": self.extension,
+            "size": self.size,
+            "mimetype": self.mimetype,
+            "s3_key": Files._key_for(transfer),
+            # One server-side copy, so the row must say "simple": the resume
+            # machinery would otherwise be consulted for a file that has no
+            # upload id and nothing to resume.
+            "upload_mode": "simple",
+            "state": "uploading",
+            # The scan verdict travels with the bytes: they are the same bytes.
+            # Re-declaring a clean file "not scanned" would quietly downgrade
+            # what the download route checks.
+            "scanned": self.scanned,
+        })
+        s3.copy_object(self.env, self.s3_key, twin.s3_key,
+                       size=int(self.size_confirmed or self.size))
+        # Same evidence as any other upload: HEAD the destination, confirm the
+        # exact size, pin ITS OWN ETag.
+        if not twin._verify_on_s3():
+            raise UserError(_(
+                "The copy of \"%s\" could not be verified on storage.",
+                self.filename))
+        return twin
+
+    def action_remove_from_draft(self):
+        """Retirer cette pièce d'un brouillon : octets effacés, ligne retirée.
+
+        ⚠ Le geste n'existe QUE sur un brouillon, et c'est ce qui le rend
+        légitime : aucun lien n'a encore été émis (le jeton tourne à
+        `_activate()`), donc personne ne perd un fichier qu'on lui avait
+        promis. Sur un envoi parti, le chemin reste la purge, qui garde la
+        trace de ce qui a été servi.
+
+        L'ordre compte : le journal d'abord, les octets ensuite, la ligne en
+        dernier. Un effacement au stockage qui échoue laisse donc la ligne en
+        place, plutôt qu'une ligne disparue et un objet payé que plus rien ne
+        réclame.
+
+        ⚠ Et il ne laisse AUCUNE entrée au journal : le `UserError` défait la
+        transaction, l'écriture en ajout seul comprise. C'est le bon
+        comportement — un journal ne doit pas dire « retiré » d'un fichier qui
+        est encore là — mais le commentaire d'avant promettait le contraire
+        (relevé en relecture adverse).
+        """
+        self.ensure_one()
+        transfer = self.transfer_id
+        transfer._assert_draft_editable()
+        # ⚠ La taille se dit dans la langue du JOURNAL, pas dans celle de
+        # l'opérateur : « 1,2 Mo » et « 1.2 MB » dans la même note, c'est le
+        # certificat d'accès qui en hérite.
+        log_env = transfer._log_env()
+        transfer._log(
+            "draft_file_removed", actor=self.env.user.login,
+            note=log_env._(
+                "\"%(name)s\" (%(size)s) removed from the draft by %(login)s")
+            % {
+                "name": self.filename,
+                "size": self.with_env(log_env)._size_label(),
+                "login": self.env.user.login,
+            },
+        )
+        if not self.sudo()._s3_delete():
+            raise UserError(_(
+                "The file \"%s\" could not be removed from storage. Nothing "
+                "was changed; try again in a moment.", self.filename))
+        self.sudo().unlink()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Secure transfer"),
+            "res_model": transfer._name,
+            "res_id": transfer.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
     def _s3_delete(self):
         """Best-effort removal of this file's S3 footprint (abort a pending
-        MPU, delete the object). Missing objects count as success. Returns
-        True when everything is gone."""
+        MPU, delete the object). A missing object — and a multipart upload the
+        provider no longer holds — count as success. Returns True when
+        everything is gone."""
         self.ensure_one()
         ok = True
         if self.s3_upload_id:
@@ -366,14 +479,39 @@ class SecureTransferFile(models.Model):
                 s3.mpu_abort(self.env, self.s3_key, self.s3_upload_id)
                 self.write({"s3_upload_id": False})
             except Exception as e:  # noqa: BLE001 — best-effort, caller decides
-                _logger.warning(
-                    "bf_securetransfer: abort MPU en échec pour %s : %s",
-                    self.s3_key, e,
-                )
-                ok = False
+                # 🔴 Le fournisseur abandonne les parties d'un téléversement
+                # inachevé après 2 jours (`st-abort-incomplete-mpu`). Passé ce
+                # délai, rien ne reste à abandonner, et s'arrêter ici rendait
+                # un brouillon GARDÉ à la fois inenvoyable — `action_finalize`
+                # refuse un téléversement inachevé — et invidable, sans fin :
+                # avant le brouillon gardé, les 24 h du ménage absorbaient ce cas. Un
+                # objet absent compte déjà comme un succès ; un téléversement
+                # absent aussi.
+                # ⚠ Mais SEULEMENT absent, et établi au listage, pas au code
+                # d'erreur de l'abandon : si le MPU est toujours là, ou si on
+                # n'a pas pu regarder, c'est un vrai échec et ses parties se
+                # paient. Voir `s3.mpu_is_gone`.
+                if s3.mpu_is_gone(self.env, self.s3_key, self.s3_upload_id):
+                    _logger.info(
+                        "bf_securetransfer: le fournisseur ne tient plus le "
+                        "MPU de %s (abandon refusé : %s) — compté comme "
+                        "effacé", self.s3_key, e,
+                    )
+                    self.write({"s3_upload_id": False})
+                else:
+                    _logger.warning(
+                        "bf_securetransfer: abort MPU en échec pour %s : %s",
+                        self.s3_key, e,
+                    )
+                    ok = False
         failed = s3.delete_keys(self.env, [self.s3_key])
         if failed:
             ok = False
-        if ok:
-            self.write({"state": "purged"})
+        # ⚠ Relevé en relecture adverse : un `state = "purged"` vivait ici, et c'était
+        # une écriture MORTE sur les DEUX seuls chemins d'appel — l'opérateur
+        # (`action_remove_from_draft`) et la route publique de retrait font
+        # tous deux `unlink()` juste après. L'état d'une ligne qui disparaît ne
+        # se lit nulle part. La purge d'un envoi parti, elle, écrit `purged`
+        # sur les lignes QUI RESTENT, et elle le fait elle-même
+        # (`secure_transfer._purge_s3`).
         return ok

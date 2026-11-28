@@ -449,14 +449,28 @@ class TestMultipartUpload(BaseNeuve, TransactionCase):
         delete.assert_called_once()
         self.assertEqual(delete.call_args.args[1], [f.s3_key])
         self.assertFalse(f.s3_upload_id)
-        self.assertEqual(f.state, "purged")
+        # ⚠ L'état n'est PAS touché (relevé en relecture adverse) : les deux
+        # seuls appelants — le bouton de retrait d'un brouillon et la route
+        # publique de retrait — font `unlink()` juste après, donc le
+        # `state = "purged"` qui vivait ici était une écriture morte. L'état
+        # d'une ligne qui disparaît ne se lit nulle part, et la purge d'un
+        # envoi parti écrit `purged` elle-même, sur les lignes QUI RESTENT.
+        self.assertEqual(f.state, "uploading")
 
     def test_s3_delete_keeps_the_trace_when_the_abort_fails(self):
-        """Marking the file "purged" while its multipart upload is still alive
-        on the bucket loses the only pointer we have to it: nothing would ever
-        abort it again and it would be billed as stored bytes."""
+        """Un abandon raté sur un téléversement multipart TOUJOURS VIVANT est
+        un vrai échec : la ligne reste, et son `UploadId` avec elle. Le perdre
+        serait perdre le seul pointeur vers des octets facturés que plus rien
+        n'abandonnerait jamais.
+
+        ⚠ Le listage est bouchonné et montre le téléversement : c'est lui qui
+        tranche « disparu ou pas » depuis la relecture adverse, et il
+        doit rester hors réseau dans les essais."""
         f = self._initiated()
+        encore_la = [{"key": f.s3_key, "upload_id": UPLOAD_ID,
+                      "initiated": None}]
         with patch(S3_MOD + ".mpu_abort", side_effect=Exception("boom")) as abort, \
+                patch(S3_MOD + ".list_stale_mpus", return_value=encore_la), \
                 patch(S3_MOD + ".delete_keys", return_value=[]) as delete:
             self.assertFalse(f._s3_delete())
         abort.assert_called_once()

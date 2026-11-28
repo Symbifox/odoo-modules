@@ -77,7 +77,13 @@
                             <t t-if="doc.sender_email"> &lt;<t t-out="doc.sender_email"/>&gt;</t>
                         </td>
                         <td style="padding:3px 0; color:#6b7280;">Recipient(s)</td>
-                        <td style="padding:3px 0;" t-out="doc.recipient_emails or ''"/>
+                        <td style="padding:3px 0;">
+                            <t t-out="doc.recipient_label or ''"/>
+                            <div t-if="doc.fanout_recipient"
+                                 style="color:#6b7280; font-size:11px;">
+                                Individual send: this link served this one recipient only, out of several sent together.
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td style="padding:3px 0; color:#6b7280;">Created on</td>
@@ -179,11 +185,10 @@
                 <div style="margin-top:14px; font-size:8pt; color:#9ca3af;">
                     Certificate issued on <t t-out="c['generated_at']"/> by
                     <t t-out="c['generated_by']"/>.
-                    <!-- « Propulsé par » crédite l'OPÉRATEUR de l'instance, jamais
-                         la marque servie — et il se lit sur la société, sinon un
-                         déploiement en marque blanche imprime « Blue Fox » sur le
-                         certificat que son client oppose au sien. -->
-                    <t t-if="brand.powered_by"> Powered by <t t-out="brand.company_id.name"/>.</t>
+                    <!-- Même source que la page et les courriels : le
+                         nom crédité de la marque, jamais la société servie. Une
+                         marque blanche a la mention éteinte, rien ne s'imprime. -->
+                    <t t-if="brand.powered_by"> Powered by <t t-out="brand._powered_by_label()"/>.</t>
                 </div>
             </div>
         </t>

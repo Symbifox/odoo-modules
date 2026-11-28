@@ -147,6 +147,18 @@ class SecureSendWizard(models.TransientModel):
     notify_on_join = fields.Boolean(
         string="Notify me of each new visitor", default=True,
     )
+    one_per_recipient = fields.Boolean(
+        string="One send per recipient",
+        default=False,
+        help="Each recipient gets their own link, their own expiry to "
+             "extend and their own journal, instead of a link shared by "
+             "everyone. The files are uploaded once and copied inside "
+             "storage.",
+    )
+    one_per_recipient_hint = fields.Char(
+        string="What this will do",
+        compute="_compute_one_per_recipient_hint",
+    )
     retention_days = fields.Integer(string="Available (days)", default=7)
     password = fields.Char(
         string="Password (optional)",
@@ -272,6 +284,35 @@ class SecureSendWizard(models.TransientModel):
             "bf_securetransfer.group_securetransfer_manager")
         for rec in self:
             rec.sender_locked = locked
+
+    @api.depends("one_per_recipient", "partner_ids", "extra_emails",
+                 "attachment_ids", "audience_mode")
+    def _compute_one_per_recipient_hint(self):
+        """Dire, AVANT l'envoi, combien de liens et combien de copies.
+
+        La case est bon marché à cocher et coûteuse à défaire : une fois les
+        liens partis, on ne recolle pas N envois en un. L'indice annonce donc
+        les deux chiffres que l'expéditrice ne peut pas deviner."""
+        for rec in self:
+            rec.one_per_recipient_hint = ""
+            if not rec.one_per_recipient or rec.audience_mode == "open":
+                continue
+            try:
+                emails, _sms = rec._resolve_recipients()
+            except UserError:
+                # L'assistant se calcule à chaque frappe : une liste encore
+                # incomplète n'est pas une erreur à ce stade.
+                continue
+            if len(emails) < 2:
+                rec.one_per_recipient_hint = _(
+                    "A single recipient: this will be an ordinary send.")
+                continue
+            files = len(rec.attachment_ids)
+            rec.one_per_recipient_hint = _(
+                "%(links)s individual links; %(copies)s file copies in "
+                "storage, made without a second upload.",
+                links=len(emails), copies=len(emails) * files,
+            )
 
     @api.depends_context("uid")
     def _compute_upload_hint(self):
@@ -448,6 +489,40 @@ class SecureSendWizard(models.TransientModel):
         return vals
 
     def action_send(self):
+        """Composer, puis envoyer.
+
+        🔴 Le drapeau de contexte, et pas un deuxième chemin de composition :
+        les modules ponts posent leurs refus EN SURCHARGE DE CETTE MÉTHODE.
+        `bf_securetransfer_sign` y refuse une
+        entente exigée sur une marque sans document, et une entente exigée
+        avec code par SMS. `action_save_draft` partait droit dans `_compose()`
+        et contournait donc ces deux gardes, en silence ; `action_send_now()`
+        passait ensuite par `action_finalize()`, qui ne les a jamais connues.
+        En faisant repasser le brouillon par ici, toute surcharge présente ou
+        future le protège par construction, sans que le pont ait à bouger.
+        Vérifié : la surcharge du pont ne fait que des contrôles AVANT
+        `super()`, donc un simple « garder » n'exécute rien d'inattendu.
+        """
+        return self._compose(
+            keep_draft=bool(self.env.context.get("st_keep_draft")))
+
+    def action_save_draft(self):
+        """Composer et s'arrêter là : rien ne part, le brouillon attend.
+
+        Pour l'envoi qui se prépare avant d'être complet — les pièces
+        justificatives téléversées aujourd'hui, le document signé ajouté quand
+        il revient. Tous les contrôles de
+        `action_send` sont joués ici aussi, et c'est voulu : un brouillon
+        refusé à l'envoi trois jours plus tard, pour une adresse hors liste
+        blanche ou une durée que la marque n'offre pas, aurait fait téléverser
+        pour rien et perdre la pièce qu'on attendait.
+
+        ⚠ On repasse par `action_send` à dessein, par un drapeau de contexte :
+        voir son docstring. Un second chemin contournait les refus des ponts.
+        """
+        return self.with_context(st_keep_draft=True).action_send()
+
+    def _compose(self, keep_draft=False):
         self.ensure_one()
         if not self.env.user.has_group(
                 "bf_securetransfer.group_securetransfer_user"):
@@ -463,6 +538,12 @@ class SecureSendWizard(models.TransientModel):
             raise UserError(_(
                 "The SMS channel is not configured (VoIP.ms): visitors "
                 "could not receive a code on their mobile."))
+
+        if self.one_per_recipient and open_audience:
+            raise UserError(_(
+                "« One send per recipient » and the open audience are "
+                "opposites: an open-audience link names nobody, so there "
+                "is nobody to split it between."))
 
         brand = self.brand_id
         # A drop page forces every send to its own owner. It is excluded from
@@ -559,11 +640,20 @@ class SecureSendWizard(models.TransientModel):
             # does. Left out, a backend send silently opted out of the notice
             # the same brand gives every public sender.
             "notify_on_download": brand.notify_on_download,
+            # Lu par `_activate()`, qui fend l'envoi une seule fois, au
+            # moment où les fichiers sont vérifiés et où les liens partent.
+            "fanout_pending": bool(self.one_per_recipient and not open_audience),
             # Any English (en_US included: the only language of some
             # databases) is en_CA; it used to fall back to fr_CA, and the
             # recipients without a contact got the transfer in French.
             "locale": "en_CA" if (self.env.user.lang or "").startswith("en")
             else "fr_CA",
+            # Qui a composé cet envoi : c'est ce que lit la porte des quatre
+            # gestes du brouillon (`_assert_draft_editable`), puisque le
+            # transfert est créé en `sudo()` et que `create_uid` nommerait le
+            # superusager. `ua_created` ci-dessous est une trace d'origine,
+            # une chaîne libre : elle ne peut pas servir de propriétaire.
+            "operator_id": self.env.user.id,
             "ip_created": "backend",
             "ua_created": "backend:%s" % self.env.user.login,
             "state": "draft",
@@ -618,9 +708,16 @@ class SecureSendWizard(models.TransientModel):
                     "recipients": len(emails),
                     "files": len(files),
                 })
-        # Activate: rotates the token, arms expiry, sends the link-only
-        # notification (secure-message template) + the sender receipt.
-        transfer._activate()
+        if keep_draft:
+            # Rien ne part : pas de jeton rendu public, pas de lien, pas de
+            # courriel, pas de ligne d'audience (le `write` ne synchronise que
+            # sur un envoi actif). Le brouillon sort du ménage horaire, et
+            # c'est tout ce que `draft_kept` fait.
+            transfer.action_keep_draft(actor=self.env.user.login)
+        else:
+            # Activate: rotates the token, arms expiry, sends the link-only
+            # notification (secure-message template) + the sender receipt.
+            transfer._activate()
 
         # The operator's copy has served its purpose. Leaving it behind would
         # keep the confidential bytes in Odoo's filestore — inside the nightly
@@ -653,6 +750,14 @@ class SecureSendWizard(models.TransientModel):
     # touching the attachment. Two hours is well past any live composing
     # session, and this is confidential material: it does not get to linger.
     _ATTACHMENT_GC_HOURS = 2
+    # ⚠ Le balayage couvre TOUS les transitoires qui tiennent une copie
+    # d'opérateur, pas seulement celui-ci : l'assistant qui ajoute une pièce à
+    # un brouillon gardé en tient une aussi, et son cron n'existe pas. Une
+    # liste ici plutôt qu'une deuxième minuterie, qui aurait vieilli à part.
+    _ATTACHMENT_GC_MODELS = (
+        "secure.transfer.send.wizard",
+        "secure.transfer.add.file.wizard",
+    )
 
     @api.model
     def _gc_orphan_attachments(self):
@@ -662,7 +767,7 @@ class SecureSendWizard(models.TransientModel):
         """
         cutoff = fields.Datetime.now() - timedelta(hours=self._ATTACHMENT_GC_HOURS)
         orphans = self.env["ir.attachment"].sudo().search([
-            ("res_model", "=", self._name),
+            ("res_model", "in", list(self._ATTACHMENT_GC_MODELS)),
             ("create_date", "<", cutoff),
         ])
         count = len(orphans)

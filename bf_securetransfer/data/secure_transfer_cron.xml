@@ -16,9 +16,15 @@
             <field name="active" eval="True"/>
         </record>
 
-        <!-- Hourly garbage collection of abandoned drafts: abort pending
+        <!-- Hourly garbage collection of ABANDONED drafts: abort pending
              multipart uploads, delete orphan objects, cancel the draft.
-             Offset to :35 to stay clear of other on-the-hour crons. -->
+             Offset to :35 to stay clear of other on-the-hour crons.
+             ⚠ A draft marked `draft_kept` is left alone, with no end date: it
+             is an operator's prepared send waiting for a missing piece, not
+             an interrupted upload. The exclusion lives in
+             `_gc_drafts_domain`, so every caller of that domain inherits
+             it. -->
+
         <record id="cron_st_gc_drafts" model="ir.cron">
             <field name="name">Secure transfer: cleanup of abandoned drafts</field>
             <field name="model_id" ref="model_secure_transfer"/>
@@ -74,6 +80,41 @@
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
             <field name="nextcall" eval="(DateTime.now() + timedelta(days=2)).strftime('%Y-%m-%d 04:45:00')"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Hourly reminder of the recipients who never came: the link is
+             sent again, to that one person, as long as their brand asks for
+             it (off by default) and their budget is not spent. :20 to stay
+             clear of the draft GC on :35 and the link masking on :50. -->
+        <record id="cron_st_remind_absentees" model="ir.cron">
+            <field name="name">Secure transfer: remind recipients who never came</field>
+            <field name="model_id" ref="model_secure_transfer"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_remind_absentees()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(hours=1)).strftime('%Y-%m-%d %H:20:00')"/>
+            <field name="active" eval="True"/>
+        </record>
+
+
+        <!-- Raise the bucket's lifecycle net when a retention went up.
+             The rule `st-expire-orphans-<prefix>` is computed from the longest
+             retention a brand may grant; raising a brand's retention used to
+             leave the rule (and the date shown on a kept draft) where the
+             last "Configure the S3 bucket" had put it. Triggered right away
+             when a brand or the tier defaults raise a retention; this daily
+             pass catches up whatever a trigger could not do. It never LOWERS
+             the net. 03:40, after the purge at 03:15. -->
+        <record id="cron_st_sync_lifecycle" model="ir.cron">
+            <field name="name">Secure transfer: raise the bucket lifecycle net</field>
+            <field name="model_id" ref="model_secure_transfer"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_sync_lifecycle()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 03:40:00')"/>
             <field name="active" eval="True"/>
         </record>
 

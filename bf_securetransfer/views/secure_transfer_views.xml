@@ -28,6 +28,7 @@
                        decoration-warning="state == 'expired'"
                        decoration-danger="state == 'suspended'"/>
                 <field name="create_date" optional="show"/>
+                <field name="draft_kept" string="Kept draft" optional="hide"/>
                 <field name="company_id" groups="base.group_multi_company" optional="hide"/>
             </list>
         </field>
@@ -40,6 +41,32 @@
         <field name="arch" type="xml">
             <form create="false">
                 <header>
+                    <!-- Les trois gestes du brouillon. Ils n'existaient pas :
+                         la barre entière était invisible hors de
+                         active/expired/suspended, donc un brouillon posé par
+                         la page publique ou par RPC était muet à l'écran.
+                         ⚠ `draft_editable_by_me` répète à l'écran la porte de
+                         `_assert_draft_editable` : propriétaire, ou
+                         gestionnaire. Le groupe seul laissait un collègue du
+                         rôle Utilisateur voir trois boutons sur le brouillon
+                         de quelqu'un d'autre et n'apprendre le refus qu'en
+                         cliquant. L'écran n'est PAS la garde : elle est au
+                         modèle, parce qu'une méthode publique est une surface
+                         RPC. -->
+                    <field name="draft_editable_by_me" invisible="1"/>
+                    <button name="action_send_now" type="object" string="Send"
+                            class="oe_highlight"
+                            groups="bf_securetransfer.group_securetransfer_user"
+                            invisible="state != 'draft' or not draft_editable_by_me"
+                            confirm="The link goes out to the recipients now, each with their own code. Once sent, the files and the recipients can no longer be changed. Continue?"/>
+                    <button name="action_add_file" type="object" string="Add a file"
+                            groups="bf_securetransfer.group_securetransfer_user"
+                            invisible="state != 'draft' or not draft_editable_by_me"/>
+                    <button name="action_keep_draft" type="object"
+                            string="Keep this draft"
+                            groups="bf_securetransfer.group_securetransfer_user"
+                            invisible="state != 'draft' or draft_kept or not draft_editable_by_me"
+                            help="The hourly cleanup removes any draft older than its grace period, files included. A kept draft waits as long as it has to."/>
                     <button name="action_reveal_link" type="object" string="Reveal link"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="state != 'active'"/>
@@ -49,10 +76,10 @@
                             invisible="force_recipient_otp or state not in ('active', 'expired', 'suspended')"
                             confirm="The link will no longer open without a code sent to one of the recipient addresses. Emails already sent are not recalled. Continue?"/>
                     <button name="action_resend_emails" type="object"
-                            string="Re-send the link to the recipients"
+                            string="Re-send the link to everyone"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="state != 'active'"
-                            confirm="The link email goes back out to each recipient, in their language. The receipt is not re-sent to the sender. Continue?"/>
+                            confirm="The link email goes back out to EVERY recipient of this link, in their language. To reach a single person, use &quot;Send again&quot; on their line in the Visitors tab. The receipt is not re-sent to the sender. Continue?"/>
                     <button name="action_extend_expiry" type="object" string="Extend the expiry"
                             groups="bf_securetransfer.group_securetransfer_manager"
                             invisible="state not in ('active', 'expired')"/>
@@ -82,6 +109,72 @@
                            statusbar_visible="draft,active,expired,deleted"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_fanout_batch" type="object"
+                                class="oe_stat_button" icon="fa-users"
+                                invisible="fanout_count == 0">
+                            <field name="fanout_count" widget="statinfo"
+                                   string="In this batch"/>
+                        </button>
+                    </div>
+                    <!-- ⚠ Pas de balise en ligne dans ces textes : un
+                         `<span>` ou un `<strong>` au milieu d'une phrase fond
+                         les deux morceaux en un seul msgid, markup compris, et
+                         la traduction casse à la première réindentation
+                         (mesuré sur l'export du catalogue). -->
+                    <field name="draft_kept" invisible="1"/>
+                    <div class="alert alert-info" role="alert"
+                         invisible="state != 'draft' or not draft_kept">
+                        <div>
+                            A kept draft: the files are on storage, no link exists yet and nothing has been sent. It waits here as long as it has to. Add the missing piece, then send.
+                        </div>
+                        <!-- ⚠ Un texte nu à côté du champ, jamais dans un
+                             `<span>` : la balise entre dans le msgid, et deux
+                             `<span>` voisins n'en font qu'un seul, markup et
+                             indentation compris. Mesuré sur l'export. -->
+                        <div class="text-muted">
+                            Kept since
+                            <field name="draft_kept_at" nolabel="1"
+                                   readonly="1" class="oe_inline"/>
+                        </div>
+                        <field name="draft_storage_net_unknown" invisible="1"/>
+                        <div class="text-muted"
+                             invisible="draft_storage_net_unknown">
+                            Files deleted from storage on
+                            <field name="draft_storage_deadline" nolabel="1"
+                                   readonly="1" class="oe_inline"/>
+                        </div>
+                        <!-- 🔴 Aucune date inventée. La règle de cycle de vie
+                             du seau n'a jamais été posée sur ce locataire, ou
+                             l'a été sous un autre préfixe : on ne sait donc
+                             pas quand le fournisseur efface. Avant 18.0.1.23.0
+                             la fiche recalculait la date à chaque lecture, et
+                             relever la rétention d'une marque la repoussait
+                             sans toucher au seau — l'opérateur lisait une date
+                             PLUS TARDIVE que la réalité. -->
+                        <div class="text-muted"
+                             invisible="not draft_storage_net_unknown">
+                            Storage net unknown: no lifecycle rule has been posted on the bucket from this database. Run "Configure the S3 bucket" in the settings to post it and learn this date.
+                        </div>
+                    </div>
+                    <!-- 🔴 La seule fin que « sans fin » a : la règle de cycle
+                         de vie du seau efface tout objet du préfixe après son
+                         délai, quoi qu'Odoo en pense. Sans ce bandeau, la
+                         perte ne se dirait qu'à l'envoi, par un refus de
+                         vérification au stockage. -->
+                    <field name="draft_storage_warning" invisible="1"/>
+                    <div class="alert alert-danger" role="alert"
+                         invisible="not draft_storage_warning">
+                        <div>
+                            This draft is about to lose its files: the storage provider deletes anything left under our prefix after the date above, and that date is near. Send it, or upload the files again on a new transfer.
+                        </div>
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="state != 'draft' or draft_kept">
+                        <div>
+                            This draft is not kept: the hourly cleanup removes any draft past its grace period, files included. Use "Keep this draft" to hold it.
+                        </div>
+                    </div>
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
@@ -90,6 +183,12 @@
                             <field name="sender_name" readonly="1"/>
                             <field name="sender_email" readonly="1"/>
                             <field name="recipient_emails" readonly="1"/>
+                            <!-- Sur un envoi fendu, le champ ci-dessus garde
+                                 la liste du LOT et celui-ci nomme la seule
+                                 personne que CE lien sert. Lire le premier
+                                 pour savoir qui peut ouvrir serait faux. -->
+                            <field name="fanout_recipient" readonly="1"
+                                   invisible="not fanout_recipient"/>
                         </group>
                         <group string="Transfer">
                             <field name="brand_id" readonly="1"/>
@@ -106,10 +205,17 @@
                             <field name="recipient_otp_channel" readonly="1"
                                    invisible="recipient_otp_status == 'off' or audience_mode == 'open'"/>
                             <field name="audience_mode" readonly="1"/>
-                            <!-- Chargé pour l'onglet Visiteurs, qui s'affiche
-                                 dès qu'une personne a confirmé son identité —
-                                 y compris sur un envoi à destinataires nommés. -->
+                            <!-- Chargés pour l'onglet Visiteurs. ⚠ La
+                                 visibilité se décide sur le TOTAL, pas sur
+                                 les confirmés : un envoi dont personne n'a
+                                 encore confirmé n'affichait aucune liste —
+                                 justement le cas où l'opérateur a besoin de
+                                 voir qui n'est pas venu. -->
                             <field name="audience_count" invisible="1"/>
+                            <field name="audience_total_count" invisible="1"/>
+                            <field name="absentee_count" invisible="1"/>
+                            <field name="downloads_unattributed" invisible="1"/>
+                            <field name="fanout_count" invisible="1"/>
                             <!-- Modifiables tant que le lien vit : ce sont les
                                  seuls garde-fous d'une audience ouverte, et
                                  devoir expirer le lien pour resserrer un
@@ -169,30 +275,61 @@
                                     <field name="scanned" optional="hide"/>
                                     <field name="download_count" string="Downloads"/>
                                     <field name="etag" optional="hide"/>
+                                    <!-- Seulement sur un brouillon : aucun
+                                         lien n'a encore été émis, donc
+                                         personne ne perd un fichier qui lui
+                                         avait été promis. Sur un envoi parti,
+                                         le chemin reste la purge, qui garde la
+                                         trace de ce qui a été servi. -->
+                                    <button name="action_remove_from_draft"
+                                            type="object" icon="fa-trash-o"
+                                            title="Remove from the draft"
+                                            groups="bf_securetransfer.group_securetransfer_user"
+                                            invisible="parent.state != 'draft' or not parent.draft_editable_by_me"
+                                            confirm="The file is deleted from storage and removed from this draft. The access trail keeps the record. Continue?"/>
                                 </list>
                             </field>
                         </page>
                         <page string="Visitors" name="page_audience"
-                              invisible="audience_mode != 'open' and audience_count == 0">
+                              invisible="audience_mode != 'open' and audience_total_count == 0">
                             <div class="alert alert-info" role="alert">
-                                Each line is a person who confirmed their identity with a code. In an open audience, they declared themselves; with named recipients, they were already on the list. "Block" cuts off their access without touching the link or the others.
+                                One line per person. With named recipients, every one of them is listed from the moment the transfer is sent, so you can see who downloaded, who is stuck on their code and who never came at all. On an open audience, a line appears when someone declares themselves. "Send again" re-sends the link to that one person; "Block" cuts off their access without touching the link or the others.
+                            </div>
+                            <div class="alert alert-warning" role="alert"
+                                 invisible="absentee_count == 0">
+                                <div>
+                                    <field name="absentee_count" nolabel="1"
+                                           readonly="1" class="oe_inline"/>
+                                    recipient(s) have left no trace at all.
+                                </div>
+                                <div invisible="not downloads_unattributed">This link is shared and opens without a code, so the server cannot tell who downloaded: one of them may be the person who did.</div>
                             </div>
                             <field name="audience_ids" readonly="1">
                                 <list create="false" delete="false"
                                       decoration-muted="state == 'blocked'"
-                                      decoration-success="state == 'confirmed'">
+                                      decoration-success="state in ('confirmed', 'seen')"
+                                      decoration-warning="state == 'invited'">
                                     <field name="display_identity"/>
-                                    <field name="identity_kind"/>
+                                    <field name="identity_kind" optional="hide"/>
                                     <field name="state" widget="badge"
-                                           decoration-success="state == 'confirmed'"
-                                           decoration-warning="state == 'pending'"
+                                           decoration-success="state in ('confirmed', 'seen')"
+                                           decoration-info="state == 'pending'"
+                                           decoration-warning="state == 'invited'"
                                            decoration-danger="state == 'blocked'"/>
                                     <field name="first_seen"/>
                                     <field name="confirmed_at" optional="show"/>
                                     <field name="download_count"/>
+                                    <field name="resend_count" optional="hide"/>
+                                    <field name="last_resend_at" optional="hide"/>
+                                    <field name="reminder_count" optional="hide"/>
+                                    <field name="invited_at" optional="hide"/>
                                     <field name="otp_send_count" optional="hide"/>
                                     <field name="sms_send_count" optional="hide"/>
                                     <field name="ip" optional="hide"/>
+                                    <button name="action_resend_link" type="object"
+                                            string="Send again" icon="fa-paper-plane"
+                                            invisible="state == 'blocked' or identity_kind != 'email' or parent.state != 'active'"
+                                            groups="bf_securetransfer.group_securetransfer_manager"/>
                                     <button name="action_block" type="object"
                                             string="Block" icon="fa-ban"
                                             invisible="state == 'blocked'"
@@ -253,6 +390,8 @@
                 <field name="sender_email"/>
                 <field name="brand_id"/>
                 <filter name="f_draft" string="Drafts" domain="[('state', '=', 'draft')]"/>
+                <filter name="f_draft_kept" string="Kept drafts"
+                        domain="[('state', '=', 'draft'), ('draft_kept', '=', True)]"/>
                 <filter name="f_active" string="Active" domain="[('state', '=', 'active')]"/>
                 <filter name="f_expired" string="Expired" domain="[('state', '=', 'expired')]"/>
                 <filter name="f_deleted" string="Purged" domain="[('state', '=', 'deleted')]"/>
@@ -321,7 +460,13 @@
         <field name="res_model">secure.transfer</field>
         <field name="view_mode">list,form,graph,pivot</field>
         <field name="search_view_id" ref="secure_transfer_view_search"/>
-        <field name="context">{'search_default_f_active': 1}</field>
+        <!-- ⚠ Les brouillons s'ajoutent au filtre par défaut, ils ne le
+             remplacent pas : deux filtres voisins du même groupe s'unissent
+             (OU), donc la liste s'ouvre sur « actifs OU brouillons ». Sans
+             cela, un brouillon gardé existait sans s'afficher, et la personne
+             devait savoir enlever un filtre pour retrouver l'envoi qu'elle
+             venait de préparer. -->
+        <field name="context">{'search_default_f_active': 1, 'search_default_f_draft': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No transfers yet</p>
             <p>Transfers are created by visitors on the public send page.

@@ -34,7 +34,7 @@ class TestOtpEssaisParCode(HttpCase):
 
     def setUp(self):
         super().setUp()
-        # La base du banc n'a pas fr_CA ; la langue des courriels n'est pas
+        # La base de l'environnement d'essai n'a pas fr_CA ; la langue des courriels n'est pas
         # l'objet de cet essai.
         langue = patch(TRANSFER + "._lang_for_email", return_value="en_US")
         langue.start()

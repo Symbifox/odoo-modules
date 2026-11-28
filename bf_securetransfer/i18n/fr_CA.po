@@ -3,7 +3,7 @@
 # the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_securetransfer 18.0.1.22.0\n"
+"Project-Id-Version: bf_securetransfer 18.0.1.26.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-21 07:27+0000\n"
 "PO-Revision-Date: 2026-10-21 07:27+0000\n"
@@ -153,6 +153,32 @@ msgstr ""
 
 #. module: bf_securetransfer
 #. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid "%(count)s recipient(s) listed at send time: %(who)s"
+msgstr "%(count)s destinataire(s) inscrit(s) à l'envoi : %(who)s"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid ""
+"%(files)s file(s), %(bytes).0f byte(s) copied inside storage, expires on "
+"%(when)s"
+msgstr ""
+"%(files)s fichier(s), %(bytes).0f octet(s) recopiés dans le stockage, "
+"échéance le %(when)s"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid ""
+"%(links)s individual links; %(copies)s file copies in storage, made without "
+"a second upload."
+msgstr ""
+"%(links)s liens individuels; %(copies)s copies de fichier au stockage, "
+"faites sans second téléversement."
+
+#. module: bf_securetransfer
+#. odoo-python
 #: code:addons/bf_securetransfer/models/res_config_settings.py:0
 msgid ""
 "%(ok)s/%(total)s probes passed. Failed: %(detail)s (full report in the "
@@ -180,41 +206,30 @@ msgid "%s (confidential)"
 msgstr "%s — confidentiel"
 
 #. module: bf_securetransfer
-#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_securetransfer
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer_file.py:0
 msgid "%s B"
 msgstr "%s o"
 
 #. module: bf_securetransfer
-#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_securetransfer, hosting_management
-#. odoo-javascript
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer_file.py:0
 msgid "%s GB"
 msgstr "%s Go"
 
 #. module: bf_securetransfer
-#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_securetransfer
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer_file.py:0
 msgid "%s KB"
 msgstr "%s Ko"
 
 #. module: bf_securetransfer
-#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_securetransfer, hosting_management
-#. odoo-javascript
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer_file.py:0
 msgid "%s MB"
 msgstr "%s Mo"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_securetransfer
 #. odoo-python
 #: code:addons/bf_securetransfer/controllers/main.py:0
 #: code:addons/bf_securetransfer/wizards/extend_expiry_wizard.py:0
@@ -886,6 +901,14 @@ msgstr ""
 
 #. module: bf_securetransfer
 #. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer_brand.py:0
+msgid ""
+"A maximum of zero reminders amounts to turning automatic reminders off."
+msgstr ""
+"Un maximum de zéro rappel revient à éteindre les rappels automatiques."
+
+#. module: bf_securetransfer
+#. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
 msgid "A new person confirmed their identity to access \"%s\":"
 msgstr "Une nouvelle personne a confirmé son identité pour accéder à « %s » :"
@@ -944,6 +967,12 @@ msgstr ""
 "Court intitulé qui dit au destinataire de quoi il s'agit (p. ex. « Baux 2026"
 " »). Il apparaît dans l'objet du courriel et en titre de la page : rien de "
 "confidentiel n'y a sa place."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid "A single recipient: this will be an ordinary send."
+msgstr "Un seul destinataire : ce sera un envoi ordinaire."
 
 #. module: bf_securetransfer
 #. odoo-python
@@ -1051,8 +1080,6 @@ msgid "Action"
 msgstr "Action"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_needaction
 msgid "Action Needed"
 msgstr "Nécessite une action"
@@ -1060,6 +1087,7 @@ msgstr "Nécessite une action"
 #. module: bf_securetransfer
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
+#: code:addons/bf_securetransfer/models/secure_transfer_audience.py:0
 #: code:addons/bf_securetransfer/wizards/extend_expiry_wizard.py:0
 #: code:addons/bf_securetransfer/wizards/reveal_link_wizard.py:0
 msgid "Action restricted to secure transfer managers."
@@ -1072,10 +1100,6 @@ msgid "Action restricted to secure transfer users."
 msgstr "Action réservée aux utilisateurs du transfert sécurisé."
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
-#. hosting_management
-#. odoo-javascript
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__active
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_template__active
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer__state__active
@@ -1096,22 +1120,16 @@ msgid "Activities"
 msgstr "Activités"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__activity_exception_decoration
 msgid "Activity Exception Decoration"
 msgstr "Indicateur d'exception d'activité"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__activity_state
 msgid "Activity State"
 msgstr "État de l'activité"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__activity_type_icon
 msgid "Activity Type Icon"
 msgstr "Icône de type d'activité"
@@ -1310,16 +1328,12 @@ msgstr ""
 "sondes de compatibilité (résidence, presign, multipart…). Idempotent."
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_document_nextcloud_sync, bf_securetransfer,
-#. hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.brand_view_form
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.view_secure_transfer_template_form
 msgid "Archived"
 msgstr "Archivé"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_attachment_count
 msgid "Attachment Count"
 msgstr "Nombre de pièces jointes"
@@ -1382,6 +1396,27 @@ msgid ""
 "Auto-provisioned page for this employee (automatic sync and archiving)."
 msgstr ""
 "Page auto-provisionnée pour cet employé (synchro et archivage automatiques)."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid "Automatic reminder sent to: %s"
+msgstr "Rappel automatique envoyé à : %s"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__audience_reminded
+msgid "Automatic reminder to a recipient"
+msgstr "Rappel automatique à un destinataire"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_audience__reminder_count
+msgid "Automatic reminders"
+msgstr "Rappels automatiques"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__st_absentee_reminder_enabled
+msgid "Automatically remind recipients who never came"
+msgstr "Relancer automatiquement les destinataires jamais venus"
 
 #. module: bf_securetransfer
 #. odoo-python
@@ -1502,7 +1537,6 @@ msgid "Brands"
 msgstr "Marques"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
 msgid "Bucket"
 msgstr "Bucket"
@@ -1511,6 +1545,15 @@ msgstr "Bucket"
 #: model:ir.model.fields,help:bf_securetransfer.field_res_config_settings__st_s3_region
 msgid "Bucket region. ca-east-1 = data residency in Canada."
 msgstr "Région du bucket. ca-east-1 = résidence des données au Canada."
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_brand__st_absentee_reminder_max
+msgid ""
+"Budget of AUTOMATIC reminders per recipient. The operator's manual re-sends "
+"do not use it up."
+msgstr ""
+"Budget de rappels AUTOMATIQUES par destinataire. Les renvois à la main de "
+"l'opérateur ne l'entament pas."
 
 #. module: bf_securetransfer
 #. odoo-python
@@ -1541,14 +1584,17 @@ msgstr ""
 "ListParts côté S3."
 
 #. module: bf_securetransfer
+#: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_audience__state__seen
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_audience_view_search
+msgid "Came without a code"
+msgstr "Venu sans code"
+
+#. module: bf_securetransfer
 #: model:res.groups,comment:bf_securetransfer.group_securetransfer_user
 msgid "Can view transfers and their access log."
 msgstr "Peut consulter les transferts et leur journal d'accès."
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_securetransfer, bf_security_awareness, hosting_management
-#. odoo-javascript
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.extend_expiry_wizard_view_form
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.reveal_link_wizard_view_form
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_send_wizard_view_form
@@ -1556,7 +1602,6 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, bf_security_awareness, hosting_management
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer__state__cancelled
 msgid "Canceled"
 msgstr "Annulé"
@@ -1581,7 +1626,6 @@ msgid "Chained access log: integrity evidence"
 msgstr "Journal d'accès chaîné — preuve d'intégrité"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_file__checksum
 msgid "Checksum"
 msgstr "Somme de contrôle"
@@ -1607,8 +1651,6 @@ msgstr ""
 "Client facturé pour cette marque (ancrage de la facturation récurrente)."
 
 #. module: bf_securetransfer
-#. modules: bf_nextcloud_browser, bf_securetransfer, bf_security_awareness
-#. odoo-javascript
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.reveal_link_wizard_view_form
 msgid "Close"
 msgstr "Fermer"
@@ -1672,9 +1714,6 @@ msgid "Codes sent"
 msgstr "Codes envoyés"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_securetransfer, bf_security_awareness,
-#. hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__company_id
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__company_id
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_template__company_id
@@ -1682,8 +1721,6 @@ msgid "Company"
 msgstr "Société"
 
 #. module: bf_securetransfer
-#. modules: bf_nextcloud_browser, bf_securetransfer, bf_security_awareness,
-#. hosting_management
 #: model:ir.ui.menu,name:bf_securetransfer.menu_config
 msgid "Configuration"
 msgstr "Configuration"
@@ -1784,11 +1821,18 @@ msgstr ""
 "jamais interprété comme HTML."
 
 #. module: bf_securetransfer
-#. modules: bf_nextcloud_browser, bf_securetransfer
-#. odoo-javascript
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_upload
 msgid "Copy link"
 msgstr "Copier le lien"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_brand__st_absentee_reminder_delay_hours
+msgid ""
+"Counted from the send, or from the last time the link was sent again — "
+"manually or automatically."
+msgstr ""
+"Compté depuis l'envoi, ou depuis le dernier renvoi du lien, à la main ou "
+"automatique."
 
 #. module: bf_securetransfer
 #: model_terms:ir.actions.act_window,help:bf_securetransfer.action_brand
@@ -1900,7 +1944,6 @@ msgid "Dark color"
 msgstr "Couleur foncée"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, bf_security_awareness, hosting_management
 #: model:ir.actions.act_window,name:bf_securetransfer.action_secure_transfer_dashboard
 #: model:ir.ui.menu,name:bf_securetransfer.menu_dashboard
 msgid "Dashboard"
@@ -1934,7 +1977,6 @@ msgid "Declared size (bytes)"
 msgstr "Taille déclarée (octets)"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.brand_view_tree
 msgid "Default"
 msgstr "Défaut"
@@ -1948,6 +1990,11 @@ msgstr "Marque par défaut"
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
 msgid "Default limits"
 msgstr "Limites par défaut"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__st_absentee_reminder_delay_hours
+msgid "Delay before reminding (h)"
+msgstr "Délai avant de relancer (h)"
 
 #. module: bf_securetransfer
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer__state__deleted
@@ -1980,9 +2027,8 @@ msgstr "Détruire après le téléchargement"
 
 #. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__burn_after_download
-#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__allow_burn
-msgid "Destroy after reading (Phase 2)"
-msgstr "Destruction après lecture (Phase 2)"
+msgid "Destroy after reading"
+msgstr "Détruire après lecture"
 
 #. module: bf_securetransfer
 #. odoo-python
@@ -2016,14 +2062,11 @@ msgid "Display Name"
 msgstr "Nom d'affichage"
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__domain
 msgid "Domain"
 msgstr "Domaine"
 
 #. module: bf_securetransfer
-#. modules: bf_nextcloud_browser, bf_securetransfer
-#. odoo-javascript
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_download
 msgid "Download"
 msgstr "Télécharger"
@@ -2074,6 +2117,11 @@ msgid "Downloads allowed"
 msgstr "Téléchargements permis"
 
 #. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__downloads_unattributed
+msgid "Downloads cannot be attributed"
+msgstr "Téléchargements non attribuables"
+
+#. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_download
 msgid "Downloads left for you:"
 msgstr "Téléchargements restants pour vous :"
@@ -2086,8 +2134,6 @@ msgid "Downloads per visitor"
 msgstr "Téléchargements par visiteur"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_securetransfer, bf_security_awareness,
-#. hosting_management
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer__state__draft
 msgid "Draft"
 msgstr "Brouillon"
@@ -2170,35 +2216,17 @@ msgstr ""
 "                La marque par défaut sert tout hôte sans marque explicite."
 
 #. module: bf_securetransfer
-#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_send_wizard__one_per_recipient
 msgid ""
-"Each line is a person who confirmed their identity with a code. In an open "
-"audience, they declared themselves; with named recipients, they were already"
-" on the list. \"Block\" cuts off their access without touching the link or "
-"the others."
+"Each recipient gets their own link, their own expiry to extend and their own"
+" journal, instead of a link shared by everyone. The files are uploaded once "
+"and copied inside storage."
 msgstr ""
-"Chaque ligne est une personne qui a confirmé son\n"
-"                                identité par code. En audience ouverte, elle s'est\n"
-"                                déclarée elle-même ; en destinataires nommés, elle\n"
-"                                figurait déjà sur la liste. « Bloquer » coupe son\n"
-"                                accès sans toucher au lien ni aux autres."
+"Chaque destinataire reçoit son propre lien, sa propre échéance à prolonger "
+"et son propre journal, au lieu d'un lien partagé par tout le monde. Les "
+"fichiers sont téléversés une fois puis recopiés dans le stockage."
 
 #. module: bf_securetransfer
-#: model_terms:ir.actions.act_window,help:bf_securetransfer.action_secure_transfer_audience
-msgid ""
-"Each line is a person who declared their identity on an open audience link, "
-"then confirmed it with a one-time code. Blocking a line cuts off their "
-"access without touching the link or the other visitors."
-msgstr ""
-"Chaque ligne est une personne qui a déclaré son identité sur un\n"
-"                lien en audience ouverte, puis l'a confirmée par un code à usage\n"
-"                unique. Bloquer une ligne coupe son accès sans toucher au lien\n"
-"                ni aux autres visiteurs."
-
-#. module: bf_securetransfer
-#. modules: bf_credentials, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_audience__email
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer__recipient_otp_channel__email
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_audience__identity_kind__email
@@ -2218,10 +2246,20 @@ msgid "Emails can only be resent for an active transfer."
 msgstr "Les courriels ne peuvent être renvoyés que pour un transfert actif."
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, bf_security_awareness
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__emailed
 msgid "Emails sent"
 msgstr "Courriels envoyés"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_brand__notify_on_download
+msgid ""
+"Emails the sender the first time a recipient downloads. Copied onto each new"
+" transfer at creation and read-only there, so this is the only place it can "
+"be turned on."
+msgstr ""
+"Avertit l'expéditeur au premier téléchargement d'un destinataire. Recopié "
+"sur chaque nouveau transfert à sa création, et en lecture seule là-bas : "
+"c'est donc le seul endroit où l'allumer."
 
 #. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__owner_user_id
@@ -2280,7 +2318,6 @@ msgid "Enable SMS"
 msgstr "Activer le SMS"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
 msgid "Endpoint"
 msgstr "Endpoint"
@@ -2307,10 +2344,6 @@ msgid "Entry hash"
 msgstr "Empreinte de l'entrée"
 
 #. module: bf_securetransfer
-#. modules: bf_document_nextcloud_sync, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#. odoo-javascript
-#. odoo-python
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_file__state__error
 msgid "Error"
 msgstr "Erreur"
@@ -2331,9 +2364,6 @@ msgid "Expire now"
 msgstr "Expirer maintenant"
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer, hosting_management
-#. odoo-javascript
-#. odoo-python
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer__state__expired
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__expired
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_search
@@ -2341,8 +2371,6 @@ msgid "Expired"
 msgstr "Expiré"
 
 #. module: bf_securetransfer
-#. modules: bf_nextcloud_browser, bf_securetransfer
-#. odoo-javascript
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__expiry_date
 msgid "Expires on"
 msgstr "Expire le"
@@ -2354,8 +2382,6 @@ msgid "Expires on {date} (UTC)."
 msgstr "Expire le {date} (UTC)."
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer, hosting_management
-#. odoo-python
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_search
 msgid "Expiring soon"
 msgstr "Expire bientôt"
@@ -2422,8 +2448,6 @@ msgstr ""
 "il ne figure dans aucun courriel."
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__failed_message_ids
 msgid "Failed Messages"
 msgstr "Messages en échec"
@@ -2444,9 +2468,6 @@ msgid "Favicon"
 msgstr "Favicon"
 
 #. module: bf_securetransfer
-#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_securetransfer, hosting_management
-#. odoo-javascript
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_access_log__file_id
 msgid "File"
 msgstr "Fichier"
@@ -2468,9 +2489,6 @@ msgstr ""
 "conservé dans la note (il survit à la purge)."
 
 #. module: bf_securetransfer
-#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_securetransfer, hosting_management
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_file__filename
 msgid "File name"
 msgstr "Nom de fichier"
@@ -2482,7 +2500,6 @@ msgid "File not found."
 msgstr "Fichier introuvable."
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__file_ids
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__attachment_ids
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_upload
@@ -2548,6 +2565,11 @@ msgid "First request"
 msgstr "Première demande"
 
 #. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__fanout_parent_id
+msgid "First send of the batch"
+msgstr "Premier envoi du lot"
+
+#. module: bf_securetransfer
 #. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
 #. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_follower_ids
@@ -2555,21 +2577,16 @@ msgid "Followers"
 msgstr "Abonnés"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_partner_ids
 msgid "Followers (Partners)"
 msgstr "Abonnés (Partenaires)"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
 msgstr "Icône Font Awesome par ex. fa-tasks"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_brand__tier__free
 msgid "Free"
 msgstr "Gratuit"
@@ -2580,7 +2597,6 @@ msgid "French (Canada)"
 msgstr "Français (Canada)"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_download
 msgid "From"
 msgstr "De la part de"
@@ -2649,8 +2665,6 @@ msgstr ""
 "= ouvert. Une marque avec sa propre liste la remplace."
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_audience_view_search
 msgid "Group by"
 msgstr "Regrouper par"
@@ -2674,8 +2688,6 @@ msgid "HEAD after PutObject inconsistent: %r"
 msgstr "HEAD après PutObject incohérent : %r"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__has_message
 msgid "Has Message"
 msgstr "A un message"
@@ -2756,27 +2768,21 @@ msgid "IP (first request)"
 msgstr "IP (première demande)"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_access_log__ip
 msgid "IP address"
 msgstr "Adresse IP"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__activity_exception_icon
 msgid "Icon"
 msgstr "Icône"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__activity_exception_icon
 msgid "Icon to indicate an exception activity."
 msgstr "Icône pour indiquer une activité d'exception."
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_audience__display_identity
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.brand_view_form
 msgid "Identity"
@@ -2798,15 +2804,11 @@ msgid "Identity type"
 msgstr "Type d'identité"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr "Si coché, de nouveaux messages demandent votre attention."
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__message_has_error
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
@@ -2823,9 +2825,23 @@ msgstr ""
 "                                courriel (téléphone ou message texte)."
 
 #. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid "In this batch"
+msgstr "Dans ce lot"
+
+#. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_download
 msgid "Incorrect password."
 msgstr "Mot de passe incorrect."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.report_access_certificate_document
+msgid ""
+"Individual send: this link served this one recipient only, out of several "
+"sent together."
+msgstr ""
+"Envoi individuel : ce lien n'a servi que ce seul destinataire, parmi "
+"plusieurs envoyés ensemble."
 
 #. module: bf_securetransfer
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_file__scanned__infected
@@ -2929,8 +2945,6 @@ msgid "Invalid sender email address."
 msgstr "Adresse courriel de l'expéditeur invalide."
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_is_follower
 msgid "Is Follower"
 msgstr "Est un abonné"
@@ -3006,6 +3020,11 @@ msgid "Last hash:"
 msgstr "Dernière empreinte :"
 
 #. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_audience__last_resend_at
+msgid "Last re-send"
+msgstr "Dernier renvoi"
+
+#. module: bf_securetransfer
 #: model_terms:ir.actions.act_window,help:bf_securetransfer.action_secure_transfer_template
 msgid "Leave the brand empty so that it applies to the one already chosen."
 msgstr "Laissez la marque vide pour qu'il s'applique à celle déjà choisie."
@@ -3061,7 +3080,6 @@ msgstr ""
 " ne l'offre pas ou si le canal SMS n'est pas câblé."
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
 msgid "Lifecycle"
 msgstr "Cycle de vie"
@@ -3090,6 +3108,11 @@ msgid "Link masked in the log"
 msgstr "Lien masqué dans le suivi"
 
 #. module: bf_securetransfer
+#: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__audience_resent
+msgid "Link re-sent to one recipient"
+msgstr "Lien renvoyé à un destinataire"
+
+#. module: bf_securetransfer
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__link_revealed
 msgid "Link revealed (manager)"
 msgstr "Lien révélé (gestionnaire)"
@@ -3103,14 +3126,35 @@ msgstr ""
 #. module: bf_securetransfer
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid "Link sent again to: %s"
+msgstr "Lien renvoyé à : %s"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
 msgid "Link sent to: %s; receipt to: %s"
 msgstr "Lien envoyé à : %s ; accusé à : %s"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_audience__resend_count
+msgid "Links re-sent"
+msgstr "Liens renvoyés"
 
 #. module: bf_securetransfer
 #. odoo-python
 #: code:addons/bf_securetransfer/models/s3.py:0
 msgid "ListParts inconsistent: %r"
 msgstr "ListParts incohérent : %r"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_audience__invited_at
+msgid "Listed on"
+msgstr "Inscrit le"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__absentee_count
+msgid "Listed recipients who have left no trace at all."
+msgstr "Destinataires inscrits qui n'ont laissé aucune trace."
 
 #. module: bf_securetransfer
 #. odoo-python
@@ -3131,20 +3175,16 @@ msgid "Log verification"
 msgstr "Vérification du journal"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_securetransfer, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__logo
 msgid "Logo"
 msgstr "Logo"
 
 #. module: bf_securetransfer
-#. modules: bf_document_nextcloud_sync, bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_file__mimetype
 msgid "MIME type"
 msgstr "Type MIME"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness
 #: model:res.groups,name:bf_securetransfer.group_securetransfer_manager
 msgid "Manager"
 msgstr "Gestionnaire"
@@ -3310,6 +3350,11 @@ msgid "Maximum number of files"
 msgstr "Nombre maximal de fichiers"
 
 #. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__st_absentee_reminder_max
+msgid "Maximum number of reminders"
+msgstr "Nombre maximal de rappels"
+
+#. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
 msgid "Maximum retention"
 msgstr "Rétention maximale"
@@ -3330,29 +3375,21 @@ msgid "Message (optional)"
 msgstr "Message (optionnel)"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_content
 msgid "Message Content"
 msgstr "Contenu du message"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_has_error
 msgid "Message Delivery error"
 msgstr "Erreur d'envoi du message"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_search
 msgid "Message Search"
 msgstr "Recherche de message"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__message_content
 msgid "Message content, to be used only in searches"
 msgstr "Contenu du message, à n'utiliser que dans les recherches"
@@ -3363,8 +3400,6 @@ msgid "Message only"
 msgstr "Message seul"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__message_search
 msgid "Message search, to be used only in searches"
 msgstr "Recherche de message, à n'utiliser que dans les recherches"
@@ -3389,7 +3424,6 @@ msgid "Missing: must be declared in odoo.conf, never in the database"
 msgstr "Absents — à déclarer dans odoo.conf, jamais en base"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_audience__identity_kind__sms
 msgid "Mobile"
 msgstr "Mobile"
@@ -3410,8 +3444,6 @@ msgid "Multipart"
 msgstr "Multipart"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__my_activity_date_deadline
 msgid "My Activity Deadline"
 msgstr "Échéance de mon activité"
@@ -3432,11 +3464,6 @@ msgid "NDA to sign"
 msgstr "Entente de confidentialité à signer"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials,
-#. bf_document_nextcloud_sync, bf_nextcloud_browser, bf_securetransfer,
-#. bf_security_awareness, hosting_management
-#. odoo-javascript
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__name
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_template__name
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.report_access_certificate_document
@@ -3483,9 +3510,10 @@ msgstr ""
 "URL publique native de la page de dépôt (aucun raccourcisseur externe)."
 
 #. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__absentee_count
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_audience_view_search
-msgid "Never confirmed"
-msgstr "Jamais confirmés"
+msgid "Never came"
+msgstr "Jamais venus"
 
 #. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_upload
@@ -3499,7 +3527,6 @@ msgstr ""
 "                                            figure jamais dans nos courriels."
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, bf_security_awareness
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
 msgid "New"
@@ -3546,29 +3573,21 @@ msgid "New visitor: %s"
 msgstr "Nouveau visiteur — %s"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
 msgstr "Activité suivante de l'événement du calendrier"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__activity_date_deadline
 msgid "Next Activity Deadline"
 msgstr "Échéance de la prochaine activité"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__activity_summary
 msgid "Next Activity Summary"
 msgstr "Résumé de l'activité suivante"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__activity_type_id
 msgid "Next Activity Type"
 msgstr "Type d'activités à venir"
@@ -3637,8 +3656,8 @@ msgstr "Aucun numéro de partie valide."
 
 #. module: bf_securetransfer
 #: model_terms:ir.actions.act_window,help:bf_securetransfer.action_secure_transfer_audience
-msgid "No visitors yet"
-msgstr "Aucun visiteur pour l'instant"
+msgid "Nobody listed yet"
+msgstr "Personne d'inscrit pour l'instant"
 
 #. module: bf_securetransfer
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer__recipient_otp_status__off
@@ -3651,7 +3670,11 @@ msgid "Not scanned"
 msgstr "Non analysé"
 
 #. module: bf_securetransfer
-#. modules: bf_nextcloud_browser, bf_securetransfer
+#: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_audience__state__invited
+msgid "Not yet seen"
+msgstr "Pas encore venu"
+
+#. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_access_log__note
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.view_secure_transfer_template_form
 msgid "Note"
@@ -3680,13 +3703,9 @@ msgstr "M'avertir au premier téléchargement"
 
 #. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__notify_on_download
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__notify_on_download
 msgid "Notify on download"
 msgstr "Notifier au téléchargement"
-
-#. module: bf_securetransfer
-#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__notify_on_download
-msgid "Notify on download (Phase 2)"
-msgstr "Notifier au téléchargement (Phase 2)"
 
 #. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__notify_on_join
@@ -3701,15 +3720,11 @@ msgstr ""
 "Aviser l'expéditeur par courriel au premier téléchargement de ses fichiers."
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_needaction_counter
 msgid "Number of Actions"
 msgstr "Nombre d'actions"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_has_error_counter
 msgid "Number of errors"
 msgstr "Nombre d'erreurs"
@@ -3720,15 +3735,11 @@ msgid "Number of files allowed in a single transfer."
 msgstr "Nombre de fichiers admis dans un même transfert."
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__message_needaction_counter
 msgid "Number of messages requiring action"
 msgstr "Nombre de messages nécessitant une action"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__message_has_error_counter
 msgid "Number of messages with delivery error"
 msgstr "Nombre de messages avec des erreurs d'envoi"
@@ -3751,6 +3762,11 @@ msgid ""
 msgstr ""
 "Contacts Odoo. Pour le canal SMS, leur mobile (ou téléphone) sert à l'envoi "
 "du code ; sans numéro, le courriel prend le relais."
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__allow_burn
+msgid "Offer destroy after reading"
+msgstr "Offrir la destruction après lecture"
 
 #. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__audience_allow_sms
@@ -3779,10 +3795,65 @@ msgstr ""
 "instance qui n'est pas la sienne."
 
 #. module: bf_securetransfer
+#: model_terms:ir.actions.act_window,help:bf_securetransfer.action_secure_transfer_audience
+msgid ""
+"One line per person a transfer reached: a named recipient, listed from the "
+"moment the transfer was sent, or a visitor who declared their identity on an"
+" open-audience link. The status says whether they confirmed a code, are "
+"stuck on one, or never came at all. \"Send again\" re-sends the link to that"
+" one person; blocking a line cuts off their access without touching the link"
+" or the others."
+msgstr ""
+"Une ligne par personne qu'un transfert a atteinte : un destinataire nommé, "
+"inscrit dès l'envoi du transfert, ou un visiteur qui a déclaré son identité "
+"sur un lien à audience ouverte. L'état dit s'il a confirmé un code, s'il est"
+" coincé dessus, ou s'il n'est jamais venu. « Renvoyer » renvoie le lien à "
+"cette seule personne; bloquer une ligne coupe son accès sans toucher au lien"
+" ni aux autres."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid ""
+"One line per person. With named recipients, every one of them is listed from"
+" the moment the transfer is sent, so you can see who downloaded, who is "
+"stuck on their code and who never came at all. On an open audience, a line "
+"appears when someone declares themselves. \"Send again\" re-sends the link "
+"to that one person; \"Block\" cuts off their access without touching the "
+"link or the others."
+msgstr ""
+"Une ligne par personne. Avec des destinataires nommés, chacun y figure dès "
+"l'envoi du transfert : on voit qui a téléchargé, qui est coincé sur son code"
+" et qui n'est jamais venu. En audience ouverte, une ligne apparaît quand "
+"quelqu'un se déclare. « Renvoyer » renvoie le lien à cette seule personne; «"
+" Bloquer » coupe son accès sans toucher au lien ni aux autres."
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__one_per_recipient
+msgid "One send per recipient"
+msgstr "Un envoi par destinataire"
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.brand_view_form
+msgid ""
+"Only a named recipient who has not even asked for their code is reminded. "
+"Someone who downloaded, or who is merely stuck on a code, already has the "
+"email and is left alone."
+msgstr ""
+"Seul un destinataire nommé qui n'a même pas demandé son code est relancé. "
+"Qui a téléchargé, ou qui est simplement coincé sur un code, a déjà le "
+"courriel et on le laisse tranquille."
+
+#. module: bf_securetransfer
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
 msgid "Only a suspended transfer can be reactivated."
 msgstr "Seul un transfert suspendu peut être réactivé."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer_file.py:0
+msgid "Only a verified file can be copied; \"%s\" is not."
+msgstr "Seul un fichier vérifié peut être recopié; « %s » ne l'est pas."
 
 #. module: bf_securetransfer
 #. odoo-python
@@ -3809,6 +3880,16 @@ msgid ""
 "Only an active, expired or suspended transfer can be made to require a code."
 msgstr ""
 "Seul un transfert actif, expiré ou suspendu peut se voir exiger un code."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer_audience.py:0
+msgid ""
+"Only an email identity can be sent a link again: this visitor declared a "
+"mobile number."
+msgstr ""
+"Seule une identité courriel peut recevoir le lien à nouveau : ce visiteur a "
+"déclaré un numéro mobile."
 
 #. module: bf_securetransfer
 #. odoo-python
@@ -3862,13 +3943,11 @@ msgstr ""
 "l'expéditeur choisit ses destinataires."
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.brand_view_form
 msgid "Options"
 msgstr "Options"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
 msgid "Origin"
 msgstr "Origine"
@@ -3898,6 +3977,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__extra_emails
 msgid "Other emails"
 msgstr "Autres courriels"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__fanout_child_ids
+msgid "Other sends of the batch"
+msgstr "Autres envois du lot"
 
 #. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__slug
@@ -3931,7 +4015,6 @@ msgid "Parts manifest"
 msgstr "Manifeste des parties"
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_download
 msgid "Password"
 msgstr "Mot de passe"
@@ -3958,7 +4041,6 @@ msgid "Password hash"
 msgstr "Empreinte du mot de passe"
 
 #. module: bf_securetransfer
-#. modules: bf_nextcloud_browser, bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__has_password
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_search
 msgid "Password protected"
@@ -3988,10 +4070,19 @@ msgid "Path-style addressing"
 msgstr "Adressage path-style"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_securetransfer, bf_security_awareness
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_file__state__pending
 msgid "Pending"
 msgstr "En attente"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__audience_total_count
+msgid "People listed"
+msgstr "Personnes inscrites"
+
+#. module: bf_securetransfer
+#: model:ir.actions.act_window,name:bf_securetransfer.action_secure_transfer_audience
+msgid "People reached"
+msgstr "Personnes atteintes"
 
 #. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.brand_view_form
@@ -4132,19 +4223,16 @@ msgid "PutObject without an ETag in the response"
 msgstr "PutObject sans ETag en réponse"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__rating_ids
 msgid "Ratings"
 msgstr "Évaluations"
 
 #. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
-msgid "Re-send the link to the recipients"
-msgstr "Renvoyer le lien aux destinataires"
+msgid "Re-send the link to everyone"
+msgstr "Renvoyer le lien à tout le monde"
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
 msgid "Reactivate"
 msgstr "Réactiver"
@@ -4176,7 +4264,6 @@ msgid "Reactivated after review (report dismissed)"
 msgstr "Réactivé après revue (signalement écarté)"
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer, hosting_management
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
 msgid "Reason"
@@ -4287,14 +4374,22 @@ msgid "Recipient(s)"
 msgstr "Destinataire(s)"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, bf_security_awareness, hosting_management
-#. odoo-javascript
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__recipient_label
+msgid "Recipient(s) of this link"
+msgstr "Destinataire(s) de ce lien"
+
+#. module: bf_securetransfer
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__recipient_emails
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__partner_ids
 msgid "Recipients"
 msgstr "Destinataires"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__audience_invited
+msgid "Recipients listed at send time"
+msgstr "Destinataires inscrits à l'envoi"
 
 #. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.brand_view_form
@@ -4306,8 +4401,6 @@ msgstr ""
 "Ex. : @client.com pour n'envoyer qu'au domaine du client"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. hosting_management
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__name
@@ -4323,6 +4416,11 @@ msgstr "Référence de l'abonnement bf_subscription qui facture ce client."
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
 msgid "Region"
 msgstr "Région"
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.brand_view_form
+msgid "Reminding the recipients who never came"
+msgstr "Relancer les destinataires jamais venus"
 
 #. module: bf_securetransfer
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_send_wizard__template_id
@@ -4448,14 +4546,11 @@ msgid "ResponseContentDisposition not honored (%r)"
 msgstr "ResponseContentDisposition non honorée (%r)"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__activity_user_id
 msgid "Responsible User"
 msgstr "Utilisateur responsable"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.report_access_certificate_document
 msgid "Retention"
 msgstr "Rétention"
@@ -4541,8 +4636,6 @@ msgid "S3 access keys"
 msgstr "Clés d'accès S3"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
-#. odoo-javascript
 #: model:ir.model.fields,field_description:bf_securetransfer.field_res_config_settings__st_s3_bucket
 msgid "S3 bucket"
 msgstr "Bucket S3"
@@ -4581,7 +4674,6 @@ msgid "S3 region"
 msgstr "Région S3"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
 msgid "S3 storage"
 msgstr "Stockage S3"
@@ -4597,7 +4689,6 @@ msgstr ""
 " Configuration → Transfert sécurisé."
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
 #: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
@@ -4607,8 +4698,6 @@ msgid "SMS"
 msgstr "SMS"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__message_has_sms_error
 msgid "SMS Delivery error"
 msgstr "Erreur d'envoi SMS"
@@ -4745,9 +4834,19 @@ msgid "Secure transfer: purge composer attachments"
 msgstr "Transfert sécurisé : purge des pièces jointes de composition"
 
 #. module: bf_securetransfer
+#: model:ir.actions.server,name:bf_securetransfer.cron_st_sync_lifecycle_ir_actions_server
+msgid "Secure transfer: raise the bucket lifecycle net"
+msgstr "Transfert sécurisé : remonter le filet de cycle de vie du seau"
+
+#. module: bf_securetransfer
 #: model:ir.actions.server,name:bf_securetransfer.cron_st_purge_ir_actions_server
 msgid "Secure transfer: purge of expired transfers"
 msgstr "Transfert sécurisé : purge des transferts expirés"
+
+#. module: bf_securetransfer
+#: model:ir.actions.server,name:bf_securetransfer.cron_st_remind_absentees_ir_actions_server
+msgid "Secure transfer: remind recipients who never came"
+msgstr "Transfert sécurisé : relancer les destinataires jamais venus"
 
 #. module: bf_securetransfer
 #: model:mail.template,name:bf_securetransfer.mail_template_secure_message
@@ -4796,6 +4895,12 @@ msgid "Send a secure transfer"
 msgstr "Envoyer un transfert sécurisé"
 
 #. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_audience_view_tree
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid "Send again"
+msgstr "Renvoyer"
+
+#. module: bf_securetransfer
 #. odoo-python
 #: code:addons/bf_securetransfer/controllers/main.py:0
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_upload
@@ -4808,12 +4913,22 @@ msgid "Send me a code"
 msgstr "Recevoir un code"
 
 #. module: bf_securetransfer
+#: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__fanout
+msgid "Send split per recipient"
+msgstr "Envoi fendu par destinataire"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid "Send split per recipient: %(count)s individual links (%(who)s)"
+msgstr "Envoi fendu par destinataire : %(count)s liens individuels (%(who)s)"
+
+#. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_upload
 msgid "Send the files"
 msgstr "Envoyer les fichiers"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, bf_security_awareness
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.report_access_certificate_document
@@ -4871,7 +4986,6 @@ msgid "Sender email"
 msgstr "Courriel de l'expéditeur"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__sender_name
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__sender_name
 msgid "Sender name"
@@ -4908,8 +5022,28 @@ msgstr ""
 "défaut du serveur."
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_securetransfer, hosting_management
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__fanout_count
+msgid "Sends in the batch"
+msgstr "Envois dans le lot"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid "Sends of this batch"
+msgstr "Les envois de ce lot"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_brand__st_absentee_reminder_enabled
+msgid ""
+"Sends the share link again to a named recipient who has not even asked for "
+"their code, following the delay and the maximum below. A recipient who "
+"downloaded, or who is merely stuck on their code, is never reminded."
+msgstr ""
+"Renvoie le lien de partage à un destinataire nommé qui n'a même pas demandé "
+"son code, selon le délai et le maximum ci-dessous. Un destinataire qui a "
+"téléchargé, ou qui est simplement coincé sur son code, n'est jamais relancé."
+
+#. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__sequence
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_template__sequence
 msgid "Sequence"
@@ -4927,16 +5061,22 @@ msgstr ""
 "quelqu'un le souhaite."
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__fanout_recipient
+msgid ""
+"Set when the send was split per recipient: the one address this link serves."
+" Empty on an ordinary send, where every recipient shares the link."
+msgstr ""
+"Posé quand l'envoi a été fendu par destinataire : la seule adresse que ce "
+"lien sert. Vide sur un envoi ordinaire, où tous les destinataires partagent "
+"le lien."
+
+#. module: bf_securetransfer
 #: model:ir.actions.act_window,name:bf_securetransfer.action_securetransfer_settings
 #: model:ir.ui.menu,name:bf_securetransfer.menu_config_settings
 msgid "Settings"
 msgstr "Paramètres"
 
 #. module: bf_securetransfer
-#. modules: bf_document_nextcloud_sync, bf_nextcloud_browser,
-#. bf_securetransfer
-#. odoo-javascript
 #. odoo-python
 #: code:addons/bf_securetransfer/wizards/reveal_link_wizard.py:0
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_reveal_wizard__url
@@ -4972,6 +5112,22 @@ msgid "Shared files"
 msgstr "Fichiers partagés"
 
 #. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__powered_by_name
+msgid "Name credited"
+msgstr "Nom crédité"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_brand__powered_by_name
+msgid ""
+"Name after \"Powered by\" on the public page, the emails and the access "
+"certificate. Empty = Symbifox. It never reads the company's name: the "
+"company served is not the one credited."
+msgstr ""
+"Nom qui suit « Propulsé par » sur la page publique, les courriels et le "
+"certificat d'accès. Vide = Symbifox. Il ne lit jamais le nom de la "
+"société : la société servie n'est pas celle qu'on crédite."
+
+#. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__powered_by
 msgid "Show \"Powered by\""
 msgstr "Afficher « Propulsé par »"
@@ -4997,7 +5153,6 @@ msgid "Single recipient (drop page)"
 msgstr "Destinataire unique (page de dépôt)"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_tree
 msgid "Size (bytes)"
@@ -5012,6 +5167,17 @@ msgstr "SMS configuré"
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__sms_hint
 msgid "Sms Hint"
 msgstr "Indication SMS"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid "Split off from %(parent)s for a single recipient: %(who)s"
+msgstr "Détaché de %(parent)s pour un seul destinataire : %(who)s"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__fanout_pending
+msgid "Split per recipient at send"
+msgstr "Fendre par destinataire à l'envoi"
 
 #. module: bf_securetransfer
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_brand__watermark_downloads
@@ -5030,10 +5196,6 @@ msgid "Start from a configuration already set up"
 msgstr "Repartir d'une configuration déjà réglée"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_nextcloud_browser,
-#. bf_securetransfer, bf_security_awareness, hosting_management
-#. odoo-javascript
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__state
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_audience__state
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_file__state
@@ -5045,8 +5207,6 @@ msgid "Status"
 msgstr "Statut"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__activity_state
 msgid ""
 "Status based on activities\n"
@@ -5074,13 +5234,16 @@ msgstr ""
 "                que les transferts arrivent."
 
 #. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_audience_view_search
+msgid "Stuck on their code"
+msgstr "Coincés sur leur code"
+
+#. module: bf_securetransfer
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_send_wizard__brand_id
 msgid "Styling and domain of the link sent to the recipient."
 msgstr "Habillage et domaine du lien envoyé au destinataire."
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, bf_security_awareness
-#. odoo-python
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__subject
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__subject
 msgid "Subject"
@@ -5107,8 +5270,6 @@ msgid "Suspend (abuse)"
 msgstr "Suspendre (abus)"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
-#. odoo-javascript
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer__state__suspended
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__suspended
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_search
@@ -5350,6 +5511,22 @@ msgstr ""
 "                                                le lien seul ne suffit alors plus."
 
 #. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer_file.py:0
+msgid "The copy of \"%s\" could not be verified on storage."
+msgstr "La copie de « %s » n'a pas pu être vérifiée au stockage."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer_brand.py:0
+msgid ""
+"The delay before reminding must be at least one hour, otherwise the "
+"scheduled job reminds at every run."
+msgstr ""
+"Le délai avant de relancer doit être d'au moins une heure, sinon la tâche "
+"planifiée relance à chaque passage."
+
+#. module: bf_securetransfer
 #: model:ir.model.constraint,message:bf_securetransfer.constraint_secure_transfer_template_audience_max_downloads_positive
 msgid "The download budget cannot be negative."
 msgstr "Le budget de téléchargements ne peut pas être négatif."
@@ -5425,13 +5602,22 @@ msgstr ""
 "Le type de dossier visé, pas les valeurs — elles sont juste au-dessus."
 
 #. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer_audience.py:0
+msgid "The link can only be sent again while the transfer is active."
+msgstr "Le lien ne peut être renvoyé que tant que le transfert est actif."
+
+#. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
 msgid ""
-"The link email goes back out to each recipient, in their language. The "
-"receipt is not re-sent to the sender. Continue?"
+"The link email goes back out to EVERY recipient of this link, in their "
+"language. To reach a single person, use \"Send again\" on their line in the "
+"Visitors tab. The receipt is not re-sent to the sender. Continue?"
 msgstr ""
-"Le courriel de lien repart à chaque destinataire, dans sa langue. L'accusé "
-"n'est pas renvoyé à l'expéditeur. Continuer ?"
+"Le courriel du lien repart vers TOUS les destinataires de ce lien, chacun "
+"dans sa langue. Pour n'atteindre qu'une personne, utiliser « Renvoyer » sur "
+"sa ligne dans l'onglet Visiteurs. Le reçu n'est pas renvoyé à l'expéditeur. "
+"Continuer ?"
 
 #. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_unavailable
@@ -5562,6 +5748,16 @@ msgstr ""
 "d'identité."
 
 #. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__fanout_parent_id
+msgid ""
+"The send this one was split off from. The first recipient keeps the original"
+" transfer — so a batch of N recipients stores N copies, not N+1."
+msgstr ""
+"L'envoi dont celui-ci a été détaché. Le premier destinataire garde le "
+"transfert d'origine : un lot de N destinataires stocke donc N copies, et non"
+" N+1."
+
+#. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
 msgid ""
 "The share tokens are not displayed here:\n"
@@ -5575,6 +5771,12 @@ msgstr ""
 #: code:addons/bf_securetransfer/models/secure_transfer_brand.py:0
 msgid "The single recipient \"%s\" is not a valid email address."
 msgstr "Le destinataire unique « %s » n'est pas une adresse courriel valide."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/s3.py:0
+msgid "The stored file is missing: it cannot be copied."
+msgstr "Le fichier stocké est introuvable : il ne peut pas être recopié."
 
 #. module: bf_securetransfer
 #. odoo-python
@@ -5679,6 +5881,11 @@ msgid "This file uploads in a single PUT."
 msgstr "Ce fichier se téléverse en un seul PUT."
 
 #. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__fanout_recipient
+msgid "This link is for"
+msgstr "Ce lien est pour"
+
+#. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_download
 msgid ""
 "This link is not addressed to anyone in particular. To access the content, "
@@ -5708,6 +5915,15 @@ msgstr ""
 "                                    transitent de façon chiffrée, le lien a une durée de vie limitée\n"
 "                                    et son contenu est automatiquement supprimé après l'échéance\n"
 "                                    choisie."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid ""
+"This link is shared and opens without a code, so the server cannot tell who "
+"downloaded: one of them may be the person who did."
+msgstr ""
+"Ce lien est partagé et s'ouvre sans code : le serveur ne peut pas savoir qui"
+" a téléchargé. L'un d'eux est peut-être celui qui l'a fait."
 
 #. module: bf_securetransfer
 #: model:ir.model.constraint,message:bf_securetransfer.constraint_secure_transfer_audience_transfer_phone_uniq
@@ -5759,6 +5975,14 @@ msgid ""
 "This transfer can no longer be reactivated: its files have been purged."
 msgstr ""
 "Ce transfert ne peut plus être réactivé : ses fichiers ont été purgés."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid ""
+"This transfer does not serve that address: the link cannot be sent to it."
+msgstr ""
+"Ce transfert ne sert pas cette adresse : le lien ne peut pas y être envoyé."
 
 #. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.extend_expiry_wizard_view_form
@@ -5883,6 +6107,12 @@ msgid "This upload token already exists."
 msgstr "Ce jeton de téléversement existe déjà."
 
 #. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer_audience.py:0
+msgid "This visitor is blocked: unblock them first."
+msgstr "Ce visiteur est bloqué : le débloquer d'abord."
+
+#. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_brand__tier
 msgid "Tier"
 msgstr "Palier"
@@ -5939,8 +6169,6 @@ msgid "Too many transfers created recently. Try again later."
 msgstr "Trop de transferts créés récemment. Réessayez plus tard."
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
-#. odoo-javascript
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_tree
 msgid "Total"
 msgstr "Total"
@@ -5980,7 +6208,6 @@ msgstr ""
 " Mo en dur."
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_access_log__transfer_id
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_audience__transfer_id
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_extend_wizard__transfer_id
@@ -6049,15 +6276,11 @@ msgstr ""
 " Utilisez « Expirer » ou « Purger »."
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr "Type d'activité d'exception enregistrée."
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer, hosting_management
-#. odoo-python
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_upload
 msgid "URL"
 msgstr "URL"
@@ -6145,14 +6368,12 @@ msgid "Uploading"
 msgstr "Téléversement en cours"
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer, hosting_management
 #: model:ir.model,name:bf_securetransfer.model_res_users
 #: model:res.groups,name:bf_securetransfer.group_securetransfer_user
 msgid "User"
 msgstr "Utilisateur"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, bf_security_awareness
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_access_log__user_agent
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_audience__user_agent
 msgid "User agent"
@@ -6169,13 +6390,11 @@ msgid "Verification code"
 msgstr "Code de vérification"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, hosting_management
 #: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_file__state__verified
 msgid "Verified"
 msgstr "Vérifié"
 
 #. module: bf_securetransfer
-#. modules: bf_credentials, bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_download
 msgid "Verify"
 msgstr "Vérifier"
@@ -6236,11 +6455,6 @@ msgid "Visitors"
 msgstr "Visiteurs"
 
 #. module: bf_securetransfer
-#: model:ir.actions.act_window,name:bf_securetransfer.action_secure_transfer_audience
-msgid "Visitors (open audiences)"
-msgstr "Visiteurs (audiences ouvertes)"
-
-#. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.brand_view_form
 msgid "Visuals"
 msgstr "Visuels"
@@ -6280,8 +6494,6 @@ msgid "Website Messages"
 msgstr "Messages du site web"
 
 #. module: bf_securetransfer
-#. modules: bf_corporate_governance, bf_credentials, bf_securetransfer,
-#. bf_security_awareness, hosting_management
 #: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__website_message_ids
 msgid "Website communication history"
 msgstr "Historique de communication du site web"
@@ -6309,6 +6521,11 @@ msgid "What this preset is for"
 msgstr "À quoi sert ce préréglage"
 
 #. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__one_per_recipient_hint
+msgid "What this will do"
+msgstr "Ce que cela fera"
+
+#. module: bf_securetransfer
 #: model:ir.model.fields,help:bf_securetransfer.field_res_config_settings__st_autoprovision_user_pages
 msgid ""
 "When an internal user is created (excluding service accounts, bots and API),"
@@ -6333,6 +6550,16 @@ msgstr ""
 "API), crée et maintient automatiquement sa page de dépôt personnelle "
 "/to/<slug>. Renommage, changement de courriel et archivage suivis. Décoché ="
 " pages créées à la main seulement."
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_audience__invited_at
+msgid ""
+"When the send registered this recipient. Set for the recipients a transfer "
+"names; empty for a visitor who declared themselves on an open audience link."
+msgstr ""
+"Quand l'envoi a inscrit ce destinataire. Posé pour les destinataires qu'un "
+"transfert nomme; vide pour un visiteur qui s'est déclaré lui-même sur un "
+"lien à audience ouverte."
 
 #. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.view_secure_transfer_template_form
@@ -6516,7 +6743,6 @@ msgid "delivered straight to"
 msgstr "transmis directement à"
 
 #. module: bf_securetransfer
-#. modules: bf_securetransfer, bf_security_awareness
 #. odoo-python
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
 #: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
@@ -6710,6 +6936,11 @@ msgid "recipient"
 msgstr "destinataire"
 
 #. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid "recipient(s) have left no trace at all."
+msgstr "destinataire(s) n'ont laissé aucune trace."
+
+#. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.brand_view_form
 msgid "secret.example.com"
 msgstr "secret.exemple.com"
@@ -6782,3 +7013,334 @@ msgid ""
 msgstr ""
 "{{ object.sender_name or object.sender_email }} vous a transmis des fichiers"
 " — {{ object.name }}"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid ""
+"« One send per recipient » and the open audience are opposites: an open-"
+"audience link names nobody, so there is nobody to split it between."
+msgstr ""
+"« Un envoi par destinataire » et l'audience ouverte s'opposent : un lien à "
+"audience ouverte ne nomme personne, il n'y a donc personne entre qui le "
+"fendre."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/add_draft_file_wizard.py:0
+msgid "\"%(name)s\" (%(size)s) added to the draft by %(login)s"
+msgstr "« %(name)s » (%(size)s) ajouté au brouillon par %(login)s"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer_file.py:0
+msgid "\"%(name)s\" (%(size)s) removed from the draft by %(login)s"
+msgstr "« %(name)s » (%(size)s) retiré du brouillon par %(login)s"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/add_draft_file_wizard.py:0
+msgid "%s MB at most per batch, from this screen."
+msgstr "%s Mo au plus par lot, depuis cet écran."
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__draft_kept
+msgid ""
+"A kept draft waits as long as it has to: the hourly cleanup leaves it alone."
+" Its files already sit on storage, so keep only what is going to be sent."
+msgstr ""
+"Un brouillon gardé attend le temps qu'il faut : le ménage horaire n'y touche"
+" pas. Ses fichiers sont déjà au stockage, donc ne gardez que ce qui va "
+"partir."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid ""
+"A kept draft: the files are on storage, no link exists yet and nothing has "
+"been sent. It waits here as long as it has to. Add the missing piece, then "
+"send."
+msgstr ""
+"Un brouillon gardé : les fichiers sont au stockage, aucun lien n'existe "
+"encore et rien n'a été envoyé. Il attend ici le temps qu'il faut. Ajoutez la"
+" pièce qui manque, puis envoyez."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.add_draft_file_wizard_view_form
+msgid "Add"
+msgstr "Ajouter"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.add_draft_file_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid "Add a file"
+msgstr "Ajouter un fichier"
+
+#. module: bf_securetransfer
+#: model:ir.model,name:bf_securetransfer.model_secure_transfer_add_file_wizard
+msgid "Add a file to a kept draft"
+msgstr "Ajouter un fichier à un brouillon gardé"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__draft_kept
+msgid "Draft kept"
+msgstr "Brouillon gardé"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid ""
+"Draft kept by %(login)s (%(files)s file(s) already on storage, no link "
+"issued yet)"
+msgstr ""
+"Brouillon gardé par %(login)s (%(files)s fichier(s) déjà au stockage, aucun "
+"lien émis)"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__draft_kept
+msgid "Draft kept on purpose"
+msgstr "Brouillon gardé volontairement"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__draft_file_added
+msgid "File added to the draft"
+msgstr "Fichier ajouté au brouillon"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields.selection,name:bf_securetransfer.selection__secure_transfer_access_log__action__draft_file_removed
+msgid "File removed from the draft"
+msgstr "Fichier retiré du brouillon"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_add_file_wizard__attachment_ids
+msgid ""
+"Files added to the draft. They are uploaded to encrypted storage and then "
+"REMOVED from Odoo, like those of the send screen."
+msgstr ""
+"Fichiers ajoutés au brouillon. Ils sont téléversés au stockage chiffré puis "
+"RETIRÉS d'Odoo, comme ceux de l'écran d'envoi."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid "Files deleted from storage on"
+msgstr "Fichiers effacés du stockage le"
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_send_wizard_view_form
+msgid "Keep as a draft"
+msgstr "Garder comme brouillon"
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid "Keep this draft"
+msgstr "Garder ce brouillon"
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_tree
+msgid "Kept draft"
+msgstr "Brouillon gardé"
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_search
+msgid "Kept drafts"
+msgstr "Brouillons gardés"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__draft_kept_at
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid "Kept since"
+msgstr "Gardé depuis"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/add_draft_file_wizard.py:0
+msgid "Pick at least one file."
+msgstr "Choisissez au moins un fichier."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_send_wizard_view_form
+msgid ""
+"Prepare the transfer now and send it later: the files go to storage, nothing"
+" goes out, and no link exists yet. Add the missing piece when it arrives, "
+"then send."
+msgstr ""
+"Préparez l'envoi maintenant et envoyez-le plus tard : les fichiers partent "
+"au stockage, rien ne sort, et aucun lien n'existe encore. Ajoutez la pièce "
+"qui manque quand elle arrive, puis envoyez."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid "Remove from the draft"
+msgstr "Retirer du brouillon"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__draft_storage_warning
+msgid "Storage net is near"
+msgstr "Filet du stockage proche"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__draft_storage_deadline
+msgid "Storage net reached on"
+msgstr "Filet du stockage atteint le"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer_file.py:0
+msgid ""
+"The file \"%s\" could not be removed from storage. Nothing was changed; try "
+"again in a moment."
+msgstr ""
+"Le fichier « %s » n'a pas pu être retiré du stockage. Rien n'a été changé ; "
+"réessayez dans un moment."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid ""
+"The file is deleted from storage and removed from this draft. The access "
+"trail keeps the record. Continue?"
+msgstr ""
+"Le fichier est effacé du stockage et retiré de ce brouillon. Le journal "
+"d'accès en garde la trace. Continuer ?"
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.add_draft_file_wizard_view_form
+msgid ""
+"The file joins this draft without touching what is already there, and "
+"nothing is sent: the draft stays a draft until you send it. Your copy is "
+"removed from Odoo once the upload is confirmed, and the addition is written "
+"to the access trail."
+msgstr ""
+"Le fichier rejoint ce brouillon sans toucher à ce qui s'y trouve déjà, et "
+"rien n'est envoyé : le brouillon reste un brouillon jusqu'à ce que vous "
+"l'envoyiez. Votre copie est retirée d'Odoo dès le téléversement confirmé, et"
+" l'ajout est inscrit au journal d'accès."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid ""
+"The hourly cleanup removes any draft older than its grace period, files "
+"included. A kept draft waits as long as it has to."
+msgstr ""
+"Le ménage horaire supprime tout brouillon plus vieux que son délai de grâce,"
+" fichiers compris. Un brouillon gardé attend le temps qu'il faut."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid ""
+"The link goes out to the recipients now, each with their own code. Once "
+"sent, the files and the recipients can no longer be changed. Continue?"
+msgstr ""
+"Le lien part maintenant vers les destinataires, chacun avec son propre code."
+" Une fois l'envoi parti, les fichiers et les destinataires ne peuvent plus "
+"changer. Continuer ?"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__draft_storage_deadline
+msgid ""
+"The storage provider deletes anything still sitting under our prefix after "
+"this date, whatever Odoo thinks. A draft kept past it loses its files."
+msgstr ""
+"Le fournisseur de stockage efface tout ce qui traîne sous notre préfixe "
+"après cette date, quoi qu'en pense Odoo. Un brouillon gardé au-delà perd ses"
+" fichiers."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid ""
+"This draft is about to lose its files: the storage provider deletes anything"
+" left under our prefix after the date above, and that date is near. Send it,"
+" or upload the files again on a new transfer."
+msgstr ""
+"Ce brouillon est sur le point de perdre ses fichiers : le fournisseur de "
+"stockage efface tout ce qui reste sous notre préfixe après la date ci-"
+"dessus, et cette date approche. Envoyez-le, ou téléversez de nouveau les "
+"fichiers sur un nouvel envoi."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid ""
+"This draft is not kept: the hourly cleanup removes any draft past its grace "
+"period, files included. Use \"Keep this draft\" to hold it."
+msgstr ""
+"Ce brouillon n'est pas gardé : le ménage horaire supprime tout brouillon "
+"passé son délai de grâce, fichiers compris. Utilisez « Garder ce brouillon »"
+" pour le retenir."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid ""
+"This transfer has already been sent: its files and its recipients can no "
+"longer be changed. Create a new transfer."
+msgstr ""
+"Cet envoi est déjà parti : ses fichiers et ses destinataires ne peuvent plus"
+" changer. Créez un nouvel envoi."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid "\"%s\" is not a valid recipient address."
+msgstr "« %s » n'est pas une adresse de destinataire valide."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid "An individual link serves a single recipient: %s addresses were given."
+msgstr ""
+"Un lien individuel ne sert qu'un seul destinataire : %s adresses ont été "
+"fournies."
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__draft_editable_by_me
+msgid "I can change this draft"
+msgstr "Je peux modifier ce brouillon"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__operator_id
+msgid "Prepared by"
+msgstr "Préparé par"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__draft_storage_net_unknown
+msgid "Storage net unknown"
+msgstr "Filet du stockage inconnu"
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
+msgid ""
+"Storage net unknown: no lifecycle rule has been posted on the bucket from "
+"this database. Run \"Configure the S3 bucket\" in the settings to post it "
+"and learn this date."
+msgstr ""
+"Filet du stockage inconnu : aucune règle de cycle de vie n'a été posée sur "
+"le bucket depuis cette base. Lancez « Configurer le bucket S3 » dans les "
+"réglages pour la poser et connaître cette date."
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer__operator_id
+msgid ""
+"The internal user who composed this send from Odoo. Empty on a transfer "
+"created from the public page, which belongs to no operator: only a secure "
+"transfer manager can act on its draft."
+msgstr ""
+"L'utilisateur interne qui a composé cet envoi depuis Odoo. Vide sur un "
+"transfert créé depuis la page publique, qui n'appartient à aucun opérateur :"
+" seul un gestionnaire du transfert sécurisé peut agir sur son brouillon."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/controllers/upload_api.py:0
+msgid "The sender of a kept draft cannot be changed."
+msgstr "L'expéditeur d'un brouillon gardé ne peut pas être changé."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid ""
+"This draft was prepared by someone else: only the person who composed it, or"
+" a secure transfer manager, can change it or send it."
+msgstr ""
+"Ce brouillon a été préparé par quelqu'un d'autre : seule la personne qui l'a"
+" composé, ou un gestionnaire du transfert sécurisé, peut le modifier ou "
+"l'envoyer."

@@ -22,3 +22,11 @@ from . import test_mail_queue_wakeup
 from . import test_otp_essais_par_code
 from . import test_langue_sans_fr_ca
 from . import test_langue_lecteur
+from . import test_envoi_individuel
+from . import test_envoi_individuel_gardes
+from . import test_brouillon_garde
+from . import test_brouillon_regressions
+from . import test_brouillon_correctifs
+from . import test_propulse_par
+from . import test_wizard_owner
+from . import test_filet_seau

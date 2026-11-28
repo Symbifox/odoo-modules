@@ -156,6 +156,55 @@ class SecureTransfer(models.Model):
         string="Recipients",
         help="Recipient addresses, comma-separated (maximum %s)." % MAX_RECIPIENTS,
     )
+    # ⚠ Le destinataire EFFECTIF de ce lien, quand l'envoi a été fendu par
+    # destinataire. ``recipient_emails`` garde alors la liste du LOT — c'est
+    # ce que le reçu de l'expéditeur doit dire, et ce que l'opérateur doit
+    # voir — tandis que ce champ nomme la seule personne que CE lien sert.
+    #
+    # Qui a le droit d'ouvrir ce lien se lit par ``_recipient_list()``, jamais
+    # par ``recipient_emails`` : sans cela, les N destinataires d'un lot
+    # passeraient tous la porte des N liens, et « un lien par personne » ne
+    # voudrait plus rien dire.
+    fanout_recipient = fields.Char(
+        string="This link is for",
+        readonly=True,
+        copy=False,
+        help="Set when the send was split per recipient: the one address "
+             "this link serves. Empty on an ordinary send, where every "
+             "recipient shares the link.",
+    )
+    fanout_parent_id = fields.Many2one(
+        "secure.transfer",
+        string="First send of the batch",
+        readonly=True,
+        index=True,
+        copy=False,
+        ondelete="set null",
+        help="The send this one was split off from. The first recipient "
+             "keeps the original transfer — so a batch of N recipients "
+             "stores N copies, not N+1.",
+    )
+    fanout_child_ids = fields.One2many(
+        "secure.transfer", "fanout_parent_id", string="Other sends of the batch",
+    )
+    fanout_count = fields.Integer(
+        string="Sends in the batch", compute="_compute_fanout_count",
+    )
+    # Ce que la PREUVE doit dire. Le certificat d'accès imprimait
+    # `recipient_emails` : sur un envoi fendu, il aurait attribué à ce lien
+    # les N destinataires du lot, alors qu'il n'en a jamais servi qu'un.
+    recipient_label = fields.Char(
+        string="Recipient(s) of this link",
+        compute="_compute_recipient_label",
+    )
+    # Drapeau de l'assistant (et de l'API publique) lu par ``_activate`` :
+    # il demande la fente, qui a lieu une seule fois, au moment où les
+    # fichiers sont vérifiés et où les liens vont partir. Il s'éteint là.
+    fanout_pending = fields.Boolean(
+        string="Split per recipient at send",
+        default=False,
+        copy=False,
+    )
     # The one line that tells the recipient WHAT this is before they open
     # anything. Deliberately outside every gate: it travels in clear in the
     # mail header (the password and the recipient code hold the CONTENT, not
@@ -204,7 +253,7 @@ class SecureTransfer(models.Model):
     )
     # Phase 2 placeholders — schema ready, hooks land at the _log choke-point.
     burn_after_download = fields.Boolean(
-        string="Destroy after reading (Phase 2)", default=False,
+        string="Destroy after reading", default=False,
     )
     notify_on_download = fields.Boolean(
         string="Notify on download", default=False,
@@ -312,6 +361,26 @@ class SecureTransfer(models.Model):
     audience_count = fields.Integer(
         string="Confirmed visitors", compute="_compute_audience_count",
     )
+    # ⚠ ``audience_count`` ne compte que les CONFIRMÉS, et c'est voulu. Mais
+    # l'onglet Visiteurs se montrait sur ce chiffre : un envoi dont personne
+    # n'avait encore confirmé n'affichait donc aucune liste — justement le
+    # cas où l'opérateur a besoin de la voir. La visibilité se décide
+    # désormais sur le total.
+    audience_total_count = fields.Integer(
+        string="People listed", compute="_compute_audience_count",
+    )
+    absentee_count = fields.Integer(
+        string="Never came", compute="_compute_audience_count",
+        help="Listed recipients who have left no trace at all.",
+    )
+    # ⚠ Un lien PARTAGÉ et sans code ne sait pas qui a téléchargé. Dès que
+    # quelqu'un a pris le fichier, compter les autres comme « jamais venus »
+    # est vrai à la lettre et trompeur à la lecture : l'un d'eux est peut-être
+    # celui qui a téléchargé. L'écran le dit, le cron s'abstient.
+    downloads_unattributed = fields.Boolean(
+        string="Downloads cannot be attributed",
+        compute="_compute_downloads_unattributed",
+    )
     # Float on purpose: Integer maps to int4 and overflows at 2.1 GB.
     total_size = fields.Float(
         string="Total size (bytes)",
@@ -329,6 +398,92 @@ class SecureTransfer(models.Model):
     ip_created = fields.Char(string="Creation IP", readonly=True, index=True)
     ua_created = fields.Char(string="User agent (creation)", readonly=True)
     finalized_at = fields.Datetime(string="Finalized on", readonly=True, copy=False)
+    # ⚠ Un brouillon n'était jusqu'ici qu'un envoi en cours de téléversement :
+    # le ménage horaire ramasse tout brouillon de plus de `draft_ttl_hours`
+    # (24 par défaut) et EFFACE ses objets au stockage. Un envoi préparé
+    # d'avance — des pièces justificatives qui attendent un document à
+    # signer — disparaissait donc la nuit même.
+    # Ce drapeau dit « celui-là est voulu » : il sort le brouillon du
+    # ménage, sans fin (choix de conception), et c'est le seul
+    # effet qu'il a. Le lien n'existe pas encore sur un brouillon : le jeton
+    # ne tourne qu'à `_activate()`, donc rien à masquer côté public.
+    # 🔴 Qui a composé cet envoi, et donc à qui le brouillon appartient.
+    # L'assistant crée le transfert en `sudo()` : `create_uid` vaut alors le
+    # superusager et ne répond de personne. La porte des quatre gestes du
+    # brouillon (`_assert_draft_editable`) se lit ICI — « propriétaire, ou
+    # gestionnaire » : un porteur du groupe
+    # Utilisateur n'agit que sur SON brouillon, un Gestionnaire sur tous.
+    # Vide sur un transfert né de la page publique, qui n'appartient à aucun
+    # opérateur : seul un gestionnaire le rattrape, et c'est voulu, personne
+    # ne l'a composé depuis Odoo.
+    # ⚠ Recopié sur un jumeau de fente (recopie par défaut) : « qui a préparé
+    # cet envoi » reste vrai de chacun des N liens.
+    operator_id = fields.Many2one(
+        "res.users",
+        string="Prepared by",
+        readonly=True,
+        copy=False,
+        index=True,
+        ondelete="set null",
+        help="The internal user who composed this send from Odoo. Empty on a "
+             "transfer created from the public page, which belongs to no "
+             "operator: only a secure transfer manager can act on its draft.",
+    )
+    draft_kept = fields.Boolean(
+        string="Draft kept on purpose",
+        default=False,
+        copy=False,
+        readonly=True,
+        index=True,
+        help="A kept draft waits as long as it has to: the hourly cleanup "
+             "leaves it alone. Its files already sit on storage, so keep only "
+             "what is going to be sent.",
+    )
+    draft_kept_at = fields.Datetime(
+        string="Kept since", readonly=True, copy=False,
+    )
+    # 🔴 « Sans fin » vaut pour le ménage DU MODULE. Le seau, lui, porte une
+    # règle de cycle de vie (`st-expire-orphans-<préfixe>`, posée par l'action
+    # « Configurer le bucket ») qui efface tout objet du préfixe après
+    # `max(60, plus_longue_rétention + 15)` jours. Un brouillon gardé au-delà
+    # perdrait ses octets côté fournisseur, en silence : rien dans Odoo ne
+    # bouge, et la perte ne se dirait qu'à l'envoi, quand le HEAD de
+    # `action_finalize` refuserait le fichier. Plutôt que de laisser cette
+    # date muette, on l'affiche — c'est la seule fin que « sans fin » a.
+    draft_storage_deadline = fields.Datetime(
+        string="Storage net reached on",
+        compute="_compute_draft_storage_deadline",
+        help="The storage provider deletes anything still sitting under our "
+             "prefix after this date, whatever Odoo thinks. A draft kept "
+             "past it loses its files.",
+    )
+    draft_storage_warning = fields.Boolean(
+        compute="_compute_draft_storage_deadline",
+        string="Storage net is near",
+    )
+    # 🔴 Aucun filet connu : l'action « Configurer le bucket S3 » n'a jamais été
+    # jouée sur ce locataire, ou l'a été sous un autre préfixe. La fiche doit
+    # le dire — annoncer une date calculée serait une fiction, et c'est
+    # exactement ce qu'elle faisait avant 18.0.1.23.0.
+    draft_storage_net_unknown = fields.Boolean(
+        compute="_compute_draft_storage_deadline",
+        string="Storage net unknown",
+    )
+    # L'écran suit la porte des quatre gestes : sans cela, un collègue du
+    # groupe Utilisateur verrait trois boutons sur le brouillon de quelqu'un
+    # d'autre et n'apprendrait le refus qu'en cliquant.
+    draft_editable_by_me = fields.Boolean(
+        string="I can change this draft",
+        compute="_compute_draft_editable_by_me",
+        # ⚠ La réponse dépend de QUI regarde. Sans `depends_context`, la
+        # valeur calculée pour une personne serait servie depuis le cache à la
+        # suivante dans la même transaction, et un collègue verrait les
+        # boutons parce que le propriétaire a ouvert la fiche avant lui.
+        depends_context=("uid",),
+    )
+    # Fenêtre d'avertissement : deux semaines, la même marge que le filet lui
+    # même prend au-dessus de la plus longue rétention.
+    _DRAFT_STORAGE_WARN_DAYS = 14
     purged_at = fields.Datetime(string="Purged on", readonly=True, copy=False)
     purge_error_count = fields.Integer(
         string="Purge failures", default=0, copy=False,
@@ -409,6 +564,75 @@ class SecureTransfer(models.Model):
         for rec in self:
             rec.file_count = len(rec.file_ids)
 
+    @api.depends("state", "create_date", "file_ids.create_date", "draft_kept")
+    def _compute_draft_storage_deadline(self):
+        """Quand le FOURNISSEUR effacerait les octets d'un brouillon.
+
+        🔴 Le délai se LIT sur ce que « Configurer le bucket S3 » a réellement
+        appliqué (``s3.applied_orphan_expiry_days``), il ne se recalcule plus.
+        La règle de cycle de vie est posée UNE fois et garde sa valeur ;
+        recalculer ``max(60, rétention + 15)`` à chaque lecture faisait bouger
+        la date annoncée dès qu'une marque relevait sa rétention, sans que
+        rien ne change au seau. On lisait
+        donc une date PLUS TARDIVE que celle à laquelle le fournisseur efface,
+        et c'est le pire sens de l'erreur. Et sur un locataire où l'action n'a
+        jamais été jouée, il n'y a aucun filet : la fiche le dit au lieu
+        d'inventer une date. Depuis 18.0.1.26.0, relever une
+        rétention déclenche la tâche planifiée qui REPOSE la règle, et le
+        paramètre consigné suit ; entre l'enregistrement et ce passage, la
+        fiche montre l'ancien délai, le plus court, donc une date vraie.
+
+        Le compte part du plus ANCIEN objet, pas du transfert : la règle de
+        cycle de vie compte les jours par objet, donc c'est le premier fichier
+        téléversé qui tombe le premier. Une pièce ajoutée plus tard ne repousse
+        rien.
+        """
+        days = None
+        lu = False
+        for rec in self:
+            if rec.state != "draft":
+                rec.draft_storage_deadline = False
+                rec.draft_storage_warning = False
+                rec.draft_storage_net_unknown = False
+                continue
+            if not lu:
+                # Lu une fois par lot : c'est un paramètre d'instance.
+                days = s3.applied_orphan_expiry_days(rec.env)
+                lu = True
+            if days is None:
+                rec.draft_storage_deadline = False
+                rec.draft_storage_warning = False
+                rec.draft_storage_net_unknown = True
+                continue
+            rec.draft_storage_net_unknown = False
+            dates = [d for d in rec.file_ids.mapped("create_date") if d]
+            base = min(dates) if dates else rec.create_date
+            if not base:
+                rec.draft_storage_deadline = False
+                rec.draft_storage_warning = False
+                continue
+            deadline = base + timedelta(days=days)
+            rec.draft_storage_deadline = deadline
+            rec.draft_storage_warning = bool(
+                rec.draft_kept
+                and deadline - timedelta(days=rec._DRAFT_STORAGE_WARN_DAYS)
+                <= fields.Datetime.now()
+            )
+
+    @api.depends("state", "operator_id")
+    def _compute_draft_editable_by_me(self):
+        """Les boutons du brouillon que CETTE personne peut actionner."""
+        gestionnaire = self.env.user.has_group(
+            "bf_securetransfer.group_securetransfer_manager")
+        usager = gestionnaire or self.env.user.has_group(
+            "bf_securetransfer.group_securetransfer_user")
+        for rec in self:
+            rec.draft_editable_by_me = bool(
+                rec.state == "draft" and usager
+                and (gestionnaire or (rec.operator_id
+                                      and rec.operator_id == self.env.user))
+            )
+
     @api.depends("force_recipient_otp", "audience_mode")
     def _compute_recipient_otp_status(self):
         # The instance setting is read once per batch: it is the same answer
@@ -428,11 +652,51 @@ class SecureTransfer(models.Model):
     @api.depends("audience_ids.state")
     def _compute_audience_count(self):
         # Les visiteurs seulement « en attente » (code envoyé, jamais validé)
-        # ne comptent pas : le chiffre lu par l'opérateur doit être celui des
-        # gens qui ont réellement franchi la porte.
+        # ne comptent pas dans `audience_count` : le chiffre lu par
+        # l'opérateur doit être celui des gens qui ont réellement franchi la
+        # porte. Les deux autres compteurs disent le reste — combien de
+        # personnes la liste connaît, et combien ne se sont jamais présentées.
         for rec in self:
             rec.audience_count = len(
                 rec.audience_ids.filtered(lambda a: a.state == "confirmed"))
+            rec.audience_total_count = len(rec.audience_ids)
+            rec.absentee_count = len(
+                rec.audience_ids.filtered(lambda a: a.state == "invited"))
+
+    @api.depends("recipient_emails", "fanout_recipient")
+    def _compute_recipient_label(self):
+        """⚠ Aucune formule traduisible ici, et c'est délibéré : le champ est
+        lu par le certificat d'accès, qui se rend dans la langue du transfert
+        et non dans celle de la session. Un calcul traduit sans
+        ``depends_context("lang")`` se serait fait servir depuis le cache
+        d'une autre langue, et la preuve aurait changé de langue sans
+        prévenir. La nuance (« un envoi individuel ») est dite par le gabarit,
+        qui est traduit comme une vue."""
+        for rec in self:
+            rec.recipient_label = (
+                rec.fanout_recipient or rec.recipient_emails or "")
+
+    @api.depends("download_count", "recipient_emails", "fanout_recipient",
+                 "force_recipient_otp", "audience_mode")
+    def _compute_downloads_unattributed(self):
+        for rec in self:
+            rec.downloads_unattributed = bool(
+                rec.download_count
+                and not rec._recipient_otp_required()
+                and len(rec._recipient_list()) > 1
+            )
+
+    @api.depends("fanout_parent_id", "fanout_child_ids")
+    def _compute_fanout_count(self):
+        """Combien d'envois le lot compte, vu de n'importe lequel d'entre eux.
+
+        Le premier destinataire garde le transfert d'origine : il est donc à
+        la fois membre du lot et parent des autres. Un enfant compte depuis
+        son parent, et 0 dit « pas un lot »."""
+        for rec in self:
+            root = rec.fanout_parent_id or rec
+            children = len(root.fanout_child_ids)
+            rec.fanout_count = (children + 1) if children else 0
 
     @api.constrains("audience_mode", "brand_id")
     def _check_audience_mode_offered(self):
@@ -474,7 +738,48 @@ class SecureTransfer(models.Model):
         "subject": MAX_SUBJECT_LEN,
         # Comma-joined list, capped well above MAX_RECIPIENTS × address length.
         "recipient_emails": MAX_RECIPIENTS * 256,
+        # 🔴 Même destination que le champ ci-dessus : `_recipient_list()`
+        # le rend tel quel et il finit dans `mail.mail.email_to`. L'oublier
+        # ici laissait un gestionnaire poser « adresse\r\nBcc: … » par RPC
+        # (`readonly=True` ne garde que l'écran) sur un champ ajouté après la
+        # ceinture — une garde posée pour un cas précis, contournée par le
+        # champ suivant.
+        "fanout_recipient": 256,
     }
+
+    @api.model
+    def _assert_single_fanout_recipient(self, vals):
+        """``fanout_recipient`` nomme UNE adresse, et elle se valide.
+
+        🔴 ``_recipient_list()`` découpe ``recipient_emails`` sur la virgule
+        mais rend CE champ tel quel. Une virgule y posait donc deux adresses
+        dans un seul ``email_to`` : le lien brandé partait à quelqu'un que
+        l'envoi n'avait jamais nommé, sans passer par ``_recipient_allowed``,
+        et ``_audience_admissible`` ne reconnaissait plus personne — le lien
+        devenait inouvrable pour tout le monde, y compris la personne à qui il
+        était destiné. ``readonly=True`` ne garde que l'écran ; le ``write``
+        d'un gestionnaire en RPC passait outre, exactement comme pour le
+        filtre CR/LF ajouté plus tôt sur le même champ.
+
+        Validée plutôt que découpée : « un lien par personne » n'a de sens
+        qu'avec une personne, et un envoi fendu dont ce champ en nommerait
+        deux est un envoi dont la fente a raté — on refuse, on ne devine pas
+        laquelle garder.
+        """
+        if not vals.get("fanout_recipient"):
+            return
+        parts = [p.strip() for p in
+                 str(vals["fanout_recipient"]).replace(";", ",").split(",")
+                 if p.strip()]
+        if len(parts) != 1:
+            raise UserError(_(
+                "An individual link serves a single recipient: %s addresses "
+                "were given.", len(parts)))
+        normalized = email_normalize(parts[0])
+        if not normalized:
+            raise UserError(_(
+                "\"%s\" is not a valid recipient address.", parts[0][:64]))
+        vals["fanout_recipient"] = normalized
 
     @api.model
     def _normalize_header_fields(self, vals):
@@ -488,6 +793,7 @@ class SecureTransfer(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             self._normalize_header_fields(vals)
+            self._assert_single_fanout_recipient(vals)
             if not vals.get("name") or vals["name"] == _("New"):
                 vals["name"] = (
                     self.env["ir.sequence"].next_by_code("secure.transfer")
@@ -497,7 +803,18 @@ class SecureTransfer(models.Model):
 
     def write(self, vals):
         self._normalize_header_fields(vals)
-        return super().write(vals)
+        self._assert_single_fanout_recipient(vals)
+        res = super().write(vals)
+        # ⚠ La liste des destinataires peut encore changer après l'envoi (un
+        # gestionnaire ajoute une adresse oubliée). Elle lui donne l'accès par
+        # `_recipient_list()` : sans sa ligne d'audience, la « liste complète »
+        # de l'onglet Visiteurs garderait un trou, et cette personne ne serait
+        # ni relançable ni comptée parmi les absents.
+        if "recipient_emails" in vals or "fanout_recipient" in vals:
+            for rec in self:
+                if rec.state == "active" and rec.audience_mode != "open":
+                    rec._sync_declared_audience()
+        return res
 
     def unlink(self):
         # Metadata + access trail survive the S3 purge by design (Loi 25).
@@ -538,11 +855,25 @@ class SecureTransfer(models.Model):
         """Start of the current UTC day (create_date is naive UTC)."""
         return fields.Datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
 
+    # 🔴 Les jumeaux d'un envoi fendu ne comptent pas dans les quotas
+    # quotidiens. Un envoi par destinataire est UN envoi : sans ce filtre, un
+    # lot de N destinataires consommait N transferts sur un quota qui
+    # vaut 5 par défaut — la première fente de la journée aurait fait refuser
+    # l'envoi suivant de la même personne, avec un message parlant de limite
+    # quotidienne. Côté octets, c'est encore plus net : les copies sont faites
+    # DANS le stockage, rien n'est téléversé, et le quota mesure ce qui monte.
+    _NOT_A_FANOUT_TWIN = ("fanout_parent_id", "=", False)
+
     @api.model
     def _daily_usage(self, domain):
         """(count, declared_bytes) of today's transfers matching ``domain``.
         DB counters (not in-memory dicts): per-worker dicts reset and lie
-        about daily quotas."""
+        about daily quotas.
+
+        ⚠ Every caller must carry ``_NOT_A_FANOUT_TWIN`` in its domain — see
+        the note above it. It is not folded in here on purpose: a future
+        caller that genuinely wants to count stored objects (a storage report,
+        not a quota) must say so rather than inherit a silent filter."""
         rows = self.sudo()._read_group(
             [("create_date", ">=", self._day_start())] + domain,
             groupby=[],
@@ -565,7 +896,8 @@ class SecureTransfer(models.Model):
         self.env.cr.execute("SELECT pg_advisory_xact_lock(hashtext(%s))",
                             ("bf_st_create_sender:" + (sender_email or ""),))
         quota = s3._int_param(self.env, "quota_daily_transfers_per_sender", 5)
-        domain = [("sender_email", "=", sender_email)]
+        domain = [("sender_email", "=", sender_email),
+                  self._NOT_A_FANOUT_TWIN]
         if exclude_id:
             domain.append(("id", "!=", exclude_id))
         count, _b = self._daily_usage(domain)
@@ -652,7 +984,8 @@ class SecureTransfer(models.Model):
         cr.execute("SELECT pg_advisory_xact_lock(hashtext(%s))",
                    ("bf_st_create_ip:" + (ip or ""),))
         quota_ip = s3._int_param(self.env, "quota_daily_transfers_per_ip", 25)
-        count_ip, _bytes_ip = self._daily_usage([("ip_created", "=", ip or "")])
+        count_ip, _bytes_ip = self._daily_usage(
+            [("ip_created", "=", ip or ""), self._NOT_A_FANOUT_TWIN])
         if count_ip >= quota_ip:
             raise UserError(_(
                 "Daily transfer limit reached for your connection. Try "
@@ -774,7 +1107,8 @@ class SecureTransfer(models.Model):
         #    registered files are included via the stored total_size)
         quota_mb = s3._int_param(self.env, "quota_daily_bytes_per_ip_mb", 10240)
         _count, day_bytes = self._daily_usage(
-            [("ip_created", "=", self.ip_created or "")],
+            [("ip_created", "=", self.ip_created or ""),
+             self._NOT_A_FANOUT_TWIN],
         )
         if day_bytes + size > quota_mb * 1024 * 1024:
             raise UserError(_(
@@ -863,7 +1197,20 @@ class SecureTransfer(models.Model):
             raise UserError(_(
                 "This email address is not authorized to send from this "
                 "service."))
-        self._check_sender_quota(self.sender_email, exclude_id=self.id)
+        # 🔴 Un brouillon gardé un jour ANTÉRIEUR a déjà payé son quota, le
+        # jour où il a été composé : le compteur est quotidien et se lit sur
+        # `create_date`. Le revérifier ici le faisait payer deux fois, et sur
+        # un autre jour — un envoi préparé lundi, envoyé jeudi après cinq
+        # autres envois, se faisait refuser « réessayez demain » au moment
+        # précis où la signature attendue venait d'arriver. C'est le scénario
+        # même du brouillon gardé qui échouait. Le plafond tient toujours à l'entrée :
+        # on ne garde que cinq brouillons par jour et par adresse. Un
+        # brouillon gardé et envoyé le MÊME jour reste compté, parce que son
+        # jour de création est aussi celui de l'envoi.
+        meme_jour = not (self.draft_kept and self.draft_kept_at
+                         and self.draft_kept_at < self._day_start())
+        if meme_jour:
+            self._check_sender_quota(self.sender_email, exclude_id=self.id)
         # Drop page guarantor: re-force the fixed recipient at send time too,
         # so a finalize call that carried a different address can never
         # redirect the transfer away from the page owner.
@@ -921,7 +1268,19 @@ class SecureTransfer(models.Model):
             % (len(self.file_ids), self.total_size,
                fields.Datetime.to_string(expiry)),
         )
+        # L'ordre compte. La fente d'abord : elle réécrit qui est le
+        # destinataire de CE lien, et aucun lien ne doit partir avant. Puis la
+        # liste des destinataires, pour que l'onglet Visiteurs soit complet au
+        # moment même où les courriels s'en vont — sinon le premier qui
+        # clique arrive avant sa propre ligne.
+        siblings = self._fan_out_per_recipient()
+        self._sync_declared_audience()
         self._send_link_emails()
+        for child in siblings:
+            child._sync_declared_audience()
+            # `recipients_only` : le reçu de l'expéditeur part une seule fois,
+            # avec le premier envoi, et il nomme déjà tout le lot.
+            child._send_link_emails(recipients_only=True)
         return {
             "share_url": self._share_url(),
             "expiry_date": fields.Datetime.to_string(expiry),
@@ -1108,7 +1467,7 @@ class SecureTransfer(models.Model):
             (denv._("Reference"), self.name),
             (denv._("Brand"), self.brand_id.name),
             (denv._("Sender"), "%s <%s>" % (self.sender_name or "", self.sender_email or "")),
-            (denv._("Recipients"), self.recipient_emails or ""),
+            (denv._("Recipients"), self.with_env(denv).recipient_label or ""),
             (denv._("Reason"), reason or ""),
             (denv._("Reporter's IP"), ip or ""),
         ]
@@ -1290,9 +1649,12 @@ class SecureTransfer(models.Model):
             # blanche ici : ils appartiennent au mode ouvert.
             if kind != "email":
                 return False, "channel"
+            # ⚠ `_recipient_list()`, PAS `recipient_emails` : sur un envoi
+            # fendu par destinataire, le champ garde la liste du lot et ce
+            # contrôle est la seule chose qui empêche les N destinataires
+            # d'ouvrir chacun des N liens.
             declared = email in [
-                email_normalize(e) for e in (self.recipient_emails or "").split(",")
-                if e.strip()
+                email_normalize(e) for e in self._recipient_list() if e.strip()
             ]
             return (True, "") if declared else (False, "not_a_recipient")
         limits = self._audience_limits()
@@ -1344,6 +1706,24 @@ class SecureTransfer(models.Model):
         self._lock_row()
         existing = self._audience_for(kind, value)
         if existing:
+            # 🔴 Depuis que les destinataires nommés sont inscrits dès
+            # l'envoi, la ligne EXISTE avant la première visite : retourner
+            # ici sans rien dire a fait disparaître du journal l'entrée
+            # « code demandé par un destinataire nommé », qui était la seule
+            # trace du moment où la personne s'est présentée. On la réécrit
+            # au PREMIER passage, repéré sur `first_seen` vide — et une seule
+            # fois, parce qu'un journal en ajout seul ne se nettoie pas.
+            if not existing.first_seen:
+                existing.sudo().write({
+                    "first_seen": fields.Datetime.now(),
+                    "ip": existing.ip or (ip or ""),
+                    "user_agent": existing.user_agent or (ua or "")[:512],
+                })
+                self._log(
+                    "audience_requested", actor=existing.display_identity,
+                    ip=ip, ua=ua,
+                    note=self._log_env()._(
+                        "Code requested by a named recipient"))
             return existing
         admissible, _reason = self._audience_admissible(kind, value)
         if not admissible:
@@ -1606,13 +1986,48 @@ class SecureTransfer(models.Model):
         return True, ""
 
     def _recipient_list(self):
-        """The recipient addresses, split and trimmed. Every caller that mails
-        recipients must go through this and send ONE mail each: the raw
-        comma-joined field in an email_to would expose the whole list to each
-        of them."""
+        """The addresses THIS link serves, split and trimmed.
+
+        Single source of truth for two questions that must never be answered
+        from the raw field: who the link mails go to, and who the recipient
+        code admits. When the send was split per recipient, this is the one
+        address this transfer names — ``recipient_emails`` still carries the
+        whole batch, because that is what the sender's receipt must say and
+        what the operator must see. Reading the field instead would let any of
+        the N recipients open any of the N links, and « one link per person »
+        would mean nothing.
+
+        Every caller that mails recipients must go through this and send ONE
+        mail each: the raw comma-joined field in an email_to would expose the
+        whole list to each of them.
+        """
         self.ensure_one()
+        if self.fanout_recipient:
+            # ⚠ Ceinture DERRIÈRE la porte de `_assert_single_fanout_recipient`
+            # (relevé en relecture adverse) : un champ qui ne normalise pas en UNE
+            # adresse ne sert personne. Il n'y a plus qu'un chemin pour en
+            # fabriquer un — du SQL brut — mais c'est ici que « qui peut ouvrir
+            # ce lien » se décide, et cette fonction ne doit jamais rendre une
+            # chaîne qui finirait telle quelle dans un `email_to`. Refuser
+            # tout le monde est la seule issue sûre : découper et garder la
+            # première adresse, ce serait deviner.
+            seule = email_normalize(self.fanout_recipient)
+            return [seule] if seule else []
         return [e.strip() for e in (self.recipient_emails or "").split(",")
                 if e.strip()]
+
+    def _sole_recipient_audience(self):
+        """La ligne d'audience du destinataire UNIQUE de ce lien, ou un
+        recordset vide dès qu'ils sont plusieurs.
+
+        ⚠ Ne crée rien : la ligne naît de l'envoi (`_sync_declared_audience`)
+        ou de la reprise. Un transfert antérieur à la 18.0.1.23.0 et déjà
+        fermé n'en a pas, et il n'y a rien à y inventer."""
+        self.ensure_one()
+        recipients = self._recipient_list()
+        if len(recipients) != 1:
+            return self.env["secure.transfer.audience"]
+        return self._audience_for("email", recipients[0])
 
     def _downloadable_files(self):
         """The files a recipient may actually fetch: upload verified and not
@@ -1647,6 +2062,17 @@ class SecureTransfer(models.Model):
                     "You have reached the number of downloads allowed for "
                     "this link."))
             member._register_download()
+        else:
+            # 🔴 Sans code destinataire exigé, le contrôleur n'a aucune
+            # identité en session et `member` est vide. Mais si ce lien ne
+            # sert QU'UNE adresse — un envoi fendu, ou un envoi à un seul
+            # destinataire — le téléchargement lui appartient sans ambiguïté.
+            # Le compter est la seule façon que « jamais venu » reste vrai, et
+            # que le rappel automatique ne relance pas quelqu'un qui a déjà
+            # tout pris.
+            sole = self._sole_recipient_audience()
+            if sole:
+                sole._register_download_without_code()
         self.download_count += 1
         file.download_count += 1
         self._log("download", file=file, ip=ip, ua=ua,
@@ -1950,14 +2376,27 @@ class SecureTransfer(models.Model):
             return False
         return formataddr((self.sender_name or "", self.sender_email))
 
-    def _send_link_emails(self, recipients_only=False):
+    def _send_link_emails(self, recipients_only=False, only=None):
         """Queue the branded emails: the download link to EACH recipient (in
         that recipient's contact language when known) and the receipt to the
         sender (in the sender's language). The password is NEVER included; the
         share link always rides the brand domain, never web.base.url.
 
         ``recipients_only`` skips the sender receipt — a manual re-send exists
-        because a RECIPIENT lost the mail; the sender already has theirs."""
+        because a RECIPIENT lost the mail; the sender already has theirs.
+
+        ``only`` narrows the link mails to those addresses: the per-person
+        re-send and the absentee reminder. It is INTERSECTED with what this
+        transfer actually serves — its own recipients, plus the identities
+        registered on an open audience, CONFIRMED OR NOT (a visitor who only
+        declared themselves already had a code mailed to that address, so
+        re-sending the link there exposes nothing new, and it takes a
+        manager's click). A manager may reveal the link and
+        forward it themselves; what they may not do is make the server mail a
+        branded, DKIM-signed share link to an address this transfer never
+        named. Leaving that unchecked would have turned one button into an
+        open relay with the tenant's reputation behind it.
+        """
         link_tmpl = self.env.ref(
             "bf_securetransfer.mail_template_transfer_link",
             raise_if_not_found=False,
@@ -1985,6 +2424,19 @@ class SecureTransfer(models.Model):
         )
         for rec in self:
             recipients = rec._recipient_list()
+            if only is not None:
+                served = {email_normalize(r) or r.strip() for r in recipients}
+                if rec.audience_mode == "open":
+                    # Un visiteur d'audience ouverte s'est déclaré lui-même :
+                    # c'est l'audience, et non la liste des destinataires,
+                    # qui dit qui ce lien sert.
+                    served |= {a.email for a in rec.audience_ids if a.email}
+                asked = [email_normalize(a) or (a or "").strip() for a in only]
+                recipients = [a for a in asked if a and a in served]
+                if not recipients:
+                    raise UserError(_(
+                        "This transfer does not serve that address: the "
+                        "link cannot be sent to it."))
             message_only = not rec.file_ids and bool((rec.message or "").strip())
             use_secure = (rec._recipient_otp_required() or message_only) and secure_tmpl
             tmpl = secure_tmpl if use_secure else link_tmpl
@@ -2009,16 +2461,37 @@ class SecureTransfer(models.Model):
                     rec.id, force_send=False,
                     email_values={"subject": subject} if subject else None)
             actor = rec.env.context.get("st_resend_actor")
+            kind = rec.env.context.get("st_resend_kind")
             log_env = rec._log_env()
-            rec._log(
-                "emailed",
-                actor=actor,
-                note=(log_env._("Link manually re-sent to: %s")
-                      % (rec.recipient_emails or "")) if actor else
-                (log_env._("Link sent to: %s; receipt to: %s")
-                 % (rec.recipient_emails or log_env._("(none, link-only mode)"),
-                    rec.sender_email)),
-            )
+            if only is not None:
+                # Un envoi nominatif se journalise nominativement : « lien
+                # renvoyé à tout le monde » sur une relance d'une personne
+                # aurait rendu le journal inutilisable pour la seule question
+                # qu'on lui pose ici — qui a été relancé, et quand.
+                rec._log(
+                    "audience_reminded" if kind == "reminder"
+                    else "audience_resent",
+                    actor=actor,
+                    note=(log_env._("Automatic reminder sent to: %s")
+                          if kind == "reminder"
+                          else log_env._("Link sent again to: %s"))
+                    % ", ".join(recipients),
+                )
+            else:
+                # ⚠ `recipients`, pas `recipient_emails` : sur un envoi
+                # fendu, le champ garde la liste du lot et la note aurait
+                # affirmé que le lien est parti aux N personnes alors
+                # qu'il n'est parti qu'à une. Le journal est une preuve.
+                servis = ", ".join(recipients)
+                rec._log(
+                    "emailed",
+                    actor=actor,
+                    note=(log_env._("Link manually re-sent to: %s")
+                          % servis) if actor else
+                    (log_env._("Link sent to: %s; receipt to: %s")
+                     % (servis or log_env._("(none, link-only mode)"),
+                        rec.sender_email)),
+                )
         self._wake_mail_queue()
 
     def _wake_mail_queue(self):
@@ -2043,6 +2516,137 @@ class SecureTransfer(models.Model):
                             raise_if_not_found=False)
         if cron:
             cron.sudo()._trigger()
+
+    # ------------------------------------------------------------------ brouillon gardé
+    # Le besoin : préparer un envoi, attendre la dernière pièce (un document
+    # signé, par exemple), puis l'ajouter et envoyer, sans téléverser de
+    # nouveau le reste. Un envoi se créait et partait dans le même geste.
+    def _assert_draft_editable(self):
+        """Porte commune des quatre gestes du brouillon : propriétaire, ou
+        gestionnaire.
+
+        🔴 Le groupe seul ne suffisait pas :
+        `group_securetransfer_user` est en LECTURE SEULE sur `secure.transfer`
+        et `secure.transfer.file` (1,0,0,0), la règle d'enregistrement est
+        `[(1,'=',1)]` — donc tout brouillon de la base — et les quatre
+        méthodes s'élèvent elles-mêmes en `sudo()`. Un collègue du même rôle
+        pouvait ainsi effacer les octets du brouillon d'une autre personne, ou
+        envoyer son dossier incomplet, sans que rien ne se reprenne. C'était
+        une régression contre la posture écrite du module : la 18.0.1.17.1 a
+        justement rendu `action_resend_emails` gestionnaire-seulement parce
+        qu'« une méthode publique est une surface RPC ».
+
+        Décision : **propriétaire, ou gestionnaire**. Un porteur du groupe
+        Utilisateur n'agit que sur un brouillon dont il est l'opérateur
+        (`operator_id`), un Gestionnaire agit sur tous : dans une équipe où
+        deux comptes sont Gestionnaire et les autres Utilisateur, ces derniers
+        gardent la fonction pour leurs propres envois. Un brouillon né de la page
+        publique n'a aucun opérateur, donc seul un gestionnaire le rattrape.
+
+        ⚠ `self.env.su` saute le contrôle de personne, et seulement lui. C'est
+        encore sain, et c'est mesuré : le seul appelant qui en profite est
+        l'assistant d'envoi, qui vérifie son groupe à l'entrée de `_compose` et
+        dont l'opérateur EST celui du transfert qu'il vient de créer ; aucun
+        contrôleur, cron ni module pont n'atteint ces méthodes (vérifié en
+        relecture adverse). La raison de fond : sous le superusager il n'y a
+        personne à nommer — `has_group` ne répondrait pas de l'opérateur et
+        `operator_id` ne vaudrait rien. L'état, lui, se vérifie TOUJOURS :
+        c'est lui qui porte la promesse. Sur un envoi parti, des octets ont
+        déjà été servis et le journal est une preuve.
+        """
+        self.ensure_one()
+        if not self.env.su and not self.env.user.has_group(
+                "bf_securetransfer.group_securetransfer_user"):
+            raise UserError(_("Action restricted to secure transfer users."))
+        if self.state != "draft":
+            raise UserError(_(
+                "This transfer has already been sent: its files and its "
+                "recipients can no longer be changed. Create a new transfer."))
+        if self.env.su or self.env.user.has_group(
+                "bf_securetransfer.group_securetransfer_manager"):
+            return
+        if not self.operator_id or self.operator_id != self.env.user:
+            raise UserError(_(
+                "This draft was prepared by someone else: only the person "
+                "who composed it, or a secure transfer manager, can change "
+                "it or send it."))
+
+    def action_keep_draft(self, actor=None):
+        """Sortir ce brouillon du ménage horaire, sans fin.
+
+        Sert deux cas : l'assistant qui s'arrête avant d'envoyer, et le
+        rattrapage d'un brouillon déjà là (téléversement interrompu sur la page
+        publique) que l'opérateur veut finir demain plutôt que de le voir
+        ramassé à 24 h.
+
+        ⚠ `actor` existe parce que l'assistant travaille sur un transfert en
+        `sudo()` : sans lui, le journal nommerait le superusager au lieu de la
+        personne qui a composé l'envoi. Même raison que les notes de
+        `action_send`, qui passent déjà l'acteur à la main.
+
+        🔴 Mais il n'est honoré QUE sous `self.env.su`, et c'est le second
+        bloquant de la relecture adverse : la méthode est publique, donc `actor` venait du
+        client XML-RPC et s'écrivait tel quel dans l'entrée `draft_kept`. Rien
+        n'était altéré — une entrée FAUSSE entrait légitimement dans la chaîne
+        de hachage que `verify_chain()` valide, puis au certificat d'accès.
+        Partout ailleurs le module code `actor=self.env.user.login` en dur, et
+        c'est ce que fait désormais tout appel authentifié.
+        """
+        self.ensure_one()
+        self._assert_draft_editable()
+        actor = (actor or self.env.user.login) if self.env.su \
+            else self.env.user.login
+        if self.draft_kept:
+            return True
+        self.sudo().write({
+            "draft_kept": True,
+            "draft_kept_at": fields.Datetime.now(),
+        })
+        self._log(
+            "draft_kept", actor=actor,
+            note=self._log_env()._(
+                "Draft kept by %(login)s (%(files)s file(s) already on "
+                "storage, no link issued yet)")
+            % {"login": actor, "files": len(self.file_ids)},
+        )
+        return True
+
+    def action_add_file(self):
+        """Ouvrir l'assistant qui ajoute une pièce à ce brouillon."""
+        self.ensure_one()
+        self._assert_draft_editable()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Add a file"),
+            "res_model": "secure.transfer.add.file.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_transfer_id": self.id},
+        }
+
+    def action_send_now(self):
+        """Envoyer un brouillon gardé : même chemin que l'assistant.
+
+        ⚠ `action_finalize` rend la charge utile de l'API publique (lien et
+        échéance), pas une action d'écran. Le bouton passe donc par ici, qui
+        vérifie les fichiers au stockage, active, fend l'envoi s'il le faut,
+        inscrit l'audience et envoie les liens — puis recharge la fiche. Le
+        journal gagne son entrée `finalized` dans `_activate()` : avec
+        `draft_kept`, les deux dates encadrent ce qui a été préparé, et quand.
+        """
+        self.ensure_one()
+        self._assert_draft_editable()
+        if not self.file_ids and not (self.message or "").strip():
+            raise UserError(_("Add at least one file or a message."))
+        self.sudo().action_finalize()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Secure transfer"),
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "current",
+        }
 
     # ------------------------------------------------------------------ operator buttons
     def action_expire_now(self):
@@ -2226,6 +2830,247 @@ class SecureTransfer(models.Model):
                 st_resend_actor=self.env.user.login,
             )._send_link_emails(recipients_only=True)
         return True
+
+    # ------------------------------------------------------------------ qui est attendu
+    def _sync_declared_audience(self):
+        """Give every named recipient their audience line, at send time.
+
+        Until this existed, a line was born of a VISIT: a recipient who never
+        clicked appeared nowhere, so « who has not come » could only be read as
+        an absence — by comparing the addresses to the Visitors tab by hand.
+        Nobody does that: a send to several recipients showed one visitor
+        line, and the others were invisible.
+
+        Creating the lines at send time makes the tab the full list — who
+        downloaded, who is stuck on their code, who never came — and gives the
+        per-person re-send something to hang on.
+
+        Idempotent: it creates only what is missing and never touches the
+        state of a line that already exists. Open audiences are skipped, where
+        the whole point is that the link names nobody.
+        """
+        self.ensure_one()
+        Audience = self.env["secure.transfer.audience"]
+        if self.audience_mode == "open":
+            return Audience
+        known = {a.email for a in self.audience_ids if a.email}
+        now = fields.Datetime.now()
+        vals_list = []
+        for raw in self._recipient_list():
+            email = email_normalize(raw)
+            if not email or email in known:
+                continue
+            known.add(email)
+            vals_list.append({
+                "transfer_id": self.id,
+                "identity_kind": "email",
+                "email": email,
+                "state": "invited",
+                # Jamais vue : « première demande » doit rester vide, sinon
+                # la colonne mentirait sur un passage qui n'a pas eu lieu.
+                "first_seen": False,
+                "invited_at": now,
+            })
+        if not vals_list:
+            return Audience
+        created = Audience.sudo().create(vals_list)
+        self._log(
+            "audience_invited",
+            note=self._log_env()._("%(count)s recipient(s) listed at send "
+                                   "time: %(who)s")
+            % {"count": len(created), "who": ", ".join(created.mapped("email"))},
+        )
+        return created
+
+    # ------------------------------------------------------------------ un envoi par personne
+    # Ce que la fente ne recopie JAMAIS. Tout le reste est recopié, y compris
+    # ce qu'un module pont ajoute au transfert — et c'est le sens sûr. Une
+    # entente de confidentialité, une politique d'échéance, un plafond posés
+    # par un pont doivent suivre le lien de chaque personne : les oublier
+    # ouvrirait N liens sans la barrière que l'envoi d'origine portait. Un
+    # réglage neuf est donc recopié par défaut, et c'est à qui veut l'exclure
+    # de l'écrire ici.
+    _FANOUT_NOT_CARRIED = (
+        "name",                 # la séquence donne son numéro à chaque envoi
+        "token",                # le lien DOIT différer : c'est tout le point
+        "upload_token",
+        "s3_prefix",            # préfixe de stockage propre à chaque envoi
+        "state", "expiry_date", "finalized_at", "purged_at",
+        "purge_error_count", "download_count",
+        "sender_confirmed", "sender_otp_hash", "sender_otp_expiry",
+        "sender_otp_fails",
+        "recipient_emails", "recipient_sms_map",   # posés à la main ci-dessous
+        "fanout_recipient", "fanout_parent_id", "fanout_pending",
+        "ua_created",           # posé à la main : l'origine, c'est la fente
+        # ⚠ Un jumeau naît AU MOMENT de l'envoi : il n'a jamais été un
+        # brouillon, encore moins un brouillon gardé. Recopier la date de
+        # garde lui donnerait une date antérieure à sa propre existence, et
+        # c'est le journal d'un envoi qui porte la preuve.
+        "draft_kept", "draft_kept_at",
+    )
+
+    def _fanout_child_vals(self, address):
+        """Les valeurs du jumeau destiné à ``address``.
+
+        Recopie par défaut (voir ``_FANOUT_NOT_CARRIED``), en sudo : deux
+        champs du socle portent ``groups=`` et le chemin public d'envoi ne les
+        lirait pas autrement.
+        """
+        self.ensure_one()
+        rec = self.sudo()
+        skip = set(self._FANOUT_NOT_CARRIED) | set(models.MAGIC_COLUMNS) | {"id"}
+        vals = {}
+        for fname, field in rec._fields.items():
+            if fname in skip or not field.store or field.compute or field.related:
+                continue
+            if field.type in ("one2many", "many2many"):
+                continue
+            # Le fil de discussion et les activités appartiennent à
+            # l'enregistrement, pas au réglage de l'envoi : recopier
+            # `message_main_attachment_id` ferait pointer un jumeau sur la
+            # pièce jointe du premier, et le préfixe couvre d'avance ce que
+            # `mail.thread` ajoutera demain.
+            if fname.startswith(("message_", "activity_", "website_message_")):
+                continue
+            value = rec[fname]
+            vals[fname] = value.id if field.type == "many2one" else value
+        sms_map = {}
+        if rec.recipient_sms_map:
+            try:
+                sms_map = json.loads(rec.recipient_sms_map) or {}
+            except ValueError:
+                sms_map = {}
+        mine = sms_map.get(email_normalize(address) or address)
+        vals.update({
+            # La liste du LOT est conservée telle quelle sur chaque envoi :
+            # c'est ce que le reçu de l'expéditeur annonce et ce que
+            # l'opérateur cherche quand il retrouve un envoi par une adresse.
+            # Qui peut OUVRIR ce lien, lui, se lit sur fanout_recipient.
+            "recipient_emails": rec.recipient_emails,
+            "recipient_sms_map": json.dumps({address: mine}) if mine else False,
+            "fanout_recipient": address,
+            "fanout_parent_id": rec.id,
+            "fanout_pending": False,
+            "ua_created": "fanout:%s" % (rec.name or ""),
+            "state": "draft",
+        })
+        return vals
+
+    def _fanout_arm(self):
+        """Arm a twin the fan-out has just filled: active, expiry, journal.
+
+        Deliberately NOT ``_activate()``: that method is the entry point of a
+        send and would fan out again, mail, and re-run the sender quota. The
+        twin's files are already verified copies and its mails are sent by the
+        caller, in order.
+        """
+        self.ensure_one()
+        now = fields.Datetime.now()
+        expiry = now + timedelta(days=self.retention_days or 7)
+        self.write({
+            "expiry_date": expiry,
+            "finalized_at": now,
+            "state": "active",
+        })
+        log_env = self._log_env()
+        self._log(
+            "created",
+            note=log_env._("Split off from %(parent)s for a single "
+                           "recipient: %(who)s")
+            % {"parent": self.fanout_parent_id.name or "",
+               "who": self.fanout_recipient or ""},
+        )
+        self._log(
+            "finalized",
+            note=log_env._("%(files)s file(s), %(bytes).0f byte(s) copied "
+                           "inside storage, expires on %(when)s")
+            % {"files": len(self.file_ids), "bytes": self.total_size,
+               "when": fields.Datetime.to_string(expiry)},
+        )
+        return True
+
+    def _fan_out_per_recipient(self):
+        """Split this send into one transfer per recipient. Returns the NEW
+        twins (an empty recordset when nothing was asked, or there is nothing
+        to split).
+
+        One upload, N links. The first recipient keeps THIS transfer, so a
+        batch of N recipients stores N copies and not N+1. Every other
+        recipient gets a twin whose files are copied INSIDE the bucket
+        (``s3.copy_object``): the sender's machine uploads once, and Odoo
+        never carries a byte — which is what makes this affordable on a file
+        the public page streamed straight to storage.
+
+        What each twin then owns, and could not own while the link was shared:
+        its own token (so the link is not transferable), its own expiry to
+        extend for one person, its own download budget, its own journal, and a
+        watermark that can finally name a person instead of an IP.
+        """
+        self.ensure_one()
+        if not self.fanout_pending:
+            return self.env["secure.transfer"]
+        recipients = self._recipient_list()
+        if len(recipients) < 2:
+            # Un seul destinataire : la fente ne donnerait rien de plus qu'un
+            # envoi ordinaire, et la demander ne doit pas coûter une copie.
+            self.write({"fanout_pending": False})
+            return self.env["secure.transfer"]
+        first, others = recipients[0], recipients[1:]
+        Transfer = self.env["secure.transfer"].sudo()
+        sources = self.file_ids.filtered(lambda f: f.state == "verified")
+        # ⚠ On accumule les JUMEAUX, pas les clés rendues. Quand `_copy_to`
+        # lève à la vérification, l'objet est DÉJÀ écrit au stockage mais la
+        # méthode n'a rien rendu : une liste de clés de retour aurait raté
+        # celle-là, et le balayage des orphelins ne l'aurait reprise qu'après
+        # sa grâce de 48 h. La ligne de fichier, elle, existe dans la
+        # transaction avec sa clé.
+        crees = Transfer.browse()
+        children = Transfer.browse()
+        try:
+            for address in others:
+                child = Transfer.create(self._fanout_child_vals(address))
+                crees |= child
+                for source in sources:
+                    source._copy_to(child)
+                child._fanout_arm()
+                children |= child
+        except Exception:
+            # La base revient en arrière avec l'exception et les lignes de
+            # fichier disparaissent — mais pas les objets copiés. Le balayage
+            # horaire des orphelins les prendrait dans ses 48 h de grâce ;
+            # les retirer tout de suite évite de payer le stockage d'un envoi
+            # qui n'a jamais eu lieu. Même geste que l'assistant d'envoi.
+            copied_keys = [k for k in crees.file_ids.mapped("s3_key") if k]
+            if copied_keys:
+                try:
+                    s3.delete_keys(self.env, copied_keys)
+                except Exception:  # noqa: BLE001 — best effort on the way out
+                    _logger.exception(
+                        "bf_securetransfer: nettoyage S3 après échec de "
+                        "fente impossible (%s)", ", ".join(copied_keys))
+            raise
+        self.write({"fanout_recipient": first, "fanout_pending": False})
+        self._log(
+            "fanout",
+            note=self._log_env()._("Send split per recipient: %(count)s "
+                                   "individual links (%(who)s)")
+            % {"count": len(recipients), "who": ", ".join(recipients)},
+        )
+        return children
+
+    def action_view_fanout_batch(self):
+        """Les envois du lot, vus de n'importe lequel d'entre eux."""
+        self.ensure_one()
+        root = self.fanout_parent_id or self
+        ids = (root | root.fanout_child_ids).ids
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Sends of this batch"),
+            "res_model": "secure.transfer",
+            "domain": [("id", "in", ids)],
+            "view_mode": "list,form",
+            "target": "current",
+        }
 
     # ------------------------------------------------------------------ expiry extension
     def _extension_choices(self):
@@ -2534,6 +3379,93 @@ class SecureTransfer(models.Model):
 
     # ------------------------------------------------------------------ crons
     @api.model
+    def _cron_remind_absentees(self, limit=200):
+        """Hourly — send the link again to recipients who never even came.
+
+        Only lines still in « invited » are reminded: someone who downloaded
+        needs nothing, and someone stuck on their code already has the mail in
+        hand — a second copy of it would not unstick them, and it would read
+        as nagging. Off unless the brand turns it on.
+
+        One savepoint per line, like ``bf_document_request``'s reminder job: a
+        line that raises (brand half set up, damaged data) must neither undo
+        the reminders already sent in this run nor deprive the next ones of
+        theirs.
+        """
+        Audience = self.env["secure.transfer.audience"].sudo()
+        now = fields.Datetime.now()
+        lines = Audience.search(
+            [
+                ("state", "=", "invited"),
+                ("identity_kind", "=", "email"),
+                ("email", "!=", False),
+                ("transfer_id.state", "=", "active"),
+                ("transfer_id.brand_id.st_absentee_reminder_enabled", "=", True),
+            ],
+            # 🔴 `reminder_count` D'ABORD. Le domaine ne peut pas comparer
+            # une colonne au plafond de la marque, donc les lignes à bout de
+            # budget restent éligibles à la recherche ; avec « les plus
+            # anciennes d'abord », ce sont justement elles qui passaient en
+            # tête et mangeaient la limite du passage. Un locataire portant
+            # 200 absents déjà relancés ne relançait plus jamais personne.
+            order="reminder_count asc, invited_at asc, id asc",
+            limit=limit,
+        )
+        sent = 0
+        for line in lines:
+            transfer = line.transfer_id
+            brand = transfer.brand_id
+            if line.reminder_count >= brand.st_absentee_reminder_max:
+                continue
+            # Un envoi qui meurt dans l'heure : rappeler quelqu'un vers un
+            # lien qui va expirer ne fait que le mener en bateau. Même règle
+            # que le rappel des demandes de pièces.
+            if transfer.expiry_date and transfer.expiry_date <= now:
+                continue
+            # 🔴 Lien PARTAGÉ et sans code : le serveur ne sait pas QUI a
+            # téléchargé, seulement que quelqu'un l'a fait. Relancer les
+            # autres risque alors de harceler précisément celui qui a déjà le
+            # fichier. On s'abstient plutôt que de deviner — tant que
+            # personne n'a rien pris, le rappel garde tout son sens.
+            if (transfer.download_count
+                    and not transfer._recipient_otp_required()
+                    and len(transfer._recipient_list()) > 1):
+                continue
+            since = line.last_resend_at or line.invited_at or line.create_date
+            if not since:
+                continue
+            delay = timedelta(
+                hours=max(1, brand.st_absentee_reminder_delay_hours))
+            if now - since < delay:
+                continue
+            try:
+                with self.env.cr.savepoint():
+                    line._send_link_again("reminder")
+            except UserError:
+                # 🔴 Un refus DÉFINITIF (retiré de la liste des
+                # destinataires, bloqué, envoi fermé entre-temps) : on
+                # consomme son budget, sinon la ligne revient à chaque heure,
+                # lève à chaque heure, et prend la place d'un absent que l'on
+                # peut encore joindre. Hors du savepoint, qui vient d'être
+                # défait.
+                line.sudo().reminder_count += 1
+                _logger.info(
+                    "bf_securetransfer: rappel de %s sur %s refusé, budget "
+                    "consommé pour ne pas y revenir", line.email, transfer.name)
+                continue
+            except Exception:  # noqa: BLE001 — one line must not sink the run
+                _logger.exception(
+                    "bf_securetransfer: rappel automatique de %s sur %s en "
+                    "échec, ligne sautée", line.email, transfer.name)
+                continue
+            sent += 1
+        if sent:
+            _logger.info(
+                "bf_securetransfer: %s rappel(s) automatique(s) envoyé(s) "
+                "à des destinataires jamais venus", sent)
+        return True
+
+    @api.model
     def _cron_purge_expired(self):
         """Daily 03:15 — flip overdue actives to expired, then purge the S3
         objects of every expired transfer. Idempotent: a killed run simply
@@ -2566,6 +3498,84 @@ class SecureTransfer(models.Model):
                     return
                 raise
 
+    # ------------------------------------------------------- filet du seau
+    _LIFECYCLE_SYNC_CRON = "bf_securetransfer.cron_st_sync_lifecycle"
+
+    @api.model
+    def _trigger_lifecycle_sync(self):
+        """Demander à la tâche planifiée de reposer le filet du seau, au plus tôt.
+
+        Appelé quand une rétention maximale monte (marque ou paramètres). On ne
+        parle PAS au fournisseur ici, dans la transaction de l'écran, et pour
+        trois raisons : un seau lent ou injoignable ferait attendre puis
+        échouer un simple enregistrement de marque ; une transaction annulée
+        après coup laisserait au seau une règle que la base ne consigne pas ;
+        et un essai qui crée une marque n'a pas à toucher un vrai seau
+        partagé — le déclencheur d'une tâche planifiée, lui, s'annule avec la
+        transaction de l'essai.
+
+        Si la tâche est éteinte (un environnement d'essai, un locataire aux tâches coupées), le
+        déclencheur reste sans effet : la fiche d'un brouillon continue
+        d'afficher le délai réellement posé, qui est le plus court des deux,
+        donc la date annoncée reste vraie.
+
+        Rien n'est demandé quand le filet est inconnu ou couvre déjà la plus
+        longue rétention : ce sont les cas où la tâche ne ferait rien.
+        """
+        applied = s3.applied_orphan_expiry_days(self.env)
+        if applied is None or s3.target_orphan_expiry_days(self.env) <= applied:
+            return
+        cron = self.env.ref(self._LIFECYCLE_SYNC_CRON, raise_if_not_found=False)
+        if cron:
+            cron.sudo()._trigger()
+
+    @api.model
+    def _cron_sync_lifecycle(self):
+        """Quotidien, et à la demande : reposer le filet quand une rétention a monté.
+
+        🔴 Avant 18.0.1.26.0, la règle `st-expire-orphans-<préfixe>` gardait la
+        valeur du jour où l'action « Configurer le bucket S3 » avait été jouée.
+        Relever la rétention d'une marque (de 7 à 30 jours, par exemple) ne
+        la reposait pas. La passe quotidienne rattrape aussi ce qu'un
+        déclencheur n'a pas pu faire (fournisseur injoignable, rétention
+        relevée par XML-RPC sans passer par l'écran).
+
+        La passe relit aussi la règle sur le seau et la remet en place quand
+        un voisin l'a réécrite plus bas que la valeur consignée (voir
+        ``s3.sync_lifecycle``).
+
+        Ne lève jamais : un cron qui échoue plusieurs fois de suite finit
+        désactivé par Odoo 18, et c'est justement le rattrapage qu'on perdrait.
+        """
+        try:
+            moved = s3.sync_lifecycle(self.env)
+        except UserError as e:
+            _logger.warning(
+                "bf_securetransfer: filet du seau non reposé — %s", e,
+            )
+            return False
+        except Exception as e:  # noqa: BLE001 — consigné, repris au prochain passage
+            if s3.is_endpoint_error(e):
+                _logger.warning(
+                    "bf_securetransfer: endpoint S3 injoignable — filet du "
+                    "seau repris au prochain passage.",
+                )
+            else:
+                # WARNING et non ERROR : un refus du fournisseur se répète
+                # chaque jour jusqu'à correction, et Odoo compte une trace
+                # ERROR comme un échec d'essai.
+                _logger.warning(
+                    "bf_securetransfer: échec en reposant le filet du seau "
+                    "(%s), repris au prochain passage", s3._short(e),
+                )
+            return False
+        if moved:
+            _logger.info(
+                "bf_securetransfer: filet du seau reposé de %d à %d jour(s) "
+                "sous %s/", moved[0], moved[1], s3.key_prefix(self.env),
+            )
+        return True
+
     @api.model
     def _gc_drafts_domain(self, cutoff):
         """Brouillons que le ménage horaire peut récolter.
@@ -2573,8 +3583,18 @@ class SecureTransfer(models.Model):
         Un module qui garde volontairement un brouillon ouvert plus longtemps que
         le délai (une demande de documents qui attend ses pièces jusqu'à son temps
         limite) en retire les siens en étendant cette méthode.
+
+        ⚠ `draft_kept` est exclu ici, et pas dans `_cron_gc_drafts` : c'est la
+        MÊME porte pour tout le monde. Un appelant qui recalculerait la liste
+        des brouillons à récolter autrement (un module pont, un essai, une
+        reprise à la main) hériterait sinon d'une récolte qui efface les
+        brouillons voulus.
         """
-        return [("state", "=", "draft"), ("create_date", "<=", cutoff)]
+        return [
+            ("state", "=", "draft"),
+            ("create_date", "<=", cutoff),
+            ("draft_kept", "=", False),
+        ]
 
     @api.model
     def _cron_gc_drafts(self):

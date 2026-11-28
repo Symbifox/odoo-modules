@@ -7,20 +7,30 @@
         <field name="arch" type="xml">
             <list create="false" delete="false"
                   decoration-muted="state == 'blocked'"
-                  decoration-success="state == 'confirmed'">
+                  decoration-success="state in ('confirmed', 'seen')"
+                  decoration-warning="state == 'invited'">
                 <field name="transfer_id"/>
                 <field name="display_identity"/>
-                <field name="identity_kind"/>
+                <field name="identity_kind" optional="hide"/>
                 <field name="state" widget="badge"
-                       decoration-success="state == 'confirmed'"
-                       decoration-warning="state == 'pending'"
+                       decoration-success="state in ('confirmed', 'seen')"
+                       decoration-info="state == 'pending'"
+                       decoration-warning="state == 'invited'"
                        decoration-danger="state == 'blocked'"/>
                 <field name="first_seen"/>
                 <field name="confirmed_at" optional="show"/>
                 <field name="download_count"/>
+                <field name="resend_count" optional="hide"/>
+                <field name="last_resend_at" optional="hide"/>
+                <field name="reminder_count" optional="hide"/>
+                <field name="invited_at" optional="hide"/>
                 <field name="otp_send_count" optional="hide"/>
                 <field name="sms_send_count" optional="hide"/>
                 <field name="ip" optional="hide"/>
+                <button name="action_resend_link" type="object"
+                        string="Send again" icon="fa-paper-plane"
+                        invisible="state == 'blocked' or identity_kind != 'email'"
+                        groups="bf_securetransfer.group_securetransfer_manager"/>
                 <button name="action_block" type="object"
                         string="Block" icon="fa-ban"
                         invisible="state == 'blocked'"
@@ -44,8 +54,12 @@
                 <field name="transfer_id"/>
                 <filter name="filter_confirmed" string="Confirmed"
                         domain="[('state', '=', 'confirmed')]"/>
-                <filter name="filter_pending" string="Never confirmed"
+                <filter name="filter_pending" string="Stuck on their code"
                         domain="[('state', '=', 'pending')]"/>
+                <filter name="filter_invited" string="Never came"
+                        domain="[('state', '=', 'invited')]"/>
+                <filter name="filter_seen" string="Came without a code"
+                        domain="[('state', '=', 'seen')]"/>
                 <filter name="filter_blocked" string="Blocked"
                         domain="[('state', '=', 'blocked')]"/>
                 <separator/>
@@ -62,14 +76,18 @@
     </record>
 
     <record id="action_secure_transfer_audience" model="ir.actions.act_window">
-        <field name="name">Visitors (open audiences)</field>
+        <field name="name">People reached</field>
         <field name="res_model">secure.transfer.audience</field>
         <field name="view_mode">list</field>
-        <field name="context">{'search_default_filter_confirmed': 1}</field>
+        <!-- ⚠ Le filtre par défaut était « confirmés » : il cachait
+             précisément les gens qu'on vient chercher ici, ceux qui ne sont
+             jamais venus. Plus de filtre par défaut, et un regroupement par
+             état à portée de clic. -->
+        <field name="context">{'search_default_group_state': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">No visitors yet</p>
+            <p class="o_view_nocontent_smiling_face">Nobody listed yet</p>
             <p>
-                Each line is a person who declared their identity on an open audience link, then confirmed it with a one-time code. Blocking a line cuts off their access without touching the link or the other visitors.
+                One line per person a transfer reached: a named recipient, listed from the moment the transfer was sent, or a visitor who declared their identity on an open-audience link. The status says whether they confirmed a code, are stuck on one, or never came at all. "Send again" re-sends the link to that one person; blocking a line cuts off their access without touching the link or the others.
             </p>
         </field>
     </record>

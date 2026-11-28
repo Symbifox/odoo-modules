@@ -74,6 +74,18 @@ class SecureTransferAudience(models.Model):
     )
     state = fields.Selection(
         selection=[
+            # « invited » est le seul état qui ne vient PAS d'un geste du
+            # visiteur : la ligne naît de l'envoi, pour que « qui n'a rien
+            # fait » se lise au lieu de se déduire d'une absence.
+            ("invited", "Not yet seen"),
+            # 🔴 Sans code destinataire exigé, le visiteur n'a aucune
+            # identité en session : un téléchargement ne peut s'accrocher à
+            # personne. Mais quand le lien ne sert QU'UNE adresse — un envoi
+            # fendu, ou un envoi à un seul destinataire — il lui appartient
+            # sans ambiguïté. Cet état le dit, sans mentir : « confirmé »
+            # signifie « a prouvé son identité par un code », et le certificat
+            # d'accès repose sur cette distinction.
+            ("seen", "Came without a code"),
             ("pending", "Code sent"),
             ("confirmed", "Confirmed"),
             ("blocked", "Blocked"),
@@ -85,6 +97,23 @@ class SecureTransferAudience(models.Model):
     )
     first_seen = fields.Datetime(
         string="First request", readonly=True, default=fields.Datetime.now,
+    )
+    # ⚠ Une ligne « invited » est créée avec first_seen à faux (le défaut
+    # ci-dessus ne tient que pour les lignes nées d'une visite) : la colonne
+    # dit quand la personne s'est présentée, et vide est la bonne réponse
+    # quand elle ne l'a jamais fait. C'est invited_at qui date l'envoi.
+    invited_at = fields.Datetime(
+        string="Listed on", readonly=True,
+        help="When the send registered this recipient. Set for the "
+             "recipients a transfer names; empty for a visitor who "
+             "declared themselves on an open audience link.",
+    )
+    resend_count = fields.Integer(
+        string="Links re-sent", default=0, readonly=True,
+    )
+    last_resend_at = fields.Datetime(string="Last re-send", readonly=True)
+    reminder_count = fields.Integer(
+        string="Automatic reminders", default=0, readonly=True,
     )
     confirmed_at = fields.Datetime(string="Confirmed on", readonly=True)
     last_otp_at = fields.Datetime(string="Last code sent", readonly=True)
@@ -218,7 +247,7 @@ class SecureTransferAudience(models.Model):
         self.ensure_one()
         now = fields.Datetime.now()
         window = self._otp_window_open()
-        self.sudo().write({
+        vals = {
             "otp_window_start": self.otp_window_start if window else now,
             "otp_window_count": (self.otp_window_count + 1) if window else 1,
             "otp_send_count": self.otp_send_count + 1,
@@ -226,7 +255,19 @@ class SecureTransferAudience(models.Model):
             + (1 if self.identity_kind == "sms" else 0),
             "last_otp_at": now,
             "otp_verify_fails": 0,
-        })
+        }
+        # ⚠ C'est ICI que « pas encore venu » devient « code envoyé ». Une
+        # ligne inscrite à l'envoi existe avant toute visite ; sans cette
+        # bascule, une personne qui a demandé son code resterait comptée parmi
+        # les absents — et le rappel automatique l'aurait relancée alors
+        # qu'elle a le courriel en main. Et c'est bien ici, après la livraison
+        # du code : un envoi que le fournisseur a refusé ne fait pas d'une
+        # personne jamais venue une personne « en attente ».
+        if self.state in ("invited", "seen"):
+            vals["state"] = "pending"
+        if not self.first_seen:
+            vals["first_seen"] = now
+        self.sudo().write(vals)
 
     def _lock_otp_attempts(self):
         """Verrou de ligne : deux essais simultanés avec le même cookie ne
@@ -263,6 +304,27 @@ class SecureTransferAudience(models.Model):
         self.ensure_one()
         self.sudo().download_count += 1
 
+    def _register_download_without_code(self):
+        """Compter un téléchargement attribuable SANS code, et sortir cette
+        personne des absents.
+
+        🔴 Appelé quand le lien ne sert qu'une adresse et qu'aucun code
+        n'est exigé : le visiteur n'a rien prouvé, mais le lien n'est parti
+        qu'à lui. Sans cela, quelqu'un qui a tout téléchargé restait compté
+        « jamais venu » pour toujours, et le rappel automatique le relançait —
+        l'inverse exact de ce que l'aide du champ de marque promet.
+
+        L'état ne devient PAS « confirmé » : aucune identité n'a été prouvée,
+        et le certificat d'accès lit cette colonne comme une preuve.
+        """
+        self.ensure_one()
+        vals = {"download_count": self.download_count + 1}
+        if not self.first_seen:
+            vals["first_seen"] = fields.Datetime.now()
+        if self.state == "invited":
+            vals["state"] = "seen"
+        self.sudo().write(vals)
+
     def _download_budget_left(self):
         """Téléchargements restants pour ce visiteur : None = illimité."""
         self.ensure_one()
@@ -270,6 +332,60 @@ class SecureTransferAudience(models.Model):
         if not budget:
             return None
         return max(0, budget - self.download_count)
+
+    # ------------------------------------------------------------- relance
+    def _send_link_again(self, reason):
+        """Re-send the share link to THIS identity, and to nobody else.
+
+        ``reason`` is ``manual`` (the operator's button) or ``reminder`` (the
+        cron). It picks the journal verb and the actor, and nothing else: the
+        mail itself is the SAME branded link mail the first send used. A second
+        notice worded differently would land in the recipient's inbox as a new,
+        unrecognisable transfer, and the one thing a reminder must do is look
+        like the thing it reminds of.
+        """
+        self.ensure_one()
+        transfer = self.transfer_id
+        if self.identity_kind != "email" or not self.email:
+            raise UserError(_(
+                "Only an email identity can be sent a link again: this "
+                "visitor declared a mobile number."))
+        if transfer.state != "active":
+            raise UserError(_(
+                "The link can only be sent again while the transfer is "
+                "active."))
+        if self.state == "blocked":
+            raise UserError(_(
+                "This visitor is blocked: unblock them first."))
+        transfer.with_context(
+            st_resend_actor=self.env.user.login if reason == "manual" else None,
+            st_resend_kind=reason,
+        )._send_link_emails(recipients_only=True, only=[self.email])
+        vals = {
+            "resend_count": self.resend_count + 1,
+            "last_resend_at": fields.Datetime.now(),
+        }
+        if reason == "reminder":
+            vals["reminder_count"] = self.reminder_count + 1
+        self.sudo().write(vals)
+        return True
+
+    def action_resend_link(self):
+        """Bouton par ligne : relancer CETTE personne.
+
+        ⚠ Une méthode sans tiret bas de tête est une surface RPC : le
+        ``groups=`` du bouton ne garde que l'interface. Le groupe USER de
+        securetransfer est en lecture seule sur le transfert, donc sans ce
+        contrôle un compte en lecture seule ferait partir le lien de partage
+        par XML-RPC. Même garde que ``action_resend_emails``.
+        """
+        if not self.env.user.has_group(
+                "bf_securetransfer.group_securetransfer_manager"):
+            raise UserError(_(
+                "Action restricted to secure transfer managers."))
+        for rec in self:
+            rec._send_link_again("manual")
+        return True
 
     def action_block(self):
         """Bouton opérateur : couper l'accès d'un visiteur sans toucher au lien
@@ -290,8 +406,19 @@ class SecureTransferAudience(models.Model):
         for rec in self:
             if rec.state != "blocked":
                 continue
-            # On revient à « confirmé » quand il l'avait été, sinon en attente.
-            rec.state = "confirmed" if rec.confirmed_at else "pending"
+            # On revient à l'état RÉEL, pas à « en attente » par défaut :
+            # depuis que les destinataires nommés sont inscrits dès l'envoi,
+            # une ligne peut n'avoir jamais rien demandé. La rendre « code
+            # envoyé » aurait fait disparaître un absent de la liste des
+            # absents — et le rappel automatique l'aurait sauté.
+            if rec.confirmed_at:
+                rec.state = "confirmed"
+            elif rec.last_otp_at:
+                rec.state = "pending"
+            elif rec.download_count:
+                rec.state = "seen"
+            else:
+                rec.state = "invited"
             rec.transfer_id._log(
                 "audience_unblocked", actor=self.env.user.login,
                 note=rec.transfer_id._log_env()._("Visitor unblocked: %s")

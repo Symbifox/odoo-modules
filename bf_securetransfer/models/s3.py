@@ -114,10 +114,47 @@ def key_prefix(env):
     All environments may share ONE bucket (decision 2026-07-03): the prefix is
     what keeps each tenant's purge/MPU sweeps and lifecycle rules off the
     other tenants' objects. Configure ``bf_securetransfer.s3_key_prefix`` per
-    tenant (e.g. ``transfers-bf`` / ``transfers-prod`` / ``transfers-staging``).
+    tenant (e.g. ``transfers-demo`` / ``transfers-prod`` / ``transfers-staging``).
     """
     raw = (param(env, "s3_key_prefix", "transfers") or "transfers").strip()
     return raw.strip("/") or "transfers"
+
+
+# 🔴 Le délai du filet tel qu'il est POSÉ sur le seau, consigné par l'action
+# « Configurer le bucket S3 ». ``_orphan_expiry_days()`` dit ce qu'on VOUDRAIT
+# poser ; ce paramètre dit ce qui est en place. Les deux divergent dès qu'une
+# marque relève sa rétention sans qu'on repose la règle, et c'est la seconde
+# valeur qui efface les octets.
+# Le préfixe voyage avec la valeur : la règle est posée PAR préfixe, donc un
+# locataire qui change de préfixe n'a plus de filet connu sous le nouveau.
+LIFECYCLE_APPLIED_PARAM = "s3_lifecycle_applied"
+
+
+def record_applied_lifecycle(env, prefix, days):
+    """Consigner le délai d'expiration que le seau porte MAINTENANT."""
+    env["ir.config_parameter"].sudo().set_param(
+        "bf_securetransfer." + LIFECYCLE_APPLIED_PARAM,
+        "%s:%d" % (prefix, int(days)),
+    )
+
+
+def applied_orphan_expiry_days(env):
+    """Le délai du filet tel qu'il est posé, ou ``None`` quand il est inconnu.
+
+    Inconnu veut dire : l'action « Configurer le bucket S3 » n'a jamais été jouée
+    sur ce locataire, ou elle l'a été sous un AUTRE préfixe de clés. Dans les
+    deux cas il n'y a pas de filet dont on puisse annoncer la date, et une
+    date calculée serait une fiction.
+    """
+    raw = (param(env, LIFECYCLE_APPLIED_PARAM, "") or "").strip()
+    prefix, sep, days = raw.rpartition(":")
+    if not sep or prefix != key_prefix(env):
+        return None
+    try:
+        value = int(days)
+    except (TypeError, ValueError):
+        return None
+    return value if value > 0 else None
 
 
 def _orphan_expiry_days(env):
@@ -339,6 +376,97 @@ def delete_keys(env, keys):
     return failed
 
 
+# ------------------------------------------------------------------ copy
+# CopyObject refuses a source larger than 5 GiB: above that, the copy has to go
+# through a multipart upload whose parts are themselves server-side copies
+# (UploadPartCopy). Neither path moves a byte through Odoo.
+COPY_SINGLE_MAX = 5 * 1024 ** 3
+# 1 GiB parts. S3 caps a multipart upload at 10 000 parts, so this carries
+# ~9.7 TiB while keeping the number of round trips small.
+COPY_PART_SIZE = 1024 ** 3
+
+
+def copy_object(env, src_key, dst_key, size=None):
+    """Server-side copy of ``src_key`` to ``dst_key``. Returns the new ETag.
+
+    The bytes never leave the bucket, which is the whole point: a send split
+    per recipient must not mean a second upload from the sender's machine, nor
+    a round trip through Odoo.
+
+    ``ContentType``/``ContentDisposition`` are PINNED on the copy
+    (``MetadataDirective="REPLACE"``) instead of inherited: an object uploaded
+    by the public flow arrives through a presigned PUT that signs neither, so a
+    plain COPY would propagate that gap. Same posture as ``put_bytes``.
+
+    ⚠ The ETag of a copy is NOT the source's when the source was uploaded in
+    parts (``md5-N``): a single CopyObject re-stores the object whole, and a
+    multipart copy re-stores it with ITS OWN part layout. The caller must pin
+    what the server reports for the destination and never reuse the source's,
+    or the integrity re-check before each download fails on a good object.
+    """
+    p = params(env)
+    if size is None:
+        head = head_object(env, src_key)
+        if head is None:
+            raise UserError(_(
+                "The stored file is missing: it cannot be copied."))
+        size = head["size"]
+    c = client(env, long_timeout=True)
+    pinned = {
+        "ContentType": "application/octet-stream",
+        "ContentDisposition": "attachment",
+    }
+    if int(size) <= COPY_SINGLE_MAX:
+        resp = c.copy_object(
+            Bucket=p["bucket"],
+            Key=dst_key,
+            CopySource={"Bucket": p["bucket"], "Key": src_key},
+            MetadataDirective="REPLACE",
+            **pinned,
+        )
+        etag = (resp.get("CopyObjectResult") or {}).get("ETag") or ""
+        etag = etag.strip('"')
+        if etag:
+            return etag
+        # Some gateways answer 200 with an empty result body.
+        return (head_object(env, dst_key) or {}).get("etag") or ""
+    upload_id = c.create_multipart_upload(
+        Bucket=p["bucket"], Key=dst_key, **pinned,
+    )["UploadId"]
+    try:
+        parts, offset, n = [], 0, 1
+        while offset < int(size):
+            last = min(offset + COPY_PART_SIZE, int(size)) - 1
+            resp = c.upload_part_copy(
+                Bucket=p["bucket"], Key=dst_key, UploadId=upload_id,
+                PartNumber=n,
+                CopySource={"Bucket": p["bucket"], "Key": src_key},
+                CopySourceRange="bytes=%d-%d" % (offset, last),
+            )
+            parts.append({
+                "PartNumber": n,
+                "ETag": resp["CopyPartResult"]["ETag"],
+            })
+            offset, n = last + 1, n + 1
+        c.complete_multipart_upload(
+            Bucket=p["bucket"], Key=dst_key, UploadId=upload_id,
+            MultipartUpload={"Parts": parts},
+        )
+    except Exception:
+        # An abandoned multipart upload is billed until the bucket lifecycle
+        # reclaims it, and the orphan sweep cannot see it: no object exists
+        # yet, only parts. Abort it on the way out.
+        try:
+            c.abort_multipart_upload(
+                Bucket=p["bucket"], Key=dst_key, UploadId=upload_id)
+        except Exception:  # noqa: BLE001 — best effort on the way out
+            _logger.exception(
+                "bf_securetransfer: abandon du multipart de copie impossible "
+                "(%s)", dst_key)
+        raise
+    return (head_object(env, dst_key) or {}).get("etag") or ""
+
+
 # ------------------------------------------------------------------ multipart
 def mpu_initiate(env, key):
     """CreateMultipartUpload → UploadId."""
@@ -430,6 +558,35 @@ def mpu_abort(env, key, upload_id):
     return True
 
 
+def mpu_is_gone(env, key, upload_id):
+    """Le fournisseur a-t-il DÉJÀ lâché ce téléversement multipart ?
+
+    🔴 Répondu par le listage, jamais par le code d'erreur d'un abandon raté.
+    Un abandon peut échouer pour des raisons qui ne disent rien du
+    téléversement — point de terminaison injoignable, identifiants, ou le
+    fournisseur qui répond ``InvalidRequest`` sur un élément multipart qu'il
+    ne valide pas, ce que ce module a déjà mesuré sur IDrive E2 pour la règle
+    de cycle de vie. Un téléversement que le listage ne montre pas n'a plus de
+    parties à payer, donc compter son effacement comme un succès est sûr ; un
+    qu'il montre doit vraiment être abandonné, sinon les parties restent et se
+    facturent sans que plus rien ne les réclame.
+
+    ⚠ Toute erreur ici répond False : on ne déclare pas disparu ce qu'on n'a
+    pas pu regarder.
+    """
+    try:
+        return not any(
+            up["upload_id"] == upload_id
+            for up in list_stale_mpus(env, key, 0)
+        )
+    except Exception:  # noqa: BLE001 — une mesure impossible n'est pas une preuve
+        _logger.warning(
+            "bf_securetransfer: impossible de vérifier si le MPU de %s existe "
+            "encore chez le fournisseur", key, exc_info=True,
+        )
+        return False
+
+
 def list_objects(env, prefix, older_than_hours=0):
     """Paginated ListObjectsV2 under ``prefix`` → ``[{"key", "last_modified",
     "size"}]``. When ``older_than_hours`` > 0, only objects last modified
@@ -461,10 +618,19 @@ def list_objects(env, prefix, older_than_hours=0):
 
 def list_stale_mpus(env, prefix, older_than_hours):
     """Paginated ListMultipartUploads under ``prefix``, initiated more than
-    ``older_than_hours`` ago → ``[{"key", "upload_id", "initiated"}]``."""
+    ``older_than_hours`` ago → ``[{"key", "upload_id", "initiated"}]``.
+
+    ⚠ ``older_than_hours`` à 0 ne filtre RIEN : c'est le listage complet du
+    préfixe, la même convention que ``list_objects`` juste au-dessus. Un
+    cutoff à « maintenant » aurait jugé disparu, sur un écart d'horloge de
+    quelques secondes, un téléversement bien vivant — et ``mpu_is_gone``
+    répond sur ce listage.
+    """
     p = params(env)
     c = client(env)
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=older_than_hours)
+    cutoff = None
+    if older_than_hours:
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=older_than_hours)
     stale = []
     kwargs = {}
     while True:
@@ -473,7 +639,7 @@ def list_stale_mpus(env, prefix, older_than_hours):
         )
         for up in resp.get("Uploads", []):
             initiated = up.get("Initiated")
-            if initiated and initiated < cutoff:
+            if cutoff is None or (initiated and initiated < cutoff):
                 stale.append({
                     "key": up["Key"],
                     "upload_id": up["UploadId"],
@@ -535,6 +701,170 @@ def apply_cors(env):
         },
     )
     return merged
+
+
+def target_orphan_expiry_days(env):
+    """Le délai à POSER d'après la base : jamais sous celui déjà consigné.
+
+    🔴 Baisser le filet tue des fichiers vivants. Une marque qui ramène sa
+    rétention de 90 à 30 jours ne raccourcit pas les envois déjà accordés pour
+    90 : ils restent sous le préfixe jusqu'à leur date, et un filet reposé à
+    ``max(60, 30 + 15)`` les effacerait au jour 60, lien encore annoncé
+    « disponible ». Le filet ne fait donc que MONTER (cliquet). Le garder trop
+    haut ne coûte que des orphelins, que ``_cron_gc_drafts`` balaie déjà.
+
+    ``apply_lifecycle`` complète ce cliquet par la règle RELUE sur le seau :
+    la valeur consignée peut être perdue (restauration) ou fausse (une copie
+    de staging au même préfixe), le seau, lui, dit ce qui efface.
+    """
+    return max(_orphan_expiry_days(env), applied_orphan_expiry_days(env) or 0)
+
+
+def _lifecycle_rule_ids(prefix):
+    return ("st-abort-incomplete-mpu-%s" % prefix,
+            "st-expire-orphans-%s" % prefix)
+
+
+def _read_lifecycle(env, c, bucket, ClientError):
+    """Les règles du seau : ``(règles étrangères, délai de NOTRE règle
+    d'expiration ou None)``."""
+    our_ids = set(_lifecycle_rule_ids(key_prefix(env)))
+    expire_id = _lifecycle_rule_ids(key_prefix(env))[1]
+    try:
+        conf = c.get_bucket_lifecycle_configuration(Bucket=bucket)
+    except ClientError as e:
+        code = e.response.get("Error", {}).get("Code") or ""
+        if code not in ("NoSuchLifecycleConfiguration", "404", "NotFound"):
+            raise
+        return [], None
+    foreign, ours = [], None
+    for rule in conf.get("Rules", []):
+        if rule.get("ID") not in our_ids:
+            foreign.append(rule)
+        elif rule.get("ID") == expire_id:
+            try:
+                ours = int((rule.get("Expiration") or {}).get("Days") or 0) or None
+            except (TypeError, ValueError):
+                ours = None
+    return foreign, ours
+
+
+def bucket_orphan_expiry_days(env):
+    """Le délai de notre règle d'expiration tel que le SEAU le porte, ou None."""
+    p = params(env)
+    return _read_lifecycle(env, client(env), p["bucket"], _client_error())[1]
+
+
+def apply_lifecycle(env, expire_days):
+    """Poser la règle d'expiration (et l'abandon des multipart) sur NOTRE
+    préfixe, puis consigner le délai posé. Rend ``(ok, détail)``.
+
+    🔴 Le délai posé n'est jamais sous celui que notre règle porte déjà sur le
+    seau (cliquet sur la valeur RELUE, pas seulement consignée) : une
+    restauration qui perd le paramètre, ou un voisin qui a réécrit la
+    configuration avec une ancienne copie de notre règle, ne fait jamais
+    baisser le filet.
+
+    Shared-bucket aware: rule IDs carry the tenant prefix and rules from
+    OTHER prefixes are preserved (PutBucketLifecycleConfiguration replaces
+    the whole config, so this is a read-merge-write). ⚠ That read-merge-write
+    is not atomic: two tenants writing at the same moment can put back an
+    older copy of the other's rule. ``sync_lifecycle`` compares with the rule
+    READ BACK from the bucket every day, so such a loss is repaired at the
+    next pass instead of lasting.
+
+    IDrive E2 rejects AbortIncompleteMultipartUpload (InvalidRequest — it does
+    not validate that element) but accepts Expiration. Because both rules used
+    to travel in ONE call, the whole configuration was refused and NO lifecycle
+    was ever applied, on any tenant. They are now sent separately, so the abort
+    rule degrades to a reported warning instead of taking the expiry rule down
+    with it. What is lost is only the provider-side belt: stale multipart
+    uploads are already swept application-side by ``_cron_gc_drafts`` (see
+    ``list_stale_mpus``), which runs daily.
+    """
+    ClientError = _client_error()
+    p = params(env)
+    c = client(env)
+    prefix = key_prefix(env)
+    foreign, on_bucket = _read_lifecycle(env, c, p["bucket"], ClientError)
+    expire_days = max(int(expire_days), on_bucket or 0)
+    abort_id, expire_id = _lifecycle_rule_ids(prefix)
+    abort_rule = {
+        "ID": abort_id,
+        "Status": "Enabled",
+        "Filter": {"Prefix": prefix + "/"},
+        "AbortIncompleteMultipartUpload": {"DaysAfterInitiation": 2},
+    }
+    expire_rule = {
+        "ID": expire_id,
+        "Status": "Enabled",
+        "Filter": {"Prefix": prefix + "/"},
+        "Expiration": {"Days": expire_days},
+    }
+
+    def put(rules):
+        c.put_bucket_lifecycle_configuration(
+            Bucket=p["bucket"], LifecycleConfiguration={"Rules": rules},
+        )
+
+    try:
+        put(foreign + [abort_rule, expire_rule])
+    except ClientError as e:
+        if (e.response.get("Error", {}).get("Code") or "") != "InvalidRequest":
+            raise
+        # The provider choked on the abort rule: keep the one that matters.
+        put(foreign + [expire_rule])
+        record_applied_lifecycle(env, prefix, expire_days)
+        return True, env._(
+            "orphan expiry set on %(prefix)s/ at %(days)d day(s); abort of "
+            "incomplete multipart uploads REFUSED by the provider (not "
+            "supported), stale ones are swept by the module itself. "
+            "%(foreign)d foreign rule(s) preserved",
+            prefix=prefix, days=expire_days, foreign=len(foreign),
+        )
+    # ⚠ Consigné APRÈS le `put`, et seulement s'il a passé : la fiche d'un
+    # brouillon n'annonce une date de filet que sur ce qui est réellement
+    # en place. Un échec laisse la valeur précédente (ou « inconnu »),
+    # jamais une promesse que le seau ne porte pas.
+    record_applied_lifecycle(env, prefix, expire_days)
+    return True, env._(
+        "lifecycle applied on %(prefix)s/ (abort MPU after 2 days + expiry "
+        "after %(days)d day(s)), %(foreign)d foreign rule(s) preserved",
+        prefix=prefix, days=expire_days, foreign=len(foreign),
+    )
+
+
+def sync_lifecycle(env):
+    """Tenir le filet du seau à la hauteur de la plus longue rétention.
+
+    Rend ``(avant, après)`` quand la règle a été reposée, ``None`` sinon.
+
+    Relit la règle SUR LE SEAU (un appel par passe) et la repose quand :
+
+    - la plus longue rétention a monté au-dessus de ce qui est posé ;
+    - notre règle a disparu du seau, ou y porte moins que la valeur consignée
+      (configuration réécrite par un voisin, copie de staging au même
+      préfixe) : la fiche d'un brouillon annoncerait sinon une date plus
+      tardive que l'effacement réel.
+
+    Ne fait RIEN quand le filet est **inconnu** (l'action « Configurer le
+    bucket S3 » n'a jamais été jouée, ou l'a été sous un autre préfixe) : poser
+    une règle sans les sondes ni le CORS de l'action serait une
+    demi-installation silencieuse, et la fiche dit déjà, à juste titre, que le
+    filet est inconnu. Ne baisse jamais la règle.
+
+    ``UserError`` quand le stockage n'est pas configuré ; les erreurs du
+    fournisseur REMONTENT : c'est la tâche planifiée qui les consigne.
+    """
+    applied = applied_orphan_expiry_days(env)
+    if applied is None:
+        return None
+    on_bucket = bucket_orphan_expiry_days(env)
+    wanted = max(target_orphan_expiry_days(env), on_bucket or 0)
+    if on_bucket == applied == wanted:
+        return None
+    apply_lifecycle(env, wanted)
+    return (on_bucket or 0), applied_orphan_expiry_days(env)
 
 
 def setup_bucket(env):
@@ -599,70 +929,13 @@ def setup_bucket(env):
         return True, env._("CORS applied (PUT only, ExposeHeaders ETag), merged "
                            "origins: %s") % ", ".join(merged)
 
-    # -- lifecycle safety net behind the purge cron.
-    # Shared-bucket aware: rule IDs carry the tenant prefix and rules from
-    # OTHER prefixes are preserved (PutBucketLifecycleConfiguration replaces
-    # the whole config, so this is a read-merge-write).
-    #
-    # IDrive E2 rejects AbortIncompleteMultipartUpload (InvalidRequest — it does
-    # not validate that element) but accepts Expiration. Because both rules used
-    # to travel in ONE call, the whole configuration was refused and NO lifecycle
-    # was ever applied, on any tenant. They are now sent separately, so the abort
-    # rule degrades to a reported warning instead of taking the expiry rule down
-    # with it. What is lost is only the provider-side belt: stale multipart
-    # uploads are already swept application-side by ``_cron_gc_drafts`` (see
-    # ``list_stale_mpus``), which runs daily.
+    # -- lifecycle safety net behind the purge cron (see ``apply_lifecycle``).
+    # Posé au CLIQUET (``target_orphan_expiry_days``) : rejouer l'action après
+    # qu'une marque a baissé sa rétention ne raccourcit pas le filet sous les
+    # envois déjà accordés. Entre deux jeux de l'action, la tâche planifiée
+    # « reposer le cycle de vie » le remonte quand une rétention monte.
     def probe_lifecycle():
-        prefix = key_prefix(env)
-        expire_days = _orphan_expiry_days(env)
-        abort_rule = {
-            "ID": "st-abort-incomplete-mpu-%s" % prefix,
-            "Status": "Enabled",
-            "Filter": {"Prefix": prefix + "/"},
-            "AbortIncompleteMultipartUpload": {"DaysAfterInitiation": 2},
-        }
-        expire_rule = {
-            "ID": "st-expire-orphans-%s" % prefix,
-            "Status": "Enabled",
-            "Filter": {"Prefix": prefix + "/"},
-            "Expiration": {"Days": expire_days},
-        }
-        our_ids = {abort_rule["ID"], expire_rule["ID"]}
-        foreign = []
-        try:
-            conf = c.get_bucket_lifecycle_configuration(Bucket=p["bucket"])
-            foreign = [
-                r for r in conf.get("Rules", []) if r.get("ID") not in our_ids
-            ]
-        except ClientError as e:
-            code = e.response.get("Error", {}).get("Code") or ""
-            if code not in ("NoSuchLifecycleConfiguration", "404", "NotFound"):
-                raise
-
-        def put(rules):
-            c.put_bucket_lifecycle_configuration(
-                Bucket=p["bucket"], LifecycleConfiguration={"Rules": rules},
-            )
-
-        try:
-            put(foreign + [abort_rule, expire_rule])
-        except ClientError as e:
-            if (e.response.get("Error", {}).get("Code") or "") != "InvalidRequest":
-                raise
-            # The provider choked on the abort rule: keep the one that matters.
-            put(foreign + [expire_rule])
-            return True, env._(
-                "orphan expiry set on %(prefix)s/ at %(days)d day(s); abort of "
-                "incomplete multipart uploads REFUSED by the provider (not "
-                "supported), stale ones are swept by the module itself. "
-                "%(foreign)d foreign rule(s) preserved",
-                prefix=prefix, days=expire_days, foreign=len(foreign),
-            )
-        return True, env._(
-            "lifecycle applied on %(prefix)s/ (abort MPU after 2 days + expiry "
-            "after %(days)d day(s)), %(foreign)d foreign rule(s) preserved",
-            prefix=prefix, days=expire_days, foreign=len(foreign),
-        )
+        return apply_lifecycle(env, target_orphan_expiry_days(env))
 
     # -- full presigned round-trip: PUT → HEAD → GET → DELETE
     def probe_roundtrip():

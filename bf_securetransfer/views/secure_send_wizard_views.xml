@@ -44,6 +44,13 @@
                         <field name="brand_id"/>
                         <field name="retention_days"/>
                         <field name="password" password="True"/>
+                        <field name="one_per_recipient"
+                               invisible="audience_mode == 'open'"/>
+                        <div colspan="2" class="text-muted"
+                             invisible="not one_per_recipient_hint">
+                            <field name="one_per_recipient_hint" nolabel="1"
+                                   readonly="1"/>
+                        </div>
                     </group>
                 </group>
                 <group string="Open audience" invisible="audience_mode != 'open'">
@@ -83,6 +90,13 @@
                 <footer>
                     <button string="Send" name="action_send" type="object"
                             class="btn-primary"/>
+                    <!-- ⚠ L'aide tient sur UNE ligne : un attribut réparti sur
+                         plusieurs lignes fabrique un msgid qui porte son
+                         indentation, et la traduction casse à la première
+                         réindentation du fichier. -->
+                    <button string="Keep as a draft" name="action_save_draft"
+                            type="object" class="btn-secondary"
+                            help="Prepare the transfer now and send it later: the files go to storage, nothing goes out, and no link exists yet. Add the missing piece when it arrives, then send."/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

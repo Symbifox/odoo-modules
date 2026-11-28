@@ -15,7 +15,7 @@ class TestSecureTransferSms(BaseNeuve, TransactionCase):
 
     # ------------------------------------------------------------- troncature
     def test_short_body_is_untouched(self):
-        for body in ("", "Hello", "Consentement.Québec : code 123456"):
+        for body in ("", "Hello", "Service Exemple : code 123456"):
             self.assertEqual(sms.truncate_utf8(body), body)
 
     def test_none_body_becomes_empty_string(self):
@@ -48,7 +48,7 @@ class TestSecureTransferSms(BaseNeuve, TransactionCase):
     def test_real_otp_body_fits(self):
         """Le corps d'OTP réellement envoyé doit rester loin du plafond, sinon
         un code de vérification arriverait amputé."""
-        text = ("Consentement.Québec : votre code de vérification est 123456 "
+        text = ("Service Exemple : votre code de vérification est 123456 "
                 "(valide 15 minutes).")
         self.assertLess(len(text.encode("utf-8")), 160)
         self.assertEqual(sms.truncate_utf8(text), text)

@@ -206,6 +206,13 @@ class ResConfigSettings(models.TransientModel):
         default=90,
     )
 
+    def set_values(self):
+        super().set_values()
+        # Les deux défauts de palier entrent dans le calcul du filet du
+        # seau, comme la rétention propre de chaque marque. Le déclencheur ne
+        # fait rien quand le filet posé les couvre déjà.
+        self.env["secure.transfer"]._trigger_lifecycle_sync()
+
     @api.depends_context("uid")
     def _compute_st_s3_creds_status(self):
         has_keys = bool(

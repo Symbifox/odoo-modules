@@ -709,14 +709,35 @@ class TestLangueDuLecteur(_Outils, TransactionCase):
         t._register_file("rapport.pdf", 4096)
         self.assertEqual(t.file_ids.with_context(lang="en_CA")._size_label(), "4 KB")
 
+    def test_taille_avec_le_separateur_decimal_du_lecteur(self):
+        """Si ça casse : une page française relit « 2.9 Mo » et « 3.40 Go ».
+
+        L'unité suivait déjà le lecteur depuis la 1.22.0, pas le NOMBRE : les
+        formats de Python rendent toujours un point, et la phrase mélangeait
+        deux conventions. Le séparateur se lit sur la même langue que l'unité.
+        """
+        fr = self.env(context={"lang": "fr_CA"})
+        en = self.env(context={"lang": "en_CA"})
+        self.assertEqual(size_label(fr, int(2.9 * MB)), "2,9 Mo")
+        self.assertEqual(size_label(fr, int(3.4 * GB)), "3,40 Go")
+        self.assertEqual(size_label(en, int(2.9 * MB)), "2.9 MB")
+        self.assertEqual(size_label(en, int(3.4 * GB)), "3.40 GB")
+        # Un entier n'a pas de séparateur à traduire, et une taille sous le Ko
+        # n'en a jamais : ces deux formes ne doivent pas bouger.
+        self.assertEqual(size_label(fr, 4096), "4 Ko")
+        self.assertEqual(size_label(fr, 500), "500 o")
+        # Le plafond de dépôt passe par la même porte.
+        self.assertEqual(size_label(fr, int(2.5 * GB), limit=True), "2,5 Go")
+        self.assertEqual(size_label(en, int(2.5 * GB), limit=True), "2.5 GB")
+
     def test_taille_avec_unite_francaise_par_le_catalogue(self):
         """Si ça casse : le lecteur francophone perd « Go », « Mo », « Ko », « o »
         (le catalogue ne traduit plus les unités anglaises de la source)."""
         fr = self.env(context={"lang": "fr_CA"})
         self.assertEqual(size_label(fr, 500), "500 o")
         self.assertEqual(size_label(fr, 4096), "4 Ko")
-        self.assertEqual(size_label(fr, 5 * MB), "5.0 Mo")
-        self.assertEqual(size_label(fr, 3 * GB), "3.00 Go")
+        self.assertEqual(size_label(fr, 5 * MB), "5,0 Mo")
+        self.assertEqual(size_label(fr, 3 * GB), "3,00 Go")
         self.assertEqual(size_label(fr, 2 * GB, limit=True), "2 Go")
         # Un lecteur francophone qui retombe sur le corps anglais (aucune clé
         # fr_CA) lit au moins des unités françaises.

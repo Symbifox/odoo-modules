@@ -34,6 +34,10 @@ EXPIRY_CHOICES = (1, 7, 30)
 # LIKE metacharacters % and _, which "=ilike" would otherwise honour.
 _HOSTNAME_RE = re.compile(r"^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$")
 
+# What « Powered by » names when a brand leaves its own name empty: the
+# product, never the company served.
+POWERED_BY_DEFAULT = "Symbifox"
+
 
 class SecureTransferBrand(models.Model):
     _name = "secure.transfer.brand"
@@ -106,6 +110,13 @@ class SecureTransferBrand(models.Model):
         default=True,
         help="\"Powered by\" footer on the public page and emails. "
              "Unchecked for paid white-label brands.",
+    )
+    powered_by_name = fields.Char(
+        string="Name credited",
+        default=POWERED_BY_DEFAULT,
+        help="Name after \"Powered by\" on the public page, the emails and the "
+             "access certificate. Empty = Symbifox. It never reads the company's "
+             "name: the company served is not the one credited.",
     )
     email_from = fields.Char(
         string="Email sender",
@@ -256,13 +267,67 @@ class SecureTransferBrand(models.Model):
              "storage. No effect on non-PDF files.",
     )
 
-    # -- Phase 2 placeholders (schema ready, no breaking migration later)
+    # ⚠ Ces deux champs ont longtemps porté « (Phase 2) » dans leur libellé,
+    # alors que les deux chemins sont implantés (`_notify_download()`,
+    # `_register_download()`) et couverts par des essais. L'étiquette a fait
+    # croire à une fonction absente — et un client est resté sans avis de
+    # téléchargement parce que personne n'avait pensé à allumer le champ.
+    # Les vraies conditions pour que l'avis parte sont le gabarit
+    # `mail_template_download_notice` et le `from_filter` du serveur sortant.
     notify_on_download = fields.Boolean(
-        string="Notify on download (Phase 2)", default=False,
+        string="Notify on download", default=False,
+        help="Emails the sender the first time a recipient downloads. "
+             "Copied onto each new transfer at creation and read-only "
+             "there, so this is the only place it can be turned on.",
     )
     allow_burn = fields.Boolean(
-        string="Destroy after reading (Phase 2)", default=False,
+        string="Offer destroy after reading", default=False,
     )
+
+    # ----------------------------------------------------------- rappel des absents
+    # Opt-in délibéré (défaut faux) : faire partir des courriels à des clients
+    # sans que personne l'ait demandé est le genre de défaut qu'on ne se fait
+    # pas pardonner. Même forme que `bf_document_reminder_*`, que ce socle
+    # côtoie déjà sur deux locataires.
+    st_absentee_reminder_enabled = fields.Boolean(
+        string="Automatically remind recipients who never came",
+        default=False,
+        help="Sends the share link again to a named recipient who has not "
+             "even asked for their code, following the delay and the "
+             "maximum below. A recipient who downloaded, or who is merely "
+             "stuck on their code, is never reminded.",
+    )
+    st_absentee_reminder_delay_hours = fields.Integer(
+        string="Delay before reminding (h)",
+        default=48,
+        help="Counted from the send, or from the last time the link was "
+             "sent again — manually or automatically.",
+    )
+    st_absentee_reminder_max = fields.Integer(
+        string="Maximum number of reminders",
+        default=1,
+        help="Budget of AUTOMATIC reminders per recipient. The operator's "
+             "manual re-sends do not use it up.",
+    )
+
+    # ⚠ L'interrupteur fait partie des dépendances : sans lui, poser un délai
+    # et un maximum à zéro pendant que le rappel est éteint, puis l'allumer,
+    # ne revalidait rien.
+    @api.constrains("st_absentee_reminder_enabled",
+                    "st_absentee_reminder_delay_hours",
+                    "st_absentee_reminder_max")
+    def _check_st_absentee_reminder(self):
+        for rec in self:
+            if not rec.st_absentee_reminder_enabled:
+                continue
+            if rec.st_absentee_reminder_delay_hours < 1:
+                raise ValidationError(_(
+                    "The delay before reminding must be at least one hour, "
+                    "otherwise the scheduled job reminds at every run."))
+            if rec.st_absentee_reminder_max < 1:
+                raise ValidationError(_(
+                    "A maximum of zero reminders amounts to turning "
+                    "automatic reminders off."))
 
     _sql_constraints = [
         ("domain_uniq", "unique(domain)",
@@ -335,7 +400,19 @@ class SecureTransferBrand(models.Model):
                 seed = (vals.get("name") or vals.get("fixed_recipient_name")
                         or (vals.get("fixed_recipient") or "").split("@")[0])
                 vals["slug"] = self._st_unique_slug(seed)
-        return super().create(vals_list)
+        brands = super().create(vals_list)
+        if any(vals.get("max_retention_days") for vals in vals_list):
+            self.env["secure.transfer"]._trigger_lifecycle_sync()
+        return brands
+
+    def write(self, vals):
+        res = super().write(vals)
+        # 🔴 La règle de cycle de vie du seau est calculée sur la plus
+        # longue rétention qu'une marque accorde. La relever sans reposer la
+        # règle laissait le fournisseur effacer des envois encore promis.
+        if vals.get("max_retention_days"):
+            self.env["secure.transfer"]._trigger_lifecycle_sync()
+        return res
 
     @api.depends("slug", "domain")
     def _compute_page_url(self):
@@ -485,10 +562,19 @@ class SecureTransferBrand(models.Model):
         self.ensure_one()
         return self._email_matches_list(email, self._audience_allowlist())
 
+    def _powered_by_label(self):
+        """The name after « Powered by », the same on every surface. Never the
+        company's: appointment_brand_name also names the public booking pages,
+        so it cannot carry the product's name."""
+        self.ensure_one()
+        return (self.powered_by_name or "").strip() or POWERED_BY_DEFAULT
+
     def _visuals(self):
         """Resolved visual identity, shared by the public QWeb pages and the
-        mail templates so both can never drift. Image URLs are absolute on
-        the brand domain (mail clients need absolute URLs).
+        mail templates so both can never drift. Image URLs are RELATIVE, so a
+        page always serves its own images from its own origin; the mail
+        templates, which need absolute URLs, prefix them with
+        `_share_base_url()` themselves.
 
         By default a brand aligns with the house branding (bf_branding /
         bluefox_branding) when present: unset colours/logo/favicon and the
@@ -542,12 +628,11 @@ class SecureTransferBrand(models.Model):
             "logo_host": logo_host,
             "favicon_url": favicon_url,
             "powered_by": bool(self.powered_by),
-            # « Propulsé par » must credit the hosting OPERATOR, never the
-            # served brand. Prefer the company's PUBLIC brand name
-            # (appointment_brand_name — the public brand) over
-            # res.company.name, which is often the legal entity.
-            "powered_by_name": cfield("appointment_brand_name")
-            or company.name or self.name,
+            # One source for the page, the four emails and the certificate.
+            # It used to read the company SERVED (appointment_brand_name, then
+            # res.company.name): a client credited itself, or a third party's
+            # domain name ended up credited on the page.
+            "powered_by_name": self._powered_by_label(),
             # Public tagline first, then the e-mail tagline; footer for e-mails.
             "tagline": cfield("appointment_brand_tagline")
             or cfield("brand_email_tagline") or "",
@@ -625,8 +710,8 @@ class SecureTransferBrand(models.Model):
         return self._email_matches_list(email, self._effective_recipient_allowlist())
 
     def _public_image_url(self, model, res_id, fname):
-        """Absolute /web/image URL for a binary field, served to anonymous
-        visitors. The backing attachment is flipped public=True (these are
+        """Relative /web/image URL for a binary field, served to anonymous
+        visitors — same origin as whatever page asks for it. The backing attachment is flipped public=True (these are
         public-facing logos by definition — same trick as website images).
         Guards on field existence so the res.company fallback works without
         bf_onboarding_base."""
@@ -645,7 +730,13 @@ class SecureTransferBrand(models.Model):
             return False
         if not att.public:
             att.write({"public": True})
-        return "%s/web/image/%s" % (self._share_base_url(), att.id)
+        # Adresse RELATIVE, donc toujours la même origine que la page qui la
+        # demande. Bâtie sur `_share_base_url()`, elle pointait le domaine de la
+        # marque : une page servie ailleurs (environnement d'essai, `public_base_url` différent,
+        # domaine pas encore branché) affichait une image brisée. Les courriels
+        # ont besoin d'absolu et le font déjà eux-mêmes, en préfixant par
+        # `base` = `_share_base_url()` quand l'adresse ne commence pas par http.
+        return "/web/image/%s" % att.id
 
     def _share_base_url(self):
         """Base URL of the public pages for this brand, no trailing slash.

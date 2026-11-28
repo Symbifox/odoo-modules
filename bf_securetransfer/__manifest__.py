@@ -1,10 +1,28 @@
 {
     'name': 'Transfert sécurisé (Secure Transfer)',
+    # 18.0.1.26.0: le filet de cycle de vie du seau suit la plus longue
+    #   rétention. Relever la rétention d'une marque, ou un défaut de palier,
+    #   déclenche une tâche planifiée qui repose la règle d'expiration du
+    #   seau, à la hausse seulement, et la passe quotidienne la remet en place
+    #   quand la configuration partagée du seau l'a rabaissée.
+    # 18.0.1.25.0: « Propulsé par » nomme Symbifox sur la page publique, les
+    #   quatre courriels et le certificat d'accès, qui lisaient jusque-là le
+    #   nom de la société servie. Un champ par marque (`powered_by_name`,
+    #   défaut « Symbifox ») est l'unique source ; la migration le remplit et
+    #   écrit au journal chaque marque touchée.
+    # 18.0.1.24.0: deux défauts de la page publique. Les tailles de fichiers
+    #   suivent la langue du lecteur pour le nombre autant que pour l'unité,
+    #   et le logo de la marque est servi par une adresse relative, donc de la
+    #   même origine que la page.
+    # 18.0.1.23.0: un envoi par destinataire. Les destinataires nommés sont
+    #   inscrits dès l'envoi (« pas encore venu »), chacun peut être relancé
+    #   seul, et l'assistant sait fendre un envoi en N liens individuels dont
+    #   les objets sont recopiés DANS le stockage, sans second téléversement.
     # 18.0.1.22.0: les libellés sont écrits en anglais dans la source, et
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    'version': '18.0.1.22.0',
+    'version': '18.0.1.26.0',
     'category': 'Website',
     'summary': "Transfert de fichiers sécurisé : téléversement direct navigateur → S3, "
                "liens tokenisés avec expiration et mot de passe, journal d'accès "
@@ -82,6 +100,7 @@ en base de données.
     'data': [
         'security/secure_transfer_security.xml',
         'security/ir.model.access.csv',
+        'security/bf_wizard_owner_rules.xml',
         'data/secure_transfer_sequence.xml',
         'data/secure_transfer_brand_data.xml',
         'data/secure_transfer_cron.xml',
@@ -98,6 +117,7 @@ en base de données.
         'views/reveal_link_wizard_views.xml',
         'views/secure_send_wizard_views.xml',
         'views/extend_expiry_wizard_views.xml',
+        'views/add_draft_file_wizard_views.xml',
         'views/menu_views.xml',
         'report/secure_transfer_certificate.xml',
     ],
