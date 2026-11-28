@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="survey_survey_view_form_bf_priorities" model="ir.ui.view">
+        <field name="name">survey.survey.view.form.bf_priorities</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="bf_rank_has_weighted" invisible="1"/>
+                <button name="action_bf_export_trend_xlsx" type="object"
+                        string="Weighted trend (Excel)"
+                        invisible="not bf_rank_has_weighted"
+                        help="The weighted trend of each matrix whose columns carry points, over the completed responses."/>
+                <button name="action_bf_export_trend_pdf" type="object"
+                        string="Weighted trend (PDF)"
+                        invisible="not bf_rank_has_weighted"
+                        help="The same trend on a few pages, in the colours of the survey's PDF theme."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

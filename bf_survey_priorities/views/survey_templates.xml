@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The respondent's matrix tells the form to check "one row per column". -->
+    <template id="question_matrix_bf_priorities" inherit_id="survey.question_matrix">
+        <xpath expr="//table[hasclass('o_survey_question_matrix')]" position="attributes">
+            <attribute name="t-att-data-bf-one-per-column">'1' if question.bf_one_per_column else None</attribute>
+        </xpath>
+    </template>
+
+    <!-- The weighted trend under the matrix, on the results page. It follows
+         the page's own filters: the lines it reads are the ones Odoo counted. -->
+    <template id="question_result_matrix_bf_priorities" inherit_id="survey.question_result_matrix">
+        <xpath expr="//div[hasclass('tab-content')]" position="after">
+            <t t-set="bf_rank" t-value="question_data.get('bf_rank')"/>
+            <div t-if="bf_rank and bf_rank['respondents']" class="o_bf_rank mt-3 mb-2">
+                <t t-set="fmt" t-value="question.survey_id._bf_num"/>
+                <h6 class="fw-bold mb-1">Weighted trend</h6>
+                <div class="text-muted small" t-out="question._bf_rank_rule()"/>
+                <div class="text-muted small" t-out="question.survey_id._bf_trend_summary(bf_rank)"/>
+                <div t-if="not search_finished" class="text-muted small o_bf_rank_in_progress">This page also counts the responses still in progress; the Excel and PDF exports count completed responses only. Filter on completed surveys to compare.</div>
+                <div class="mb-2"/>
+                <table class="table table-sm table-hover o_bf_rank_rows">
+                    <thead>
+                        <tr>
+                            <th class="text-end">#</th>
+                            <th>Row</th>
+                            <th style="width: 15%;"/>
+                            <th class="text-end">Points</th>
+                            <th class="text-end">Share</th>
+                            <th class="text-end" t-foreach="bf_rank['columns']" t-as="column" t-out="column['label']"/>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="bf_rank['rows']" t-as="r">
+                            <td class="text-end text-muted"><t t-if="r['rank']" t-out="r['rank']"/></td>
+                            <td>
+                                <t t-out="r['label']"/>
+                                <span t-if="r['group']" class="badge text-bg-light border ms-1" t-out="r['group']"/>
+                            </td>
+                            <td class="align-middle">
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar" role="progressbar" t-attf-style="width: {{ r['bar'] }}%;"/>
+                                </div>
+                            </td>
+                            <td class="text-end text-nowrap fw-bold" t-out="fmt(r['points'])"/>
+                            <td class="text-end text-nowrap"><t t-out="fmt(r['share'])"/>&#160;%</td>
+                            <td class="text-end text-muted" t-foreach="r['mentions']" t-as="count" t-out="count"/>
+                        </tr>
+                    </tbody>
+                </table>
+                <t t-if="bf_rank['groups']">
+                    <h6 class="fw-bold mb-1">By group</h6>
+                    <table class="table table-sm table-hover o_bf_rank_groups">
+                        <thead>
+                            <tr>
+                                <th class="text-end">#</th>
+                                <th>Group</th>
+                                <th style="width: 15%;"/>
+                                <th class="text-end">Rows</th>
+                                <th class="text-end">Points</th>
+                                <th class="text-end">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="bf_rank['groups']" t-as="g">
+                                <td class="text-end text-muted"><t t-if="g['rank']" t-out="g['rank']"/></td>
+                                <td t-out="g['label']"/>
+                                <td class="align-middle">
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" role="progressbar" t-attf-style="width: {{ g['bar'] }}%;"/>
+                                    </div>
+                                </td>
+                                <td class="text-end text-muted" t-out="g['rows']"/>
+                                <td class="text-end text-nowrap fw-bold" t-out="fmt(g['points'])"/>
+                                <td class="text-end text-nowrap"><t t-out="fmt(g['share'])"/>&#160;%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+            </div>
+        </xpath>
+    </template>
+</odoo>

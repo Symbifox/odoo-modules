@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_bf_survey_trend" model="ir.actions.report">
+        <field name="name">Weighted trend (PDF)</field>
+        <field name="model">survey.survey</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_survey_priorities.report_bf_survey_trend</field>
+        <field name="report_file">bf_survey_priorities.report_bf_survey_trend</field>
+        <field name="print_report_name">object._bf_trend_filename()</field>
+        <field name="paperformat_id" ref="bf_survey_export.paperformat_bf_survey"/>
+        <field name="binding_model_id" ref="survey.model_survey_survey"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- The band, footer and colours are those of the survey's PDF theme
+         (bf_survey_export). -->
+    <template id="report_bf_survey_trend">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="survey">
+                <t t-set="style" t-value="survey._bf_pdf_style()"/>
+                <t t-set="trend" t-value="survey._bf_trend()"/>
+                <t t-call="bf_survey_export.bf_survey_pdf_footer"/>
+                <div class="article" t-att-data-oe-model="survey._name" t-att-data-oe-id="survey.id">
+                    <t t-call="bf_survey_export.bf_survey_pdf_style"/>
+                    <style>
+                        .bfx table.mx td.rk { width: 7%; color: #888888; }
+                        .bfx table.mx td.mv { width: 18%; }
+                        .bfx table.mx td.bar { width: 30%; }
+                        .bfx .grp { font-size: 7.5pt; color: #888888; }
+                        .bfx .mn { font-size: 7.5pt; color: #888888; }
+                        .bfx .trend { page-break-inside: avoid; margin-bottom: 14px; }
+                    </style>
+                    <div class="bfx">
+                        <t t-set="band_title" t-value="survey.title"/>
+                        <t t-set="band_subtitle">Weighted trend</t>
+                        <t t-call="bf_survey_export.bf_survey_pdf_band"/>
+                        <table class="meta"><tr>
+                            <td>
+                                <div class="label">Completed responses</div>
+                                <div class="value" t-out="trend['completed']"/>
+                            </td>
+                            <td>
+                                <div class="label">Printed on</div>
+                                <div class="value" t-out="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>
+                            </td>
+                        </tr></table>
+                        <p class="muted">Test entries are left out. When a respondent ticks several rows in one column, that column's points are shared between those rows.</p>
+                        <p t-if="not trend['questions']" class="none">No matrix of this survey has points on its columns.</p>
+                        <div t-foreach="trend['questions']" t-as="item" class="trend">
+                            <h2 t-out="item['title']"/>
+                            <div class="muted" t-out="item['rule']"/>
+                            <div class="muted" t-out="survey._bf_trend_summary(item)"/>
+                            <p t-if="not item['respondents']" class="none">No answers yet.</p>
+                            <table t-else="" class="mx">
+                                <tr t-foreach="item['rows']" t-as="r">
+                                    <td class="rk"><t t-if="r['rank']" t-out="r['rank']"/></td>
+                                    <td class="mr">
+                                        <t t-out="r['label']"/>
+                                        <div t-if="r['group']" class="grp" t-out="r['group']"/>
+                                        <div class="mn" t-out="item['question']._bf_rank_mentions(item, r)"/>
+                                    </td>
+                                    <td class="bar"><div class="rail"><div class="fill" t-attf-style="width: {{ r['bar'] }}%;"/></div></td>
+                                    <td class="mv"><t t-out="survey._bf_num(r['points'])"/> pts · <t t-out="survey._bf_num(r['share'])"/> %</td>
+                                </tr>
+                            </table>
+                            <t t-if="item['groups'] and item['respondents']">
+                                <div class="muted" style="margin-top: 8px;">By group</div>
+                                <table class="mx">
+                                    <tr t-foreach="item['groups']" t-as="g">
+                                        <td class="rk"><t t-if="g['rank']" t-out="g['rank']"/></td>
+                                        <td class="mr"><t t-out="g['label']"/></td>
+                                        <td class="bar"><div class="rail"><div class="fill" t-attf-style="width: {{ g['bar'] }}%;"/></div></td>
+                                        <td class="mv"><t t-out="survey._bf_num(g['points'])"/> pts · <t t-out="survey._bf_num(g['share'])"/> %</td>
+                                    </tr>
+                                </table>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

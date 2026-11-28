@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="survey_question_form_inherit_bf_survey_priorities" model="ir.ui.view">
+        <field name="name">survey.question.form.inherit.bf_survey_priorities</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form"/>
+        <field name="arch" type="xml">
+            <!-- The columns of a matrix carry the points of the weighted trend. -->
+            <xpath expr="//page[@name='answers']/field[@name='suggested_answer_ids']/list/field[@name='value']" position="after">
+                <field name="bf_rank_points" column_invisible="parent.question_type != 'matrix'"/>
+            </xpath>
+            <xpath expr="//page[@name='answers']/field[@name='matrix_row_ids']/list/field[@name='value']" position="after">
+                <field name="bf_rank_group" column_invisible="parent.question_type != 'matrix'"/>
+            </xpath>
+            <xpath expr="//page[@name='answers']/field[@name='suggested_answer_ids']" position="before">
+                <p class="text-muted" invisible="question_type != 'matrix'">
+                    Give points to the columns (for example 10, 5 and 2 for priority 1, 2 and 3) to see the weighted trend of all respondents on the results page. Rows can share a group to be added up together.
+                </p>
+            </xpath>
+            <xpath expr="//field[@name='matrix_subtype']" position="after">
+                <field name="bf_one_per_column" invisible="question_type != 'matrix'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

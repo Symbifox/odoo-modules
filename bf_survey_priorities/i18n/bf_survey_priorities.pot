@@ -1,0 +1,313 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_survey_priorities
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20261124\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-27 23:54+0000\n"
+"PO-Revision-Date: 2026-11-27 23:54+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_question.py:0
+msgid "%(column)s = %(points)s pts"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_question.py:0
+msgid "%(column)s: %(count)s"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+msgid "%(count)s respondent(s)"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+msgid ""
+"%(count)s ticked several rows in one column: those columns' points are "
+"shared"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_question.py:0
+msgid ""
+"%(question)s: a mandatory matrix needs an answer on every row, and \"One row"
+" per column\" allows only one row under each column. With more rows than "
+"columns, nobody could finish the survey: make the question optional or "
+"uncheck \"One row per column\"."
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.model.fields,help:bf_survey_priorities.field_survey_question__bf_rank_weighted
+msgid ""
+"A matrix whose columns carry points: its weighted trend is shown on the "
+"results page and can be exported."
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.question_result_matrix_bf_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.report_bf_survey_trend
+msgid "By group"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_question.py:0
+#: code:addons/bf_survey_priorities/static/src/js/survey_form_priorities.js:0
+msgid "Choose only one row in each column: uncheck the extra rows."
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.report_bf_survey_trend
+msgid "Completed responses"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+msgid ""
+"Completed responses, test entries left out: %(count)s. Several rows ticked "
+"in one column share that column's points."
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.survey_question_form_inherit_bf_survey_priorities
+msgid ""
+"Give points to the columns (for example 10, 5 and 2 for priority 1, 2 and 3)"
+" to see the weighted trend of all respondents on the results page. Rows can "
+"share a group to be added up together."
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+#: model:ir.model.fields,field_description:bf_survey_priorities.field_survey_question_answer__bf_rank_group
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.question_result_matrix_bf_priorities
+msgid "Group"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.model,name:bf_survey_priorities.model_ir_http
+msgid "HTTP Routing"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.model.fields,field_description:bf_survey_priorities.field_survey_survey__bf_rank_has_weighted
+msgid "Has a weighted matrix"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+msgid "Mentions: %s"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.report_bf_survey_trend
+msgid "No answers yet."
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_question.py:0
+msgid "No group"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.report_bf_survey_trend
+msgid "No matrix of this survey has points on its columns."
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.model.fields,field_description:bf_survey_priorities.field_survey_question__bf_one_per_column
+msgid "One row per column"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.model.fields,help:bf_survey_priorities.field_survey_question_answer__bf_rank_group
+msgid ""
+"Optional. Rows that share a group are also added up together in the weighted"
+" trend (a skill, a theme, a department)."
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+#: model:ir.model.fields,field_description:bf_survey_priorities.field_survey_question_answer__bf_rank_points
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.question_result_matrix_bf_priorities
+msgid "Points"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.report_bf_survey_trend
+msgid "Printed on"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+msgid "Rank"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.question_result_matrix_bf_priorities
+msgid "Row"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.question_result_matrix_bf_priorities
+msgid "Rows"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.question_result_matrix_bf_priorities
+msgid "Share"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+msgid "Share (%)"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+#: model:ir.model,name:bf_survey_priorities.model_survey_survey
+msgid "Survey"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.model,name:bf_survey_priorities.model_survey_question_answer
+msgid "Survey Label"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.model,name:bf_survey_priorities.model_survey_question
+msgid "Survey Question"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.model,name:bf_survey_priorities.model_report_bf_survey_priorities_report_bf_survey_trend
+msgid "Survey weighted trend PDF"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.report_bf_survey_trend
+msgid ""
+"Test entries are left out. When a respondent ticks several rows in one "
+"column, that column's points are shared between those rows."
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_question_answer.py:0
+msgid "The points of a column cannot be negative."
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.model.fields,help:bf_survey_priorities.field_survey_question__bf_one_per_column
+msgid ""
+"The respondent may tick at most one row under each column (for example one "
+"need as priority 1, one as priority 2). Checked before the page is sent, "
+"then by the server. In a matrix with several answers per row, one row may "
+"still be ticked under several columns: use one answer per row for a ranking."
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.survey_survey_view_form_bf_priorities
+msgid ""
+"The same trend on a few pages, in the colours of the survey's PDF theme."
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.survey_survey_view_form_bf_priorities
+msgid ""
+"The weighted trend of each matrix whose columns carry points, over the "
+"completed responses."
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.question_result_matrix_bf_priorities
+msgid ""
+"This page also counts the responses still in progress; the Excel and PDF "
+"exports count completed responses only. Filter on completed surveys to "
+"compare."
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+#: model:ir.model.fields,field_description:bf_survey_priorities.field_survey_question__bf_rank_weighted
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.question_result_matrix_bf_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.report_bf_survey_trend
+msgid "Weighted trend"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.survey_survey_view_form_bf_priorities
+msgid "Weighted trend (Excel)"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.actions.report,name:bf_survey_priorities.action_report_bf_survey_trend
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.survey_survey_view_form_bf_priorities
+msgid "Weighted trend (PDF)"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.model.fields,help:bf_survey_priorities.field_survey_question_answer__bf_rank_points
+msgid ""
+"What a tick in this column is worth in the weighted trend of the matrix. "
+"When a respondent ticks several rows in this column, the points are shared "
+"between them."
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/report/survey_trend_report.py:0
+msgid "You cannot read this survey."
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+msgid "[truncated]"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model:ir.actions.report,print_report_name:bf_survey_priorities.action_report_bf_survey_trend
+msgid "object._bf_trend_filename()"
+msgstr ""
+
+#. module: bf_survey_priorities
+#: model_terms:ir.ui.view,arch_db:bf_survey_priorities.report_bf_survey_trend
+msgid "pts ·"
+msgstr ""
+
+#. module: bf_survey_priorities
+#. odoo-python
+#: code:addons/bf_survey_priorities/models/survey_survey.py:0
+msgid "weighted trend"
+msgstr ""
