@@ -47,7 +47,21 @@ one of the files the respondent had sent — in silence, since nothing on the pa
 said a question had been left out. A blank sheet now carries the accepted
 formats and the size limit, a filled one lists the files, a skipped one says so.
 
+## On every page (v18.0.1.5.0)
+
+Up to 18.0.1.4.0 the upload box never worked in a browser. Its script was
+declared in the website's bundle, where the survey form it extends does not
+exist: the script never loaded, every public page (the login page included)
+logged a JavaScript error, and a respondent could pick a file without it ever
+being sent. The script now lives in the survey pages' own bundle, and it listens
+from the survey form itself, which replaces the HTML of each page in place: an
+upload question placed after the first page works like one on the first.
+
 ## Changelog
+
+### 18.0.1.5.0
+- The upload box works in the browser: script moved to `survey.survey_assets`, events delegated from the survey form so that a question on any page starts; no more JavaScript error on public pages.
+- Removing a file that was saved earlier also drops it from what the page sends.
 
 ### 18.0.1.4.0
 - The file upload question renders on the printable page (`/survey/print/...`), blank or filled: formats and size limit on a blank sheet, the names of the files received on a filled one, and the native "skipped" notice when the question was left out.

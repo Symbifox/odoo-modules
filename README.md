@@ -463,7 +463,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_survey_numbering` | BF Survey Numbering | 18.0.1.0.0 | LGPL-3 | Number a survey's sections and questions by themselves (2, 2.1, 2.1.1), and move questions from one section to another |
 | `bf_survey_print` | BF Survey Print | 18.0.1.0.0 | LGPL-3 | Printing a survey breaks at the right places: a section starts a new sheet and a question is kept in one piece |
 | `bf_survey_priorities` | BF Survey Priorities | 18.0.1.0.0 | LGPL-3 | Weight the columns of a matrix (priority 1, 2, 3) and read the weighted trend of all respondents, on the results page, in Excel and PDF |
-| `bf_survey_upload` | BF Survey Upload | 18.0.1.4.0 | LGPL-3 | File-upload question type for Odoo surveys |
+| `bf_survey_upload` | BF Survey Upload | 18.0.1.5.0 | LGPL-3 | File-upload question type for Odoo surveys |
 | `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.1.0 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
 | `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.2.0.3 | LGPL-3 | Notifies assignees when their task becomes unblocked |
 | `bf_task_waiting_states` | Task Waiting States | 18.0.1.1.0 | LGPL-3 | Add Waiting on Client / Waiting on External task states (French: Attente - Client / Externe) |

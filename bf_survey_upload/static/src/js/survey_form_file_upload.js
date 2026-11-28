@@ -4,160 +4,165 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 import { _t } from "@web/core/l10n/translation";
 import "@survey/js/survey_form";
 
-// Collect uploaded attachment ids and inject them into submit params under the
-// question id key. Survey natively only handles known types; file_upload is ours.
+// The upload box of a "File upload" question. Everything is delegated from
+// the survey form itself: the form swaps the HTML of each page in place, and
+// a widget started on its own selector would not be started on the next page.
+// Loaded in survey.survey_assets, where @survey/js/survey_form lives (in
+// web.assets_frontend the import is missing, and this file never ran).
+
+function box(el) {
+    return el.closest(".o_survey_form_file_upload");
+}
+
+function settings(wrapper) {
+    const d = wrapper.dataset;
+    return {
+        questionId: d.questionId,
+        surveyToken: d.surveyToken,
+        answerToken: d.answerToken,
+        multiple: d.multiple === "1",
+        maxSizeMb: parseInt(d.maxSizeMb || "25", 10),
+        allowedExts: (d.allowedExtensions || "")
+            .split(",")
+            .map((s) => s.trim().toLowerCase().replace(/^\./, ""))
+            .filter(Boolean),
+    };
+}
+
+function showError(wrapper, msg) {
+    const errorEl = wrapper.querySelector(".o_survey_form_file_upload_error");
+    if (!errorEl) return;
+    errorEl.textContent = msg || "";
+    errorEl.classList.toggle("d-none", !msg);
+}
+
+function escapeHtml(str) {
+    const d = document.createElement("div");
+    d.textContent = str || "";
+    return d.innerHTML;
+}
+
 publicWidget.registry.SurveyFormWidget.include({
-    _prepareSubmitValues: function () {
+    events: Object.assign({}, publicWidget.registry.SurveyFormWidget.prototype.events, {
+        "change .o_survey_form_file_upload_picker": "_onBfUploadChange",
+        "click .o_survey_form_file_upload_remove": "_onBfUploadRemove",
+    }),
+
+    // Collect the uploaded attachment ids under the question id: the survey
+    // only knows how to send its own question types.
+    _prepareSubmitValues: function (formData, params) {
         this._super(...arguments);
-        const params = arguments[1];
-        const self = this;
-        this.$(".o_survey_form_file_upload").each(function () {
-            const questionId = this.dataset.questionId;
+        this.el.querySelectorAll(".o_survey_form_file_upload").forEach((wrapper) => {
+            const questionId = wrapper.dataset.questionId;
             if (!questionId) return;
             const ids = Array.from(
-                this.querySelectorAll(".o_survey_form_file_upload_input")
+                wrapper.querySelectorAll(".o_survey_form_file_upload_input")
             ).map((n) => n.value);
             if (!ids.length) return;
-            // _prepareSubmitAnswer mutates params in place; the return value is
-            // the same reference. We ignore the return to keep params const.
             ids.forEach((v) => {
-                self._prepareSubmitAnswer(params, questionId, v);
+                this._prepareSubmitAnswer(params, questionId, v);
             });
         });
     },
-});
 
-publicWidget.registry.BfSurveyFileUpload = publicWidget.Widget.extend({
-    selector: ".o_survey_form_file_upload",
-    events: {
-        "change .o_survey_form_file_upload_picker": "_onFileChange",
-        "click .o_survey_form_file_upload_remove": "_onRemoveClick",
-    },
-
-    start: function () {
-        this.questionId = this.el.dataset.questionId;
-        this.surveyToken = this.el.dataset.surveyToken;
-        this.answerToken = this.el.dataset.answerToken;
-        this.multiple = this.el.dataset.multiple === "1";
-        this.maxSizeMb = parseInt(this.el.dataset.maxSizeMb || "25", 10);
-        this.allowedExts = (this.el.dataset.allowedExtensions || "")
-            .split(",")
-            .map((s) => s.trim().toLowerCase().replace(/^\./, ""))
-            .filter(Boolean);
-        this.errorEl = this.el.querySelector(".o_survey_form_file_upload_error");
-        this.listEl = this.el.querySelector(".o_survey_form_file_upload_list");
-        return this._super.apply(this, arguments);
-    },
-
-    _showError: function (msg) {
-        if (!this.errorEl) return;
-        this.errorEl.textContent = msg || "";
-        this.errorEl.classList.toggle("d-none", !msg);
-    },
-
-    _validateLocal: function (file) {
-        if (file.size > this.maxSizeMb * 1024 * 1024) {
+    _bfValidateLocal: function (file, conf) {
+        if (file.size > conf.maxSizeMb * 1024 * 1024) {
             return _t('The file "%(name)s" exceeds %(max)s MB.', {
                 name: file.name,
-                max: this.maxSizeMb,
+                max: conf.maxSizeMb,
             });
         }
-        if (this.allowedExts.length) {
-            const ext = file.name.includes(".")
-                ? file.name.split(".").pop().toLowerCase()
-                : "";
-            if (!this.allowedExts.includes(ext)) {
+        if (conf.allowedExts.length) {
+            const ext = file.name.includes(".") ? file.name.split(".").pop().toLowerCase() : "";
+            if (!conf.allowedExts.includes(ext)) {
                 return _t('The ".%(ext)s" format is not accepted. Formats: %(formats)s.', {
                     ext: ext || "?",
-                    formats: this.allowedExts.join(", "),
+                    formats: conf.allowedExts.join(", "),
                 });
             }
         }
         return null;
     },
 
-    _onFileChange: async function (ev) {
-        this._showError("");
+    _onBfUploadChange: async function (ev) {
         const input = ev.currentTarget;
+        const wrapper = box(input);
+        const conf = settings(wrapper);
+        showError(wrapper, "");
         const files = Array.from(input.files || []);
         if (!files.length) return;
-
-        if (!this.multiple) {
-            // Replace existing selection: clear hidden inputs + list
-            this._clearAll();
+        if (!conf.multiple) {
+            // One file only: the new one replaces the current selection.
+            this._bfClearAll(wrapper);
         }
-
         for (const file of files) {
-            const localErr = this._validateLocal(file);
+            const localErr = this._bfValidateLocal(file, conf);
             if (localErr) {
-                this._showError(localErr);
+                showError(wrapper, localErr);
                 continue;
             }
             try {
-                const att = await this._uploadFile(file);
+                const att = await this._bfUploadFile(file, conf);
                 if (att) {
-                    this._addAttachment(att);
+                    this._bfAddAttachment(wrapper, conf, att);
                 }
             } catch (e) {
-                this._showError(e.message || _t("Upload failed."));
+                showError(wrapper, e.message || _t("Upload failed."));
             }
         }
-        // Reset input so re-selecting the same file fires change
+        // Reset the picker so that choosing the same file again fires change.
         input.value = "";
     },
 
-    _uploadFile: async function (file) {
-        const url = `/survey/upload/${this.surveyToken}/${this.answerToken}/${this.questionId}`;
+    _bfUploadFile: async function (file, conf) {
+        const url = `/survey/upload/${conf.surveyToken}/${conf.answerToken}/${conf.questionId}`;
         const formData = new FormData();
         formData.append("file", file);
-        const resp = await fetch(url, {
-            method: "POST",
-            body: formData,
-            credentials: "same-origin",
-        });
+        const resp = await fetch(url, { method: "POST", body: formData, credentials: "same-origin" });
         const data = await resp.json().catch(() => ({}));
         if (!resp.ok) {
             throw new Error(data.message || _t("Error %s", resp.status));
         }
-        const atts = data.attachments || [];
-        return atts[0];
+        return (data.attachments || [])[0];
     },
 
-    _addAttachment: function (att) {
+    _bfAddAttachment: function (wrapper, conf, att) {
         const safeId = Number(att.id);
         if (!Number.isInteger(safeId) || safeId <= 0) return;
 
         const hidden = document.createElement("input");
         hidden.type = "hidden";
-        hidden.name = this.questionId;
+        hidden.name = conf.questionId;
         hidden.value = String(safeId);
         hidden.classList.add("o_survey_form_file_upload_input");
-        hidden.dataset.attachmentId = String(safeId);
-        this.el.appendChild(hidden);
+        wrapper.appendChild(hidden);
 
-        if (this.listEl) {
+        const listEl = wrapper.querySelector(".o_survey_form_file_upload_list");
+        if (listEl) {
             const li = document.createElement("li");
             li.className =
                 "d-flex align-items-center justify-content-between border rounded px-2 py-1 mt-1";
             li.dataset.attachmentId = String(safeId);
             li.innerHTML = `
-                <span class="text-truncate"><i class="fa fa-file-o me-2"></i>${this._escape(att.name)}</span>
+                <span class="text-truncate"><i class="fa fa-file-o me-2"></i>${escapeHtml(att.name)}</span>
                 <button type="button" class="btn btn-sm btn-link text-danger o_survey_form_file_upload_remove" data-attachment-id="${safeId}">
                     <i class="fa fa-trash"></i>
                 </button>
             `;
-            this.listEl.appendChild(li);
+            listEl.appendChild(li);
         }
     },
 
-    _onRemoveClick: async function (ev) {
+    _onBfUploadRemove: async function (ev) {
         ev.preventDefault();
         const btn = ev.currentTarget;
+        const wrapper = box(btn);
+        const conf = settings(wrapper);
         const attId = btn.dataset.attachmentId;
         if (!attId) return;
         try {
             const resp = await fetch(
-                `/survey/upload/${this.surveyToken}/${this.answerToken}/delete/${attId}`,
+                `/survey/upload/${conf.surveyToken}/${conf.answerToken}/delete/${attId}`,
                 { method: "POST", credentials: "same-origin" }
             );
             if (!resp.ok) {
@@ -166,32 +171,21 @@ publicWidget.registry.BfSurveyFileUpload = publicWidget.Widget.extend({
         } catch (e) {
             console.warn("bf_survey_upload: delete failed", e);
         }
-        this._removeAttachment(attId);
-    },
-
-    _removeAttachment: function (attId) {
-        this.el.querySelectorAll(`input[data-attachment-id="${attId}"]`).forEach((n) =>
-            n.remove()
-        );
-        this.el.querySelectorAll(`li[data-attachment-id="${attId}"]`).forEach((n) =>
-            n.remove()
-        );
-    },
-
-    _clearAll: function () {
-        this.el
+        // By value: the inputs of files saved earlier are rendered by the
+        // server without a data-attachment-id.
+        wrapper
             .querySelectorAll(".o_survey_form_file_upload_input")
+            .forEach((n) => n.value === String(attId) && n.remove());
+        wrapper
+            .querySelectorAll(`li[data-attachment-id="${attId}"]`)
             .forEach((n) => n.remove());
-        if (this.listEl) {
-            this.listEl.innerHTML = "";
+    },
+
+    _bfClearAll: function (wrapper) {
+        wrapper.querySelectorAll(".o_survey_form_file_upload_input").forEach((n) => n.remove());
+        const listEl = wrapper.querySelector(".o_survey_form_file_upload_list");
+        if (listEl) {
+            listEl.innerHTML = "";
         }
     },
-
-    _escape: function (str) {
-        const d = document.createElement("div");
-        d.textContent = str || "";
-        return d.innerHTML;
-    },
 });
-
-export default publicWidget.registry.BfSurveyFileUpload;
