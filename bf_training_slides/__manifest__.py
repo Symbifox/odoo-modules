@@ -4,7 +4,7 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.1.0.3",
+    "version": "18.0.1.0.4",
     "category": "Human Resources",
     "summary": "Une activité du registre adossée à un cours en ligne : la vraie date, "
                "les heures, et la dérive du contenu qui se voit",

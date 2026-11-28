@@ -190,6 +190,21 @@ went out; an unexpected failure is written to the assignment's own thread
 rather than to the server log alone; and one failure no longer takes the whole
 batch down.
 
+**Scheduled job failures are told** (since 18.0.2.3.6): a campaign whose
+scheduled launch fails gets an internal note with the cause and a to-do for
+whoever created it, and its scheduled date is cleared so the job stops retrying
+every 30 minutes (a concurrency error is retried for six hours before it is
+reported). Each running campaign is processed on its own: one that raises no
+longer stops the others or the bounce reconciliation, and its thread says so
+once, not at every run. *Launch* refuses a campaign whose lure's training course
+is not published (preparing it stays allowed), and the public lesson page only
+offers *Take the assigned training* towards a published course. When no portal
+account can be created for a person enrolled in remedial training (most often
+because the address already is the login of another account, archived ones
+included), the assignment's thread says why, and the refused account no longer
+survives: with `website` installed, login uniqueness is a Python check run after
+the insert, so the old code committed a second account with the same login.
+
 The clawback and the reporting alias are high-impact. Read **`SECURITY.md`** for
 the threat model and controls (least-privilege groups, reversible quarantine,
 IMAP-injection screening, the authorization flag, blast-radius cap, encrypted
@@ -204,5 +219,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-11-13, this version converts automatically to
+- **Change Date**: on 2030-11-28, this version converts automatically to
   **LGPL-3.0-or-later**.

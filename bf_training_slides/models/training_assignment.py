@@ -97,9 +97,23 @@ class BfTrainingAssignment(models.Model):
         groupe = self.env.ref("base.group_portal", raise_if_not_found=False)
         if not groupe:
             return False
+        # L'échec se DIT. Avant, il n'était que
+        # journalisé : la personne était inscrite « Invitée » au lieu de
+        # « Inscrite », et rien n'expliquait pourquoi sa complétion ne serait
+        # jamais enregistrée.
+        # 🔴 Et le point de sauvegarde est INDISPENSABLE, mesuré :
+        # `website` remplace l'unicité SQL du login par `UNIQUE (login,
+        # website_id)`, et NULL n'égale jamais NULL. L'unicité n'est donc tenue
+        # que par une contrainte PYTHON (`website.res_users._check_login`),
+        # vérifiée APRÈS l'INSERT. Sans point de sauvegarde, l'exception était
+        # avalée ici et la ligne restait dans la transaction : à la validation,
+        # un SECOND compte portail au même identifiant naissait, rattaché à la
+        # personne, sans que rien le dise.
+        Usagers = self.env["res.users"].sudo().with_context(
+            no_reset_password=True)
         try:
-            return self.env["res.users"].sudo().with_context(
-                no_reset_password=True).create({
+            with self.env.cr.savepoint():
+                return Usagers.create({
                     "name": partenaire.name or partenaire.email,
                     "login": partenaire.email,
                     "email": partenaire.email,
@@ -110,7 +124,34 @@ class BfTrainingAssignment(models.Model):
             _logger.warning(
                 "Registre de formation : compte portail impossible pour le "
                 "partenaire %s : %s", partenaire.id, exc)
+            self._noter_compte_portail_impossible(exc)
             return False
+
+    def _noter_compte_portail_impossible(self, exc):
+        """Dire au fil pourquoi la personne reste « Invitée »."""
+        self.ensure_one()
+        partenaire = self.partner_id
+        # La cause courante, nommée : l'adresse sert déjà d'identifiant à un
+        # compte existant, archivé compris — parfois un compte archivé de la
+        # MÊME personne, que `partner.user_ids` ne voit pas : la phrase
+        # ne dit donc pas « un autre compte ». Le reste est
+        # rendu tel quel.
+        pris = self.env["res.users"].sudo().with_context(
+            active_test=False).search_count(
+                [("login", "=", partenaire.email)], limit=1)
+        if pris:
+            cause = _(
+                "the address %s is already the login of an existing account "
+                "(archived ones included)",
+                partenaire.email)
+        else:
+            cause = str(exc)
+        self.message_post(body=_(
+            "No portal account could be created for %(personne)s (%(cause)s): "
+            "they are enrolled as invited, and their course completion will "
+            "not be recorded until they sign in with an account of their own. "
+            "Give them portal access, then enroll them again.",
+            personne=partenaire.name, cause=cause))
 
     def action_enroll(self):
         """Inscrire la personne au cours adossé à l'activité."""

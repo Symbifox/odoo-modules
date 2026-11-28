@@ -93,7 +93,9 @@ class BfTrainingAssignment(models.Model):
             # Les notes : la langue de l'opérateur qui inscrit, sinon celle de la
             # société (une remédiation arrive par la page publique, en sudo).
             note = operator_env(rec, rec.company_id)
-            utilisateur = rec._ensure_portal_user()
+            # Appelé sur `note`, pour que l'échec du compte portail
+            # s'écrive au fil dans la même langue que la note d'inscription.
+            utilisateur = note._ensure_portal_user()
             statut = "joined" if utilisateur else "invited"
             try:
                 rec.slide_channel_id.sudo()._action_add_members(

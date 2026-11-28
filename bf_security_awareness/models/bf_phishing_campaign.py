@@ -1,14 +1,56 @@
 import logging
 import random
+import threading
 from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-from odoo.tools import email_normalize
+from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
+from odoo.tools import email_normalize, html2plaintext
 
-from .reader_lang import company_env, operator_env
+from .reader_lang import company_env, operator_env, reader_env
 
 _logger = logging.getLogger(__name__)
+_PASSAGERE_PENDANT = timedelta(hours=6)
+
+
+def _cause(exc):
+    """The exception's text, without its final full stop: it is quoted inside
+    a sentence that adds its own ("…the campaign.. The…"). An
+    exception without text (``AssertionError()``) is named by its class."""
+    return str(exc).strip().rstrip(".") or type(exc).__name__
+
+
+def _sans_espaces(texte):
+    return " ".join(texte.split())
+
+
+def _passagere(exc, date_planifiee=None):
+    """Une erreur de concurrence que la passe suivante ne rencontrera sans
+    doute plus.
+
+    Vider la date planifiée pour elle arrêterait
+    pour de bon un lancement qui n'a fait que croiser une autre transaction.
+    Elle est journalisée et réessayée, comme avant ce correctif — mais :
+
+    - elle peut arriver ENVELOPPÉE.
+      `_release_due_results` rattrape l'erreur de l'envoi de masse et pose une
+      note sur une transaction avortée, qui lève `InFailedSqlTransaction` avec
+      la vraie cause dans son `__context__`. Toute la chaîne est donc lue ;
+    - une erreur qui revient toujours n'est plus
+      passagère. Passé ``_PASSAGERE_PENDANT`` après la date planifiée, elle est
+      signalée comme les autres : elle ne peut pas rester muette indéfiniment.
+    """
+    if date_planifiee and fields.Datetime.now() - date_planifiee > _PASSAGERE_PENDANT:
+        return False
+    vues = set()
+    while exc is not None and id(exc) not in vues:
+        if isinstance(exc, PG_CONCURRENCY_EXCEPTIONS_TO_RETRY):
+            return True
+        vues.add(id(exc))
+        exc = exc.__cause__ or exc.__context__
+    return False
+
 
 # Appended to every lure body so we capture opens in real time on our own
 # endpoint, independently of the native mass-mailing tracking pixel. The marker
@@ -235,10 +277,45 @@ class BfPhishingCampaign(models.Model):
             camp.state = "scheduled"
         return True
 
+    def _refus_lancement(self):
+        """La phrase qui refuse le lancement, ou False quand il peut partir.
+
+        La page publique de la simulation offre « Suivre
+        la formation assignée » vers le cours du leurre. La règle du cœur de
+        l'eLearning (`website_slides.rule_slide_channel_visibility_signed_in_user`)
+        exige `website_published` pour TOUT compte portail, membre inscrit ou
+        pas : lancer une campagne dont le cours n'est pas publié envoie chaque
+        personne prise par la simulation sur une page qu'elle ne peut pas
+        ouvrir. La PRÉPARATION reste permise : préparer la campagne pendant que
+        le cours se prépare est l'état courant, et rien n'en part.
+
+        ⚠️ En sudo, pour ce seul booléen, et `prefetch_fields=False` : sans lui,
+        la lecture ramènerait tous les champs stockés du cours dans le cache de
+        la transaction, servis ensuite au code non-sudo sans aucune règle
+        Le nom du cours n'entre pas dans le message.
+        """
+        self.ensure_one()
+        cours = self.template_id.training_channel_id.sudo().with_context(
+            prefetch_fields=False)
+        if not cours or cours.website_published:
+            return False
+        lu = operator_env(self, self.company_id)
+        return lu.env._(
+            "The training course of this lure is not published: the people "
+            "caught by the simulation would get a link to a page they cannot "
+            "open. Publish the course, then launch the campaign.")
+
     def action_launch(self):
+        # Tous les refus AVANT le premier effet. Levé en chemin, un
+        # refus annulerait aussi ce que les campagnes précédentes du lot ont
+        # fait, sans que rien le dise.
         for camp in self:
             if camp.state not in ("scheduled", "sending"):
                 raise UserError(_("Prepare the campaign first."))
+            refus = camp._refus_lancement()
+            if refus:
+                raise UserError(refus)
+        for camp in self:
             if not camp.mailing_id:
                 camp._ensure_mailing()
             camp.state = "sending"
@@ -394,13 +471,184 @@ class BfPhishingCampaign(models.Model):
             ("scheduled_date", "<=", now),
         ])
         for camp in due:
-            try:
-                camp.action_launch()
-            except Exception as exc:  # noqa: BLE001
-                _logger.exception(
-                    "bf_security_awareness: scheduled launch failed for %s: %s",
-                    camp.id, exc)
+            echec = camp._isoler(lambda c=camp: c._lancer_si_due(now))
+            if echec is None:
+                continue
+            _logger.error(
+                "bf_security_awareness: scheduled launch failed for %s",
+                camp.id, exc_info=echec)
+            if not _passagere(echec, camp.scheduled_date):
+                camp._dire_sans_lever(camp._signaler_lancement_echoue, echec)
         running = self.search([("state", "=", "running")])
         for camp in running:
-            camp._release_due_results()  # drip: send batches whose time arrived
-        running.result_ids._sync_from_traces()
+            # Une campagne par passe. Avant, une seule
+            # qui levait arrêtait la distribution de TOUTES les autres et la
+            # réconciliation des traces.
+            echec = camp._isoler(camp._release_running)
+            if echec is None:
+                continue
+            _logger.error(
+                "bf_security_awareness: scheduled processing failed for "
+                "campaign %s", camp.id, exc_info=echec)
+            # Pas d'exemption ici : la note est dédoublonnée, donc une erreur
+            # de concurrence se dit une fois, et ne peut pas rester muette.
+            camp._dire_sans_lever(camp._noter_echec_moteur, echec)
+
+    def _lancer_si_due(self, maintenant):
+        """Lancer, si la campagne est ENCORE due.
+
+        Le lot `due` est lu une fois, puis
+        chaque `_isoler` valide et ouvre un nouvel instantané. Entre-temps,
+        quelqu'un a pu cliquer « Lancer », replanifier ou annuler : relue ici,
+        la campagne n'est plus « Planifiée », et `action_launch` lèverait
+        « Prepare the campaign first. » — une fausse alerte, avec activité,
+        sur une campagne qui va très bien.
+        """
+        self.ensure_one()
+        if (self.state != "scheduled" or not self.scheduled_date
+                or self.scheduled_date > maintenant):
+            return
+        self.action_launch()
+
+    def _dire_sans_lever(self, signaler, echec):
+        """Signaler un échec, sans que le signalement emporte la passe.
+
+        Si `message_post` ou
+        `activity_schedule` levait ici, l'exception sortait de la tâche
+        planifiée, qui annulait TOUT — la date vidée comprise, donc la campagne
+        réessayée toutes les 30 minutes — et les campagnes en cours n'étaient
+        plus traitées : l'isolement perdu, par la porte du signalement. Le
+        point de sauvegarde est sûr ici : rien dans un signalement ne valide.
+        """
+        try:
+            with self.env.cr.savepoint():
+                signaler(echec)
+        except Exception:
+            _logger.exception(
+                "bf_security_awareness: could not report the failure of "
+                "campaign %s", self.id)
+
+    def _release_running(self):
+        """Une passe de la tâche planifiée sur une campagne en cours."""
+        self.ensure_one()
+        self._release_due_results()  # drip: send batches whose time arrived
+        self.result_ids._sync_from_traces()
+
+    def _isoler(self, geste):
+        """Jouer ``geste`` pour cette seule campagne ; rendre l'exception, ou None.
+
+        PAS de point de sauvegarde en production, et ce n'est pas un
+        oubli : hors des essais, l'envoi de masse d'Odoo VALIDE la transaction
+        en chemin (`mail.compose.message._action_send_mail_mass_mail`,
+        `self._cr.commit()` quand `auto_commit`, et `auto_commit` vaut vrai
+        partout sauf sous les essais). Une validation libère les points de
+        sauvegarde ouverts : la sortie du `with` lèverait alors « savepoint does
+        not exist » — sur le chemin du SUCCÈS, et chaque campagne qui part
+        serait signalée en échec. On fait donc comme les tâches planifiées du
+        cœur : valider avant, valider après, annuler à l'échec. Ce qu'un envoi
+        a déjà validé en chemin reste validé, comme avant ce correctif.
+
+        Sous les essais, rien ne valide jamais (`auto_commit` faux) et une
+        validation lèverait : un point de sauvegarde y tient le même rôle.
+        """
+        self.ensure_one()
+        cr = self.env.cr
+        if getattr(threading.current_thread(), "testing", False):
+            try:
+                with cr.savepoint():
+                    geste()
+            except Exception as exc:  # noqa: BLE001 - dit au fil par l'appelant
+                return exc
+            return None
+        # Valider ce qui précède (le signalement de la campagne d'avant). Un
+        # échec ICI n'est pas celui de cette campagne : il ne lui est pas
+        # imputé, et la passe continue sur une transaction propre.
+        try:
+            cr.commit()
+        except Exception:
+            _logger.exception(
+                "bf_security_awareness: commit before campaign %s failed",
+                self.id)
+            cr.rollback()
+        try:
+            geste()
+            cr.commit()
+        except Exception as exc:  # noqa: BLE001 - dit au fil par l'appelant
+            cr.rollback()
+            return exc
+        return None
+
+    def _signaler_lancement_echoue(self, exc):
+        """Le lancement planifié a échoué ; le dire.
+
+        Avant, seul le journal du serveur le savait : l'opérateur qui avait
+        planifié une simulation à 9 h voyait « Planifiée » sans explication, et
+        la tâche planifiée réessayait toutes les 30 minutes. Désormais :
+        une note au fil, une activité chez qui a créé la
+        campagne, et la date planifiée vidée — la tâche cesse de réessayer, la
+        campagne reste prête, et l'opérateur relance quand la cause est réglée.
+        """
+        self.ensure_one()
+        lance = self.state != "scheduled"
+        self.scheduled_date = False
+        camp = operator_env(self, self.company_id)
+        camp.message_post(body=camp._motif_lancement_echoue(exc, lance))
+        responsable = self.create_uid
+        todo = self.env.ref(
+            "mail.mail_activity_data_todo", raise_if_not_found=False)
+        if not (todo and responsable.active and not responsable.share):
+            return
+        lu = reader_env(
+            self, responsable.lang, self.company_id.sudo().partner_id.lang)
+        resume = lu.env._("Scheduled launch failed")
+        # Replanifiée puis encore en échec : une seule activité ouverte.
+        if self.activity_ids.filtered(
+                lambda a: a.user_id == responsable and a.summary == resume):
+            return
+        lu.activity_schedule(
+            activity_type_id=todo.id,
+            user_id=responsable.id,
+            summary=resume,
+            note=lu._motif_lancement_echoue(exc, lance),
+        )
+
+    def _motif_lancement_echoue(self, exc, lance):
+        if lance:
+            # Ce qu'un envoi a validé en chemin n'est pas défait : la campagne
+            # est bien partie, ne pas dire le contraire.
+            return self.env._(
+                "The scheduled launch raised an error after the campaign had "
+                "started: %s. The scheduled date has been cleared.") % _cause(exc)
+        return self.env._(
+            "The scheduled launch failed: %s. The campaign was not launched, "
+            "and its scheduled date has been cleared so that the scheduled job "
+            "stops retrying. Fix the cause, then launch the campaign or "
+            "schedule it again.") % _cause(exc)
+
+    def _noter_echec_moteur(self, exc):
+        """Écrire l'échec au fil, sans le répéter.
+
+        La tâche planifiée passe toutes les 30 minutes, et une campagne qui
+        lève une fois lèvera sans doute à la passe suivante. Donc une note,
+        PAS répétée tant que la même erreur revient —
+        c'est-à-dire tant que la dernière note du fil est déjà celle-là.
+        """
+        self.ensure_one()
+        camp = operator_env(self, self.company_id)
+        corps = camp.env._(
+            "The scheduled job could not process this campaign: %s. The other "
+            "campaigns are processed separately; this one will be retried at "
+            "the next run.") % _cause(exc)
+        dernier = self.env["mail.message"].sudo().search([
+            ("model", "=", self._name),
+            ("res_id", "=", self.id),
+            ("message_type", "in", ("comment", "notification")),
+        ], order="id desc", limit=1)
+        # Comparé à espaces normalisés.
+        # `html2plaintext` réduit les espaces doubles, et PostgreSQL en écrit
+        # (« DETAIL:  Key… ») : sans normaliser des deux côtés, une erreur de
+        # la base n'était JAMAIS reconnue, et la note revenait 48 fois par jour.
+        if dernier and _sans_espaces(html2plaintext(dernier.body or "")) == \
+                _sans_espaces(corps):
+            return
+        camp.message_post(body=corps)

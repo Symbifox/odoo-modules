@@ -67,6 +67,17 @@ page qu'elle ne peut pas ouvrir. Ce raccord refuse donc le clic — et écarte
 l'assignation de la tâche planifiée — tant que le cours n'est pas publié. La garde
 vit ici, et pas dans le socle, qui ne sait rien des cours.
 
+## Un compte portail impossible le dit (18.0.1.0.4)
+
+La complétion d'un cours n'est enregistrée que pour une personne connectée : à
+l'inscription, ce raccord fabrique donc un compte portail quand la personne n'en a
+pas. Quand c'est impossible — le plus souvent parce que l'adresse sert déjà
+d'identifiant à un compte existant, archivé compris —, une note interne au fil de
+l'assignation dit pourquoi, au lieu du seul journal du serveur. Et la création passe
+sous un point de sauvegarde : avec `website` installé, l'unicité de l'identifiant
+n'est tenue que par une contrainte Python, vérifiée après l'insertion, et l'ancien
+code validait un second compte au même identifiant.
+
 ## Essais
 
 16 essais. Deux mutations éprouvées : la réalisation qui se dédouble à chaque
@@ -82,4 +93,4 @@ Labels and messages are written in English in the source; the French ships in `i
 
 ## Licence
 
-Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-11-25.
+Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-11-28.

@@ -3370,3 +3370,43 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.phishing_reported
 msgid "✓ Well done!"
 msgstr ""
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign.py:0
+msgid "Scheduled launch failed"
+msgstr ""
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign.py:0
+msgid ""
+"The scheduled job could not process this campaign: %s. The other campaigns "
+"are processed separately; this one will be retried at the next run."
+msgstr ""
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign.py:0
+msgid ""
+"The scheduled launch failed: %s. The campaign was not launched, and its "
+"scheduled date has been cleared so that the scheduled job stops retrying. "
+"Fix the cause, then launch the campaign or schedule it again."
+msgstr ""
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign.py:0
+msgid ""
+"The scheduled launch raised an error after the campaign had started: %s. The"
+" scheduled date has been cleared."
+msgstr ""
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign.py:0
+msgid ""
+"The training course of this lure is not published: the people caught by the "
+"simulation would get a link to a page they cannot open. Publish the course, "
+"then launch the campaign."
+msgstr ""

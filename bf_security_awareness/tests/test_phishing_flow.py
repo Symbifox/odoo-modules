@@ -16,6 +16,9 @@ class PhishingFlowCommon(TransactionCase):
             "enroll": "invite",
             "visibility": "connected",
         })
+        # Le lancement refuse un cours non publié ; ces essais mesurent
+        # la campagne qui PART, donc leur cours est publié.
+        cls.channel.is_published = True
         cls.template = cls.env["bf.phishing.template"].create({
             "name": "Test lure",
             "subject": "Action requise",

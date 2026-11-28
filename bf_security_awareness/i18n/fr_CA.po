@@ -3544,3 +3544,53 @@ msgstr "✓ Il s'agissait d'une simulation autorisée"
 #: model_terms:ir.ui.view,arch_db:bf_security_awareness.phishing_reported
 msgid "✓ Well done!"
 msgstr "✓ Bien joué !"
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign.py:0
+msgid "Scheduled launch failed"
+msgstr "Échec du lancement planifié"
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign.py:0
+msgid ""
+"The scheduled job could not process this campaign: %s. The other campaigns "
+"are processed separately; this one will be retried at the next run."
+msgstr ""
+"La tâche planifiée n'a pas pu traiter cette campagne : %s. Les autres "
+"campagnes sont traitées à part ; celle-ci sera reprise au prochain passage."
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign.py:0
+msgid ""
+"The scheduled launch failed: %s. The campaign was not launched, and its "
+"scheduled date has been cleared so that the scheduled job stops retrying. "
+"Fix the cause, then launch the campaign or schedule it again."
+msgstr ""
+"Le lancement planifié a échoué : %s. La campagne n'a pas été lancée, et sa "
+"date planifiée a été vidée pour que la tâche planifiée cesse de réessayer. "
+"Réglez la cause, puis lancez la campagne ou planifiez-la de nouveau."
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign.py:0
+msgid ""
+"The scheduled launch raised an error after the campaign had started: %s. The"
+" scheduled date has been cleared."
+msgstr ""
+"Le lancement planifié a rencontré une erreur après le départ de la campagne "
+": %s. La date planifiée a été vidée."
+
+#. module: bf_security_awareness
+#. odoo-python
+#: code:addons/bf_security_awareness/models/bf_phishing_campaign.py:0
+msgid ""
+"The training course of this lure is not published: the people caught by the "
+"simulation would get a link to a page they cannot open. Publish the course, "
+"then launch the campaign."
+msgstr ""
+"Le cours de formation de ce leurre n'est pas publié : les personnes prises "
+"par la simulation recevraient un lien vers une page qu'elles ne peuvent pas "
+"ouvrir. Publiez le cours, puis lancez la campagne."

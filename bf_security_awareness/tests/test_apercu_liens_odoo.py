@@ -80,6 +80,8 @@ class TestApercuOdooNeCliquePas(HttpCase):
             "name": "Cours aperçu", "channel_type": "training",
             "enroll": "invite", "visibility": "connected",
         })
+        # Le lancement refuse un cours non publié.
+        channel.is_published = True
         template = self.env["bf.phishing.template"].create({
             "name": "Leurre aperçu", "subject": "Bonjour",
             "landing_mode": "awareness",

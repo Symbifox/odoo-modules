@@ -34,7 +34,7 @@
     #   follow-up activity are written only after a send that went out; an
     #   unexpected failure lands on the assignment's own thread; and one
     #   failure no longer takes the whole batch down.
-    "version": "18.0.2.3.5",
+    "version": "18.0.2.3.6",
     "category": "Marketing/Security Awareness",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

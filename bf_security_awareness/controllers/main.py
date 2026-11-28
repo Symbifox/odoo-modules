@@ -123,11 +123,29 @@ class BfSecurityAwarenessController(http.Controller):
                 "result": result,
                 "template": template,
                 "teachable_html": template.teachable_html if template else False,
-                "training_url": (
-                    "/slides/%s" % template.training_channel_id.id
-                    if template and template.training_channel_id else False),
+                "training_url": self._training_url(template),
             },
         )
+
+    def _training_url(self, template):
+        """Le lien « Suivre la formation assignée », ou False.
+
+        Seulement vers un cours PUBLIÉ. La règle du cœur
+        de l'eLearning (`website_slides.rule_slide_channel_visibility_signed_in_user`)
+        exige `website_published` pour TOUT compte portail, membre inscrit ou
+        pas : le bouton menait l'employé qui vient de se faire prendre vers une
+        page qu'il ne peut pas ouvrir. Le lancement refuse déjà un cours non
+        publié ; ceci tient le cas du cours dépublié pendant la campagne.
+
+        ⚠️ En sudo, pour ce seul booléen, et `prefetch_fields=False` : la lecture
+        est bornée à ce qu'elle dit lire.
+        """
+        cours = template.training_channel_id if template else False
+        if not cours:
+            return False
+        if not cours.sudo().with_context(prefetch_fields=False).website_published:
+            return False
+        return "/slides/%s" % cours.id
 
     # ------------------------------------------------------------------ #
     # Landing (click)

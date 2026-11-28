@@ -144,3 +144,26 @@ msgstr ""
 #: code:addons/bf_training_slides/models/slide_channel_partner.py:0
 msgid "Written automatically when the online course is completed."
 msgstr "Écrite automatiquement à la complétion du cours en ligne."
+
+#. module: bf_training_slides
+#. odoo-python
+#: code:addons/bf_training_slides/models/training_assignment.py:0
+msgid ""
+"No portal account could be created for %(personne)s (%(cause)s): they are "
+"enrolled as invited, and their course completion will not be recorded until "
+"they sign in with an account of their own. Give them portal access, then "
+"enroll them again."
+msgstr ""
+"Aucun compte portail n'a pu être créé pour %(personne)s (%(cause)s) : la "
+"personne est inscrite comme invitée, et sa complétion du cours ne sera pas "
+"enregistrée tant qu'elle ne se connectera pas avec un compte à elle. Donnez-"
+"lui un accès au portail, puis inscrivez-la de nouveau."
+
+#. module: bf_training_slides
+#. odoo-python
+#: code:addons/bf_training_slides/models/training_assignment.py:0
+msgid ""
+"the address %s is already the login of an existing account (archived ones "
+"included)"
+msgstr ""
+"l'adresse %s sert déjà d'identifiant à un compte existant (archivés compris)"

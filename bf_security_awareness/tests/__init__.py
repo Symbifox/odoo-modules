@@ -13,3 +13,4 @@ from . import test_rapport_agrege
 from . import test_signalement_jeton
 from . import test_attribution_partenaire
 from . import test_invitation_muette
+from . import test_chemins_muets_campagne
