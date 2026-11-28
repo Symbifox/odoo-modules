@@ -460,7 +460,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_survey_certificate` | Branded Course Certificates | 18.0.1.1.1 | BUSL-1.1 | Certification documents in the company's own brand: a branded PDF, a verifiable certificate number with its public page, and a branded success email |
 | `bf_survey_export` | BF Survey Export | 18.0.1.1.0 | LGPL-3 | Export a survey's questions to an Excel workbook or a PDF, and one response to a PDF, in the colours of a theme chosen on the survey |
 | `bf_survey_live` | Séance en direct : la trame et les écrans | 18.0.1.5.0 | BUSL-1.1 | A presentation deck between the questions, word cloud, teams, podium and the join code on every screen, for a live survey session |
-| `bf_survey_numbering` | BF Survey Numbering | 18.0.1.0.0 | LGPL-3 | Number a survey's sections and questions by themselves (2, 2.1, 2.1.1), and move questions from one section to another |
+| `bf_survey_numbering` | BF Survey Numbering | 18.0.1.1.0 | LGPL-3 | Number a survey's sections and questions by themselves (2, 2.1, 2.1.1), and move questions from one section to another |
 | `bf_survey_print` | BF Survey Print | 18.0.1.0.0 | LGPL-3 | Printing a survey breaks at the right places: a section starts a new sheet and a question is kept in one piece |
 | `bf_survey_priorities` | BF Survey Priorities | 18.0.1.0.0 | LGPL-3 | Weight the columns of a matrix (priority 1, 2, 3) and read the weighted trend of all respondents, on the results page, in Excel and PDF |
 | `bf_survey_upload` | BF Survey Upload | 18.0.1.5.0 | LGPL-3 | File-upload question type for Odoo surveys |

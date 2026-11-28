@@ -102,3 +102,11 @@ class TestRendering(NumberingCase, HttpCase):
         self.assertIn('name="bf_number"', arch)
         self.assertIn('limit="1000"', arch)
         self.assertIn('name="action_bf_move"', arch)
+
+    def test_question_dialog_offers_the_move(self):
+        views = self.env["survey.question"].get_views([(False, "form")])
+        arch = html.fromstring(views["views"]["form"]["arch"])
+        button = arch.xpath("//button[@name='action_bf_move']")
+        self.assertEqual(len(button), 1)
+        self.assertIn("bf_move_from_question", button[0].get("context"))
+        self.assertTrue(arch.xpath("//field[@name='page_id' and @readonly='1']"))

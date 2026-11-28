@@ -17,9 +17,9 @@
                     <field name="survey_id" readonly="1"/>
                     <field name="question_ids" widget="many2many_tags"
                            options="{'no_create': True}"/>
-                    <field name="target_page_id" options="{'no_create': True}"/>
+                    <field name="target_page_id" options="{'no_create': True, 'no_open': True}"/>
                     <field name="placement" widget="radio"/>
-                    <field name="after_question_id" options="{'no_create': True}"
+                    <field name="after_question_id" options="{'no_create': True, 'no_open': True}"
                            invisible="placement != 'after'"
                            required="placement == 'after'"/>
                 </group>

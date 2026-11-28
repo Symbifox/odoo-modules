@@ -56,4 +56,23 @@
             </field>
         </field>
     </record>
+    <!-- From the question itself: the editor opens a question in a dialog that
+         hides its section, so a question could only be moved from the list. -->
+    <record id="survey_question_form_move" model="ir.ui.view">
+        <field name="name">survey.question.form.bf_move</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="d-flex align-items-center gap-2 mb-3" invisible="not id">
+                    <span class="text-muted" invisible="is_page or not page_id">Section</span>
+                    <field name="page_id" readonly="1" nolabel="1" invisible="is_page or not page_id"
+                           options="{'no_open': True}"/>
+                    <button name="action_bf_move" type="object" string="Move"
+                            icon="fa-arrows" class="btn btn-secondary btn-sm"
+                            context="{'bf_move_from_question': True}"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
 </odoo>

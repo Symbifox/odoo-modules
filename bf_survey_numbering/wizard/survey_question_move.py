@@ -69,6 +69,8 @@ class SurveyQuestionMove(models.TransientModel):
         context = {"default_survey_id": survey.id}
         if questions:
             context["default_question_ids"] = [(6, 0, questions.ids)]
+        if self.env.context.get("bf_move_from_question"):
+            context["bf_move_from_question"] = True
         return {
             "type": "ir.actions.act_window",
             "name": self.env._("Move questions"),
@@ -163,4 +165,11 @@ class SurveyQuestionMove(models.TransientModel):
         for position, question in enumerate(after, start=1):
             if question.sequence != position * STEP:
                 question.sequence = position * STEP
+        if self.env.context.get("bf_move_from_question"):
+            # Opened from a question's own dialog, over the survey editor.
+            # Closing the wizard alone would leave that dialog open, and the
+            # list behind it in its old order: a line dragged in that list
+            # next would write the old order back. Reloading the editor closes
+            # the dialog and shows the new order.
+            return {"type": "ir.actions.client", "tag": "soft_reload"}
         return {"type": "ir.actions.act_window_close"}

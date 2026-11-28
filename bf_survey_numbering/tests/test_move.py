@@ -132,3 +132,22 @@ class TestMove(NumberingCase):
         self.survey.user_id = officer
         self.move(self.q11, self.s2, user=officer)
         self.assertEqual(self.numbers()["Company name"], "2.3")
+
+    def test_from_the_question_dialog_reloads_the_editor(self):
+        # Opened from a question's own dialog, the wizard reloads the editor:
+        # closing it alone would leave the list behind in its old order.
+        action = self.q11.with_context(bf_move_from_question=True).action_bf_move()
+        self.assertTrue(action["context"].get("bf_move_from_question"))
+        wizard = self.env["bf.survey.question.move"].with_context(action["context"]).create(
+            {"target_page_id": self.s2.id})
+        self.assertEqual(wizard.question_ids, self.q11)
+        self.assertEqual(wizard.action_move(),
+                         {"type": "ir.actions.client", "tag": "soft_reload"})
+        self.assertEqual(self.numbers()["Company name"], "2.3")
+
+    def test_from_the_list_only_closes(self):
+        action = self.q11.action_bf_move()
+        self.assertNotIn("bf_move_from_question", action["context"])
+        wizard = self.env["bf.survey.question.move"].with_context(action["context"]).create(
+            {"target_page_id": self.s2.id})
+        self.assertEqual(wizard.action_move(), {"type": "ir.actions.act_window_close"})

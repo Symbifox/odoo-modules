@@ -6,6 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-27 22:24+0000\n"
 "Last-Translator: Blue Fox Inc.\n"
 "Language-Team: \n"
 "Language: fr_CA\n"
@@ -23,6 +24,11 @@ msgid ""
 "                        the line's own number are removed; the others are named, to be\n"
 "                        fixed by hand."
 msgstr ". Avec la numérotation, le répondant le verrait deux fois (« 2.1 2.1 Année de fondation »). Seuls les numéros tapés qui répètent le numéro de la ligne sont retirés; les autres sont nommés, à corriger à la main."
+
+#. module: bf_survey_numbering
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.survey_question_form_move
+msgid "<span class=\"text-muted\" invisible=\"is_page or not page_id\">Section</span>"
+msgstr "<span class=\"text-muted\" invisible=\"is_page or not page_id\">Section</span>"
 
 #. module: bf_survey_numbering
 #. odoo-python
@@ -137,6 +143,7 @@ msgstr "Dernière mise à jour le"
 
 #. module: bf_survey_numbering
 #: model_terms:ir.ui.view,arch_db:bf_survey_numbering.bf_survey_question_move_view_form
+#: model_terms:ir.ui.view,arch_db:bf_survey_numbering.survey_question_form_move
 msgid "Move"
 msgstr "Déplacer"
 

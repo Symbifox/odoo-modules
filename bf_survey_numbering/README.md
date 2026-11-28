@@ -66,10 +66,14 @@ survey over RPC) sees the bare title. Read `bf_number` alongside it.
 
 - **Drag and drop across the whole survey.** The editor shows up to 1,000 lines
   on one screen, so any line can be dragged anywhere.
-- **Move questions** (survey header), the ✥ button on a line, or *Action ▸ Move
-  to another section* on the list of questions (several at once): pick a
-  destination section and place the lines **at its end**, **at its start**, or
-  **after one of its questions**.
+- **Move questions** (survey header), the ✥ button on a line, the **Move**
+  button in a question's own dialog (next to the section it belongs to), or
+  *Action ▸ Move to another section* on the list of questions (several at
+  once): pick a destination section and place the lines **at its end**, **at
+  its start**, or **after one of its questions**.
+- Moved from a question's dialog, the editor reloads: the dialog closes and the
+  list shows the new order at once. Edits typed in the dialog before *Move* are
+  saved first, and stay saved even if the move is then cancelled.
 - A **section moves with all its questions**. It is placed just before the
   destination section (*start*) or just after the destination's last question
   (*end*); never after a question, which would cut a section in two. A section
