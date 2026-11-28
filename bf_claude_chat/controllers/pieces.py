@@ -19,7 +19,7 @@ sa longueur d'origine dans ``description``.
 
 import json
 
-from odoo import _, fields, http
+from odoo import _, http
 from odoo.http import request
 
 from .. import pieces_jointes as pj
@@ -144,6 +144,11 @@ class GenPiecesJointes(http.Controller):
         lira ; un PDF numérisé est refusé ici, pas au milieu du tour.
         """
         from .main import _check_rate_limit, _get_settings
+        # 🔴 Un compte portail n'a pas accès aux messages de Gen : la création de la pièce
+        # le refusait, mais APRÈS la lecture du fichier dans le sous-processus (jusqu'à
+        # 60 s de processeur et 2 Go). Refusé ici, avant de lire quoi que ce soit.
+        if not request.env.user._is_internal():
+            return _json({"error": _("Gen is reserved for internal users.")}, 403)
         if not _get_settings()["enabled"]:
             return _json({"error": _("Gen is turned off.")}, 403)
         if ufile is None or not getattr(ufile, "filename", ""):

@@ -34,6 +34,8 @@ import shutil
 import signal
 import subprocess
 import sys
+import tempfile
+import warnings
 import zipfile
 from xml.etree import ElementTree
 
@@ -57,6 +59,12 @@ PAGES_MAX = 1000
 DELAI = 60
 # Espace d'adressage, pas mémoire réelle : openpyxl ne se charge pas sous 1 Go (mesuré).
 MEMOIRE = 2 * 1024 * 1024 * 1024
+#: Ce que le sous-processus peut écrire sur sa sortie d'erreur, qui est un fichier. Au-delà
+#: (`prlimit --fsize`), l'écriture échoue (Python ignore SIGXFSZ), l'enfant sort en code 120
+#: et la pièce est refusée comme illisible : mesuré sur Python 3.12.
+ERREUR_MAX = 1024 * 1024
+#: Ce que le journal garde de cette sortie quand la lecture échoue.
+ERREUR_JOURNAL = 500
 
 #: Les formats lus, par extension. Une image n'y est pas, et c'est voulu : son contenu
 #: ne peut partir qu'en base64, donc non masqué.
@@ -283,28 +291,37 @@ def _commande(sorte):
     cmd = [sys.executable, "-I", __file__, sorte]
     prlimit = shutil.which("prlimit")
     if prlimit:
-        cmd = [prlimit, f"--as={MEMOIRE}", f"--cpu={DELAI}", "--"] + cmd
+        cmd = [prlimit, f"--as={MEMOIRE}", f"--cpu={DELAI}", f"--fsize={ERREUR_MAX}",
+               "--"] + cmd
     return cmd
 
 
 def _lire_a_part(sorte, octets):
-    try:
-        fini = subprocess.run(_commande(sorte), input=octets, capture_output=True,
-                              timeout=DELAI + 10)
-    except subprocess.TimeoutExpired:
-        return {"refus": "delai"}
-    if fini.returncode:
-        # Tué par le plafond de processeur (SIGXCPU, puis SIGKILL à la limite dure) : le
-        # fichier prend trop de temps. Tué autrement : il voulait trop de mémoire.
-        # Sortie en erreur sans signal : l'environnement (bibliothèque absente, `prlimit`
-        # refusé) — elle se journalise, sinon TOUT fichier passerait pour « endommagé ».
-        if fini.returncode in (-signal.SIGXCPU, -signal.SIGKILL):
+    # 🔴 La sortie d'erreur va dans un FICHIER, pas dans un tube : `capture_output` gardait
+    # dans la mémoire du worker tout ce que l'enfant écrivait, sans borne, et un PDF fabriqué
+    # fait écrire un avertissement par objet. Le fichier est borné par `--fsize`, et le
+    # worker n'en relit que la fin, quand il faut la journaliser.
+    with tempfile.TemporaryFile() as erreurs:
+        try:
+            fini = subprocess.run(_commande(sorte), input=octets, stdout=subprocess.PIPE,
+                                  stderr=erreurs, timeout=DELAI + 10)
+        except subprocess.TimeoutExpired:
             return {"refus": "delai"}
-        if fini.returncode < 0:
-            return {"refus": "bombe"}
-        _logger.warning("Gen : lecture d'une pièce jointe en échec (code %s) : %s",
-                        fini.returncode, fini.stderr[-500:].decode(errors="replace"))
-        return {"refus": "illisible"}
+        if fini.returncode:
+            # Tué par le plafond de processeur (SIGXCPU, puis SIGKILL à la limite dure) :
+            # le fichier prend trop de temps. Tué autrement : il voulait trop de mémoire.
+            # Sortie en erreur sans signal : l'environnement (bibliothèque absente,
+            # `prlimit` refusé) — elle se journalise, sinon TOUT fichier passerait pour
+            # « endommagé ».
+            if fini.returncode in (-signal.SIGXCPU, -signal.SIGKILL):
+                return {"refus": "delai"}
+            if fini.returncode < 0:
+                return {"refus": "bombe"}
+            erreurs.seek(0, io.SEEK_END)
+            erreurs.seek(max(0, erreurs.tell() - ERREUR_JOURNAL))
+            _logger.warning("Gen : lecture d'une pièce jointe en échec (code %s) : %s",
+                            fini.returncode, erreurs.read().decode(errors="replace"))
+            return {"refus": "illisible"}
     try:
         return json.loads(fini.stdout)
     except ValueError:
@@ -408,6 +425,10 @@ def message_pour_gen(question, pieces):
 
 if __name__ == "__main__":
     # Le sous-processus : une sorte en argument, les octets sur l'entrée standard.
+    # Les bibliothèques de lecture se taisent : un fichier fabriqué leur fait écrire un
+    # avertissement par objet, pour rien, puisque le refus dit déjà ce qui ne va pas.
+    logging.disable(logging.CRITICAL)
+    warnings.simplefilter("ignore")
     # `ensure_ascii=False` : un texte accentué ne grossit pas six fois en chemin.
     sys.stdout.buffer.write(json.dumps(_lire(sys.argv[1], sys.stdin.buffer.read()),
                                        ensure_ascii=False).encode())

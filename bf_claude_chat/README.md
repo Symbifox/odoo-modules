@@ -372,7 +372,9 @@ are refused.
   is refused like a missing one, and **nothing is created**.
 - **Reading runs in a separate, bounded process** (`prlimit`: 2 GB address space,
   60 s CPU, plus a timeout), never in the worker: a file is hostile input. A zip bomb
-  is refused on its declared size, and reading stops at the character cap. The text
+  is refused on its declared size, and reading stops at the character cap. Its error
+  output goes to a file capped at 1 MB (`prlimit --fsize`), never into the worker's
+  memory, and only its last 500 bytes are logged (1.45.3). The text
   is kept with the attachment, and Odoo's own indexer does not read Gen's
   attachments.
 - Retention: deleting a conversation or a message deletes its documents; a daily
@@ -517,7 +519,9 @@ Every endpoint is `type="json"`, `auth="user"`, `methods=["POST"]`.
 
 `/claude-chat/upload` (`type="http"`, `auth="user"`, multipart field `ufile`) reads
 a chosen file at once and returns `id`, `name`, `size`, `chars`, `total` and
-`truncated`, or an `error` with the reason it was refused. `/claude-chat/send` and `/claude-chat/stream` accept `attachment_ids`
+`truncated`, or an `error` with the reason it was refused. It serves internal users
+only: a portal account gets a 403 before its text is extracted (1.45.3).
+`/claude-chat/send` and `/claude-chat/stream` accept `attachment_ids`
 (1.45.0).
 
 `/claude-chat/stream` is the streaming counterpart of `/send`: `type="http"`,
@@ -791,4 +795,4 @@ After updating, force a browser asset reload: `Ctrl+Shift+R`.
 ## Licence
 
 Business Source License 1.1, see `LICENSE`. This version becomes available
-under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-11-27).
+under LGPL-3.0-or-later on the Change Date the `LICENSE` sets (2030-11-28).

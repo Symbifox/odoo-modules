@@ -17,6 +17,9 @@ import io
 import json
 import pathlib
 import re
+import shutil
+import subprocess
+import sys
 import time
 import zipfile
 from unittest.mock import patch
@@ -214,6 +217,37 @@ class TestExtraction(TransactionCase):
         ecrivain.write(sortie)
         with self.assertRaisesRegex(pj.PieceRefusee, "password"):
             pj.extraire("c.pdf", sortie.getvalue())
+
+    def test_la_sortie_d_erreur_de_l_enfant_ne_passe_pas_par_la_memoire(self):
+        """Elle va dans un fichier borné, et le journal n'en garde que la fin.
+
+        Par un tube (`capture_output`), tout ce que l'enfant écrit s'accumulait dans le
+        worker : un PDF fabriqué fait écrire un avertissement par objet."""
+        bavard = [sys.executable, "-I", "-c",
+                  "import sys; sys.stderr.write('x' * 3_000_000 + 'FIN'); sys.exit(3)"]
+        vu = {}
+        vrai_run = subprocess.run
+
+        def espion(cmd, **kw):
+            # Seul l'appel de CE essai : un autre fil du serveur d'essai peut appeler
+            # `subprocess.run` pendant le remplacement.
+            if cmd == bavard:
+                vu.update(kw)
+            return vrai_run(cmd, **kw)
+
+        with patch.object(pj, "_commande", return_value=bavard), \
+                patch.object(pj.subprocess, "run", side_effect=espion), \
+                self.assertLogs(pj._logger.name, "WARNING") as journal:
+            self.assertEqual(pj._lire_a_part("texte", b"x"), {"refus": "illisible"})
+        self.assertNotIn("capture_output", vu)
+        self.assertTrue(hasattr(vu["stderr"], "fileno"), vu.get("stderr"))
+        self.assertTrue(journal.output[0].endswith("FIN"))
+        self.assertLess(len(journal.output[0]), 2 * pj.ERREUR_JOURNAL)
+
+    def test_l_enfant_a_un_plafond_d_ecriture(self):
+        if not shutil.which("prlimit"):
+            self.skipTest("prlimit absent de cette image")
+        self.assertIn(f"--fsize={pj.ERREUR_MAX}", pj._commande("pdf"))
 
 
 @tagged("post_install", "-at_install")
@@ -505,6 +539,25 @@ class TestRoutesDesPieces(HttpCase):
         refus = self.make_jsonrpc_request("/claude-chat/send", {
             "message": "Encore", "attachment_ids": [rendu["id"]]})
         self.assertEqual(refus["attachment_ids"], [rendu["id"]])
+
+    def test_un_compte_portail_est_refuse_avant_toute_lecture(self):
+        """La création de la pièce le refusait, mais après la lecture du fichier."""
+        self.env["res.users"].create({
+            "name": "Banc Gen PJ portail", "login": "banc_gen_pj_portail",
+            "password": "banc_gen_pj_portail",
+            "groups_id": [(6, 0, [self.env.ref("base.group_portal").id])],
+        })
+        self.authenticate("banc_gen_pj_portail", "banc_gen_pj_portail")
+        avant = self.env["ir.attachment"].sudo().search_count(
+            [("res_model", "=", pieces_ctl.MODELE)])
+        with patch.object(pj, "extraire", side_effect=AssertionError("fichier lu")) as lecture:
+            reponse = self.url_open(
+                "/claude-chat/upload", files={"ufile": ("a.txt", b"Contenu")},
+                data={"csrf_token": http.Request.csrf_token(self)})
+        self.assertEqual(reponse.status_code, 403)
+        lecture.assert_not_called()
+        self.assertEqual(self.env["ir.attachment"].sudo().search_count(
+            [("res_model", "=", pieces_ctl.MODELE)]), avant)
 
     def test_televerser_coupe_quand_gen_est_eteint(self):
         self.env["ir.config_parameter"].sudo().set_param("bf_claude_chat.enabled", "False")

@@ -1,5 +1,19 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.45.3 - 2026-11-28
+
+Deux durcissements des pièces jointes.
+
+- **Un compte portail est refusé avant l'extraction du texte.** La création de la pièce
+  le refusait déjà, mais après la lecture dans le sous-processus, qui peut prendre 60 s de
+  processeur et 2 Go de mémoire. `/claude-chat/upload` rend maintenant un 403 d'emblée.
+- **La sortie d'erreur du sous-processus ne passe plus par la mémoire du worker.** Elle
+  allait dans un tube (`capture_output`), donc gardée en entier : un PDF fabriqué peut faire
+  écrire un avertissement par objet. Elle va dans un fichier plafonné à 1 Mo
+  (`prlimit --fsize`) ; au-delà, l'enfant sort en erreur et la pièce est refusée comme
+  illisible. Le journal n'en garde que les 500 derniers octets, et les bibliothèques de
+  lecture n'écrivent plus leurs avertissements.
+
 ## 18.0.1.45.2 - 2026-11-27
 
 Publication de rattrapage : le dépôt passe de 18.0.1.42.0 à 18.0.1.45.2 et porte
