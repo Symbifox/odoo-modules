@@ -1,6 +1,7 @@
 {
     'name': 'Banque d\'heures',
-    'version': '18.0.1.16.0',
+    # 18.0.1.17.1: source passée à l'anglais (le français vit dans fr_CA.po) ; courriels, classeur et PDF dans la langue du lecteur ; l'étape d'accueil « Configurer » ouvre la liste des banques.
+    'version': '18.0.1.17.1',
     'category': 'Services/Project',
     'summary': 'Suivi automatisé des banques d\'heures client',
     'description': """
@@ -29,6 +30,7 @@ Fonctionnalités:
         # Security first
         'security/hour_bank_security.xml',
         'security/ir.model.access.csv',
+        'security/bf_wizard_owner_rules.xml',
         # Reports
         'report/hour_bank_paperformat.xml',
         'report/hour_bank_report_templates.xml',

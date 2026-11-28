@@ -11,9 +11,16 @@ class TestFactureBanque(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.client = cls.env['res.partner'].create({'name': 'Client Facture Co', 'is_company': True})
+        # Ces essais lisent du français : la langue est épinglée, le catalogue
+        # chargé et les contacts sont francophones, au lieu de supposer une base
+        # française (la source est anglaise ; sur une base en_US seule,
+        # un contact créé ici restait en en_US et la facture sortait en anglais).
+        cls.env['res.lang']._activate_lang('fr_CA')
+        cls.env['ir.module.module']._load_module_terms(['bf_hour_bank'], ['fr_CA'], overwrite=True)
+        cls.env = cls.env(context=dict(cls.env.context, lang='fr_CA'))
+        cls.client = cls.env['res.partner'].create({'name': 'Client Facture Co', 'is_company': True, 'lang': 'fr_CA'})
         cls.contact_facturation = cls.env['res.partner'].create({
-            'name': 'Comptes payables', 'parent_id': cls.client.id,
+            'name': 'Comptes payables', 'parent_id': cls.client.id, 'lang': 'fr_CA',
         })
         cls.autre_client = cls.env['res.partner'].create({'name': 'Autre Client'})
         cls.projet_a = cls.env['project.project'].create({

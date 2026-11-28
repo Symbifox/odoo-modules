@@ -4,10 +4,11 @@ import logging
 from collections import defaultdict
 from datetime import datetime
 
-from markupsafe import escape as html_escape
+from markupsafe import Markup
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools.misc import formatLang, get_lang
 
 _logger = logging.getLogger(__name__)
 
@@ -22,133 +23,138 @@ except ImportError:
 
 class HourBankClient(models.Model):
     _name = 'hour.bank.client'
-    _description = "Configuration de banque d'heures client"
+    _description = "Client hour bank configuration"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
     name = fields.Char(
-        compute='_compute_name', store=True, string="Nom",
+        compute='_compute_name', store=True, string="Name",
     )
     partner_id = fields.Many2one(
         'res.partner', required=True, string="Client",
         tracking=True,
     )
     project_ids = fields.Many2many(
-        'project.project', string="Projets inclus",
+        'project.project', string="Included projects",
     )
     product_filter_mode = fields.Selection([
-        ('all', 'Toutes les lignes de facture'),
-        ('include', 'Inclure seulement ces produits'),
-        ('exclude', 'Exclure ces produits'),
-    ], string="Filtre produits", default='all', required=True)
+        ('all', "All invoice lines"),
+        ('include', "Include only these products"),
+        ('exclude', "Exclude these products"),
+    ], string="Product filter", default='all', required=True)
     filter_product_ids = fields.Many2many(
-        'product.product', string="Produits",
+        'product.product', string="Products",
     )
     company_filter_mode = fields.Selection([
-        ('all', 'Toutes les sociétés'),
-        ('include', 'Inclure seulement ces sociétés'),
-        ('exclude', 'Exclure ces sociétés'),
-    ], string="Filtre sociétés", default='all', required=True)
+        ('all', "All companies"),
+        ('include', "Include only these companies"),
+        ('exclude', "Exclude these companies"),
+    ], string="Company filter", default='all', required=True)
     filter_company_ids = fields.Many2many(
-        'res.company', string="Sociétés",
+        'res.company', string="Companies",
     )
     invoice_partner_ids = fields.Many2many(
         'res.partner', 'hour_bank_invoice_partner_rel',
-        string="Partenaires de facturation",
-        help="Si renseigné, seules les factures émises à ces partenaires seront comptées. "
-             "Sinon, toutes les factures du partenaire commercial seront incluses.",
+        string="Billing partners",
+        help="If set, only the invoices issued to these partners are "
+             "counted. Otherwise every invoice of the commercial partner "
+             "is included.",
     )
     extra_invoice_ids = fields.Many2many(
-        'account.move', string="Factures additionnelles",
+        'account.move', string="Extra invoices",
         domain="[('move_type', '=', 'out_invoice'), ('state', '=', 'posted')]",
     )
     adjustment_ids = fields.One2many(
         'hour.bank.adjustment', 'hour_bank_id',
-        string="Ajustements manuels",
+        string="Manual adjustments",
     )
     recipient_ids = fields.Many2many(
         'res.partner', 'hour_bank_recipient_rel',
-        string="Destinataires du rapport",
+        string="Report recipients",
     )
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
         'res.company', default=lambda self: self.env.company,
     )
     current_balance = fields.Float(
-        compute='_compute_balance', string="Solde actuel",
+        compute='_compute_balance', string="Current balance",
     )
     last_report_date = fields.Datetime(
-        string="Dernier rapport", tracking=True,
+        string="Last report", tracking=True,
     )
     auto_send = fields.Boolean(
-        string="Envoi automatique", default=False, tracking=True,
+        string="Automatic sending", default=False, tracking=True,
     )
     send_frequency = fields.Selection([
-        ('weekly', 'Hebdomadaire (lundi)'),
-        ('biweekly', 'Aux deux semaines (lundi)'),
-        ('monthly', 'Mensuel (1er du mois)'),
-    ], string="Fréquence d'envoi", default='weekly')
+        ('weekly', "Weekly (Monday)"),
+        ('biweekly', "Fortnightly (Monday)"),
+        ('monthly', "Monthly (1st of the month)"),
+    ], string="Sending frequency", default='weekly')
 
     # ---- Threshold notifications ----
     threshold_mode = fields.Selection([
-        ('disabled', 'Désactivé'),
-        ('unbilled', 'Heures non facturées'),
-        ('budget_pct', '% du budget alloué'),
-        ('balance_floor', 'Solde résiduel sous seuil'),
-    ], string="Mode de palier", default='disabled', required=True, tracking=True)
+        ('disabled', "Disabled"),
+        ('unbilled', "Unbilled hours"),
+        ('budget_pct', "% of allocated budget"),
+        ('balance_floor', "Remaining balance below a floor"),
+    ], string="Threshold mode", default='disabled', required=True, tracking=True)
     threshold_budget_hours = fields.Float(
-        string="Budget alloué (h)", tracking=True,
-        help="Budget de référence utilisé en mode '%% du budget alloué'. "
-             "Changer cette valeur réarme tous les paliers.",
+        string="Allocated budget (h)", tracking=True,
+        help="Reference budget used in '%% of allocated budget' mode. "
+             "Changing this value rearms every threshold.",
     )
     threshold_line_ids = fields.One2many(
         'hour.bank.threshold.line', 'bank_id',
-        string="Paliers à surveiller",
+        string="Thresholds to watch",
     )
     threshold_event_ids = fields.One2many(
         'hour.bank.threshold.event', 'bank_id',
-        string="Historique des alertes",
+        string="Alert history",
     )
     threshold_event_count = fields.Integer(
-        compute='_compute_threshold_event_count', string="Alertes envoyées",
+        compute='_compute_threshold_event_count', string="Alerts sent",
     )
     alert_recipient_ids = fields.Many2many(
         'res.partner', 'hour_bank_alert_recipient_rel',
-        string="Destinataires des alertes",
-        help="Destinataires des alertes de palier. Laisser vide pour réutiliser "
-             "les destinataires du rapport périodique.",
+        string="Alert recipients",
+        help="Recipients of the threshold alerts. Leave empty to reuse "
+             "the periodic report's recipients.",
     )
     notify_internal_followers = fields.Boolean(
-        string="Notifier les followers internes", default=True,
-        help="Si coché, poste aussi un message_notify sur le chatter pour "
-             "alerter les followers internes Blue Fox.",
+        string="Notify internal followers", default=True,
+        # Le module tourne chez plusieurs locataires : l'aide ne nomme la maison
+        # d'aucun d'eux.
+        help="If checked, also posts a message in the chatter to alert the "
+             "record's internal followers.",
     )
 
     # ---- Facture générée depuis la banque ----
     invoice_mode = fields.Selection([
-        ('postpaid', 'Postpayé : facturer les heures consommées'),
-        ('prepaid', "Prépayé : facturer une tranche d'heures"),
-    ], string="Mode de facturation", default='postpaid', required=True, tracking=True)
+        ('postpaid', "Postpaid: bill the hours consumed"),
+        ('prepaid', "Prepaid: bill a block of hours"),
+    ], string="Billing mode", default='postpaid', required=True, tracking=True)
     invoice_block_hours = fields.Float(
-        string="Tranche (h)", tracking=True,
-        help="Nombre d'heures facturées d'avance à chaque renouvellement, en mode prépayé.",
+        string="Block (h)", tracking=True,
+        help="Number of hours billed in advance at each renewal, in "
+             "prepaid mode.",
     )
     invoice_product_id = fields.Many2one(
-        'product.product', string="Produit facturé", tracking=True,
-        help="Produit des lignes de la facture générée. Il doit être un produit que "
-             "la banque crédite (filtre produits), sinon la facture validée ne "
-             "réduirait pas le solde.",
+        'product.product', string="Invoiced product", tracking=True,
+        help="Product of the generated invoice lines. It must be a "
+             "product the bank credits (product filter), otherwise the "
+             "posted invoice would not reduce the balance.",
     )
     invoice_hourly_rate = fields.Float(
-        string="Taux horaire", digits='Product Price', tracking=True,
-        help="Prix unitaire des lignes générées. Prérempli avec le prix de la "
-             "dernière facture comptée par la banque, jamais avec le prix catalogue.",
+        string="Hourly rate", digits='Product Price', tracking=True,
+        help="Unit price of the generated lines. Prefilled from the price "
+             "on the last invoice counted by the bank, never from the "
+             "catalogue price.",
     )
     invoice_split_by_project = fields.Boolean(
-        string="Ventiler par projet",
-        help="Par défaut, une ligne par projet. Sinon, une seule ligne pour la "
-             "période, le détail étant dans le rapport joint. L'assistant permet "
-             "de changer d'avis pour une facture.",
+        string="Split per project",
+        help="By default, one line per project. Otherwise a single line "
+             "for the period, the detail being in the attached report. "
+             "The wizard lets you change your mind for one invoice.",
     )
 
     # ------------------------------------------------------------------
@@ -158,7 +164,7 @@ class HourBankClient(models.Model):
     @api.depends('partner_id')
     def _compute_name(self):
         for rec in self:
-            rec.name = rec.partner_id.name or _("Nouveau")
+            rec.name = rec.partner_id.name or _("New")
 
     def _compute_balance(self):
         for rec in self:
@@ -168,6 +174,46 @@ class HourBankClient(models.Model):
     # ------------------------------------------------------------------
     # Core: build report data
     # ------------------------------------------------------------------
+
+    def _bf_lang(self, partner=None):
+        """La langue de qui lira : le destinataire s'il est donné, sinon le
+        client de la banque, puis sa société mère, puis la maison.
+
+        Un envoi automatique tourne sans langue au contexte : sans ce repli, le
+        rapport partait dans la langue SOURCE (l'anglais) à un
+        client francophone. Seules les langues actives comptent."""
+        self.ensure_one()
+        actives = {code for code, _name in self.env['res.lang'].get_installed()}
+        candidats = [
+            partner and partner.lang,
+            self.partner_id.lang,
+            self.partner_id.commercial_partner_id.lang,
+            self.company_id.partner_id.lang,
+            self.env.lang,
+        ]
+        for code in candidats:
+            if code and code in actives:
+                return code
+        return next(iter(sorted(actives)), 'en_US')
+
+    def _bf_by_lang(self, partners):
+        """{langue: destinataires}, chacun dans sa langue (voir _bf_lang)."""
+        self.ensure_one()
+        groupes = {}
+        for partner in partners:
+            groupes.setdefault(self._bf_lang(partner), self.env['res.partner'])
+            groupes[self._bf_lang(partner)] |= partner
+        return groupes
+
+    def _bf_file_stem(self, date_str=None):
+        """Nom de fichier du rapport (sans extension), dans la langue du
+        contexte : « Banque_heures_<client>_<date> » en français."""
+        self.ensure_one()
+        return "%s_%s_%s" % (
+            self.env._("Hour_bank"),
+            (self.partner_id.name or '').replace(' ', '_'),
+            date_str or fields.Date.today().isoformat(),
+        )
 
     def _bf_tz_lecteur(self):
         """Le fuseau du client à qui part le PDF, jamais celui de qui l'envoie.
@@ -235,6 +281,7 @@ class HourBankClient(models.Model):
                 pp.name->>'en_US' AS project_name,
                 pt.name AS task_name,
                 'debit' AS entry_type,
+                'timesheet' AS source_kind,
                 aal.id AS source_id,
                 aal.project_id AS project_id
             FROM account_analytic_line aal
@@ -296,9 +343,10 @@ class HourBankClient(models.Model):
                 am.invoice_date AS entry_date,
                 aml.quantity AS hours,
                 am.name AS description,
-                'Heures factur\u00e9es' AS project_name,
+                NULL AS project_name,
                 NULL AS task_name,
                 'credit' AS entry_type,
+                'invoice' AS source_kind,
                 aml.id AS source_id,
                 NULL AS project_id
             FROM account_move_line aml
@@ -320,9 +368,10 @@ class HourBankClient(models.Model):
                 hba.date AS entry_date,
                 hba.hours AS hours,
                 hba.description AS description,
-                'Ajustement' AS project_name,
+                NULL AS project_name,
                 NULL AS task_name,
                 CASE WHEN hba.hours >= 0 THEN 'credit' ELSE 'debit' END AS entry_type,
+                'adjustment' AS source_kind,
                 hba.id + 1000000000 AS source_id,
                 NULL AS project_id
             FROM hour_bank_adjustment hba
@@ -350,14 +399,22 @@ class HourBankClient(models.Model):
         # summary_by_month: {(year, month): {project: hours}}
         summary_by_month = defaultdict(lambda: defaultdict(float))
 
+        # Les deux libellés de regroupement se rendent dans la langue du
+        # contexte : écrits en dur dans le SQL, ils restaient français dans le
+        # PDF, le classeur et le portail d'un client anglophone.
+        kind_labels = {
+            'invoice': self.env._("Billed hours"),
+            'adjustment': self.env._("Adjustment"),
+        }
         for row in rows:
             balance += row['hours']
+            project_name = row['project_name'] or kind_labels.get(row['source_kind'], '')
             entry = {
                 'date': row['entry_date'],
                 'hours': row['hours'],
                 'cumulative': balance,
                 'description': row['description'] or '',
-                'project': row['project_name'] or '',
+                'project': project_name or '',
                 'task': row['task_name'] or '',
                 'entry_type': row['entry_type'],
                 'project_id': row['project_id'],
@@ -391,9 +448,14 @@ class HourBankClient(models.Model):
             'bf_hour_bank.action_report_hour_bank'
         ).report_action(self)
 
-    def _get_pdf_binary(self):
-        """Generate PDF as binary for attachment purposes."""
+    def _get_pdf_binary(self, lang=None):
+        """Generate PDF as binary for attachment purposes.
+
+        `lang` : la langue du lecteur. Sans elle, le PDF suit le contexte, et
+        un envoi planifié (sans langue) le rendait dans la langue source."""
         self.ensure_one()
+        if lang:
+            self = self.with_context(lang=lang)
         pdf_content, _content_type = self.env['ir.actions.report']._render_qweb_pdf(
             'bf_hour_bank.action_report_hour_bank', self.ids,
         )
@@ -407,10 +469,7 @@ class HourBankClient(models.Model):
         """Generate Excel and return download action."""
         self.ensure_one()
         xlsx_data = self._generate_xlsx_binary()
-        filename = "Banque_heures_%s_%s.xlsx" % (
-            self.partner_id.name.replace(' ', '_'),
-            fields.Date.today().isoformat(),
-        )
+        filename = "%s.xlsx" % self._bf_file_stem()
         attachment = self.env['ir.attachment'].create({
             'name': filename,
             'type': 'binary',
@@ -425,11 +484,17 @@ class HourBankClient(models.Model):
             'target': 'new',
         }
 
-    def _generate_xlsx_binary(self):
-        """Build a 4-sheet .xlsx and return raw bytes."""
+    def _generate_xlsx_binary(self, lang=None):
+        """Build a 4-sheet .xlsx and return raw bytes.
+
+        Onglets et en-têtes dans la langue du contexte (ou `lang`) : ils
+        étaient écrits en dur, en français pour tout le monde."""
         self.ensure_one()
+        if lang:
+            self = self.with_context(lang=lang)
+        env = self.env
         if not openpyxl:
-            raise UserError(_("La biblioth\u00e8que openpyxl n'est pas install\u00e9e."))
+            raise UserError(_("The openpyxl library is not installed."))
 
         data = self._get_report_data()
         wb = openpyxl.Workbook()
@@ -461,10 +526,11 @@ class HourBankClient(models.Model):
                 cell.alignment = Alignment(horizontal='center')
                 cell.border = thin_border
 
-        # ─── Sheet 1: Feuilles de temps ───
+        # ─── Sheet 1: timesheets ───
         ws1 = wb.active
-        ws1.title = "Feuilles de temps"
-        cols1 = ["Date", "Nombre d'heures", "Solde cumulatif", "Description", "Projet", "Tâche"]
+        ws1.title = env._("Timesheets")
+        cols1 = [env._("Date"), env._("Number of hours"), env._("Running balance"),
+                 env._("Description"), env._("Project"), env._("Task")]
         style_header(ws1, cols1)
 
         for i, entry in enumerate(data['entries'], 2):
@@ -486,9 +552,9 @@ class HourBankClient(models.Model):
                 [14, 16, 16, 40, 25, 25][col_idx - 1]
             )
 
-        # ─── Sheet 2: Sommaire par projet ───
-        ws2 = wb.create_sheet("Sommaire par projet")
-        cols2 = ["Projet", "Heures totales"]
+        # ─── Sheet 2: per-project summary ───
+        ws2 = wb.create_sheet(env._("Per-project summary"))
+        cols2 = [env._("Project"), env._("Total hours")]
         style_header(ws2, cols2)
         row = 2
         for project, hours in sorted(data['summary_by_project'].items()):
@@ -500,14 +566,14 @@ class HourBankClient(models.Model):
         ws2.column_dimensions['A'].width = 40
         ws2.column_dimensions['B'].width = 18
 
-        # ─── Sheet 3: Synth\u00e8se par mois ───
-        ws3 = wb.create_sheet("Synth\u00e8se par mois")
+        # ─── Sheet 3: monthly summary ───
+        ws3 = wb.create_sheet(env._("Monthly summary"))
         # Collect all projects for column headers
         all_projects = sorted(set(
             p for month_data in data['summary_by_month'].values()
             for p in month_data
         ))
-        cols3 = ["Mois"] + all_projects + ["Total"]
+        cols3 = [env._("Month")] + all_projects + [env._("Total")]
         style_header(ws3, cols3)
 
         row = 2
@@ -530,9 +596,9 @@ class HourBankClient(models.Model):
         for idx in range(2, len(all_projects) + 3):
             ws3.column_dimensions[get_column_letter(idx)].width = 20
 
-        # ─── Sheet 4: \u00c0 facturer ───
-        ws4 = wb.create_sheet("\u00c0 facturer")
-        cols4 = ["Date", "Heures", "Description", "Projet", "T\u00e2che"]
+        # ─── Sheet 4: to bill ───
+        ws4 = wb.create_sheet(env._("To bill"))
+        cols4 = [env._("Date"), env._("Hours"), env._("Description"), env._("Project"), env._("Task")]
         style_header(ws4, cols4)
 
         # Entries since last credit (invoice)
@@ -556,7 +622,7 @@ class HourBankClient(models.Model):
             row += 1
 
         # Total row
-        ws4.cell(row=row, column=1, value="TOTAL").font = Font(bold=True)
+        ws4.cell(row=row, column=1, value=env._("TOTAL")).font = Font(bold=True)
         ws4.cell(row=row, column=1).border = thin_border
         total_cell = ws4.cell(row=row, column=2, value=total_unbilled)
         total_cell.number_format = number_fmt
@@ -586,7 +652,7 @@ class HourBankClient(models.Model):
         })
         return {
             'type': 'ir.actions.act_window',
-            'name': _("Envoyer le rapport"),
+            'name': _("Send the report"),
             'res_model': 'hour.bank.send.wizard',
             'res_id': wizard.id,
             'views': [[False, 'form']],
@@ -602,10 +668,10 @@ class HourBankClient(models.Model):
         for rec in self:
             if rec.invoice_product_id and not rec._bf_product_credits(rec.invoice_product_id):
                 raise ValidationError(_(
-                    "Le produit facturé « %(product)s » n'est pas compté par le filtre "
-                    "produits de cette banque : une facture validée sur ce produit ne "
-                    "réduirait pas le solde. Choisissez un produit du filtre, ou "
-                    "ajoutez-le au filtre.",
+                    "The invoiced product \"%(product)s\" is not counted "
+                    "by this bank's product filter: a posted invoice on "
+                    "that product would not reduce the balance. Choose a "
+                    "product from the filter, or add it to the filter.",
                     product=rec.invoice_product_id.display_name,
                 ))
 
@@ -738,7 +804,7 @@ class HourBankClient(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _("Générer la facture"),
+            'name': _("Generate the invoice"),
             'res_model': 'hour.bank.invoice.wizard',
             'views': [[False, 'form']],
             'target': 'new',
@@ -759,83 +825,93 @@ class HourBankClient(models.Model):
             _logger.info("Hour bank %s: no recipients configured, skipping", self.name)
             return
 
-        WizardModel = self.env['hour.bank.send.wizard']
-
-        partner_name = self.partner_id.name.replace(' ', '_')
         date_str = fields.Date.today().isoformat()
-
-        # Generate PDF
-        pdf_data = self._get_pdf_binary()
-        pdf_att = self.env['ir.attachment'].create({
-            'name': "Banque_heures_%s_%s.pdf" % (partner_name, date_str),
-            'type': 'binary',
-            'datas': base64.b64encode(pdf_data),
-            'mimetype': 'application/pdf',
-            'res_model': self._name,
-            'res_id': self.id,
-        })
-
-        # Generate Excel
-        xlsx_data = self._generate_xlsx_binary()
-        xlsx_att = self.env['ir.attachment'].create({
-            'name': "Banque_heures_%s_%s.xlsx" % (partner_name, date_str),
-            'type': 'binary',
-            'datas': base64.b64encode(xlsx_data),
-            'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'res_model': self._name,
-            'res_id': self.id,
-        })
-
-        # Build branded body
-        inner_body = (
-            '<p style="font-size:16px;line-height:26px;color:#374151;'
-            'margin:0 0 16px 0;">Bonjour,</p>'
-            '<p style="font-size:16px;line-height:26px;color:#374151;'
-            'margin:0 0 20px 0;">Veuillez trouver ci-joint '
-            "l'&#233;tat des banques d'heures pour "
-            "<strong>%s</strong>.</p>"  # noqa: S001
-            '<p style="font-size:16px;line-height:26px;color:#374151;'
-            'margin:0 0 20px 0;">Les fichiers PDF et Excel sont '
-            "en pi&#232;ces jointes.</p>"
-            '<p style="font-size:16px;line-height:26px;color:#374151;'
-            'margin:0;">Cordialement,<br/>%s</p>'
-        ) % (html_escape(self.partner_id.name), html_escape(self.company_id.name or ''))
-
-        body_html = WizardModel.new({})._wrap_branded_body(inner_body)
-
-        subject = "État des banques d'heures — %s" % self.partner_id.name
         sender = self.company_id.email or self.env.user.email_formatted
+        destinataires = self.recipient_ids.filtered('email')
+        attachments = self.env['ir.attachment']
 
-        for partner in self.recipient_ids:
-            if not partner.email:
-                continue
-            mail = self.env['mail.mail'].sudo().create({
-                'subject': subject,
-                'body_html': body_html,
-                'email_from': sender,
-                # recipient_ids ONLY — never also set email_to to the same
-                # person: Odoo's _prepare_outgoing_list builds one outgoing
-                # email for email_to AND one per recipient_ids partner (no
-                # dedup), so the recipient gets two identical SMTP deliveries.
-                'recipient_ids': [(4, partner.id)],
-                'attachment_ids': [(6, 0, [pdf_att.id, xlsx_att.id])],
+        # Un envoi par langue de lecteur : courriel, PDF et classeur dans la
+        # langue de chacun. Le travail planifié tourne sans langue au
+        # contexte ; tout rendre une seule fois l'aurait écrit dans la langue
+        # source pour tout le monde.
+        for lang, partners in self._bf_by_lang(destinataires).items():
+            bank = self.with_context(lang=lang)
+            stem = bank._bf_file_stem(date_str)
+            pdf_att = self.env['ir.attachment'].create({
+                'name': "%s.pdf" % stem,
+                'type': 'binary',
+                'datas': base64.b64encode(bank._get_pdf_binary()),
+                'mimetype': 'application/pdf',
+                'res_model': self._name,
+                'res_id': self.id,
             })
-            mail.send()
+            xlsx_att = self.env['ir.attachment'].create({
+                'name': "%s.xlsx" % stem,
+                'type': 'binary',
+                'datas': base64.b64encode(bank._generate_xlsx_binary()),
+                'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'res_model': self._name,
+                'res_id': self.id,
+            })
+            attachments |= pdf_att | xlsx_att
+            body_html = self.env['hour.bank.send.wizard'].with_context(
+                lang=lang)._wrap_branded_body(bank._bf_report_body(self.company_id.name or ''))
+            subject = bank.env._("Hour bank statement — %(client)s",
+                                 client=self.partner_id.name)
+            for partner in partners:
+                mail = self.env['mail.mail'].sudo().create({
+                    'subject': subject,
+                    'body_html': body_html,
+                    'email_from': sender,
+                    # recipient_ids ONLY — never also set email_to to the same
+                    # person: Odoo's _prepare_outgoing_list builds one outgoing
+                    # email for email_to AND one per recipient_ids partner (no
+                    # dedup), so the recipient gets two identical SMTP deliveries.
+                    'recipient_ids': [(4, partner.id)],
+                    'attachment_ids': [(6, 0, [pdf_att.id, xlsx_att.id])],
+                })
+                mail.send()
 
         self.write({'last_report_date': fields.Datetime.now()})
 
         recipient_names = ', '.join(self.recipient_ids.mapped('name'))
         self.message_post(
-            body=_("Rapport automatique envoyé à %s") % recipient_names,
+            body=_("Automatic report sent to %s") % recipient_names,
             message_type='comment',
             subtype_xmlid='mail.mt_note',
-            attachment_ids=[pdf_att.id, xlsx_att.id],
+            attachment_ids=attachments.ids,
         )
         _logger.info("Hour bank %s: report sent to %s", self.name, recipient_names)
+
+    def _bf_report_body(self, signature):
+        """Contenu du courriel du rapport (sans l'habillage), dans la langue
+        du contexte. L'assistant d'envoi le pré-remplit, l'envoi planifié
+        l'habille directement.
+
+        Le texte passe par le catalogue phrase par phrase ; le balisage reste
+        ici, et les valeurs sont échappées par Markup."""
+        self.ensure_one()
+        env = self.env
+        p = Markup('<p style="font-size:16px;line-height:26px;color:#374151;margin:%s;">%s</p>')
+        inner = Markup('').join([
+            p % ('0 0 16px 0', env._("Hello,")),
+            p % ('0 0 20px 0', Markup(env._(
+                "Please find attached the hour bank statement for "
+                "%(client)s.")) % {
+                    'client': Markup('<strong>%s</strong>') % (self.partner_id.name or '')}),
+            p % ('0 0 20px 0', env._("The PDF and Excel files are attached.")),
+            p % ('0', Markup('%s<br/>%s') % (env._("Kind regards,"), signature)),
+        ])
+        return inner
 
     @api.model
     def _cron_send_reports(self):
         """Cron job: send reports for all active auto-send hour banks."""
+        # Sans langue au contexte, les notes du fil sortaient dans la langue
+        # source : la maison écrit dans sa langue. Chaque courriel,
+        # lui, prend la langue de son destinataire.
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         today = fields.Date.today()
         weekday = today.weekday()  # 0=Monday
         day = today.day
@@ -1051,7 +1127,6 @@ class HourBankClient(models.Model):
     def _fire_threshold_alert(self, line, measurement, measured, period_key, report_data=None):
         """Send the alert email + record the event + post on chatter."""
         self.ensure_one()
-        WizardModel = self.env['hour.bank.send.wizard']
         partners = self._get_alert_recipients()
 
         if not partners:
@@ -1075,85 +1150,55 @@ class HourBankClient(models.Model):
             })
             return
 
-        # Generate XLSX attachment (reuse data if available)
-        if report_data is None:
-            report_data = self._get_report_data()
-        xlsx_data = self._generate_xlsx_binary()
-        partner_name = self.partner_id.name.replace(' ', '_')
         date_str = fields.Date.today().isoformat()
-        xlsx_att = self.env['ir.attachment'].create({
-            'name': "Banque_heures_%s_%s.xlsx" % (partner_name, date_str),
-            'type': 'binary',
-            'datas': base64.b64encode(xlsx_data),
-            'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'res_model': self._name,
-            'res_id': self.id,
-        })
-
-        # Build branded HTML body
-        if self.threshold_mode == 'budget_pct':
-            measure_label = "%.1f %% du budget consommés (%.2fh sur %.2fh)" % (
-                measured, measurement['current_unbilled'], self.threshold_budget_hours,
-            )
-        elif self.threshold_mode == 'unbilled':
-            measure_label = "%.2fh non facturées" % measured
-        else:
-            measure_label = "Solde courant : %.2fh" % measured
-
+        sender = self.company_id.email or self.env.user.email_formatted
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url', '')
         bank_url = "%s/odoo/action-base.action_client/?model=hour.bank.client&view_type=form&id=%d" % (
             base_url.rstrip('/'), self.id,
         ) if base_url else ''
 
-        inner_body = (
-            '<p style="font-size:16px;line-height:26px;color:#374151;'
-            'margin:0 0 16px 0;">Bonjour,</p>'
-            '<p style="font-size:16px;line-height:26px;color:#374151;'
-            'margin:0 0 16px 0;">Votre banque d\'heures pour '
-            "<strong>%s</strong> vient d'atteindre le palier "
-            "<strong>« %s »</strong>.</p>"
-            '<table cellpadding="6" cellspacing="0" border="0" '
-            'style="border-collapse:collapse;margin:0 0 20px 0;'
-            'font-size:14px;color:#374151;">'
-            '<tr><td style="color:#6B7280;">Mesure actuelle :</td>'
-            '<td><strong>%s</strong></td></tr>'
-            '<tr><td style="color:#6B7280;">Solde courant :</td>'
-            '<td><strong>%.2fh</strong></td></tr>'
-            '</table>'
-            '<p style="font-size:16px;line-height:26px;color:#374151;'
-            'margin:0 0 20px 0;">Le détail des entrées est joint en '
-            'format Excel.</p>'
-            '%s'
-            '<p style="font-size:16px;line-height:26px;color:#374151;'
-            'margin:0;">Cordialement,<br/>%s</p>'
-        ) % (
-            html_escape(self.partner_id.name),
-            html_escape(line.name or ''),
-            html_escape(measure_label),
-            measurement['current_balance'],
-            ('<p style="font-size:14px;line-height:22px;margin:0 0 20px 0;">'
-             '<a href="%s" style="color:#29ABE2;">Ouvrir la banque dans Odoo</a></p>'
-             % html_escape(bank_url)) if bank_url else '',
-            html_escape(self.company_id.name or ''),
-        )
-
-        body_html = WizardModel.new({})._wrap_branded_body(inner_body)
-        subject = "Banque d'heures %s — palier « %s » atteint" % (
-            self.partner_id.name, line.name or '',
-        )
-        sender = self.company_id.email or self.env.user.email_formatted
-
-        for partner in partners:
-            mail = self.env['mail.mail'].sudo().create({
-                'subject': subject,
-                'body_html': body_html,
-                'email_from': sender,
-                # recipient_ids ONLY — see note in _send_report_to_recipients:
-                # setting email_to to the same partner duplicates the SMTP send.
-                'recipient_ids': [(4, partner.id)],
-                'attachment_ids': [(6, 0, [xlsx_att.id])],
+        # Un courriel par langue de lecteur : objet, corps, palier et
+        # classeur dans la langue de chacun. Les heures suivent la
+        # langue (`formatLang`).
+        xlsx_att = self.env['ir.attachment']
+        for lang, groupe in self._bf_by_lang(partners).items():
+            bank = self.with_context(lang=lang)
+            att = self.env['ir.attachment'].create({
+                'name': "%s.xlsx" % bank._bf_file_stem(date_str),
+                'type': 'binary',
+                'datas': base64.b64encode(bank._generate_xlsx_binary()),
+                'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'res_model': self._name,
+                'res_id': self.id,
             })
-            mail.send()
+            xlsx_att |= att
+            libelle = line.with_context(lang=lang)._bf_label()
+            body_html = bank._bf_alert_body(
+                libelle, bank._bf_measure_label(measured, measurement),
+                measurement['current_balance'], bank_url,
+            )
+            subject = bank.env._(
+                "Hour bank %(client)s — threshold \"%(threshold)s\" reached",
+                client=self.partner_id.name, threshold=libelle,
+            )
+            for partner in groupe:
+                mail = self.env['mail.mail'].sudo().create({
+                    'subject': subject,
+                    'body_html': body_html,
+                    'email_from': sender,
+                    # recipient_ids ONLY — see note in _send_report_to_recipients:
+                    # setting email_to to the same partner duplicates the SMTP send.
+                    'recipient_ids': [(4, partner.id)],
+                    'attachment_ids': [(6, 0, [att.id])],
+                })
+                mail.send()
+
+        # La trace du fil et l'avis aux abonnés internes : langue de la maison.
+        measure_label = self._bf_measure_label(measured, measurement)
+        subject = self.env._(
+            "Hour bank %(client)s — threshold \"%(threshold)s\" reached",
+            client=self.partner_id.name, threshold=line._bf_label(),
+        )
 
         # Update the line state (consume the period)
         line.write({
@@ -1164,14 +1209,15 @@ class HourBankClient(models.Model):
         # Chatter note (audit) — captures the mail.message id for the event
         recipient_names = ', '.join(partners.mapped('name'))
         message = self.message_post(
-            body=_("Alerte de palier « %(label)s » envoyée à %(names)s — %(measure)s") % {
-                'label': line.name or '',
+            body=_("Threshold alert \"%(label)s\" sent to %(names)s — "
+                   "%(measure)s") % {
+                'label': line._bf_label(),
                 'names': recipient_names,
                 'measure': measure_label,
             },
             message_type='comment',
             subtype_xmlid='mail.mt_note',
-            attachment_ids=[xlsx_att.id],
+            attachment_ids=xlsx_att.ids,
         )
 
         # Optional message_notify to internal followers
@@ -1185,10 +1231,10 @@ class HourBankClient(models.Model):
                         partner_ids=internal_partners.ids,
                         subject=subject,
                         body=_(
-                            "Alerte de palier « %(label)s » sur %(bank)s. "
-                            "Mesure : %(measure)s."
+                            "Threshold alert \"%(label)s\" on %(bank)s. "
+                            "Measure: %(measure)s."
                         ) % {
-                            'label': line.name or '',
+                            'label': line._bf_label(),
                             'bank': self.name,
                             'measure': measure_label,
                         },
@@ -1208,7 +1254,7 @@ class HourBankClient(models.Model):
             'measured_value': measured,
             'period_key': period_key,
             'recipient_ids': [(6, 0, partners.ids)],
-            'attachment_id': xlsx_att.id,
+            'attachment_id': xlsx_att[:1].id,
             'mail_message_id': message.id if message else False,
         })
         _logger.info(
@@ -1216,19 +1262,73 @@ class HourBankClient(models.Model):
             self.name, line.name, measured, recipient_names,
         )
 
+    def _bf_measure_label(self, measured, measurement):
+        """La mesure du palier, en clair, dans la langue du contexte."""
+        self.ensure_one()
+        env = self.env
+
+        def _h(valeur):
+            return "%s h" % formatLang(env, valeur)
+
+        if self.threshold_mode == 'budget_pct':
+            return env._(
+                "%(pct)s %% of the budget used (%(used)s of %(budget)s)",
+                pct=formatLang(env, measured, digits=1),
+                used=_h(measurement['current_unbilled']),
+                budget=_h(self.threshold_budget_hours),
+            )
+        if self.threshold_mode == 'unbilled':
+            return env._("%(hours)s unbilled", hours=_h(measured))
+        return env._("Current balance: %(hours)s", hours=_h(measured))
+
+    def _bf_alert_body(self, threshold_label, measure_label, balance, bank_url):
+        """Corps du courriel d'alerte, dans la langue du contexte."""
+        self.ensure_one()
+        env = self.env
+        p = Markup('<p style="font-size:16px;line-height:26px;color:#374151;margin:%s;">%s</p>')
+        ligne = Markup('<tr><td style="color:#6B7280;">%s</td><td><strong>%s</strong></td></tr>')
+        lien = Markup('')
+        if bank_url:
+            lien = Markup('<p style="font-size:14px;line-height:22px;margin:0 0 20px 0;">'
+                          '<a href="%s" style="color:%s;">%s</a></p>') % (
+                bank_url, self.company_id.report_brand_primary or '#714B67',
+                env._("Open the bank in Odoo"))
+        inner = Markup('').join([
+            p % ('0 0 16px 0', env._("Hello,")),
+            p % ('0 0 16px 0', Markup(env._(
+                "Your hour bank for %(client)s has just reached the threshold "
+                "%(threshold)s.")) % {
+                    'client': Markup('<strong>%s</strong>') % (self.partner_id.name or ''),
+                    'threshold': Markup('<strong>%s</strong>') % env._(
+                        "\"%(label)s\"", label=threshold_label),
+                }),
+            Markup('<table cellpadding="6" cellspacing="0" border="0" '
+                   'style="border-collapse:collapse;margin:0 0 20px 0;'
+                   'font-size:14px;color:#374151;">%s%s</table>') % (
+                ligne % (env._("Current measure:"), measure_label),
+                ligne % (env._("Current balance:"),
+                         "%s h" % formatLang(env, balance)),
+            ),
+            p % ('0 0 20px 0', env._("The details of the entries are attached in Excel format.")),
+            lien,
+            p % ('0', Markup('%s<br/>%s') % (env._("Kind regards,"), self.company_id.name or '')),
+        ])
+        return self.env['hour.bank.send.wizard'].with_context(lang=env.lang)._wrap_branded_body(inner)
+
     def action_check_thresholds_now(self):
         """Manual button: evaluate thresholds and show how many fired."""
         self.ensure_one()
         fired = self._check_thresholds()
         if fired:
-            msg = _("%(n)d alerte(s) de palier envoyée(s).", n=fired)
+            msg = _("%(n)d threshold alert(s) sent.", n=fired)
         else:
-            msg = _("Aucun palier déclenché. (Tous déjà notifiés ou en-dessous des seuils.)")
+            msg = _("No threshold fired. (All already notified, or below "
+                    "the thresholds.)")
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': _("Vérification des paliers"),
+                'title': _("Threshold check"),
                 'message': msg,
                 'sticky': False,
                 'type': 'success' if fired else 'info',
@@ -1240,7 +1340,7 @@ class HourBankClient(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _("Alertes envoyées"),
+            'name': _("Alerts sent"),
             'res_model': 'hour.bank.threshold.event',
             'view_mode': 'list,form',
             'domain': [('bank_id', '=', self.id)],
@@ -1250,6 +1350,8 @@ class HourBankClient(models.Model):
     @api.model
     def _cron_check_thresholds(self):
         """Cron: evaluate thresholds for all active banks with mode != disabled."""
+        if not self.env.lang:
+            self = self.with_context(lang=get_lang(self.env).code)
         banks = self.search([
             ('active', '=', True),
             ('threshold_mode', '!=', 'disabled'),

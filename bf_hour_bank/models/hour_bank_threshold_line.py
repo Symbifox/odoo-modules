@@ -1,70 +1,84 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
+from odoo.tools.misc import get_lang
 
 
 class HourBankThresholdLine(models.Model):
     _name = 'hour.bank.threshold.line'
-    _description = "Palier de notification d'une banque d'heures"
+    _description = "Notification threshold of an hour bank"
     _order = 'bank_id, value'
 
     bank_id = fields.Many2one(
         'hour.bank.client', required=True, ondelete='cascade',
-        string="Banque d'heures", index=True,
+        string="Hour bank", index=True,
     )
     mode = fields.Selection(
         related='bank_id.threshold_mode', store=True, readonly=True,
         string="Mode",
     )
     value = fields.Float(
-        required=True, string="Seuil",
-        help="Heures pour les modes 'Non facturées' et 'Solde résiduel'. "
-             "Pourcentage (0-100) pour le mode '% du budget'. "
-             "En 'Solde résiduel', une valeur négative pose le palier sous zéro : "
-             "c'est la forme utile sur un compte postpayé, où les heures "
-             "s'accumulent en dette entre deux factures.",
+        required=True, string="Threshold",
+        help="Hours for the 'Unbilled' and 'Remaining balance' modes. "
+             "Percentage (0-100) for the '% of budget' mode. In "
+             "'Remaining balance', a negative value sets the threshold "
+             "below zero: that is the useful form on a postpaid account, "
+             "where hours pile up as a debt between two invoices.",
     )
     name = fields.Char(
-        compute='_compute_name', store=True, string="Libellé",
+        compute='_compute_name', store=True, string="Label",
     )
     active = fields.Boolean(default=True)
     last_fired_date = fields.Datetime(
-        readonly=True, string="Dernier déclenchement",
+        readonly=True, string="Last triggered",
     )
     last_fired_period_key = fields.Char(
-        readonly=True, string="Clé de période",
-        help="Clé d'idempotence : tant qu'elle ne change pas, le palier "
-             "ne se redéclenche pas. Reset selon le mode "
-             "(nouvelle facture, changement de budget, ou remontée du solde).",
+        readonly=True, string="Period key",
+        help="Idempotency key: as long as it does not change, the "
+             "threshold does not fire again. Reset depends on the mode (a "
+             "new invoice, a budget change, or the balance rising back).",
     )
     is_armed = fields.Boolean(
-        compute='_compute_is_armed', string="Armé",
-        help="Vrai si le palier est prêt à déclencher (clé de période courante différente de la dernière).",
+        compute='_compute_is_armed', string="Armed",
+        help="True if the threshold is ready to fire (current period key "
+             "different from the last one).",
     )
 
     _sql_constraints = [
         (
             'unique_bank_value',
             'UNIQUE(bank_id, value)',
-            "Un palier avec cette valeur existe déjà sur cette banque.",
+            "A threshold with this value already exists on this bank.",
         ),
     ]
 
     @api.depends('mode', 'value')
     def _compute_name(self):
+        # Sans langue au contexte (RPC, travail planifié), la langue de la
+        # maison, comme le faisait `_()` : `env._` y rendrait la source.
+        lang = self.env.lang or get_lang(self.env).code
         for rec in self:
-            if rec.mode == 'budget_pct':
-                rec.name = _("%(value)s %% du budget", value=int(rec.value) if rec.value == int(rec.value) else rec.value)
-            elif rec.mode == 'unbilled':
-                rec.name = _("%(value)sh non facturées", value=rec.value)
-            elif rec.mode == 'balance_floor':
-                if rec.value < 0:
-                    # Compte postpayé : le solde plonge sous zéro, le palier
-                    # se lit comme une dette d'heures et non comme un reste.
-                    rec.name = _("Dette de %(value)sh", value=abs(rec.value))
-                else:
-                    rec.name = _("Solde sous %(value)sh", value=rec.value)
-            else:
-                rec.name = _("%(value)s", value=rec.value)
+            rec.name = rec.with_context(lang=lang)._bf_label()
+
+    def _bf_label(self):
+        """Le libellé du palier dans la langue du contexte.
+
+        `name` est stocké, donc écrit une fois dans la langue de qui a créé le
+        palier : un courriel d'alerte le relit par ici, dans la langue de son
+        lecteur."""
+        self.ensure_one()
+        env = self.env
+        if self.mode == 'budget_pct':
+            return env._("%(value)s %% of budget",
+                         value=int(self.value) if self.value == int(self.value) else self.value)
+        if self.mode == 'unbilled':
+            return env._("%(value)sh unbilled", value=self.value)
+        if self.mode == 'balance_floor':
+            if self.value < 0:
+                # Compte postpayé : le solde plonge sous zéro, le palier
+                # se lit comme une dette d'heures et non comme un reste.
+                return env._("Debt of %(value)sh", value=abs(self.value))
+            return env._("Balance below %(value)sh", value=self.value)
+        return env._("%(value)s", value=self.value)
 
     @api.depends('last_fired_period_key', 'bank_id.threshold_mode', 'bank_id.threshold_budget_hours')
     def _compute_is_armed(self):
@@ -81,7 +95,8 @@ class HourBankThresholdLine(models.Model):
             if rec.mode == 'budget_pct':
                 if rec.value <= 0 or rec.value > 100:
                     raise ValidationError(_(
-                        "Pour le mode '%% du budget', le seuil doit être strictement supérieur à 0 et au plus égal à 100."
+                        "For the '%% of budget' mode, the threshold must "
+                        "be strictly greater than 0 and at most 100."
                     ))
             elif rec.mode == 'balance_floor':
                 # Une valeur négative est légitime sur un compte postpayé, où
@@ -90,10 +105,10 @@ class HourBankThresholdLine(models.Model):
                 # palier créé sans valeur alerterait dès le premier solde nul.
                 if rec.value == 0:
                     raise ValidationError(_(
-                        "Le seuil de solde résiduel ne peut pas être zéro."
+                        "The remaining balance threshold cannot be zero."
                     ))
             else:
                 if rec.value <= 0:
                     raise ValidationError(_(
-                        "Le seuil doit être strictement positif."
+                        "The threshold must be strictly positive."
                     ))

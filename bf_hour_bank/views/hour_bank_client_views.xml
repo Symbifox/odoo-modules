@@ -6,23 +6,23 @@
         <field name="name">hour.bank.client.form</field>
         <field name="model">hour.bank.client</field>
         <field name="arch" type="xml">
-            <form string="Banque d'heures">
+            <form string="Hour bank">
                 <header>
                     <button name="action_generate_pdf" type="object"
-                            string="G&#233;n&#233;rer PDF" class="btn-primary"
+                            string="Generate PDF" class="btn-primary"
                             icon="fa-file-pdf-o"/>
                     <button name="action_generate_xlsx" type="object"
-                            string="G&#233;n&#233;rer Excel"
+                            string="Generate Excel"
                             icon="fa-file-excel-o"/>
                     <button name="action_open_send_wizard" type="object"
-                            string="Envoyer rapport" class="btn-secondary"
+                            string="Send report" class="btn-secondary"
                             icon="fa-envelope-o"/>
                     <button name="action_open_invoice_wizard" type="object"
-                            string="G&#233;n&#233;rer la facture" class="btn-secondary"
+                            string="Generate the invoice" class="btn-secondary"
                             icon="fa-file-text-o"
                             groups="account.group_account_invoice"/>
                     <button name="action_check_thresholds_now" type="object"
-                            string="V&#233;rifier les paliers maintenant"
+                            string="Check thresholds now"
                             icon="fa-bell-o"
                             invisible="threshold_mode == 'disabled'"/>
                 </header>
@@ -31,18 +31,18 @@
                         <button class="oe_stat_button" icon="fa-clock-o" name="action_generate_pdf" type="object">
                             <div class="o_stat_info">
                                 <field name="current_balance" class="o_stat_value" widget="float" options="{'digits': [16, 2]}"/>
-                                <span class="o_stat_text">Solde (h)</span>
+                                <span class="o_stat_text">Balance (h)</span>
                             </div>
                         </button>
                         <button class="oe_stat_button" icon="fa-bell-o"
                                 name="action_view_threshold_events" type="object"
                                 invisible="threshold_event_count == 0">
-                            <field name="threshold_event_count" widget="statinfo" string="Alertes"/>
+                            <field name="threshold_event_count" widget="statinfo" string="Alerts"/>
                         </button>
                     </div>
                     <div class="oe_title">
                         <h1>
-                            <field name="partner_id" placeholder="S&#233;lectionnez un client"/>
+                            <field name="partner_id" placeholder="Select a client"/>
                         </h1>
                     </div>
                     <group>
@@ -53,29 +53,29 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Projets" name="projects">
+                        <page string="Projects" name="projects">
                             <field name="project_ids" widget="many2many_tags"/>
                         </page>
-                        <page string="Facturation" name="invoicing">
-                            <group string="Filtre soci&#233;t&#233;s">
+                        <page string="Billing" name="invoicing">
+                            <group string="Company filter">
                                 <field name="company_filter_mode" widget="radio"/>
                                 <field name="filter_company_ids" widget="many2many_tags"
                                        invisible="company_filter_mode == 'all'"
                                        options="{'no_create': True}"/>
                             </group>
-                            <group string="Filtre partenaires">
+                            <group string="Partner filter">
                                 <field name="invoice_partner_ids" widget="many2many_tags"
                                        options="{'no_create': True}"/>
                             </group>
-                            <group string="Filtre produits">
+                            <group string="Product filter">
                                 <field name="product_filter_mode" widget="radio"/>
                                 <field name="filter_product_ids" widget="many2many_tags"
                                        invisible="product_filter_mode == 'all'"/>
                             </group>
-                            <separator string="Factures additionnelles"/>
+                            <separator string="Extra invoices"/>
                             <field name="extra_invoice_ids" widget="many2many_tags"
                                    options="{'no_create': True}"/>
-                            <group string="Facture g&#233;n&#233;r&#233;e depuis la banque" name="generated_invoice">
+                            <group string="Invoice generated from the bank" name="generated_invoice">
                                 <field name="invoice_mode" widget="radio"/>
                                 <field name="invoice_block_hours"
                                        invisible="invoice_mode != 'prepaid'"/>
@@ -87,7 +87,7 @@
                                        invisible="invoice_mode != 'postpaid'"/>
                             </group>
                         </page>
-                        <page string="Ajustements" name="adjustments">
+                        <page string="Adjustments" name="adjustments">
                             <field name="adjustment_ids">
                                 <list editable="bottom">
                                     <field name="date"/>
@@ -96,25 +96,25 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Destinataires" name="recipients">
+                        <page string="Recipients" name="recipients">
                             <group>
                                 <field name="recipient_ids" widget="many2many_tags" nolabel="1"/>
                             </group>
-                            <separator string="Envoi automatique"/>
+                            <separator string="Automatic sending"/>
                             <group>
                                 <field name="auto_send"/>
                                 <field name="send_frequency"
                                        invisible="not auto_send"/>
                             </group>
                         </page>
-                        <page string="Paliers" name="thresholds">
+                        <page string="Thresholds" name="thresholds">
                             <group>
                                 <field name="threshold_mode" widget="radio"/>
                                 <field name="threshold_budget_hours"
                                        invisible="threshold_mode != 'budget_pct'"
                                        required="threshold_mode == 'budget_pct'"/>
                             </group>
-                            <separator string="Paliers &#224; surveiller"
+                            <separator string="Thresholds to watch"
                                        invisible="threshold_mode == 'disabled'"/>
                             <field name="threshold_line_ids"
                                    invisible="threshold_mode == 'disabled'">
@@ -126,14 +126,14 @@
                                     <field name="active" widget="boolean_toggle"/>
                                 </list>
                             </field>
-                            <separator string="Destinataires des alertes"
+                            <separator string="Alert recipients"
                                        invisible="threshold_mode == 'disabled'"/>
                             <group invisible="threshold_mode == 'disabled'">
                                 <field name="alert_recipient_ids" widget="many2many_tags"/>
                                 <field name="notify_internal_followers"/>
                             </group>
                         </page>
-                        <page string="Historique des alertes" name="threshold_history"
+                        <page string="Alert history" name="threshold_history"
                               invisible="threshold_event_count == 0">
                             <field name="threshold_event_ids" readonly="1">
                                 <list>
@@ -158,9 +158,9 @@
         <field name="name">hour.bank.client.list</field>
         <field name="model">hour.bank.client</field>
         <field name="arch" type="xml">
-            <list string="Banques d'heures">
+            <list string="Hour banks">
                 <field name="partner_id"/>
-                <field name="current_balance" string="Solde (h)" widget="float"/>
+                <field name="current_balance" string="Balance (h)" widget="float"/>
                 <field name="auto_send" string="Auto"/>
                 <field name="send_frequency" optional="hide"/>
                 <field name="last_report_date"/>
@@ -173,26 +173,26 @@
         <field name="name">hour.bank.client.search</field>
         <field name="model">hour.bank.client</field>
         <field name="arch" type="xml">
-            <search string="Banques d'heures">
+            <search string="Hour banks">
                 <field name="partner_id"/>
-                <filter name="active" string="Actif" domain="[('active', '=', True)]"/>
-                <filter name="archived" string="Archiv&#233;" domain="[('active', '=', False)]"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
             </search>
         </field>
     </record>
 
     <!-- Action -->
     <record id="action_hour_bank_client" model="ir.actions.act_window">
-        <field name="name">Banques d'heures</field>
+        <field name="name">Hour banks</field>
         <field name="res_model">hour.bank.client</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="hour_bank_client_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Cr&#233;ez votre premi&#232;re banque d'heures
+                Create your first hour bank
             </p>
             <p>
-                Configurez le suivi des heures pour vos clients en forfait.
+                Set up hour tracking for the clients who have an hour bank.
             </p>
         </field>
     </record>

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo noupdate="1">
     <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
-        <field name="title">Configurer la banque d'heures</field>
-        <field name="description">Définissez les règles de rollover, les seuils d'alerte et les rapports périodiques.</field>
-        <field name="button_text">Ouvrir Paramètres</field>
-        <field name="done_text">Banque d'heures configurée</field>
-        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="title">Configure the hour bank</field>
+        <field name="description">[action:bf_hour_bank.action_hour_bank_client] On each bank, set the alert thresholds, the billing mode and the periodic reports.</field>
+        <field name="button_text">Open the banks</field>
+        <field name="done_text">Hour bank configured</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">1</field>
     </record>
     <record id="bf_onb_step_clients" model="onboarding.onboarding.step">
-        <field name="title">Lier les clients à des banques</field>
-        <field name="description">[action:bf_hour_bank.action_hour_bank_client] Associez chaque client à une banque d'heures avec son solde initial.</field>
-        <field name="button_text">Voir les clients</field>
-        <field name="done_text">Clients liés</field>
+        <field name="title">Link clients to banks</field>
+        <field name="description">[action:bf_hour_bank.action_hour_bank_client] Link each client to an hour bank with its opening balance.</field>
+        <field name="button_text">View clients</field>
+        <field name="done_text">Clients linked</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">2</field>
     </record>
     <record id="bf_onboarding_panel" model="onboarding.onboarding">
-        <field name="name">Banque d'heures</field>
+        <field name="name">Hour bank</field>
         <field name="route_name">bf_hour_bank_onboarding</field>
         <field name="panel_close_action_name">action_close_panel_bf_hour_bank</field>
         <field name="step_ids" eval="[

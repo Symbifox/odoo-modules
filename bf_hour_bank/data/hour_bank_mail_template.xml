@@ -3,10 +3,10 @@
     <data noupdate="0">
 
         <record id="email_template_hour_bank_report" model="mail.template">
-            <field name="name">Banque d'heures : Rapport</field>
+            <field name="name">Hour bank: report</field>
             <field name="model_id" ref="model_hour_bank_client"/>
             <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
-            <field name="subject">&#201;tat des banques d'heures &#8212; {{ object.partner_id.name }}</field>
+            <field name="subject">Hour bank statement — {{ object.partner_id.name }}</field>
             <field name="body_html" type="html">
 
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
@@ -35,7 +35,7 @@
                                                                 </a>
                                                             </td>
                                                             <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
-                                                                Banque d'heures
+                                                                Hour bank
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -52,23 +52,23 @@
                                         <tr>
                                             <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
                                                 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">
-                                                    Bonjour,
+                                                    Hello,
                                                 </p>
                                                 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
-                                                    Veuillez trouver ci-joint l'&#233;tat des banques d'heures pour
+                                                    Please find attached the hour bank statement for
                                                     <strong><t t-out="object.partner_id.name"/></strong>.
                                                 </p>
                                                 <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
-                                                    Les fichiers PDF et Excel sont en pi&#232;ces jointes.
+                                                    The PDF and Excel files are attached.
                                                 </p>
                                                 <p style="font-size:16px; line-height:26px; color:#374151; margin:0;">
-                                                    Cordialement,<br/>
+                                                    Kind regards,<br/>
                                                     <t t-out="user.name"/>
                                                 </p>
                                                 <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">
-                                                    Pour toute question, contactez-nous &#224;
+                                                    If you have any questions, contact us at
                                                     <a t-attf-href="mailto:{{ company.email or 'service@example.com' }}" t-attf-style="color:{{ brand_primary }}; text-decoration:none;"><t t-out="company.email or 'service@example.com'"/></a>
-                                                    ou appelez le
+                                                    or call
                                                     <a t-attf-href="tel:{{ company.phone or '+15555555555' }}" t-attf-style="color:{{ brand_primary }}; text-decoration:none;"><t t-out="company.phone or '555-555-5555'"/></a>.
                                                 </p>
                                             </td>
@@ -86,13 +86,13 @@
                                                     <tbody>
                                                         <tr>
                                                             <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
-                                                                <strong t-attf-style="color:{{ brand_dark }};">Banque d'heures par <t t-out="company.name"/></strong><br/>
-                                                                Suivi automatique des heures consomm&#233;es vs. provisionn&#233;es.
+                                                                <strong t-attf-style="color:{{ brand_dark }};">Hour bank by <t t-out="company.name"/></strong><br/>
+                                                                Automatic tracking of hours consumed vs. hours allocated.
                                                             </td>
                                                             <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                                                <a t-if="company and 'brand_privacy_url' in company and company.brand_privacy_url" t-attf-href="{{ company.brand_privacy_url }}" style="color:#9CA3AF; text-decoration:underline;">Politique de confidentialit&#233;</a>
+                                                                <a t-if="company and 'brand_privacy_url' in company and company.brand_privacy_url" t-attf-href="{{ company.brand_privacy_url }}" style="color:#9CA3AF; text-decoration:underline;">Privacy policy</a>
                                                                 <span t-if="company and 'brand_privacy_url' in company and company.brand_privacy_url and company and 'brand_terms_url' in company and company.brand_terms_url" style="color:#9CA3AF;"> | </span>
-                                                                <a t-if="company and 'brand_terms_url' in company and company.brand_terms_url" t-attf-href="{{ company.brand_terms_url }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a>
+                                                                <a t-if="company and 'brand_terms_url' in company and company.brand_terms_url" t-attf-href="{{ company.brand_terms_url }}" style="color:#9CA3AF; text-decoration:underline;">Terms</a>
                                                             </td>
                                                         </tr>
                                                     </tbody>

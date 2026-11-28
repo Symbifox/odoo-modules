@@ -94,9 +94,10 @@ class PortalHourBank(CustomerPortal):
             return request.redirect('/my/hour-banks')
 
         pdf_data = hour_bank._get_pdf_binary()
-        filename = "Banque_heures_%s.pdf" % _safe_filename(
-            hour_bank.partner_id.name
-        ).replace(' ', '_')
+        filename = "%s_%s.pdf" % (
+            request.env._("Hour_bank"),
+            _safe_filename(hour_bank.partner_id.name).replace(' ', '_'),
+        )
         return request.make_response(
             pdf_data,
             headers=[
@@ -119,9 +120,10 @@ class PortalHourBank(CustomerPortal):
             return request.redirect('/my/hour-banks')
 
         xlsx_data = hour_bank._generate_xlsx_binary()
-        filename = "Banque_heures_%s.xlsx" % _safe_filename(
-            hour_bank.partner_id.name
-        ).replace(' ', '_')
+        filename = "%s_%s.xlsx" % (
+            request.env._("Hour_bank"),
+            _safe_filename(hour_bank.partner_id.name).replace(' ', '_'),
+        )
         return request.make_response(
             xlsx_data,
             headers=[

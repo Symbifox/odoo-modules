@@ -2,11 +2,11 @@
 <odoo>
 
     <!-- ============================================================ -->
-    <!-- Portal home: add "Banque d'heures" entry                     -->
+    <!-- Portal home: add "Hour bank" entry                           -->
     <!-- ============================================================ -->
 
     <template id="portal_my_home_hour_bank"
-              name="Portal : Banque d'heures"
+              name="Portal: hour bank"
               inherit_id="portal.portal_my_home"
               customize_show="True" priority="35">
         <div id="portal_common_category" position="inside">
@@ -21,7 +21,7 @@
                      fait 128 px (2x) pour rester net en retina, ~11 Ko contre
                      ~1062 Ko. L'icone d'application d'origine reste intacte. -->
                 <t t-set="icon" t-value="'/bf_hour_bank/static/src/img/portal_icon.svg'"/>
-                <t t-set="title">Banque d'heures</t>
+                <t t-set="title">Hour bank</t>
                 <t t-set="url" t-value="'/my/hour-banks'"/>
                 <t t-set="placeholder_count" t-value="'hour_bank_count'"/>
             </t>
@@ -33,13 +33,13 @@
     <!-- ============================================================ -->
 
     <template id="portal_breadcrumb_hour_bank"
-              name="Portal breadcrumb: Banque d'heures"
+              name="Portal breadcrumb: hour bank"
               inherit_id="portal.portal_breadcrumbs" priority="35">
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
             <li t-if="page_name == 'hour_banks' or page_name == 'hour_bank_detail'"
                 t-attf-class="breadcrumb-item #{'active' if page_name == 'hour_banks' else ''}">
-                <a t-if="page_name == 'hour_bank_detail'" href="/my/hour-banks">Banque d'heures</a>
-                <t t-else="">Banque d'heures</t>
+                <a t-if="page_name == 'hour_bank_detail'" href="/my/hour-banks">Hour bank</a>
+                <t t-else="">Hour bank</t>
             </li>
             <li t-if="page_name == 'hour_bank_detail' and hour_bank"
                 class="breadcrumb-item active">
@@ -58,7 +58,7 @@
 
             <t t-if="not hour_banks">
                 <div class="alert alert-info" role="alert">
-                    Aucune banque d'heures n'est configur&#233;e pour votre compte.
+                    No hour bank is set up for your account.
                 </div>
             </t>
 
@@ -66,8 +66,8 @@
                 <thead>
                     <tr class="active">
                         <th>Client</th>
-                        <th class="text-end">Solde actuel (h)</th>
-                        <th class="text-end d-none d-md-table-cell">Dernier rapport</th>
+                        <th class="text-end">Current balance (h)</th>
+                        <th class="text-end d-none d-md-table-cell">Last report</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -100,7 +100,7 @@
     <!-- Detail page: /my/hour-banks/<id>                             -->
     <!-- ============================================================ -->
 
-    <template id="portal_hour_bank_page" name="Banque d'heures - D&#233;tail">
+    <template id="portal_hour_bank_page" name="Hour bank - detail">
         <t t-call="portal.portal_layout">
             <style>
                 .hb-portal-table {
@@ -114,7 +114,14 @@
                     white-space: nowrap;
                 }
                 .hb-portal-table .credit td {
-                    background: #C6EFCE;
+                    /* Translucide, jamais opaque : le portail peut être sombre, et
+                       un vert clair en dur y mettait du texte blanc sur fond pâle. */
+                    background: rgba(40, 167, 69, 0.22);
+                }
+                .hb-portal-table td.date {
+                    /* Les `th` portaient `nowrap`, pas les `td` : une date se
+                       coupait sur le trait d'union. */
+                    white-space: nowrap;
                 }
                 .hb-portal-table td.num {
                     text-align: right;
@@ -125,7 +132,24 @@
                 }
                 .hb-balance-card {
                     border-left: 4px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
-                    background: #f8f9fb;
+                    /* Un gris translucide s'éclaircit sur un fond clair et
+                       s'assombrit sur un fond sombre : le texte garde sa couleur
+                       et son contraste. En dur, « Solde restant » rendait 1,04:1. */
+                    background: rgba(127, 127, 127, 0.14);
+                }
+                .hb-balance-card .text-danger,
+                .hb-balance-card .text-success {
+                    /* ⚠️ Le fond de la carte suit le thème, donc la couleur du
+                       chiffre doit le suivre aussi : un rouge Bootstrap en dur
+                       rendait 2,86:1 sur fond sombre. `currentColor` dans une
+                       déclaration `color` vaut la valeur HÉRITÉE, donc le texte
+                       du thème : le mélange s'éclaircit en sombre et s'assombrit
+                       en clair, tout seul. Non reconnu, la règle est ignorée et
+                       la classe Bootstrap reprend la main. */
+                    color: color-mix(in srgb, currentColor 45%, #dc3545) !important;
+                }
+                .hb-balance-card .text-success {
+                    color: color-mix(in srgb, currentColor 45%, #198754) !important;
                 }
             </style>
 
@@ -133,17 +157,17 @@
             <div class="row mb-4">
                 <div class="col-md-8">
                     <h3 class="mb-1">
-                        Banque d'heures &#8212;
+                        Hour bank —
                         <t t-out="hour_bank.partner_id.name"/>
                     </h3>
                     <p class="text-muted mb-0">
-                        Derni&#232;re mise &#224; jour :
+                        Last updated:
                         <t t-out="data['last_update']" t-options="{'widget': 'datetime', 'hide_seconds': True}"/>
                     </p>
                 </div>
                 <div class="col-md-4">
                     <div class="hb-balance-card p-3 rounded">
-                        <div class="text-muted small text-uppercase">Solde restant</div>
+                        <div class="text-muted small text-uppercase">Remaining balance</div>
                         <div t-attf-class="fs-2 fw-bold #{'text-success' if data['balance'] &gt;= 0 else 'text-danger'}">
                             <t t-out="data['balance']" t-options="{'widget': 'float', 'precision': 2}"/> h
                         </div>
@@ -155,34 +179,34 @@
             <div class="mb-4">
                 <a t-attf-href="/my/hour-banks/#{hour_bank.id}/pdf"
                    class="btn btn-primary btn-sm me-2">
-                    <i class="fa fa-file-pdf-o"/> T&#233;l&#233;charger PDF
+                    <i class="fa fa-file-pdf-o"/> Download PDF
                 </a>
                 <a t-attf-href="/my/hour-banks/#{hour_bank.id}/xlsx"
                    class="btn btn-success btn-sm">
-                    <i class="fa fa-file-excel-o"/> T&#233;l&#233;charger Excel
+                    <i class="fa fa-file-excel-o"/> Download Excel
                 </a>
             </div>
 
             <!-- Entries table -->
             <t t-set="entries" t-value="data['entries']"/>
             <t t-if="entries">
-                <h5 class="mt-4 mb-3">D&#233;tail des op&#233;rations</h5>
+                <h5 class="mt-4 mb-3">Entry details</h5>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover hb-portal-table">
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th class="num">Heures</th>
-                                <th class="num">Solde cumulatif</th>
+                                <th class="num">Hours</th>
+                                <th class="num">Running balance</th>
                                 <th>Description</th>
-                                <th class="d-none d-lg-table-cell">Projet</th>
-                                <th class="d-none d-lg-table-cell">T&#226;che</th>
+                                <th class="d-none d-lg-table-cell">Project</th>
+                                <th class="d-none d-lg-table-cell">Task</th>
                             </tr>
                         </thead>
                         <tbody>
                             <t t-foreach="entries" t-as="e">
                                 <tr t-attf-class="#{'credit' if e['entry_type'] == 'credit' else ''}">
-                                    <td><t t-out="str(e['date'])"/></td>
+                                    <td class="date"><t t-out="str(e['date'])"/></td>
                                     <td class="num"><t t-out="e['hours']" t-options="{'widget': 'float', 'precision': 2}"/></td>
                                     <td class="num"><t t-out="e['cumulative']" t-options="{'widget': 'float', 'precision': 2}"/></td>
                                     <td><t t-out="e['description']"/></td>
@@ -196,20 +220,20 @@
             </t>
             <t t-else="">
                 <div class="alert alert-info mt-4">
-                    Aucune op&#233;ration enregistr&#233;e.
+                    No entry recorded.
                 </div>
             </t>
 
             <!-- Summary by project -->
             <t t-set="summary" t-value="data['summary_by_project']"/>
             <t t-if="summary">
-                <h5 class="mt-5 mb-3">Sommaire par projet</h5>
+                <h5 class="mt-5 mb-3">Per-project summary</h5>
                 <div class="table-responsive">
                     <table class="table table-sm table-bordered" style="max-width:500px;">
                         <thead class="table-light">
                             <tr>
-                                <th>Projet</th>
-                                <th class="text-end">Heures</th>
+                                <th>Project</th>
+                                <th class="text-end">Hours</th>
                             </tr>
                         </thead>
                         <tbody>

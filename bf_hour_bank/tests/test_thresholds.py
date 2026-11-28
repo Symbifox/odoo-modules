@@ -10,6 +10,12 @@ class TestHourBankThresholds(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Ces essais lisent du français : la langue est épinglée et le catalogue
+        # chargé, au lieu de supposer une base française (la source est
+        # anglaise, une base en_US seule les ferait tomber).
+        cls.env['res.lang']._activate_lang('fr_CA')
+        cls.env['ir.module.module']._load_module_terms(['bf_hour_bank'], ['fr_CA'], overwrite=True)
+        cls.env = cls.env(context=dict(cls.env.context, lang='fr_CA'))
         cls.partner = cls.env['res.partner'].create({
             'name': 'Test Threshold Co',
             'email': 'client@example.test',

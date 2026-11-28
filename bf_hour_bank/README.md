@@ -15,6 +15,7 @@ An Odoo 18 module for automated tracking of client hour banks.
 - **Notification thresholds**: proactive email alerts when consumption crosses a threshold (unbilled hours, % of an allocated budget, or balance below a floor) with the XLSX attached
 - **Invoice from the bank**: a « Générer la facture » button that prepares a draft customer invoice with the right number of hours, split per project if wanted
 - **Client portal**: a `/my/hour-banks` page for portal users, with self-service PDF/Excel download
+- **In the reader's language**: emails, PDF, Excel and file names follow each recipient's language (English source, French in `fr_CA.po`)
 
 ## Dependencies
 
@@ -84,7 +85,8 @@ bf_hour_bank/
 │   ├── hour_bank_threshold_line.py    # Threshold configuration
 │   └── hour_bank_threshold_event.py   # Append-only alert history
 ├── wizard/
-│   └── hour_bank_send_wizard.py       # Email delivery (branded)
+│   ├── hour_bank_send_wizard.py       # Email delivery (branded)
+│   └── hour_bank_invoice_wizard.py    # Draft invoice from the bank
 ├── controllers/
 │   └── portal.py                      # Client portal (/my/hour-banks)
 ├── report/
@@ -100,10 +102,12 @@ bf_hour_bank/
 │   └── hour_bank_cron.xml             # Crons: periodic reports + thresholds
 ├── security/
 │   ├── hour_bank_security.xml         # Access rules (internal + portal)
+│   ├── bf_wizard_owner_rules.xml      # Wizards readable by their author only
 │   └── ir.model.access.csv
-├── tests/
-│   └── test_thresholds.py             # 13 unit tests on the thresholds
+├── tests/                             # thresholds, invoice, portal, legal links,
+│                                      # wizard owner rules, reader's language
 └── i18n/
+    ├── bf_hour_bank.pot
     └── fr_CA.po
 ```
 
@@ -232,6 +236,50 @@ checks that every line of the new draft is one the bank will count once posted (
 nothing is created). The bank's PDF report is attached to the draft, and an internal note
 on the bank records the generated invoice.
 
+## Languages
+
+Since 18.0.1.17.0 the source is English and the French lives in `i18n/fr_CA.po`.
+Odoo 18 never translates into `en_US`, so a French source left English readers with a
+French interface; the reverse arrangement serves both.
+
+What a client receives follows **the client's language**, not the sender's:
+
+- the automatic report and the threshold alert are sent **once per language** among the
+  recipients, each with its own subject, body, PDF and Excel (sheet names, headers and file
+  names included, `Hour_bank_…` or `Banque_heures_…`);
+- the sending wizard is prefilled in the client's language, and the files it attaches
+  follow it;
+- the invoice wizard attaches the report in the invoiced contact's language;
+- hours are formatted for the language (`16,20 h` in French, `16.20 h` in English);
+- threshold labels are computed in the reader's language when an email reads them.
+
+Only active languages count: a contact left on a deactivated language falls back on the
+client's, then on the company's. A scheduled job that runs with no language in its context
+uses the company's.
+
+The update to 18.0.1.17.0 keeps what a database already holds. The report template's body
+is `noupdate`: its French text segments are switched to English only if every delivered
+segment is still there (the tenant's colours and contact details are kept), and the old
+text becomes the French translation. The four record rules are renamed to English only if
+they still carry their delivered French name.
+
+## Wizards are owner-scoped
+
+Each wizard of this module carries a global record rule,
+`[('create_uid', '=', user.id)]`, on read, write, create and unlink:
+
+- `hour.bank.invoice.wizard`
+- `hour.bank.invoice.wizard.line`
+- `hour.bank.send.wizard`
+
+A transient model is a real table, and Odoo 18 does not restrict it to its
+creator on its own: without the rule, any internal user could read a
+colleague's wizard until the autovacuum cron cleared it. The rule is global,
+like core's own wizard rules, so administrators do not read others' wizard
+rows either. (A file uploaded in a wizard before it is saved is stored as an
+attachment with `res_id` 0: Odoo lets its uploader and system administrators
+read it, whatever the rule.) Tests: `tests/test_wizard_owner.py`.
+
 ## Installation
 
 ```bash
@@ -239,6 +287,28 @@ docker exec <container> odoo -d <db> -i bf_hour_bank --stop-after-init --no-http
 ```
 
 ## Changelog
+
+### 18.0.1.17.1
+
+- The « Configure » onboarding step opens the list of banks and describes what can be set
+  there (alert thresholds, billing mode, periodic reports). It used to promise rollover
+  rules, which the module does not have.
+- Each wizard is readable by its author only (see « Wizards are owner-scoped »).
+
+### 18.0.1.17.0
+
+- English source, French in `fr_CA.po` (see « Languages »): emails, PDF, Excel and file
+  names in each reader's language, one send per language.
+- Record rule names, paper format and portal template names in English.
+- Update migrations that switch the stored template body and rule names without touching
+  a tenant's own edits.
+
+### 18.0.1.16.1 and 18.0.1.16.2
+
+- Threshold alerts format hours for the reader's language (decimal comma in French).
+- The « Notify internal followers » help no longer names a specific company.
+- Portal: credit rows and the balance card use translucent colours that keep their
+  contrast on a dark theme; dates no longer wrap on their hyphen.
 
 ### 18.0.1.16.0
 

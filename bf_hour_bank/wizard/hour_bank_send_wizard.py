@@ -5,8 +5,10 @@ from markupsafe import Markup, escape
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
-# Blue Fox branded email wrapper. Colors substituted at render time from
-# company.report_brand_primary / report_brand_dark (bf_lexend). Placeholders:
+# Branded email wrapper. Colors substituted at render time from
+# company.report_brand_primary / report_brand_dark (bf_lexend). Its texts
+# ({title}, {contact}, {signature}, legal links) come from the catalogue, in the
+# language of the context. Placeholders:
 #   {primary}      → company.report_brand_primary
 #   {dark}         → company.report_brand_dark
 #   {company_name} → company.name
@@ -32,7 +34,7 @@ Arial,sans-serif;font-size:16px;font-weight:600;">\
 display:block;border:0;"/></a></td>\
 <td align="right" style="color:#E6EDF3;font-family:'Lexend','Segoe UI',\
 Arial,sans-serif;font-size:22px;font-weight:800;letter-spacing:0.2px;">\
-Banque d'heures</td>\
+{title}</td>\
 </tr></tbody></table></td></tr>\
 <tr><td style="height:4px;line-height:4px;background-color:{primary};">\
 &nbsp;</td></tr>\
@@ -41,12 +43,7 @@ sans-serif;">\
 {content}\
 <p style="font-size:13px;line-height:20px;color:#6B7280;\
 margin:16px 0 0 0;">\
-Pour toute question, contactez-nous &agrave; \
-<a href="mailto:{company_email}" \
-style="color:{primary};text-decoration:none;">\
-{company_email}</a> ou appelez le \
-<a href="tel:{company_phone}" style="color:{primary};text-decoration:none;">\
-{company_phone}</a>.</p>\
+{contact}</p>\
 </td></tr>\
 <tr><td style="height:1px;line-height:1px;background-color:#E5E7EB;">\
 &nbsp;</td></tr>\
@@ -56,7 +53,7 @@ border-radius:0 0 12px 12px;">\
 border="0"><tbody><tr>\
 <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;\
 font-size:12px;color:#6B7280;">\
-<strong style="color:{dark};">Banque d'heures par {company_name}</strong><br/>\
+<strong style="color:{dark};">{signature}</strong><br/>\
 {tagline}</td>\
 <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;\
 font-size:12px;color:#9CA3AF;">\
@@ -77,41 +74,29 @@ width:50%;">&nbsp;</td>\
 
 class HourBankSendWizard(models.TransientModel):
     _name = 'hour.bank.send.wizard'
-    _description = "Envoi du rapport de banque d'heures"
+    _description = "Sending the hour bank report"
 
     hour_bank_id = fields.Many2one(
-        'hour.bank.client', required=True, string="Banque d'heures",
+        'hour.bank.client', required=True, string="Hour bank",
     )
     recipient_ids = fields.Many2many(
-        'res.partner', string="Destinataires",
+        'res.partner', string="Recipients",
     )
-    subject = fields.Char(string="Sujet")
-    body = fields.Html(string="Corps du message")
+    subject = fields.Char(string="Subject")
+    body = fields.Html(string="Message body")
     preview_url = fields.Char(readonly=True)
 
     @api.onchange('hour_bank_id')
     def _onchange_hour_bank_id(self):
         if self.hour_bank_id:
-            self.recipient_ids = self.hour_bank_id.recipient_ids
-            self.subject = "État des banques d'heures — %s" % (
-                self.hour_bank_id.partner_id.name,
-            )
-            self.body = (
-                '<p style="font-size:16px;line-height:26px;color:#374151;'
-                'margin:0 0 16px 0;">Bonjour,</p>'
-                '<p style="font-size:16px;line-height:26px;color:#374151;'
-                'margin:0 0 20px 0;">Veuillez trouver ci-joint '
-                "l'&#233;tat des banques d'heures pour "
-                "<strong>%s</strong>.</p>"
-                '<p style="font-size:16px;line-height:26px;color:#374151;'
-                'margin:0 0 20px 0;">Les fichiers PDF et Excel sont '
-                "en pi&#232;ces jointes.</p>"
-                '<p style="font-size:16px;line-height:26px;color:#374151;'
-                'margin:0;">Cordialement,<br/>%s</p>'
-            ) % (
-                self.hour_bank_id.partner_id.name,
-                self.env.user.name,
-            )
+            hb = self.hour_bank_id
+            self.recipient_ids = hb.recipient_ids
+            # Pré-rempli dans la langue du client : c'est lui qui lira. La
+            # personne qui envoie peut retoucher avant d'envoyer.
+            bank = hb.with_context(lang=hb._bf_lang())
+            self.subject = bank.env._("Hour bank statement — %(client)s",
+                                      client=hb.partner_id.name)
+            self.body = bank._bf_report_body(self.env.user.name or '')
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -122,7 +107,7 @@ class HourBankSendWizard(models.TransientModel):
         return records
 
     @staticmethod
-    def _legal_links(company):
+    def _legal_links(company, env):
         """Les liens légaux que la société a déclarés, et eux seuls.
 
         Même règle que le gabarit du courriel : un lien bâti sur le site
@@ -130,11 +115,11 @@ class HourBankSendWizard(models.TransientModel):
         part chez un locataire qui n'a pas cette page."""
         style = 'style="color:#9CA3AF;text-decoration:underline;"'
         liens = []
-        for champ, libelle in (('brand_privacy_url', 'Politique de confidentialit&eacute;'),
-                               ('brand_terms_url', 'Conditions')):
+        for champ, libelle in (('brand_privacy_url', env._("Privacy policy")),
+                               ('brand_terms_url', env._("Terms"))):
             url = company[champ] if champ in company else False
             if url:
-                liens.append('<a href="%s" %s>%s</a>' % (escape(url), style, libelle))
+                liens.append('<a href="%s" %s>%s</a>' % (escape(url), style, escape(libelle)))
         return '<span style="color:#9CA3AF;"> | </span>'.join(liens)
 
     def _wrap_branded_body(self, inner_html):
@@ -144,8 +129,24 @@ class HourBankSendWizard(models.TransientModel):
         in the database sends emails with its own visual identity."""
         company = self.env.company
         website = company.website or company.get_base_url()
+        env = self.env
+        email = company.email or 'service@example.com'
+        phone = company.phone or '555-555-5555'
+        lien = '<a href="%s:%s" style="color:%s;text-decoration:none;">%s</a>'
+        primary = company.report_brand_primary or '#714B67'
+        # Le texte vient du catalogue, échappé ; les deux liens s'y glissent
+        # ensuite par leurs paramètres nommés.
+        contact = escape(env._(
+            "If you have any questions, contact us at %(email)s or call %(phone)s."
+        )) % {
+            'email': Markup(lien % ('mailto', escape(email), primary, escape(email))),
+            'phone': Markup(lien % ('tel', escape(phone), primary, escape(phone))),
+        }
         return Markup(_BRANDED_WRAPPER.format(
-            primary=company.report_brand_primary or '#714B67',
+            title=escape(env._("Hour bank")),
+            contact=contact,
+            signature=escape(env._("Hour bank by %(company)s", company=company.name or '')),
+            primary=primary,
             dark=company.report_brand_dark or '#212529',
             company_name=company.name or '',
             company_email=company.email or 'service@example.com',
@@ -154,7 +155,7 @@ class HourBankSendWizard(models.TransientModel):
             logo_url='/web/image/res.company/%d/logo' % company.id,
             tagline=escape(company['brand_email_tagline'] or '')
             if 'brand_email_tagline' in company else '',
-            legal_links=self._legal_links(company),
+            legal_links=self._legal_links(company, env),
             content=str(inner_html or ''),
         ))
 
@@ -162,12 +163,11 @@ class HourBankSendWizard(models.TransientModel):
         """Generate PDF preview and re-open wizard with download link."""
         self.ensure_one()
         hb = self.hour_bank_id
-        partner_name = hb.partner_id.name.replace(' ', '_')
-        date_str = fields.Date.today().isoformat()
+        bank = hb.with_context(lang=hb._bf_lang())
 
-        pdf_data = hb._get_pdf_binary()
+        pdf_data = bank._get_pdf_binary()
         att = self.env['ir.attachment'].create({
-            'name': "Apercu_Banque_heures_%s_%s.pdf" % (partner_name, date_str),
+            'name': "%s_%s.pdf" % (bank.env._("Preview"), bank._bf_file_stem()),
             'type': 'binary',
             'datas': base64.b64encode(pdf_data),
             'mimetype': 'application/pdf',
@@ -178,7 +178,7 @@ class HourBankSendWizard(models.TransientModel):
         self.preview_url = '/web/content/%d?download=false' % att.id
         return {
             'type': 'ir.actions.act_window',
-            'name': _("Envoyer le rapport"),
+            'name': _("Send the report"),
             'res_model': self._name,
             'res_id': self.id,
             'views': [[False, 'form']],
@@ -191,16 +191,17 @@ class HourBankSendWizard(models.TransientModel):
         hb = self.hour_bank_id
 
         if not self.recipient_ids:
-            raise UserError(_("Veuillez sélectionner au moins un destinataire."))
+            raise UserError(_("Please select at least one recipient."))
 
-        # Generate attachments
-        partner_name = hb.partner_id.name.replace(' ', '_')
-        date_str = fields.Date.today().isoformat()
+        # Pièces jointes et habillage dans la langue du client, celle où le
+        # corps a été pré-rempli.
+        bank = hb.with_context(lang=hb._bf_lang())
+        stem = bank._bf_file_stem()
 
         # PDF
-        pdf_data = hb._get_pdf_binary()
+        pdf_data = bank._get_pdf_binary()
         pdf_att = self.env['ir.attachment'].create({
-            'name': "Banque_heures_%s_%s.pdf" % (partner_name, date_str),
+            'name': "%s.pdf" % stem,
             'type': 'binary',
             'datas': base64.b64encode(pdf_data),
             'mimetype': 'application/pdf',
@@ -209,9 +210,9 @@ class HourBankSendWizard(models.TransientModel):
         })
 
         # Excel
-        xlsx_data = hb._generate_xlsx_binary()
+        xlsx_data = bank._generate_xlsx_binary()
         xlsx_att = self.env['ir.attachment'].create({
-            'name': "Banque_heures_%s_%s.xlsx" % (partner_name, date_str),
+            'name': "%s.xlsx" % stem,
             'type': 'binary',
             'datas': base64.b64encode(xlsx_data),
             'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -220,7 +221,7 @@ class HourBankSendWizard(models.TransientModel):
         })
 
         # Wrap body with branded layout
-        body_html = self._wrap_branded_body(self.body or '')
+        body_html = self.with_context(lang=bank.env.lang)._wrap_branded_body(self.body or '')
 
         # Send email to each recipient individually
         for partner in self.recipient_ids:
@@ -244,7 +245,7 @@ class HourBankSendWizard(models.TransientModel):
         # Post a note on the chatter
         recipient_names = ', '.join(self.recipient_ids.mapped('name'))
         hb.message_post(
-            body=_("Rapport envoyé à %s") % recipient_names,
+            body=_("Report sent to %s") % recipient_names,
             message_type='comment',
             subtype_xmlid='mail.mt_note',
             attachment_ids=[pdf_att.id, xlsx_att.id],

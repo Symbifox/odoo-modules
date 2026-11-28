@@ -1,13 +1,12 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-#	* bf_hour_bank
-#
+# Translation of Banque d'heures - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: bf_hour_bank 18.0.1.17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-14 00:00+0000\n"
-"PO-Revision-Date: 2026-02-14 00:00+0000\n"
+"POT-Creation-Date: 2026-11-28 03:49+0000\n"
+"PO-Revision-Date: 2026-11-28 03:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
@@ -17,11 +16,1973 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "\"%(label)s\""
+msgstr "« %(label)s »"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__threshold_mode__budget_pct
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_threshold_event__mode_snapshot__budget_pct
+msgid "% of allocated budget"
+msgstr "% du budget alloué"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_threshold_event_search
+msgid "% of budget"
+msgstr "% du budget"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "%(hours)s unbilled"
+msgstr "%(hours)s non facturées"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid ""
+"%(move)s generated from the bank: %(hours)s h at %(rate)s (%(product)s), "
+"%(detail)s."
+msgstr ""
+"%(move)s générée depuis la banque : %(hours)s h à %(rate)s (%(product)s), "
+"%(detail)s."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "%(n)d threshold alert(s) sent."
+msgstr "%(n)d alerte(s) de palier envoyée(s)."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "%(pct)s %% of the budget used (%(used)s of %(budget)s)"
+msgstr "%(pct)s %% du budget consommés (%(used)s sur %(budget)s)"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid "%(project)s — from %(start)s to %(end)s"
+msgstr "%(project)s — du %(start)s au %(end)s"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_threshold_line.py:0
+msgid "%(value)s"
+msgstr "%(value)s"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_threshold_line.py:0
+msgid "%(value)s %% of budget"
+msgstr "%(value)s %% du budget"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_threshold_line.py:0
+msgid "%(value)sh unbilled"
+msgstr "%(value)sh non facturées"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid ", minus %(hours)s h already in a draft"
+msgstr ", moins %(hours)s h déjà en brouillon"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_send_wizard_form
+msgid ""
+"<i class=\"fa fa-check-circle\"/>\n"
+"                        Preview generated — click the link to open it:"
+msgstr ""
+"<i class=\"fa fa-check-circle\"/>\n"
+"                        Aperçu généré — cliquez le lien pour ouvrir :"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+msgid "<i class=\"fa fa-file-excel-o\"/> Download Excel"
+msgstr "<i class=\"fa fa-file-excel-o\"/> Télécharger Excel"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+msgid "<i class=\"fa fa-file-pdf-o\"/> Download PDF"
+msgstr "<i class=\"fa fa-file-pdf-o\"/> Télécharger PDF"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "<span class=\"o_stat_text\">Balance (h)</span>"
+msgstr "<span class=\"o_stat_text\">Solde (h)</span>"
+
+#. module: bf_hour_bank
+#: model:mail.template,body_html:bf_hour_bank.email_template_hour_bank_report
+msgid ""
+"<t t-set=\"company\" t-value=\"(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)\"></t>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"></t>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"></t>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background-color:#F8FAFC;\">\n"
+"    <tbody>\n"
+"        <tr>\n"
+"            <td align=\"center\" style=\"padding:24px;\">\n"
+"                <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\" align=\"center\" role=\"presentation\">\n"
+"                    <tbody>\n"
+"                        <tr>\n"
+"                            <td>\n"
+"                                <br>\n"
+"                                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;\">\n"
+"                                    <tbody>\n"
+"                                        <!-- En-t&#234;te -->\n"
+"                                        <tr>\n"
+"                                            <td t-attf-style=\"background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;\">\n"
+"                                                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n"
+"                                                    <tbody>\n"
+"                                                        <tr>\n"
+"                                                            <td align=\"left\" style=\"color:#FFFFFF; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600;\">\n"
+"                                                                <a t-attf-href=\"{{ company.website or object.get_base_url() }}\" style=\"text-decoration:none;\">\n"
+"                                                                    <img t-attf-src=\"/brand/logo/{{ company.id }}\" t-att-alt=\"company.name or 'Logo'\" style=\"height:48px; width:auto; display:block; border:0;\">\n"
+"                                                                </a>\n"
+"                                                            </td>\n"
+"                                                            <td align=\"right\" style=\"color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;\">\n"
+"                                                                Hour bank\n"
+"                                                            </td>\n"
+"                                                        </tr>\n"
+"                                                    </tbody>\n"
+"                                                </table>\n"
+"                                            </td>\n"
+"                                        </tr>\n"
+"\n"
+"                                        <!-- Barre d'accentuation -->\n"
+"                                        <tr>\n"
+"                                            <td t-attf-style=\"height:4px; line-height:4px; background-color:{{ brand_primary }};\">&amp;nbsp;</td>\n"
+"                                        </tr>\n"
+"\n"
+"                                        <!-- Contenu -->\n"
+"                                        <tr>\n"
+"                                            <td style=\"padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;\">\n"
+"                                                <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">\n"
+"                                                    Hello,\n"
+"                                                </p>\n"
+"                                                <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;\">\n"
+"                                                    Please find attached the hour bank statement for\n"
+"                                                    <strong><t t-out=\"object.partner_id.name\"></t></strong>.\n"
+"                                                </p>\n"
+"                                                <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;\">\n"
+"                                                    The PDF and Excel files are attached.\n"
+"                                                </p>\n"
+"                                                <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0;\">\n"
+"                                                    Kind regards,<br>\n"
+"                                                    <t t-out=\"user.name\"></t>\n"
+"                                                </p>\n"
+"                                                <p style=\"font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;\">\n"
+"                                                    If you have any questions, contact us at\n"
+"                                                    <a t-attf-href=\"mailto:{{ company.email or 'service@example.com' }}\" t-attf-style=\"color:{{ brand_primary }}; text-decoration:none;\"><t t-out=\"company.email or 'service@example.com'\"></t></a>\n"
+"                                                    or call\n"
+"                                                    <a t-attf-href=\"tel:{{ company.phone or '+15555555555' }}\" t-attf-style=\"color:{{ brand_primary }}; text-decoration:none;\"><t t-out=\"company.phone or '555-555-5555'\"></t></a>.\n"
+"                                                </p>\n"
+"                                            </td>\n"
+"                                        </tr>\n"
+"\n"
+"                                        <!-- S&#233;parateur -->\n"
+"                                        <tr>\n"
+"                                            <td style=\"height:1px; line-height:1px; background-color:#E5E7EB;\">&amp;nbsp;</td>\n"
+"                                        </tr>\n"
+"\n"
+"                                        <!-- Pied de page -->\n"
+"                                        <tr>\n"
+"                                            <td style=\"padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;\">\n"
+"                                                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n"
+"                                                    <tbody>\n"
+"                                                        <tr>\n"
+"                                                            <td style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;\">\n"
+"                                                                <strong t-attf-style=\"color:{{ brand_dark }};\">Hour bank by <t t-out=\"company.name\"></t></strong><br>\n"
+"                                                                Automatic tracking of hours consumed vs. hours allocated.\n"
+"                                                            </td>\n"
+"                                                            <td align=\"right\" style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;\">\n"
+"                                                                <a t-if=\"company and 'brand_privacy_url' in company and company.brand_privacy_url\" t-attf-href=\"{{ company.brand_privacy_url }}\" style=\"color:#9CA3AF; text-decoration:underline;\">Privacy policy</a>\n"
+"                                                                <span t-if=\"company and 'brand_privacy_url' in company and company.brand_privacy_url and company and 'brand_terms_url' in company and company.brand_terms_url\" style=\"color:#9CA3AF;\"> | </span>\n"
+"                                                                <a t-if=\"company and 'brand_terms_url' in company and company.brand_terms_url\" t-attf-href=\"{{ company.brand_terms_url }}\" style=\"color:#9CA3AF; text-decoration:underline;\">Terms</a>\n"
+"                                                            </td>\n"
+"                                                        </tr>\n"
+"                                                    </tbody>\n"
+"                                                </table>\n"
+"                                            </td>\n"
+"                                        </tr>\n"
+"                                    </tbody>\n"
+"                                </table>\n"
+"\n"
+"                                <!-- Barre d'accentuation inf&#233;rieure -->\n"
+"                                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:12px auto 0;\">\n"
+"                                    <tbody>\n"
+"                                        <tr>\n"
+"                                            <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;\">&amp;nbsp;</td>\n"
+"                                            <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;\">&amp;nbsp;</td>\n"
+"                                        </tr>\n"
+"                                    </tbody>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                    </tbody>\n"
+"                </table>\n"
+"            </td>\n"
+"        </tr>\n"
+"    </tbody>\n"
+"</table>"
+msgstr ""
+"<t t-set=\"company\" t-value=\"(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)\"></t>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and company.report_brand_primary) or '#714B67'\"></t>\n"
+"<t t-set=\"brand_dark\" t-value=\"(company and company.report_brand_dark) or '#212529'\"></t>\n"
+"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background-color:#F8FAFC;\">\n"
+"    <tbody>\n"
+"        <tr>\n"
+"            <td align=\"center\" style=\"padding:24px;\">\n"
+"                <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\" align=\"center\" role=\"presentation\">\n"
+"                    <tbody>\n"
+"                        <tr>\n"
+"                            <td>\n"
+"                                <br>\n"
+"                                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;\">\n"
+"                                    <tbody>\n"
+"                                        <!-- En-t&#234;te -->\n"
+"                                        <tr>\n"
+"                                            <td t-attf-style=\"background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;\">\n"
+"                                                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n"
+"                                                    <tbody>\n"
+"                                                        <tr>\n"
+"                                                            <td align=\"left\" style=\"color:#FFFFFF; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600;\">\n"
+"                                                                <a t-attf-href=\"{{ company.website or object.get_base_url() }}\" style=\"text-decoration:none;\">\n"
+"                                                                    <img t-attf-src=\"/brand/logo/{{ company.id }}\" t-att-alt=\"company.name or 'Logo'\" style=\"height:48px; width:auto; display:block; border:0;\">\n"
+"                                                                </a>\n"
+"                                                            </td>\n"
+"                                                            <td align=\"right\" style=\"color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;\">\n"
+"                                                                Banque d'heures\n"
+"                                                            </td>\n"
+"                                                        </tr>\n"
+"                                                    </tbody>\n"
+"                                                </table>\n"
+"                                            </td>\n"
+"                                        </tr>\n"
+"\n"
+"                                        <!-- Barre d'accentuation -->\n"
+"                                        <tr>\n"
+"                                            <td t-attf-style=\"height:4px; line-height:4px; background-color:{{ brand_primary }};\">&amp;nbsp;</td>\n"
+"                                        </tr>\n"
+"\n"
+"                                        <!-- Contenu -->\n"
+"                                        <tr>\n"
+"                                            <td style=\"padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;\">\n"
+"                                                <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;\">\n"
+"                                                    Bonjour,\n"
+"                                                </p>\n"
+"                                                <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;\">\n"
+"                                                    Veuillez trouver ci-joint l'état des banques d'heures pour\n"
+"                                                    <strong><t t-out=\"object.partner_id.name\"></t></strong>.\n"
+"                                                </p>\n"
+"                                                <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;\">\n"
+"                                                    Les fichiers PDF et Excel sont en pièces jointes.\n"
+"                                                </p>\n"
+"                                                <p style=\"font-size:16px; line-height:26px; color:#374151; margin:0;\">\n"
+"                                                    Cordialement,<br>\n"
+"                                                    <t t-out=\"user.name\"></t>\n"
+"                                                </p>\n"
+"                                                <p style=\"font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;\">\n"
+"                                                    Pour toute question, contactez-nous à\n"
+"                                                    <a t-attf-href=\"mailto:{{ company.email or 'service@example.com' }}\" t-attf-style=\"color:{{ brand_primary }}; text-decoration:none;\"><t t-out=\"company.email or 'service@example.com'\"></t></a>\n"
+"                                                    ou appelez le\n"
+"                                                    <a t-attf-href=\"tel:{{ company.phone or '+15555555555' }}\" t-attf-style=\"color:{{ brand_primary }}; text-decoration:none;\"><t t-out=\"company.phone or '555-555-5555'\"></t></a>.\n"
+"                                                </p>\n"
+"                                            </td>\n"
+"                                        </tr>\n"
+"\n"
+"                                        <!-- S&#233;parateur -->\n"
+"                                        <tr>\n"
+"                                            <td style=\"height:1px; line-height:1px; background-color:#E5E7EB;\">&amp;nbsp;</td>\n"
+"                                        </tr>\n"
+"\n"
+"                                        <!-- Pied de page -->\n"
+"                                        <tr>\n"
+"                                            <td style=\"padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;\">\n"
+"                                                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n"
+"                                                    <tbody>\n"
+"                                                        <tr>\n"
+"                                                            <td style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;\">\n"
+"                                                                <strong t-attf-style=\"color:{{ brand_dark }};\">Banque d'heures par <t t-out=\"company.name\"></t></strong><br>\n"
+"                                                                Suivi automatique des heures consommées vs. provisionnées.\n"
+"                                                            </td>\n"
+"                                                            <td align=\"right\" style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;\">\n"
+"                                                                <a t-if=\"company and 'brand_privacy_url' in company and company.brand_privacy_url\" t-attf-href=\"{{ company.brand_privacy_url }}\" style=\"color:#9CA3AF; text-decoration:underline;\">Politique de confidentialité</a>\n"
+"                                                                <span t-if=\"company and 'brand_privacy_url' in company and company.brand_privacy_url and company and 'brand_terms_url' in company and company.brand_terms_url\" style=\"color:#9CA3AF;\"> | </span>\n"
+"                                                                <a t-if=\"company and 'brand_terms_url' in company and company.brand_terms_url\" t-attf-href=\"{{ company.brand_terms_url }}\" style=\"color:#9CA3AF; text-decoration:underline;\">Conditions</a>\n"
+"                                                            </td>\n"
+"                                                        </tr>\n"
+"                                                    </tbody>\n"
+"                                                </table>\n"
+"                                            </td>\n"
+"                                        </tr>\n"
+"                                    </tbody>\n"
+"                                </table>\n"
+"\n"
+"                                <!-- Barre d'accentuation inf&#233;rieure -->\n"
+"                                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"width:600px; max-width:600px; margin:12px auto 0;\">\n"
+"                                    <tbody>\n"
+"                                        <tr>\n"
+"                                            <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;\">&amp;nbsp;</td>\n"
+"                                            <td t-attf-style=\"height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;\">&amp;nbsp;</td>\n"
+"                                        </tr>\n"
+"                                    </tbody>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                    </tbody>\n"
+"                </table>\n"
+"            </td>\n"
+"        </tr>\n"
+"    </tbody>\n"
+"</table>"
+
+#. module: bf_hour_bank
+#: model:ir.model.constraint,message:bf_hour_bank.constraint_hour_bank_threshold_line_unique_bank_value
+msgid "A threshold with this value already exists on this bank."
+msgstr "Un palier avec cette valeur existe déjà sur cette banque."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__active
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__active
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_search
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d’exception d’activité"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__activity_state
+msgid "Activity State"
+msgstr "Statut de l'activité"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Adjustment"
+msgstr "Ajustement"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Adjustments"
+msgstr "Ajustements"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__threshold_event_ids
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Alert history"
+msgstr "Historique des alertes"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__alert_recipient_ids
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Alert recipients"
+msgstr "Destinataires des alertes"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Alerts"
+msgstr "Alertes"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__threshold_event_count
+msgid "Alerts sent"
+msgstr "Alertes envoyées"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__company_filter_mode__all
+msgid "All companies"
+msgstr "Toutes les sociétés"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__product_filter_mode__all
+msgid "All invoice lines"
+msgstr "Toutes les lignes de facture"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__threshold_budget_hours
+msgid "Allocated budget (h)"
+msgstr "Budget alloué (h)"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__draft_hours
+msgid "Already in a draft (h)"
+msgstr "Déjà en brouillon (h)"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__amount_untaxed
+msgid "Amount before taxes"
+msgstr "Montant avant taxes"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid ""
+"An invoice addressed to \"%(partner)s\" would not be counted by this bank "
+"(partner filter, or another client). Choose one of the bank's billing "
+"partners."
+msgstr ""
+"Une facture adressée à « %(partner)s » ne serait pas comptée par cette "
+"banque (filtre partenaires, ou autre client). Choisissez un partenaire de "
+"facturation de la banque."
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__is_armed
+msgid "Armed"
+msgstr "Armé"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_list
+msgid "Auto"
+msgstr "Auto"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Automatic report sent to %s"
+msgstr "Rapport automatique envoyé à %s"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__auto_send
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Automatic sending"
+msgstr "Envoi automatique"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_list
+msgid "Balance (h)"
+msgstr "Solde (h)"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_threshold_line.py:0
+msgid "Balance below %(value)sh"
+msgstr "Solde sous %(value)sh"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_threshold_event_search
+msgid "Balance below the floor"
+msgstr "Solde sous seuil"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_threshold_event_search
+msgid "Bank"
+msgstr "Banque"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__partner_id
+msgid "Bill to"
+msgstr "Facturer à"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Billed hours"
+msgstr "Heures facturées"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Billing"
+msgstr "Facturation"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__invoice_mode
+msgid "Billing mode"
+msgstr "Mode de facturation"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__invoice_partner_ids
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__invoice_partner_ids
+msgid "Billing partners"
+msgstr "Partenaires de facturation"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__invoice_block_hours
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__block_hours
+msgid "Block (h)"
+msgstr "Tranche (h)"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid "Block of %(hours)s h"
+msgstr "Tranche de %(hours)s h"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__invoice_split_by_project
+msgid ""
+"By default, one line per project. Otherwise a single line for the period, "
+"the detail being in the attached report. The wizard lets you change your "
+"mind for one invoice."
+msgstr ""
+"Par défaut, une ligne par projet. Sinon, une seule ligne pour la période, le"
+" détail étant dans le rapport joint. L'assistant permet de changer d'avis "
+"pour une facture."
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_invoice_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_send_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__mail_message_id
+msgid "Chatter message"
+msgstr "Message chatter"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Check thresholds now"
+msgstr "Vérifier les paliers maintenant"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid "Choose the product to bill."
+msgstr "Choisissez le produit à facturer."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid "Choose who to bill."
+msgstr "Choisissez à qui facturer."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__partner_id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_my_hour_banks
+msgid "Client"
+msgstr "Client"
+
+#. module: bf_hour_bank
 #: model:ir.model,name:bf_hour_bank.model_hour_bank_client
-msgid "Hour Bank Client Configuration"
+msgid "Client hour bank configuration"
 msgstr "Configuration de banque d'heures client"
 
 #. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Client:"
+msgstr "Client :"
+
+#. module: bf_hour_bank
+#: model:ir.ui.menu,name:bf_hour_bank.menu_hour_bank_clients
+msgid "Clients"
+msgstr "Clients"
+
+#. module: bf_hour_bank
+#: model:onboarding.onboarding.step,done_text:bf_hour_bank.bf_onb_step_clients
+msgid "Clients linked"
+msgstr "Clients liés"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__bank_commercial_partner_id
+msgid "Commercial Entity"
+msgstr "Entité commerciale"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__filter_company_ids
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__company_id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__company_filter_mode
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Company filter"
+msgstr "Filtre sociétés"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_hour_bank
+#: model:onboarding.onboarding.step,title:bf_hour_bank.bf_onb_step_settings
+msgid "Configure the hour bank"
+msgstr "Configurer la banque d'heures"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_invoice_wizard_form
+msgid "Create the draft"
+msgstr "Créer le brouillon"
+
+#. module: bf_hour_bank
+#: model_terms:ir.actions.act_window,help:bf_hour_bank.action_hour_bank_client
+msgid "Create your first hour bank"
+msgstr "Créez votre première banque d'heures"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__create_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__create_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__create_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__create_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__create_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__create_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__create_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__create_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__create_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__create_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__current_balance
+msgid "Current balance"
+msgstr "Solde actuel"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_my_hour_banks
+msgid "Current balance (h)"
+msgstr "Solde actuel (h)"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Current balance:"
+msgstr "Solde courant :"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Current balance: %(hours)s"
+msgstr "Solde courant : %(hours)s"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Current measure:"
+msgstr "Mesure actuelle :"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__date
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_threshold_line.py:0
+msgid "Debt of %(value)sh"
+msgstr "Dette de %(value)sh"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__description
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Description / Details"
+msgstr "Description / Détails"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__threshold_mode__disabled
+msgid "Disabled"
+msgstr "Désactivé"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__display_name
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__display_name
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__display_name
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__display_name
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__display_name
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__display_name
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid "Draft generated from hour bank %(bank)s. Bank report attached."
+msgstr ""
+"Brouillon généré depuis la banque d'heures %(bank)s. Rapport de la banque "
+"joint."
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_invoice_wizard_form
+msgid ""
+"Draft invoices counted by this bank already exist.\n"
+"                    <span invisible=\"invoice_mode != 'postpaid'\">Their hours are deducted\n"
+"                        from what is proposed here.</span>\n"
+"                    <span invisible=\"invoice_mode != 'prepaid'\">Check that a block\n"
+"                        is not already waiting to be posted.</span>"
+msgstr ""
+"Des factures brouillon comptées par cette banque existent déjà.\n"
+"                    <span invisible=\"invoice_mode != 'postpaid'\">Leurs heures sont déduites\n"
+"                        de ce qui est proposé ici.</span>\n"
+"                    <span invisible=\"invoice_mode != 'prepaid'\">Vérifiez qu'une tranche\n"
+"                        n'est pas déjà en attente de validation.</span>"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__draft_move_ids
+msgid "Drafts"
+msgstr "Brouillons"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid "Enter the hourly rate."
+msgstr "Indiquez le taux horaire."
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+msgid "Entry details"
+msgstr "Détail des opérations"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__company_filter_mode__exclude
+msgid "Exclude these companies"
+msgstr "Exclure ces sociétés"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__product_filter_mode__exclude
+msgid "Exclude these products"
+msgstr "Exclure ces produits"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__extra_invoice_ids
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Extra invoices"
+msgstr "Factures additionnelles"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__failed_message_ids
+msgid "Failed Messages"
+msgstr "Failed Messages"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_threshold_line.py:0
+msgid ""
+"For the '%% of budget' mode, the threshold must be strictly greater than 0 "
+"and at most 100."
+msgstr ""
+"Pour le mode '%% du budget', le seuil doit être strictement supérieur à 0 et"
+" au plus égal à 100."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__send_frequency__biweekly
+msgid "Fortnightly (Monday)"
+msgstr "Aux deux semaines (lundi)"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid ""
+"From %(start)s to %(end)s\n"
+"Breakdown of the hours: see the attached hour bank report."
+msgstr ""
+"Du %(start)s au %(end)s\n"
+"Détail des heures : voir le rapport de banque d'heures joint."
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Generate Excel"
+msgstr "Générer Excel"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Generate PDF"
+msgstr "Générer PDF"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_invoice_wizard_form
+msgid "Generate the invoice"
+msgstr "Générer la facture"
+
+#. module: bf_hour_bank
+#: model:ir.model,name:bf_hour_bank.model_hour_bank_invoice_wizard
+msgid "Generating an invoice from the hour bank"
+msgstr "Génération d'une facture depuis la banque d'heures"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_threshold_event_search
+msgid "Group By"
+msgstr "Groupé par"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Hello,"
+msgstr "Bonjour,"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_send_wizard.py:0
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__hour_bank_id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__bank_id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__hour_bank_id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__bank_id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__bank_id
+#: model:ir.ui.menu,name:bf_hour_bank.menu_hour_bank_root
+#: model:onboarding.onboarding,name:bf_hour_bank.bf_onboarding_panel
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_breadcrumb_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_my_home_hour_bank
+msgid "Hour bank"
+msgstr "Banque d'heures"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Hour bank %(client)s — threshold \"%(threshold)s\" reached"
+msgstr "Banque d'heures %(client)s — palier « %(threshold)s » atteint"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_send_wizard.py:0
+msgid "Hour bank by %(company)s"
+msgstr "Banque d'heures par %(company)s"
+
+#. module: bf_hour_bank
+#: model:onboarding.onboarding.step,done_text:bf_hour_bank.bf_onb_step_settings
+msgid "Hour bank configured"
+msgstr "Banque d'heures configurée"
+
+#. module: bf_hour_bank
+#: model:ir.actions.report,name:bf_hour_bank.action_report_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Hour bank statement"
+msgstr "État des banques d'heures"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: code:addons/bf_hour_bank/wizard/hour_bank_send_wizard.py:0
+msgid "Hour bank statement — %(client)s"
+msgstr "État des banques d'heures — %(client)s"
+
+#. module: bf_hour_bank
+#: model:mail.template,subject:bf_hour_bank.email_template_hour_bank_report
+msgid "Hour bank statement — {{ object.partner_id.name }}"
+msgstr "État des banques d'heures — {{ object.partner_id.name }}"
+
+#. module: bf_hour_bank
+#: model:ir.model,name:bf_hour_bank.model_hour_bank_threshold_event
+msgid "Hour bank threshold alert (history)"
+msgstr "Alerte de palier de banque d'heures (historique)"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+msgid "Hour bank —"
+msgstr "Banque d'heures —"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Hour bank — Confidential document"
+msgstr "Banque d'heures — Document confidentiel"
+
+#. module: bf_hour_bank
+#: model:ir.actions.server,name:bf_hour_bank.cron_hour_bank_send_reports_ir_actions_server
+msgid "Hour bank: automatic report sending"
+msgstr "Banque d'heures : Envoi automatique des rapports"
+
+#. module: bf_hour_bank
+#: model:ir.actions.server,name:bf_hour_bank.cron_hour_bank_check_thresholds_ir_actions_server
+msgid "Hour bank: check notification thresholds"
+msgstr "Banque d'heures : Vérifier les paliers de notification"
+
+#. module: bf_hour_bank
+#: model:mail.template,name:bf_hour_bank.email_template_hour_bank_report
+msgid "Hour bank: report"
+msgstr "Banque d'heures : Rapport"
+
+#. module: bf_hour_bank
+#: model:ir.actions.act_window,name:bf_hour_bank.action_hour_bank_client
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_list
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_search
+msgid "Hour banks"
+msgstr "Banques d'heures"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/controllers/portal.py:0
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Hour_bank"
+msgstr "Banque_heures"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__invoice_hourly_rate
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__price_unit
+msgid "Hourly rate"
+msgstr "Taux horaire"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__hours
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__quantity
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+msgid "Hours"
+msgstr "Heures"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_threshold_line__value
+msgid ""
+"Hours for the 'Unbilled' and 'Remaining balance' modes. Percentage (0-100) "
+"for the '% of budget' mode. In 'Remaining balance', a negative value sets "
+"the threshold below zero: that is the useful form on a postpaid account, "
+"where hours pile up as a debt between two invoices."
+msgstr ""
+"Heures pour les modes 'Non facturées' et 'Solde résiduel'. Pourcentage "
+"(0-100) pour le mode '% du budget'. En 'Solde résiduel', une valeur négative"
+" pose le palier sous zéro : c'est la forme utile sur un compte postpayé, où "
+"les heures s'accumulent en dette entre deux factures."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__date_cutoff
+msgid "Hours logged up to"
+msgstr "Heures portées jusqu'au"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__id
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_threshold_line__last_fired_period_key
+msgid ""
+"Idempotency key: as long as it does not change, the threshold does not fire "
+"again. Reset depends on the mode (a new invoice, a budget change, or the "
+"balance rising back)."
+msgstr ""
+"Clé d'idempotence : tant qu'elle ne change pas, le palier ne se redéclenche "
+"pas. Reset selon le mode (nouvelle facture, changement de budget, ou "
+"remontée du solde)."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__notify_internal_followers
+msgid ""
+"If checked, also posts a message in the chatter to alert the record's "
+"internal followers."
+msgstr ""
+"Si coché, poste aussi un message sur le chatter pour alerter les abonnés "
+"internes de la fiche."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__message_has_error
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__invoice_partner_ids
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_invoice_wizard__invoice_partner_ids
+msgid ""
+"If set, only the invoices issued to these partners are counted. Otherwise "
+"every invoice of the commercial partner is included."
+msgstr ""
+"Si renseigné, seules les factures émises à ces partenaires seront comptées. "
+"Sinon, toutes les factures du partenaire commercial seront incluses."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_send_wizard.py:0
+msgid "If you have any questions, contact us at %(email)s or call %(phone)s."
+msgstr ""
+"Pour toute question, contactez-nous à %(email)s ou appelez le %(phone)s."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__company_filter_mode__include
+msgid "Include only these companies"
+msgstr "Inclure seulement ces sociétés"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__product_filter_mode__include
+msgid "Include only these products"
+msgstr "Inclure seulement ces produits"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__project_ids
+msgid "Included projects"
+msgstr "Projets inclus"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Invoice generated from the bank"
+msgstr "Facture générée depuis la banque"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__invoice_product_id
+msgid "Invoiced product"
+msgstr "Produit facturé"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Kind regards,"
+msgstr "Cordialement,"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__name
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__name
+msgid "Label"
+msgstr "Libellé"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__write_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__write_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__write_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__write_uid
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_adjustment__write_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__write_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__write_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__write_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__write_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__write_date
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__last_report_date
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_my_hour_banks
+msgid "Last report"
+msgstr "Dernier rapport"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__last_fired_date
+msgid "Last triggered"
+msgstr "Dernier déclenchement"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Last updated"
+msgstr "Dernière mise à jour"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+msgid "Last updated:"
+msgstr "Dernière mise à jour :"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__line_ids
+msgid "Lines"
+msgstr "Lignes"
+
+#. module: bf_hour_bank
+#: model:onboarding.onboarding.step,title:bf_hour_bank.bf_onb_step_clients
+msgid "Link clients to banks"
+msgstr "Lier les clients à des banques"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Logo"
+msgstr "Logo"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__adjustment_ids
+msgid "Manual adjustments"
+msgstr "Ajustements manuels"
+
+#. module: bf_hour_bank
+#: model:ir.model,name:bf_hour_bank.model_hour_bank_adjustment
+msgid "Manual hour bank adjustment"
+msgstr "Ajustement manuel de banque d'heures"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__measured_value
+msgid "Measured value"
+msgstr "Valeur mesurée"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_content
+msgid "Message Content"
+msgstr "Message Content"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_search
+msgid "Message Search"
+msgstr "Message Search"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__body
+msgid "Message body"
+msgstr "Corps du message"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__message_content
+msgid "Message content, to be used only in searches"
+msgstr "Message content, to be used only in searches"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__message_search
+msgid "Message search, to be used only in searches"
+msgstr "Message search, to be used only in searches"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__invoice_mode
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__mode
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_threshold_event_search
+msgid "Mode"
+msgstr "Mode"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__mode_snapshot
+msgid "Mode at the time of the trigger"
+msgstr "Mode au moment du déclenchement"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Month"
+msgstr "Mois"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__send_frequency__monthly
+msgid "Monthly (1st of the month)"
+msgstr "Mensuel (1er du mois)"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Monthly summary"
+msgstr "Synthèse par mois"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "New"
+msgstr "Nouveau"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Activité suivante de l'événement du calendrier"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de l'activité suivante"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type d'activités à venir"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+msgid "No entry recorded."
+msgstr "Aucune opération enregistrée."
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_my_hour_banks
+msgid "No hour bank is set up for your account."
+msgstr "Aucune banque d'heures n'est configurée pour votre compte."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "No threshold fired. (All already notified, or below the thresholds.)"
+msgstr ""
+"Aucun palier déclenché. (Tous déjà notifiés ou en-dessous des seuils.)"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "No. of hours"
+msgstr "Nb d'heures"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid ""
+"Nothing to bill: no uncovered hours at the cut-off date, once the hours "
+"already in a draft are deducted."
+msgstr ""
+"Rien à facturer : aucune heure non couverte à la date de coupe, une fois "
+"déduites les heures déjà en brouillon."
+
+#. module: bf_hour_bank
+#: model:ir.model,name:bf_hour_bank.model_hour_bank_threshold_line
+msgid "Notification threshold of an hour bank"
+msgstr "Palier de notification d'une banque d'heures"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__notify_internal_followers
+msgid "Notify internal followers"
+msgstr "Notifier les followers internes"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Number of hours"
+msgstr "Nombre d'heures"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__invoice_block_hours
+msgid "Number of hours billed in advance at each renewal, in prepaid mode."
+msgstr ""
+"Nombre d'heures facturées d'avance à chaque renouvellement, en mode prépayé."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_hour_bank
+#: model:ir.model,name:bf_hour_bank.model_onboarding_onboarding
+msgid "Onboarding"
+msgstr "Parcours d'intégration"
+
+#. module: bf_hour_bank
+#: model:onboarding.onboarding.step,step_image_alt:bf_hour_bank.bf_onb_step_clients
+#: model:onboarding.onboarding.step,step_image_alt:bf_hour_bank.bf_onb_step_settings
+msgid "Onboarding Step Image"
+msgstr "Onboarding Step Image"
+
+#. module: bf_hour_bank
+#: model:onboarding.onboarding.step,button_text:bf_hour_bank.bf_onb_step_settings
+msgid "Open the banks"
+msgstr "Ouvrir les banques"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Open the bank in Odoo"
+msgstr "Ouvrir la banque dans Odoo"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Partner filter"
+msgstr "Filtre partenaires"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Per-project summary"
+msgstr "Sommaire par projet"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__period_key
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__last_fired_period_key
+msgid "Period key"
+msgstr "Clé de période"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Please find attached the hour bank statement for %(client)s."
+msgstr ""
+"Veuillez trouver ci-joint l'état des banques d'heures pour %(client)s."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_send_wizard.py:0
+msgid "Please select at least one recipient."
+msgstr "Veuillez sélectionner au moins un destinataire."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_adjustment__hours
+msgid "Positive = credit (hours added), Negative = debit (hours taken out)."
+msgstr "Positif = crédit (ajout d'heures), Négatif = débit (retrait)."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__invoice_mode__postpaid
+msgid "Postpaid: bill the hours consumed"
+msgstr "Postpayé : facturer les heures consommées"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_invoice_wizard__invoice_mode__postpaid
+msgid "Postpaid: hours consumed"
+msgstr "Postpayé : heures consommées"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__invoice_mode__prepaid
+msgid "Prepaid: bill a block of hours"
+msgstr "Prépayé : facturer une tranche d'heures"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_invoice_wizard__invoice_mode__prepaid
+msgid "Prepaid: block of hours"
+msgstr "Prépayé : tranche d'heures"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_send_wizard.py:0
+msgid "Preview"
+msgstr "Aperçu"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_send_wizard_form
+msgid "Preview PDF"
+msgstr "Prévisualiser PDF"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__preview_url
+msgid "Preview Url"
+msgstr "Preview Url"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_send_wizard.py:0
+msgid "Privacy policy"
+msgstr "Politique de confidentialité"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__product_id
+msgid "Product"
+msgstr "Produit"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__product_filter_mode
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__product_filter_mode
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Product filter"
+msgstr "Filtre produits"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__invoice_product_id
+msgid ""
+"Product of the generated invoice lines. It must be a product the bank "
+"credits (product filter), otherwise the posted invoice would not reduce the "
+"balance."
+msgstr ""
+"Produit des lignes de la facture générée. Il doit être un produit que la "
+"banque crédite (filtre produits), sinon la facture validée ne réduirait pas "
+"le solde."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__filter_product_ids
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__filter_product_ids
+msgid "Products"
+msgstr "Produits"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__project_id
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Projects"
+msgstr "Projets"
+
+#. module: bf_hour_bank
+#: model:ir.model,name:bf_hour_bank.model_hour_bank_invoice_wizard_line
+msgid "Proposed line for the hour bank invoice"
+msgstr "Ligne proposée pour la facture de la banque d'heures"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__recipient_ids
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__recipient_ids
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_threshold_event_form
+msgid "Recipients"
+msgstr "Destinataires"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__alert_recipient_ids
+msgid ""
+"Recipients of the threshold alerts. Leave empty to reuse the periodic "
+"report's recipients."
+msgstr ""
+"Destinataires des alertes de palier. Laisser vide pour réutiliser les "
+"destinataires du rapport périodique."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__threshold_budget_hours
+msgid ""
+"Reference budget used in '%% of allocated budget' mode. Changing this value "
+"rearms every threshold."
+msgstr ""
+"Budget de référence utilisé en mode '%% du budget alloué'. Changer cette "
+"valeur réarme tous les paliers."
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Remaining balance"
+msgstr "Solde restant"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__threshold_mode__balance_floor
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_threshold_event__mode_snapshot__balance_floor
+msgid "Remaining balance below a floor"
+msgstr "Solde résiduel sous seuil"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Report"
+msgstr "Rapport"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__recipient_ids
+msgid "Report recipients"
+msgstr "Destinataires du rapport"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_send_wizard.py:0
+msgid "Report sent to %s"
+msgstr "Rapport envoyé à %s"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Running balance"
+msgstr "Solde cumulatif"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Select a client"
+msgstr "Sélectionnez un client"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_send_wizard_form
+msgid "Send"
+msgstr "Envoyer"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Send report"
+msgstr "Envoyer rapport"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: code:addons/bf_hour_bank/wizard/hour_bank_send_wizard.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_send_wizard_form
+msgid "Send the report"
+msgstr "Envoyer le rapport"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__send_frequency
+msgid "Sending frequency"
+msgstr "Fréquence d'envoi"
+
+#. module: bf_hour_bank
 #: model:ir.model,name:bf_hour_bank.model_hour_bank_send_wizard
-msgid "Hour Bank Send Wizard"
+msgid "Sending the hour bank report"
 msgstr "Envoi du rapport de banque d'heures"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__fired_date
+msgid "Sent on"
+msgstr "Envoyé le"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_hour_bank
+#: model:onboarding.onboarding.step,description:bf_hour_bank.bf_onb_step_settings
+msgid ""
+"[action:bf_hour_bank.action_hour_bank_client] On each bank, set the alert "
+"thresholds, the billing mode and the periodic reports."
+msgstr ""
+"[action:bf_hour_bank.action_hour_bank_client] Sur chaque banque, définissez "
+"les paliers d'alerte, le mode de facturation et les rapports périodiques."
+
+#. module: bf_hour_bank
+#: model_terms:ir.actions.act_window,help:bf_hour_bank.action_hour_bank_client
+msgid "Set up hour tracking for the clients who have an hour bank."
+msgstr "Configurez le suivi des heures pour vos clients en forfait."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__invoice_split_by_project
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__split_by_project
+msgid "Split per project"
+msgstr "Ventiler par projet"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_send_wizard__subject
+msgid "Subject"
+msgstr "Sujet"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "TOTAL"
+msgstr "TOTAL"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+msgid "Task"
+msgstr "Tâche"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_send_wizard.py:0
+msgid "Terms"
+msgstr "Conditions"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "The PDF and Excel files are attached."
+msgstr "Les fichiers PDF et Excel sont en pièces jointes."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "The details of the entries are attached in Excel format."
+msgstr "Le détail des entrées est joint en format Excel."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid ""
+"The invoice created would not be counted by this bank once posted (company "
+"%(company)s, product, contact or filters). Nothing was created; check the "
+"bank's configuration."
+msgstr ""
+"La facture créée ne serait pas comptée par cette banque une fois validée "
+"(société %(company)s, produit, contact ou filtres). Rien n'a été créé ; "
+"vérifiez la configuration de la banque."
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_invoice_wizard_form
+msgid ""
+"The invoice is created as a draft, with the bank's report\n"
+"                    attached. It is neither posted nor sent: the bank\n"
+"                    will only count it once it is posted."
+msgstr ""
+"La facture est créée en brouillon, avec le rapport de la banque\n"
+"                    en pièce jointe. Elle n'est ni validée ni envoyée : la banque\n"
+"                    ne la comptera qu'une fois validée."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid ""
+"The invoiced product \"%(product)s\" is not counted by this bank's product "
+"filter: a posted invoice on that product would not reduce the balance. "
+"Choose a product from the filter, or add it to the filter."
+msgstr ""
+"Le produit facturé « %(product)s » n'est pas compté par le filtre produits "
+"de cette banque : une facture validée sur ce produit ne réduirait pas le "
+"solde. Choisissez un produit du filtre, ou ajoutez-le au filtre."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "The openpyxl library is not installed."
+msgstr "La bibliothèque openpyxl n'est pas installée."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid ""
+"The product \"%(product)s\" is not counted by this bank's product filter: "
+"once posted, the invoice would not reduce the balance. Choose a product from"
+" the filter, or add it to the bank's filter."
+msgstr ""
+"Le produit « %(product)s » n'est pas compté par le filtre produits de cette "
+"banque : une fois validée, la facture ne réduirait pas le solde. Choisissez "
+"un produit du filtre, ou ajoutez-le au filtre de la banque."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_threshold_line.py:0
+msgid "The remaining balance threshold cannot be zero."
+msgstr "Le seuil de solde résiduel ne peut pas être zéro."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_threshold_line.py:0
+msgid "The threshold must be strictly positive."
+msgstr "Le seuil doit être strictement positif."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid ""
+"This bank's company filter excludes %(company)s: the invoice would not be "
+"counted."
+msgstr ""
+"Le filtre sociétés de cette banque exclut %(company)s : la facture ne serait"
+" pas comptée."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_line__value
+msgid "Threshold"
+msgstr "Seuil"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_threshold_event_form
+msgid "Threshold alert"
+msgstr "Alerte de palier"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Threshold alert \"%(label)s\" on %(bank)s. Measure: %(measure)s."
+msgstr "Alerte de palier « %(label)s » sur %(bank)s. Mesure : %(measure)s."
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Threshold alert \"%(label)s\" sent to %(names)s — %(measure)s"
+msgstr "Alerte de palier « %(label)s » envoyée à %(names)s — %(measure)s"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_threshold_event_list
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_threshold_event_search
+msgid "Threshold alerts"
+msgstr "Alertes de palier"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Threshold check"
+msgstr "Vérification des paliers"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__threshold_line_id
+msgid "Threshold line"
+msgstr "Palier"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__threshold_mode
+msgid "Threshold mode"
+msgstr "Mode de palier"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__value_snapshot
+msgid "Threshold value"
+msgstr "Valeur du palier"
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Thresholds"
+msgstr "Paliers"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__threshold_line_ids
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_client_form
+msgid "Thresholds to watch"
+msgstr "Paliers à surveiller"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "Timesheets"
+msgstr "Feuilles de temps"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid "To bill"
+msgstr "À facturer"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__total_hours
+msgid "Total (h)"
+msgstr "Total (h)"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "Total hours"
+msgstr "Heures totales"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_threshold_line__is_armed
+msgid ""
+"True if the threshold is ready to fire (current period key different from "
+"the last one)."
+msgstr ""
+"Vrai si le palier est prêt à déclencher (clé de période courante différente "
+"de la dernière)."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__threshold_mode__unbilled
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_threshold_event__mode_snapshot__unbilled
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.hour_bank_threshold_event_search
+msgid "Unbilled hours"
+msgstr "Heures non facturées"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard__uncovered_hours
+msgid "Uncovered at the cut-off (h)"
+msgstr "Non couvertes à la coupe (h)"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__invoice_hourly_rate
+msgid ""
+"Unit price of the generated lines. Prefilled from the price on the last "
+"invoice counted by the bank, never from the catalogue price."
+msgstr ""
+"Prix unitaire des lignes générées. Prérempli avec le prix de la dernière "
+"facture comptée par la banque, jamais avec le prix catalogue."
+
+#. module: bf_hour_bank
+#: model:onboarding.onboarding.step,button_text:bf_hour_bank.bf_onb_step_clients
+msgid "View clients"
+msgstr "Voir les clients"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_client__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,help:bf_hour_bank.field_hour_bank_client__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields.selection,name:bf_hour_bank.selection__hour_bank_client__send_frequency__weekly
+msgid "Weekly (Monday)"
+msgstr "Hebdomadaire (lundi)"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_invoice_wizard_line__wizard_id
+msgid "Wizard"
+msgstr "Assistant"
+
+#. module: bf_hour_bank
+#: model:ir.model.fields,field_description:bf_hour_bank.field_hour_bank_threshold_event__attachment_id
+msgid "XLSX attachment"
+msgstr "Pièce jointe XLSX"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/models/hour_bank_client.py:0
+msgid ""
+"Your hour bank for %(client)s has just reached the threshold %(threshold)s."
+msgstr ""
+"Votre banque d'heures pour %(client)s vient d'atteindre le palier "
+"%(threshold)s."
+
+#. module: bf_hour_bank
+#: model:onboarding.onboarding.step,description:bf_hour_bank.bf_onb_step_clients
+msgid ""
+"[action:bf_hour_bank.action_hour_bank_client] Link each client to an hour "
+"bank with its opening balance."
+msgstr ""
+"[action:bf_hour_bank.action_hour_bank_client] Associez chaque client à une "
+"banque d'heures avec son solde initial."
+
+#. module: bf_hour_bank
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.portal_hour_bank_page
+#: model_terms:ir.ui.view,arch_db:bf_hour_bank.report_hour_bank
+msgid "h"
+msgstr "h"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid "hours logged up to %(cutoff)s"
+msgstr "heures portées jusqu'au %(cutoff)s"
+
+#. module: bf_hour_bank
+#: model:ir.actions.report,print_report_name:bf_hour_bank.action_report_hour_bank
+msgid "object._bf_file_stem(time.strftime('%Y-%m-%d'))"
+msgstr "object._bf_file_stem(time.strftime('%Y-%m-%d'))"
+
+#. module: bf_hour_bank
+#. odoo-python
+#: code:addons/bf_hour_bank/wizard/hour_bank_invoice_wizard.py:0
+msgid "prepaid block"
+msgstr "tranche prépayée"

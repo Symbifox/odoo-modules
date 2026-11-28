@@ -3,7 +3,7 @@
     <data noupdate="1">
 
         <record id="cron_hour_bank_send_reports" model="ir.cron">
-            <field name="name">Banque d'heures : Envoi automatique des rapports</field>
+            <field name="name">Hour bank: automatic report sending</field>
             <field name="model_id" ref="model_hour_bank_client"/>
             <field name="state">code</field>
             <field name="code">model._cron_send_reports()</field>
@@ -15,7 +15,7 @@
         </record>
 
         <record id="cron_hour_bank_check_thresholds" model="ir.cron">
-            <field name="name">Banque d'heures : Vérifier les paliers de notification</field>
+            <field name="name">Hour bank: check notification thresholds</field>
             <field name="model_id" ref="model_hour_bank_client"/>
             <field name="state">code</field>
             <field name="code">model._cron_check_thresholds()</field>

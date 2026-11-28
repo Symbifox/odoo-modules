@@ -211,9 +211,9 @@
                                 <img t-att-src="image_data_uri(doc.company_id.logo)" alt="Logo"/>
                             </div>
                             <div class="banner-content">
-                                <div class="doc-type">Rapport</div>
-                                <h1>&#201;tat des banques d'heures</h1>
-                                <div class="doc-subtitle">Client : <t t-out="doc.partner_id.name"/></div>
+                                <div class="doc-type">Report</div>
+                                <h1>Hour bank statement</h1>
+                                <div class="doc-subtitle">Client: <t t-out="doc.partner_id.name"/></div>
                             </div>
                         </div>
                         <div class="hb-accent-bar"/>
@@ -221,13 +221,13 @@
                         <!-- Metadata bar -->
                         <div class="hb-meta">
                             <div class="hb-meta-item">
-                                <div class="hb-meta-label">Derni&#232;re mise &#224; jour</div>
+                                <div class="hb-meta-label">Last updated</div>
                                 <div class="hb-meta-value">
                                     <t t-out="data['last_update']" t-options="{'widget': 'datetime', 'hide_seconds': True, 'tz_name': doc._bf_tz_lecteur()}"/>
                                 </div>
                             </div>
                             <div class="hb-meta-item right">
-                                <div class="hb-meta-label">Solde restant</div>
+                                <div class="hb-meta-label">Remaining balance</div>
                                 <div t-attf-class="hb-meta-value {{ 'balance-positive' if balance &gt;= 0 else 'balance-negative' }}">
                                     <t t-out="balance" t-options="{'widget': 'float', 'precision': 2}"/> h
                                 </div>
@@ -240,10 +240,10 @@
                                 <thead>
                                     <tr>
                                         <th style="width:12%">Date</th>
-                                        <th class="num" style="width:12%">Nb d'heures</th>
-                                        <th class="num" style="width:12%">Solde cumulatif</th>
-                                        <th style="width:40%">Description / D&#233;tails</th>
-                                        <th style="width:24%">Projet</th>
+                                        <th class="num" style="width:12%">No. of hours</th>
+                                        <th class="num" style="width:12%">Running balance</th>
+                                        <th style="width:40%">Description / Details</th>
+                                        <th style="width:24%">Project</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -261,12 +261,12 @@
 
                             <!-- Summary by project -->
                             <div style="page-break-before: auto; margin-top: 24pt;">
-                                <div class="hb-section-title">Sommaire par projet</div>
+                                <div class="hb-section-title">Per-project summary</div>
                                 <table class="hb-summary-table">
                                     <thead>
                                         <tr>
-                                            <th>Projet</th>
-                                            <th class="num">Heures totales</th>
+                                            <th>Project</th>
+                                            <th class="num">Total hours</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -288,12 +288,12 @@
 
                             <!-- Summary by month -->
                             <div style="margin-top: 24pt;">
-                                <div class="hb-section-title">Synth&#232;se par mois</div>
+                                <div class="hb-section-title">Monthly summary</div>
                                 <t t-set="all_projects" t-value="sorted(set(p for md in summary_by_month.values() for p in md))"/>
                                 <table class="hb-summary-table">
                                     <thead>
                                         <tr>
-                                            <th>Mois</th>
+                                            <th>Month</th>
                                             <t t-foreach="all_projects" t-as="proj">
                                                 <th class="num"><t t-out="proj"/></th>
                                             </t>
@@ -323,7 +323,7 @@
                                     <t t-out="doc.company_id.name"/>
                                 </div>
                                 <div class="hb-footer-right">
-                                    Banque d'heures &#8212; Document confidentiel
+                                    Hour bank — Confidential document
                                 </div>
                             </div>
                         </div>

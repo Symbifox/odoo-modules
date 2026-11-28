@@ -5,7 +5,7 @@
         <field name="name">hour.bank.threshold.event.list</field>
         <field name="model">hour.bank.threshold.event</field>
         <field name="arch" type="xml">
-            <list string="Alertes de palier" create="false" edit="false">
+            <list string="Threshold alerts" create="false" edit="false">
                 <field name="fired_date"/>
                 <field name="bank_id"/>
                 <field name="mode_snapshot"/>
@@ -21,7 +21,7 @@
         <field name="name">hour.bank.threshold.event.form</field>
         <field name="model">hour.bank.threshold.event</field>
         <field name="arch" type="xml">
-            <form string="Alerte de palier" create="false" edit="false">
+            <form string="Threshold alert" create="false" edit="false">
                 <sheet>
                     <group>
                         <group>
@@ -36,7 +36,7 @@
                             <field name="measured_value"/>
                         </group>
                     </group>
-                    <separator string="Destinataires"/>
+                    <separator string="Recipients"/>
                     <field name="recipient_ids" widget="many2many_tags"/>
                     <group>
                         <field name="attachment_id"/>
@@ -51,17 +51,17 @@
         <field name="name">hour.bank.threshold.event.search</field>
         <field name="model">hour.bank.threshold.event</field>
         <field name="arch" type="xml">
-            <search string="Alertes de palier">
+            <search string="Threshold alerts">
                 <field name="bank_id"/>
                 <field name="mode_snapshot"/>
-                <filter name="unbilled" string="Heures non factur&#233;es"
+                <filter name="unbilled" string="Unbilled hours"
                         domain="[('mode_snapshot', '=', 'unbilled')]"/>
-                <filter name="budget_pct" string="% du budget"
+                <filter name="budget_pct" string="% of budget"
                         domain="[('mode_snapshot', '=', 'budget_pct')]"/>
-                <filter name="balance_floor" string="Solde sous seuil"
+                <filter name="balance_floor" string="Balance below the floor"
                         domain="[('mode_snapshot', '=', 'balance_floor')]"/>
-                <group expand="0" string="Group&#233; par">
-                    <filter name="group_bank" string="Banque"
+                <group expand="0" string="Group By">
+                    <filter name="group_bank" string="Bank"
                             context="{'group_by': 'bank_id'}"/>
                     <filter name="group_mode" string="Mode"
                             context="{'group_by': 'mode_snapshot'}"/>

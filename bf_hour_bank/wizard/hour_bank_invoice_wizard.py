@@ -14,10 +14,10 @@ class HourBankInvoiceWizard(models.TransientModel):
     Jamais validée ni envoyée ici : la banque ne crédite qu'une facture validée,
     et c'est à la personne qui facture de la relire avant."""
     _name = 'hour.bank.invoice.wizard'
-    _description = "Génération d'une facture depuis la banque d'heures"
+    _description = "Generating an invoice from the hour bank"
 
     bank_id = fields.Many2one(
-        'hour.bank.client', required=True, string="Banque d'heures",
+        'hour.bank.client', required=True, string="Hour bank",
     )
     company_id = fields.Many2one(related='bank_id.company_id')
     currency_id = fields.Many2one(related='company_id.currency_id')
@@ -30,48 +30,48 @@ class HourBankInvoiceWizard(models.TransientModel):
     )
 
     invoice_mode = fields.Selection(
-        [('postpaid', 'Postpayé : heures consommées'),
-         ('prepaid', "Prépayé : tranche d'heures")],
+        [('postpaid', "Postpaid: hours consumed"),
+         ('prepaid', "Prepaid: block of hours")],
         string="Mode", compute='_compute_from_bank', store=True, readonly=False, precompute=True, required=True,
     )
     date_cutoff = fields.Date(
-        string="Heures portées jusqu'au", default=fields.Date.context_today, required=True,
+        string="Hours logged up to", default=fields.Date.context_today, required=True,
     )
     block_hours = fields.Float(
-        string="Tranche (h)", compute='_compute_from_bank', store=True, readonly=False, precompute=True,
+        string="Block (h)", compute='_compute_from_bank', store=True, readonly=False, precompute=True,
     )
     split_by_project = fields.Boolean(
-        string="Ventiler par projet", compute='_compute_from_bank', store=True, readonly=False, precompute=True,
+        string="Split per project", compute='_compute_from_bank', store=True, readonly=False, precompute=True,
     )
     product_id = fields.Many2one(
-        'product.product', string="Produit",
+        'product.product', string="Product",
         compute='_compute_from_bank', store=True, readonly=False, precompute=True,
     )
     partner_id = fields.Many2one(
-        'res.partner', string="Facturer à",
+        'res.partner', string="Bill to",
         compute='_compute_from_bank', store=True, readonly=False, precompute=True,
     )
     price_unit = fields.Float(
-        string="Taux horaire", digits='Product Price',
+        string="Hourly rate", digits='Product Price',
         compute='_compute_price_unit', store=True, readonly=False, precompute=True,
     )
 
     uncovered_hours = fields.Float(
-        string="Non couvertes à la coupe (h)", compute='_compute_postpaid_hours',
+        string="Uncovered at the cut-off (h)", compute='_compute_postpaid_hours',
     )
     draft_hours = fields.Float(
-        string="Déjà en brouillon (h)", compute='_compute_postpaid_hours',
+        string="Already in a draft (h)", compute='_compute_postpaid_hours',
     )
     draft_move_ids = fields.Many2many(
-        'account.move', string="Brouillons", compute='_compute_postpaid_hours',
+        'account.move', string="Drafts", compute='_compute_postpaid_hours',
     )
 
     line_ids = fields.One2many(
-        'hour.bank.invoice.wizard.line', 'wizard_id', string="Lignes",
+        'hour.bank.invoice.wizard.line', 'wizard_id', string="Lines",
         compute='_compute_line_ids', store=True, readonly=False,
     )
     total_hours = fields.Float(string="Total (h)", compute='_compute_totals')
-    amount_untaxed = fields.Monetary(string="Montant avant taxes", compute='_compute_totals')
+    amount_untaxed = fields.Monetary(string="Amount before taxes", compute='_compute_totals')
 
     # ------------------------------------------------------------------
     # Valeurs proposées
@@ -143,6 +143,12 @@ class HourBankInvoiceWizard(models.TransientModel):
             wiz.amount_untaxed = wiz.total_hours * wiz.price_unit
 
     def _bf_lang(self):
+        # Même règle que la banque : la langue du contact facturé si elle est
+        # ACTIVE, sinon celle du client, puis de la maison. Une langue inactive
+        # (un en_US resté sur un contact d'une base où en_US est désactivée)
+        # sortait la facture et son rapport en anglais à un client francophone.
+        if self.bank_id:
+            return self.bank_id._bf_lang(self.partner_id)
         return self.partner_id.lang or self.env.lang
 
     def _bf_line_values(self):
@@ -161,7 +167,7 @@ class HourBankInvoiceWizard(models.TransientModel):
                                digits=0 if self.block_hours.is_integer() else 2)
             return [{
                 'sequence': 10,
-                'name': env._("Tranche de %(hours)s h", hours=hours),
+                'name': env._("Block of %(hours)s h", hours=hours),
                 'quantity': self.block_hours,
             }]
 
@@ -181,8 +187,9 @@ class HourBankInvoiceWizard(models.TransientModel):
         if not self.split_by_project:
             return [{
                 'sequence': 10,
-                'name': env._("Du %(start)s au %(end)s\n"
-                              "Détail des heures : voir le rapport de banque d'heures joint.",
+                'name': env._("From %(start)s to %(end)s\nBreakdown of "
+                              "the hours: see the attached hour bank "
+                              "report.",
                               **period),
                 'quantity': total,
             }]
@@ -195,10 +202,10 @@ class HourBankInvoiceWizard(models.TransientModel):
             # sudo : le projet peut être privé pour la personne qui facture.
             project = self.env['project.project'].sudo().browse(project_id) if project_id else False
             label = (project.with_context(lang=lang).name if project
-                     else env._("Ajustements"))
+                     else env._("Adjustments"))
             values.append({
                 'project_id': project_id or False,
-                'name': env._("%(project)s — du %(start)s au %(end)s", project=label, **period),
+                'name': env._("%(project)s — from %(start)s to %(end)s", project=label, **period),
                 'quantity': round(hours, 2),
             })
         # Le reste d'arrondi va à la plus grosse ligne : le total ventilé égale
@@ -219,34 +226,35 @@ class HourBankInvoiceWizard(models.TransientModel):
         bank = self.bank_id
         company = bank.company_id or self.env.company
         if not self.product_id:
-            raise UserError(_("Choisissez le produit à facturer."))
+            raise UserError(_("Choose the product to bill."))
         if not bank._bf_product_credits(self.product_id):
             raise UserError(_(
-                "Le produit « %(product)s » n'est pas compté par le filtre produits de "
-                "cette banque : une fois validée, la facture ne réduirait pas le solde. "
-                "Choisissez un produit du filtre, ou ajoutez-le au filtre de la banque.",
+                "The product \"%(product)s\" is not counted by this "
+                "bank's product filter: once posted, the invoice would "
+                "not reduce the balance. Choose a product from the "
+                "filter, or add it to the bank's filter.",
                 product=self.product_id.display_name,
             ))
         if not self.partner_id:
-            raise UserError(_("Choisissez à qui facturer."))
+            raise UserError(_("Choose who to bill."))
         if not bank._bf_partner_credits(self.partner_id):
             raise UserError(_(
-                "Une facture adressée à « %(partner)s » ne serait pas comptée par cette "
-                "banque (filtre partenaires, ou autre client). Choisissez un partenaire "
-                "de facturation de la banque.",
+                "An invoice addressed to \"%(partner)s\" would not be "
+                "counted by this bank (partner filter, or another "
+                "client). Choose one of the bank's billing partners.",
                 partner=self.partner_id.display_name,
             ))
         if not bank._bf_company_credits(company):
             raise UserError(_(
-                "Le filtre sociétés de cette banque exclut %(company)s : la facture "
-                "ne serait pas comptée.", company=company.name,
+                "This bank's company filter excludes %(company)s: the "
+                "invoice would not be counted.", company=company.name,
             ))
         if self.price_unit <= 0:
-            raise UserError(_("Indiquez le taux horaire."))
+            raise UserError(_("Enter the hourly rate."))
         if not lines:
             raise UserError(_(
-                "Rien à facturer : aucune heure non couverte à la date de coupe, "
-                "une fois déduites les heures déjà en brouillon."
+                "Nothing to bill: no uncovered hours at the cut-off date, "
+                "once the hours already in a draft are deducted."
             ))
 
     def action_create_invoice(self):
@@ -291,16 +299,20 @@ class HourBankInvoiceWizard(models.TransientModel):
             bank._bf_credit_line_domain(state='draft') + [('move_id', '=', move.id)])
         if counted != len(move.invoice_line_ids):
             raise UserError(_(
-                "La facture créée ne serait pas comptée par cette banque une fois "
-                "validée (société %(company)s, produit, contact ou filtres). Rien n'a "
-                "été créé ; vérifiez la configuration de la banque.",
+                "The invoice created would not be counted by this bank "
+                "once posted (company %(company)s, product, contact or "
+                "filters). Nothing was created; check the bank's "
+                "configuration.",
                 company=move.company_id.name,
             ))
 
-        pdf = bank._get_pdf_binary()
+        # Le rapport joint suit la langue du contact facturé, comme les
+        # libellés des lignes.
+        lang = self._bf_lang()
+        pdf = bank._get_pdf_binary(lang=lang)
         attachment = self.env['ir.attachment'].create({
-            'name': "Banque_heures_%s_%s.pdf" % (
-                bank.partner_id.name.replace(' ', '_'), self.date_cutoff.isoformat()),
+            'name': "%s.pdf" % bank.with_context(lang=lang)._bf_file_stem(
+                self.date_cutoff.isoformat()),
             'type': 'binary',
             'datas': base64.b64encode(pdf),
             'mimetype': 'application/pdf',
@@ -310,8 +322,8 @@ class HourBankInvoiceWizard(models.TransientModel):
         # no_new_invoice : sans lui, Odoo prend le PDF posté sur un brouillon
         # pour une facture à importer (EDI, OCR) et le dit au chatter.
         move.with_context(no_new_invoice=True).message_post(
-            body=Markup(_("Brouillon généré depuis la banque d'heures %(bank)s. "
-                          "Rapport de la banque joint.")) % {'bank': bank._get_html_link()},
+            body=Markup(_("Draft generated from hour bank %(bank)s. Bank "
+                          "report attached.")) % {'bank': bank._get_html_link()},
             message_type='comment',
             subtype_xmlid='mail.mt_note',
             attachment_ids=[attachment.id],
@@ -319,19 +331,19 @@ class HourBankInvoiceWizard(models.TransientModel):
 
         total = sum(lines.mapped('quantity'))
         if self.invoice_mode == 'prepaid':
-            detail = _("tranche prépayée")
+            detail = _("prepaid block")
         else:
-            detail = _("heures portées jusqu'au %(cutoff)s",
+            detail = _("hours logged up to %(cutoff)s",
                        cutoff=format_date(self.env, self.date_cutoff))
             if draft_hours:
-                detail += _(", moins %(hours)s h déjà en brouillon",
+                detail += _(", minus %(hours)s h already in a draft",
                             hours=formatLang(self.env, draft_hours))
         # La trace se pose en sudo : facturer ne demande pas le droit de
         # modifier la banque (réservé aux gestionnaires de projet).
         bank.sudo().message_post(
             # Le lien porte le nom du brouillon (« Facture brouillon »).
-            body=Markup(_("%(move)s générée depuis la banque : %(hours)s h à %(rate)s "
-                          "(%(product)s), %(detail)s.")) % {
+            body=Markup(_("%(move)s generated from the bank: %(hours)s h "
+                          "at %(rate)s (%(product)s), %(detail)s.")) % {
                 'move': move._get_html_link(),
                 'hours': formatLang(self.env, total),
                 'rate': formatLang(self.env, self.price_unit, currency_obj=move.currency_id),
@@ -354,11 +366,11 @@ class HourBankInvoiceWizard(models.TransientModel):
 
 class HourBankInvoiceWizardLine(models.TransientModel):
     _name = 'hour.bank.invoice.wizard.line'
-    _description = "Ligne proposée pour la facture de la banque d'heures"
+    _description = "Proposed line for the hour bank invoice"
     _order = 'sequence, id'
 
     wizard_id = fields.Many2one('hour.bank.invoice.wizard', required=True, ondelete='cascade')
     sequence = fields.Integer(default=10)
-    project_id = fields.Many2one('project.project', string="Projet")
-    name = fields.Text(string="Libellé", required=True)
-    quantity = fields.Float(string="Heures", digits='Product Unit of Measure')
+    project_id = fields.Many2one('project.project', string="Project")
+    name = fields.Text(string="Label", required=True)
+    quantity = fields.Float(string="Hours", digits='Product Unit of Measure')

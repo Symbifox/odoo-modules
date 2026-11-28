@@ -3,43 +3,43 @@ from odoo import fields, models
 
 class HourBankThresholdEvent(models.Model):
     _name = 'hour.bank.threshold.event'
-    _description = "Alerte de palier de banque d'heures (historique)"
+    _description = "Hour bank threshold alert (history)"
     _order = 'fired_date desc, id desc'
 
     bank_id = fields.Many2one(
         'hour.bank.client', required=True, ondelete='cascade',
-        index=True, string="Banque d'heures",
+        index=True, string="Hour bank",
     )
     threshold_line_id = fields.Many2one(
         'hour.bank.threshold.line', ondelete='set null',
-        string="Palier",
+        string="Threshold line",
     )
     mode_snapshot = fields.Selection([
-        ('unbilled', 'Heures non facturées'),
-        ('budget_pct', '% du budget alloué'),
-        ('balance_floor', 'Solde résiduel sous seuil'),
-    ], string="Mode au moment du déclenchement", readonly=True)
+        ('unbilled', "Unbilled hours"),
+        ('budget_pct', "% of allocated budget"),
+        ('balance_floor', "Remaining balance below a floor"),
+    ], string="Mode at the time of the trigger", readonly=True)
     value_snapshot = fields.Float(
-        readonly=True, string="Valeur du palier",
+        readonly=True, string="Threshold value",
     )
     measured_value = fields.Float(
-        readonly=True, string="Valeur mesurée",
+        readonly=True, string="Measured value",
     )
     period_key = fields.Char(
-        index=True, readonly=True, string="Clé de période",
+        index=True, readonly=True, string="Period key",
     )
     fired_date = fields.Datetime(
-        default=fields.Datetime.now, readonly=True, string="Envoyé le",
+        default=fields.Datetime.now, readonly=True, string="Sent on",
     )
     recipient_ids = fields.Many2many(
         'res.partner', 'hour_bank_threshold_event_recipient_rel',
-        string="Destinataires", readonly=True,
+        string="Recipients", readonly=True,
     )
     attachment_id = fields.Many2one(
         'ir.attachment', ondelete='set null', readonly=True,
-        string="Pièce jointe XLSX",
+        string="XLSX attachment",
     )
     mail_message_id = fields.Many2one(
         'mail.message', ondelete='set null', readonly=True,
-        string="Message chatter",
+        string="Chatter message",
     )

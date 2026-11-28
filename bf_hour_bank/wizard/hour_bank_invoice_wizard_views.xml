@@ -5,7 +5,7 @@
         <field name="name">hour.bank.invoice.wizard.form</field>
         <field name="model">hour.bank.invoice.wizard</field>
         <field name="arch" type="xml">
-            <form string="G&#233;n&#233;rer la facture">
+            <form string="Generate the invoice">
                 <field name="bank_id" invisible="1"/>
                 <field name="company_id" invisible="1"/>
                 <field name="currency_id" invisible="1"/>
@@ -15,11 +15,11 @@
                 <field name="bank_commercial_partner_id" invisible="1"/>
                 <div class="alert alert-warning" role="alert"
                      invisible="not draft_move_ids">
-                    Des factures brouillon compt&#233;es par cette banque existent d&#233;j&#224;.
-                    <span invisible="invoice_mode != 'postpaid'">Leurs heures sont d&#233;duites
-                        de ce qui est propos&#233; ici.</span>
-                    <span invisible="invoice_mode != 'prepaid'">V&#233;rifiez qu'une tranche
-                        n'est pas d&#233;j&#224; en attente de validation.</span>
+                    Draft invoices counted by this bank already exist.
+                    <span invisible="invoice_mode != 'postpaid'">Their hours are deducted
+                        from what is proposed here.</span>
+                    <span invisible="invoice_mode != 'prepaid'">Check that a block
+                        is not already waiting to be posted.</span>
                     <field name="draft_move_ids" widget="many2many_tags" readonly="1" nolabel="1"/>
                 </div>
                 <group>
@@ -58,15 +58,15 @@
                     <field name="amount_untaxed" readonly="1"/>
                 </group>
                 <p class="text-muted">
-                    La facture est cr&#233;&#233;e en brouillon, avec le rapport de la banque
-                    en pi&#232;ce jointe. Elle n'est ni valid&#233;e ni envoy&#233;e : la banque
-                    ne la comptera qu'une fois valid&#233;e.
+                    The invoice is created as a draft, with the bank's report
+                    attached. It is neither posted nor sent: the bank
+                    will only count it once it is posted.
                 </p>
                 <footer>
                     <button name="action_create_invoice" type="object"
-                            string="Cr&#233;er le brouillon" class="btn-primary"
+                            string="Create the draft" class="btn-primary"
                             icon="fa-file-text-o"/>
-                    <button string="Annuler" special="cancel"/>
+                    <button string="Cancel" special="cancel"/>
                 </footer>
             </form>
         </field>
